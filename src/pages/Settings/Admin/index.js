@@ -62,7 +62,7 @@ const pagesList = [
   },
   {
     label: 'Privacy',
-    to: '#',
+    to: '/privacy',
   },
   {
     label: 'Terms & Conditions',

@@ -1,6 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import OptionsSelect from '../../components/Filter/OptionsSelect';
 import StyledFormField from '../../components/Form/StyledFormField';
@@ -48,9 +47,7 @@ const updateType = (type) => {
   }
   return modifiedType;
 };
-function AddReason({ isEdit, onClose, reason, submitHandler }) {
-  const store = useSelector((store) => store.settingsReducer);
-  console.log('store: ', store?.isUpdated);
+function AddReason({ isEdit, onClose, reason, submitHandler, loading }) {
   const [currentReason, setCurrentReason] = useState(reason || initialReason);
 
   // eslint-disable-next-line no-unused-vars
@@ -66,13 +63,6 @@ function AddReason({ isEdit, onClose, reason, submitHandler }) {
       submitHandler(currentReason);
     }
   };
-
-  useEffect(() => {
-    if (store?.isUpdated) {
-      onClose();
-    }
-    store.isUpdated = false;
-  }, [store.isUpdated]);
 
   return (
     <SidebarContainer
@@ -136,7 +126,7 @@ function AddReason({ isEdit, onClose, reason, submitHandler }) {
           disableElevation
           variant="contained"
           fullWidth
-          disabled={store?.loading}
+          disabled={loading}
           //   disabled={(isEdit && !currentFaq?._id) || isFaqLoading || isChatReasonLoading}
           onClick={() => {
             addNewReason();

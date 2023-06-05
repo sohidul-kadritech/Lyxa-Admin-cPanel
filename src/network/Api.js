@@ -174,6 +174,7 @@ export const ADD_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/add`;
 export const UPDATE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/edit`;
 export const ALL_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel`;
 export const SORT_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/sort`;
+export const DELETE_ORDER_CANCEL_REASON = `${ADMIN_ENDPOINT}/order-cancel/delete`;
 
 export const SET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge/add-global-drop-charge`;
 export const GET_DELIVERY_FEE = `${ADMIN_ENDPOINT}/drop-charge`;

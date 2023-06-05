@@ -41,6 +41,14 @@ const section2Sx = {
   width: '100%',
 };
 
+export const paymentInformationValidation = (paymentmethod) => {
+  if (paymentmethod.length > 0) return true;
+
+  successMsg('Please Select at least one payment method!');
+
+  return false;
+};
+
 function ShopSettings() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
@@ -305,7 +313,9 @@ function ShopSettings() {
             </Button>
             <Button
               onClick={() => {
-                if (has_unsaved_change) {
+                if (!paymentInformationValidation(newPayMentInformation)) {
+                  set_has_unsaved_change(false);
+                } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
                   updateShopSettings();
                 } else {
                   successMsg('Please make some changes first!');

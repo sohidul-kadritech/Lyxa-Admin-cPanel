@@ -10,6 +10,10 @@ export const validateData = (data) => {
 
 export const statusTypeOptions = [
   {
+    value: 'all',
+    label: 'All',
+  },
+  {
     value: 'active',
     label: 'Active',
   },

@@ -26,7 +26,6 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
-import styled from 'styled-components';
 import CloseButton from '../../components/Common/CloseButton';
 import PageTop from '../../components/Common/PageTop';
 import TablePagination from '../../components/Common/TablePagination';
@@ -43,8 +42,8 @@ import { getQueryParamsInit } from './helpers';
 // eslint-disable-next-line no-unused-vars
 import { cancelButlerOrderByAdmin } from '../../store/Butler/butlerActions';
 // eslint-disable-next-line no-unused-vars
-import StyledFormField from '../../components/Form/StyledFormField';
 import { cancelOrderByAdmin } from '../../store/order/orderAction';
+import RefundOrder from './RefundOrder';
 
 const orderFilterToTabValueMap = {
   0: 'ongoing',
@@ -318,19 +317,19 @@ export default function NewOrders({ showFor }) {
     },
   );
 
-  const CancelOrderRefunds = styled.div`
-    padding-bottom: 10px;
-    .refund_item_wrapper {
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
+  // const CancelOrderRefunds = styled.div`
+  //   padding-bottom: 10px;
+  //   .refund_item_wrapper {
+  //     margin-bottom: 5px;
+  //     display: flex;
+  //     align-items: center;
 
-      .refund_input {
-        width: 180px;
-        margin-right: 20px;
-      }
-    }
-  `;
+  //     .refund_input {
+  //       width: 180px;
+  //       margin-right: 20px;
+  //     }
+  //   }
+  // `;
 
   const getFlagOptions = (currentOrder) => {
     const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
@@ -855,71 +854,76 @@ export default function NewOrders({ showFor }) {
               </div>
 
               {orderCancel?.refundType === 'partial' && (
-                <CancelOrderRefunds>
-                  {/* <input
-                      type="number"
-                      className="form-control refund_input"
-                      placeholder="Enter Admin Amount"
-                      min={0}
-                      max={orderPayment?.admin}
-                      onChange={updateRefundAmount}
-                      name="admin"
-                      value={orderCancel?.partialPayment?.admin}
-                    /> */}
-                  <StyledFormField
-                    label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
-                    intputType="text"
-                    containerProps={{
-                      sx: {
-                        padding: '14px 0px 23px 0',
-                        flex: '1',
-                      },
-                    }}
-                    inputProps={{
-                      value: orderCancel?.partialPayment?.admin,
-                      min: 0,
-                      type: 'number',
-                      name: 'admin',
-                      placeholder: 'Enter Admin Amount',
-                      onChange: updateRefundAmount,
-                    }}
-                  />
-                  {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
+                <RefundOrder
+                  orderPayment={orderPayment}
+                  orderCancel={orderCancel}
+                  updateRefundAmount={updateRefundAmount}
+                />
+                // <CancelOrderRefunds>
+                //   {/* <input
+                //       type="number"
+                //       className="form-control refund_input"
+                //       placeholder="Enter Admin Amount"
+                //       min={0}
+                //       max={orderPayment?.admin}
+                //       onChange={updateRefundAmount}
+                //       name="admin"
+                //       value={orderCancel?.partialPayment?.admin}
+                //     /> */}
+                //   <StyledFormField
+                //     label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
+                //     intputType="text"
+                //     containerProps={{
+                //       sx: {
+                //         padding: '14px 0px 23px 0',
+                //         flex: '1',
+                //       },
+                //     }}
+                //     inputProps={{
+                //       value: orderCancel?.partialPayment?.admin,
+                //       min: 0,
+                //       type: 'number',
+                //       name: 'admin',
+                //       placeholder: 'Enter Admin Amount',
+                //       onChange: updateRefundAmount,
+                //     }}
+                //   />
+                //   {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
 
-                  {orderCancel?.shop?._id && (
-                    <div className="refund_item_wrapper">
-                      {/* <input
-                        type="number"
-                        className="form-control refund_input"
-                        placeholder="Enter Shop Amount"
-                        min={0}
-                        max={orderPayment?.shop}
-                        onChange={updateRefundAmount}
-                        name="shop"
-                        value={orderCancel?.partialPayment?.shop}
-                      />
-                      <span>Shop Earning: {orderPayment?.shop}</span> */}
-                      <StyledFormField
-                        label={<span>Shop Earning: {orderPayment?.shop}</span>}
-                        intputType="text"
-                        containerProps={{
-                          sx: {
-                            padding: '14px 0px 23px 0',
-                            flex: '1',
-                          },
-                        }}
-                        inputProps={{
-                          value: orderCancel?.partialPayment?.shop,
-                          type: 'number',
-                          min: 0,
-                          name: 'shop',
-                          placeholder: 'Enter Shop Amount',
-                          onChange: updateRefundAmount,
-                        }}
-                      />
-                    </div>
-                  )}
-                </CancelOrderRefunds>
+                //   {orderCancel?.shop?._id && (
+                //     <div className="refund_item_wrapper">
+                //       {/* <input
+                //         type="number"
+                //         className="form-control refund_input"
+                //         placeholder="Enter Shop Amount"
+                //         min={0}
+                //         max={orderPayment?.shop}
+                //         onChange={updateRefundAmount}
+                //         name="shop"
+                //         value={orderCancel?.partialPayment?.shop}
+                //       />
+                //       <span>Shop Earning: {orderPayment?.shop}</span> */}
+                //       <StyledFormField
+                //         label={<span>Shop Earning: {orderPayment?.shop}</span>}
+                //         intputType="text"
+                //         containerProps={{
+                //           sx: {
+                //             padding: '14px 0px 23px 0',
+                //             flex: '1',
+                //           },
+                //         }}
+                //         inputProps={{
+                //           value: orderCancel?.partialPayment?.shop,
+                //           type: 'number',
+                //           min: 0,
+                //           name: 'shop',
+                //           placeholder: 'Enter Shop Amount',
+                //           onChange: updateRefundAmount,
+                //         }}
+                //       />
+                //     </div>
+                //   )}
+                // </CancelOrderRefunds>
               )}
               <h5>
                 Total Refund Amount:{' '}
@@ -1052,71 +1056,76 @@ export default function NewOrders({ showFor }) {
                 </RadioGroup>
               </FormControl>
               {orderCancel?.refundType === 'partial' && (
-                <CancelOrderRefunds>
-                  {/* <input
-                      type="number"
-                      className="form-control refund_input"
-                      placeholder="Enter Admin Amount"
-                      min={0}
-                      max={orderPayment?.admin}
-                      onChange={updateRefundAmount}
-                      name="admin"
-                      value={orderCancel?.partialPayment?.admin}
-                    /> */}
-                  <StyledFormField
-                    label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
-                    intputType="text"
-                    containerProps={{
-                      sx: {
-                        padding: '14px 0px 23px 0',
-                        flex: '1',
-                      },
-                    }}
-                    inputProps={{
-                      value: orderCancel?.partialPayment?.admin,
-                      min: 0,
-                      type: 'number',
-                      name: 'admin',
-                      placeholder: 'Enter Admin Amount',
-                      onChange: updateRefundAmount,
-                    }}
-                  />
-                  {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
+                <RefundOrder
+                  orderPayment={orderPayment}
+                  orderCancel={orderCancel}
+                  updateRefundAmount={updateRefundAmount}
+                />
+                // <CancelOrderRefunds>
+                //   {/* <input
+                //       type="number"
+                //       className="form-control refund_input"
+                //       placeholder="Enter Admin Amount"
+                //       min={0}
+                //       max={orderPayment?.admin}
+                //       onChange={updateRefundAmount}
+                //       name="admin"
+                //       value={orderCancel?.partialPayment?.admin}
+                //     /> */}
+                //   <StyledFormField
+                //     label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
+                //     intputType="text"
+                //     containerProps={{
+                //       sx: {
+                //         padding: '14px 0px 23px 0',
+                //         flex: '1',
+                //       },
+                //     }}
+                //     inputProps={{
+                //       value: orderCancel?.partialPayment?.admin,
+                //       min: 0,
+                //       type: 'number',
+                //       name: 'admin',
+                //       placeholder: 'Enter Admin Amount',
+                //       onChange: updateRefundAmount,
+                //     }}
+                //   />
+                //   {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
 
-                  {orderCancel?.shop?._id && (
-                    <div className="refund_item_wrapper">
-                      {/* <input
-                        type="number"
-                        className="form-control refund_input"
-                        placeholder="Enter Shop Amount"
-                        min={0}
-                        max={orderPayment?.shop}
-                        onChange={updateRefundAmount}
-                        name="shop"
-                        value={orderCancel?.partialPayment?.shop}
-                      />
-                      <span>Shop Earning: {orderPayment?.shop}</span> */}
-                      <StyledFormField
-                        label={<span>Shop Earning: {orderPayment?.shop}</span>}
-                        intputType="text"
-                        containerProps={{
-                          sx: {
-                            padding: '14px 0px 23px 0',
-                            flex: '1',
-                          },
-                        }}
-                        inputProps={{
-                          value: orderCancel?.partialPayment?.shop,
-                          type: 'number',
-                          min: 0,
-                          name: 'shop',
-                          placeholder: 'Enter Shop Amount',
-                          onChange: updateRefundAmount,
-                        }}
-                      />
-                    </div>
-                  )}
-                </CancelOrderRefunds>
+                //   {orderCancel?.shop?._id && (
+                //     <div className="refund_item_wrapper">
+                //       {/* <input
+                //         type="number"
+                //         className="form-control refund_input"
+                //         placeholder="Enter Shop Amount"
+                //         min={0}
+                //         max={orderPayment?.shop}
+                //         onChange={updateRefundAmount}
+                //         name="shop"
+                //         value={orderCancel?.partialPayment?.shop}
+                //       />
+                //       <span>Shop Earning: {orderPayment?.shop}</span> */}
+                //       <StyledFormField
+                //         label={<span>Shop Earning: {orderPayment?.shop}</span>}
+                //         intputType="text"
+                //         containerProps={{
+                //           sx: {
+                //             padding: '14px 0px 23px 0',
+                //             flex: '1',
+                //           },
+                //         }}
+                //         inputProps={{
+                //           value: orderCancel?.partialPayment?.shop,
+                //           type: 'number',
+                //           min: 0,
+                //           name: 'shop',
+                //           placeholder: 'Enter Shop Amount',
+                //           onChange: updateRefundAmount,
+                //         }}
+                //       />
+                //     </div>
+                //   )}
+                // </CancelOrderRefunds>
               )}
               <h5>
                 Total Refund Amount:{' '}
