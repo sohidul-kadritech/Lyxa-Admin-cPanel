@@ -15,6 +15,7 @@ import { ReactComponent as RidersAdminIcons } from '../assets/icons/menu-icons/r
 import { ReactComponent as SellersIcon } from '../assets/icons/menu-icons/sellers.svg';
 import { ReactComponent as SettingsAdminIcon } from '../assets/icons/menu-icons/settings-admin.svg';
 import { ReactComponent as SettingsIcon } from '../assets/icons/menu-icons/settings.svg';
+import { ReactComponent as ShopListIcon } from '../assets/icons/menu-icons/shop-list.svg';
 import { ReactComponent as ShopIcon } from '../assets/icons/menu-icons/shop.svg';
 import { ReactComponent as TeamIcon } from '../assets/icons/menu-icons/team.svg';
 import { ReactComponent as TrxIcon } from '../assets/icons/menu-icons/trx.svg';
@@ -136,10 +137,12 @@ export const seller_menu_items = (prefix = '') => [
       {
         label: 'Dashboard',
         to: `${prefix}/`,
+        icon: DashBoardIcon,
       },
       {
         label: 'Orders',
         to: `${prefix}/orders/list`,
+        icon: OrderIcon,
       },
       {
         label: 'Financials',
@@ -151,34 +154,35 @@ export const seller_menu_items = (prefix = '') => [
         icon: UsersIcon,
         to: `${prefix}/users`,
       },
-    ],
-  },
-  {
-    title: 'Shop',
-    menu: [
       {
         label: 'Shop List',
         to: `${prefix}/shops/list`,
-      },
-      // {
-      //   label: 'Shop Add',
-      //   to: `${prefix}/shops/add`,
-      // },
-    ],
-  },
-  {
-    title: 'Arbiatry',
-    menu: [
-      {
-        label: 'Shops TRX',
-        to: `${prefix}/app-wallet/seller/shops-transactions`,
-      },
-      {
-        label: 'Categories List',
-        to: `${prefix}/categories/list`,
+        icon: ShopListIcon,
       },
     ],
   },
+  // {
+  //   title: 'Shop',
+  //   menu: [
+  //     // {
+  //     //   label: 'Shop Add',
+  //     //   to: `${prefix}/shops/add`,
+  //     // },
+  //   ],
+  // },
+  // {
+  //   title: 'Arbiatry',
+  //   menu: [
+  //     {
+  //       label: 'Shops TRX',
+  //       to: `${prefix}/app-wallet/seller/shops-transactions`,
+  //     },
+  //     {
+  //       label: 'Categories List',
+  //       to: `${prefix}/categories/list`,
+  //     },
+  //   ],
+  // },
 ];
 
 /* ======== admin ======== */
