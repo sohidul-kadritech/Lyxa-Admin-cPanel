@@ -1,6 +1,8 @@
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
 import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
-import Financials from '../pages/Financials';
+// import Financials from '../pages/Financials';
+import ShopFinancials from '../pages/ShopFinancials';
+
 import ShopHourSettings from '../pages/Hours';
 import Marketing from '../pages/Marketing';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
@@ -32,7 +34,7 @@ export const shop_routes = (prefix = '') => {
     { path: `${prefix}/profile`, component: ShopProfile },
     { path: `${prefix}/menu`, component: MenuPage },
     { path: `${prefix}/settings`, component: ShopSettings2 },
-    { path: `${prefix}/financials`, component: () => <Financials viewUserType="shop" /> },
+    { path: `${prefix}/financials`, component: () => <ShopFinancials /> },
     { path: `${prefix}/marketing`, component: () => <Marketing viewUserType="shop" /> },
     { path: `${prefix}/marketing/dashboard/:type/:id`, component: () => <MarketingDashboard viewUserType="shop" /> },
     { path: `${prefix}/new-orders`, component: () => <NewOrders showFor="shop" /> },

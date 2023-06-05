@@ -1,10 +1,10 @@
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
-import Financials from '../pages/Financials';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerDashboard from '../pages/SellerDashboard';
+import SellerFinancials from '../pages/SellerFinancials';
 import ShopList from '../pages/ShopList';
 import Users from '../pages/Users2';
 
@@ -27,7 +27,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/orders/details/:id`, component: OrderDetails },
   { path: `${prefix}/shops/list`, component: ShopList },
   { path: `${prefix}/users`, component: () => <Users userType="seller" /> },
-  { path: `${prefix}/financials`, component: () => <Financials viewUserType="seller" /> },
+  { path: `${prefix}/financials`, component: SellerFinancials },
   {
     path: `${prefix}/app-wallet/seller/shops-transactions`,
     component: ShopsTransactions,

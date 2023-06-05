@@ -3,12 +3,12 @@ import { useQuery } from 'react-query';
 
 // local
 import { useState } from 'react';
-import ChartBox from '../../../components/StyledCharts/ChartBox';
-import StyledAreaChart from '../../../components/StyledCharts/StyledAreaChart';
 import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import ChartBox from '../../StyledCharts/ChartBox';
+import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
 
 const dateRangeItit = {
   end: moment().format('YYYY-MM-DD'),

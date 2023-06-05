@@ -20,7 +20,7 @@ import {
   validateRider,
 } from './helpers';
 
-export default function AddRider({ onClose, editRider, onUpdateSuccess }) {
+export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete }) {
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(editRider?._id ? convertEditRiderData(editRider) : { ...riderInit });
   const [loading, setLoading] = useState(false);
@@ -370,18 +370,20 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess }) {
               >
                 Save Item
               </Button>
-              <Button
-                variant="text"
-                disableRipple
-                color="error"
-                startIcon={<Delete />}
-                fullWidth
-                onClick={() => {
-                  setIsConfirm(true);
-                }}
-              >
-                Delete Rider
-              </Button>
+              {editRider?._id && !hideDelete && (
+                <Button
+                  variant="text"
+                  disableRipple
+                  color="error"
+                  startIcon={<Delete />}
+                  fullWidth
+                  onClick={() => {
+                    setIsConfirm(true);
+                  }}
+                >
+                  Delete Rider
+                </Button>
+              )}
             </Stack>
           </Box>
         )}

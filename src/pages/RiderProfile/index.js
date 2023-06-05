@@ -133,6 +133,7 @@ export default function RiderProfile() {
       </Box>
       <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
         <AddRider
+          hideDelete
           editRider={rider}
           onClose={() => setOpen(false)}
           onUpdateSuccess={(data) => {

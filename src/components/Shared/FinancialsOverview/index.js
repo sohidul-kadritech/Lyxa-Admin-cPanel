@@ -7,13 +7,13 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 // local
-import DateRange from '../../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import DateRange from '../../StyledCharts/DateRange';
 
-import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
+import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
+import InfoCard from '../../StyledCharts/InfoCard';
 import MarketingSpentChart from './MarketingSpentChart';
 import OrderAmountChart from './OrderAmontChat';
 import PayoutDetails from './PayoutDetails';

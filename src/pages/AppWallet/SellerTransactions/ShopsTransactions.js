@@ -211,7 +211,7 @@ function ShopsTransactions() {
 
   return (
     <GlobalWrapper>
-      <div className="page-content">
+      <div>
         <Container fluid>
           <Breadcrumb maintitle="Lyxa" breadcrumbItem={companyName} title="App Wallet" isRefresh={false} />
 
