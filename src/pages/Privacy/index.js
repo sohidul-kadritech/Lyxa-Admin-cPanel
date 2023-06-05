@@ -15,7 +15,7 @@ import AXIOS from '../../network/axios';
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Privacy Settings',

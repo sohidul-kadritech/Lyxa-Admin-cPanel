@@ -81,6 +81,7 @@ import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
+import PercentageSettings2 from '../pages/PercentageSettings';
 import PrivacySettings from '../pages/Privacy';
 import Product from '../pages/Product1';
 import RatingSettings2 from '../pages/Ratings2';
@@ -209,6 +210,7 @@ export const admin_routes = [
   { path: '/admin/role', component: Role },
 
   { path: '/percentage-setting', component: PercentageSetting },
+  { path: '/percentage-setting2', component: PercentageSettings2 },
 
   //  settings
   { path: '/app/settings', component: AppSettings },

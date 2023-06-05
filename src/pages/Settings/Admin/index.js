@@ -49,6 +49,10 @@ const pagesList = [
     to: '/percentage-setting',
   },
   {
+    label: 'Percentages2',
+    to: '/percentage-setting2',
+  },
+  {
     label: 'App Settings',
     to: '/settings/app-settings',
   },
@@ -64,6 +68,7 @@ const pagesList = [
     label: 'Privacy',
     to: '/privacy',
   },
+
   {
     label: 'Terms & Conditions',
     to: '/terms-and-conditions',

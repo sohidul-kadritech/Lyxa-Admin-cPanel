@@ -18,6 +18,7 @@ import {
   Tab,
   Tabs,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 
@@ -26,6 +27,8 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'reactstrap';
+import styled from 'styled-components';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 import CloseButton from '../../components/Common/CloseButton';
 import PageTop from '../../components/Common/PageTop';
 import TablePagination from '../../components/Common/TablePagination';
@@ -38,12 +41,11 @@ import AXIOS from '../../network/axios';
 import OrderTable from './OrderTable';
 import PageSkeleton from './PageSkeleton';
 import SearchBar from './Searchbar';
-import { getQueryParamsInit } from './helpers';
+import { calculateTotalRefundedAmount, getQueryParamsInit, getRefundedVatForAdmin } from './helpers';
 // eslint-disable-next-line no-unused-vars
-import { cancelButlerOrderByAdmin } from '../../store/Butler/butlerActions';
 // eslint-disable-next-line no-unused-vars
+import StyledFormField from '../../components/Form/StyledFormField';
 import { cancelOrderByAdmin } from '../../store/order/orderAction';
-import RefundOrder from './RefundOrder';
 
 const orderFilterToTabValueMap = {
   0: 'ongoing',
@@ -73,6 +75,27 @@ const orderFlagTypeOptions = [
   { label: 'Rider', value: 'delivery' },
   { label: 'Shop', value: 'shop' },
 ];
+
+function TitleWithToolTip({ title, tooltip }) {
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={2}>
+      <Typography variant="body1" fontWeight={600}>
+        {title}
+      </Typography>
+      <Tooltip
+        arrow
+        title={tooltip}
+        sx={{
+          '.MuiTooltip-popper': {
+            zIndex: '9999999 !important',
+          },
+        }}
+      >
+        <InfoIcon />
+      </Tooltip>
+    </Stack>
+  );
+}
 
 export default function NewOrders({ showFor }) {
   const { socket } = useSelector((state) => state.socketReducer);
@@ -105,6 +128,8 @@ export default function NewOrders({ showFor }) {
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [currentOrderShop, setCurrentOrderShop] = useState({});
+  // eslint-disable-next-line no-unused-vars
+  const [appVat, setAppVat] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState({});
   // eslint-disable-next-line no-unused-vars
@@ -148,6 +173,8 @@ export default function NewOrders({ showFor }) {
           cancelReasonId: '',
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
+          orderFor: order?.orderFor,
+          orderActivity: order?.orderActivity,
           paymentMethod: order?.paymentMethod,
           orderId: order?._id,
           refundType: 'none',
@@ -155,6 +182,7 @@ export default function NewOrders({ showFor }) {
             deliveryBoy: '',
             admin: '',
           },
+          vatAmount: order?.vatAmount,
           summary: order?.summary,
         });
       } else {
@@ -168,10 +196,13 @@ export default function NewOrders({ showFor }) {
           cancelReasonId: '',
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
+          orderFor: order?.orderFor,
+          orderActivity: order?.orderActivity,
           paymentMethod: order?.paymentMethod,
           shop: order?.shop,
           orderId: order?._id,
           refundType: 'none',
+          vatAmount: order?.vatAmount,
           partialPayment: {
             deliveryBoy: '',
             admin: '',
@@ -195,7 +226,10 @@ export default function NewOrders({ showFor }) {
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
           paymentMethod: order?.paymentMethod,
+          orderActivity: order?.orderActivity,
+          orderFor: order?.orderFor,
           orderId: order?._id,
+          vatAmount: order?.vatAmount,
           refundType: 'none',
           partialPayment: {
             deliveryBoy: '',
@@ -215,6 +249,8 @@ export default function NewOrders({ showFor }) {
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
           paymentMethod: order?.paymentMethod,
+          orderFor: order?.orderFor,
+          orderActivity: order?.orderActivity,
           shop: order?.shop,
           orderId: order?._id,
           refundType: 'none',
@@ -222,6 +258,7 @@ export default function NewOrders({ showFor }) {
             deliveryBoy: '',
             admin: '',
           },
+          vatAmount: order?.vatAmount,
           summary: order?.summary,
         });
       }
@@ -273,6 +310,16 @@ export default function NewOrders({ showFor }) {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('app setttings; ', data?.data?.appSetting);
+        setAppVat(data?.data?.appSetting?.vat);
+      }
+    },
+  });
+
   // eslint-disable-next-line prettier/prettier, no-unused-vars
   const refundOrderMutation = useMutation((data) => AXIOS.post(Api.REFUND_ORDER, data), {
     onSuccess: (data) => {
@@ -317,19 +364,19 @@ export default function NewOrders({ showFor }) {
     },
   );
 
-  // const CancelOrderRefunds = styled.div`
-  //   padding-bottom: 10px;
-  //   .refund_item_wrapper {
-  //     margin-bottom: 5px;
-  //     display: flex;
-  //     align-items: center;
+  const CancelOrderRefunds = styled.div`
+    padding-bottom: 10px;
+    .refund_item_wrapper {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
 
-  //     .refund_input {
-  //       width: 180px;
-  //       margin-right: 20px;
-  //     }
-  //   }
-  // `;
+      .refund_input {
+        width: 180px;
+        margin-right: 20px;
+      }
+    }
+  `;
 
   const getFlagOptions = (currentOrder) => {
     const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
@@ -486,26 +533,62 @@ export default function NewOrders({ showFor }) {
         successMsg('Enter Minimum One Partial Amount');
         return;
       }
+
       const data = {
-        ...orderCancel,
+        // ...orderCancel,
+        orderId: orderCancel?.orderId,
+        otherReason: orderCancel?.otherReason,
+        refundType: orderCancel?.refundType,
+        partialPayment: {
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          shop: orderCancel?.partialPayment?.shop,
+          deliveryBoy: orderCancel?.partialPayment?.deliveryBoy,
+          admin: orderCancel?.partialPayment?.admin,
+          adminVat: getRefundedVatForAdmin(
+            orderCancel?.vatAmount?.vatForAdmin,
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+            // eslint-disable-next-line prettier/prettier
+            appVat,
+            // eslint-disable-next-line prettier/prettier
+          ),
+        },
         cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       };
 
       delete data.deliveryBoy;
 
-      dispatch(cancelButlerOrderByAdmin(data));
+      console.log('data-->', data);
+      // dispatch(cancelButlerOrderByAdmin(data));
     } else {
       if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
         successMsg('Enter Minimum One Partial Amount');
         return;
       }
-
+      // console.log('orderCancel: ', orderCancel);
       const data = {
-        ...orderCancel,
+        // ...orderCancel,
+        orderId: orderCancel?.orderId,
+        otherReason: orderCancel?.otherReason,
+        refundType: orderCancel?.refundType,
+        partialPayment: {
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          shop: orderCancel?.partialPayment?.shop,
+          deliveryBoy: orderCancel?.partialPayment?.deliveryBoy,
+          admin: orderCancel?.partialPayment?.admin,
+          adminVat: getRefundedVatForAdmin(
+            orderCancel?.vatAmount?.vatForAdmin,
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+            // eslint-disable-next-line prettier/prettier
+            appVat,
+            // eslint-disable-next-line prettier/prettier
+          ),
+        },
         cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       };
-
-      delete data.deliveryBoy;
+      console.log('data--->', data);
+      // delete data.deliveryBoy;
 
       dispatch(cancelOrderByAdmin(data));
     }
@@ -572,7 +655,7 @@ export default function NewOrders({ showFor }) {
       return;
     }
 
-    if (shop && name === 'shop' && Number(value) > shop) {
+    if (shop && name === 'shop' && Number(value) > shop + orderCancel.vatAmount.vatForShop) {
       successMsg('Invalid Shop Amount');
       return;
     }
@@ -788,10 +871,12 @@ export default function NewOrders({ showFor }) {
         onClose={() => {
           setOpenCancelModal(!openCancelModal);
         }}
+        sx={{ zIndex: '10 !important' }}
       >
         <Paper
           sx={{
             minWidth: 'max(35vw, 450px)',
+            zIndex: '10 !important',
           }}
         >
           <Box padding={5}>
@@ -823,7 +908,6 @@ export default function NewOrders({ showFor }) {
                 }}
                 id="controllable-states-demo"
                 options={getCancelReasonsQuery?.data?.data?.cancelReason || []}
-                // options={cancelReasons.length > 0 ? cancelReasons.filter((item) => item?.type === 'butler') : []}
                 sx={{ width: '100%' }}
                 renderInput={(params) => (
                   <TextField
@@ -852,87 +936,177 @@ export default function NewOrders({ showFor }) {
                   label="Send other reason"
                 />
               </div>
+              {isOtherReason && (
+                <div className="mt-2">
+                  <TextField
+                    type="text"
+                    multiline
+                    className="form-control"
+                    placeholder="Type other reason"
+                    maxRows={4}
+                    required={isOtherReason}
+                    label="Other reason"
+                    value={orderCancel.otherReason}
+                    onChange={(e) =>
+                      setOrderCancel({
+                        ...orderCancel,
+                        otherReason: e.target.value,
+                        cancelReason: null,
+                      })
+                    }
+                  />
+                </div>
+              )}
+              <FormControl className="py-3">
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  value={orderCancel?.refundType}
+                  onChange={(e) => {
+                    updateRefundType(e.target.value);
+                    console.log('order Cancel: ====>', orderCancel?.orderFor);
+                  }}
+                  required
+                >
+                  {orderCancel?.paymentMethod !== 'cash' && (
+                    <>
+                      <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
+                      {((orderCancel?.orderFor === 'specific' && orderCancel?.orderActivity?.length > 1) ||
+                        (orderCancel?.orderFor === 'global' && orderCancel?.orderActivity?.length > 2)) && (
+                        <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
+                      )}
+                      <FormControlLabel value="none" control={<Radio />} label="No Refund" />
+                    </>
+                  )}
+                </RadioGroup>
+              </FormControl>
 
               {orderCancel?.refundType === 'partial' && (
-                <RefundOrder
-                  orderPayment={orderPayment}
-                  orderCancel={orderCancel}
-                  updateRefundAmount={updateRefundAmount}
-                />
-                // <CancelOrderRefunds>
-                //   {/* <input
-                //       type="number"
-                //       className="form-control refund_input"
-                //       placeholder="Enter Admin Amount"
-                //       min={0}
-                //       max={orderPayment?.admin}
-                //       onChange={updateRefundAmount}
-                //       name="admin"
-                //       value={orderCancel?.partialPayment?.admin}
-                //     /> */}
-                //   <StyledFormField
-                //     label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
-                //     intputType="text"
-                //     containerProps={{
-                //       sx: {
-                //         padding: '14px 0px 23px 0',
-                //         flex: '1',
-                //       },
-                //     }}
-                //     inputProps={{
-                //       value: orderCancel?.partialPayment?.admin,
-                //       min: 0,
-                //       type: 'number',
-                //       name: 'admin',
-                //       placeholder: 'Enter Admin Amount',
-                //       onChange: updateRefundAmount,
-                //     }}
-                //   />
-                //   {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
+                <CancelOrderRefunds>
+                  <StyledFormField
+                    label={
+                      <TitleWithToolTip
+                        // eslint-disable-next-line no-unsafe-optional-chaining
+                        title={`Lyxa Refund: ${orderPayment?.admin}`}
+                        tooltip="Lyxa Earning"
+                      />
+                    }
+                    intputType="text"
+                    containerProps={{
+                      sx: {
+                        padding: '14px 0px 23px 0',
+                        flex: '1',
+                      },
+                    }}
+                    inputProps={{
+                      value: orderCancel?.partialPayment?.admin,
+                      min: 0,
+                      type: 'number',
+                      name: 'admin',
+                      placeholder: 'Enter Admin Amount',
+                      onChange: updateRefundAmount,
+                    }}
+                  />
+                  {orderCancel?.shop?._id && (
+                    <div className="refund_item_wrapper">
+                      <StyledFormField
+                        label={
+                          <TitleWithToolTip
+                            // eslint-disable-next-line no-unsafe-optional-chaining
+                            title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            tooltip="Shop Earning+VAT"
+                          />
+                        }
+                        intputType="text"
+                        containerProps={{
+                          sx: {
+                            padding: '14px 0px 23px 0',
+                            flex: '1',
+                          },
+                        }}
+                        inputProps={{
+                          value: orderCancel?.partialPayment?.shop,
+                          type: 'number',
+                          min: 0,
+                          name: 'shop',
+                          placeholder: 'Enter Shop Amount',
+                          onChange: updateRefundAmount,
+                        }}
+                      />
+                    </div>
+                  )}
 
-                //   {orderCancel?.shop?._id && (
-                //     <div className="refund_item_wrapper">
-                //       {/* <input
-                //         type="number"
-                //         className="form-control refund_input"
-                //         placeholder="Enter Shop Amount"
-                //         min={0}
-                //         max={orderPayment?.shop}
-                //         onChange={updateRefundAmount}
-                //         name="shop"
-                //         value={orderCancel?.partialPayment?.shop}
-                //       />
-                //       <span>Shop Earning: {orderPayment?.shop}</span> */}
-                //       <StyledFormField
-                //         label={<span>Shop Earning: {orderPayment?.shop}</span>}
-                //         intputType="text"
-                //         containerProps={{
-                //           sx: {
-                //             padding: '14px 0px 23px 0',
-                //             flex: '1',
-                //           },
-                //         }}
-                //         inputProps={{
-                //           value: orderCancel?.partialPayment?.shop,
-                //           type: 'number',
-                //           min: 0,
-                //           name: 'shop',
-                //           placeholder: 'Enter Shop Amount',
-                //           onChange: updateRefundAmount,
-                //         }}
-                //       />
-                //     </div>
-                //   )}
-                // </CancelOrderRefunds>
+                  {orderCancel?.orderFor === 'global' && (
+                    <div className="refund_item_wrapper">
+                      <StyledFormField
+                        label={<span>Delivery boy Earning: {orderPayment?.deliveryBoy}</span>}
+                        intputType="text"
+                        containerProps={{
+                          sx: {
+                            padding: '14px 0px 23px 0',
+                            flex: '1',
+                          },
+                        }}
+                        inputProps={{
+                          value: orderCancel?.partialPayment?.deliveryBoy,
+                          type: 'number',
+                          min: 0,
+                          max: orderPayment?.deliveryBoy,
+                          name: 'deliveryBoy',
+                          placeholder: 'Enter Delivery Amount',
+                          onChange: updateRefundAmount,
+                        }}
+                      />
+                    </div>
+                  )}
+                </CancelOrderRefunds>
               )}
               <h5>
-                Total Refund Amount:{' '}
-                {orderCancel.refundType === 'full'
-                  ? Number(orderCancel?.summary?.cash) +
-                      Number(orderCancel?.summary?.wallet) +
-                      Number(orderCancel?.summary?.card) || 0
-                  : Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.deliveryBoy || 0)}
+                <TitleWithToolTip
+                  title={`Total Refund Amount:
+                ${
+                  orderCancel.refundType === 'full'
+                    ? Number(orderCancel?.summary?.cash) +
+                        Number(orderCancel?.summary?.wallet) +
+                        Number(orderCancel?.summary?.card) || 0
+                    : calculateTotalRefundedAmount(
+                        Number(orderCancel?.partialPayment?.deliveryBoy),
+                        Number(orderCancel?.partialPayment?.admin),
+                        Number(orderCancel?.partialPayment?.shop),
+                        getRefundedVatForAdmin(
+                          orderCancel?.vatAmount?.vatForAdmin,
+                          // eslint-disable-next-line no-unsafe-optional-chaining
+                          orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                          // eslint-disable-next-line prettier/prettier
+                          appVat,
+                          // eslint-disable-next-line prettier/prettier
+                        ),
+                      ) || 0
+                }`}
+                  tooltip="Lyxa Earning+Lyxa Vat+Shop Earning+Shop VAT+Delivery Boy Earning"
+                />
               </h5>
+
+              {getRefundedVatForAdmin(
+                orderCancel?.vatAmount?.vatForAdmin,
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                // eslint-disable-next-line prettier/prettier
+                appVat,
+              ) > 0 &&
+                orderCancel.refundType !== 'full' && (
+                  <h5>
+                    Admin VAT Refunded:{' '}
+                    {getRefundedVatForAdmin(
+                      orderCancel?.vatAmount?.vatForAdmin,
+                      // eslint-disable-next-line no-unsafe-optional-chaining
+                      orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                      // eslint-disable-next-line prettier/prettier
+                      appVat,
+                    )}
+                  </h5>
+                )}
 
               <div className="d-flex justify-content-center my-3 pt-3">
                 <Button fullWidth variant="contained" className="px-4" type="submit" disabled={ordersQuery.isLoading}>
@@ -954,7 +1128,7 @@ export default function NewOrders({ showFor }) {
       >
         <Paper
           sx={{
-            minWidth: 'max(35vw, 450px)',
+            minWidth: 'max(40vw, 500px)',
           }}
         >
           <Box padding={5}>
@@ -967,77 +1141,6 @@ export default function NewOrders({ showFor }) {
               />
             </Stack>
             <Form onSubmit={submitOrderRefund}>
-              {/* <Autocomplete
-                className="cursor-pointer mt-3"
-                disabled={isOtherReason}
-                value={orderCancel.cancelReasonId}
-                onChange={(event, newValue) => {
-                  setOrderCancel({
-                    ...orderCancel,
-                    cancelReasonId: newValue,
-                    otherReason: '',
-                  });
-                }}
-                getOptionLabel={(option) => (option.name ? option.name : '')}
-                isOptionEqualToValue={(option, value) => option?._id === value?._id}
-                inputValue={deliverySearchKey}
-                onInputChange={(event, newInputValue) => {
-                  setDeliverySearchKey(newInputValue);
-                }}
-                id="controllable-states-demo"
-                options={getCancelReasonsQuery?.data?.data?.cancelReason || []}
-                // options={cancelReasons.length > 0 ? cancelReasons.filter((item) => item?.type === 'butler') : []}
-                sx={{ width: '100%' }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Select a cancel reason"
-                    value={orderCancel.cancelReasonId}
-                    required={!isOtherReason}
-                  />
-                )}
-                renderOption={(props, option) => (
-                  <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props} key={option?._id}>
-                    {option?.name}
-                  </Box>
-                )}
-              /> */}
-
-              {/* <div className="mt-2">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isOtherReason}
-                      onChange={(e) => setIsOtherReason(e.target.checked)}
-                      name="otherReason"
-                    />
-                  }
-                  label="Send other reason"
-                />
-              </div> */}
-
-              {/* {isOtherReason && (
-                <div className="mt-2">
-                  <TextField
-                    type="text"
-                    multiline
-                    className="form-control"
-                    placeholder="Type other reason"
-                    maxRows={4}
-                    required={isOtherReason}
-                    label="Other reason"
-                    value={orderCancel.otherReason}
-                    onChange={(e) =>
-                      setOrderCancel({
-                        ...orderCancel,
-                        otherReason: e.target.value,
-                        cancelReasonId: null,
-                      })
-                    }
-                  />
-                </div>
-              )} */}
-
               <FormControl className="py-3">
                 <RadioGroup
                   row
@@ -1056,85 +1159,61 @@ export default function NewOrders({ showFor }) {
                 </RadioGroup>
               </FormControl>
               {orderCancel?.refundType === 'partial' && (
-                <RefundOrder
-                  orderPayment={orderPayment}
-                  orderCancel={orderCancel}
-                  updateRefundAmount={updateRefundAmount}
-                />
-                // <CancelOrderRefunds>
-                //   {/* <input
-                //       type="number"
-                //       className="form-control refund_input"
-                //       placeholder="Enter Admin Amount"
-                //       min={0}
-                //       max={orderPayment?.admin}
-                //       onChange={updateRefundAmount}
-                //       name="admin"
-                //       value={orderCancel?.partialPayment?.admin}
-                //     /> */}
-                //   <StyledFormField
-                //     label={<span>Lyxa Earning: {orderPayment?.admin}</span>}
-                //     intputType="text"
-                //     containerProps={{
-                //       sx: {
-                //         padding: '14px 0px 23px 0',
-                //         flex: '1',
-                //       },
-                //     }}
-                //     inputProps={{
-                //       value: orderCancel?.partialPayment?.admin,
-                //       min: 0,
-                //       type: 'number',
-                //       name: 'admin',
-                //       placeholder: 'Enter Admin Amount',
-                //       onChange: updateRefundAmount,
-                //     }}
-                //   />
-                //   {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
+                <CancelOrderRefunds>
+                  <StyledFormField
+                    label={<span>Lyxa Refund: {orderPayment?.admin}</span>}
+                    intputType="text"
+                    containerProps={{
+                      sx: {
+                        padding: '14px 0px 23px 0',
+                        flex: '1',
+                      },
+                    }}
+                    inputProps={{
+                      value: orderCancel?.partialPayment?.admin,
+                      min: 0,
+                      type: 'number',
+                      name: 'admin',
+                      placeholder: 'Enter Admin Amount',
+                      onChange: updateRefundAmount,
+                    }}
+                  />
+                  {/* <span>Lyxa Earning: {orderPayment?.admin}</span> */}
 
-                //   {orderCancel?.shop?._id && (
-                //     <div className="refund_item_wrapper">
-                //       {/* <input
-                //         type="number"
-                //         className="form-control refund_input"
-                //         placeholder="Enter Shop Amount"
-                //         min={0}
-                //         max={orderPayment?.shop}
-                //         onChange={updateRefundAmount}
-                //         name="shop"
-                //         value={orderCancel?.partialPayment?.shop}
-                //       />
-                //       <span>Shop Earning: {orderPayment?.shop}</span> */}
-                //       <StyledFormField
-                //         label={<span>Shop Earning: {orderPayment?.shop}</span>}
-                //         intputType="text"
-                //         containerProps={{
-                //           sx: {
-                //             padding: '14px 0px 23px 0',
-                //             flex: '1',
-                //           },
-                //         }}
-                //         inputProps={{
-                //           value: orderCancel?.partialPayment?.shop,
-                //           type: 'number',
-                //           min: 0,
-                //           name: 'shop',
-                //           placeholder: 'Enter Shop Amount',
-                //           onChange: updateRefundAmount,
-                //         }}
-                //       />
-                //     </div>
-                //   )}
-                // </CancelOrderRefunds>
+                  {orderCancel?.shop?._id && (
+                    <div className="refund_item_wrapper">
+                      <StyledFormField
+                        label={<span>Shop Refund: {orderPayment?.shop}</span>}
+                        intputType="text"
+                        containerProps={{
+                          sx: {
+                            padding: '14px 0px 23px 0',
+                            flex: '1',
+                          },
+                        }}
+                        inputProps={{
+                          value: orderCancel?.partialPayment?.shop,
+                          type: 'number',
+                          min: 0,
+                          name: 'shop',
+                          placeholder: 'Enter Shop Amount',
+                          onChange: updateRefundAmount,
+                        }}
+                      />
+                    </div>
+                  )}
+                </CancelOrderRefunds>
               )}
-              <h5>
-                Total Refund Amount:{' '}
-                {orderCancel.refundType === 'full'
-                  ? Number(orderCancel?.summary?.cash) +
-                      Number(orderCancel?.summary?.wallet) +
-                      Number(orderCancel?.summary?.card) || 0
-                  : Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.shop || 0)}
-              </h5>
+              {orderCancel.refundType !== 'none' && (
+                <h5>
+                  Total Refund Amount:{' '}
+                  {orderCancel.refundType === 'full'
+                    ? Number(orderCancel?.summary?.cash) +
+                        Number(orderCancel?.summary?.wallet) +
+                        Number(orderCancel?.summary?.card) || 0
+                    : Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.shop || 0)}
+                </h5>
+              )}
 
               <div className="d-flex justify-content-center my-3 pt-3">
                 <Button
