@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/static/css/main.67268934.css",
-    "main.js": "/static/js/main.e44b77c7.js",
-    "static/js/949.35437ae1.chunk.js": "/static/js/949.35437ae1.chunk.js",
+    "main.js": "/static/js/main.20596b64.js",
+    "static/js/949.86b75e5d.chunk.js": "/static/js/949.86b75e5d.chunk.js",
     "static/js/332.48dc95f0.chunk.js": "/static/js/332.48dc95f0.chunk.js",
     "static/js/943.3f34dc7f.chunk.js": "/static/js/943.3f34dc7f.chunk.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
@@ -11,7 +11,6 @@
     "static/js/576.da7102db.chunk.js": "/static/js/576.da7102db.chunk.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
-    "static/media/lyxa.png": "/static/media/lyxa.eafeffd3cf26edcdc503.png",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.18df003f90a7f1313b98.svg",
     "static/media/fa-brands-400.svg": "/static/media/fa-brands-400.3c45c98f6f6c1b009c08.svg",
     "static/media/materialdesignicons-webfont.woff?v=5.8.55": "/static/media/materialdesignicons-webfont.d06df622bc47f0db9812.woff",
@@ -87,6 +86,7 @@
     "static/media/cart.svg": "/static/media/cart.3cd8e9dc41c559247171cb28ef31d46a.svg",
     "static/media/upload.svg": "/static/media/upload.f3d0d8cc101bc489475dc935fa5f6364.svg",
     "static/media/warning-icon.svg": "/static/media/warning-icon.95fa95854995a18e93a9534e5804fa4e.svg",
+    "static/media/shop-list.svg": "/static/media/shop-list.2838ce96ed62298f099cb964821a00eb.svg",
     "index.html": "/index.html",
     "static/media/media-cloud-icon.svg": "/static/media/media-cloud-icon.0ef20c38a2084854a7ab13c4cc119b94.svg",
     "static/media/star.svg": "/static/media/star.42448765f2bb5cf81202adf82794585d.svg",
@@ -111,6 +111,7 @@
     "static/media/clock.svg": "/static/media/clock.dc745bfb10364608efabac664a0b91d5.svg",
     "static/media/order-flag.svg": "/static/media/order-flag.9b56d9503980d88e036471844c76a3ef.svg",
     "static/media/search.svg": "/static/media/search.cac6b16e25170e472a7503e45c522632.svg",
+    "static/media/logout.svg": "/static/media/logout.19ba31264b2635f42576ab12982a541d.svg",
     "static/media/delete-icon.svg": "/static/media/delete-icon.920e34927a7844d29da7aceaca21f3ff.svg",
     "static/media/login-user.svg": "/static/media/login-user.8e8ed31e7905a587199bc20911336b42.svg",
     "static/media/heart.svg": "/static/media/heart.2b7858e3b2580587c6591d0e3d9131d7.svg",
@@ -123,6 +124,6 @@
   },
   "entrypoints": [
     "static/css/main.67268934.css",
-    "static/js/main.e44b77c7.js"
+    "static/js/main.20596b64.js"
   ]
 }
