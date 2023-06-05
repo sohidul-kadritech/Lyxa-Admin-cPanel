@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import AddRider from '../Riders/AddRider';
 import Documents from './Documents';
 import RiderFlags from './Flags';
@@ -15,12 +18,30 @@ import TopInfo from './TopInfo';
 import RiderTransactions from './Transactions';
 
 export default function RiderProfile() {
-  const [open, setOpen] = useState(false);
   const location = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
-
-  const [rider, setRider] = useState(location?.state?.rider);
+  const [open, setOpen] = useState(false);
   const params = useParams();
+  const [rider, setRider] = useState(location?.state?.rider);
+  console.log(params);
+
+  const query = useQuery(
+    [Api.SINGLE_DELIVERY_MAN, { id: params?.riderId }],
+    () =>
+      AXIOS.get(Api.SINGLE_DELIVERY_MAN, {
+        params: {
+          id: params?.riderId,
+        },
+      }),
+    {
+      enabled: params?.riderId !== location?.state?.rider?._id,
+      onSuccess: (data) => {
+        if (data?.status) {
+          setRider(data?.data?.delivery);
+        }
+      },
+    }
+  );
   const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
 
   return (
@@ -111,7 +132,13 @@ export default function RiderProfile() {
         </Box>
       </Box>
       <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
-        <AddRider editRider={rider} onClose={() => setOpen(false)} />
+        <AddRider
+          editRider={rider}
+          onClose={() => setOpen(false)}
+          onUpdateSuccess={(data) => {
+            setRider(data?.data?.delivery);
+          }}
+        />
       </Drawer>
     </Box>
   );

@@ -20,7 +20,7 @@ import {
   validateRider,
 } from './helpers';
 
-export default function AddRider({ onClose, editRider }) {
+export default function AddRider({ onClose, editRider, onUpdateSuccess }) {
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(editRider?._id ? convertEditRiderData(editRider) : { ...riderInit });
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,8 @@ export default function AddRider({ onClose, editRider }) {
 
         if (data?.status) {
           queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
+
+          if (onUpdateSuccess) onUpdateSuccess(data);
           onClose();
         }
 
