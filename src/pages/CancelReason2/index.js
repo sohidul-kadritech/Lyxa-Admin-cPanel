@@ -1,22 +1,15 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import {
-  addCancelReason,
-  getAllCancelReasons,
-  updateCancelReason,
-  updateReasonStatusKey,
-  updateReasonTypeKey,
-} from '../../store/Settings/settingsAction';
 import { dateRangeInit } from '../Faq2/helpers';
 import AddReason from './AddReason';
 import ReasonTable from './ReasonTable';
@@ -36,17 +29,6 @@ export const breadcrumbItems = [
 const fieldContainerSx = {
   padding: '0px 0px',
 };
-
-// export const statusTypeOptions = [
-//   {
-//     value: 'active',
-//     label: 'Active',
-//   },
-//   {
-//     value: 'inactive',
-//     label: 'Inactive',
-//   },
-// ];
 
 // eslint-disable-next-line no-unused-vars
 const tabTracker = {
@@ -68,48 +50,91 @@ function AddMenuButton({ ...props }) {
 function CancelReason() {
   const [currentTab, setCurrentTab] = useState(0);
   const [range, setRange] = useState({ ...dateRangeInit });
-  // eslint-disable-next-line no-unused-vars
-  const [newStatus, setNewStatus] = useState('active');
-  // eslint-disable-next-line no-unused-vars
+
   const [isEdit, setIsEdit] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
-  const { loading, cancelReasons, status, typeKey, activeStatus } = useSelector((state) => state.settingsReducer);
-  // eslint-disable-next-line no-unused-vars
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
+  const [open, setOpen] = useState(false);
+
+  const [type, setType] = useState('userCancel');
+  const [status, setStatus] = useState('active');
+  const [searchKey, setSearchKey] = useState('');
+  const queryClient = useQueryClient();
+  const [cancelReasons, setCancelReasons] = useState([]);
+
   const [currentCancelReason, setCurrentCancelReason] = useState({
     name: '',
     type: '',
     status: '',
   });
-  // const [id, setId] = useState('');
 
-  useEffect(async () => {
-    await dispatch(updateReasonTypeKey(tabTracker[currentTab]));
-    await dispatch(updateReasonStatusKey(newStatus));
-    if (typeKey || activeStatus) {
-      dispatch(getAllCancelReasons(true));
-    }
-  }, [typeKey, activeStatus]);
+  const getAllcancelReason = useQuery(
+    [API_URL.ALL_ORDER_CANCEL_REASON, { type, status, searchKey, startDate: range.start, endDate: range.end }],
+    () =>
+      AXIOS.get(API_URL.ALL_ORDER_CANCEL_REASON, {
+        params: {
+          type,
+          status,
+          searchKey,
+          startDate: range.start,
+          endDate: range.end,
+        },
+        // eslint-disable-next-line prettier/prettier
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          setCancelReasons(data?.data?.cancelReason || []);
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+
+  const cancelReasonAdd = useMutation((data) => AXIOS.post(API_URL.ADD_ORDER_CANCEL_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg('Successfully deleted!', 'success');
+        queryClient.invalidateQueries(API_URL.ALL_ORDER_CANCEL_REASON);
+        setOpen(false);
+      } else {
+        successMsg('Reason not found', 'warn');
+      }
+    },
+  });
+  const cancelReasonEdit = useMutation((data) => AXIOS.post(API_URL.UPDATE_ORDER_CANCEL_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg('Successfully deleted!', 'success');
+        queryClient.invalidateQueries(API_URL.ALL_ORDER_CANCEL_REASON);
+        setOpen(false);
+      } else {
+        successMsg('Reason not found', 'warn');
+      }
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
-  const submitCancelReason = (item) => {
-    if (item?._id) {
-      dispatch(updateCancelReason({ ...item, id: item?._id }));
-    } else {
-      dispatch(addCancelReason(item));
-    }
-  };
+  const cancelReasonsSort = useMutation((data) => AXIOS.post(API_URL.SORT_ORDER_CANCEL_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(API_URL.ALL_ORDER_CANCEL_REASON);
+      }
+    },
+  });
 
-  // eslint-disable-next-line no-unused-vars
-  const cancelReasonsSort = useMutation((data) => AXIOS.post(API_URL.SORT_ORDER_CANCEL_REASON, data));
+  const cancelReasonDelete = useMutation((data) => AXIOS.post(API_URL.DELETE_ORDER_CANCEL_REASON, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg('Successfully deleted!', 'success');
+        queryClient.invalidateQueries(API_URL.ALL_ORDER_CANCEL_REASON);
+        setIsConfirmModalOpen(false);
+      } else {
+        successMsg('Reason not found', 'warn');
+      }
+    },
+  });
 
   const dropSort = ({ removedIndex, addedIndex }) => {
     if (removedIndex === null || addedIndex === null) return;
@@ -122,21 +147,26 @@ function CancelReason() {
       })),
     });
   };
-  // eslint-disable-next-line no-unused-vars
-  const callReasonsList = (refresh = false) => {
-    dispatch(getAllCancelReasons(refresh));
-  };
-
   const threeDotHandler = (menu, item) => {
     if (menu === 'Edit') {
       setOpen(true);
       setIsEdit(true);
       setCurrentCancelReason(item);
     } else {
+      setCurrentCancelReason(item);
       setIsConfirmModalOpen(true);
     }
   };
 
+  const submitCancelReason = (item) => {
+    if (item?._id) {
+      // dispatch(updateCancelReason({ ...item, id: item?._id }));
+      cancelReasonEdit.mutate({ ...item, id: item?._id });
+    } else {
+      // dispatch(addCancelReason(item));
+      cancelReasonAdd.mutate(item);
+    }
+  };
   return (
     <Box>
       <PageTop
@@ -159,7 +189,7 @@ function CancelReason() {
             setCurrentTab(newValue);
             // setType(() => (newValue === 0 ? 'orderSupport' : newValue === 1 ? 'accountSupport' : 'faq'));
             // setIsSideBarOpen(false);
-            dispatch(updateReasonTypeKey(tabTracker[newValue]));
+            setType(tabTracker[newValue]);
           }}
         >
           <Tab label="User"></Tab>
@@ -170,7 +200,7 @@ function CancelReason() {
       </Box>
 
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" />
+        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
         <DateRange range={range} setRange={setRange} />
         <StyledFormField
           intputType="select"
@@ -180,13 +210,12 @@ function CancelReason() {
           inputProps={{
             name: 'status',
             placeholder: 'Status',
-            value: newStatus,
+            value: status,
             items: statusTypeOptions,
             size: 'sm2',
             //   items: categories,
             onChange: (e) => {
-              setNewStatus(e.target.value);
-              dispatch(updateReasonStatusKey(e.target.value));
+              setStatus(e.target.value);
             },
           }}
         />
@@ -206,12 +235,13 @@ function CancelReason() {
           onDrop={dropSort}
           items={cancelReasons || []}
           threeDotHandler={threeDotHandler}
-          loading={loading}
+          loading={getAllcancelReason?.isLoading}
         />
       </Box>
 
       <Drawer open={open} anchor="right">
         <AddReason
+          loading={cancelReasonAdd?.isLoading || cancelReasonEdit?.isLoading}
           isEdit={isEdit}
           reason={isEdit ? currentCancelReason : { type: tabTracker[currentTab] }}
           submitHandler={submitCancelReason}
@@ -222,12 +252,14 @@ function CancelReason() {
         message="Do you want to delete this reason ?"
         isOpen={isConfirmModalOpen}
         blurClose
+        loading={cancelReasonDelete.isLoading}
         onCancel={() => {
           setIsConfirmModalOpen(false);
         }}
         onConfirm={() => {
           // callDeleteFaq();
-          setIsConfirmModalOpen(false);
+          cancelReasonDelete.mutate({ id: currentCancelReason?._id });
+          // setIsConfirmModalOpen(false);
         }}
       />
     </Box>

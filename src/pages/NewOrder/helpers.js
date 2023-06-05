@@ -1,6 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
 import moment from 'moment';
+import { successMsg } from '../../helpers/successMsg';
 
 export const orderStatusMap = {
   placed: 'Pending',
@@ -141,4 +142,34 @@ export const getThreedotMenuOptions = (orderStatus, userType) => {
   }
 
   return options;
+};
+
+export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
+  const refundedVat = (vatPercentage / 100) * value;
+  console.log('refunded vat: ', refundedVat);
+  // console.log('vatPercentage ', vatPercentage);
+  // console.log('adminvat: ', adminVat);
+  // console.log('value: ', value);
+  if (refundedVat > adminVat) {
+    successMsg('Refunded VAT cannot be greater than admin VAT!');
+    return adminVat.toFixed(2);
+  }
+  if (refundedVat <= adminVat) return refundedVat.toFixed(2);
+
+  return 0;
+};
+
+export const calculateTotalRefundedAmount = (deliveryBoy, admin, shop, vatForAdmin) => {
+  console.log(
+    'deliveryBoy',
+    deliveryBoy,
+    'admin',
+    admin,
+    'shop',
+    shop,
+    'vatforAdmin',
+    // eslint-disable-next-line prettier/prettier
+    vatForAdmin,
+  );
+  return (deliveryBoy + admin + shop + Number(vatForAdmin)).toFixed(2);
 };

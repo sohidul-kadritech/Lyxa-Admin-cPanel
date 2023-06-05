@@ -81,6 +81,8 @@ import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
+import PercentageSettings2 from '../pages/PercentageSettings';
+import PrivacySettings from '../pages/Privacy';
 import Product from '../pages/Product1';
 import RatingSettings2 from '../pages/Ratings2';
 import ReferFriend from '../pages/ReferFriend';
@@ -92,9 +94,6 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
-import DeliveryTermsAndConditions from '../pages/TermsAndConditons/DeliveryTermsAndConditions';
-import ShopTermsAndConditions from '../pages/TermsAndConditons/ShopTermsAndConditions';
-import UserTermsAndConditions from '../pages/TermsAndConditons/UserTermsAndConditions';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
@@ -211,6 +210,7 @@ export const admin_routes = [
   { path: '/admin/role', component: Role },
 
   { path: '/percentage-setting', component: PercentageSetting },
+  { path: '/percentage-setting2', component: PercentageSettings2 },
 
   //  settings
   { path: '/app/settings', component: AppSettings },
@@ -248,12 +248,8 @@ export const admin_routes = [
 
   // terms and conditions
   { path: '/terms-and-conditions', component: TermsAndConditions },
-  { path: '/terms-and-conditions/user-app', component: UserTermsAndConditions },
-  { path: '/terms-and-conditions/shop-app', component: ShopTermsAndConditions },
-  {
-    path: '/terms-and-conditions/delivery-app',
-    component: DeliveryTermsAndConditions,
-  },
+  { path: '/privacy', component: PrivacySettings },
+
   { path: '/admin/settings/zone', component: ServiceZone },
 
   // Chat Reason
