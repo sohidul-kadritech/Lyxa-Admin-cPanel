@@ -46,22 +46,20 @@ export default function RiderDetails({ rider }) {
       <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={Loacation} />
       <ProfileSidebarInfo label="Area Covered" value="Rampura" icon={Loacation} />
       <ProfileSidebarInfo label="Shift" value={rider?.shift} icon={Loacation} />
-      {rider.isLogin && (
-        <Box pb={12}>
-          <Button
-            variant="text"
-            disableRipple
-            color="error"
-            startIcon={<LogoutIcon />}
-            disabled={update.isLoading}
-            onClick={() => {
-              update.mutate({ id: rider._id, isLogin: false });
-            }}
-          >
-            Force Log out
-          </Button>
-        </Box>
-      )}
+      <Box pb={12}>
+        <Button
+          variant="text"
+          disableRipple
+          color="error"
+          startIcon={<LogoutIcon />}
+          disabled={update.isLoading}
+          onClick={() => {
+            update.mutate({ id: rider._id, isLogin: false });
+          }}
+        >
+          Force Log out
+        </Button>
+      </Box>
     </Stack>
   );
 }
