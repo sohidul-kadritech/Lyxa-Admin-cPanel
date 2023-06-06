@@ -32,12 +32,9 @@ function AddMenuButton({ ...props }) {
 function RatingSettings2() {
   const [currentTab, setCurrentTab] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const [isRightBarOpen, setIsRightBarOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [ratingType, setRatingType] = useState('shop');
-  // eslint-disable-next-line no-unused-vars
   const [currentRating, setCurrentRating] = useState({});
 
   // ratings query
@@ -51,7 +48,6 @@ function RatingSettings2() {
       }),
     {
       staleTime: minInMiliSec(3),
-      // eslint-disable-next-line prettier/prettier
     }
   );
   // get stars
@@ -122,7 +118,6 @@ function RatingSettings2() {
   return (
     <Box>
       <PageTop
-        // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -135,29 +130,26 @@ function RatingSettings2() {
         }}
       />
 
-      <Box sx={{ marginBottom: '30px' }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: '30px' }}>
         <Tabs
           value={currentTab}
           onChange={(event, newValue) => {
             setCurrentTab(newValue);
             setRatingType(() => (newValue === 0 ? 'shop' : 'deliveryBoy'));
-            // setIsSideBarOpen(false);
           }}
         >
           <Tab label="Shop"></Tab>
           <Tab label="Rider"></Tab>
         </Tabs>
 
-        <Stack direction="row" justifyContent="end" sx={{ marginBottom: '30px' }}>
-          <AddMenuButton
-            onClick={() => {
-              setCurrentRating({});
-              setIsEdit(false);
-              setIsRightBarOpen(true);
-            }}
-          />
-        </Stack>
-      </Box>
+        <AddMenuButton
+          onClick={() => {
+            setCurrentRating({});
+            setIsEdit(false);
+            setIsRightBarOpen(true);
+          }}
+        />
+      </Stack>
       <Box>
         <StyledTable
           columns={columns}

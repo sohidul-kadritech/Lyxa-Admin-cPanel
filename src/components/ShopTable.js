@@ -18,14 +18,13 @@ function ShopTable({ shops = [], viewUserType }) {
   console.log(routeMatch);
   console.log(routeMatch?.url?.split('/')?.pop());
 
-  const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+  const { dispatchCurrentUser, dispatchShopTabs, currentUser } = useGlobalContext();
 
   const { loading } = useSelector((state) => state.shopReducer);
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { currentUser } = useGlobalContext();
-  const { userType, adminType } = currentUser;
+  const { userType, adminType, seller } = currentUser;
 
   // GO TO SHOP PRODUCT LIST
   const goToShopProductList = (shopId) => {
@@ -64,9 +63,9 @@ function ShopTable({ shops = [], viewUserType }) {
         pathArr?.pop();
         routePath = `${pathArr?.join('/')}/shop/dashboard/${item._id}`;
       }
-      history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: routePath } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: routePath, seller } });
+      history.push(routePath);
     }
   };
 

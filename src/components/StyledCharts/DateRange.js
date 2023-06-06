@@ -8,6 +8,7 @@ export default function DateRange({ range, setRange, startKey = 'start', endKey 
       <FilterDate
         value={range?.[startKey]}
         maxDate={moment(range?.[endKey]).subtract(1, 'day')}
+        minDate={moment(range?.[endKey]).subtract(6, 'month')}
         tooltip="Start Date"
         size={size}
         onChange={(e) => {
@@ -17,6 +18,7 @@ export default function DateRange({ range, setRange, startKey = 'start', endKey 
       <FilterDate
         value={range?.[endKey]}
         minDate={moment(range?.[startKey]).add(1, 'day')}
+        maxDate={moment(range?.[startKey]).add(6, 'month')}
         tooltip="End Date"
         size={size}
         onChange={(e) => {

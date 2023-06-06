@@ -24,7 +24,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       field: 'orders',
       flex: orderFilter === 'cancelled ' ? 1.5 : 1,
       sortable: false,
-      minWidth: 270,
+      // minWidth: 270,
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="user-image"
@@ -41,7 +41,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
       flex: 1,
-      minWidth: 200,
+      // minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
@@ -54,7 +54,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
-      minWidth: 240,
+      // minWidth: 240,
       sortable: false,
       flex: orderFilter === 'cancelled' ? 1.5 : 1,
       renderCell: ({ value }) => <Typography variant="body4">{moment(value).format('MMM D, YYYY h:mm a')}</Typography>,
@@ -64,7 +64,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       id: 3,
       headerName: 'RIDER',
       field: 'deliveryBoy',
-      minWidth: 270,
+      // minWidth: 270,
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => (
@@ -95,7 +95,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
-      minWidth: 200,
+      // minWidth: 200,
       sortable: false,
       flex: 1,
       renderCell: ({ value }) => (
@@ -143,7 +143,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
         handleMenuClick={(menu) => {
           threeDotHandler(menu, params?.row);
         }}
-        menuItems={getThreedotMenuOptions(params?.row?.orderStatus, adminType)}
+        menuItems={getThreedotMenuOptions(params?.row, adminType)}
       />
     ),
   };

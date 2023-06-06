@@ -43,7 +43,7 @@ export const getRiderInit = (riderFor, riderShop) => ({
   status: 'active',
 });
 
-export const validateRider = (rider, isEditRider, riderFor) => {
+export const validateRider = (rider, isEditRider) => {
   const status = {
     status: false,
     msg: null,
@@ -126,7 +126,7 @@ export const validateRider = (rider, isEditRider, riderFor) => {
     return status;
   }
 
-  if (!rider?.zoneId && riderFor !== 'shop') {
+  if (!rider?.zoneId && rider?.deliveryBoyType !== 'shopRider') {
     status.msg = 'Rider zoneId cannot be empty!';
     return status;
   }

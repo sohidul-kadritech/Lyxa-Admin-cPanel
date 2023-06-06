@@ -30,7 +30,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   const history = useHistory();
 
   const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
-  const { shop } = currentUser;
+  const { shop, seller } = currentUser;
   const currency = general?.currency;
 
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
@@ -57,7 +57,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath } });
+      // dispatchCurrentUser({ type: 'seller', payload: { seller } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller } });
     }
   };
 
@@ -221,7 +222,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                     }}
                   />
                   <InfoListItem
-                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}${currency?.symbol_native}`, '')}
+                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}$`, '')}
                     dotColor="text.secondary2"
                     titleSx={{
                       color: 'text.secondary2',
@@ -255,10 +256,12 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                   >
                     <AccessTime sx={{ width: '17px', height: '17px' }} />
                     <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                      {/* ETA{' '}
                       {shop?.avgOrderDeliveryTime < 30
                         ? '30-40'
                         : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
-                      min
+                      min */}
+                      ETA {Math.round(shop?.avgOrderDeliveryTime)} min
                     </Typography>
                   </Box>
                   {Deals.deals.reward.isActive && (

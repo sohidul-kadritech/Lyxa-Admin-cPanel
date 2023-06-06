@@ -15,6 +15,7 @@ import ChildLayout from './ChildLayout';
 
 export default function SellerToShopLayout() {
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+  const { seller } = currentUser;
   const location = useLocation();
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -38,7 +39,10 @@ export default function SellerToShopLayout() {
         if (data?.status) {
           console.log(data?.data);
           dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shop } });
-          dispatchShopTabs({ type: 'add-tab', payload: { shop: data?.data?.shop || {}, location: location.pathname } });
+          dispatchShopTabs({
+            type: 'add-tab',
+            payload: { shop: data?.data?.shop || {}, location: location.pathname, seller },
+          });
         } else {
           history.push('/');
           successMsg('Could not find shop');
@@ -77,8 +81,9 @@ export default function SellerToShopLayout() {
     <ChildLayout
       hideSidebar={hideSidebar}
       sidebarTitle="Lyxa Shop"
-      routes={shop_routes(path)}
-      menuItems={shop_menu_items(url)}
+      cosnole={console.log('=================>', currentUser?.shop)}
+      routes={shop_routes(path, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
+      menuItems={shop_menu_items(url, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
       childFor="shop"
     />
   );

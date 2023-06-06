@@ -25,6 +25,7 @@ import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.sv
 
 /* ======== shop ======== */
 export const shop_menu_items = (prefix = '', shopDeliveryType) => {
+  console.log({ shopDeliveryType, prefix });
   const menuItems = [
     {
       title: 'Management',
@@ -135,7 +136,7 @@ export const shop_menu_items = (prefix = '', shopDeliveryType) => {
   if (shopDeliveryType === 'self') {
     menuItems[1].menu.push({
       label: 'Riders',
-      to: '/riders',
+      to: `${prefix}/riders`,
       icon: RidersAdminIcons,
     });
   }

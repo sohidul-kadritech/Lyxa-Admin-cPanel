@@ -197,7 +197,7 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
 
       attributes?.forEach((attr) => {
         // attr name not added
-        if (attr?.name?.trim() === 'Untitled Attribute' || !attr?.name?.trim()) return;
+        // if (attr?.name?.trim() === 'Untitled Attribute' || !attr?.name?.trim()) return;
 
         // filter attr items
         const items = attr?.items?.filter((item) => item.name && item.extraPrice);
@@ -331,10 +331,10 @@ export const validateProduct = (product) => {
     return status;
   }
 
-  if (!product?.seoDescription) {
-    status.msg = 'Product description cannot be empty';
-    return status;
-  }
+  // if (!product?.seoDescription) {
+  //   status.msg = 'Product description cannot be empty';
+  //   return status;
+  // }
 
   if (!product?.price) {
     status.msg = 'Product price cannot be empty';
@@ -346,28 +346,50 @@ export const validateProduct = (product) => {
     return status;
   }
 
-  // if (product?.type === 'food') {
-  //   let error = false;
+  if (product?.type === 'food') {
+    let error = false;
 
-  //   product?.attributes?.forEach((attr) => {
-  //     if (attr?.items?.length && (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute')) error = true;
-  //   });
+    product?.attributes?.forEach((attr) => {
+      // if (attr?.items?.length && (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute')) error = true;
+      if (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute') error = 'Please add attribte title';
+      if (!attr?.items?.length) error = 'Please add attribute items or remove attribute';
+    });
 
-  //   if (error) {
-  //     status.msg = 'Please add attribte title or keep as default';
-  //     return status;
-  //   }
-  // }
-
-  if (
-    product?.type === 'food' &&
-    product?.attributes[0] &&
-    (product?.attributes[0]?.required || product?.attributes[0]?.select) &&
-    !product?.attributes[0]?.items?.length
-  ) {
-    status.msg = 'Please add attribtes or keep as default';
-    return status;
+    if (error) {
+      status.msg = error;
+      return status;
+    }
   }
+
+  if (product?.type === 'food') {
+    let error = false;
+
+    product?.attributes?.forEach((attr) => {
+      // if (attr?.items?.length && (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute')) error = true;
+      if (attr?.items?.length) {
+        attr?.items?.forEach((itm) => {
+          if (!itm?.extraPrice || itm?.extraPrice < 1 || !itm?.name?.trim()) {
+            error = true;
+          }
+        });
+      }
+    });
+
+    if (error) {
+      status.msg = 'Please fill the attribute details';
+      return status;
+    }
+  }
+
+  // if (
+  //   product?.type === 'food' &&
+  //   product?.attributes[0] &&
+  //   (product?.attributes[0]?.required || product?.attributes[0]?.select) &&
+  //   !product?.attributes[0]?.items?.length
+  // ) {
+  //   status.msg = 'Please add attribtes or keep as default';
+  //   return status;
+  // }
 
   return {
     status: true,
