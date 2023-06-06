@@ -91,14 +91,28 @@ export default function Payout({ paymentDetails }) {
           />
 
           {/* Other payments */}
-          {(paymentDetails?.freeDeliveryShopCut > 0 || paymentDetails?.totalFeaturedAmount > 0) && (
+          {(paymentDetails?.freeDeliveryShopCut > 0 ||
+            paymentDetails?.totalFeaturedAmount > 0 ||
+            paymentDetails?.totalRefundAmount !== 0) && (
             <DetailsAccordion
               title="Other Payments"
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-              titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
-              titleAmountStatus="minus"
+              titleAmount={Math.abs(
+                paymentDetails?.freeDeliveryShopCut +
+                  paymentDetails?.totalFeaturedAmount +
+                  // eslint-disable-next-line prettier/prettier
+                  paymentDetails?.totalRefundAmount,
+              )}
+              titleAmountStatus={`${
+                paymentDetails?.freeDeliveryShopCut +
+                  paymentDetails?.totalFeaturedAmount +
+                  paymentDetails?.totalRefundAmount <
+                0
+                  ? ''
+                  : 'minus'
+              }`}
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 2 : -1);
@@ -117,6 +131,13 @@ export default function Payout({ paymentDetails }) {
                   title="Promotion: featured"
                   amount={paymentDetails?.totalFeaturedAmount}
                   amountStatus="minus"
+                />
+              )}
+              {paymentDetails?.totalRefundAmount !== 0 && (
+                <PriceItem
+                  title="Refunded Amount"
+                  amount={Math.abs(paymentDetails?.totalRefundAmount)}
+                  amountStatus={`${paymentDetails?.totalRefundAmount > 0 ? 'minus' : ''}`}
                 />
               )}
             </DetailsAccordion>

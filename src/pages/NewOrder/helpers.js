@@ -1,7 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
 import moment from 'moment';
-import { successMsg } from '../../helpers/successMsg';
 
 export const orderStatusMap = {
   placed: 'Pending',
@@ -121,19 +120,19 @@ export const getOrderProfit = (order, adminType = 'shop') => {
   return totalPayment;
 };
 
-export const getThreedotMenuOptions = (orderStatus, userType) => {
+export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
-  console.log('Order status: ', orderStatus);
-  if (hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+  console.log('Order status: ', order?.orderStatus);
+  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
     options.push({ label: 'Update Status', value: 'update_status' });
   }
 
-  if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(orderStatus) < 0) {
+  if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
     options.push({ label: 'Cancel Order', value: 'cancel_order' });
   }
 
-  if (userType === 'admin' && orderStatus === 'delivered') {
+  if (userType === 'admin' && order?.orderStatus === 'delivered' && !order?.isRefundedAfterDelivered) {
     options.push({ label: 'Refund Order', value: 'refund_order' });
   }
 
@@ -151,10 +150,10 @@ export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
   // console.log('adminvat: ', adminVat);
   // console.log('value: ', value);
   if (refundedVat > adminVat) {
-    successMsg('Refunded VAT cannot be greater than admin VAT!');
-    return adminVat.toFixed(2);
+    // successMsg('Refunded VAT cannot be greater than admin VAT!');
+    return Number(adminVat.toFixed(2));
   }
-  if (refundedVat <= adminVat) return refundedVat.toFixed(2);
+  if (refundedVat <= adminVat) return Number(refundedVat.toFixed(2));
 
   return 0;
 };
@@ -172,4 +171,11 @@ export const calculateTotalRefundedAmount = (deliveryBoy, admin, shop, vatForAdm
     vatForAdmin,
   );
   return (deliveryBoy + admin + shop + Number(vatForAdmin)).toFixed(2);
+};
+
+export const calculateTotalRefund = (array, refundType) => {
+  console.log('array', array, refundType);
+  if (refundType !== 'none' && array.length > 0)
+    return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  return 0;
 };

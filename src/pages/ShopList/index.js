@@ -23,7 +23,13 @@ export default function ShopList() {
   const [filters, setFilters] = useState(filtersInit);
   const [shops, setShops] = useState([]);
 
-  console.log(filters);
+  const setCurrentShop = (data) => {
+    const currShopSellerId = typeof currentShop?.seller === 'string' ? currentShop?.seller : currentShop?.seller?._id;
+
+    if (data?.data?.shops?.length && (!currentShop?._id || currShopSellerId !== seller?._id)) {
+      dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shops[0] } });
+    }
+  };
 
   const query = useQuery(
     [Api.ALL_SHOP, { sellerId: seller?._id }],
@@ -32,13 +38,15 @@ export default function ShopList() {
       onSuccess: (data) => {
         if (data?.status) {
           setShops(data?.data?.shops);
-          if (data?.data?.shops?.length && !currentShop?._id) {
-            dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shops[0] } });
-          }
+          setCurrentShop(data);
         }
       },
     }
   );
+
+  useEffect(() => {
+    setCurrentShop(query?.data);
+  }, []);
 
   useEffect(() => {
     setShops(filterShops(query?.data?.data?.shops, filters));

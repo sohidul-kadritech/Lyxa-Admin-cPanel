@@ -1,13 +1,18 @@
-import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Drawer, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { isNumber } from 'lodash';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import IncrementDecrementButton from '../ReferFriend/IncrementDecrementButton';
-import { discountTypeOptions } from './helpers';
+import AddRange from './AddRange';
+import PercentageTable from './PercentageTable';
+import RangeTable from './RangeTable';
+import { discountTypeOptions, generatedDataForRange, generatedDataForRangeDelete } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -26,12 +31,25 @@ const indexToTypeTracker = {
   2: 'delivery',
   3: 'butler',
 };
+
 function PercentageSettings2() {
   const [currentTab, setCurrentTab] = useState(0);
   const [globalChargeType, setGlobalChargeType] = useState('percentage');
   const [globalCharge, setGlobalCharge] = useState(0);
   // eslint-disable-next-line no-unused-vars
+  const [searchResult, setSearchResult] = useState([]);
+  const [isConfirm, setIsConfirm] = useState(false);
+  const [selectedRange, setSelectedRange] = useState({});
+
   const [type, setType] = useState('global');
+
+  const [hasChanged, setHasChanged] = useState(true);
+
+  const [open, setOpen] = useState(false);
+
+  const [isConfirmDelete, setIsConfirmDelete] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const incrementHandler = (setValue) => {
     setValue((prev) => {
@@ -49,16 +67,123 @@ function PercentageSettings2() {
     });
   };
 
+  const getRelatedSellerQuery = useQuery(
+    [API_URL.GET_SPECIAL_DROP_CHARGE],
+    () => AXIOS.get(API_URL.GET_SPECIAL_DROP_CHARGE),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          console.log('====> seller', data?.data?.sellers);
+        } else {
+          console.log('=====> msg: ', data.message);
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
   // eslint-disable-next-line no-unused-vars
   const getGlobalDropCharge = useQuery([API_URL.GET_DELIVERY_FEE], () => AXIOS.get(API_URL.GET_DELIVERY_FEE), {
     onSuccess: (data) => {
       if (data.status) {
-        console.log('====>', data?.data);
+        console.log('====>', data?.data?.charge);
+        setGlobalCharge(data?.data?.charge?.dropPercentage);
+        setGlobalChargeType(data?.data?.charge?.dropPercentageType);
       } else {
         console.log('=====> msg: ', data.message);
       }
     },
   });
+
+  const setGlobalDropCharge = useMutation((data) => AXIOS.post(API_URL.SET_DELIVERY_FEE, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  const deleteSellerRange = useMutation((data) => AXIOS.post(API_URL.DELETE_SELLER_SPECIAL_DROP_CHARGE, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.GET_SPECIAL_DROP_CHARGE);
+        setIsConfirmDelete(false);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  const addDeliveryCutRange = useMutation((data) => AXIOS.post(API_URL.UPDATE_DELIVERY_CUT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.GET_DELIVERY_FEE);
+        setOpen(false);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  const addDeliveryCutRangeForButler = useMutation((data) => AXIOS.post(API_URL.UPDATE_BULTER_DELIVERY_CUT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.GET_DELIVERY_FEE);
+        setOpen(false);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  const addRangeHandler = (newRange) => {
+    // console.log('newRange:', newRange);
+    const allData =
+      indexToTypeTracker[currentTab] === 'delivery'
+        ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
+        : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler;
+
+    const generatedData = generatedDataForRange(newRange, allData, indexToTypeTracker[currentTab]);
+
+    if (generatedData && generatedData?.deliveryRange) {
+      addDeliveryCutRange.mutate(generatedData);
+      return;
+    }
+    if (generatedData && generatedData?.deliveryRangeButler) {
+      addDeliveryCutRangeForButler.mutate(generatedData);
+    }
+  };
+
+  const callDeleteRange = () => {
+    // console.log('newRange:', newRange);
+    console.log(indexToTypeTracker[currentTab], 'current tab:');
+    const allData =
+      indexToTypeTracker[currentTab] === 'delivery'
+        ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
+        : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler;
+
+    const generatedData = generatedDataForRangeDelete(selectedRange, allData, indexToTypeTracker[currentTab]);
+
+    if (indexToTypeTracker[currentTab] !== 'seller' && generatedData && generatedData?.deliveryRange) {
+      addDeliveryCutRange.mutate(generatedData);
+      console.log('newRange for normal', generatedData);
+      return;
+    }
+    if (indexToTypeTracker[currentTab] !== 'seller' && generatedData && generatedData?.deliveryRangeButler) {
+      console.log('newRange for butler', generatedData);
+      addDeliveryCutRangeForButler.mutate(generatedData);
+      return;
+    }
+
+    if (indexToTypeTracker[currentTab] === 'seller') {
+      deleteSellerRange.mutate({ sellerId: selectedRange._id });
+    }
+  };
 
   return (
     <Box>
@@ -79,6 +204,7 @@ function PercentageSettings2() {
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
+
           setType(indexToTypeTracker[newValue]);
           //   setLoading(true);
         }}
@@ -114,6 +240,8 @@ function PercentageSettings2() {
                   items: discountTypeOptions,
                   //   items: categories,
                   onChange: (e) => {
+                    setGlobalCharge(0);
+                    setHasChanged(true);
                     setGlobalChargeType(() => e.target.value);
                   },
                 }}
@@ -128,7 +256,7 @@ function PercentageSettings2() {
                 setValue={setGlobalCharge}
                 incrementHandler={incrementHandler}
                 decrementHandler={decrementHandler}
-                setTypeValidation={() => console.log('no type')}
+                setTypeValidation={() => setHasChanged(true)}
               />
             </Stack>
           </Stack>
@@ -137,35 +265,98 @@ function PercentageSettings2() {
             <Button
               variant="outlined"
               color="primary"
-              //   onClick={() => {
-              //     if (hasChanged) {
-              //       setIsConfirm(true);
-              //     } else {
-              //       successMsg('Please make a change first!');
-              //     }
-              //   }}
+              onClick={() => {
+                if (hasChanged) {
+                  setIsConfirm(true);
+                } else {
+                  successMsg('Please make a change first!');
+                }
+              }}
             >
               Discard
             </Button>
             <Button
-              //   onClick={() => {
-              //     if (hasChanged) {
-              //       updateConfiguration();
-              //     } else {
-              //       successMsg('Please make a change first!');
-              //     }
-              //   }}
+              onClick={() => {
+                if (hasChanged) {
+                  setGlobalDropCharge.mutate({ dropPercentage: globalCharge, dropPercentageType: globalChargeType });
+                } else {
+                  successMsg('Please make a change first!');
+                }
+              }}
               variant="contained"
               color="primary"
-              //   disabled={updateConfigurationQuery?.isLoading}
+              disabled={setGlobalDropCharge?.isLoading}
             >
               Save Changes
             </Button>
           </Stack>
+          <ConfirmModal
+            message="Do you want to discard the changes ?"
+            isOpen={isConfirm}
+            blurClose
+            onCancel={() => {
+              setIsConfirm(false);
+            }}
+            onConfirm={() => {
+              // callDeleteFaq();
+              setIsConfirm(false);
+              getGlobalDropCharge.refetch();
+              setHasChanged(false);
+            }}
+          />
         </Box>
       ) : (
-        <Box sx={{ marginTop: '30px' }}>Not Global</Box>
+        <Box sx={{ marginTop: '30px' }}>
+          {indexToTypeTracker[currentTab] === 'seller' ? (
+            <PercentageTable
+              setSelectedRange={setSelectedRange}
+              setIsConfirm={setIsConfirmDelete}
+              data={getRelatedSellerQuery?.data?.data?.sellers}
+            />
+          ) : (
+            <RangeTable
+              setSelectedRange={setSelectedRange}
+              setIsConfirm={setIsConfirmDelete}
+              setOpen={setOpen}
+              data={
+                indexToTypeTracker[currentTab] === 'delivery'
+                  ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
+                  : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler
+              }
+            />
+          )}
+
+          <ConfirmModal
+            message="Do you want to delete the range ?"
+            isOpen={isConfirmDelete}
+            blurClose
+            loading={
+              addDeliveryCutRange.isLoading || addDeliveryCutRangeForButler.isLoading || deleteSellerRange.isLoading
+            }
+            onCancel={() => {
+              setIsConfirmDelete(false);
+            }}
+            onConfirm={() => {
+              callDeleteRange();
+              setIsConfirmDelete(false);
+              setHasChanged(false);
+            }}
+          />
+        </Box>
       )}
+
+      <Drawer open={open} anchor="right">
+        <AddRange
+          allData={
+            indexToTypeTracker[currentTab] === 'delivery'
+              ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
+              : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler
+          }
+          callForUpdate={addRangeHandler}
+          onClose={() => setOpen(false)}
+          isLoading={addDeliveryCutRange.isLoading || addDeliveryCutRangeForButler.isLoading}
+        />
+      </Drawer>
     </Box>
   );
 }

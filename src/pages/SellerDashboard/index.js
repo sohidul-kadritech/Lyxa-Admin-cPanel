@@ -11,6 +11,7 @@ export default function SellerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
   const { currentUser } = useGlobalContext();
   const { seller } = currentUser;
+  console.log(seller);
 
   return (
     <Box>
@@ -19,7 +20,7 @@ export default function SellerDashboard() {
       </Typography>
       <UserProfileInfo
         user={{
-          name: seller?.name,
+          name: seller?.company_name,
           phone: seller?.phone_number,
           email: seller?.email,
           profile: seller?.profile_photo,

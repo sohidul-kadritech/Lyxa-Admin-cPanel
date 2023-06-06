@@ -51,8 +51,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [container, setContainer] = useState(
-    // eslint-disable-next-line prettier/prettier
-    containerType === 'list' ? { ...containerInit, image: [], banner: [] } : containerInit,
+    containerType === 'list' ? { ...containerInit, image: [], banner: [] } : containerInit
   );
 
   // image
@@ -61,7 +60,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     setContainer((prev) => ({
@@ -77,7 +76,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
         type: shopType === 'food' ? 'restaurant' : shopType,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const dealsOptions = useMemo(() => {
@@ -89,14 +88,25 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       ? dealSettingsQuery?.data?.data?.dealSetting[0]?.option
       : [];
 
-    const dealOptions = percentageDeals.map((item) => ({ value: item, name: item.toString() }));
+    const dealOptions = percentageDeals.map((item) => ({ value: item, name: `${item.toString()}%` }));
 
+    // double menu
     if (shopTypeDeals.includes('double_menu')) {
       dealOptions.push({
-        name: 'Double Menu',
+        name: 'Buy 1 Get 1',
         value: 'double_menu',
       });
     }
+
+    // free delivery
+    if (shopTypeDeals.includes('free_delivery')) {
+      dealOptions.push({
+        name: 'Free Delivery',
+        value: 'free_delivery',
+      });
+    }
+
+    console.log({ shopTypeDeals });
 
     return dealOptions;
   }, [dealSettingsQuery.status]);
@@ -109,8 +119,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
         pageSize: 500,
         shopType,
       },
-      // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const tagsOptions = tagsQuery?.data?.data?.tags?.filter((item) => item.type === 'tag') || [];
@@ -121,8 +130,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
       params: {
         type: shopType,
       },
-      // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const shopsOptions = shopsQuery?.data?.data?.shops || [];
@@ -146,8 +154,7 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
           successMsg(data.message, 'error');
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // update container
@@ -173,13 +180,19 @@ export default function AddContainer({ onClose, shopType, editContainer, contain
     newData.name = container?.name;
     newData.type = [...(container.type || [])];
     newData.deals = container?.deals?.map((item) => {
-      if (item === 'double_menu') {
+      if (item === 'double_menu')
         return {
-          name: 'Double Menu',
+          name: 'Buy 1 Get 1',
           value: 'double_menu',
         };
-      }
-      return { value: item, name: item.toString() };
+
+      if (item === 'free_delivery')
+        return {
+          name: 'Free Delivery',
+          value: 'free_delivery',
+        };
+
+      return { value: item, name: `${item.toString()}%` };
     });
 
     if (containerType === 'list') {

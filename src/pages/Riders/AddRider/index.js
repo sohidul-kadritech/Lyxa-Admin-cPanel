@@ -75,7 +75,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
 
   //  upload data
   const onSubmit = async () => {
-    const isValid = validateRider(rider, !!editRider?._id, riderFor);
+    const isValid = validateRider(rider, !!editRider?._id);
 
     if (!isValid?.status) {
       successMsg(isValid.msg);
@@ -83,7 +83,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     }
 
     setLoading(true);
-    const riderData = await createRiderData(rider, riderFor);
+    const riderData = await createRiderData(rider);
 
     if (riderData.error) {
       successMsg(riderData.msg);
@@ -91,7 +91,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       return;
     }
 
-    console.log(riderData);
     addRiderMutation.mutate(riderData);
   };
 
@@ -240,7 +239,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               }}
             />
             {/* Area Covered */}
-            {riderFor !== 'shop' && (
+            {rider.deliveryBoyType !== 'shopRider' && (
               <StyledFormField
                 label="Area Covered"
                 intputType="select"
