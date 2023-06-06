@@ -1,7 +1,7 @@
 import { Box, Drawer, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import TablePagination from '../../components/Common/TablePagination';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
@@ -15,9 +15,11 @@ import { getQueryParamsInit } from './helper';
 
 export default function RiderList({ viewUserType }) {
   const history = useHistory();
+  const routeMatch = useRouteMatch();
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
+  console.log(routeMatch);
   console.log({ viewUserType });
 
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, shop?._id));
@@ -64,7 +66,7 @@ export default function RiderList({ viewUserType }) {
               setModalOpen(true);
             }}
             onProfileView={(rider) => {
-              history.push(`/riders/${rider?._id}`, {
+              history.push(`${routeMatch?.url}/${rider?._id}`, {
                 rider,
               });
             }}

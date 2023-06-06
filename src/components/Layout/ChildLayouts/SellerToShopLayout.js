@@ -77,8 +77,9 @@ export default function SellerToShopLayout() {
     <ChildLayout
       hideSidebar={hideSidebar}
       sidebarTitle="Lyxa Shop"
-      routes={shop_routes(path)}
-      menuItems={shop_menu_items(url)}
+      cosnole={console.log('=================>', currentUser?.shop)}
+      routes={shop_routes(path, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
+      menuItems={shop_menu_items(url, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
       childFor="shop"
     />
   );

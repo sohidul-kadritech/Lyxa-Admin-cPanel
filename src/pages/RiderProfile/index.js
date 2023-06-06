@@ -2,7 +2,7 @@
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useLocation, useParams, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
@@ -14,8 +14,16 @@ import TopInfo from './TopInfo';
 
 export default function RiderProfile() {
   const location = useLocation();
+  const routeMatch = useRouteMatch();
+
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
+
+  const backRoute = useMemo(() => {
+    const routeArr = routeMatch?.url?.split('/');
+    routeArr?.pop();
+    return routeArr?.join('/');
+  }, []);
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [open, setOpen] = useState(false);
@@ -42,7 +50,7 @@ export default function RiderProfile() {
 
   return (
     <Box>
-      <PageTop title="Rider Profile" backButtonLabel="Back to Riders" backTo="/riders" />
+      <PageTop title="Rider Profile" backButtonLabel="Back to Riders" backTo={backRoute} />
       <Box
         sx={{
           display: 'grid',

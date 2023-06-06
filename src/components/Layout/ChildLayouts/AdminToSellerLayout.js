@@ -79,8 +79,8 @@ export default function AdminToSellerLayout() {
       sidebarTitle="Lyxa Seller"
       routes={seller_routes(path)}
       menuItems={seller_menu_items(url)}
-      secondaryRoutes={shop_routes(shopPath)}
-      secondaryMenuItems={shop_menu_items(shopUrl)}
+      secondaryRoutes={shop_routes(shopPath, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
+      secondaryMenuItems={shop_menu_items(shopUrl, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
       childFor="seller"
     />
   );
