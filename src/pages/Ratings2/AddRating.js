@@ -23,7 +23,6 @@ const ratingTypes = [
   { label: 'Rider', value: 'deliveryBoy' },
 ];
 
-// eslint-disable-next-line no-unused-vars
 const initRating = {
   rating: '4',
   tags: [],
@@ -43,11 +42,9 @@ export const validateList = (newValue, oldList) => {
 
   return true;
 };
+
 // eslint-disable-next-line no-unused-vars
 function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFlags }) {
-  // eslint-disable-next-line no-undef
-  // eslint-disable-next-line no-unused-vars
-  const [faqType, setFaqType] = useState('');
   const queryClient = useQueryClient();
 
   const [currentRating, setCurrentRating] = useState({ ...initRating });
@@ -85,8 +82,12 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const submitRatings = () => {
+    if (currentRating?.tags?.length < 1) {
+      successMsg('Please add atleast one tag');
+      return;
+    }
+
     if (isEdit) {
       updateRatings.mutate({ ...currentRating, id: currentRating?._id });
     } else {
