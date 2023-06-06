@@ -1,5 +1,5 @@
 import { Email } from '@mui/icons-material';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
@@ -31,7 +31,17 @@ export default function RiderDetails({ rider }) {
   });
 
   return (
-    <Stack gap="40px" flexDirection="column">
+    <Box
+      pb={12}
+      sx={{
+        display: 'grid',
+        rowGap: '40px',
+        gridTemplateColumns: {
+          lg: '1fr',
+          md: '1fr 1fr',
+        },
+      }}
+    >
       <ProfileSidebarInfo
         label="Email"
         value={rider?.email}
@@ -46,7 +56,7 @@ export default function RiderDetails({ rider }) {
       <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={Loacation} />
       <ProfileSidebarInfo label="Area Covered" value="Rampura" icon={Loacation} />
       <ProfileSidebarInfo label="Shift" value={rider?.shift} icon={Loacation} />
-      <Box pb={12}>
+      <Box>
         <Button
           variant="text"
           disableRipple
@@ -60,6 +70,6 @@ export default function RiderDetails({ rider }) {
           Force Log out
         </Button>
       </Box>
-    </Stack>
+    </Box>
   );
 }

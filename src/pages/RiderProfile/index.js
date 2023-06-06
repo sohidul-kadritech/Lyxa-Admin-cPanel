@@ -1,22 +1,16 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
-import TabPanel from '../../components/Common/TabPanel';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRider from '../Riders/AddRider';
-import Documents from './Documents';
-import RiderFlags from './Flags';
-import RiderOrders from './Orders';
 import RiderDetails from './RiderDetails';
-import RiderRating from './RiderRating';
-import RiderTimeStamp from './Timestamp';
+import RiderTabs from './Tabs';
 import TopInfo from './TopInfo';
-import RiderTransactions from './Transactions';
 
 export default function RiderProfile() {
   const location = useLocation();
@@ -27,7 +21,6 @@ export default function RiderProfile() {
   const [open, setOpen] = useState(false);
   const params = useParams();
   const [rider, setRider] = useState(location?.state?.rider);
-  console.log(params);
 
   const query = useQuery(
     [Api.SINGLE_DELIVERY_MAN, { id: params?.riderId }],
@@ -46,7 +39,6 @@ export default function RiderProfile() {
       },
     }
   );
-  const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
 
   return (
     <Box>
@@ -54,12 +46,18 @@ export default function RiderProfile() {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 300px',
+          gridTemplateColumns: {
+            lg: '1fr 300px',
+            md: '1fr',
+          },
         }}
       >
         <Box
           sx={{
-            paddingRight: '50px',
+            paddingRight: {
+              lg: '50px',
+              md: '0px',
+            },
             paddingBottom: '30px',
           }}
         >
@@ -80,56 +78,19 @@ export default function RiderProfile() {
               Edit Account
             </Button>
           </Stack>
-          <Tabs
-            value={currentTab}
-            sx={{
-              '& .MuiTab-root': {
-                padding: '8px 12px',
-                textTransform: 'none',
-              },
-            }}
-            onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-            }}
-          >
-            <Tab label="Orders" />
-            <Tab label="Transactions" />
-            <Tab label="Cash Orders" />
-            <Tab label="Timestamp" />
-            <Tab label="Flagged" />
-            <Tab label="Documents" />
-            <Tab label="Shop Rating" />
-          </Tabs>
-          <Box>
-            <TabPanel index={0} value={currentTab}>
-              <RiderOrders riderId={rider?._id} />
-            </TabPanel>
-            <TabPanel index={1} value={currentTab}>
-              <RiderTransactions riderId={rider?._id} showFor="transactions" />
-            </TabPanel>
-            <TabPanel index={2} value={currentTab}>
-              <RiderTransactions riderId={rider?._id} showFor="cashOrderList" />
-            </TabPanel>
-            <TabPanel index={3} value={currentTab}>
-              <RiderTimeStamp riderId={rider?._id} />
-            </TabPanel>
-            <TabPanel index={4} value={currentTab}>
-              <RiderFlags flags={rider?.flags} />
-            </TabPanel>
-            <TabPanel index={5} value={currentTab}>
-              <Documents rider={rider} />
-            </TabPanel>
-            <TabPanel index={6} value={currentTab}>
-              <RiderRating rider={rider} />
-            </TabPanel>
-          </Box>
+          <RiderTabs rider={rider} />
         </Box>
-        {/* right */}
         <Box
           sx={{
-            paddingLeft: '50px',
+            paddingLeft: {
+              lg: '50px',
+              md: '0px',
+            },
             borderLeft: '1px solid',
-            borderColor: 'custom.border',
+            borderColor: {
+              lg: 'custom.border',
+              md: 'transparent',
+            },
           }}
         >
           <RiderDetails rider={rider} />
