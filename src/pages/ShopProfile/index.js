@@ -30,7 +30,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   const history = useHistory();
 
   const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
-  const { shop } = currentUser;
+  const { shop, seller } = currentUser;
   const currency = general?.currency;
 
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
@@ -57,7 +57,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath } });
+      // dispatchCurrentUser({ type: 'seller', payload: { seller } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller } });
     }
   };
 

@@ -43,13 +43,16 @@ export default function Tabs() {
   const { shopTabs, dispatchShopTabs, dispatchCurrentUser, currentUser } = useGlobalContext();
   const { userType, seller } = currentUser;
 
+  console.log('=================>', 'all-tab', shopTabs?.allTabs);
+  console.log('=================>', 'seller', seller);
+
   // on switch tab
   const changeTab = (tab) => {
     history.push(tab?.currentLocation);
     dispatchShopTabs({ type: 'change-current-tab', payload: { tabId: tab?.shopId } });
     dispatchCurrentUser({ type: 'shop', payload: { shop: tab.shop } });
+    dispatchCurrentUser({ type: 'seller', payload: { seller: tab.seller } });
   };
-
   // on remove tab
   const removeTab = (event, tab) => {
     event.stopPropagation();
