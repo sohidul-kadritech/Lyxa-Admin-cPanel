@@ -91,13 +91,19 @@ export default function Payout({ paymentDetails }) {
           />
 
           {/* Other payments */}
-          {(paymentDetails?.freeDeliveryShopCut > 0 || paymentDetails?.totalFeaturedAmount > 0) && (
+          {(paymentDetails?.freeDeliveryShopCut > 0 ||
+            paymentDetails?.totalFeaturedAmount > 0 ||
+            paymentDetails?.totalRefundAmount > 0) && (
             <DetailsAccordion
               title="Other Payments"
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-              titleAmount={paymentDetails?.freeDeliveryShopCut + paymentDetails?.totalFeaturedAmount}
+              titleAmount={
+                paymentDetails?.freeDeliveryShopCut +
+                paymentDetails?.totalFeaturedAmount +
+                paymentDetails?.totalRefundAmount
+              }
               titleAmountStatus="minus"
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
@@ -118,6 +124,9 @@ export default function Payout({ paymentDetails }) {
                   amount={paymentDetails?.totalFeaturedAmount}
                   amountStatus="minus"
                 />
+              )}
+              {Math.abs(paymentDetails?.totalRefundAmount) > 0 && (
+                <PriceItem title="Refunded Amount" amount={paymentDetails?.totalRefundAmount} amountStatus="minus" />
               )}
             </DetailsAccordion>
           )}

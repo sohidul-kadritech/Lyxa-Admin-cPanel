@@ -41,7 +41,12 @@ import AXIOS from '../../network/axios';
 import OrderTable from './OrderTable';
 import PageSkeleton from './PageSkeleton';
 import SearchBar from './Searchbar';
-import { calculateTotalRefundedAmount, getQueryParamsInit, getRefundedVatForAdmin } from './helpers';
+import {
+  calculateTotalRefund,
+  calculateTotalRefundedAmount,
+  getQueryParamsInit,
+  getRefundedVatForAdmin,
+} from './helpers';
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
 import StyledFormField from '../../components/Form/StyledFormField';
@@ -122,9 +127,7 @@ export default function NewOrders({ showFor }) {
     deliveryBoy: 0,
     admin: 0,
   });
-  // const { cancelReasons } = useSelector((state) => state.settingsReducer);
-  // console.log('cancel reason: ', cancelReasons);
-  // eslint-disable-next-line no-unused-vars
+
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [currentOrderShop, setCurrentOrderShop] = useState({});
@@ -324,7 +327,7 @@ export default function NewOrders({ showFor }) {
   const refundOrderMutation = useMutation((data) => AXIOS.post(Api.REFUND_ORDER, data), {
     onSuccess: (data) => {
       if (data.status) {
-        successMsg(data.message, 'succes');
+        successMsg(data.message, 'success');
         setOpenRefundModal(false);
       } else {
         successMsg(data.message, 'warn');
@@ -616,6 +619,14 @@ export default function NewOrders({ showFor }) {
       partialPayment: {
         shop: orderCancel?.partialPayment?.shop,
         admin: orderCancel?.partialPayment?.admin,
+        adminVat: getRefundedVatForAdmin(
+          orderCancel?.vatAmount?.vatForAdmin,
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+          // eslint-disable-next-line prettier/prettier
+          appVat,
+          // eslint-disable-next-line prettier/prettier
+        ),
       },
     };
 
@@ -646,12 +657,8 @@ export default function NewOrders({ showFor }) {
     const { name, value } = e.target;
     const { admin, deliveryBoy, shop } = orderPayment;
 
-    if (name === 'admin' && Number(value) > admin) {
+    if (name === 'admin' && Number(value) > admin + deliveryBoy) {
       successMsg('Invalid Lyxa Amount');
-      return;
-    }
-    if (name === 'deliveryBoy' && Number(value) > deliveryBoy) {
-      successMsg('Invalid Delivery Boy Amount');
       return;
     }
 
@@ -1062,6 +1069,42 @@ export default function NewOrders({ showFor }) {
                   )}
                 </CancelOrderRefunds>
               )}
+              {/* <h5>
+                <TitleWithToolTip
+                  title={`Total Refund Amount:
+                ${
+                  orderCancel.refundType === 'none'
+                    ? calculateTotalRefund([], 'none')
+                    : orderCancel.refundType === 'full'
+                    ? calculateTotalRefund(
+                        [
+                          Number(orderCancel?.summary?.cash),
+                          Number(orderCancel?.summary?.wallet),
+                          Number(orderCancel?.summary?.card),
+                        ],
+                        // eslint-disable-next-line prettier/prettier
+                        'full',
+                      )
+                    : calculateTotalRefund(
+                        [
+                          Number(orderCancel?.partialPayment?.deliveryBoy),
+                          Number(orderCancel?.partialPayment?.admin),
+                          Number(orderCancel?.partialPayment?.shop),
+                          getRefundedVatForAdmin(
+                            orderCancel?.vatAmount?.vatForAdmin,
+                            orderCancel?.partialPayment?.admin,
+                            orderCancel?.partialPayment?.deliveryBoy,
+                            // eslint-disable-next-line prettier/prettier
+                            appVat,
+                          ),
+                        ],
+                        // eslint-disable-next-line prettier/prettier
+                        'partial',
+                      )
+                }`}
+                  tooltip="Lyxa Earning+Lyxa Vat+Shop Earning+Shop VAT+Delivery Boy Earning"
+                />
+              </h5> */}
               <h5>
                 <TitleWithToolTip
                   title={`Total Refund Amount:
@@ -1125,10 +1168,12 @@ export default function NewOrders({ showFor }) {
         onClose={() => {
           setOpenRefundModal(!openRefundModal);
         }}
+        sx={{ zIndex: '10 !important' }}
       >
         <Paper
           sx={{
             minWidth: 'max(40vw, 500px)',
+            zIndex: '10 !important',
           }}
         >
           <Box padding={5}>
@@ -1161,7 +1206,13 @@ export default function NewOrders({ showFor }) {
               {orderCancel?.refundType === 'partial' && (
                 <CancelOrderRefunds>
                   <StyledFormField
-                    label={<span>Lyxa Refund: {orderPayment?.admin}</span>}
+                    label={
+                      <TitleWithToolTip
+                        // eslint-disable-next-line no-unsafe-optional-chaining
+                        title={`Lyxa Refund: ${orderPayment?.admin + orderPayment?.deliveryBoy}`}
+                        tooltip="Lyxa Earning+Rider Earning"
+                      />
+                    }
                     intputType="text"
                     containerProps={{
                       sx: {
@@ -1183,7 +1234,13 @@ export default function NewOrders({ showFor }) {
                   {orderCancel?.shop?._id && (
                     <div className="refund_item_wrapper">
                       <StyledFormField
-                        label={<span>Shop Refund: {orderPayment?.shop}</span>}
+                        label={
+                          <TitleWithToolTip
+                            // eslint-disable-next-line no-unsafe-optional-chaining
+                            title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            tooltip="Shop Earning+Shop VAT"
+                          />
+                        }
                         intputType="text"
                         containerProps={{
                           sx: {
@@ -1205,14 +1262,70 @@ export default function NewOrders({ showFor }) {
                 </CancelOrderRefunds>
               )}
               {orderCancel.refundType !== 'none' && (
-                <h5>
-                  Total Refund Amount:{' '}
-                  {orderCancel.refundType === 'full'
-                    ? Number(orderCancel?.summary?.cash) +
-                        Number(orderCancel?.summary?.wallet) +
-                        Number(orderCancel?.summary?.card) || 0
-                    : Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.shop || 0)}
-                </h5>
+                // <h5>
+                //   Total Refund Amount:{' '}
+                //   {orderCancel.refundType === 'full'
+                //     ? Number(orderCancel?.summary?.cash) +
+                //         Number(orderCancel?.summary?.wallet) +
+                //         Number(orderCancel?.summary?.card) || 0
+                //     : Number(orderCancel?.partialPayment?.admin) + Number(orderCancel?.partialPayment?.shop || 0)}
+                // </h5>
+                <>
+                  <h5>
+                    <TitleWithToolTip
+                      title={`Total Refund Amount:
+                ${
+                  orderCancel.refundType === 'none'
+                    ? calculateTotalRefund([], 'none')
+                    : orderCancel.refundType === 'full'
+                    ? calculateTotalRefund(
+                        [
+                          Number(orderCancel?.summary?.cash),
+                          Number(orderCancel?.summary?.wallet),
+                          Number(orderCancel?.summary?.card),
+                        ],
+                        // eslint-disable-next-line prettier/prettier
+                        'full',
+                      )
+                    : calculateTotalRefund(
+                        [
+                          Number(orderCancel?.partialPayment?.admin),
+                          Number(orderCancel?.partialPayment?.shop),
+                          getRefundedVatForAdmin(
+                            orderCancel?.vatAmount?.vatForAdmin,
+                            // eslint-disable-next-line no-unsafe-optional-chaining
+                            orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                            // eslint-disable-next-line prettier/prettier
+                            appVat,
+                          ),
+                        ],
+                        // eslint-disable-next-line prettier/prettier
+                        'partial',
+                      )
+                }`}
+                      tooltip="Lyxa Earning+Lyxa VAT+Shop Earning+Shop VAT+Rider Earning+Rider VAT"
+                    />
+                  </h5>
+                  {getRefundedVatForAdmin(
+                    orderCancel?.vatAmount?.vatForAdmin,
+                    // eslint-disable-next-line no-unsafe-optional-chaining
+                    orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                    // eslint-disable-next-line prettier/prettier
+                    appVat,
+                  ) > 0 &&
+                    orderCancel.refundType !== 'full' && (
+                      <h5>
+                        Admin VAT Refunded:{' '}
+                        {getRefundedVatForAdmin(
+                          orderCancel?.vatAmount?.vatForAdmin,
+                          // eslint-disable-next-line no-unsafe-optional-chaining
+                          orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                          // eslint-disable-next-line prettier/prettier
+                          appVat,
+                        )}
+                      </h5>
+                    )}
+                </>
               )}
 
               <div className="d-flex justify-content-center my-3 pt-3">
