@@ -31,7 +31,7 @@ export default function RiderTabs({ rider }) {
         }}
       >
         <Tab label="Orders" />
-        {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Transactions" />}
+        {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Financials" />}
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Cash Orders" />}
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Timestamp" />}
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Flagged" />}
