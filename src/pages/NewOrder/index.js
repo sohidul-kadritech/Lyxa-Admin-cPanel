@@ -217,7 +217,6 @@ export default function NewOrders({ showFor }) {
     if (menu === 'refund_order') {
       setCurrentOrder(order);
       setOpenRefundModal(!openRefundModal);
-
       if (order?.isButler) {
         setOrderPayment({
           deliveryBoy: order?.deliveryBoyFee,
@@ -246,6 +245,7 @@ export default function NewOrders({ showFor }) {
           deliveryBoy: order?.deliveryBoyFee,
           admin: order?.dropCharge?.totalDropAmount,
         });
+        console.log('order?.deliveryBoyFee', order?.deliveryBoyFee);
         setOrderCancel({
           ...orderCancel,
           cancelReasonId: '',
@@ -656,13 +656,20 @@ export default function NewOrders({ showFor }) {
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
     const { admin, deliveryBoy, shop } = orderPayment;
+    const forShop =
+      orderPayment?.admin < 0
+        ? // eslint-disable-next-line no-unsafe-optional-chaining
+          shop + orderCancel.vatAmount.vatForShop + orderPayment?.admin
+        : shop + orderCancel.vatAmount.vatForShop;
 
-    if (name === 'admin' && Number(value) > admin + deliveryBoy) {
+    const forAdmin = orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
+
+    if (name === 'admin' && Number(value) > forAdmin) {
       successMsg('Invalid Lyxa Amount');
       return;
     }
 
-    if (shop && name === 'shop' && Number(value) > shop + orderCancel.vatAmount.vatForShop) {
+    if (shop && name === 'shop' && Number(value) > forShop) {
       successMsg('Invalid Shop Amount');
       return;
     }
@@ -872,7 +879,7 @@ export default function NewOrders({ showFor }) {
           </Box>
         </Paper>
       </Modal>
-      {/* cancel order modal */}
+      {/* Cancel order modal */}
       <Modal
         open={openCancelModal}
         onClose={() => {
@@ -995,7 +1002,7 @@ export default function NewOrders({ showFor }) {
                     label={
                       <TitleWithToolTip
                         // eslint-disable-next-line no-unsafe-optional-chaining
-                        title={`Lyxa Refund: ${orderPayment?.admin}`}
+                        title={`Lyxa Refund: ${orderPayment?.admin < 0 ? 0 : orderPayment?.admin}`}
                         tooltip="Lyxa Earning"
                       />
                     }
@@ -1021,7 +1028,15 @@ export default function NewOrders({ showFor }) {
                         label={
                           <TitleWithToolTip
                             // eslint-disable-next-line no-unsafe-optional-chaining
-                            title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            // title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            title={`Shop Refund: ${
+                              // eslint-disable-next-line no-unsafe-optional-chaining
+                              orderPayment?.admin < 0
+                                ? // eslint-disable-next-line no-unsafe-optional-chaining
+                                  orderPayment?.shop + orderCancel?.vatAmount?.vatForShop + orderPayment?.admin
+                                : // eslint-disable-next-line no-unsafe-optional-chaining
+                                  orderPayment?.shop + orderCancel?.vatAmount?.vatForShop
+                            }`}
                             tooltip="Shop Earning+VAT"
                           />
                         }
@@ -1138,8 +1153,9 @@ export default function NewOrders({ showFor }) {
                 // eslint-disable-next-line prettier/prettier
                 appVat,
               ) > 0 &&
-                orderCancel.refundType !== 'full' && (
-                  <h5>
+                orderCancel.refundType !== 'full' &&
+                orderPayment?.admin > 0 && (
+                  <Typography variant="body1" fontWeight={600}>
                     Admin VAT Refunded:{' '}
                     {getRefundedVatForAdmin(
                       orderCancel?.vatAmount?.vatForAdmin,
@@ -1148,7 +1164,7 @@ export default function NewOrders({ showFor }) {
                       // eslint-disable-next-line prettier/prettier
                       appVat,
                     )}
-                  </h5>
+                  </Typography>
                 )}
 
               <div className="d-flex justify-content-center my-3 pt-3">
@@ -1208,8 +1224,12 @@ export default function NewOrders({ showFor }) {
                   <StyledFormField
                     label={
                       <TitleWithToolTip
-                        // eslint-disable-next-line no-unsafe-optional-chaining
-                        title={`Lyxa Refund: ${orderPayment?.admin + orderPayment?.deliveryBoy}`}
+                        title={`Lyxa Refund: ${
+                          orderPayment?.admin < 0
+                            ? Number(orderPayment?.delivaryBoy) || 0
+                            : // eslint-disable-next-line no-unsafe-optional-chaining
+                              orderPayment?.admin + orderPayment?.deliveryBoy
+                        }`}
                         tooltip="Lyxa Earning+Rider Earning"
                       />
                     }
@@ -1314,7 +1334,7 @@ export default function NewOrders({ showFor }) {
                     appVat,
                   ) > 0 &&
                     orderCancel.refundType !== 'full' && (
-                      <h5>
+                      <Typography variant="body1" fontWeight={600}>
                         Admin VAT Refunded:{' '}
                         {getRefundedVatForAdmin(
                           orderCancel?.vatAmount?.vatForAdmin,
@@ -1323,7 +1343,7 @@ export default function NewOrders({ showFor }) {
                           // eslint-disable-next-line prettier/prettier
                           appVat,
                         )}
-                      </h5>
+                      </Typography>
                     )}
                 </>
               )}
