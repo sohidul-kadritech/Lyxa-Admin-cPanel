@@ -221,7 +221,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                     }}
                   />
                   <InfoListItem
-                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}${currency?.symbol_native}`, '')}
+                    title={new Array(shop?.expensive)?.fill(0)?.reduce((acc) => `${acc}$`, '')}
                     dotColor="text.secondary2"
                     titleSx={{
                       color: 'text.secondary2',
@@ -255,10 +255,12 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
                   >
                     <AccessTime sx={{ width: '17px', height: '17px' }} />
                     <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                      {/* ETA{' '}
                       {shop?.avgOrderDeliveryTime < 30
                         ? '30-40'
                         : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
-                      min
+                      min */}
+                      ETA {Math.round(shop?.avgOrderDeliveryTime)} min
                     </Typography>
                   </Box>
                   {Deals.deals.reward.isActive && (
