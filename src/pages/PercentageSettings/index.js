@@ -8,7 +8,6 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AddMenuButton } from '../Faq2';
 import IncrementDecrementButton from '../ReferFriend/IncrementDecrementButton';
 import AddRange from './AddRange';
 import PercentageTable from './PercentageTable';
@@ -37,9 +36,9 @@ function PercentageSettings2() {
   const [currentTab, setCurrentTab] = useState(0);
   const [globalChargeType, setGlobalChargeType] = useState('percentage');
   const [globalCharge, setGlobalCharge] = useState(0);
-
-  const [isConfirm, setIsConfirm] = useState(false);
   // eslint-disable-next-line no-unused-vars
+  const [searchResult, setSearchResult] = useState([]);
+  const [isConfirm, setIsConfirm] = useState(false);
   const [selectedRange, setSelectedRange] = useState({});
 
   const [type, setType] = useState('global');
@@ -68,7 +67,6 @@ function PercentageSettings2() {
     });
   };
 
-  // eslint-disable-next-line no-unused-vars
   const getRelatedSellerQuery = useQuery(
     [API_URL.GET_SPECIAL_DROP_CHARGE],
     () => AXIOS.get(API_URL.GET_SPECIAL_DROP_CHARGE),
@@ -309,15 +307,6 @@ function PercentageSettings2() {
         </Box>
       ) : (
         <Box sx={{ marginTop: '30px' }}>
-          {indexToTypeTracker[currentTab] !== 'seller' && (
-            <Stack flexDirection="row" justifyContent="flex-end" marginBottom="30px">
-              <AddMenuButton
-                onClick={() => {
-                  setOpen(true);
-                }}
-              />
-            </Stack>
-          )}
           {indexToTypeTracker[currentTab] === 'seller' ? (
             <PercentageTable
               setSelectedRange={setSelectedRange}
@@ -328,6 +317,7 @@ function PercentageSettings2() {
             <RangeTable
               setSelectedRange={setSelectedRange}
               setIsConfirm={setIsConfirmDelete}
+              setOpen={setOpen}
               data={
                 indexToTypeTracker[currentTab] === 'delivery'
                   ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange

@@ -1,12 +1,38 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Stack, Typography } from '@mui/material';
-import React from 'react';
+// eslint-disable-next-line import/no-named-as-default
+// eslint-disable-next-line import/no-named-as-default
+import { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
+import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
+import { AddMenuButton } from '../Faq2';
 
-function RangeTable({ data = [], setSelectedRange, setIsConfirm }) {
+function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen }) {
+  console.log('=====>range data', data);
+  // eslint-disable-next-line no-unused-vars
+  const [searchResult, setSearchResult] = useState([...data]);
+
+  useEffect(() => {
+    setSearchResult(data);
+  }, [data]);
+
+  const searchResultHandler = (e) => {
+    if (e.target.value) {
+      // name.toLowerCase().includes(key.toLowerCase());
+      // eslint-disable-next-line no-unused-vars
+      const matchData = data.filter(
+        // eslint-disable-next-line prettier/prettier
+        (item) => item?.to.toString() === e.target.value || item?.from.toString() === e.target.value,
+      );
+      console.log(matchData);
+      setSearchResult(() => [...matchData]);
+    } else {
+      setSearchResult(() => [...data]);
+    }
+  };
   const { general } = useGlobalContext();
   const { currency } = general;
   console.log('currency', currency);
@@ -95,36 +121,46 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm }) {
     },
   ];
   return (
-    <Box
-      sx={{
-        pr: 5,
-        pl: 3.5,
-        pt: 1,
-        pb: 1,
-        border: '1px solid #EEEEEE',
-        borderRadius: '7px',
-        background: '#fff',
-      }}
-    >
-      <StyledTable
-        columns={columns}
-        rows={data}
-        getRowId={(row) => row?._id}
-        rowHeight={71}
+    <>
+      <Stack flexDirection="row" justifyContent="flex-end" gap="17px" marginBottom="30px">
+        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
+        <AddMenuButton
+          onClick={() => {
+            setOpen(true);
+          }}
+        />
+      </Stack>
+      <Box
         sx={{
-          '& .MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
+          pr: 5,
+          pl: 3.5,
+          pt: 1,
+          pb: 1,
+          border: '1px solid #EEEEEE',
+          borderRadius: '7px',
+          background: '#fff',
         }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No range found
-            </Stack>
-          ),
-        }}
-      />
-    </Box>
+      >
+        <StyledTable
+          columns={columns}
+          rows={searchResult}
+          getRowId={(row) => row?._id}
+          rowHeight={71}
+          sx={{
+            '& .MuiDataGrid-row': {
+              cursor: 'pointer',
+            },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No range found
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+    </>
   );
 }
 
