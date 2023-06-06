@@ -2,6 +2,7 @@ const createTab = (payload) => ({
   shopId: payload.shop?._id,
   shopName: payload.shop?.shopName,
   shop: payload.shop,
+  seller: payload.seller || {},
   currentLocation: payload.location,
 });
 
@@ -12,6 +13,7 @@ export const shopTabsInit = {
 
 export const shopTabsReducer = (state, { type, payload }) => {
   if (type === 'add-tab') {
+    console.log('new tab ====================>', { payload });
     const newTab = createTab(payload);
 
     if (state.allTabs.find((tab) => tab.shopId === newTab.shopId)) return { ...state, currentTabId: newTab?.shopId };
@@ -36,8 +38,6 @@ export const shopTabsReducer = (state, { type, payload }) => {
   if (type === 'change-current-tab') return { ...state, currentTabId: payload.tabId };
 
   if (type === 'remove-tab') return { ...state, allTabs: state.allTabs.filter((tab) => tab.shopId !== payload.tabId) };
-
-  // if(type === 'routePrefix')
 
   return state;
 };
