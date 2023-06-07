@@ -47,7 +47,6 @@ export const generatedDataForRangeDelete = (data, allData, type) => {
 };
 
 export const validateRange = (allValue, newValue) => {
-  // const existingRange = allValue.find((range) => range.from === newValue.from && range.to === newValue.to);
   if (!newValue.from) {
     successMsg('Enter From Range', 'error');
     return false;
@@ -66,10 +65,10 @@ export const validateRange = (allValue, newValue) => {
     return false;
   }
 
-  if (Number(newValue.charge) < Number(newValue.deliveryPersonCut)) {
-    successMsg("Delivery person cut can't be getter than charge", 'error');
-    return false;
-  }
+  // if (Number(newValue.charge) < Number(newValue.deliveryPersonCut)) {
+  //   successMsg("Delivery person cut can't be getter than charge", 'error');
+  //   return false;
+  // }
   const existingRange = allValue?.filter((item) => {
     if (Number(newValue.from) > item.from && Number(newValue.from) < item?.to) {
       console.log('1st item');
