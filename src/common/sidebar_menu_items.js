@@ -222,6 +222,11 @@ export const admin_menu_items = [
         icon: SellersIcon,
       },
       {
+        label: 'Sellers2',
+        to: '/seller/list2',
+        icon: SellersIcon,
+      },
+      {
         label: 'Shops',
         to: '/shops/list',
         icon: ShopIcon,
