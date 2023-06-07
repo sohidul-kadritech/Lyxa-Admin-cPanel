@@ -6,23 +6,24 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
+import PageSkeleton from './PageSkeleton';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 // import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 
-export default function OrderTable({ orders = [], onRowClick, orderFilter, adminType, threeDotHandler }) {
+export default function OrderTable({ orders = [], onRowClick, orderType, adminType, threeDotHandler, loading }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   // const theme = useTheme();
-  // console.log('order table: ', orders, 'order fileter: ', orderFilter);
+  // console.log('order table: ', orders, 'order fileter: ', orderType);
   const { general } = useGlobalContext();
   const currency = general?.currency?.code;
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
       id: 1,
       headerName: 'ORDERS',
       field: 'orders',
-      flex: orderFilter === 'cancelled ' ? 1.5 : 1,
+      flex: orderType === 'cancelled ' ? 1.5 : 1,
       sortable: false,
       // minWidth: 270,
       renderCell: ({ row }) => (
@@ -50,17 +51,17 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
       // minWidth: 240,
       sortable: false,
-      flex: orderFilter === 'cancelled' ? 1.5 : 1,
+      flex: orderType === 'cancelled' ? 1.5 : 1,
       renderCell: ({ value }) => <Typography variant="body4">{moment(value).format('MMM D, YYYY h:mm a')}</Typography>,
     },
     {
-      showFor: ['delivered'],
+      showFor: ['delivered', 'shopProfile'],
       id: 3,
       headerName: 'RIDER',
       field: 'deliveryBoy',
@@ -77,7 +78,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       ),
     },
     {
-      showFor: ['delivered'],
+      showFor: ['delivered', 'shopProfile'],
       id: 3,
       headerName: 'RATING',
       field: 'rating',
@@ -91,7 +92,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       },
     },
     {
-      showFor: ['ongoing', 'cancelled'],
+      showFor: ['ongoing', 'cancelled', 'shopProfile'],
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
@@ -112,7 +113,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
       id: 5,
       headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PROFIT'}`,
       field: 'profit',
@@ -153,6 +154,10 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
     columns.push(newColumn);
   }
 
+  if (loading) {
+    return <PageSkeleton />;
+  }
+
   return (
     <Box
       sx={{
@@ -166,7 +171,7 @@ export default function OrderTable({ orders = [], onRowClick, orderFilter, admin
       }}
     >
       <StyledTable
-        columns={columns.filter((column) => column.showFor.includes(orderFilter))}
+        columns={columns.filter((column) => column.showFor.includes(orderType))}
         rows={orders}
         getRowId={(row) => row?._id}
         rowHeight={71}

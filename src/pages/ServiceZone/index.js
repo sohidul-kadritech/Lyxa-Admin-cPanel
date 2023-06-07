@@ -57,8 +57,6 @@ const statusOptions = [
   },
 ];
 
-// styled button
-// eslint-disable-next-line no-unused-vars
 function AddMenuButton({ ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
@@ -71,7 +69,6 @@ function ServiceZone() {
   const theme = useTheme();
 
   const currentLocation = useGeoLocation();
-  // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -80,15 +77,17 @@ function ServiceZone() {
 
   const [rowData, setRowData] = useState({});
   const [currentTab, setCurrentTab] = useState(0);
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
+
   const [slectedZoneStatus, setSelectedZoneStatus] = useState('all');
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
+
   const [searchedValue, setSearchedValue] = useState('');
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
+
   const [pageNo, setPageNo] = useState(1);
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
+
+  // eslint-disable-next-line no-unused-vars
   const [selectedPageSize, setSelectedPageSize] = useState(5);
-  // eslint-disable-next-line prettier/prettier, no-unused-vars
+
+  // eslint-disable-next-line no-unused-vars
   const [selectedsortBy, setSelectedSortBy] = useState('desc');
 
   const [currentRowData, setCurrentRowData] = useState({});
@@ -112,7 +111,7 @@ function ServiceZone() {
           sortBy: selectedsortBy,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {

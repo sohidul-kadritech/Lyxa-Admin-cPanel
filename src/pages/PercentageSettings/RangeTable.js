@@ -9,8 +9,9 @@ import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 import { AddMenuButton } from '../Faq2';
+import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
-function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen }) {
+function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loading }) {
   console.log('=====>range data', data);
   // eslint-disable-next-line no-unused-vars
   const [searchResult, setSearchResult] = useState([...data]);
@@ -130,36 +131,41 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen }) {
           }}
         />
       </Stack>
-      <Box
-        sx={{
-          pr: 5,
-          pl: 3.5,
-          pt: 1,
-          pb: 1,
-          border: '1px solid #EEEEEE',
-          borderRadius: '7px',
-          background: '#fff',
-        }}
-      >
-        <StyledTable
-          columns={columns}
-          rows={searchResult}
-          getRowId={(row) => row?._id}
-          rowHeight={71}
+
+      {loading ? (
+        <TablePageSkeleton row={5} column={5} />
+      ) : (
+        <Box
           sx={{
-            '& .MuiDataGrid-row': {
-              cursor: 'pointer',
-            },
+            pr: 5,
+            pl: 3.5,
+            pt: 1,
+            pb: 1,
+            border: '1px solid #EEEEEE',
+            borderRadius: '7px',
+            background: '#fff',
           }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No range found
-              </Stack>
-            ),
-          }}
-        />
-      </Box>
+        >
+          <StyledTable
+            columns={columns}
+            rows={searchResult}
+            getRowId={(row) => row?._id}
+            rowHeight={71}
+            sx={{
+              '& .MuiDataGrid-row': {
+                cursor: 'pointer',
+              },
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No range found
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 }

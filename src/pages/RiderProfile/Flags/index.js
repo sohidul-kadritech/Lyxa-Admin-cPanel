@@ -30,7 +30,7 @@ const filterFlags = (filters, flags) => {
       return;
     }
 
-    if (moment(flag?.createdAt).subtract(1, 'day').isAfter(filters.endDate)) {
+    if (moment(flag?.createdAt).startOf('day').isAfter(filters.endDate)) {
       console.log('remove by end date');
       return;
     }
