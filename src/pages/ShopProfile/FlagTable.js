@@ -92,7 +92,6 @@ export default function FlagTable({ filteredData, currentTab }) {
           border: '1px solid #EEEEEE',
           borderRadius: '7px',
           background: '#fff',
-          marginTop: '30px',
         }}
       >
         <StyledTable

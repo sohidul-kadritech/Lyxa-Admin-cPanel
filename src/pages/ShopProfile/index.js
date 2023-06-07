@@ -91,7 +91,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   return (
     <Box>
       <PageTop title="Profie" />
-      {/* main container */}
       <Box
         sx={{
           display: 'grid',

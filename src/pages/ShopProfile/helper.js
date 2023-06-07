@@ -1,6 +1,14 @@
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import moment from 'moment';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
+
+export const getQueryParamsInit = () => ({
+  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+  searchKey: '',
+  sortBy: '',
+});
 
 export const menuOtions = (userType) => {
   const options = [
