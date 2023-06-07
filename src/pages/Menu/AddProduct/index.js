@@ -94,7 +94,20 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     [productsQuery?.data?.data?.products]
   );
 
+  // units
+  const unitsQuery = useQuery([Api.GET_ALL_UNIT], () => AXIOS.get(Api.GET_ALL_UNIT), {
+    onSuccess: (data) => {
+      console.log('=====>', data);
+    },
+  });
+
   // categories
+  const setConvertCategories = (data) => {
+    setCategories(
+      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
+    );
+  };
+
   const categoriesQuery = useQuery(
     [
       Api.GET_ALL_CATEGORY,
@@ -126,9 +139,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         console.log(data);
-        setCategories(
-          (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
-        );
+        setConvertCategories(data);
       },
     }
   );
@@ -152,12 +163,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   useEffect(() => {
     if (categoriesQuery.data?.status) {
-      setCategories(
-        (prev) =>
-          categoriesQuery.data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) ||
-          // eslint-disable-next-line prettier/prettier
-          prev
-      );
+      setConvertCategories(categoriesQuery.data);
     }
 
     if (editProduct?._id) {
@@ -185,7 +191,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -197,7 +202,10 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // loading
   const __loading =
-    categoriesQuery.isLoading || productsQuery.isLoading || (editProduct?._id && isProductAddonQuery?.isLoading);
+    categoriesQuery.isLoading ||
+    productsQuery.isLoading ||
+    (editProduct?._id && isProductAddonQuery?.isLoading) ||
+    unitsQuery?.isLoading;
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -212,7 +220,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -605,6 +612,49 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           )}
         </Box>
       )}
+      {/*  unit */}
+      <Box sx={fieldContainerSx}>
+        <Stack justifyContent="space-between" alignItems="center" direction="row" pb={1}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: '600',
+              fontSize: '15px',
+              lineHeight: '18px',
+            }}
+          >
+            Unit
+          </Typography>
+          <StyledSwitch
+            checked={product?.isUnitEnabled}
+            readOnly={productReadonly}
+            onChange={(e) => {
+              if (productReadonly) {
+                return;
+              }
+              setProduct((prev) => ({ ...prev, isUnitEnabled: e.target.checked }));
+            }}
+          />
+        </Stack>
+        {product?.isUnitEnabled && (
+          <StyledFormField
+            intputType="select"
+            inputProps={{
+              name: 'unit',
+              value: product?.unit,
+              items: unitsQuery?.data?.data || [],
+              onChange: commonChangeHandler,
+              readOnly: productReadonly,
+              disabled: unitsQuery.isLoading,
+              getLabel: (item) => item?.name?.toUpperCase() || '',
+              getKey: (item) => item?.name,
+              getValue: (item) => item?.name,
+              getDisplayValue: (value) =>
+                unitsQuery?.data?.data?.find((unit) => unit?.name === value)?.name?.toUpperCase() || '',
+            }}
+          />
+        )}
+      </Box>
       {/* description */}
       <StyledFormField
         label={

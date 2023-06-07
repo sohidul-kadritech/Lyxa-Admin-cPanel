@@ -62,30 +62,34 @@ export const getAddMenuOptions = (shopType) => {
   return options;
 };
 
-export const getProductMenuOptions = (product, shopFavourites) => [
-  {
-    label: 'Edit item',
-    value: 'edit',
-  },
-  {
-    label: 'Go to marketing',
-    value: 'marketing',
-  },
-  {
-    label: product?.stockQuantity < 1 ? 'Set stock available' : 'Mark as sold out',
-    value: 'stock',
-  },
-  {
-    label: product?.status === 'active' ? 'Deactivate' : 'Active',
-    value: 'status',
-  },
-  {
-    label: shopFavourites?.sortedProducts?.find((item) => item?._id === product?._id)
-      ? 'Remove favourite'
-      : 'Add favourite',
-    value: 'favourite',
-  },
-];
+export const getProductMenuOptions = (product, shopFavourites, shopType) => {
+  const items = [
+    {
+      label: 'Edit item',
+      value: 'edit',
+    },
+    {
+      label: 'Go to marketing',
+      value: 'marketing',
+    },
+    {
+      label: product?.stockQuantity < 1 ? 'Set stock available' : 'Mark as sold out',
+      value: 'stock',
+    },
+    {
+      label: product?.status === 'active' ? 'Deactivate' : 'Active',
+      value: 'status',
+    },
+    {
+      label: shopFavourites?.sortedProducts?.find((item) => item?._id === product?._id)
+        ? 'Remove favourite'
+        : 'Add favourite',
+      value: 'favourite',
+    },
+  ];
+
+  return items.filter((itm) => shopType === 'food' || itm.value !== 'favourite');
+};
 
 export const bulkItemOptions = [
   {
@@ -168,6 +172,8 @@ export const productInit = () => ({
   note: '',
   isStockEnabled: false,
   stockQuantity: 1,
+  unit: '',
+  isUnitEnabled: false,
 });
 
 export const createProductData = async (product, shop, isEditProduct, hasAttribute) => {
@@ -186,6 +192,7 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
   let attributes = product?.attributes;
   let dietry = product?.dietry;
   let subCategory = product?.subCategory;
+  // const isUnitEnabled = ;
 
   if (shop?.shopType === 'food') {
     stockQuantity = undefined;
@@ -232,6 +239,7 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
     attributes,
     subCategory,
     id: isEditProduct ? product?._id : undefined,
+    isUnitEnabled: undefined,
   };
 };
 
@@ -261,14 +269,13 @@ export const getProductInit = (shop, categoryId) => {
 };
 
 export const converEditProduct = (product) => {
-  console.log(product);
   const data = {
+    isUnitEnabled: Boolean(product?.unit),
     category: product?.category._id,
     subCategory: product?.subCategory?._id,
     images: product?.images?.map((url) => ({
       preview: url,
     })),
-    // attributes: product?.attributes?.length ? product?.attributes : [{ ...productAttrInit }],
   };
 
   return {
@@ -379,6 +386,11 @@ export const validateProduct = (product) => {
       status.msg = 'Please fill the attribute details';
       return status;
     }
+  }
+
+  if (product?.isUnitEnabled && !product?.unit) {
+    status.msg = 'Please select unit or disable unit';
+    return status;
   }
 
   // if (

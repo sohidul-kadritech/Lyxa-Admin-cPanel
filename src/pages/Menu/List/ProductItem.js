@@ -267,7 +267,10 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
             e.stopPropagation();
           }}
         >
-          <ThreeDotsMenu handleMenuClick={handleMenuClick} menuItems={getProductMenuOptions(product, favorites)} />
+          <ThreeDotsMenu
+            handleMenuClick={handleMenuClick}
+            menuItems={getProductMenuOptions(product, favorites, shop?.shopType)}
+          />
         </Box>
       </Stack>
     </Stack>
