@@ -46,8 +46,8 @@ export function createShopSettingsData(
   minimumOrder,
   newPayMentInformation,
   newDietary,
-  // eslint-disable-next-line prettier/prettier
   newPriceRange,
+  newOrderCapacity
 ) {
   return {
     id: shop?._id,
@@ -65,7 +65,7 @@ export function createShopSettingsData(
     shopDescription: 'desrcriptions',
     tags: shop?.tags,
     tagsId: shop?.tagsId,
-    orderCapacity: shop?.orderCapacity,
+    orderCapacity: newOrderCapacity,
     paymentOption: newPayMentInformation,
     dietary: newDietary,
     liveStatus: shop?.liveStatus,

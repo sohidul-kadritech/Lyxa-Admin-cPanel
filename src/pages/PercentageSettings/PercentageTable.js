@@ -5,8 +5,9 @@ import React, { useEffect, useState } from 'react';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
+import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
-function PercentageTable({ data = [], setSelectedRange, setIsConfirm }) {
+function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading }) {
   const theme = useTheme();
   console.log(data);
   const [searchResult, setSearchResult] = useState([...data]);
@@ -112,36 +113,41 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm }) {
       <Stack flexDirection="row" justifyContent="flex-end" gap="17px" marginBottom="30px">
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
       </Stack>
-      <Box
-        sx={{
-          pr: 5,
-          pl: 3.5,
-          pt: 1,
-          pb: 1,
-          border: '1px solid #EEEEEE',
-          borderRadius: '7px',
-          background: '#fff',
-        }}
-      >
-        <StyledTable
-          columns={columns}
-          rows={searchResult}
-          getRowId={(row) => row?._id}
-          rowHeight={71}
+
+      {loading ? (
+        <TablePageSkeleton row={5} column={4} />
+      ) : (
+        <Box
           sx={{
-            '& .MuiDataGrid-row': {
-              cursor: 'pointer',
-            },
+            pr: 5,
+            pl: 3.5,
+            pt: 1,
+            pb: 1,
+            border: '1px solid #EEEEEE',
+            borderRadius: '7px',
+            background: '#fff',
           }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Order found
-              </Stack>
-            ),
-          }}
-        />
-      </Box>
+        >
+          <StyledTable
+            columns={columns}
+            rows={searchResult}
+            getRowId={(row) => row?._id}
+            rowHeight={71}
+            sx={{
+              '& .MuiDataGrid-row': {
+                cursor: 'pointer',
+              },
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No Order found
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
+      )}
     </>
   );
 }

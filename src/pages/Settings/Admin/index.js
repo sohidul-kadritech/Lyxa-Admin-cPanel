@@ -46,12 +46,12 @@ const getpagesList = () => [
     label: 'Invoice Configuration',
     to: '#',
   },
+  // {
+  //   label: 'Percentages',
+  //   to: '/percentage-setting',
+  // },
   {
     label: 'Percentages',
-    to: '/percentage-setting',
-  },
-  {
-    label: 'Percentages2',
     to: '/percentage-setting2',
   },
   {
@@ -95,7 +95,8 @@ const filterPages = (searchKey, pages) => {
   return pages.filter((page) =>
     page?.label
       ?.toLowerCase()
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
+      // eslint-disable-next-line prettier/prettier
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
   );
 };
 
