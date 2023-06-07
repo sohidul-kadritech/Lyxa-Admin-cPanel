@@ -2,9 +2,11 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import Banking from '../ShopFinancials/Banking';
 import FlagTable from './FlagTable';
 import ShopOrders from './Orders';
 import ShopReviews from './Review';
+import ShopTransactions from './Transactions';
 
 export default function ShopProfileTabs({ shop }) {
   const [currentTab, setCurrentTab] = useState(0);
@@ -29,6 +31,8 @@ export default function ShopProfileTabs({ shop }) {
             <Tab label="Flagged" />
             <Tab label="Reviews" />
             <Tab label="Orders" />
+            <Tab label="Financials" />
+            <Tab label="Banking" />
           </Tabs>
           <Box pt={6}>
             <TabPanel index={0} value={currentTab} noPadding>
@@ -39,6 +43,12 @@ export default function ShopProfileTabs({ shop }) {
             </TabPanel>
             <TabPanel index={2} noPadding value={currentTab}>
               <ShopOrders onViewDetail={onViewDetail} shop={shop} />
+            </TabPanel>
+            <TabPanel index={3} noPadding value={currentTab}>
+              <ShopTransactions shop={shop} />
+            </TabPanel>
+            <TabPanel index={4} noPadding value={currentTab}>
+              <Banking shop={shop} />
             </TabPanel>
           </Box>
         </Box>
