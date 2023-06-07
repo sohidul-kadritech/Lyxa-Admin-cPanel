@@ -39,7 +39,6 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import OrderTable from './OrderTable';
-import PageSkeleton from './PageSkeleton';
 import SearchBar from './Searchbar';
 import {
   calculateTotalRefund,
@@ -155,7 +154,7 @@ export default function NewOrders({ showFor }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const threeDotHandler = (menu, order) => {
@@ -375,7 +374,7 @@ export default function NewOrders({ showFor }) {
         console.log('api error: ', error);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const CancelOrderRefunds = styled.div`
@@ -465,7 +464,7 @@ export default function NewOrders({ showFor }) {
         successMsg(error?.message || 'Could not get delivery boys', 'error');
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   const updateOrderStatus = () => {
     if (newOrderStatus === '') {
@@ -524,7 +523,7 @@ export default function NewOrders({ showFor }) {
         console.log('api error: ', error);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addOrderFlag = () => {
@@ -589,7 +588,7 @@ export default function NewOrders({ showFor }) {
             // eslint-disable-next-line no-unsafe-optional-chaining
             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
             // eslint-disable-next-line prettier/prettier
-            appVat,
+            appVat
             // eslint-disable-next-line prettier/prettier
           ),
         },
@@ -620,7 +619,7 @@ export default function NewOrders({ showFor }) {
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  appVat,
+                  appVat
                   // eslint-disable-next-line prettier/prettier
                 ),
               }
@@ -671,7 +670,7 @@ export default function NewOrders({ showFor }) {
                 // eslint-disable-next-line no-unsafe-optional-chaining
                 orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
-                appVat,
+                appVat
                 // eslint-disable-next-line prettier/prettier
               ),
             }
@@ -695,7 +694,7 @@ export default function NewOrders({ showFor }) {
                   : // eslint-disable-next-line no-unsafe-optional-chaining
                     orderPayment?.admin + orderPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
-                appVat,
+                appVat
                 // eslint-disable-next-line prettier/prettier
               ),
             },
@@ -778,26 +777,27 @@ export default function NewOrders({ showFor }) {
         <Tab label="Incomplete" />
       </Tabs>
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
-      {ordersQuery.isLoading && <PageSkeleton />}
+      <OrderTable
+        loading={ordersQuery.isLoading}
+        orders={ordersQuery?.data?.data.orders}
+        orderType={orderFilterToTabValueMap[currentTab]}
+        onRowClick={({ row }) => {
+          setCurrentOrder(row);
+          setSidebarOpen(true);
+        }}
+        adminType={showFor}
+        threeDotHandler={threeDotHandler}
+      />
       {!ordersQuery.isLoading && (
-        <OrderTable
-          orders={ordersQuery?.data?.data.orders}
-          orderFilter={orderFilterToTabValueMap[currentTab]}
-          onRowClick={({ row }) => {
-            setCurrentOrder(row);
-            setSidebarOpen(true);
+        <TablePagination
+          currentPage={queryParams?.page}
+          lisener={(page) => {
+            setQueryParams((prev) => ({ ...prev, page }));
           }}
-          adminType={showFor}
-          threeDotHandler={threeDotHandler}
+          totalPage={totalPage}
         />
       )}
-      <TablePagination
-        currentPage={queryParams?.page}
-        lisener={(page) => {
-          setQueryParams((prev) => ({ ...prev, page }));
-        }}
-        totalPage={totalPage}
-      />
+
       <Drawer open={Boolean(sidebarOpen)} anchor="right">
         <OrderDetail
           order={currentOrder}
@@ -1209,9 +1209,9 @@ export default function NewOrders({ showFor }) {
                           // eslint-disable-next-line no-unsafe-optional-chaining
                           orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                           // eslint-disable-next-line prettier/prettier
-                          appVat,
+                          appVat
                           // eslint-disable-next-line prettier/prettier
-                        ),
+                        )
                       ) || 0
                 }`}
                   tooltip="Lyxa Earning+Lyxa Vat+Shop Earning+Shop VAT+Delivery Boy Earning"
@@ -1223,7 +1223,7 @@ export default function NewOrders({ showFor }) {
                 // eslint-disable-next-line no-unsafe-optional-chaining
                 orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
-                appVat,
+                appVat
               ) > 0 &&
                 orderCancel.refundType !== 'full' &&
                 orderPayment?.admin > 0 && (
@@ -1234,7 +1234,7 @@ export default function NewOrders({ showFor }) {
                       // eslint-disable-next-line no-unsafe-optional-chaining
                       orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                       // eslint-disable-next-line prettier/prettier
-                      appVat,
+                      appVat
                     )}
                   </Typography>
                 )}
@@ -1392,7 +1392,7 @@ export default function NewOrders({ showFor }) {
                           Number(orderCancel?.summary?.card),
                         ],
                         // eslint-disable-next-line prettier/prettier
-                        'full',
+                        'full'
                       )
                     : calculateTotalRefund(
                         [
@@ -1403,11 +1403,11 @@ export default function NewOrders({ showFor }) {
                             // eslint-disable-next-line no-unsafe-optional-chaining
                             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                             // eslint-disable-next-line prettier/prettier
-                            appVat,
+                            appVat
                           ),
                         ],
                         // eslint-disable-next-line prettier/prettier
-                        'partial',
+                        'partial'
                       )
                 }`}
                       tooltip="Lyxa Earning+Lyxa VAT+Shop Earning+Shop VAT+Rider Earning+Rider VAT"
@@ -1418,7 +1418,7 @@ export default function NewOrders({ showFor }) {
                     // eslint-disable-next-line no-unsafe-optional-chaining
                     orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                     // eslint-disable-next-line prettier/prettier
-                    appVat,
+                    appVat
                   ) > 0 &&
                     orderCancel.refundType !== 'full' && (
                       <Typography variant="body1" fontWeight={600}>
@@ -1428,7 +1428,7 @@ export default function NewOrders({ showFor }) {
                           // eslint-disable-next-line no-unsafe-optional-chaining
                           orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                           // eslint-disable-next-line prettier/prettier
-                          appVat,
+                          appVat
                         )}
                       </Typography>
                     )}

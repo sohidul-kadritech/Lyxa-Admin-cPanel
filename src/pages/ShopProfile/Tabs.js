@@ -1,9 +1,9 @@
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
-// import Review from '../../components/Shared/OrderDetail/Review';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import FlagTable from './FlagTable';
+import ShopOrders from './Orders';
 import ShopReviews from './Review';
 
 export default function ShopProfileTabs({ shop }) {
@@ -28,6 +28,7 @@ export default function ShopProfileTabs({ shop }) {
           >
             <Tab label="Flagged" />
             <Tab label="Reviews" />
+            <Tab label="Orders" />
           </Tabs>
           <Box pt={6}>
             <TabPanel index={0} value={currentTab} noPadding>
@@ -35,6 +36,9 @@ export default function ShopProfileTabs({ shop }) {
             </TabPanel>
             <TabPanel index={1} noPadding value={currentTab}>
               <ShopReviews reviews={shop?.reviews || []} onViewDetail={onViewDetail} />
+            </TabPanel>
+            <TabPanel index={2} noPadding value={currentTab}>
+              <ShopOrders onViewDetail={onViewDetail} shop={shop} />
             </TabPanel>
           </Box>
         </Box>

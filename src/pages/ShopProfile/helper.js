@@ -3,11 +3,12 @@ import moment from 'moment';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
 
-export const getQueryParamsInit = () => ({
+export const getQueryParamsInit = (params) => ({
   endDate: moment().format('YYYY-MM-DD'),
   startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
   searchKey: '',
-  sortBy: '',
+  sortBy: 'desc',
+  ...params,
 });
 
 export const menuOtions = (userType) => {
