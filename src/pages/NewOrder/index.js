@@ -178,6 +178,7 @@ export default function NewOrders({ showFor }) {
         setOrderCancel({
           ...orderCancel,
           cancelReasonId: '',
+          cartType: order?.cart?.cartType,
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
           orderFor: order?.orderFor,
@@ -204,6 +205,7 @@ export default function NewOrders({ showFor }) {
           otherReason: '',
           deliveryBoy: order?.deliveryBoy,
           orderFor: order?.orderFor,
+          cartType: order?.cart?.cartType,
           orderActivity: order?.orderActivity,
           paymentMethod: order?.paymentMethod,
           shop: order?.shop,
@@ -231,6 +233,7 @@ export default function NewOrders({ showFor }) {
           ...orderCancel,
           cancelReasonId: '',
           otherReason: '',
+          cartType: order?.cart?.cartType,
           deliveryBoy: order?.deliveryBoy,
           paymentMethod: order?.paymentMethod,
           orderActivity: order?.orderActivity,
@@ -255,6 +258,7 @@ export default function NewOrders({ showFor }) {
           ...orderCancel,
           cancelReasonId: '',
           otherReason: '',
+          cartType: order?.cart?.cartType,
           deliveryBoy: order?.deliveryBoy,
           paymentMethod: order?.paymentMethod,
           orderFor: order?.orderFor,
@@ -632,6 +636,15 @@ export default function NewOrders({ showFor }) {
   const submitOrderRefund = (e) => {
     e.preventDefault();
 
+    // const { admin, deliveryBoy, shop } = orderPayment;
+    // const forShop =
+    //   ordeadmin < 0
+    //     ? // eslint-disable-next-line no-unsafe-optional-chaining
+    //       shop + orderCancel.vatAmount.vatForShop + deliveryBoy
+    //     : shop + orderCancel.vatAmount.vatForShop;
+
+    // const forAdmin = getAdminRefundedAmount(orderPayment?.admin, orderPayment?.deliveryBoy, newRefundType);
+
     const {
       partialPayment: { admin, shop },
     } = orderCancel;
@@ -662,10 +675,35 @@ export default function NewOrders({ showFor }) {
                 // eslint-disable-next-line prettier/prettier
               ),
             }
-          : {},
+          : {
+              shop:
+                orderPayment?.admin < 0
+                  ? // eslint-disable-next-line no-unsafe-optional-chaining
+                    orderPayment?.shop + orderCancel?.vatAmount?.vatForShop + orderPayment?.admin
+                  : // eslint-disable-next-line no-unsafe-optional-chaining
+                    orderPayment?.shop + orderCancel?.vatAmount?.vatForShop,
+              admin:
+                orderPayment?.admin < 0
+                  ? returnNewValue(orderPayment?.deliveryBoy) || 0
+                  : // eslint-disable-next-line no-unsafe-optional-chaining
+                    orderPayment?.admin + orderPayment?.deliveryBoy,
+              adminVat: getRefundedVatForAdmin(
+                orderCancel?.vatAmount?.vatForAdmin,
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                orderPayment?.admin < 0
+                  ? returnNewValue(orderPayment?.deliveryBoy) || 0
+                  : // eslint-disable-next-line no-unsafe-optional-chaining
+                    orderPayment?.admin + orderPayment?.deliveryBoy,
+                // eslint-disable-next-line prettier/prettier
+                appVat,
+                // eslint-disable-next-line prettier/prettier
+              ),
+            },
     };
 
     delete data.deliveryBoy;
+
+    // console.log(generatedData);
 
     refundOrderMutation.mutate(generatedData);
   };
@@ -1019,10 +1057,13 @@ export default function NewOrders({ showFor }) {
                   {orderCancel?.paymentMethod !== 'cash' && (
                     <>
                       <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                      {((orderCancel?.orderFor === 'specific' && orderCancel?.orderActivity?.length > 1) ||
-                        (orderCancel?.orderFor === 'global' && orderCancel?.orderActivity?.length > 2)) && (
-                        <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
-                      )}
+                      {((orderCancel?.orderFor === 'specific' &&
+                        orderCancel?.orderActivity?.length > 1 &&
+                        orderCancel?.cartType !== 'group') ||
+                        (orderCancel?.orderFor === 'global' && orderCancel?.orderActivity?.length > 2)) &&
+                        orderCancel?.cartType !== 'group' && (
+                          <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
+                        )}
                       <FormControlLabel value="none" control={<Radio />} label="No Refund" />
                     </>
                   )}
@@ -1060,8 +1101,6 @@ export default function NewOrders({ showFor }) {
                       <StyledFormField
                         label={
                           <TitleWithToolTip
-                            // eslint-disable-next-line no-unsafe-optional-chaining
-                            // title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
                             title={`Shop Refund: ${
                               // eslint-disable-next-line no-unsafe-optional-chaining
                               orderPayment?.admin < 0
@@ -1252,7 +1291,7 @@ export default function NewOrders({ showFor }) {
                 >
                   <>
                     <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                    {orderCancel?.deliveryBoy?._id && (
+                    {orderCancel?.deliveryBoy?._id && orderCancel?.cartType !== 'group' && (
                       <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
                     )}
                   </>
