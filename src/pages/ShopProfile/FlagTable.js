@@ -2,14 +2,11 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
+import TablePagination from '../../components/Common/TablePagination';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import StyledTable from '../../components/Styled/StyledTable3';
-// import TableDataPagination from './TableDataPagination';
-// import TableDataPagination from '../../components/Shared/TableDataPagination';
-// import TablePagination from '@mui/material';
-import TablePagination from '../../components/Common/TablePagination';
 
-export default function FlaggedViews({ filteredData, currentTab }) {
+export default function FlagTable({ filteredData, currentTab }) {
   const [rowPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -53,8 +50,6 @@ export default function FlaggedViews({ filteredData, currentTab }) {
       id: 2,
       headerName: 'COMMENT',
       field: 'comment',
-      // align: currentTab === 0 ? 'right' : 'left',
-      // headerAlign: currentTab === 0 ? 'right' : 'left',
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
