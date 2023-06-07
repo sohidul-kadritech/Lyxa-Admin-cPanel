@@ -57,9 +57,9 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
     if (validateEditedData(data)) {
       addNewZone.mutate(data);
     }
-    // console.log(data);
   };
 
+  // search loacation here
   const mapSearchResult = async (e) => {
     setSearchLoading(true);
     const provider = new OpenStreetMapProvider();

@@ -89,6 +89,7 @@ import ReferFriend from '../pages/ReferFriend';
 import RequestedArea from '../pages/RequestedArea';
 import RiderProfile from '../pages/RiderProfile';
 import RiderList from '../pages/Riders';
+import SellerList2 from '../pages/Sellers2';
 import ServiceZone from '../pages/ServiceZone';
 import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
@@ -124,6 +125,7 @@ export const admin_routes = [
 
   // sellers
   { path: '/seller/list', component: SellerList },
+  { path: '/seller/list2', component: SellerList2 },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },

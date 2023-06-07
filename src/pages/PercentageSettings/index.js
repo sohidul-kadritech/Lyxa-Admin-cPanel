@@ -312,6 +312,7 @@ function PercentageSettings2() {
               setSelectedRange={setSelectedRange}
               setIsConfirm={setIsConfirmDelete}
               data={getRelatedSellerQuery?.data?.data?.sellers}
+              loading={getRelatedSellerQuery.isLoading}
             />
           ) : (
             <RangeTable
@@ -323,6 +324,7 @@ function PercentageSettings2() {
                   ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
                   : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler
               }
+              loading={getGlobalDropCharge.isLoading}
             />
           )}
 
