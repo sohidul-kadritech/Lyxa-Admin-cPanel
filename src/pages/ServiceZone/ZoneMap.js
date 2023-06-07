@@ -1,20 +1,21 @@
-import { Box } from '@mui/material';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import L from 'leaflet';
-import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { FeatureGroup, MapContainer, Marker, Polygon, TileLayer, Tooltip } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import { useQuery } from 'react-query';
 import { successMsg } from '../../helpers/successMsg';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 import './ZoneMap.css';
 import { calculatePolygonArea, colorList, convertedLonLatToLatLon, getLocationFromLatLng } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
 const defaultCenter = { lat: 23.8103, lon: 90.4125 };
-// eslint-disable-next-line no-unused-vars
 
-// eslint-disable-next-line no-unused-vars
 function ZoneMap({
   selectedLocation = {},
   setCreatedZoneGeometry = [],
@@ -23,7 +24,6 @@ function ZoneMap({
   setPolygonArea = 0,
   setCreatedZoneArea,
 }) {
-  // eslint-disable-next-line no-unused-vars
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
     currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
@@ -43,6 +43,9 @@ function ZoneMap({
   const zoom_level = 13;
 
   const mapRef = useRef(null);
+
+  // getAllStore
+  const getAllStore = useQuery([API_URL.ALL_SHOP], () => AXIOS.get(API_URL.ALL_SHOP));
 
   const createdPolygon = (e) => {
     const polygon = e.layer;
@@ -115,48 +118,85 @@ function ZoneMap({
 
   return (
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
-      <MapContainer
-        style={{ zIndex: '9999' }}
-        center={[center?.lat, center?.lon]}
-        zoom={zoom_level}
-        ref={mapRef}
-        scrollWheelZoom
-      >
-        {/* Map edit controler */}
-        <FeatureGroup>
-          <EditControl
-            position="topleft"
-            onCreated={createdPolygon}
-            onEdited={polygonEdited}
-            onDeleted={polygonDeleted}
-            draw={{
-              rectangle: false,
-              circle: false,
-              circlemarker: false,
-              marker: false,
-              polyline: false,
-            }}
-          ></EditControl>
-        </FeatureGroup>
+      {getAllStore.isLoading ? (
+        <Stack
+          sx={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            zIndex: '9999',
+            backdropFilter: 'blur(15px)',
+            background: '#737373',
+            borderRadius: '7px',
+          }}
+          justifyContent="center"
+          alignContent="center"
+          alignItems="center"
+          width="100%"
+          height="100%"
+        >
+          <CircularProgress color="primary" sx={{ width: '100px !important', height: '100px !important' }} />
+          <Typography>Please Wait...</Typography>
+        </Stack>
+      ) : (
+        <MapContainer
+          style={{ zIndex: '9999' }}
+          center={[center?.lat, center?.lon]}
+          zoom={zoom_level}
+          ref={mapRef}
+          scrollWheelZoom
+        >
+          {/* Map edit controler */}
+          <FeatureGroup>
+            <EditControl
+              position="topleft"
+              onCreated={createdPolygon}
+              onEdited={polygonEdited}
+              onDeleted={polygonDeleted}
+              draw={{
+                rectangle: false,
+                circle: false,
+                circlemarker: false,
+                marker: false,
+                polyline: false,
+              }}
+            ></EditControl>
+          </FeatureGroup>
 
-        {/* Previous zone will be show here */}
-        {allZones.map((loc, i) => (
-          <Polygon
-            key={i}
-            pathOptions={{ color: `${colorList[i % 50]}` }}
-            positions={convertedLonLatToLatLon(loc?.zoneGeometry?.coordinates[0]).slice(0, -1)}
-          >
-            <Popup>{loc.zoneName}</Popup>
-          </Polygon>
-        ))}
+          {/* Previous zone will be show here */}
+          {allZones.map((loc, i) => (
+            <Polygon
+              key={i}
+              pathOptions={{ color: `${colorList[i % 50]}` }}
+              positions={convertedLonLatToLatLon(loc?.zoneGeometry?.coordinates[0]).slice(0, -1)}
+            >
+              {/* <Popup>{loc.zoneName}</Popup> */}
+              <Tooltip background="red" direction="top" offset={[0, 0]} opacity={1} sticky>
+                {loc.zoneName}
+              </Tooltip>
+            </Polygon>
+          ))}
 
-        <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
+          <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
 
-        {/* Location marker here */}
-        <Marker position={[center?.lat, center?.lon]}>
-          <Popup>{JSON.stringify(center)}</Popup>
-        </Marker>
-      </MapContainer>
+          {/* Location marker here */}
+          <Marker position={[center?.lat, center?.lon]}>
+            <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
+              Current Location
+            </Tooltip>
+            {/* <Popup>{JSON.stringify(center)}</Popup> */}
+          </Marker>
+          {getAllStore?.data?.data?.shops.map((store) => (
+            <Marker position={[store?.location?.coordinates[1], store?.location?.coordinates[0]]}>
+              {/* <Popup>{store?.shopName}</Popup> */}
+              <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
+                {store?.shopName}
+              </Tooltip>
+              {/* <Typography sx={{ position: 'absolute', top: '0', left: '0' }}>{store?.shopName}</Typography> */}
+            </Marker>
+          ))}
+        </MapContainer>
+      )}
     </Box>
   );
 }
