@@ -146,11 +146,7 @@ export const getThreedotMenuOptions = (order, userType) => {
 export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
   const refundedVat = (vatPercentage / 100) * value;
   console.log('refunded vat: ', refundedVat);
-  // console.log('vatPercentage ', vatPercentage);
-  // console.log('adminvat: ', adminVat);
-  // console.log('value: ', value);
   if (refundedVat > adminVat) {
-    // successMsg('Refunded VAT cannot be greater than admin VAT!');
     return Number(adminVat.toFixed(2));
   }
   if (refundedVat <= adminVat) return Number(refundedVat.toFixed(2));
@@ -173,9 +169,27 @@ export const calculateTotalRefundedAmount = (deliveryBoy, admin, shop, vatForAdm
   return (deliveryBoy + admin + shop + Number(vatForAdmin)).toFixed(2);
 };
 
-export const calculateTotalRefund = (array, refundType) => {
+export const calculateTotalRefund = (array, refundType = '') => {
   console.log('array', array, refundType);
   if (refundType !== 'none' && array.length > 0)
     return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   return 0;
+};
+
+export const returnNewValue = (value) => {
+  console.log(value);
+  return value;
+};
+
+// orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
+
+export const getShopRefundedAmount = (adminEarning, shopEarning, vatAmount) =>
+  adminEarning < 0 ? shopEarning + vatAmount.vatForShop + adminEarning : shopEarning + vatAmount.vatForShop;
+
+export const getAdminRefundedAmount = (adminEarning, deliveryBoy, type = '') => {
+  if (type !== 'delivered') {
+    return adminEarning < 0 ? 0 : adminEarning + deliveryBoy;
+  }
+
+  return adminEarning < 0 ? deliveryBoy : adminEarning + deliveryBoy;
 };
