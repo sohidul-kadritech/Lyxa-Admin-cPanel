@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.67268934.css",
-    "main.js": "/static/js/main.ad458cda.js",
+    "main.js": "/static/js/main.3c3282fb.js",
     "static/js/949.86b75e5d.chunk.js": "/static/js/949.86b75e5d.chunk.js",
     "static/js/332.48dc95f0.chunk.js": "/static/js/332.48dc95f0.chunk.js",
     "static/js/943.3f34dc7f.chunk.js": "/static/js/943.3f34dc7f.chunk.js",
@@ -119,11 +119,13 @@
     "static/media/financials.svg": "/static/media/financials.0196e350b3d0777d59513fef040e1939.svg",
     "static/media/credit-card.svg": "/static/media/credit-card.fc4b02a63904787904615144eb7b0ff4.svg",
     "static/media/menu.svg": "/static/media/menu.d90409e0b2ad07a93592c35b3366db79.svg",
+    "static/media/envelope.svg": "/static/media/envelope.6adc2be9990d84d5368fe28e6d21aede.svg",
     "static/media/info.svg": "/static/media/info.21ababdaab8ac4e90720f0c8f1624e06.svg",
-    "static/media/time-inactive.svg": "/static/media/time-inactive.2efbfb72846ddf57862cfdb3d2699e6d.svg"
+    "static/media/time-inactive.svg": "/static/media/time-inactive.2efbfb72846ddf57862cfdb3d2699e6d.svg",
+    "static/media/circle-dot.svg": "/static/media/circle-dot.94bcb8468f7e17f07a05836a41c33c2e.svg"
   },
   "entrypoints": [
     "static/css/main.67268934.css",
-    "static/js/main.ad458cda.js"
+    "static/js/main.3c3282fb.js"
   ]
 }
