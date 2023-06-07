@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core';
-import { Button, Divider, Stack } from '@mui/material';
+import { Button, Divider, Stack, Typography } from '@mui/material';
 import { cloneDeep, isNaN, isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -16,6 +16,7 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
+import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 import {
   DeliverySettings,
   DietarySettings,
@@ -71,6 +72,8 @@ function ShopSettings() {
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
+  const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
+
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS));
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
@@ -96,8 +99,8 @@ function ShopSettings() {
       minimumOrder,
       newPayMentInformation,
       newDietary,
-      // eslint-disable-next-line prettier/prettier
       newPriceRange,
+      newOrderCapacity
     );
     if (data) {
       updateData.mutate(data);
@@ -123,6 +126,7 @@ function ShopSettings() {
     setMinimumOrder(shop?.minOrderAmount);
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
     setNewMaxDiscount(shop?.maxDiscount?.toString() || '');
+    setNewOrderCapacity(shop?.orderCapacity || 0);
   };
 
   useEffect(() => {
@@ -258,6 +262,7 @@ function ShopSettings() {
             <MinimumOrder
               boxSx={{
                 paddingTop: '21px',
+                paddingBottom: '21px',
               }}
               incrementOrder={incrementOrder}
               decrementOrder={decrementOrder}
@@ -268,8 +273,30 @@ function ShopSettings() {
               current={minimumOrder !== null ? minimumOrder : 0}
               TypoSx={TypoSx}
             />
+            <Divider variant="middle" sx={{ background: '#000000' }} />
+            <Box
+              sx={{
+                paddingTop: '21px',
+              }}
+            >
+              <Typography sx={TypoSx}>Order Capacitty</Typography>
+              <Box
+                sx={{
+                  marginTop: '15px',
+                }}
+              >
+                <IncrementDecrementButton
+                  currentValue={newOrderCapacity}
+                  setValue={setNewOrderCapacity}
+                  incrementHandler={incrementOrder}
+                  decrementHandler={decrementOrder}
+                  setTypeValidation={() => {
+                    set_has_unsaved_change(true);
+                  }}
+                />
+              </Box>
+            </Box>
           </Box>
-
           <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
@@ -287,10 +314,8 @@ function ShopSettings() {
               options={maxDiscountOptions(getAppSettingsData?.data?.data?.appSetting?.maxDiscount || [])}
               action={maxDiscountHandler}
               isInput
-              // isMethod
             />
           </Box>
-
           <Stack
             direction="row"
             justifyContent="flex-end"
@@ -313,7 +338,9 @@ function ShopSettings() {
             </Button>
             <Button
               onClick={() => {
-                if (!paymentInformationValidation(newPayMentInformation)) {
+                if (newOrderCapacity < 1) {
+                  successMsg('Order capacity has to be greater than 0');
+                } else if (!paymentInformationValidation(newPayMentInformation)) {
                   set_has_unsaved_change(false);
                 } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
                   updateShopSettings();
