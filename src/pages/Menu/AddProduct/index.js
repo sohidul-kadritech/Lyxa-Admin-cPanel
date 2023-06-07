@@ -95,11 +95,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   );
 
   // units
-  const unitsQuery = useQuery([Api.GET_ALL_UNIT], () => AXIOS.get(Api.GET_ALL_UNIT), {
-    onSuccess: (data) => {
-      console.log('=====>', data);
-    },
-  });
+  const unitsQuery = useQuery([Api.GET_ALL_UNIT], () => AXIOS.get(Api.GET_ALL_UNIT));
 
   // categories
   const setConvertCategories = (data) => {
@@ -244,7 +240,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 

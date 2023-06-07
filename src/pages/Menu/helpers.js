@@ -192,7 +192,6 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
   let attributes = product?.attributes;
   let dietry = product?.dietry;
   let subCategory = product?.subCategory;
-  // const isUnitEnabled = ;
 
   if (shop?.shopType === 'food') {
     stockQuantity = undefined;
@@ -203,9 +202,6 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
       const attrs = [];
 
       attributes?.forEach((attr) => {
-        // attr name not added
-        // if (attr?.name?.trim() === 'Untitled Attribute' || !attr?.name?.trim()) return;
-
         // filter attr items
         const items = attr?.items?.filter((item) => item.name && item.extraPrice);
 
@@ -239,6 +235,7 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
     attributes,
     subCategory,
     id: isEditProduct ? product?._id : undefined,
+    unit: product?.isUnitEnabled ? product?.unit : '',
     isUnitEnabled: undefined,
   };
 };
