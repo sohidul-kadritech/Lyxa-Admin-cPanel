@@ -23,11 +23,9 @@ export const GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH = `${ADMIN_ENDPOINT}/dashb
 export const GET_SHOP_DASHBOARD_OPERATIONS = `${ADMIN_ENDPOINT}/dashboard/shop/operations`;
 
 export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/users`;
-
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
 export const SELLER_DASHBOARD_SHOP_LIST = `${ADMIN_ENDPOINT}/dashboard/seller/shop-list`;
-
 export const ADMIN_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/earnings`;
 export const SELLER_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/earnings`;
 
