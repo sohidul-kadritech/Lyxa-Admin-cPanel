@@ -44,13 +44,14 @@ import SearchBar from './Searchbar';
 import {
   calculateTotalRefund,
   calculateTotalRefundedAmount,
+  getAdminRefundedAmount,
   getQueryParamsInit,
   getRefundedVatForAdmin,
+  returnNewValue,
 } from './helpers';
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
 import StyledFormField from '../../components/Form/StyledFormField';
-import { cancelOrderByAdmin } from '../../store/order/orderAction';
 
 const orderFilterToTabValueMap = {
   0: 'ongoing',
@@ -131,12 +132,13 @@ export default function NewOrders({ showFor }) {
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [currentOrderShop, setCurrentOrderShop] = useState({});
-  // eslint-disable-next-line no-unused-vars
+
   const [appVat, setAppVat] = useState(0);
-  // eslint-disable-next-line no-unused-vars
+
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState({});
   // eslint-disable-next-line no-unused-vars
   const dispatch = useDispatch();
+  const [newRefundType, setNewRefundType] = useState('');
   const queryClient = useQueryClient();
 
   const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () => AXIOS.get(Api.ALL_ORDER_CANCEL_REASON));
@@ -158,10 +160,12 @@ export default function NewOrders({ showFor }) {
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
+      setNewRefundType('');
       setFlagModal(true);
       setCurrentOrder(order);
     }
     if (menu === 'cancel_order') {
+      setNewRefundType('');
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
 
@@ -216,6 +220,7 @@ export default function NewOrders({ showFor }) {
     }
     if (menu === 'refund_order') {
       setCurrentOrder(order);
+      setNewRefundType('delivered');
       setOpenRefundModal(!openRefundModal);
       if (order?.isButler) {
         setOrderPayment({
@@ -267,6 +272,7 @@ export default function NewOrders({ showFor }) {
       }
     }
     if (menu === 'update_status') {
+      setNewRefundType('');
       setUpdateStatusModal(true);
       setCurrentOrder(order);
       setCurrentOrderShop(order?.shop);
@@ -328,6 +334,7 @@ export default function NewOrders({ showFor }) {
     onSuccess: (data) => {
       if (data.status) {
         successMsg(data.message, 'success');
+        queryClient.invalidateQueries(Api.ORDER_LIST);
         setOpenRefundModal(false);
       } else {
         successMsg(data.message, 'warn');
@@ -380,6 +387,32 @@ export default function NewOrders({ showFor }) {
       }
     }
   `;
+
+  // eslint-disable-next-line no-unused-vars
+  const cancelOrderForButlarMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        setOpenCancelModal(false);
+        queryClient.invalidateQueries(Api.ORDER_LIST);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  const cancelOrderByAdminMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        setOpenCancelModal(false);
+        queryClient.invalidateQueries(Api.ORDER_LIST);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
 
   const getFlagOptions = (currentOrder) => {
     const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
@@ -544,9 +577,9 @@ export default function NewOrders({ showFor }) {
         refundType: orderCancel?.refundType,
         partialPayment: {
           // eslint-disable-next-line no-unsafe-optional-chaining
-          shop: orderCancel?.partialPayment?.shop,
-          deliveryBoy: orderCancel?.partialPayment?.deliveryBoy,
-          admin: orderCancel?.partialPayment?.admin,
+          shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
+          deliveryBoy: orderCancel?.partialPayment?.deliveryBoy ? orderCancel?.partialPayment?.deliveryBoy : 0,
+          admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
           adminVat: getRefundedVatForAdmin(
             orderCancel?.vatAmount?.vatForAdmin,
             // eslint-disable-next-line no-unsafe-optional-chaining
@@ -560,40 +593,39 @@ export default function NewOrders({ showFor }) {
       };
 
       delete data.deliveryBoy;
-
-      console.log('data-->', data);
       // dispatch(cancelButlerOrderByAdmin(data));
+      cancelOrderForButlarMutation.mutate(data);
     } else {
       if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
         successMsg('Enter Minimum One Partial Amount');
         return;
       }
-      // console.log('orderCancel: ', orderCancel);
       const data = {
         // ...orderCancel,
         orderId: orderCancel?.orderId,
         otherReason: orderCancel?.otherReason,
         refundType: orderCancel?.refundType,
-        partialPayment: {
-          // eslint-disable-next-line no-unsafe-optional-chaining
-          shop: orderCancel?.partialPayment?.shop,
-          deliveryBoy: orderCancel?.partialPayment?.deliveryBoy,
-          admin: orderCancel?.partialPayment?.admin,
-          adminVat: getRefundedVatForAdmin(
-            orderCancel?.vatAmount?.vatForAdmin,
-            // eslint-disable-next-line no-unsafe-optional-chaining
-            orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
-            // eslint-disable-next-line prettier/prettier
-            appVat,
-            // eslint-disable-next-line prettier/prettier
-          ),
-        },
+        partialPayment:
+          orderCancel?.refundType !== 'full'
+            ? {
+                shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
+                deliveryBoy: orderCancel?.partialPayment?.deliveryBoy ? orderCancel?.partialPayment?.deliveryBoy : 0,
+                admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
+                adminVat: getRefundedVatForAdmin(
+                  orderCancel?.vatAmount?.vatForAdmin,
+                  // eslint-disable-next-line no-unsafe-optional-chaining
+                  orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                  // eslint-disable-next-line prettier/prettier
+                  appVat,
+                  // eslint-disable-next-line prettier/prettier
+                ),
+              }
+            : {},
         cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       };
-      console.log('data--->', data);
-      // delete data.deliveryBoy;
 
-      dispatch(cancelOrderByAdmin(data));
+      // dispatch(cancelOrderByAdmin(data));
+      cancelOrderByAdminMutation.mutate(data);
     }
   };
 
@@ -616,26 +648,26 @@ export default function NewOrders({ showFor }) {
     const generatedData = {
       orderId: orderCancel?.orderId,
       refundType: orderCancel?.refundType,
-      partialPayment: {
-        shop: orderCancel?.partialPayment?.shop,
-        admin: orderCancel?.partialPayment?.admin,
-        adminVat: getRefundedVatForAdmin(
-          orderCancel?.vatAmount?.vatForAdmin,
-          // eslint-disable-next-line no-unsafe-optional-chaining
-          orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
-          // eslint-disable-next-line prettier/prettier
-          appVat,
-          // eslint-disable-next-line prettier/prettier
-        ),
-      },
+      partialPayment:
+        orderCancel?.refundType !== 'full'
+          ? {
+              shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
+              admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
+              adminVat: getRefundedVatForAdmin(
+                orderCancel?.vatAmount?.vatForAdmin,
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
+                // eslint-disable-next-line prettier/prettier
+                appVat,
+                // eslint-disable-next-line prettier/prettier
+              ),
+            }
+          : {},
     };
 
     delete data.deliveryBoy;
 
-    console.log('refund data: ', generatedData);
-
     refundOrderMutation.mutate(generatedData);
-    // dispatch(cancelOrderByAdmin(data));
   };
 
   const updateRefundType = (type) => {
@@ -655,14 +687,16 @@ export default function NewOrders({ showFor }) {
 
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
+
     const { admin, deliveryBoy, shop } = orderPayment;
     const forShop =
-      orderPayment?.admin < 0
+      admin < 0
         ? // eslint-disable-next-line no-unsafe-optional-chaining
-          shop + orderCancel.vatAmount.vatForShop + orderPayment?.admin
+          shop + orderCancel.vatAmount.vatForShop + deliveryBoy
         : shop + orderCancel.vatAmount.vatForShop;
 
-    const forAdmin = orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
+    // const forAdmin = orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
+    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, newRefundType);
 
     if (name === 'admin' && Number(value) > forAdmin) {
       successMsg('Invalid Lyxa Amount');
@@ -979,7 +1013,6 @@ export default function NewOrders({ showFor }) {
                   value={orderCancel?.refundType}
                   onChange={(e) => {
                     updateRefundType(e.target.value);
-                    console.log('order Cancel: ====>', orderCancel?.orderFor);
                   }}
                   required
                 >
@@ -1168,7 +1201,13 @@ export default function NewOrders({ showFor }) {
                 )}
 
               <div className="d-flex justify-content-center my-3 pt-3">
-                <Button fullWidth variant="contained" className="px-4" type="submit" disabled={ordersQuery.isLoading}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  className="px-4"
+                  type="submit"
+                  disabled={cancelOrderByAdminMutation?.isLoading || cancelOrderForButlarMutation?.isLoading}
+                >
                   Confirm
                 </Button>
               </div>
@@ -1226,7 +1265,7 @@ export default function NewOrders({ showFor }) {
                       <TitleWithToolTip
                         title={`Lyxa Refund: ${
                           orderPayment?.admin < 0
-                            ? Number(orderPayment?.delivaryBoy) || 0
+                            ? returnNewValue(orderPayment?.deliveryBoy) || 0
                             : // eslint-disable-next-line no-unsafe-optional-chaining
                               orderPayment?.admin + orderPayment?.deliveryBoy
                         }`}
@@ -1257,7 +1296,16 @@ export default function NewOrders({ showFor }) {
                         label={
                           <TitleWithToolTip
                             // eslint-disable-next-line no-unsafe-optional-chaining
-                            title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            // title={`Shop Refund: ${orderPayment?.shop + orderCancel?.vatAmount?.vatForShop}`}
+                            title={`Shop Refund: ${
+                              orderPayment?.admin < 0
+                                ? calculateTotalRefund([
+                                    orderPayment?.shop,
+                                    orderCancel?.vatAmount?.vatForShop,
+                                    orderPayment?.admin,
+                                  ])
+                                : calculateTotalRefund([orderPayment?.shop, orderCancel?.vatAmount?.vatForShop])
+                            }`}
                             tooltip="Shop Earning+Shop VAT"
                           />
                         }
