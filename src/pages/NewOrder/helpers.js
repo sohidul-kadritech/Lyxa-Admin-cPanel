@@ -40,8 +40,8 @@ export const statusColorVariants = {
   },
 
   delivered: {
-    color: '#00A3FF',
-    background: '#F1FAFF',
+    color: '#5BBD4E',
+    background: 'rgba(91, 189, 78, 0.08)',
   },
 
   cancelled: {
@@ -164,7 +164,7 @@ export const calculateTotalRefundedAmount = (deliveryBoy, admin, shop, vatForAdm
     shop,
     'vatforAdmin',
     // eslint-disable-next-line prettier/prettier
-    vatForAdmin,
+    vatForAdmin
   );
   return (deliveryBoy + admin + shop + Number(vatForAdmin)).toFixed(2);
 };
