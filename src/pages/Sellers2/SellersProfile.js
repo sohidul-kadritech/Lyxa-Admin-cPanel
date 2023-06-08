@@ -10,13 +10,14 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
+import ViewSellerInfo from './ViewSellerInfo';
 import ViewShopInfo from './ViewShopInfo';
 import { getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
-function SellersProfileInfo({ data = {}, theme }) {
+function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   return (
     <Box>
-      <Stack direction="row" gap="25px">
+      <Stack direction="row" gap="25px" flexWrap="wrap">
         <Avatar src={data?.profile_photo} alt="photo" sx={{ width: 100, height: 100, textTransform: 'uppercase' }}>
           <Typography variant="h1" sx={{ color: '#ffffff !important' }}>
             {data?.name
@@ -41,9 +42,9 @@ function SellersProfileInfo({ data = {}, theme }) {
               </Stack>
               <Box>
                 <ThreeDotsMenu
-                  // handleMenuClick={(menu) => {
-                  //   threeDotHandler(menu, params?.row);
-                  // }}
+                  handleMenuClick={(menu) => {
+                    threeDotHandler(menu);
+                  }}
                   menuItems={getThreedotMenuOptions}
                 />
               </Box>
@@ -78,7 +79,7 @@ function SellersProfileInfo({ data = {}, theme }) {
   );
 }
 
-function SellersProfile({ currentSeller = {} }) {
+function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChargeSidebar, setIsEdit }) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
   const [currentTab, setCurrentTab] = useState(0);
@@ -88,6 +89,8 @@ function SellersProfile({ currentSeller = {} }) {
   const [searchResult, setSearchResult] = useState([]);
   const [selectedShop, setSelectedShop] = useState({});
   const [open, setOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedMenu, setSelectedMenu] = useState('');
 
   useEffect(() => {
     setSearchResult(currentSeller?.shops);
@@ -107,6 +110,29 @@ function SellersProfile({ currentSeller = {} }) {
     }
   };
 
+  const threeDotHandler = (menu) => {
+    setSelectedMenu(menu);
+    console.log('menu-->', menu);
+    if (menu === 'view') {
+      setOpen(true);
+      return;
+      // setSelectedShop(currentSeller);
+    }
+    if (menu === 'edit_seller') {
+      setAddSidebarOpen(true);
+      setIsEdit(true);
+      return;
+    }
+    if (menu === 'update_lyxa_charge') {
+      setOpenLyxaChargeSidebar(true);
+      setIsEdit(true);
+    }
+  };
+  const closeModal = () => {
+    setSelectedMenu('');
+    setOpen(false);
+  };
+
   return (
     <Box
       sx={{
@@ -118,7 +144,7 @@ function SellersProfile({ currentSeller = {} }) {
     >
       {Object?.keys(currentSeller)?.length > 0 ? (
         <Stack>
-          <SellersProfileInfo data={currentSeller} theme={theme} />
+          <SellersProfileInfo threeDotHandler={threeDotHandler} data={currentSeller} theme={theme} />
           <Box marginTop="30px" marginBottom="23px">
             <Tabs
               value={currentTab}
@@ -175,7 +201,8 @@ function SellersProfile({ currentSeller = {} }) {
       )}
 
       <Drawer open={open} anchor="right">
-        <ViewShopInfo selectedShop={selectedShop} onClose={() => setOpen(false)} />
+        {selectedMenu === '' && <ViewShopInfo selectedShop={selectedShop} onClose={closeModal} />}
+        {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
       </Drawer>
     </Box>
   );

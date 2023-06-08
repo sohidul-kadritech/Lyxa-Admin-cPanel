@@ -1,7 +1,6 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import CloseButton from '../../components/Common/CloseButton';
-import Rating from '../../components/Common/Rating';
 
 function ShopInfo({ title, theme, sx, children }) {
   return (
@@ -14,9 +13,9 @@ function ShopInfo({ title, theme, sx, children }) {
   );
 }
 
-function ViewShopInfo({ onClose, selectedShop = {} }) {
+function ViewSellerInfo({ onClose, selectedSeller = {} }) {
   const theme = useTheme();
-  console.log('selectedShop', selectedShop);
+  console.log('selectedShop', selectedSeller);
   return (
     <Box
       sx={{
@@ -37,13 +36,15 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
         >
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" alignItems="center" gap={3}>
-              <Avatar alt="user-image" src={selectedShop?.shopLogo} sx={{ width: 36, height: 36 }}>
-                {selectedShop?.shopName?.length && selectedShop?.shopName[0]}
+              <Avatar alt="user-image" src={selectedSeller?.profile_photo} sx={{ width: 36, height: 36 }}>
+                {selectedSeller?.name?.length && selectedSeller?.name[0]}
               </Avatar>
               <Stack gap={0.5}>
-                <Typography variant="body4">{selectedShop?.shopName}</Typography>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedSeller?.name}
+                </Typography>
                 <Typography variant="body4" color="#737373">
-                  {selectedShop?.totalOrder || 0} orders
+                  {selectedSeller?.shops?.length || 0} Shops
                 </Typography>
               </Stack>
             </Stack>
@@ -67,42 +68,33 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               marginBottom: '43px',
             }}
           >
-            View Shop
+            View Seller
           </Typography>
-          <ShopInfo title="Shop Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          <ShopInfo title="Seller Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopName}
+              {selectedSeller?.name}
             </Typography>
           </ShopInfo>
           <ShopInfo title="E-mail" theme={theme}>
-            <Typography variant="body4">{selectedShop?.email}</Typography>
+            <Typography variant="body4">{selectedSeller?.email}</Typography>
           </ShopInfo>
           <ShopInfo title="Phone number" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.phone_number}</Typography>
-          </ShopInfo>
-          <ShopInfo title="rating" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Rating
-              amount={selectedShop?.rating}
-              titleSx={{
-                fontSize: '15px',
-                fontWeight: 500,
-              }}
-            />
+            <Typography variant="body4">{selectedSeller?.phone_number}</Typography>
           </ShopInfo>
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.address?.address}</Typography>
+            <Typography variant="body4">{selectedSeller?.addressSeller?.address}</Typography>
           </ShopInfo>
           <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.address?.pin || '1233'}</Typography>
+            <Typography variant="body4">{selectedSeller?.addressSeller?.pin || '1233'}</Typography>
           </ShopInfo>
           <ShopInfo title="Shop Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopType}
+              {selectedSeller?.sellerType}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Status" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopStatus}
+              {selectedSeller?.status}
             </Typography>
           </ShopInfo>
         </Box>
@@ -111,4 +103,4 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
   );
 }
 
-export default ViewShopInfo;
+export default ViewSellerInfo;

@@ -27,7 +27,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
   console.log(data);
   const theme = useTheme();
   const styleForSellerList = {
-    padding: '12px 16px 10px 40px',
+    padding: '12px 20px 10px 20px',
     borderLeft: `4px solid transparent`,
     cursor: 'pointer',
     // transition: 'all 0.2s ease-in',
@@ -37,7 +37,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     },
   };
   const styleForSellerListActive = {
-    padding: '12px 16px 10px 40px',
+    padding: '12px 20px 10px 20px',
     borderLeft: `4px solid ${theme.palette.danger.main}`,
     cursor: 'pointer',
     backgroundColor: 'rgba(177, 177, 177, 0.2)',

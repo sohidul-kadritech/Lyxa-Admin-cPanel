@@ -9,6 +9,7 @@ import StyledFormField from '../../components/Form/StyledFormField';
 
 import AppPagination from '../../components/Common/AppPagination2';
 import TabPanel from '../../components/Common/TabPanel';
+import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -57,6 +58,16 @@ const statusOptions = [
   },
 ];
 
+const listFilterOptions = [
+  {
+    label: 'Active',
+    value: 'active',
+  },
+  {
+    label: 'Inactive',
+    value: 'inactive',
+  },
+];
 function AddMenuButton({ ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
@@ -152,6 +163,13 @@ function ServiceZone() {
 
   console.log(getAllZones?.data?.data?.zones);
 
+  // eslint-disable-next-line no-unused-vars
+  const onStatusChange = (value, item) => {
+    item.status = value;
+    // setRender((prev) => !prev);
+    // tagsMutation.mutate(item);
+  };
+
   const columns = [
     {
       id: 0,
@@ -185,6 +203,36 @@ function ServiceZone() {
             {value || 'no area added'}
           </Typography>
         </Box>
+      ),
+    },
+    {
+      id: 2,
+      headerName: 'IS BUSY',
+      field: 'isBusy',
+      sortable: false,
+      flex: 3,
+
+      renderCell: (params) => (
+        <FilterSelect
+          items={listFilterOptions}
+          sx={{
+            background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+            '&:hover': {
+              background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+            },
+            '& .MuiInputBase-input': {
+              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+            },
+            '& .MuiSelect-icon': {
+              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+            },
+          }}
+          size="lg1"
+          value="active"
+          onChange={(e) => {
+            onStatusChange(e.target.value, params.row);
+          }}
+        />
       ),
     },
     {
