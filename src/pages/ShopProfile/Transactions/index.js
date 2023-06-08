@@ -37,7 +37,7 @@ export default function ShopTransactions({ shop }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
 
-  const query = useQuery([Api.SHOP_TRX], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
+  const query = useQuery([Api.SHOP_TRX, queryParams.tnxFilter], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
     onSuccess: (data) => {
       setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
     },
@@ -67,7 +67,7 @@ export default function ShopTransactions({ shop }) {
         />
         <InfoCard
           title="Shop Profit"
-          value={summary?.toalShopProfile?.toFixed(2)}
+          value={(summary?.toalShopProfile || 0)?.toFixed(2)}
           sm={6}
           md={4}
           lg={3}

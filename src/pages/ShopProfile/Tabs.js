@@ -3,7 +3,8 @@ import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import Banking from '../ShopFinancials/Banking';
-import FlagTable from './FlagTable';
+// import FlagTable from './FlagTable';
+import ShopFlags from './Flag';
 import Invoices from './Invoices';
 import ShopOrders from './Orders';
 import ShopReviews from './Review';
@@ -38,7 +39,7 @@ export default function ShopProfileTabs({ shop }) {
           </Tabs>
           <Box pt={6}>
             <TabPanel index={0} value={currentTab} noPadding>
-              <FlagTable filteredData={shop?.flags || []} currentTab={currentTab} />
+              <ShopFlags flags={shop?.flags} onViewDetail={onViewDetail} />
             </TabPanel>
             <TabPanel index={1} noPadding value={currentTab}>
               <ShopReviews reviews={shop?.reviews || []} onViewDetail={onViewDetail} />
