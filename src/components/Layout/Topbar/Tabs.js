@@ -12,7 +12,7 @@ const StyledTab = styled(Button)(({ theme }) => ({
   border: '1px solid #E5E5E5',
   borderBottom: '0',
   padding: '0 8px',
-  width: '130px',
+  width: '170px',
   height: '40px',
   borderRadius: '7px 7px 0px 0px',
   zIndex: '99',
@@ -23,6 +23,10 @@ const StyledTab = styled(Button)(({ theme }) => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  },
+
+  '& .MuiButton-endIcon': {
+    flexShrink: 0,
   },
 
   '&:hover': {

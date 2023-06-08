@@ -20,6 +20,10 @@ const pagesList = [
     label: 'Coupons',
     to: '/settings/marketing/coupons',
   },
+  {
+    label: 'Refer A Friend',
+    to: '/settings/refer-friend',
+  },
 ];
 
 export default function AdminMarketingSettings() {

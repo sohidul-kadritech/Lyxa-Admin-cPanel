@@ -5,18 +5,20 @@ import { StyledOrderDetailBox } from './helpers';
 export default function OrderIssues({ flags = [] }) {
   const theme = useTheme();
 
+  console.log({ flags });
+
   return (
     <StyledOrderDetailBox
       title={
         <>
-          <FlagIcon style={{ color: theme.palette.error.main, marginRight: '3px' }} /> Issues
+          <FlagIcon style={{ color: theme.palette.error.main, marginRight: '3px' }} /> Flags
         </>
       }
     >
       <Stack gap={1}>
         {flags?.map((item) => (
           <Typography variant="body2" fontSize={14} lineHeight="22px" key={item?._id}>
-            {item?.comment}
+            <span style={{ textTransform: 'capitalize' }}>{item?.type}</span> - {item?.comment}
           </Typography>
         ))}
       </Stack>

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Stack, Typography } from '@mui/material';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useRef, useState } from 'react';
@@ -190,7 +190,11 @@ function ZoneMap({
             <Marker position={[store?.location?.coordinates[1], store?.location?.coordinates[0]]}>
               {/* <Popup>{store?.shopName}</Popup> */}
               <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
-                {store?.shopName}
+                <Stack direction="row" gap="5.2px" alignItems="center">
+                  {' '}
+                  <Avatar src={store?.shopLogo} width="36px" height="36px"></Avatar>
+                  <Typography sx={{ textTransform: 'capitalize' }}>{store?.shopName}</Typography>
+                </Stack>
               </Tooltip>
               {/* <Typography sx={{ position: 'absolute', top: '0', left: '0' }}>{store?.shopName}</Typography> */}
             </Marker>
