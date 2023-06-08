@@ -16,3 +16,8 @@ export const getThreedotMenuOptions = [
     value: 'go_to_financials',
   },
 ];
+
+export const sellerShopTabType = {
+  0: 'Shop List',
+  1: 'Documents',
+};
