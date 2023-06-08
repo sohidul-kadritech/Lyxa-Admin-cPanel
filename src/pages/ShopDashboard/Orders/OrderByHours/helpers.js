@@ -38,14 +38,14 @@ export const frequencyMap = {
 };
 
 export const createCharData = (data = []) => {
-  console.log('triggered');
+  console.log(data);
   const hourInit = () => ({ monday: '0', tuesday: '0', wednesday: '0', thursday: '0', friday: '0', sunday: '0' });
   const rows = new Array(24).fill(0).map(() => hourInit());
 
   data?.forEach((day) => {
     day?.hourlyOrderCounts?.forEach((hour) => {
       if (hour?.hourOfDay !== undefined && day?.dayOfWeek !== undefined) {
-        rows[hour.hourOfDay - 1][weekdays[day.dayOfWeek]] = hour?.avgOrderCount || 0;
+        rows[hour.hourOfDay][weekdays[day.dayOfWeek]] = hour?.avgOrderCount || 0;
       }
     });
   });
@@ -79,9 +79,9 @@ export function CustomTooltip({ weekdayNum, hour, orders }) {
   return (
     <Box sx={{ width: '150px' }}>
       <Typography variant="body4" fontSize={12} lineHeight="20px" textTransform="capitalize">
-        {weekdays[weekdayNum]} {hour}
-        {hour < 13 ? 'am' : 'pm'} - {hour + 1}
-        {hour < 13 ? 'am' : 'pm'}
+        {weekdays[weekdayNum]} {hour % 12}
+        {hour < 12 ? 'am' : 'pm'} - {(hour % 12) + 1}
+        {hour < 12 ? 'am' : 'pm'}
       </Typography>
       <Typography
         variant="body4"
