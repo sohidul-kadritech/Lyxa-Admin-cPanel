@@ -4,6 +4,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import Banking from '../ShopFinancials/Banking';
 import FlagTable from './FlagTable';
+import Invoices from './Invoices';
 import ShopOrders from './Orders';
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
@@ -32,6 +33,7 @@ export default function ShopProfileTabs({ shop }) {
             <Tab label="Reviews" />
             <Tab label="Orders" />
             <Tab label="Financials" />
+            <Tab label="Invoices" />
             <Tab label="Banking" />
           </Tabs>
           <Box pt={6}>
@@ -48,6 +50,9 @@ export default function ShopProfileTabs({ shop }) {
               <ShopTransactions shop={shop} />
             </TabPanel>
             <TabPanel index={4} noPadding value={currentTab}>
+              <Invoices />
+            </TabPanel>
+            <TabPanel index={5} noPadding value={currentTab}>
               <Banking shop={shop} />
             </TabPanel>
           </Box>

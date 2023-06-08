@@ -1,11 +1,12 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
+import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
-import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import AddRemoveCredit from './AddRemoveCredit';
@@ -18,7 +19,7 @@ const amountSx = {
 
 const getTrxQueryParams = (shopId) => ({
   page: 1,
-  pageSize: 10,
+  pageSize: 5,
   shopId,
   sortBy: 'desc',
   tnxFilter: {
@@ -34,29 +35,15 @@ const getTrxQueryParams = (shopId) => ({
 export default function ShopTransactions({ shop }) {
   const [queryParams, setQueryParams] = useState(getTrxQueryParams(shop?._id));
   const [modalOpen, setModalOpen] = useState(false);
+  const [totalPage, setTotalPage] = useState(1);
 
-  const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams));
-  const summary = query?.data?.data?.summary || {};
-
-  const creditMutation = useMutation((data) => AXIOS.post(Api.SHOP_ADD_REMOVE_CREDIT, data), {
+  const query = useQuery([Api.SHOP_TRX], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
     onSuccess: (data) => {
-      if (data?.success) {
-        successMsg(data?.message, 'success');
-      }
+      setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
     },
   });
 
-  const addRemoveCredit = (data) => {
-    if (
-      (data.type === 'add' && data.amount > summary?.dropGetFromShop) ||
-      (data.type === 'remove' && data.amount > summary?.totalShopEarning)
-    ) {
-      successMsg("You don't have enough credit", 'error');
-      return;
-    }
-
-    creditMutation.mutate(data);
-  };
+  const summary = query?.data?.data?.summary || {};
 
   return (
     <Box>
@@ -80,7 +67,7 @@ export default function ShopTransactions({ shop }) {
         />
         <InfoCard
           title="Shop Profit"
-          value={(summary?.toalShopProfile || 0)?.toFixed(2)}
+          value={summary?.toalShopProfile?.toFixed(2)}
           sm={6}
           md={4}
           lg={3}
@@ -90,12 +77,28 @@ export default function ShopTransactions({ shop }) {
           <Stack gap={3}>
             <PriceItem fontSize="14px!important" title="Paid" amount={summary?.totalShopEarning} />
             <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalShopUnsettle} />
+            {summary?.totalShopDeliveryFee > 0 && (
+              <PriceItem
+                fontSize="14px!important"
+                title="Shop Delivery fee"
+                amount={summary?.totalShopDeliveryFee}
+                amountStatus="secondary"
+              />
+            )}
           </Stack>
         </InfoCard>
         <InfoCard title="Orders No" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
         <InfoCard title="Order Amount" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
       </Grid>
       <ShopTransactionsTable rows={query?.data?.data?.transections} />
+      <TablePagination
+        currentPage={queryParams?.page}
+        lisener={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
+        }}
+        totalPage={totalPage}
+      />
+      {/* add/remove credit */}
       <Modal
         open={modalOpen}
         onClose={() => {
@@ -104,10 +107,11 @@ export default function ShopTransactions({ shop }) {
       >
         <AddRemoveCredit
           shopId={shop?._id}
+          dropAmount={summary?.totalDropGet}
+          shopAmount={summary?.toalShopProfile}
           onClose={() => {
             setModalOpen(false);
           }}
-          onSubmit={addRemoveCredit}
         />
       </Modal>
     </Box>
