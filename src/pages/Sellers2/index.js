@@ -26,11 +26,11 @@ function SellerList2() {
   const theme = useTheme();
 
   const getAllSellersQuery = useQuery(
-    [API_URL.ALL_SELLER, { status, searchKey }],
+    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey }],
     () =>
       AXIOS.get(API_URL.ALL_SELLER, {
         params: {
-          status,
+          sellerStatus: status,
           searchKey,
         },
       }),
@@ -91,31 +91,33 @@ function SellerList2() {
 
       {/* Sellers Main Section */}
       <Box marginTop="42px">
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: '600 !important',
-            color: theme.palette.text.secondary2,
-            marginBottom: '26px',
-            textTransform: 'uppercase',
-          }}
-        >
-          Sellers
-        </Typography>
-        <Stack direction="row" gap="22px">
-          {/* Sellers List --> left */}
-          <Box>
-            <SellerList
-              data={getAllSellersQuery?.data?.data?.sellers}
-              currentSeller={currentSeller}
-              setCurrentSeller={setCurrentSeller}
-            />
-          </Box>
-          {/* Seller Profile --> right */}
-          <Box flex={1}>
-            <SellersProfile currentSeller={currentSeller} />
-          </Box>
-        </Stack>
+        <Box>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: '600 !important',
+              color: theme.palette.text.secondary2,
+              marginBottom: '26px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Sellers
+          </Typography>
+          <Stack direction="row" gap="22px">
+            {/* Sellers List --> left */}
+            <Box>
+              <SellerList
+                data={getAllSellersQuery?.data?.data?.sellers}
+                currentSeller={currentSeller}
+                setCurrentSeller={setCurrentSeller}
+              />
+            </Box>
+            {/* Seller Profile --> right */}
+            <Box flex={1}>
+              <SellersProfile currentSeller={currentSeller} />
+            </Box>
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );

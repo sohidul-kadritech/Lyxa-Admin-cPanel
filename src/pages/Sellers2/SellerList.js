@@ -56,21 +56,31 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
       }}
     >
       <Stack>
-        {data.map((seller, i) => (
-          <Box
-            key={i}
-            sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
-            onClick={() => {
-              setCurrentSeller(seller);
-            }}
-          >
-            <SellerInfo
-              sellerName={seller?.name}
-              image={seller?.profile_photo}
-              shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
-            />
+        {data.length > 0 ? (
+          <>
+            {data.map((seller, i) => (
+              <Box
+                key={i}
+                sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
+                onClick={() => {
+                  setCurrentSeller(seller);
+                }}
+              >
+                <SellerInfo
+                  sellerName={seller?.name}
+                  image={seller?.profile_photo}
+                  shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
+                />
+              </Box>
+            ))}
+          </>
+        ) : (
+          <Box sx={styleForSellerList}>
+            <Typography variant="h5" sx={{ fontWeight: '500 !important' }}>
+              No sellers found
+            </Typography>
           </Box>
-        ))}
+        )}
       </Stack>
     </Box>
   );

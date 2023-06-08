@@ -54,7 +54,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
               <Stack gap={0.5}>
                 <Typography variant="body4">{order?.user?.name}</Typography>
                 <Typography variant="body4" color="#737373">
-                  9 orders
+                  {order?.user?.orderCompleted || 0} orders
                 </Typography>
               </Stack>
             </Stack>
