@@ -79,6 +79,7 @@ export default function ShopTransactions({ shop }) {
             <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalShopUnsettle} />
             {summary?.totalShopDeliveryFee > 0 && (
               <PriceItem
+                titleSx={{ color: '#b9b9b9' }}
                 fontSize="14px!important"
                 title="Shop Delivery fee"
                 amount={summary?.totalShopDeliveryFee}
