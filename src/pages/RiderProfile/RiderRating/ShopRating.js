@@ -10,17 +10,17 @@ export default function ShopRatingTable({ rows = [] }) {
     {
       id: 1,
       headerName: 'RATING',
-      field: 'status',
+      field: 'shopRateToRider',
       flex: 1,
       sortable: false,
       // minWidth: 270,
       renderCell: ({ value }) => (
         <span
           style={{
-            color: value ? '#DD5B63' : '#4D9D64',
+            color: value === 'like' ? '#4D9D64' : '#DD5B63',
           }}
         >
-          {value ? <DownIcon /> : <UpIcon />}
+          {value === 'like' ? <UpIcon /> : <DownIcon />}
         </span>
       ),
     },
@@ -29,45 +29,56 @@ export default function ShopRatingTable({ rows = [] }) {
       headerName: 'SHOP',
       field: 'shop',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
-      renderCell: ({ row }) => <Typography variant="body4">{row?.shop?.shopName}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography color="primary.main" variant="body4">
+          {row?.shop?.shopName}
+        </Typography>
+      ),
     },
     {
       id: 3,
       headerName: 'ORDER ID',
       field: 'orderId',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography color="primary.main" variant="body4">
+          {value}
+        </Typography>
+      ),
     },
     {
       id: 4,
       headerName: 'ACCOUNT',
-      field: 'account',
+      field: 'user',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography color="primary.main" variant="body4">
+          {value?.name}
+        </Typography>
+      ),
     },
     {
       id: 5,
       headerName: 'AMOUNT',
-      field: 'amount',
+      field: 'summary',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value?.totalAmount}</Typography>,
     },
     {
       id: 6,
       headerName: 'PAYMENT TYPE',
-      field: 'type',
+      field: 'paymentMethod',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value, row }) => (
+        <Typography variant="body4" className="text-capitalize">
+          {value} {row?.selectPos !== 'no' ? '(Pos)' : ''}
+        </Typography>
+      ),
     },
     {
       id: 7,
@@ -108,7 +119,7 @@ export default function ShopRatingTable({ rows = [] }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No Flags found
+              No Ratings Find
             </Stack>
           ),
         }}

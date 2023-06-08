@@ -64,7 +64,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'ORDERS',
       field: 'totalOrder',
       flex: 1,
-      sortable: false,
+      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -72,7 +72,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'AVG.TIME',
       field: 'avgOrderDeliveryTime',
       flex: 1,
-      sortable: false,
+      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -82,7 +82,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      sortable: false,
+      // sortable: false,
       renderCell: ({ value }) => <Rating amount={value} />,
     },
     {
