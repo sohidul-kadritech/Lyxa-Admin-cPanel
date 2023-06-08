@@ -32,6 +32,7 @@ import SellerList from '../pages/Seller/SellerList/SellerList';
 import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
+import ShopListTable from '../pages/ShopTable';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
 import UsersList from '../pages/Users/UsersList/UsersList';
 
@@ -141,6 +142,7 @@ export const admin_routes = [
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
     component: () => <MarketingDashboard viewUserType="admin" />,
   },
+  { path: '/shops/list2', component: ShopListTable },
 
   // product
   { path: '/products/list2', component: ProductList },
