@@ -279,7 +279,7 @@ function ShopSettings() {
                 paddingTop: '21px',
               }}
             >
-              <Typography sx={TypoSx}>Order Capacitty</Typography>
+              <Typography sx={TypoSx}>Order Capacity</Typography>
               <Box
                 sx={{
                   marginTop: '15px',
