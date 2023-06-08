@@ -88,7 +88,7 @@ export default function OrderAmountDetails({ order = {} }) {
                 pbsx={2.5}
                 label="Refund Type"
                 isCurrency={false}
-                value={order?.userRefundTnx[0]?.isPartialRefund ? 'Partial' : 'full'}
+                value={order?.userRefundTnx[0]?.isPartialRefund ? 'Partial' : 'Full'}
               />
             </Box>
             <StyledItem pbsx={2.5} label="Admin Cut" value={order?.userRefundTnx[0]?.adminCut} />
@@ -96,6 +96,24 @@ export default function OrderAmountDetails({ order = {} }) {
             <StyledItem pbsx={2.5} label="Rider Cut" value={order?.userRefundTnx[0]?.deliveryBoyCut} />
             <StyledItem pbsx={2.5} label="Shop Cut" value={order?.userRefundTnx[0]?.shopCut} />
             <StyledItem pbsx={2.5} label="Total Refund" value={order?.userRefundTnx[0]?.amount} total />
+          </>
+        )}
+        {order?.userCancelTnx.length > 0 && (
+          <>
+            <Box pbsx={2.5} pt={2.5} borderBottom="1px solid #EEEEEE">
+              <StyledItem
+                pt={2.5}
+                pbsx={2.5}
+                label="Refund Type"
+                isCurrency={false}
+                value={order?.userCancelTnx[0]?.isPartialRefund ? 'Partial' : 'Full'}
+              />
+            </Box>
+            <StyledItem pbsx={2.5} label="Admin Cut" value={order?.userCancelTnx[0]?.adminCut} />
+            <StyledItem pbsx={2.5} label="Admin VAT Cut" value={order?.userCancelTnx[0]?.adminVatCut} />
+            <StyledItem pbsx={2.5} label="Rider Cut" value={order?.userCancelTnx[0]?.deliveryBoyCut} />
+            <StyledItem pbsx={2.5} label="Shop Cut" value={order?.userCancelTnx[0]?.shopCut} />
+            <StyledItem pbsx={2.5} label="Total Refund" value={order?.userCancelTnx[0]?.amount} total />
           </>
         )}
       </Box>
