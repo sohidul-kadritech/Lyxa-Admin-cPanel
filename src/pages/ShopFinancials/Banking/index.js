@@ -7,6 +7,7 @@ import { useGlobalContext } from '../../../context';
 const inputSx = {
   background: '#F6F6F6',
   borderRadius: '30px',
+  color: '#737373',
 };
 
 export default function Banking() {
@@ -28,6 +29,7 @@ export default function Banking() {
             label="Bank Account Type"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'accountName',
@@ -42,6 +44,7 @@ export default function Banking() {
             label="Account holder's full name/name of the enterprise"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'accountOwner',
@@ -56,6 +59,7 @@ export default function Banking() {
             label="Address"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'address',
@@ -70,6 +74,7 @@ export default function Banking() {
             label="City"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'Vegan Pizza',
               name: 'city',
@@ -84,6 +89,7 @@ export default function Banking() {
             label="Postal Code"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'number',
               placeholder: 'XXXX',
               name: 'postalCode',
@@ -99,6 +105,7 @@ export default function Banking() {
             label="IBAN"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'number',
               placeholder: 'XXXXXXXXXXXXXXXX24',
               name: 'iban',
@@ -113,6 +120,7 @@ export default function Banking() {
             label="SWIFT"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'AHHJFIIUWHA',
               name: 'swift',
@@ -126,6 +134,7 @@ export default function Banking() {
             label="Payout Frequency"
             intputType="text"
             inputProps={{
+              readOnly: true,
               type: 'text',
               placeholder: 'Weekly',
               name: 'payoutFrequency',

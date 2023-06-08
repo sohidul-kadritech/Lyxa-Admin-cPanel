@@ -12,11 +12,13 @@ const calculateTotal = (array) => {
   return 0;
 };
 
-function ShopList({ data }) {
+function ShopList({ data, tabName = 'Shop List', setOpen, setSelectedShop }) {
   const theme = useTheme();
+
   const allColumns = [
     {
       id: 1,
+      showFor: ['Shop List'],
       headerName: `SHOP NAME`,
       field: 'shopName',
       sortable: false,
@@ -46,6 +48,7 @@ function ShopList({ data }) {
     },
     {
       id: 2,
+      showFor: ['Shop List'],
       headerName: `CUSTOMERS`,
       field: 'customers',
       sortable: false,
@@ -68,6 +71,7 @@ function ShopList({ data }) {
 
     {
       id: 2,
+      showFor: ['Shop List'],
       headerName: `ORDERS`,
       field: 'orders',
       sortable: false,
@@ -89,6 +93,7 @@ function ShopList({ data }) {
     },
     {
       id: 3,
+      showFor: ['Shop List'],
       headerName: `RATING`,
       field: 'rating',
       sortable: false,
@@ -103,29 +108,48 @@ function ShopList({ data }) {
         />
       ),
     },
+    // {
+    //   id: 3,
+    //   showFor: ['Documents'],
+    //   headerName: `TYPE`,
+    //   field: 'type',
+    //   sortable: false,
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <Rating
+    //       amount={params?.row?.rating}
+    //       titleSx={{
+    //         fontSize: '15px',
+    //         fontWeight: 500,
+    //       }}
+    //     />
+    //   ),
+    // },
     {
       id: 3,
+      showFor: ['Shop List'],
       headerName: `ACTIONS`,
       headerAlign: 'right',
       align: 'right',
       field: 'action',
       sortable: false,
       flex: 1,
-      renderCell: () => (
+      renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* edit */}
           <StyledIconButton
-            // onClick={() => {
-            //   onEdit(params.row);
-            // }}
+            onClick={() => {
+              setOpen(true);
+            }}
             color="primary"
           >
             <Edit />
           </StyledIconButton>
           <StyledIconButton
-            // onClick={() => {
-            //   onEdit(params.row);
-            // }}
+            onClick={() => {
+              setSelectedShop(params?.row);
+              setOpen(true);
+            }}
             color="primary"
           >
             <VisibilityIcon />
@@ -138,7 +162,7 @@ function ShopList({ data }) {
   return (
     <Box
       sx={{
-        padding: '20px',
+        padding: '23px 16px  18px',
         maxHeight: '500px',
         overflow: 'auto',
         border: `1px solid ${theme.palette.custom.border}`,
@@ -146,7 +170,7 @@ function ShopList({ data }) {
       }}
     >
       <StyledTable
-        columns={allColumns}
+        columns={allColumns.filter((column) => column.showFor.includes(tabName))}
         rows={data || []}
         getRowHeight={() => 'auto'}
         getRowId={(row) => row?._id}

@@ -8,6 +8,8 @@ import { shopAddRemoveCredit } from '../store/appWallet/appWalletAction';
 function AddRemoveCredit({ userType, id, dropAmount, userAmount }) {
   const { loading } = useSelector((state) => state.appWalletReducer);
 
+  console.log(dropAmount, userAmount);
+
   const dispatch = useDispatch();
 
   const [amount, setAmount] = useState('');

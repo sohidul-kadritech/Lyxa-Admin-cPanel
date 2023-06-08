@@ -1,4 +1,4 @@
-import { Avatar, Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
@@ -10,12 +10,14 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
-import { getThreedotMenuOptions } from './helpers';
+import ViewSellerInfo from './ViewSellerInfo';
+import ViewShopInfo from './ViewShopInfo';
+import { getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
-function SellersProfileInfo({ data = {}, theme }) {
+function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   return (
     <Box>
-      <Stack direction="row" gap="25px">
+      <Stack direction="row" gap="25px" flexWrap="wrap">
         <Avatar src={data?.profile_photo} alt="photo" sx={{ width: 100, height: 100, textTransform: 'uppercase' }}>
           <Typography variant="h1" sx={{ color: '#ffffff !important' }}>
             {data?.name
@@ -40,9 +42,9 @@ function SellersProfileInfo({ data = {}, theme }) {
               </Stack>
               <Box>
                 <ThreeDotsMenu
-                  // handleMenuClick={(menu) => {
-                  //   threeDotHandler(menu, params?.row);
-                  // }}
+                  handleMenuClick={(menu) => {
+                    threeDotHandler(menu);
+                  }}
                   menuItems={getThreedotMenuOptions}
                 />
               </Box>
@@ -70,13 +72,6 @@ function SellersProfileInfo({ data = {}, theme }) {
                 </Stack>
               </Typography>
             </Stack>
-            {/* <Rating
-              amount={data?.rating}
-              titleSx={{
-                fontSize: '18px',
-                fontWeight: 500,
-              }}
-            /> */}
           </Stack>
         </Box>
       </Stack>
@@ -84,22 +79,18 @@ function SellersProfileInfo({ data = {}, theme }) {
   );
 }
 
-function SellersProfile({ currentSeller = {} }) {
+function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChargeSidebar, setIsEdit }) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
   const [currentTab, setCurrentTab] = useState(0);
+  const [tabName, setTabName] = useState('Shop List');
   const [sort, setSort] = useState('');
   const [status, setStatus] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [searchKey, setSearchKey] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [searchResult, setSearchResult] = useState([]);
-
-  // const onChangeSearchHandler = (e)=>{
-  //   if(e.target.value){
-  //     let matchedData = currentSeller.shops.includes()
-  //   }
-  // }
+  const [selectedShop, setSelectedShop] = useState({});
+  const [open, setOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedMenu, setSelectedMenu] = useState('');
 
   useEffect(() => {
     setSearchResult(currentSeller?.shops);
@@ -119,6 +110,29 @@ function SellersProfile({ currentSeller = {} }) {
     }
   };
 
+  const threeDotHandler = (menu) => {
+    setSelectedMenu(menu);
+    console.log('menu-->', menu);
+    if (menu === 'view') {
+      setOpen(true);
+      return;
+      // setSelectedShop(currentSeller);
+    }
+    if (menu === 'edit_seller') {
+      setAddSidebarOpen(true);
+      setIsEdit(true);
+      return;
+    }
+    if (menu === 'update_lyxa_charge') {
+      setOpenLyxaChargeSidebar(true);
+      setIsEdit(true);
+    }
+  };
+  const closeModal = () => {
+    setSelectedMenu('');
+    setOpen(false);
+  };
+
   return (
     <Box
       sx={{
@@ -128,54 +142,68 @@ function SellersProfile({ currentSeller = {} }) {
         border: `1px solid ${theme.palette.custom.border}`,
       }}
     >
-      <Stack>
-        <SellersProfileInfo data={currentSeller} theme={theme} />
-        <Box marginTop="30px" marginBottom="23px">
-          <Tabs
-            value={currentTab}
-            onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-            }}
-          >
-            <Tab label="Shop List"></Tab>
-            <Tab label="Documents"></Tab>
-          </Tabs>
-        </Box>
-        <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
+      {Object?.keys(currentSeller)?.length > 0 ? (
+        <Stack>
+          <SellersProfileInfo threeDotHandler={threeDotHandler} data={currentSeller} theme={theme} />
+          <Box marginTop="30px" marginBottom="23px">
+            <Tabs
+              value={currentTab}
+              onChange={(event, newValue) => {
+                setTabName(sellerShopTabType[newValue]);
+                setCurrentTab(newValue);
+              }}
+            >
+              <Tab label="Shop List"></Tab>
+              <Tab label="Documents"></Tab>
+            </Tabs>
+          </Box>
+          <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
+            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
 
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sort',
-              placeholder: 'sort',
-              value: sort,
-              items: sortOptions,
-              size: 'sm2',
-              onChange: (e) => setSort(e.target.value),
-            }}
-          />
+            <StyledFormField
+              intputType="select"
+              containerProps={{
+                sx: { padding: '0px 0px' },
+              }}
+              inputProps={{
+                name: 'sort',
+                placeholder: 'sort',
+                value: sort,
+                items: sortOptions,
+                size: 'sm2',
+                onChange: (e) => setSort(e.target.value),
+              }}
+            />
 
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'status',
-              placeholder: 'status',
-              value: status,
-              items: statusTypeOptions,
-              size: 'sm2',
-              onChange: (e) => setStatus(e.target.value),
-            }}
-          />
+            <StyledFormField
+              intputType="select"
+              containerProps={{
+                sx: { padding: '0px 0px' },
+              }}
+              inputProps={{
+                name: 'status',
+                placeholder: 'status',
+                value: status,
+                items: statusTypeOptions,
+                size: 'sm2',
+                onChange: (e) => setStatus(e.target.value),
+              }}
+            />
+          </Stack>
+          <ShopList setSelectedShop={setSelectedShop} setOpen={setOpen} tabName={tabName} data={searchResult || []} />
         </Stack>
-        <ShopList data={searchResult || []} />
-      </Stack>
+      ) : (
+        <Stack alignContent="center" justifyContent="center">
+          <Typography flex={1} varient="h3" sx={{ fontWeight: 500 }} textAlign="center">
+            No seller profile found
+          </Typography>
+        </Stack>
+      )}
+
+      <Drawer open={open} anchor="right">
+        {selectedMenu === '' && <ViewShopInfo selectedShop={selectedShop} onClose={closeModal} />}
+        {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
+      </Drawer>
     </Box>
   );
 }

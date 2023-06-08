@@ -158,6 +158,7 @@ export const EDIT_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/update`;
 export const TRACK_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/tracking`;
 export const DELIVERY_BOY_ORDERS = `${ADMIN_ENDPOINT}/order/delivery`;
 export const DELIVERY_BOY_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/get-current-location`;
+export const DELIVERY_BOY_SHOP_RATING = `${ADMIN_ENDPOINT}/order/delivery/shop-rating`;
 
 //  SETTINGS
 export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
@@ -246,7 +247,6 @@ export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
-
 // BUTLER
 export const BUTLER_ORDER_LIST = `${ADMIN_ENDPOINT}/butler`;
 export const BUTLER_SINGLE_ORDER = `${ADMIN_ENDPOINT}/butler/single-details`;
