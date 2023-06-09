@@ -48,6 +48,7 @@ export default function AccountList() {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"
+          hideFilters={{ button: true }}
         />
       </Box>
       <UsersTable
