@@ -240,15 +240,35 @@ function ServiceZone() {
         <FilterSelect
           items={listFilterOptions}
           sx={{
-            background: params?.row?.zoneStatus === 'active' ? '#DCFCE7' : '#FEE2E2',
+            background:
+              params?.row?.zoneStatus === 'active' && params?.row?.zoneAvailability !== 'busy'
+                ? '#DCFCE7'
+                : params?.row?.zoneStatus === 'inactive' && params?.row?.zoneAvailability !== 'busy'
+                ? '#FEE2E2'
+                : '#FFB01733',
             '&:hover': {
-              background: params?.row?.zoneStatus === 'active' ? '#DCFCE7' : '#FEE2E2',
+              background:
+                params?.row?.zoneStatus === 'active' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#DCFCE7'
+                  : params?.row?.zoneStatus === 'inactive' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#FEE2E2'
+                  : '#FFB01733',
             },
             '& .MuiInputBase-input': {
-              color: params?.row?.zoneStatus === 'active' ? '#417C45' : '#DD5B63',
+              color:
+                params?.row?.zoneStatus === 'active' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#417C45'
+                  : params?.row?.zoneStatus === 'inactive' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#DD5B63'
+                  : '#FFAB09',
             },
             '& .MuiSelect-icon': {
-              color: params?.row?.zoneStatus === 'active' ? '#417C45' : '#DD5B63',
+              color:
+                params?.row?.zoneStatus === 'active' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#417C45'
+                  : params?.row?.zoneStatus === 'inactive' && params?.row?.zoneAvailability !== 'busy'
+                  ? '#DD5B63'
+                  : '#FFAB09',
             },
           }}
           size="lg1"
