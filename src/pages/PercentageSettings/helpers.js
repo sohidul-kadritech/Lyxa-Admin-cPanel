@@ -28,7 +28,7 @@ export const generatedDataForRange = (data, allData, type) => {
 export const generatedDataForRangeDelete = (data, allData, type) => {
   const value = allData.map((range) => range.to);
   value.sort((a, b) => b - a);
-  if (value[0] !== data?.to) {
+  if (value[0] !== data?.to && type !== 'seller') {
     const range = allData.find((item) => item.to === value[0]);
     successMsg(`Only max delivery range can be delete (try:${range.from}-${range.to}Km)`);
     return false;
@@ -65,10 +65,6 @@ export const validateRange = (allValue, newValue) => {
     return false;
   }
 
-  // if (Number(newValue.charge) < Number(newValue.deliveryPersonCut)) {
-  //   successMsg("Delivery person cut can't be getter than charge", 'error');
-  //   return false;
-  // }
   const existingRange = allValue?.filter((item) => {
     if (Number(newValue.from) > item.from && Number(newValue.from) < item?.to) {
       console.log('1st item');

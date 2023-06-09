@@ -51,7 +51,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
         width: '278px',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.custom.border}`,
-        maxHeight: '70vh',
+        maxHeight: '60vh',
         overflow: 'auto',
       }}
     >
