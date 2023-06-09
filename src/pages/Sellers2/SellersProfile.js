@@ -11,7 +11,8 @@ import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
 import ViewSellerInfo from './ViewSellerInfo';
-import ViewShopInfo from './ViewShopInfo';
+// import ViewShopInfo from './ViewShopInfo';
+import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import { getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
@@ -101,7 +102,7 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
       console.log(e.target.value);
       const matchData = currentSeller?.shops.filter((obj) =>
         // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
+        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase())
       );
       console.log('matchData', matchData);
       setSearchResult(() => [...matchData]);

@@ -45,6 +45,7 @@ export default function Tabs() {
   const history = useHistory();
   const location = useLocation();
   const { shopTabs, dispatchShopTabs, dispatchCurrentUser, currentUser } = useGlobalContext();
+  // eslint-disable-next-line no-unused-vars
   const { userType, seller } = currentUser;
 
   console.log('=================>', 'all-tab', shopTabs?.allTabs);
@@ -57,6 +58,7 @@ export default function Tabs() {
     dispatchCurrentUser({ type: 'shop', payload: { shop: tab.shop } });
     dispatchCurrentUser({ type: 'seller', payload: { seller: tab.seller } });
   };
+
   // on remove tab
   const removeTab = (event, tab) => {
     event.stopPropagation();
@@ -75,8 +77,10 @@ export default function Tabs() {
 
     // is current and only tab
     if (shopTabs?.allTabs?.length === 1) {
-      const fallbackpath = userType === 'admin' ? `/seller/dashboard/${seller?._id}/shops/list` : '/shops/list';
-      history.push(fallbackpath);
+      // console.log('block triggered');
+      // const fallbackpath = userType === 'admin' ? `/seller/dashboard/${seller?._id}/shops/list` : '/shops/list';
+      // history.push(fallbackpath);
+      history.push(tab?.from);
       dispatchCurrentUser({ type: 'shop', payload: { shop: {} } });
       dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
       return;

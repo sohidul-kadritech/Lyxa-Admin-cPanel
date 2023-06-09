@@ -1,8 +1,11 @@
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
+import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SearchBar from './Searchbar';
@@ -27,10 +30,14 @@ const menuItems = [
 ];
 
 export default function ShopList() {
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
+  const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
   const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
   const [currentTab, setCurrentTab] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(null);
   const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery([Api.ALL_SHOP, queryParams], () => AXIOS.get(Api.ALL_SHOP, { params: queryParams }), {
@@ -42,7 +49,19 @@ export default function ShopList() {
   const handleMenuClick = (menu, shop) => {
     if (menu === 'edit') {
       setCurrentShop(shop);
-      setOpen(true);
+      setOpen(menu);
+    }
+
+    if (menu === 'view') {
+      setCurrentShop(shop);
+      setOpen(menu);
+    }
+
+    if (menu === 'access') {
+      const routePath = `/shop/dashboard/${shop._id}`;
+      history.push(routePath);
+      dispatchCurrentUser({ type: 'shop', payload: { shop } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller: {}, from: routeMatch?.url } });
     }
   };
 
@@ -84,17 +103,28 @@ export default function ShopList() {
         anchor="right"
         open={open}
         onClose={() => {
-          setOpen(false);
+          setOpen(null);
           setCurrentShop({});
         }}
       >
-        <AddShop
-          editShop={currentShop}
-          onClose={() => {
-            setOpen(false);
-            setCurrentShop({});
-          }}
-        />
+        {open === 'edit' && (
+          <AddShop
+            editShop={currentShop}
+            onClose={() => {
+              setOpen(null);
+              setCurrentShop({});
+            }}
+          />
+        )}
+        {open === 'view' && (
+          <ViewShopInfo
+            selectedShop={currentShop}
+            onClose={() => {
+              setOpen(null);
+              setCurrentShop({});
+            }}
+          />
+        )}
       </Drawer>
     </Box>
   );
