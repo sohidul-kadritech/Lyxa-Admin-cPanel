@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import TabPanel from '../../../components/Common/TabPanel';
 import { data } from '../../../components/Shared/Invoices/mock';
 import StyledTabs2 from '../../../components/Styled/StyledTab2';
-import SearchBar from '../Searchbar';
 import { getQueryParamsInit } from '../helper';
 import InvoiceTable from './Table';
 
@@ -22,7 +22,7 @@ export default function Invoices() {
     <Box>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       <Box paddingTop="30px" paddingBottom="30px">
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
+        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} hideFilters={{ button: true }} />
       </Box>
       <TabPanel noPadding index="unpaid" value={currentTab}>
         <InvoiceTable rows={data} />

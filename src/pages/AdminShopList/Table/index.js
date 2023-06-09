@@ -1,13 +1,18 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import { useGlobalContext } from '../../../context';
 import TableSkeleton from './TableSkeleton';
 
 export default function ShopListTable({ shops, setPage, page, totalPage, loading, handleMenuClick, menuItems }) {
+  const history = useHistory();
+  const { dispatchCurrentUser } = useGlobalContext();
+
   const column = [
     {
       id: 1,
@@ -40,6 +45,13 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
             imgStyle="circular"
             imgFallbackCharacter={row?.shopName?.charAt(0)}
             name={row?.shopName}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history?.push(`/shop/profile/${row?._id}`);
+                dispatchCurrentUser({ type: 'shop', payload: { shop: row } });
+              },
+            }}
           />
         </Stack>
       ),
@@ -149,4 +161,3 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
     </Box>
   );
 }
-//

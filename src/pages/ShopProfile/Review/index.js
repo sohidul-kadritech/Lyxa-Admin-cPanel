@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import SearchBar from '../Searchbar';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import { getQueryParamsInit } from '../helper';
 import ReviewTable from './ReviewTable';
 
@@ -33,8 +33,8 @@ const searchReviews = (reviews, queryParams) => {
   });
 
   items?.sort((a, b) => {
-    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'desc' ? 1 : -1;
-    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'desc' ? -1 : 1;
+    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? 1 : -1;
+    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? -1 : 1;
     return 0;
   });
 
@@ -49,9 +49,18 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
     setFilteredReviews(searchReviews(reviews, queryParams));
   }, [queryParams]);
 
+  useEffect(() => {
+    setQueryParams(getQueryParamsInit());
+  }, [reviews]);
+
   return (
     <Box>
-      <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search Reviews" />
+      <SearchBar
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        searchPlaceHolder="Search Reviews"
+        hideFilters={{ button: true, status: true }}
+      />
       <ReviewTable reviews={filteredReviews} onViewDetail={onViewDetail} />
     </Box>
   );
