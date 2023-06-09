@@ -4,10 +4,10 @@ import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import TableSkeleton from './TableSkeleton';
 
-// eslint-disable-next-line no-unused-vars
-export default function ShopListTable({ shops, setPage, page, totalPage, loading }) {
+export default function ShopListTable({ shops, setPage, page, totalPage, loading, handleMenuClick, menuItems }) {
   const column = [
     {
       id: 1,
@@ -65,7 +65,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'ORDERS',
       field: 'totalOrder',
       flex: 1,
-      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -73,7 +72,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'AVG.TIME',
       field: 'avgOrderDeliveryTime',
       flex: 1,
-      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -83,7 +81,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      // sortable: false,
       renderCell: ({ value }) => <Rating amount={value} />,
     },
     {
@@ -91,10 +88,26 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'PROFIT',
       field: 'totalProfit',
       flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+    },
+    {
+      id: 7,
+      headerName: '',
+      field: 'action',
+      flex: 0.9,
       align: 'right',
       headerAlign: 'right',
-      // sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      sortable: false,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            handleMenuClick(menu, params.row);
+          }}
+          menuItems={menuItems}
+        />
+      ),
     },
   ];
 
@@ -136,3 +149,4 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
     </Box>
   );
 }
+//

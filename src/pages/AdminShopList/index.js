@@ -1,12 +1,12 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import AddShop from '../../components/Shared/AddShop';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SearchBar from './Searchbar';
 import ShopListTable from './Table';
-// import ShopListTable from './ShopListTable';
 
 const queryParamsInit = (type) => ({
   page: 1,
@@ -20,16 +20,31 @@ const queryParamsInit = (type) => ({
 
 const tabValueToTypeMap = { 0: 'food', 1: 'grocery', 2: 'pharmacy' };
 
+const menuItems = [
+  { label: 'View Shop', value: 'view' },
+  { label: 'Access as Shop', value: 'access' },
+  { label: 'Edit Shop', value: 'edit' },
+];
+
 export default function ShopList() {
   const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
   const [currentTab, setCurrentTab] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery([Api.ALL_SHOP, queryParams], () => AXIOS.get(Api.ALL_SHOP, { params: queryParams }), {
     onSuccess: (data) => {
       setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
     },
   });
+
+  const handleMenuClick = (menu, shop) => {
+    if (menu === 'edit') {
+      setCurrentShop(shop);
+      setOpen(true);
+    }
+  };
 
   return (
     <Box>
@@ -62,7 +77,25 @@ export default function ShopList() {
         setPage={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
+        menuItems={menuItems}
+        handleMenuClick={handleMenuClick}
       />
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          setCurrentShop({});
+        }}
+      >
+        <AddShop
+          editShop={currentShop}
+          onClose={() => {
+            setOpen(false);
+            setCurrentShop({});
+          }}
+        />
+      </Drawer>
     </Box>
   );
 }
