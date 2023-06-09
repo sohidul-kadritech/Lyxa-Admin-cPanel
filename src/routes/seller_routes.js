@@ -5,7 +5,7 @@ import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerDashboard from '../pages/SellerDashboard';
 import SellerFinancials from '../pages/SellerFinancials';
-import ShopList from '../pages/ShopList';
+import SellerShopList from '../pages/SellerShopList';
 import Users from '../pages/Users2';
 
 // import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
@@ -25,7 +25,7 @@ export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: SellerDashboard },
   { path: `${prefix}/orders/list`, component: OrdersList },
   { path: `${prefix}/orders/details/:id`, component: OrderDetails },
-  { path: `${prefix}/shops/list`, component: ShopList },
+  { path: `${prefix}/shops/list`, component: SellerShopList },
   { path: `${prefix}/users`, component: () => <Users userType="seller" /> },
   { path: `${prefix}/financials`, component: SellerFinancials },
   {

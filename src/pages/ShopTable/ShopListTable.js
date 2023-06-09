@@ -92,7 +92,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      sortable: false,
+      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
   ];
