@@ -233,12 +233,17 @@ export const admin_menu_items = [
       },
       {
         label: 'Shops New',
-        to: '/shops/list2',
+        to: '/shop',
         icon: ShopIcon,
       },
       {
         label: 'Users',
         to: '/users/list',
+        icon: UsersIcon,
+      },
+      {
+        label: 'Accounts',
+        to: '/accounts',
         icon: UsersIcon,
       },
       {

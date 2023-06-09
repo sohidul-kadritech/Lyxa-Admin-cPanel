@@ -29,7 +29,16 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
               background: statusColorVariants[getRiderStatus(row)]?.color,
             }}
           />
-          <UserAvatar imgUrl={row?.image} name={row?.name} imgStyle="circular" subTitle={row?.autoGenId} />
+          <UserAvatar
+            imgUrl={row?.image}
+            name={row?.name}
+            imgStyle="circular"
+            subTitle={row?.autoGenId}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => onProfileView(row),
+            }}
+          />
         </Stack>
       ),
     },

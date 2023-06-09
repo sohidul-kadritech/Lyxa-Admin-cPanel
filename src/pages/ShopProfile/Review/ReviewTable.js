@@ -36,11 +36,12 @@ export default function ReviewTable({ reviews, onViewDetail }) {
           imgStyle="circle"
           imgUrl={row?.user?.profile_photo}
           name={row?.user?.name}
-          subTitle={row?.order?._id}
+          subTitle={row?.order?.orderId}
           subTitleProps={{
-            sx: { color: 'primary.main' },
+            sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              onViewDetail(row);
+              console.log(row);
+              onViewDetail(row?.order);
             },
           }}
         />

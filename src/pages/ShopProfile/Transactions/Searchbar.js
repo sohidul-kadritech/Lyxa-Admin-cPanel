@@ -10,11 +10,11 @@ import { useGlobalContext } from '../../../context';
 const sortOptions = [
   {
     label: 'Desc',
-    value: 'desc',
+    value: 'DESC',
   },
   {
     label: 'Asc',
-    value: 'asc',
+    value: 'ASC',
   },
 ];
 

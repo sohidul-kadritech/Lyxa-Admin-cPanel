@@ -2,13 +2,13 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import SearchBar from './Searchbar';
 import ShopListTable from './Table';
 
 const queryParamsInit = (type) => ({
@@ -86,7 +86,18 @@ export default function ShopList() {
         <Tab label="Pharmacy" />
       </Tabs>
       <Box pt="30px" pb="30px">
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search shops" />
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          searchPlaceHolder="Search shops"
+          hideFilters={{
+            button: true,
+            status: true,
+            startDate: true,
+            endDate: true,
+            sort: true,
+          }}
+        />
       </Box>
       <ShopListTable
         shops={shopsQuery?.data?.data?.shops}
