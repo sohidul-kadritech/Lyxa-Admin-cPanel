@@ -238,6 +238,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
 
         <Box sx={{ position: 'relative' }}>
           <ZoneMap
+            currentZoneName={rowData?.zoneName || ''}
             setPolygonArea={setPolygonArea}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
