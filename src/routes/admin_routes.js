@@ -79,6 +79,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
+import AccountList from '../pages/Accounts';
 import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
@@ -98,6 +99,7 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
@@ -122,6 +124,7 @@ export const admin_routes = [
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
+  { path: '/accounts', component: AccountList },
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
@@ -135,7 +138,6 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  // { path: '/shops/das/:id', component: () => <Marketing viewUserType="admin" /> },
   { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
@@ -145,7 +147,8 @@ export const admin_routes = [
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
     component: () => <MarketingDashboard viewUserType="admin" />,
   },
-  { path: '/shops/list2', component: AdminShopList },
+  { path: '/shop', component: AdminShopList },
+  { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 
   // product

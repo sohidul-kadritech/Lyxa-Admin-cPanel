@@ -142,6 +142,7 @@ function ShopList({
             width: '100%',
             cursor: 'default',
             textTransform: 'capitalize',
+            padding: '16px 0px',
             color: theme.palette.text?.primary,
           }}
         >
@@ -175,6 +176,7 @@ function ShopList({
           <StyledIconButton
             onClick={() => {
               setSelectedShop(params?.row);
+              props.setSelectedMenu('');
               setOpen(true);
             }}
             color="primary"

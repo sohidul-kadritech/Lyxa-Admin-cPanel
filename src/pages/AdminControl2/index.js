@@ -38,7 +38,7 @@ function AdminControl() {
         </Tabs>
       </Box>
 
-      <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
+      <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }} width="500px">
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
 
         <AddMenuButton
