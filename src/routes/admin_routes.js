@@ -98,6 +98,7 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
@@ -145,7 +146,8 @@ export const admin_routes = [
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
     component: () => <MarketingDashboard viewUserType="admin" />,
   },
-  { path: '/shops/list2', component: AdminShopList },
+  { path: '/shop', component: AdminShopList },
+  { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 
   // product

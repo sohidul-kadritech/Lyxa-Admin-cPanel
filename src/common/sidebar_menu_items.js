@@ -233,7 +233,7 @@ export const admin_menu_items = [
       },
       {
         label: 'Shops New',
-        to: '/shops/list2',
+        to: '/shop',
         icon: ShopIcon,
       },
       {
