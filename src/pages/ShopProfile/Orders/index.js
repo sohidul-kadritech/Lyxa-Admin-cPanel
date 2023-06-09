@@ -11,12 +11,12 @@ import { getQueryParamsInit } from '../helper';
 export default function ShopOrders({ shop, onViewDetail }) {
   const [totalPage, setTotalPage] = useState(0);
   const [queryParams, setQueryParams] = useState(
-    getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'desc', orderType: 'all', model: 'order' })
+    getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' })
   );
 
   useEffect(() => {
     setQueryParams(
-      getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'desc', orderType: 'all', model: 'order' })
+      getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' })
     );
     setTotalPage(1);
   }, [shop?._id]);
@@ -40,7 +40,7 @@ export default function ShopOrders({ shop, onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Orders"
-        hideFilters={{ button: true }}
+        hideFilters={{ button: true, status: true }}
       />
       <Box paddingTop="30px" />
       <OrderTable

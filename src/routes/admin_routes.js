@@ -79,6 +79,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
+import AccountList from '../pages/Accounts';
 import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
@@ -121,6 +122,7 @@ export const admin_routes = [
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
+  { path: '/accounts', component: AccountList },
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
@@ -134,7 +136,6 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  // { path: '/shops/das/:id', component: () => <Marketing viewUserType="admin" /> },
   { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },

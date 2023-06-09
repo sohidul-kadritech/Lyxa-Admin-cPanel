@@ -242,6 +242,11 @@ export const admin_menu_items = [
         icon: UsersIcon,
       },
       {
+        label: 'Accounts',
+        to: '/accounts',
+        icon: UsersIcon,
+      },
+      {
         label: 'Riders',
         to: '/riders',
         icon: RidersAdminIcons,

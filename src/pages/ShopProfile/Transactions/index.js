@@ -21,13 +21,13 @@ const getTrxQueryParams = (shopId) => ({
   page: 1,
   pageSize: 5,
   shopId,
-  sortBy: 'desc',
+  sortBy: 'DESC',
   tnxFilter: {
     startDate: moment().subtract(7, 'day'),
     endDate: moment(),
     type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
     searchKey: '',
-    amountBy: 'desc',
+    amountBy: 'DESC',
     amountRange: '',
   },
 });

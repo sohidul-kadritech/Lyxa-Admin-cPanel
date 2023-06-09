@@ -33,8 +33,8 @@ const searchReviews = (reviews, queryParams) => {
   });
 
   items?.sort((a, b) => {
-    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'desc' ? 1 : -1;
-    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'desc' ? -1 : 1;
+    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? 1 : -1;
+    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? -1 : 1;
     return 0;
   });
 
@@ -59,7 +59,7 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Reviews"
-        hideFilters={{ button: true }}
+        hideFilters={{ button: true, status: true }}
       />
       <ReviewTable reviews={filteredReviews} onViewDetail={onViewDetail} />
     </Box>

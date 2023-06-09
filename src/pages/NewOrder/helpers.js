@@ -40,8 +40,8 @@ export const statusColorVariants = {
   },
 
   delivered: {
-    color: '#5BBD4E',
-    background: 'rgba(91, 189, 78, 0.08)',
+    color: '#417C45',
+    background: '#DCFCE7',
   },
 
   cancelled: {

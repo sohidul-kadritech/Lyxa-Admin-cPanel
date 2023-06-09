@@ -9,11 +9,22 @@ import StyledSearchBar from '../Styled/StyledSearchBar';
 const sortOptions = [
   {
     label: 'Desc',
-    value: 'desc',
+    value: 'DESC',
   },
   {
     label: 'Asc',
-    value: 'asc',
+    value: 'ASC',
+  },
+];
+
+const statusOptions = [
+  {
+    label: 'Active',
+    value: 'active',
+  },
+  {
+    label: 'Inactive',
+    value: 'inactive',
   },
 ];
 
@@ -89,6 +100,22 @@ export default function SearchBar({
           }}
           onChange={(e) => {
             setQueryParams((prev) => ({ ...prev, sortBy: e.target.value, page: 1 }));
+          }}
+        />
+      )}
+      {/* status */}
+      {!hideFilters?.status && (
+        <FilterSelect
+          items={statusOptions}
+          value={queryParams.status}
+          placeholder="Status"
+          tooltip="Status"
+          size="sm"
+          sx={{
+            minWidth: 'auto',
+          }}
+          onChange={(e) => {
+            setQueryParams((prev) => ({ ...prev, status: e.target.value, page: 1 }));
           }}
         />
       )}

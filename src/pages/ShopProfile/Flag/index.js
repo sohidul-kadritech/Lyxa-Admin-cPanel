@@ -24,8 +24,8 @@ const searchFlags = (flags, queryParams) => {
   });
 
   items?.sort((a, b) => {
-    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'desc' ? 1 : -1;
-    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'desc' ? -1 : 1;
+    if (moment(a?.createdAt).isBefore(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? 1 : -1;
+    if (moment(a?.createdAt).isAfter(b?.createdAt)) return queryParams?.sortBy === 'DESC' ? -1 : 1;
     return 0;
   });
 
@@ -47,7 +47,7 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Flags"
-        hideFilters={{ button: true }}
+        hideFilters={{ button: true, status: true }}
       />
       <Box sx={{ paddingTop: '30px' }} />
       <FlagTable flags={filteredData} onViewDetail={onViewDetail} />
