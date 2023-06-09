@@ -21,7 +21,7 @@ export default function MinimumOrder({
   console.log('currency', currency);
   return (
     <Box sx={props.boxSx}>
-      <Typography sx={TypoSx}>Minimum order ({currency})</Typography>
+      <Typography sx={TypoSx}>Minimum Order ({currency})</Typography>
       <Box
         sx={{
           marginTop: '15px',

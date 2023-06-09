@@ -1,12 +1,13 @@
 import { Box, Stack, Typography } from '@mui/material';
-import Rating from '../../components/Common/Rating';
-import TablePagination from '../../components/Common/TablePagination';
-import UserAvatar from '../../components/Common/UserAvatar';
-import StyledTable from '../../components/Styled/StyledTable3';
-import StyledBox from '../../components/StyledCharts/StyledBox';
+import Rating from '../../../components/Common/Rating';
+import TablePagination from '../../../components/Common/TablePagination';
+import UserAvatar from '../../../components/Common/UserAvatar';
+import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
+import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
+import TableSkeleton from './TableSkeleton';
 
-// eslint-disable-next-line no-unused-vars
-export default function ShopListTable({ shops, setPage, page, totalPage, loading }) {
+export default function ShopListTable({ shops, setPage, page, totalPage, loading, handleMenuClick, menuItems }) {
   const column = [
     {
       id: 1,
@@ -64,7 +65,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'ORDERS',
       field: 'totalOrder',
       flex: 1,
-      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -72,7 +72,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'AVG.TIME',
       field: 'avgOrderDeliveryTime',
       flex: 1,
-      // sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
@@ -82,7 +81,6 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      // sortable: false,
       renderCell: ({ value }) => <Rating amount={value} />,
     },
     {
@@ -90,43 +88,65 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       headerName: 'PROFIT',
       field: 'totalProfit',
       flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+    },
+    {
+      id: 7,
+      headerName: '',
+      field: 'action',
+      flex: 0.9,
       align: 'right',
       headerAlign: 'right',
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            handleMenuClick(menu, params.row);
+          }}
+          menuItems={menuItems}
+        />
+      ),
     },
   ];
 
   return (
     <Box>
-      <StyledBox
-        sx={{
-          pr: 5,
-          pl: 3.5,
-          pt: 1,
-          pb: 1,
-        }}
-      >
-        <StyledTable
-          columns={column}
-          rows={
-            shops?.map((s, i) => {
-              s.rowNumber = i + 1;
-              return s;
-            }) || []
-          }
-          getRowId={(row) => row?._id}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Shops found
-              </Stack>
-            ),
-          }}
-        />
-      </StyledBox>
-      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+      {loading && <TableSkeleton />}
+      {!loading && (
+        <>
+          <StyledBox
+            sx={{
+              pr: 5,
+              pl: 3.5,
+              pt: 1,
+              pb: 1,
+            }}
+          >
+            <StyledTable
+              columns={column}
+              rows={
+                shops?.map((s, i) => {
+                  s.rowNumber = i + 1;
+                  return s;
+                }) || []
+              }
+              getRowId={(row) => row?._id}
+              rowHeight={71}
+              components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    No Shops found
+                  </Stack>
+                ),
+              }}
+            />
+          </StyledBox>
+          <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+        </>
+      )}
     </Box>
   );
 }
+//

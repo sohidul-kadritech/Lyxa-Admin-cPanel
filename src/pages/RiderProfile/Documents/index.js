@@ -8,13 +8,14 @@ import { useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 // eslint-disable-next-line import/no-named-as-default
+import EditDocument from '../../../components/Common/EditDocument';
+// eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { downloadFile } from '../../../helpers/downloadFile';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import EditDocument from './EditDocument';
 
 const createDocumentRows = (rider) => {
   const rows = [];

@@ -11,6 +11,7 @@ import BannerPage from '../pages/Banner/BannerPage';
 import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import Role from '../pages/AdminControl/Role/Role';
+import AdminShopList from '../pages/AdminShopList';
 import AdminLogHistory from '../pages/AppWallet/AdminLogHistory/AdminLogHistory';
 import DeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
 import PaymentHistory from '../pages/AppWallet/PaymentHistory/PaymentHistory';
@@ -32,7 +33,6 @@ import SellerList from '../pages/Seller/SellerList/SellerList';
 import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
-import ShopListTable from '../pages/ShopTable';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
 import UsersList from '../pages/Users/UsersList/UsersList';
 
@@ -78,6 +78,7 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
@@ -133,6 +134,7 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
+  // { path: '/shops/das/:id', component: () => <Marketing viewUserType="admin" /> },
   { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
@@ -142,7 +144,8 @@ export const admin_routes = [
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
     component: () => <MarketingDashboard viewUserType="admin" />,
   },
-  { path: '/shops/list2', component: ShopListTable },
+  { path: '/shops/list2', component: AdminShopList },
+  { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 
   // product
   { path: '/products/list2', component: ProductList },

@@ -8,6 +8,7 @@ import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 
 import AppPagination from '../../components/Common/AppPagination2';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import TabPanel from '../../components/Common/TabPanel';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -17,6 +18,7 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import AddZoneStatus from './AddZoneStatus';
 import CreateZone from './CreateZone';
 import EditZone from './EditZone';
 import MapOverview from './MapOverview';
@@ -80,6 +82,8 @@ function ServiceZone() {
   const theme = useTheme();
 
   const currentLocation = useGeoLocation();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [zoneId, setZoneId] = useState('');
   const [open, setOpen] = useState(false);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -142,6 +146,7 @@ function ServiceZone() {
       if (data?.status) {
         successMsg('Succesfully deleted', 'success');
         queryClient.invalidateQueries(apiurl);
+        setIsConfirmModalOpen(false);
       }
     },
   });
@@ -149,9 +154,11 @@ function ServiceZone() {
   const updateAZoneQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_ZONE, data), {
     onSuccess: (data) => {
       if (data?.status) {
-        successMsg('Succesfully updated', 'success');
+        successMsg(data.message, 'success');
         queryClient.invalidateQueries(apiurl);
         setOpen(false);
+      } else {
+        successMsg(data.message, 'error');
       }
     },
   });
@@ -165,7 +172,13 @@ function ServiceZone() {
 
   // eslint-disable-next-line no-unused-vars
   const onStatusChange = (value, item) => {
-    item.status = value;
+    item.zoneStatus = value;
+    // console.log('item', item);
+    updateAZoneQuery.mutate({
+      zoneId: item?._id,
+      zoneStatus: item?.zoneStatus,
+    });
+
     // setRender((prev) => !prev);
     // tagsMutation.mutate(item);
   };
@@ -177,8 +190,7 @@ function ServiceZone() {
       field: 'zoneName',
       sortable: false,
       density: 'comfortable',
-      flex: 3,
-
+      flex: 1,
       renderCell: ({ value }) => (
         <Box sx={{ flex: '3' }}>
           <Typography>{value}</Typography>
@@ -207,28 +219,29 @@ function ServiceZone() {
     },
     {
       id: 2,
-      headerName: 'IS BUSY',
-      field: 'isBusy',
+      headerName: 'STATUS',
+      field: 'status',
       sortable: false,
-      flex: 3,
+      flex: 1.5,
 
       renderCell: (params) => (
         <FilterSelect
           items={listFilterOptions}
           sx={{
-            background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+            background: params?.row?.zoneStatus === 'active' ? '#DCFCE7' : '#FEE2E2',
             '&:hover': {
-              background: params?.row?.status === 'active' ? '#DCFCE7' : '#FEE2E2',
+              background: params?.row?.zoneStatus === 'active' ? '#DCFCE7' : '#FEE2E2',
             },
             '& .MuiInputBase-input': {
-              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+              color: params?.row?.zoneStatus === 'active' ? '#417C45' : '#DD5B63',
             },
             '& .MuiSelect-icon': {
-              color: params?.row?.status === 'active' ? '#417C45' : '#DD5B63',
+              color: params?.row?.zoneStatus === 'active' ? '#417C45' : '#DD5B63',
             },
           }}
           size="lg1"
-          value="active"
+          value={params?.row?.zoneStatus}
+          readOnly={params?.row?.zoneAvailability === 'busy'}
           onChange={(e) => {
             onStatusChange(e.target.value, params.row);
           }}
@@ -240,7 +253,7 @@ function ServiceZone() {
       headerName: 'Date Created',
       field: 'createdAt',
       sortable: false,
-      flex: 2,
+      flex: 1.5,
 
       renderCell: ({ value }) => <Typography>{dateFormation(value)}</Typography>,
     },
@@ -253,18 +266,20 @@ function ServiceZone() {
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
           <StyledSwitch
-            checked={value?.row?.zoneStatus === 'active'}
+            checked={value?.row?.zoneAvailability === 'online'}
+            disabled={value?.row?.zoneStatus !== 'active'}
             onChange={() => {
-              console.log('value; ', value?.row?.zoneStatus);
-              if (value?.row?.zoneStatus === 'active') {
-                updateAZoneQuery.mutate({
-                  zoneId: value?.row?._id,
-                  zoneStatus: 'inactive',
-                });
+              console.log('value; ', value?.row?.zoneAvailability);
+              setActionType('updateZoneStatus');
+              if (value?.row.zoneAvailability !== 'busy') {
+                setRowData(value?.row);
+                setOpen(true);
               } else {
                 updateAZoneQuery.mutate({
                   zoneId: value?.row?._id,
-                  zoneStatus: 'active',
+                  zoneAvailability: 'online',
+                  zoneBusyTitle: '',
+                  zoneBusyDescription: '',
                 });
               }
             }}
@@ -293,7 +308,10 @@ function ServiceZone() {
           </Button>
 
           <Button
-            onClick={() => deletedAzoneById(value?.row._id)}
+            onClick={() => {
+              setZoneId(value?.row?._id);
+              setIsConfirmModalOpen(true);
+            }}
             sx={{
               minWidth: '32px',
               padding: '9px',
@@ -355,7 +373,6 @@ function ServiceZone() {
                 onChange={(e) => setSearchedValue(e.target.value)}
               />
               <StyledFormField
-                // label="Status *"
                 intputType="select"
                 containerProps={{
                   sx: fieldContainerSx,
@@ -365,12 +382,11 @@ function ServiceZone() {
                   value: slectedZoneStatus,
                   items: statusOptions,
                   size: 'sm2',
-                  //   items: categories,
+
                   onChange: (e) => setSelectedZoneStatus(e.target.value),
-                  //   readOnly: Boolean(newProductCategory) || productReadonly,
                 }}
               />
-
+              {/* Add new zone */}
               <AddMenuButton
                 onClick={() => {
                   setOpen(() => {
@@ -432,11 +448,12 @@ function ServiceZone() {
                     setOpen(!open);
                   }}
                 />
-              ) : (
+              ) : actionType === 'edit' ? (
                 <EditZone
                   allZones={getAllZones?.data?.data?.zones || []}
                   currentLocation={{
                     loaded: true,
+                    isCurrent: null,
                     coordinates: {
                       lat: rowData?.zoneGeometry?.coordinates[0][0][1],
                       lon: rowData?.zoneGeometry?.coordinates[0][0][0],
@@ -446,6 +463,24 @@ function ServiceZone() {
                   editZone={updateAZoneQuery}
                   onClose={() => {
                     console.log('edit');
+                    setOpen(!open);
+                  }}
+                />
+              ) : (
+                <AddZoneStatus
+                  allZones={getAllZones?.data?.data?.zones || []}
+                  currentLocation={{
+                    loaded: true,
+                    isCurrent: null,
+                    coordinates: {
+                      lat: rowData?.zoneGeometry?.coordinates[0][0][1],
+                      lon: rowData?.zoneGeometry?.coordinates[0][0][0],
+                    },
+                  }}
+                  updateAZoneQuery={updateAZoneQuery}
+                  rowData={rowData || { zoneName: 'no name' }}
+                  onClose={() => {
+                    console.log('update status');
                     setOpen(!open);
                   }}
                 />
@@ -482,6 +517,20 @@ function ServiceZone() {
           </Grid>
         )}
       </Grid>
+      {/* confirmation of delete a zone */}
+      <ConfirmModal
+        message="Do you want to delete this zone ?"
+        isOpen={isConfirmModalOpen}
+        blurClose
+        loading={deleteAZoneQuery?.isLoading}
+        onCancel={() => {
+          setIsConfirmModalOpen(false);
+        }}
+        onConfirm={() => {
+          deletedAzoneById(zoneId);
+          // setIsConfirmModalOpen(false);
+        }}
+      />
     </Box>
   );
 }

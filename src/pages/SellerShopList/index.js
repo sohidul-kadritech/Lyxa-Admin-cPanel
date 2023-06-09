@@ -15,7 +15,7 @@ import PageSkeleton from './PageSkeleton';
 import SearchBar from './SearchBar';
 import { filterShops, filtersInit } from './helper';
 
-export default function ShopList() {
+export default function SellerShopList() {
   const { currentUser, dispatchCurrentUser } = useGlobalContext();
   const { seller, shop: currentShop } = currentUser;
   const [loading, setLoading] = useState(false);

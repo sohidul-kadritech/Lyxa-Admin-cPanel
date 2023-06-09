@@ -41,7 +41,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller } });
+      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller, from: routeMatch?.url } });
     }
   };
 

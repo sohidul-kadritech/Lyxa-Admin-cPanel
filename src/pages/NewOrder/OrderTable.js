@@ -152,7 +152,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
   }
 
   if (loading) {
-    return <PageSkeleton />;
+    return <PageSkeleton orderType={orderType} />;
   }
 
   return (

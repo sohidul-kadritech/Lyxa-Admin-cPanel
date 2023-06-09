@@ -4,6 +4,7 @@ const createTab = (payload) => ({
   shop: payload.shop,
   seller: payload.seller || {},
   currentLocation: payload.location,
+  from: payload?.from,
 });
 
 export const shopTabsInit = {
@@ -13,10 +14,25 @@ export const shopTabsInit = {
 
 export const shopTabsReducer = (state, { type, payload }) => {
   if (type === 'add-tab') {
-    console.log('new tab ====================>', { payload });
-    const newTab = createTab(payload);
+    /*
+      1. Check if shop is already in tabs to avoid duplicates.
+      2. Check for case when shop is already accessed directly from admin and is inside tabs.
+      But again trying to access shop from insde seller.
+      3. Else add a new tab and set it active tab.
+    */
 
-    if (state.allTabs.find((tab) => tab.shopId === newTab.shopId)) return { ...state, currentTabId: newTab?.shopId };
+    const newTab = createTab(payload);
+    const duplicateTab = state.allTabs.find((tab) => tab.shopId === newTab.shopId);
+
+    if (duplicateTab && !duplicateTab?._id) {
+      duplicateTab.seller = payload.seller;
+      duplicateTab.from = payload.from;
+      return { ...state, currentTabId: duplicateTab?.shopId };
+    }
+
+    if (duplicateTab) {
+      return { ...state, currentTabId: duplicateTab?.shopId };
+    }
 
     return {
       ...state,
@@ -25,6 +41,7 @@ export const shopTabsReducer = (state, { type, payload }) => {
     };
   }
 
+  // change active tab location
   if (type === 'change-current-tab-location') {
     return {
       ...state,

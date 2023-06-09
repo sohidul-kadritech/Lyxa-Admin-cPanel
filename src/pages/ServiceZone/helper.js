@@ -15,10 +15,7 @@ export const validateEditedData = (data) => {
     successMsg('Please add a zone area!');
     return false;
   }
-  if (!data?.zoneStatus) {
-    successMsg('Please select a zone status!');
-    return false;
-  }
+
   if (data?.zoneGeometry?.coordinates[0].length === 0) {
     successMsg('Please select a polygon!');
     return false;
