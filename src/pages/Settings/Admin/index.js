@@ -70,14 +70,9 @@ const getpagesList = () => [
     label: 'Privacy',
     to: '/privacy',
   },
-
   {
     label: 'Terms & Conditions',
     to: '/terms-and-conditions',
-  },
-  {
-    label: 'Refer A Friend',
-    to: '/settings/refer-friend',
   },
   {
     label: 'Request New Area',
@@ -96,7 +91,7 @@ const filterPages = (searchKey, pages) => {
     page?.label
       ?.toLowerCase()
       // eslint-disable-next-line prettier/prettier
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
   );
 };
 
