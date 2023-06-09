@@ -138,7 +138,7 @@ function SellersProfile({
   const sortHandler = (e) => {
     // console.log(e.target.value, 'sort');
     setSort(e.target.value);
-    // const oldOrderData = currentSeller?.shop?.slice();
+    // const oldOrderData = currentSeller?.shops
     // // const oldOrderData = currentSeller?.shops;
     // console.log('=====>', oldOrderData);
     // if (e.target.value === 'asc') {

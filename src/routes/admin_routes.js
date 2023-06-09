@@ -79,6 +79,7 @@ import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
+import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
@@ -212,6 +213,7 @@ export const admin_routes = [
 
   // admin control
   { path: '/admin/list', component: AdminList },
+  { path: '/admin/list2', component: AdminControl },
   { path: '/admin/create', component: CreateAdmin },
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },

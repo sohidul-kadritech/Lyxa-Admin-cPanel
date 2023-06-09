@@ -113,7 +113,6 @@ function SellerList2() {
       {/* Sellers Page Top Section */}
       <PageTop
         title="Seller List"
-        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',
