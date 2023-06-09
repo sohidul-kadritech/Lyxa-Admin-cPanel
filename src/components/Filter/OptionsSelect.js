@@ -20,12 +20,14 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 
   '&:active': {
     boxShadow: 'none!important',
-  },
-
-  '&:hover, &.active': {
     border: `1.25px solid ${theme.palette.primary.main}`,
     background: theme.palette.background.secondary,
   },
+
+  // '&:hover, &.active': {
+  //   border: `1.25px solid ${theme.palette.primary.main}`,
+  //   background: theme.palette.background.secondary,
+  // },
 }));
 
 export default function OptionsSelect({

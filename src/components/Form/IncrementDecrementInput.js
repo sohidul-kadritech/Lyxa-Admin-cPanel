@@ -9,13 +9,21 @@ const StyledContainer = styled(Stack)(({ theme }) => ({
   borderRadius: '30px',
 }));
 
-export default function IncrementDecrementInput({ value, onChange }) {
+export default function IncrementDecrementInput({
+  value,
+  onChange,
+  min = Number.MIN_SAFE_INTEGER,
+  max = Number.MAX_SAFE_INTEGER,
+}) {
   return (
     <StyledContainer direction="row" justifyContent="space-between" alignItems="center">
       <Button
+        disabled={Number(value) === min}
         disableRipple
         onClick={() => {
-          onChange(Number(value) - 1);
+          if (Number(value) > min) {
+            onChange(Number(value) - 1);
+          }
         }}
       >
         <RemoveIcon />
@@ -33,13 +41,22 @@ export default function IncrementDecrementInput({ value, onChange }) {
         type="number"
         value={value}
         onChange={(e) => {
-          onChange(e.target.value);
+          if (Number(e.target.value) < min) {
+            onChange(min);
+          } else if (Number(e.target.value) > max) {
+            onChange(max);
+          } else {
+            onChange(Number(e.target.value));
+          }
         }}
       />
       <Button
         disableRipple
+        disabled={Number(value) === max}
         onClick={() => {
-          onChange(Number(value) + 1);
+          if (Number(value) < max) {
+            onChange(Number(value) + 1);
+          }
         }}
       >
         <AddIcon />

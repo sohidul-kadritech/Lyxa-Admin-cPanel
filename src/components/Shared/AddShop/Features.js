@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { dietryOptions } from '../../../pages/Menu/helpers';
 import IncrementDecrementInput from '../../Form/IncrementDecrementInput';
 import StyledFormField from '../../Form/StyledFormField';
+import StyledSwitch from '../../Styled/StyledSwitch';
 import OpenDays from './OpenDays';
 import { deliveryOptions, paymentOptions, priceRangeOptions } from './helper';
 
@@ -35,6 +36,8 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
   };
 
   const { tagsOptions, cuisinesOptions } = useMemo(() => filterTagsAndCuisine(tagsCuisine), [tagsCuisine]);
+
+  console.log(shop);
 
   return (
     <Box>
@@ -113,12 +116,46 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
         </Typography>
         <IncrementDecrementInput
           value={shop?.minOrderAmount}
+          min={1}
           onChange={(value) => {
             shop.minOrderAmount = value;
             setRender(!render);
           }}
         />
       </Stack>
+      {/* order capacity */}
+      <Stack gap={2} pt={3} pb={3}>
+        <Stack justifyContent="space-between" alignItems="center" direction="row" pb={1}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: '600',
+              fontSize: '15px',
+              lineHeight: '18px',
+            }}
+          >
+            Order Capacity
+          </Typography>
+          <StyledSwitch
+            checked={shop?.orderCapacity > 0}
+            onChange={(e) => {
+              shop.orderCapacity = e.target.checked ? 1 : 0;
+              setRender(!render);
+            }}
+          />
+        </Stack>
+        {shop?.orderCapacity > 0 && (
+          <IncrementDecrementInput
+            value={shop?.orderCapacity}
+            min={1}
+            onChange={(value) => {
+              shop.orderCapacity = value;
+              setRender(!render);
+            }}
+          />
+        )}
+      </Stack>
+
       {/* payment method */}
       <StyledFormField
         intputType="optionsSelect"
@@ -180,7 +217,6 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
           }}
         />
       )}
-
       {/* dietary */}
       <StyledFormField
         intputType="optionsSelect"
