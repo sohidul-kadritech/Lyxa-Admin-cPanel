@@ -11,8 +11,10 @@ import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
 import ViewSellerInfo from './ViewSellerInfo';
-import ViewShopInfo from './ViewShopInfo';
-import { getThreedotMenuOptions, sellerShopTabType } from './helpers';
+// import ViewShopInfo from './ViewShopInfo';
+import AddShop from '../../components/Shared/AddShop';
+import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   return (
@@ -50,11 +52,23 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
               </Box>
             </Stack>
             <Stack direction="row" gap="16px">
-              <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
-                <Stack direction="row" alignItems="center" gap="5.4px">
-                  <LocationIcon /> {data?.addressSeller?.address}
-                </Stack>
-              </Typography>
+              <Stack direction="row" alignItems="center" gap="5.4px">
+                <LocationIcon />{' '}
+                <Typography
+                  variant="h4"
+                  flex={1}
+                  sx={{
+                    fontWeight: '500!important',
+                    maxWidth: '350px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {data?.addressSeller?.address}
+                </Typography>
+              </Stack>
+
               <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
                 <Stack direction="row" alignItems="center" gap="16px">
                   <CircleIcon />
@@ -79,7 +93,19 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   );
 }
 
-function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChargeSidebar, setIsEdit }) {
+function SellersProfile({
+  currentSeller = {},
+  setAddSidebarOpen,
+  setOpenLyxaChargeSidebar,
+  setIsEdit,
+  replaceDocument,
+  removeDocument,
+  isConfirmModal,
+  setIsConfirmModal,
+  editSellerQuery,
+  editDocumentOpen,
+  setEditDocumentOpen,
+}) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
   const [currentTab, setCurrentTab] = useState(0);
@@ -109,6 +135,36 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
       setSearchResult(() => [...currentSeller.shops]);
     }
   };
+  const sortHandler = (e) => {
+    // console.log(e.target.value, 'sort');
+    setSort(e.target.value);
+    // const oldOrderData = currentSeller?.shops
+    // // const oldOrderData = currentSeller?.shops;
+    // console.log('=====>', oldOrderData);
+    // if (e.target.value === 'asc') {
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   oldOrderData.sort((a, b) => a?.shopName - b?.shopName);
+
+    //   console.log('asc sorted data', oldOrderData);
+    // } else if (e.target.value === 'dsc') {
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   oldOrderData.sort((a, b) => b?.shopName - a?.shopName);
+
+    //   console.log('dsc sorted data', oldOrderData);
+    // }
+  };
+
+  const statusShopHandler = (e) => {
+    setStatus(e.target.value);
+    if (e.target.value !== 'all') {
+      const filteredData = currentSeller?.shops.filter((item) => item.shopStatus === e.target.value);
+      console.log(filteredData);
+      setSearchResult([...filteredData]);
+      return;
+    }
+
+    setSearchResult(currentSeller?.shops);
+  };
 
   const threeDotHandler = (menu) => {
     setSelectedMenu(menu);
@@ -116,7 +172,6 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
     if (menu === 'view') {
       setOpen(true);
       return;
-      // setSelectedShop(currentSeller);
     }
     if (menu === 'edit_seller') {
       setAddSidebarOpen(true);
@@ -171,7 +226,8 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
                 value: sort,
                 items: sortOptions,
                 size: 'sm2',
-                onChange: (e) => setSort(e.target.value),
+                onChange: sortHandler,
+                // onChange: (e) => setSort(e.target.value),
               }}
             />
 
@@ -186,11 +242,26 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
                 value: status,
                 items: statusTypeOptions,
                 size: 'sm2',
-                onChange: (e) => setStatus(e.target.value),
+                onChange: statusShopHandler,
+
+                // onChange: (e) => setStatus(e.target.value),
               }}
             />
           </Stack>
-          <ShopList setSelectedShop={setSelectedShop} setOpen={setOpen} tabName={tabName} data={searchResult || []} />
+          <ShopList
+            setSelectedShop={setSelectedShop}
+            editSellerQuery={editSellerQuery}
+            isConfirmModal={isConfirmModal}
+            editDocumentOpen={editDocumentOpen}
+            setEditDocumentOpen={setEditDocumentOpen}
+            setIsConfirmModal={setIsConfirmModal}
+            setSelectedMenu={setSelectedMenu}
+            setOpen={setOpen}
+            tabName={tabName}
+            replaceDocument={replaceDocument}
+            removeDocument={removeDocument}
+            data={tabName === 'Shop List' ? searchResult || [] : generateDataForSellerDocuments(currentSeller) || []}
+          />
         </Stack>
       ) : (
         <Stack alignContent="center" justifyContent="center">
@@ -203,6 +274,7 @@ function SellersProfile({ currentSeller = {}, setAddSidebarOpen, setOpenLyxaChar
       <Drawer open={open} anchor="right">
         {selectedMenu === '' && <ViewShopInfo selectedShop={selectedShop} onClose={closeModal} />}
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
+        {selectedMenu === 'edit_shop' && <AddShop editShop={selectedShop} onClose={() => setOpen(false)} />}
       </Drawer>
     </Box>
   );

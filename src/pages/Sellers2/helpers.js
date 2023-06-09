@@ -18,10 +18,10 @@ export const getThreedotMenuOptions = [
     label: 'Update Lyxa Charge',
     value: 'update_lyxa_charge',
   },
-  {
-    label: 'Go to Financials',
-    value: 'go_to_financials',
-  },
+  // {
+  //   label: 'Go to Financials',
+  //   value: 'go_to_financials',
+  // },
 ];
 
 export const sellerShopTabType = {
@@ -167,3 +167,22 @@ export const sellerTypeOption = [
 ];
 
 export const previewGenerator = (file) => [{ preview: file }];
+
+export const generateDataForSellerDocuments = (data) => [
+  { _id: 1, sellerId: data?._id, title: 'Profile', url: data?.profile_photo, type: 'profile_photo' },
+  { _id: 2, sellerId: data?._id, title: 'National ID', url: data?.national_id, type: 'national_id' },
+  {
+    _id: 3,
+    sellerId: data?._id,
+    title: 'Seller Contract Paper',
+    url: data?.sellerContractPaper,
+    type: 'sellerContractPaper',
+  },
+  {
+    _id: 4,
+    sellerId: data?._id,
+    title: 'Certificate Of Incorporation',
+    url: data?.certificate_of_incorporation,
+    type: 'certificate_of_incorporation',
+  },
+];

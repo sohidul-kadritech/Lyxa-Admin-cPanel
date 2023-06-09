@@ -14,7 +14,7 @@ import './ZoneMap.css';
 import { calculatePolygonArea, colorList, convertedLonLatToLatLon, getLocationFromLatLng } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
-const defaultCenter = { lat: 23.8103, lon: 90.4125 };
+const defaultCenter = { lat: 0, lon: 0 };
 
 function ZoneMap({
   selectedLocation = {},
@@ -23,7 +23,10 @@ function ZoneMap({
   currentLocation = {},
   setPolygonArea = 0,
   setCreatedZoneArea,
+  currentZoneName = null,
+  isEditable = true,
 }) {
+  const [currentLocationName, setCurrentLocationName] = useState(currentZoneName || '');
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
     currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
@@ -33,6 +36,8 @@ function ZoneMap({
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
+
+  useEffect(() => {}, []);
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png',
@@ -85,6 +90,15 @@ function ZoneMap({
 
   // Map view handler
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
+    const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
+      // eslint-disable-next-line prettier/prettier
+      (error) => console.log(error),
+    );
+    location.then((res) => {
+      console.log('current location: ', res?.data);
+      setCurrentLocationName(res?.data?.results[0]?.formatted_address);
+    });
+
     const map = mapRef.current;
     if (map) {
       map.setView([newLatitude, newLongitude], newZoomLevel);
@@ -93,6 +107,14 @@ function ZoneMap({
 
   // Map view handler
   const handleFlyTo = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
+    const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
+      // eslint-disable-next-line prettier/prettier
+      (error) => console.log(error),
+    );
+    location.then((res) => {
+      console.log('current location: ', res?.data);
+      setCurrentLocationName(res?.data?.results[0]?.formatted_address);
+    });
     const map = mapRef.current;
     if (map) {
       map.flyTo([newLatitude, newLongitude], newZoomLevel, {
@@ -110,9 +132,9 @@ function ZoneMap({
         return { lat: selectedLocation?.lat, lon: selectedLocation?.lon };
       }
 
-      handleSetView(currentLocation?.coordinates?.lat || 23.8103, currentLocation?.coordinates?.lon || 90.4125);
-      handleFlyTo(currentLocation?.coordinates?.lat || 23.8103, currentLocation?.coordinates?.lon || 90.4125);
-      return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 23.8103, lon: 90.4125 };
+      handleSetView(currentLocation?.coordinates?.lat || 0, currentLocation?.coordinates?.lon || 0);
+      handleFlyTo(currentLocation?.coordinates?.lat || 0, currentLocation?.coordinates?.lon || 0);
+      return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 0, lon: 0 };
     });
   }, [selectedLocation]);
 
@@ -147,21 +169,23 @@ function ZoneMap({
           scrollWheelZoom
         >
           {/* Map edit controler */}
-          <FeatureGroup>
-            <EditControl
-              position="topleft"
-              onCreated={createdPolygon}
-              onEdited={polygonEdited}
-              onDeleted={polygonDeleted}
-              draw={{
-                rectangle: false,
-                circle: false,
-                circlemarker: false,
-                marker: false,
-                polyline: false,
-              }}
-            ></EditControl>
-          </FeatureGroup>
+          {isEditable && (
+            <FeatureGroup>
+              <EditControl
+                position="topleft"
+                onCreated={createdPolygon}
+                onEdited={polygonEdited}
+                onDeleted={polygonDeleted}
+                draw={{
+                  rectangle: false,
+                  circle: false,
+                  circlemarker: false,
+                  marker: false,
+                  polyline: false,
+                }}
+              ></EditControl>
+            </FeatureGroup>
+          )}
 
           {/* Previous zone will be show here */}
           {allZones.map((loc, i) => (
@@ -181,8 +205,29 @@ function ZoneMap({
 
           {/* Location marker here */}
           <Marker position={[center?.lat, center?.lon]}>
-            <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
-              Current Location
+            <Tooltip
+              direction="top"
+              offset={[-15, -10]}
+              opacity={1}
+              pathOptions={{ backgroundColor: 'black' }}
+              permanent
+            >
+              <Typography
+                sx={{
+                  textTransform: 'capitalize',
+                  fontWeight: '600',
+                  maxWidth: '250px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {' '}
+                {currentLocation?.loaded && currentLocation?.isCurrent !== null
+                  ? currentLocation?.isCurrent === false
+                    ? `Please give permission to get your current location`
+                    : `${currentLocationName} (Your Location)`
+                  : `${currentZoneName} (Current Zone)`}
+              </Typography>
             </Tooltip>
             {/* <Popup>{JSON.stringify(center)}</Popup> */}
           </Marker>

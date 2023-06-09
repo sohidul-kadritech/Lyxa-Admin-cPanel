@@ -1,7 +1,7 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import CloseButton from '../../components/Common/CloseButton';
-import Rating from '../../components/Common/Rating';
+import CloseButton from '../Common/CloseButton';
+import Rating from '../Common/Rating';
 
 function ShopInfo({ title, theme, sx, children }) {
   return (
@@ -30,7 +30,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
             position: 'sticky',
             top: '0',
             background: '#fff',
-            padding: '25px 0px',
+            paddingTop: '25px',
             zIndex: '999',
             marginBottom: '39px',
           }}

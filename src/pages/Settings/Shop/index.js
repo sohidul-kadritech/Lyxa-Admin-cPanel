@@ -14,6 +14,7 @@ import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 // data
 
 import ConfirmModal from '../../../components/Common/ConfirmModal';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
@@ -153,9 +154,12 @@ function ShopSettings() {
   const decrementOrder = (setValue) => {
     set_has_unsaved_change(true);
     setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
-      if (prev === '' || prev <= 0) return 0;
-      return prev;
+      // if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
+      // if (prev === '' || prev <= 0) return 1;
+      // return prev;
+
+      if (Number(prev) <= 1) return 1;
+      return prev - 1;
     });
   };
 
@@ -279,22 +283,39 @@ function ShopSettings() {
                 paddingTop: '21px',
               }}
             >
-              <Typography sx={TypoSx}>Order Capacity</Typography>
-              <Box
-                sx={{
-                  marginTop: '15px',
-                }}
-              >
-                <IncrementDecrementButton
-                  currentValue={newOrderCapacity}
-                  setValue={setNewOrderCapacity}
-                  incrementHandler={incrementOrder}
-                  decrementHandler={decrementOrder}
-                  setTypeValidation={() => {
+              <Stack direction="row" alignItems="center" gap={10}>
+                <Typography sx={TypoSx}>Order Capacity</Typography>
+                <StyledSwitch
+                  checked={Number(newOrderCapacity) > 0}
+                  onChange={() => {
                     set_has_unsaved_change(true);
+                    setNewOrderCapacity(Number(newOrderCapacity) > 0 ? 0 : 1);
                   }}
                 />
-              </Box>
+              </Stack>
+              {Number(newOrderCapacity) > 0 && (
+                <Box
+                  sx={{
+                    marginTop: '15px',
+                  }}
+                >
+                  <IncrementDecrementButton
+                    currentValue={newOrderCapacity}
+                    setValue={(value) => {
+                      console.log({ value });
+                      if (typeof value === 'function') {
+                        setNewOrderCapacity(value);
+                      } else if (Number(value) <= 1) setNewOrderCapacity(1);
+                      else setNewOrderCapacity(value);
+                    }}
+                    incrementHandler={incrementOrder}
+                    decrementHandler={decrementOrder}
+                    setTypeValidation={() => {
+                      set_has_unsaved_change(true);
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           </Box>
           <Box sx={boxSx2}>
@@ -338,9 +359,7 @@ function ShopSettings() {
             </Button>
             <Button
               onClick={() => {
-                if (newOrderCapacity < 1) {
-                  successMsg('Order capacity has to be greater than 0');
-                } else if (!paymentInformationValidation(newPayMentInformation)) {
+                if (!paymentInformationValidation(newPayMentInformation)) {
                   set_has_unsaved_change(false);
                 } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
                   updateShopSettings();

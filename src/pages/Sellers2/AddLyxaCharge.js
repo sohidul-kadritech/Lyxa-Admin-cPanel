@@ -2,18 +2,41 @@ import { Button, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { successMsg } from '../../helpers/successMsg';
 import { discountTypeOptions } from '../PercentageSettings/helpers';
 
 const intial = {
-  chargeType: '',
-  charge: '',
+  dropPercentageType: '',
+  dropPercentage: '',
 };
-function AddLyxaCharge({ onClose }) {
+// eslint-disable-next-line no-unused-vars
+function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
   const [currentLyxaCharge, setCurrentLyxaCharge] = useState({ ...intial });
 
   const changeHandler = (e) => {
-    setCurrentLyxaCharge((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setCurrentLyxaCharge((prev) => {
+      console.log({ ...prev, [e.target.name]: e.target.value });
+      return { ...prev, [e.target.name]: e.target.value };
+    });
   };
+
+  const onSubmitDropCharge = () => {
+    if (!currentLyxaCharge?.dropPercentageType) {
+      successMsg('Select lyxa charge type');
+      return;
+    }
+    if (!currentLyxaCharge?.dropPercentage) {
+      successMsg('Provide lyxa charge');
+      return;
+    }
+
+    console.log('successfully update');
+    sellerDropChargeQuery.mutate({
+      ...currentLyxaCharge,
+      sellerId: currentSeller?._id,
+    });
+  };
+
   return (
     <SidebarContainer title="Add Lyxa Charge" onClose={onClose}>
       <Stack>
@@ -24,13 +47,11 @@ function AddLyxaCharge({ onClose }) {
             sx: { padding: '14px 0' },
           }}
           inputProps={{
-            // value: newSellerData?.company_name,
             placeholder: 'Lyxa Charge Type',
-            value: currentLyxaCharge?.chargeType || '',
-            name: 'chargeType',
+            value: currentLyxaCharge?.dropPercentageType || '',
+            name: 'dropPercentageType',
             items: discountTypeOptions,
             onChange: changeHandler,
-            //   readOnly: isReadOnly,
           }}
         />
         <StyledFormField
@@ -40,10 +61,10 @@ function AddLyxaCharge({ onClose }) {
             sx: { padding: '14px 0' },
           }}
           inputProps={{
-            value: currentLyxaCharge?.charge,
+            value: currentLyxaCharge?.dropPercentage,
             placeholder: 'Lyxa charge',
             type: 'number',
-            name: 'charge',
+            name: 'dropPercentage',
             onChange: changeHandler,
             //   readOnly: isReadOnly,
           }}
@@ -53,11 +74,11 @@ function AddLyxaCharge({ onClose }) {
         <Button
           disableElevation
           variant="contained"
-          // disabled={loading}
-          // onClick={() => {
-          //   onSubmitSeller();
-          //   setLoading(true);
-          // }}
+          disabled={sellerDropChargeQuery?.isLoading}
+          onClick={() => {
+            onSubmitDropCharge();
+            // setLoading(true);
+          }}
           fullWidth
         >
           ADD

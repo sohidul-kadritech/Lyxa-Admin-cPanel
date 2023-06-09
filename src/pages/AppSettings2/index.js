@@ -103,6 +103,7 @@ function Appsettings2() {
 
   // eslint-disable-next-line no-unused-vars
   const [nearByShopKm, setNearByShopKm] = useState(0);
+  const [nearByShopKmForUserHomeScreen, setNearByShopKmForUserHomeScreen] = useState(0);
 
   // eslint-disable-next-line no-unused-vars
   const [maxDiscount, setMaxDiscount] = useState([]);
@@ -128,7 +129,11 @@ function Appsettings2() {
     setMaxCustomerServiceValue(getShopSettingsData?.data?.data?.appSetting?.maxCustomerServiceValue || 0);
     setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
-    setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
+    setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || 0);
+    setNearByShopKmForUserHomeScreen(
+      // eslint-disable-next-line prettier/prettier
+      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0,
+    );
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
     // eslint-disable-next-line no-unused-vars
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
@@ -190,6 +195,10 @@ function Appsettings2() {
     setMaxCustomerServiceValue(getShopSettingsData?.data?.data?.appSetting?.maxCustomerServiceValue || 0);
     setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
+    setNearByShopKmForUserHomeScreen(
+      // eslint-disable-next-line prettier/prettier
+      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0,
+    );
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
@@ -277,6 +286,7 @@ function Appsettings2() {
     const appsettignsData = {
       maxTotalEstItemsPriceForButler,
       nearByShopKm,
+      nearByShopKmForUserHomeScreen,
       maxDistanceForButler,
       maxDiscount,
       maxCustomerServiceValue,
@@ -404,12 +414,24 @@ function Appsettings2() {
                 }}
               />
             </StyledBox>
-            <StyledBox title="Near Shop Distance (KM)">
+            <StyledBox title="Shop Distance (KM)">
               <IncrementDecrementButton
                 incrementHandler={incrementByFiveHandler}
                 decrementHandler={decrementByFiveHandler}
                 setValue={setNearByShopKm}
                 currentValue={nearByShopKm}
+                setTypeValidation={setTypeValidation}
+                types={type}
+                type="nearByShopKm"
+                setType={setType}
+              />
+            </StyledBox>
+            <StyledBox title="Near Shop Distance in Home Screen (KM)">
+              <IncrementDecrementButton
+                incrementHandler={incrementByFiveHandler}
+                decrementHandler={decrementByFiveHandler}
+                setValue={setNearByShopKmForUserHomeScreen}
+                currentValue={nearByShopKmForUserHomeScreen}
                 setTypeValidation={setTypeValidation}
                 types={type}
                 type="nearByShopKm"
