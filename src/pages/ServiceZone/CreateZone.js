@@ -26,7 +26,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
   ]);
 
   // eslint-disable-next-line no-unused-vars
-  const [createdZoneStatus, setCreatedZoneStatus] = useState('active');
+  // const [createdZoneStatus, setCreatedZoneStatus] = useState('active');
 
   const [createdZoneName, setCreatedZoneName] = useState('');
 
@@ -51,7 +51,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
         type: 'Polygon',
         coordinates: [...polygon, polygon[0]],
       },
-      zoneStatus: createdZoneStatus,
+      // zoneStatus: createdZoneStatus,
     };
     console.log('data-->', data);
     if (validateEditedData(data)) {
