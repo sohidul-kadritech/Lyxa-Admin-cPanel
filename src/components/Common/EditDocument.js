@@ -2,10 +2,10 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
-import CloseButton from '../../../components/Common/CloseButton';
-import StyledFileDropzone from '../../../components/Styled/StyledFileDropzone';
-import { getImageUrl } from '../../../helpers/images';
-import { successMsg } from '../../../helpers/successMsg';
+import { getImageUrl } from '../../helpers/images';
+import { successMsg } from '../../helpers/successMsg';
+import StyledFileDropzone from '../Styled/StyledFileDropzone';
+import CloseButton from './CloseButton';
 
 export default function EditDocument({ onClose, document, onReplaceDoc, loading }) {
   const [currentFile, setCurrentFile] = useState(document?.url);
@@ -15,7 +15,8 @@ export default function EditDocument({ onClose, document, onReplaceDoc, loading 
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     if (newFiles?.length) {

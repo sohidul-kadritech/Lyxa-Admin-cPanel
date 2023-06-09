@@ -21,11 +21,13 @@ function SellerList2() {
   const [searchKey, setSearchKey] = useState('');
 
   const [open, setOpen] = useState(false);
+  const [editDocumentOpen, setEditDocumentOpen] = useState(false);
+
   const [openLyxaChargeSidebar, setOpenLyxaChargeSidebar] = useState(false);
 
   const [isEdit, setIsEdit] = useState(false);
 
-  // const [isReadOnly, setIsReadOnly] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [currentSeller, setCurrentSeller] = useState({});
@@ -66,6 +68,21 @@ function SellerList2() {
     },
   });
 
+  const sellerDropChargeQuery = useMutation((data) => AXIOS.post(API_URL.SELLER_DROP_CHARGE, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.ALL_SELLER);
+        setOpenLyxaChargeSidebar(false);
+        // setLoading(false);
+      } else {
+        successMsg(data.message);
+        setLoading(false);
+      }
+    },
+  });
+
   const editSellerQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_SELLER, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -73,12 +90,23 @@ function SellerList2() {
         successMsg(data.message, 'success');
         queryClient.invalidateQueries(API_URL.ALL_SELLER);
         setLoading(false);
+        setEditDocumentOpen(false);
+        setIsConfirmModal(false);
       } else {
         successMsg(data.message);
         setLoading(false);
       }
     },
   });
+
+  const replaceDocument = (document) => {
+    // console.log('documents: ', document);
+    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: document.url });
+  };
+  const removeDocument = (document) => {
+    // console.log('remove--documents: ', document);
+    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: '' });
+  };
 
   return (
     <Box>
@@ -147,10 +175,17 @@ function SellerList2() {
             {/* Seller Profile --> right */}
             <Box flex={1}>
               <SellersProfile
+                editSellerQuery={editSellerQuery}
+                editDocumentOpen={editDocumentOpen}
+                setEditDocumentOpen={setEditDocumentOpen}
+                isConfirmModal={isConfirmModal}
+                setIsConfirmModal={setIsConfirmModal}
                 setAddSidebarOpen={setOpen}
                 setOpenLyxaChargeSidebar={setOpenLyxaChargeSidebar}
                 setIsEdit={setIsEdit}
                 currentSeller={currentSeller}
+                replaceDocument={replaceDocument}
+                removeDocument={removeDocument}
               />
             </Box>
           </Stack>
@@ -188,9 +223,11 @@ function SellerList2() {
 
       <Drawer open={openLyxaChargeSidebar} anchor="right">
         <AddLyxaCharge
+          currentSeller={currentSeller}
           onClose={() => {
             setOpenLyxaChargeSidebar(false);
           }}
+          sellerDropChargeQuery={sellerDropChargeQuery}
         />
       </Drawer>
     </Box>
