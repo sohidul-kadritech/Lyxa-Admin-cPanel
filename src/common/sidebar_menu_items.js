@@ -267,6 +267,11 @@ export const admin_menu_items = [
         icon: TeamIcon,
       },
       {
+        label: 'Team2',
+        to: '/admin/list2',
+        icon: TeamIcon,
+      },
+      {
         label: 'Display',
         to: '/display',
         icon: DisplayIcon,
