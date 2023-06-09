@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
@@ -44,6 +44,11 @@ export default function ShopTransactions({ shop }) {
   });
 
   const summary = query?.data?.data?.summary || {};
+
+  useEffect(() => {
+    setQueryParams(getTrxQueryParams(shop?._id));
+    setTotalPage(1);
+  }, [shop?._id]);
 
   return (
     <Box>

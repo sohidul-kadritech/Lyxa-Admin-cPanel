@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import TablePagination from '../../../components/Common/TablePagination';
-import SearchBar from '../Searchbar';
 import { getQueryParamsInit } from '../helper';
 import FlagTable from './Table';
 
@@ -33,17 +33,22 @@ const searchFlags = (flags, queryParams) => {
 };
 
 export default function ShopFlags({ flags = [], onViewDetail }) {
-  console.log(flags);
+  // console.log(flags);
   const [queryParams, setQueryParams] = useState(getQueryParamsInit({ page: 1 }));
   const [filteredData, setFilteredData] = useState(flags);
 
   useEffect(() => {
     setFilteredData(searchFlags(flags, queryParams));
-  }, [queryParams]);
+  }, [queryParams, flags]);
 
   return (
     <Box>
-      <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search Flags" />
+      <SearchBar
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        searchPlaceHolder="Search Flags"
+        hideFilters={{ button: true }}
+      />
       <Box sx={{ paddingTop: '30px' }} />
       <FlagTable flags={filteredData} onViewDetail={onViewDetail} />
       <TablePagination

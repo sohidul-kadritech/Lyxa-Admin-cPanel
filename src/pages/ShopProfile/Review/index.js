@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import SearchBar from '../Searchbar';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import { getQueryParamsInit } from '../helper';
 import ReviewTable from './ReviewTable';
 
@@ -49,9 +49,18 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
     setFilteredReviews(searchReviews(reviews, queryParams));
   }, [queryParams]);
 
+  useEffect(() => {
+    setQueryParams(getQueryParamsInit());
+  }, [reviews]);
+
   return (
     <Box>
-      <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search Reviews" />
+      <SearchBar
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        searchPlaceHolder="Search Reviews"
+        hideFilters={{ button: true }}
+      />
       <ReviewTable reviews={filteredReviews} onViewDetail={onViewDetail} />
     </Box>
   );
