@@ -12,7 +12,6 @@ import ConfirmModal from '../../components/Common/ConfirmModal';
 import TabPanel from '../../components/Common/TabPanel';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
@@ -68,6 +67,10 @@ const listFilterOptions = [
   {
     label: 'Inactive',
     value: 'inactive',
+  },
+  {
+    label: 'Busy',
+    value: 'busy',
   },
 ];
 function AddMenuButton({ ...props }) {
@@ -171,13 +174,22 @@ function ServiceZone() {
   console.log(getAllZones?.data?.data?.zones);
 
   // eslint-disable-next-line no-unused-vars
-  const onStatusChange = (value, item) => {
-    item.zoneStatus = value;
-    // console.log('item', item);
-    updateAZoneQuery.mutate({
-      zoneId: item?._id,
-      zoneStatus: item?.zoneStatus,
-    });
+  const onStatusChange = (value, data) => {
+    data.zoneStatus = value;
+
+    if (value !== 'busy') {
+      updateAZoneQuery.mutate({
+        zoneId: data?._id,
+        zoneStatus: value,
+        zoneAvailability: 'online',
+        zoneBusyTitle: '',
+        zoneBusyDescription: '',
+      });
+    } else {
+      setActionType('updateZoneStatus');
+      setRowData(data);
+      setOpen(true);
+    }
 
     // setRender((prev) => !prev);
     // tagsMutation.mutate(item);
@@ -240,8 +252,8 @@ function ServiceZone() {
             },
           }}
           size="lg1"
-          value={params?.row?.zoneStatus}
-          readOnly={params?.row?.zoneAvailability === 'busy'}
+          value={params?.row?.zoneAvailability === 'busy' ? params?.row?.zoneAvailability : params?.row?.zoneStatus}
+          // readOnly={params?.row?.zoneAvailability === 'busy'}
           onChange={(e) => {
             onStatusChange(e.target.value, params.row);
           }}
@@ -265,7 +277,7 @@ function ServiceZone() {
 
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
-          <StyledSwitch
+          {/* <StyledSwitch
             checked={value?.row?.zoneAvailability === 'online'}
             disabled={value?.row?.zoneStatus !== 'active'}
             onChange={() => {
@@ -283,7 +295,7 @@ function ServiceZone() {
                 });
               }
             }}
-          />
+          /> */}
           <Button
             sx={{
               minWidth: '32px',
