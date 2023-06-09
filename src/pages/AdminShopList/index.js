@@ -5,7 +5,8 @@ import PageTop from '../../components/Common/PageTop';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SearchBar from './Searchbar';
-import ShopListTable from './ShopListTable';
+import ShopListTable from './Table';
+// import ShopListTable from './ShopListTable';
 
 const queryParamsInit = (type) => ({
   page: 1,

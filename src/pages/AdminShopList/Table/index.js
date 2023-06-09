@@ -1,9 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
-import Rating from '../../components/Common/Rating';
-import TablePagination from '../../components/Common/TablePagination';
-import UserAvatar from '../../components/Common/UserAvatar';
-import StyledTable from '../../components/Styled/StyledTable3';
-import StyledBox from '../../components/StyledCharts/StyledBox';
+import Rating from '../../../components/Common/Rating';
+import TablePagination from '../../../components/Common/TablePagination';
+import UserAvatar from '../../../components/Common/UserAvatar';
+import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
+import TableSkeleton from './TableSkeleton';
 
 // eslint-disable-next-line no-unused-vars
 export default function ShopListTable({ shops, setPage, page, totalPage, loading }) {
@@ -99,34 +100,39 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
 
   return (
     <Box>
-      <StyledBox
-        sx={{
-          pr: 5,
-          pl: 3.5,
-          pt: 1,
-          pb: 1,
-        }}
-      >
-        <StyledTable
-          columns={column}
-          rows={
-            shops?.map((s, i) => {
-              s.rowNumber = i + 1;
-              return s;
-            }) || []
-          }
-          getRowId={(row) => row?._id}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Shops found
-              </Stack>
-            ),
-          }}
-        />
-      </StyledBox>
-      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+      {loading && <TableSkeleton />}
+      {!loading && (
+        <>
+          <StyledBox
+            sx={{
+              pr: 5,
+              pl: 3.5,
+              pt: 1,
+              pb: 1,
+            }}
+          >
+            <StyledTable
+              columns={column}
+              rows={
+                shops?.map((s, i) => {
+                  s.rowNumber = i + 1;
+                  return s;
+                }) || []
+              }
+              getRowId={(row) => row?._id}
+              rowHeight={71}
+              components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    No Shops found
+                  </Stack>
+                ),
+              }}
+            />
+          </StyledBox>
+          <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+        </>
+      )}
     </Box>
   );
 }
