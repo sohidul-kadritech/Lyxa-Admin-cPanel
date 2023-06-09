@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import React, { useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
 import { useGlobalContext } from '../context';
 import CircularLoader from './CircularLoader';
@@ -12,7 +11,6 @@ import ThreeDotsMenu from './ThreeDotsMenu';
 
 function ShopTable({ shops = [], viewUserType }) {
   const history = useHistory();
-  const location = useLocation();
   const routeMatch = useRouteMatch();
 
   console.log(routeMatch);
@@ -22,7 +20,7 @@ function ShopTable({ shops = [], viewUserType }) {
 
   const { loading } = useSelector((state) => state.shopReducer);
 
-  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImg] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { userType, adminType, seller } = currentUser;
 
@@ -64,7 +62,10 @@ function ShopTable({ shops = [], viewUserType }) {
         routePath = `${pathArr?.join('/')}/shop/dashboard/${item._id}`;
       }
       dispatchCurrentUser({ type: 'shop', payload: { shop: item } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop: item, location: routePath, seller } });
+      dispatchShopTabs({
+        type: 'add-tab',
+        payload: { shop: item, location: routePath, seller, from: routeMatch?.url },
+      });
       history.push(routePath);
     }
   };

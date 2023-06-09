@@ -7,7 +7,7 @@ export const getQueryParamsInit = (params) => ({
   endDate: moment().format('YYYY-MM-DD'),
   startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
   searchKey: '',
-  sortBy: 'desc',
+  sortBy: 'DESC',
   ...params,
 });
 

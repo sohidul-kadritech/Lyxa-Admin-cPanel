@@ -1,8 +1,12 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { React, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 
 const getDataInit = (shopId) => ({ shopId, amount: 0, type: 'remove', desc: '' });
 
@@ -11,8 +15,39 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
 ];
 
-export default function AddRemoveCredit({ shopId, onSubmit, onClose }) {
+export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount }) {
+  const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(shopId));
+
+  const creditMutation = useMutation((data) => AXIOS.post(Api.SHOP_ADD_REMOVE_CREDIT, data), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+
+      if (data?.status) {
+        queryClient.invalidateQueries([Api.SHOP_TRX, { shopId }]);
+        onClose();
+      }
+    },
+  });
+
+  const addRemoveCredit = () => {
+    if (data?.amount < 0) {
+      successMsg("Amount can't be negative", 'error');
+      return;
+    }
+
+    if (data.type === 'add' && data.amount > dropAmount) {
+      successMsg("You don't have enough credit", 'error');
+      return;
+    }
+
+    if (data.type === 'remove' && data.amount > shopAmount) {
+      successMsg("Shop doesn't have enough credit", 'error');
+      return;
+    }
+
+    creditMutation.mutate(data);
+  };
 
   return (
     <Box
@@ -49,6 +84,7 @@ export default function AddRemoveCredit({ shopId, onSubmit, onClose }) {
             value: data.amount,
             onChange: (e) => {
               if (e.target.value > 0) setData({ ...data, amount: e.target.value });
+              else setData({ ...data, amount: 1 });
             },
           }}
         />
@@ -66,10 +102,8 @@ export default function AddRemoveCredit({ shopId, onSubmit, onClose }) {
             color="primary"
             variant="contained"
             sx={{ width: '200px' }}
-            onClick={() => {
-              onSubmit(data);
-            }}
-            disabled={onSubmit}
+            onClick={addRemoveCredit}
+            disabled={creditMutation.isLoading}
           >
             Pay
           </Button>

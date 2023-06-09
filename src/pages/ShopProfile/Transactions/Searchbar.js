@@ -5,19 +5,23 @@ import { useMemo } from 'react';
 import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
+import { useGlobalContext } from '../../../context';
 
 const sortOptions = [
   {
     label: 'Desc',
-    value: 'desc',
+    value: 'DESC',
   },
   {
     label: 'Asc',
-    value: 'asc',
+    value: 'ASC',
   },
 ];
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAddRemove }) {
+  const { currentUser } = useGlobalContext();
+  // const [render, setRender] = useState(false);
+
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
@@ -39,15 +43,15 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       <FilterDate
         tooltip="Start Date"
         maxDate={moment(queryParams.tnxFilter.endDate).subtract(1, 'day')}
-        value={queryParams.startDate}
+        value={queryParams.tnxFilter.startDate}
         size="sm"
         onChange={(e) => {
           setQueryParams((prev) => ({
             ...prev,
             page: 1,
             tnxFilter: {
+              ...prev.tnxFilter,
               startDate: e._d,
-              ...prev?.tnxFilter,
             },
           }));
         }}
@@ -56,15 +60,15 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       <FilterDate
         tooltip="End Date"
         minDate={moment(queryParams.tnxFilter.startDate).add(1, 'day')}
-        value={queryParams.endDate}
+        value={queryParams.tnxFilter.endDate}
         size="sm"
         onChange={(e) => {
           setQueryParams((prev) => ({
             ...prev,
             page: 1,
             tnxFilter: {
+              ...prev.tnxFilter,
               endDate: e._d,
-              ...prev?.tnxFilter,
             },
           }));
         }}
@@ -83,11 +87,13 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           setQueryParams((prev) => ({ ...prev, sortBy: e.target.value, page: 1 }));
         }}
       />
-      <Box flexShrink={0}>
-        <Button variant="contained" size="small" color="primary" onClick={onAddRemove}>
-          Add/Remove Credit
-        </Button>
-      </Box>
+      {currentUser?.userType === 'admin' && (
+        <Box flexShrink={0}>
+          <Button variant="contained" size="small" color="primary" onClick={onAddRemove}>
+            Add/Remove Credit
+          </Button>
+        </Box>
+      )}
     </Stack>
   );
 }

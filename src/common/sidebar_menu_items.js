@@ -232,8 +232,18 @@ export const admin_menu_items = [
         icon: ShopIcon,
       },
       {
+        label: 'Shops New',
+        to: '/shop',
+        icon: ShopIcon,
+      },
+      {
         label: 'Users',
         to: '/users/list',
+        icon: UsersIcon,
+      },
+      {
+        label: 'Accounts',
+        to: '/accounts',
         icon: UsersIcon,
       },
       {
@@ -254,6 +264,11 @@ export const admin_menu_items = [
       {
         label: 'Team',
         to: '/admin/list',
+        icon: TeamIcon,
+      },
+      {
+        label: 'Team2',
+        to: '/admin/list2',
         icon: TeamIcon,
       },
       {

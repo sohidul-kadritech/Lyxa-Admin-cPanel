@@ -27,7 +27,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
   console.log(data);
   const theme = useTheme();
   const styleForSellerList = {
-    padding: '12px 16px 10px 40px',
+    padding: '12px 20px 10px 20px',
     borderLeft: `4px solid transparent`,
     cursor: 'pointer',
     // transition: 'all 0.2s ease-in',
@@ -37,7 +37,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     },
   };
   const styleForSellerListActive = {
-    padding: '12px 16px 10px 40px',
+    padding: '12px 20px 10px 20px',
     borderLeft: `4px solid ${theme.palette.danger.main}`,
     cursor: 'pointer',
     backgroundColor: 'rgba(177, 177, 177, 0.2)',
@@ -51,26 +51,36 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
         width: '278px',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.custom.border}`,
-        maxHeight: '70vh',
+        maxHeight: '60vh',
         overflow: 'auto',
       }}
     >
       <Stack>
-        {data.map((seller, i) => (
-          <Box
-            key={i}
-            sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
-            onClick={() => {
-              setCurrentSeller(seller);
-            }}
-          >
-            <SellerInfo
-              sellerName={seller?.name}
-              image={seller?.profile_photo}
-              shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
-            />
+        {data.length > 0 ? (
+          <>
+            {data.map((seller, i) => (
+              <Box
+                key={i}
+                sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
+                onClick={() => {
+                  setCurrentSeller(seller);
+                }}
+              >
+                <SellerInfo
+                  sellerName={seller?.name}
+                  image={seller?.profile_photo}
+                  shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
+                />
+              </Box>
+            ))}
+          </>
+        ) : (
+          <Box sx={styleForSellerList}>
+            <Typography variant="h5" sx={{ fontWeight: '500 !important' }}>
+              No sellers found
+            </Typography>
           </Box>
-        ))}
+        )}
       </Stack>
     </Box>
   );

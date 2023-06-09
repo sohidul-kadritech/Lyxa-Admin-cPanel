@@ -1,4 +1,4 @@
-import { Avatar, Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
@@ -10,12 +10,16 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
-import { getThreedotMenuOptions } from './helpers';
+import ViewSellerInfo from './ViewSellerInfo';
+// import ViewShopInfo from './ViewShopInfo';
+import AddShop from '../../components/Shared/AddShop';
+import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
-function SellersProfileInfo({ data = {}, theme }) {
+function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   return (
     <Box>
-      <Stack direction="row" gap="25px">
+      <Stack direction="row" gap="25px" flexWrap="wrap">
         <Avatar src={data?.profile_photo} alt="photo" sx={{ width: 100, height: 100, textTransform: 'uppercase' }}>
           <Typography variant="h1" sx={{ color: '#ffffff !important' }}>
             {data?.name
@@ -40,19 +44,31 @@ function SellersProfileInfo({ data = {}, theme }) {
               </Stack>
               <Box>
                 <ThreeDotsMenu
-                  // handleMenuClick={(menu) => {
-                  //   threeDotHandler(menu, params?.row);
-                  // }}
+                  handleMenuClick={(menu) => {
+                    threeDotHandler(menu);
+                  }}
                   menuItems={getThreedotMenuOptions}
                 />
               </Box>
             </Stack>
             <Stack direction="row" gap="16px">
-              <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
-                <Stack direction="row" alignItems="center" gap="5.4px">
-                  <LocationIcon /> {data?.addressSeller?.address}
-                </Stack>
-              </Typography>
+              <Stack direction="row" alignItems="center" gap="5.4px">
+                <LocationIcon />{' '}
+                <Typography
+                  variant="h4"
+                  flex={1}
+                  sx={{
+                    fontWeight: '500!important',
+                    maxWidth: '350px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {data?.addressSeller?.address}
+                </Typography>
+              </Stack>
+
               <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
                 <Stack direction="row" alignItems="center" gap="16px">
                   <CircleIcon />
@@ -70,13 +86,6 @@ function SellersProfileInfo({ data = {}, theme }) {
                 </Stack>
               </Typography>
             </Stack>
-            {/* <Rating
-              amount={data?.rating}
-              titleSx={{
-                fontSize: '18px',
-                fontWeight: 500,
-              }}
-            /> */}
           </Stack>
         </Box>
       </Stack>
@@ -84,22 +93,30 @@ function SellersProfileInfo({ data = {}, theme }) {
   );
 }
 
-function SellersProfile({ currentSeller = {} }) {
+function SellersProfile({
+  currentSeller = {},
+  setAddSidebarOpen,
+  setOpenLyxaChargeSidebar,
+  setIsEdit,
+  replaceDocument,
+  removeDocument,
+  isConfirmModal,
+  setIsConfirmModal,
+  editSellerQuery,
+  editDocumentOpen,
+  setEditDocumentOpen,
+}) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
   const [currentTab, setCurrentTab] = useState(0);
+  const [tabName, setTabName] = useState('Shop List');
   const [sort, setSort] = useState('');
   const [status, setStatus] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [searchKey, setSearchKey] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [searchResult, setSearchResult] = useState([]);
-
-  // const onChangeSearchHandler = (e)=>{
-  //   if(e.target.value){
-  //     let matchedData = currentSeller.shops.includes()
-  //   }
-  // }
+  const [selectedShop, setSelectedShop] = useState({});
+  const [open, setOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedMenu, setSelectedMenu] = useState('');
 
   useEffect(() => {
     setSearchResult(currentSeller?.shops);
@@ -118,6 +135,58 @@ function SellersProfile({ currentSeller = {} }) {
       setSearchResult(() => [...currentSeller.shops]);
     }
   };
+  const sortHandler = (e) => {
+    // console.log(e.target.value, 'sort');
+    setSort(e.target.value);
+    // const oldOrderData = currentSeller?.shops
+    // // const oldOrderData = currentSeller?.shops;
+    // console.log('=====>', oldOrderData);
+    // if (e.target.value === 'asc') {
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   oldOrderData.sort((a, b) => a?.shopName - b?.shopName);
+
+    //   console.log('asc sorted data', oldOrderData);
+    // } else if (e.target.value === 'dsc') {
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   oldOrderData.sort((a, b) => b?.shopName - a?.shopName);
+
+    //   console.log('dsc sorted data', oldOrderData);
+    // }
+  };
+
+  const statusShopHandler = (e) => {
+    setStatus(e.target.value);
+    if (e.target.value !== 'all') {
+      const filteredData = currentSeller?.shops.filter((item) => item.shopStatus === e.target.value);
+      console.log(filteredData);
+      setSearchResult([...filteredData]);
+      return;
+    }
+
+    setSearchResult(currentSeller?.shops);
+  };
+
+  const threeDotHandler = (menu) => {
+    setSelectedMenu(menu);
+    console.log('menu-->', menu);
+    if (menu === 'view') {
+      setOpen(true);
+      return;
+    }
+    if (menu === 'edit_seller') {
+      setAddSidebarOpen(true);
+      setIsEdit(true);
+      return;
+    }
+    if (menu === 'update_lyxa_charge') {
+      setOpenLyxaChargeSidebar(true);
+      setIsEdit(true);
+    }
+  };
+  const closeModal = () => {
+    setSelectedMenu('');
+    setOpen(false);
+  };
 
   return (
     <Box
@@ -128,54 +197,85 @@ function SellersProfile({ currentSeller = {} }) {
         border: `1px solid ${theme.palette.custom.border}`,
       }}
     >
-      <Stack>
-        <SellersProfileInfo data={currentSeller} theme={theme} />
-        <Box marginTop="30px" marginBottom="23px">
-          <Tabs
-            value={currentTab}
-            onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-            }}
-          >
-            <Tab label="Shop List"></Tab>
-            <Tab label="Documents"></Tab>
-          </Tabs>
-        </Box>
-        <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
+      {Object?.keys(currentSeller)?.length > 0 ? (
+        <Stack>
+          <SellersProfileInfo threeDotHandler={threeDotHandler} data={currentSeller} theme={theme} />
+          <Box marginTop="30px" marginBottom="23px">
+            <Tabs
+              value={currentTab}
+              onChange={(event, newValue) => {
+                setTabName(sellerShopTabType[newValue]);
+                setCurrentTab(newValue);
+              }}
+            >
+              <Tab label="Shop List"></Tab>
+              <Tab label="Documents"></Tab>
+            </Tabs>
+          </Box>
+          <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
+            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
 
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sort',
-              placeholder: 'sort',
-              value: sort,
-              items: sortOptions,
-              size: 'sm2',
-              onChange: (e) => setSort(e.target.value),
-            }}
-          />
+            <StyledFormField
+              intputType="select"
+              containerProps={{
+                sx: { padding: '0px 0px' },
+              }}
+              inputProps={{
+                name: 'sort',
+                placeholder: 'sort',
+                value: sort,
+                items: sortOptions,
+                size: 'sm2',
+                onChange: sortHandler,
+                // onChange: (e) => setSort(e.target.value),
+              }}
+            />
 
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'status',
-              placeholder: 'status',
-              value: status,
-              items: statusTypeOptions,
-              size: 'sm2',
-              onChange: (e) => setStatus(e.target.value),
-            }}
+            <StyledFormField
+              intputType="select"
+              containerProps={{
+                sx: { padding: '0px 0px' },
+              }}
+              inputProps={{
+                name: 'status',
+                placeholder: 'status',
+                value: status,
+                items: statusTypeOptions,
+                size: 'sm2',
+                onChange: statusShopHandler,
+
+                // onChange: (e) => setStatus(e.target.value),
+              }}
+            />
+          </Stack>
+          <ShopList
+            setSelectedShop={setSelectedShop}
+            editSellerQuery={editSellerQuery}
+            isConfirmModal={isConfirmModal}
+            editDocumentOpen={editDocumentOpen}
+            setEditDocumentOpen={setEditDocumentOpen}
+            setIsConfirmModal={setIsConfirmModal}
+            setSelectedMenu={setSelectedMenu}
+            setOpen={setOpen}
+            tabName={tabName}
+            replaceDocument={replaceDocument}
+            removeDocument={removeDocument}
+            data={tabName === 'Shop List' ? searchResult || [] : generateDataForSellerDocuments(currentSeller) || []}
           />
         </Stack>
-        <ShopList data={searchResult || []} />
-      </Stack>
+      ) : (
+        <Stack alignContent="center" justifyContent="center">
+          <Typography flex={1} varient="h3" sx={{ fontWeight: 500 }} textAlign="center">
+            No seller profile found
+          </Typography>
+        </Stack>
+      )}
+
+      <Drawer open={open} anchor="right">
+        {selectedMenu === '' && <ViewShopInfo selectedShop={selectedShop} onClose={closeModal} />}
+        {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
+        {selectedMenu === 'edit_shop' && <AddShop editShop={selectedShop} onClose={() => setOpen(false)} />}
+      </Drawer>
     </Box>
   );
 }

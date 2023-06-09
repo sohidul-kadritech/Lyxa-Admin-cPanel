@@ -8,7 +8,6 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import PageSkeleton from './PageSkeleton';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
-// import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, threeDotHandler, loading }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
@@ -129,8 +128,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     },
   ];
 
-  console.log('admintype', adminType);
-
   const newColumn = {
     showFor: ['ongoing', 'delivered', 'cancelled'],
     id: 6,
@@ -155,7 +152,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
   }
 
   if (loading) {
-    return <PageSkeleton />;
+    return <PageSkeleton orderType={orderType} />;
   }
 
   return (

@@ -58,13 +58,13 @@ export default function OrderByHoursChart({ hourlyOrders }) {
             >
               {index + 1}
             </Box>
-            <HourItem row={row} weekdayNum={1} hour={index + 1} />
-            <HourItem row={row} weekdayNum={2} hour={index + 1} />
-            <HourItem row={row} weekdayNum={3} hour={index + 1} />
-            <HourItem row={row} weekdayNum={4} hour={index + 1} />
-            <HourItem row={row} weekdayNum={5} hour={index + 1} />
-            <HourItem row={row} weekdayNum={6} hour={index + 1} />
-            <HourItem row={row} weekdayNum={7} hour={index + 1} />
+            <HourItem row={row} weekdayNum={1} hour={index} />
+            <HourItem row={row} weekdayNum={2} hour={index} />
+            <HourItem row={row} weekdayNum={3} hour={index} />
+            <HourItem row={row} weekdayNum={4} hour={index} />
+            <HourItem row={row} weekdayNum={5} hour={index} />
+            <HourItem row={row} weekdayNum={6} hour={index} />
+            <HourItem row={row} weekdayNum={7} hour={index} />
           </Stack>
         ))}
       </Stack>

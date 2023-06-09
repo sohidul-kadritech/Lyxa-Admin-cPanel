@@ -11,6 +11,7 @@ import BannerPage from '../pages/Banner/BannerPage';
 import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import Role from '../pages/AdminControl/Role/Role';
+import AdminShopList from '../pages/AdminShopList';
 import AdminLogHistory from '../pages/AppWallet/AdminLogHistory/AdminLogHistory';
 import DeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
 import PaymentHistory from '../pages/AppWallet/PaymentHistory/PaymentHistory';
@@ -77,6 +78,9 @@ import NotificationsList from '../pages/Notifications/NotificationsList';
 import SendNotifications from '../pages/Notifications/SendNotifications';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
+import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
+import AccountList from '../pages/Accounts';
+import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
@@ -95,6 +99,7 @@ import AdminSettings2 from '../pages/Settings/Admin';
 import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
 import Vat from '../pages/Vat';
@@ -119,6 +124,7 @@ export const admin_routes = [
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
+  { path: '/accounts', component: AccountList },
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
@@ -141,6 +147,9 @@ export const admin_routes = [
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
     component: () => <MarketingDashboard viewUserType="admin" />,
   },
+  { path: '/shop', component: AdminShopList },
+  { path: '/shop/profile/:shopId', component: ShopProfile },
+  { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 
   // product
   { path: '/products/list2', component: ProductList },
@@ -207,6 +216,7 @@ export const admin_routes = [
 
   // admin control
   { path: '/admin/list', component: AdminList },
+  { path: '/admin/list2', component: AdminControl },
   { path: '/admin/create', component: CreateAdmin },
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },

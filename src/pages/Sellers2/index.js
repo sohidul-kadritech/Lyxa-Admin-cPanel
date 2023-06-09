@@ -1,36 +1,45 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import { statusTypeOptions } from '../Product1/helpers';
+import AddLyxaCharge from './AddLyxaCharge';
+import AddSeller from './AddSeller';
 import SellerList from './SellerList';
 import SellersProfile from './SellersProfile';
+import { previewGenerator } from './helpers';
 
 function SellerList2() {
   const [status, setStatus] = useState('all');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKey, setSearchKey] = useState('');
-  // eslint-disable-next-line no-unused-vars
+
   const [open, setOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
+  const [editDocumentOpen, setEditDocumentOpen] = useState(false);
+
+  const [openLyxaChargeSidebar, setOpenLyxaChargeSidebar] = useState(false);
+
   const [isEdit, setIsEdit] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [isReadOnly, setIsReadOnly] = useState(false);
-  // eslint-disable-next-line no-unused-vars
+
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+
+  const [loading, setLoading] = useState(false);
   const [currentSeller, setCurrentSeller] = useState({});
   const theme = useTheme();
 
+  const queryClient = useQueryClient();
   const getAllSellersQuery = useQuery(
-    [API_URL.ALL_SELLER, { status, searchKey }],
+    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey }],
     () =>
       AXIOS.get(API_URL.ALL_SELLER, {
         params: {
-          status,
+          sellerStatus: status,
           searchKey,
         },
       }),
@@ -45,14 +54,65 @@ function SellerList2() {
     },
   );
 
-  console.log('get all sellers: ', getAllSellersQuery?.data?.data?.sellers);
+  const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.ALL_SELLER);
+        setLoading(false);
+      } else {
+        successMsg(data.message);
+        setLoading(false);
+      }
+    },
+  });
+
+  const sellerDropChargeQuery = useMutation((data) => AXIOS.post(API_URL.SELLER_DROP_CHARGE, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.ALL_SELLER);
+        setOpenLyxaChargeSidebar(false);
+        // setLoading(false);
+      } else {
+        successMsg(data.message);
+        setLoading(false);
+      }
+    },
+  });
+
+  const editSellerQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_SELLER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(API_URL.ALL_SELLER);
+        setLoading(false);
+        setEditDocumentOpen(false);
+        setIsConfirmModal(false);
+      } else {
+        successMsg(data.message);
+        setLoading(false);
+      }
+    },
+  });
+
+  const replaceDocument = (document) => {
+    // console.log('documents: ', document);
+    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: document.url });
+  };
+  const removeDocument = (document) => {
+    // console.log('remove--documents: ', document);
+    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: '' });
+  };
 
   return (
     <Box>
       {/* Sellers Page Top Section */}
       <PageTop
         title="Seller List"
-        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',
@@ -82,7 +142,6 @@ function SellerList2() {
           onClick={() => {
             setOpen(() => {
               setIsEdit(false);
-              setIsReadOnly(false);
               return true;
             });
           }}
@@ -91,32 +150,85 @@ function SellerList2() {
 
       {/* Sellers Main Section */}
       <Box marginTop="42px">
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: '600 !important',
-            color: theme.palette.text.secondary2,
-            marginBottom: '26px',
-            textTransform: 'uppercase',
-          }}
-        >
-          Sellers
-        </Typography>
-        <Stack direction="row" gap="22px">
-          {/* Sellers List --> left */}
-          <Box>
-            <SellerList
-              data={getAllSellersQuery?.data?.data?.sellers}
-              currentSeller={currentSeller}
-              setCurrentSeller={setCurrentSeller}
-            />
-          </Box>
-          {/* Seller Profile --> right */}
-          <Box flex={1}>
-            <SellersProfile currentSeller={currentSeller} />
-          </Box>
-        </Stack>
+        <Box>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: '600 !important',
+              color: theme.palette.text.secondary2,
+              marginBottom: '26px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Sellers
+          </Typography>
+          <Stack direction="row" gap="22px">
+            {/* Sellers List --> left */}
+            <Box>
+              <SellerList
+                data={getAllSellersQuery?.data?.data?.sellers}
+                currentSeller={currentSeller}
+                setCurrentSeller={setCurrentSeller}
+              />
+            </Box>
+            {/* Seller Profile --> right */}
+            <Box flex={1}>
+              <SellersProfile
+                editSellerQuery={editSellerQuery}
+                editDocumentOpen={editDocumentOpen}
+                setEditDocumentOpen={setEditDocumentOpen}
+                isConfirmModal={isConfirmModal}
+                setIsConfirmModal={setIsConfirmModal}
+                setAddSidebarOpen={setOpen}
+                setOpenLyxaChargeSidebar={setOpenLyxaChargeSidebar}
+                setIsEdit={setIsEdit}
+                currentSeller={currentSeller}
+                replaceDocument={replaceDocument}
+                removeDocument={removeDocument}
+              />
+            </Box>
+          </Stack>
+        </Box>
       </Box>
+
+      <Drawer open={open} anchor="right">
+        <AddSeller
+          onClose={() => {
+            setOpen(false);
+            setLoading(false);
+          }}
+          loading={loading}
+          isEdit={isEdit}
+          setLoading={setLoading}
+          addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
+          sellerData={
+            isEdit
+              ? {
+                  ...currentSeller,
+                  password: '',
+                  sellerStatus: currentSeller?.status,
+                  profile_photo: previewGenerator(currentSeller?.profile_photo),
+                  certificate_of_incorporation: previewGenerator(currentSeller?.certificate_of_incorporation),
+                  national_id: previewGenerator(currentSeller?.national_id),
+                  sellerContractPaper: previewGenerator(currentSeller?.sellerContractPaper),
+                }
+              : {
+                  sellerStatus: '',
+                  sellerType: '',
+                }
+          }
+        />
+      </Drawer>
+
+      <Drawer open={openLyxaChargeSidebar} anchor="right">
+        <AddLyxaCharge
+          currentSeller={currentSeller}
+          onClose={() => {
+            setOpenLyxaChargeSidebar(false);
+          }}
+          sellerDropChargeQuery={sellerDropChargeQuery}
+        />
+      </Drawer>
     </Box>
   );
 }

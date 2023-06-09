@@ -18,8 +18,10 @@ export default function SellerToShopLayout() {
   const { seller } = currentUser;
   const location = useLocation();
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
   const hideSidebar = location?.pathname?.search('/seller/dashboard/') > -1;
+
   const { path, url } = useMemo(
     () => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }),
     [routeMatch?.params?.shopId]
@@ -41,7 +43,7 @@ export default function SellerToShopLayout() {
           dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shop } });
           dispatchShopTabs({
             type: 'add-tab',
-            payload: { shop: data?.data?.shop || {}, location: location.pathname, seller },
+            payload: { shop: data?.data?.shop || {}, location: location.pathname, seller, from: '/' },
           });
         } else {
           history.push('/');
@@ -81,7 +83,6 @@ export default function SellerToShopLayout() {
     <ChildLayout
       hideSidebar={hideSidebar}
       sidebarTitle="Lyxa Shop"
-      cosnole={console.log('=================>', currentUser?.shop)}
       routes={shop_routes(path, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
       menuItems={shop_menu_items(url, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
       childFor="shop"

@@ -9,6 +9,7 @@ const useGeoLocation = () => {
   const onSuccess = (location) => {
     setLocation({
       loaded: true,
+      isCurrent: true,
       coordinates: {
         lat: location.coords.latitude,
         lon: location.coords.longitude,
@@ -19,6 +20,7 @@ const useGeoLocation = () => {
   const onError = (error) => {
     setLocation({
       loaded: true,
+      isCurrent: false,
       coordinates: {
         lat: 0,
         lon: 0,

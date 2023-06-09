@@ -11,6 +11,7 @@ import AXIOS from '../../../../network/axios';
 import OrderByHoursChart from './Chart';
 
 const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
+const utcDiff = new Date().getTimezoneOffset() / 60;
 
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -18,10 +19,13 @@ export default function OrdersByHour() {
   const { shop } = currentUser;
 
   const ordersGraph = useQuery(
-    [Api.SHOP_DASHBOARD_ORDER_BY_HOURS, { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id }],
+    [
+      Api.SHOP_DASHBOARD_ORDER_BY_HOURS,
+      { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id, timeZone: utcDiff },
+    ],
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
-        params: { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id },
+        params: { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id, timeZone: utcDiff },
       })
   );
 
