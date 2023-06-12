@@ -177,11 +177,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
               >
                 Area
               </Typography>
-              <Typography
-                sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
-              >
-                <ConvertArea squareMeters={polygonArea} />
-              </Typography>
+              <ConvertArea squareMeters={polygonArea} />
             </Box>
             <Box>
               <Button

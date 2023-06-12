@@ -234,11 +234,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
               >
                 Area
               </Typography>
-              <Typography
-                sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
-              >
-                <ConvertArea squareMeters={polygonArea} />
-              </Typography>
+              <ConvertArea squareMeters={polygonArea} />
             </Box>
             <Box>
               <Button disabled={addNewZone?.isLoading} onClick={createNewZone} variant="contained" color="primary">

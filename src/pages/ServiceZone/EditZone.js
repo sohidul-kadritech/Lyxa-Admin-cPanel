@@ -268,11 +268,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
               >
                 Area
               </Typography>
-              <Typography
-                sx={{ color: theme.palette.text.primary, fontSize: '28px', fontWeight: 500, lineHeight: '20px' }}
-              >
-                <ConvertArea squareMeters={polygonArea} />
-              </Typography>
+              <ConvertArea squareMeters={polygonArea} />
             </Box>
             <Stack flexDirection="row" gap="20px">
               <Button disabled={editZone?.isLoading} onClick={updateZone} variant="contained" color="primary">

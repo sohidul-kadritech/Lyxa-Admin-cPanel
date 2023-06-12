@@ -54,6 +54,18 @@ function AdminControl() {
       }
     },
   });
+  const deleteAdminQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_ADMIN, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        setOpen(false);
+        setIsEdit(false);
+        queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN);
+      } else {
+        successMsg(data.message, 'warn');
+      }
+    },
+  });
 
   // eslint-disable-next-line no-unused-vars
   const editAdminQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_ADMIN, data), {
@@ -114,6 +126,7 @@ function AdminControl() {
       ) : (
         <Box>
           <AdminTeamList
+            deleteAdminQuery={deleteAdminQuery}
             setOpen={setOpen}
             setIsEdit={setIsEdit}
             setCurrentAdmin={setCurrentAdmin}

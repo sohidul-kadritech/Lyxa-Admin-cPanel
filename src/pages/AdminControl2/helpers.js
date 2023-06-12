@@ -1,6 +1,6 @@
 import { successMsg } from '../../helpers/successMsg';
 
-export const varifyUserData = (data) => {
+export const varifyUserData = (data, isEdit) => {
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!data?.name) {
     successMsg('Please provide admin name');
@@ -14,15 +14,19 @@ export const varifyUserData = (data) => {
     successMsg('Invalid email');
     return false;
   }
-  if (!data?.password) {
+  if (!data?.password && !isEdit) {
     successMsg('Please provide your password');
     return false;
   }
-  if (!data?.confirm_password) {
+  if (!data?.confirm_password && !isEdit) {
     successMsg('Please provide your confirm password');
     return false;
   }
-  if (data?.confirm_password && data?.password && data?.password !== data?.confirm_password) {
+  if (data?.confirm_password && data?.password && data?.password !== data?.confirm_password && !isEdit) {
+    successMsg('Password not matched');
+    return false;
+  }
+  if (data?.confirm_password && data?.password && data?.password !== data?.confirm_password && isEdit) {
     successMsg('Password not matched');
     return false;
   }
@@ -35,4 +39,18 @@ export const varifyUserData = (data) => {
     return false;
   }
   return true;
+};
+export const generateData = (data, isEdit) => {
+  delete data.confirm_password;
+  if (isEdit) {
+    return {
+      ...data,
+      id: data?._id,
+      password: data?.password ? data.password : '',
+    };
+  }
+
+  return {
+    ...data,
+  };
 };
