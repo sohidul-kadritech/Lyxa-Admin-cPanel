@@ -64,10 +64,11 @@ export default function ViewAccountInfo({ onClose, user = {} }) {
             <ViewUserInfoItem title="Address" value={address?.address || 'No address found'} />
             {user?.dob && <ViewUserInfoItem title="Date of Birth" value={moment(user?.dob).format('MMM DD, YYYY')} />}
             {user?.gender && <ViewUserInfoItem title="Gender" value={user?.gender} />}
+            <ViewUserInfoItem title="Join Date" value={moment(user?.createdAt).format('MMM DD, YYYY')} />
             <ViewUserInfoItem title="Status" value={user?.status} />
-            <ViewUserInfoItem title="Balance" value={user?.tempBalance?.toFixed(2)} />
-            <ViewUserInfoItem title="Points" value={user?.tempRewardPoints} />
-            <ViewUserInfoItem title="Verified" value={user?.phoneVerify ? 'Yes' : 'No'} />
+            <ViewUserInfoItem title="Lyxa Balance" value={user?.tempBalance?.toFixed(2)} />
+            <ViewUserInfoItem title="Reward Points" value={user?.tempRewardPoints} />
+            <ViewUserInfoItem title="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} />
             <ViewUserInfoItem title="Register Type" value={user?.registerType} />
           </Box>
         </Box>

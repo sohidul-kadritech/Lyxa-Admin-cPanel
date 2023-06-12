@@ -89,7 +89,8 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
             }}
           />
           <StyledFormField
-            label="Password *"
+            label={`${isEdit ? 'New ' : ''}Password *`}
+            // label="Password *"
             intputType="text"
             containerProps={{
               sx: { padding: '14px 0' },
@@ -104,14 +105,15 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
             }}
           />
           <StyledFormField
-            label="Repeated Password *"
+            label={`Repeated ${isEdit ? 'New ' : ''} Password *`}
+            // label="Repeated Password *"
             intputType="text"
             containerProps={{
               sx: { padding: '14px 0' },
             }}
             inputProps={{
               value: newAdminData?.confirm_password,
-              placeholder: 'Confirm password',
+              placeholder: 'Repeated password',
               type: 'password',
               name: 'confirm_password',
               onChange: changeHandler,
@@ -167,8 +169,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
             startIcon={<EmailOutlined />}
             fullWidth
           >
-            {/* {isEdit ? 'SAVE' : 'ADD'} */}
-            Add e-mail
+            {isEdit ? 'SAVE' : ' Add e-mail'}
           </Button>
         </Stack>
       </Stack>
