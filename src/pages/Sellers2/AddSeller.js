@@ -23,22 +23,17 @@ const addressInit = {
 function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, setLoading }) {
   const [newSellerData, setNewSellerData] = useState(sellerData);
 
-  console.log('=========>', sellerData);
-
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
 
   const changeHandler = (e) => {
     if (e.target.name === 'pin') {
-      setNewSellerData((prev) => {
-        console.log('seller data: ', { ...prev, [e.target.name]: e.target.value });
-        return { ...prev, sellerAddress: { ...newSellerData?.sellerAddress, [e.target.name]: e.target.value } };
-      });
+      setNewSellerData((prev) => ({
+        ...prev,
+        sellerAddress: { ...newSellerData?.sellerAddress, [e.target.name]: e.target.value },
+      }));
     } else {
-      setNewSellerData((prev) => {
-        console.log('seller data: ', { ...prev, [e.target.name]: e.target.value });
-        return { ...prev, [e.target.name]: e.target.value };
-      });
+      setNewSellerData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
 

@@ -75,6 +75,7 @@ export const SINGLE_USER = `${ADMIN_ENDPOINT}/user/get-user-details`;
 export const USER_TRANSACTIONS = `${ADMIN_ENDPOINT}/user/get-user-transaction`;
 export const USER_ORDERS = `${ADMIN_ENDPOINT}/order/user`;
 export const USER_STATUS = `${ADMIN_ENDPOINT}/USER/update-status`;
+export const USER_UPDATE = `${ADMIN_ENDPOINT}/user/update`;
 
 // CATEGORY
 export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;

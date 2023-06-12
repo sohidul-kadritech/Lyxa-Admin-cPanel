@@ -232,7 +232,7 @@ function ShopList({
   return (
     <Box
       sx={{
-        padding: '23px 16px  18px',
+        padding: '7.5px 16px  2px',
         maxHeight: '350px',
         overflow: 'auto',
         border: `1px solid ${theme.palette.custom.border}`,

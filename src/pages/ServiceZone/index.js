@@ -175,9 +175,10 @@ function ServiceZone() {
 
   // eslint-disable-next-line no-unused-vars
   const onStatusChange = (value, data) => {
-    data.zoneStatus = value;
+    // data.zoneStatus = value;
 
     if (value !== 'busy') {
+      data.zoneStatus = value;
       updateAZoneQuery.mutate({
         zoneId: data?._id,
         zoneStatus: value,
@@ -513,7 +514,7 @@ function ServiceZone() {
                   rowData={rowData || { zoneName: 'no name' }}
                   onClose={() => {
                     console.log('update status');
-                    setOpen(!open);
+                    setOpen(false);
                   }}
                 />
               )}

@@ -1,13 +1,17 @@
 // project import
 import { Edit, Visibility } from '@mui/icons-material';
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import EditUser from './EditUser/index ';
 import TableSkeleton from './Skeleton';
+import ViewAccountInfo from './ViewAccount';
 
 const statusToLabelMap = {
   active: 'Active',
@@ -27,6 +31,10 @@ const statusToColorMap = {
 };
 
 export default function UsersTable({ users = [], page, setPage, totalPage, loading }) {
+  const history = useHistory();
+  const [sidebarOpen, setSidebarOpen] = useState(null);
+  const [selectedUser, setSelectedUser] = useState({});
+
   const columns = [
     {
       id: 1,
@@ -41,6 +49,14 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
           imgFallbackCharacter={row?.name?.charAt(0)}
           name={row?.name}
           subTitle={row?.autoGenId}
+          titleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              history.push(`/accounts/${row?._id}`, {
+                user: row,
+              });
+            },
+          }}
         />
       ),
     },
@@ -123,12 +139,24 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       flex: 0.5,
       align: 'right',
       headerAlign: 'right',
-      renderCell: () => (
+      renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton onClick={() => {}} color="primary">
+          <StyledIconButton
+            onClick={() => {
+              setSidebarOpen('edit');
+              setSelectedUser(row);
+            }}
+            color="primary"
+          >
             <Edit />
           </StyledIconButton>
-          <StyledIconButton color="primary" onClick={() => {}}>
+          <StyledIconButton
+            color="primary"
+            onClick={() => {
+              setSidebarOpen('view');
+              setSelectedUser(row);
+            }}
+          >
             <Visibility />
           </StyledIconButton>
         </Stack>
@@ -168,6 +196,26 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
         />
       </Box>
       <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+      <Drawer open={Boolean(sidebarOpen)} anchor="right">
+        {sidebarOpen === 'view' && (
+          <ViewAccountInfo
+            user={selectedUser}
+            onClose={() => {
+              setSelectedUser({});
+              setSidebarOpen(null);
+            }}
+          />
+        )}
+        {sidebarOpen === 'edit' && (
+          <EditUser
+            editUser={selectedUser}
+            onClose={() => {
+              setSelectedUser({});
+              setSidebarOpen(null);
+            }}
+          />
+        )}
+      </Drawer>
     </Box>
   );
 }
