@@ -36,7 +36,7 @@ export default function RiderTabs({ rider }) {
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Timestamp" />}
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Flagged" />}
         <Tab label="Documents" />
-        {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Shop Rating" />}
+        {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Reviews" />}
       </Tabs>
       <Box>
         <TabPanel index={0} value={currentTab}>

@@ -1,11 +1,18 @@
 // project import
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
 import moment from 'moment';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as DownIcon } from '../../../assets/icons/thumbs-down.svg';
 import { ReactComponent as UpIcon } from '../../../assets/icons/thumbs-up.svg';
+import OrderDetail from '../../../components/Shared/OrderDetail';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
 export default function ShopRatingTable({ rows = [] }) {
+  const history = useHistory();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState({});
+
   const columns = [
     {
       id: 1,
@@ -13,7 +20,6 @@ export default function ShopRatingTable({ rows = [] }) {
       field: 'shopRateToRider',
       flex: 1,
       sortable: false,
-      // minWidth: 270,
       renderCell: ({ value }) => (
         <span
           style={{
@@ -31,7 +37,16 @@ export default function ShopRatingTable({ rows = [] }) {
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
-        <Typography color="primary.main" variant="body4">
+        <Typography
+          color="primary.main"
+          variant="body4"
+          sx={{
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            history.push(`/shop/profile/${row?.shop?._id}`);
+          }}
+        >
           {row?.shop?.shopName}
         </Typography>
       ),
@@ -42,9 +57,17 @@ export default function ShopRatingTable({ rows = [] }) {
       field: 'orderId',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => (
-        <Typography color="primary.main" variant="body4">
-          {value}
+      renderCell: ({ row }) => (
+        <Typography
+          color="primary.main"
+          variant="body4"
+          sx={{ cursor: 'pointer' }}
+          onClick={() => {
+            setCurrentOrder(row);
+            setSidebarOpen(true);
+          }}
+        >
+          {row?.orderId}
         </Typography>
       ),
     },
@@ -55,7 +78,16 @@ export default function ShopRatingTable({ rows = [] }) {
       flex: 1,
       sortable: false,
       renderCell: ({ value }) => (
-        <Typography color="primary.main" variant="body4">
+        <Typography
+          color="primary.main"
+          sx={{
+            cursor: 'pointer',
+          }}
+          variant="body4"
+          onClick={() => {
+            history.push(`/accounts/${value?._id}`);
+          }}
+        >
           {value?.name}
         </Typography>
       ),
@@ -100,30 +132,41 @@ export default function ShopRatingTable({ rows = [] }) {
   ];
 
   return (
-    <Box
-      sx={{
-        pr: 5,
-        pl: 3.5,
-        pt: 1,
-        pb: 1,
-        border: '1px solid #EEEEEE',
-        borderRadius: '7px',
-        background: '#fff',
-      }}
-    >
-      <StyledTable
-        columns={columns}
-        rows={rows}
-        getRowId={(row) => row?._id}
-        rowHeight={71}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No Ratings Find
-            </Stack>
-          ),
+    <>
+      <Box
+        sx={{
+          pr: 5,
+          pl: 3.5,
+          pt: 1,
+          pb: 1,
+          border: '1px solid #EEEEEE',
+          borderRadius: '7px',
+          background: '#fff',
         }}
-      />
-    </Box>
+      >
+        <StyledTable
+          columns={columns}
+          rows={rows}
+          getRowId={(row) => row?._id}
+          rowHeight={71}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No Ratings Find
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+      <Drawer open={sidebarOpen} anchor="right">
+        <OrderDetail
+          order={currentOrder}
+          onClose={() => {
+            setSidebarOpen(false);
+            setCurrentOrder({});
+          }}
+        />
+      </Drawer>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { Delete, Edit } from '@mui/icons-material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import ConfirmModal from '../../components/Common/ConfirmModal';
@@ -26,6 +25,7 @@ function AdminTeamList({
   setIsEdit,
   deleteAdminQuery,
   isConfirmModal,
+  editAdminQuery,
   setIsConfirmModal,
 }) {
   const theme = useTheme();
@@ -35,6 +35,10 @@ function AdminTeamList({
     item.status = value;
     // setRender((prev) => !prev);
     // tagsMutation.mutate(item);
+    editAdminQuery.mutate({
+      id: item._id,
+      status: value,
+    });
   };
 
   const allColumns = [
@@ -147,16 +151,6 @@ function AdminTeamList({
       flex: 1.5,
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton
-            //   onClick={() => {
-            //     setSelectedShop(params?.row);
-            //     props.setSelectedMenu('');
-            //     setOpen(true);
-            //   }}
-            color="primary"
-          >
-            <VisibilityIcon />
-          </StyledIconButton>
           {/* edit */}
           <StyledIconButton
             onClick={() => {
@@ -168,6 +162,7 @@ function AdminTeamList({
           >
             <Edit />
           </StyledIconButton>
+          {/* Delete */}
           <StyledIconButton
             onClick={() => {
               setIsConfirmModal(true);

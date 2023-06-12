@@ -127,6 +127,7 @@ function AdminControl() {
         <Box>
           <AdminTeamList
             deleteAdminQuery={deleteAdminQuery}
+            editAdminQuery={editAdminQuery}
             setOpen={setOpen}
             setIsEdit={setIsEdit}
             setCurrentAdmin={setCurrentAdmin}

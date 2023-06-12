@@ -289,43 +289,44 @@ export default function Marketing({ viewUserType }) {
             }}
           />
         </Grid>
-        <Grid md={6} lg={4}>
-          <MCard
-            description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
-            title="$0 Delivery Fee"
-            loading={__loading || freeDeliverySettingsQuery?.isFetching}
-            readOnly={__readonly}
-            disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
-            status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
-            // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
-            ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
-            icon={DeliveryIcon}
-            onOpen={() => {
-              if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
-                openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
-              }
-            }}
-          />
-        </Grid>
+        {!(shop?.haveOwnDeliveryBoy && viewUserType === 'admin') && (
+          <Grid md={6} lg={4}>
+            <MCard
+              description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
+              title="$0 Delivery Fee"
+              loading={__loading || freeDeliverySettingsQuery?.isFetching}
+              readOnly={__readonly}
+              disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
+              status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
+              // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
+              ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
+              icon={DeliveryIcon}
+              onOpen={() => {
+                if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
+                  openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
+                }
+              }}
+            />
+          </Grid>
+        )}
         {viewUserType === 'shop' && (
           <>
-            {shop?.haveOwnDeliveryBoy === false && (
-              <Grid md={6} lg={4}>
-                <MCard
-                  description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
-                  title="Loyalty Points"
-                  loading={__loading || rewardSettingsQuery.isFetching}
-                  readOnly={__readonly}
-                  status={getPromotionStatus(rewardSettingsQuery)}
-                  icon={LoyaltyIcon}
-                  onOpen={() => {
-                    if (!rewardSettingsQuery.isLoading) {
-                      openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
-                    }
-                  }}
-                />
-              </Grid>
-            )}
+            <Grid md={6} lg={4}>
+              <MCard
+                description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
+                title="Loyalty Points"
+                loading={__loading || rewardSettingsQuery.isFetching}
+                readOnly={__readonly}
+                status={getPromotionStatus(rewardSettingsQuery)}
+                icon={LoyaltyIcon}
+                onOpen={() => {
+                  if (!rewardSettingsQuery.isLoading) {
+                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
+                  }
+                }}
+              />
+            </Grid>
+            {/* )} */}
             <Grid md={6} lg={4}>
               <MCard
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
