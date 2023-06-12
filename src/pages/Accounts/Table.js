@@ -2,6 +2,7 @@
 import { Edit, Visibility } from '@mui/icons-material';
 import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
@@ -30,6 +31,7 @@ const statusToColorMap = {
 };
 
 export default function UsersTable({ users = [], page, setPage, totalPage, loading }) {
+  const history = useHistory();
   const [sidebarOpen, setSidebarOpen] = useState(null);
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -47,6 +49,14 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
           imgFallbackCharacter={row?.name?.charAt(0)}
           name={row?.name}
           subTitle={row?.autoGenId}
+          titleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              history.push(`/accounts/${row?._id}`, {
+                user: row,
+              });
+            },
+          }}
         />
       ),
     },
