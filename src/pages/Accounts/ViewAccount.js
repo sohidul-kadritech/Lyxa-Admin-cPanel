@@ -57,12 +57,11 @@ export default function ViewAccountInfo({ onClose, user = {} }) {
           >
             View Account
           </Typography>
-          {/* ========================= */}
           <Box>
             <ViewUserInfoItem title="Account Name" value={user?.name} />
             <ViewUserInfoItem title="E-mail" value={user?.email} valueSx={{ textTransform: 'normal' }} />
             <ViewUserInfoItem title="Phone Number" value={user?.phone_number} />
-            <ViewUserInfoItem title="Address" value={address?.address} />
+            <ViewUserInfoItem title="Address" value={address?.address || 'No address found'} />
             {user?.dob && <ViewUserInfoItem title="Date of Birth" value={moment(user?.dob).format('MMM DD, YYYY')} />}
             {user?.gender && <ViewUserInfoItem title="Gender" value={user?.gender} />}
             <ViewUserInfoItem title="Status" value={user?.status} />

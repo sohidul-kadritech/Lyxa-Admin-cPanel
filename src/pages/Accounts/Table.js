@@ -8,6 +8,7 @@ import UserAvatar from '../../components/Common/UserAvatar';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import EditUser from './EditUser/index ';
 import TableSkeleton from './Skeleton';
 import ViewAccountInfo from './ViewAccount';
 
@@ -130,7 +131,13 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       headerAlign: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton onClick={() => {}} color="primary">
+          <StyledIconButton
+            onClick={() => {
+              setSidebarOpen('edit');
+              setSelectedUser(row);
+            }}
+            color="primary"
+          >
             <Edit />
           </StyledIconButton>
           <StyledIconButton
@@ -183,6 +190,15 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
         {sidebarOpen === 'view' && (
           <ViewAccountInfo
             user={selectedUser}
+            onClose={() => {
+              setSelectedUser({});
+              setSidebarOpen(null);
+            }}
+          />
+        )}
+        {sidebarOpen === 'edit' && (
+          <EditUser
+            editUser={selectedUser}
             onClose={() => {
               setSelectedUser({});
               setSidebarOpen(null);
