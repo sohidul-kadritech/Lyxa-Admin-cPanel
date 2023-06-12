@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { statusTypeOptions } from '../Faq2/helpers';
-import { varifyUserData } from './helpers';
+import { generateData, varifyUserData } from './helpers';
 
 const intialData = {
   status: 'active',
@@ -38,23 +38,20 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
   };
 
   const onSubmitAdminController = () => {
-    const isVarified = varifyUserData(newAdminData);
+    const isVarified = varifyUserData(newAdminData, isEdit);
     console.log(isVarified);
 
-    if (isVarified && !isEdit) {
-      addAdminQuery.mutate({
-        ...newAdminData,
-        adminType,
-      });
+    if (isVarified) {
+      addAdminQuery.mutate(generateData(newAdminData, isEdit));
     }
 
-    if (isVarified && isEdit) {
-      addAdminQuery.mutate({
-        ...newAdminData,
-        id: newAdminData?._id,
-        adminType,
-      });
-    }
+    // if (isVarified && isEdit) {
+    //   addAdminQuery.mutate({
+    //     ...newAdminData,
+    //     id: newAdminData?._id,
+    //     adminType,
+    //   });
+    // }
   };
 
   return (

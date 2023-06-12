@@ -19,10 +19,18 @@ const listFilterOptions = [
   },
 ];
 
-function AdminTeamList({ data = [], setCurrentAdmin, setOpen, setIsEdit }) {
+function AdminTeamList({
+  data = [],
+  setCurrentAdmin,
+  setOpen,
+  setIsEdit,
+  deleteAdminQuery,
+  isConfirmModal,
+  setIsConfirmModal,
+}) {
   const theme = useTheme();
+  const [rowId, setRowId] = useState('');
 
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const onStatusChange = (value, item) => {
     item.status = value;
     // setRender((prev) => !prev);
@@ -161,11 +169,10 @@ function AdminTeamList({ data = [], setCurrentAdmin, setOpen, setIsEdit }) {
             <Edit />
           </StyledIconButton>
           <StyledIconButton
-            //   onClick={() => {
-            //     setOpen(true);
-            //     props.setSelectedMenu('edit_shop');
-            //     setSelectedShop(params?.row);
-            //   }}
+            onClick={() => {
+              setIsConfirmModal(true);
+              setRowId(params?.row?._id);
+            }}
             color="primary"
           >
             <Delete />
@@ -208,15 +215,16 @@ function AdminTeamList({ data = [], setCurrentAdmin, setOpen, setIsEdit }) {
       />
 
       <ConfirmModal
-        message="Are you sure you want to delete this resource?"
+        message="Are you sure you want to delete this admin?"
         isOpen={isConfirmModal}
-        // loading={editSellerQuery?.isLoading}
+        loading={deleteAdminQuery?.isLoading}
         onCancel={() => {
           setIsConfirmModal(false);
           //   setCurrentDocumet({});
         }}
         onConfirm={() => {
           // setIsConfirmModal(false);
+          deleteAdminQuery.mutate({ id: rowId });
           //   removeDocument(currentDocumet);
         }}
       />

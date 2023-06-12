@@ -45,7 +45,7 @@ export function ConvertArea({ squareMeters }) {
 
   return (
     <Stack flexDirection="row" alignContent="center" alignItems="center" gap="4px">
-      <Typography variant="span">
+      <Typography variant="body4">
         {squareKilometers.toFixed(2)}km<sup>2</sup>
       </Typography>
       {/* <Typography sx={{ fontSize: '12px' }} variant="span">
