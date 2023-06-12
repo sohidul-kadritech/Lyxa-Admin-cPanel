@@ -9,6 +9,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   background: theme.palette.background.secondary,
   border: `1.25px solid transparent`,
   transition: 'border 200ms ease',
+  boxShadow: 'none!important',
 
   '& .MuiChip-label': {
     color: theme.palette.text.primary,
@@ -18,7 +19,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     lineHeight: '24px',
   },
 
-  '&:active': {
+  '&.active': {
     boxShadow: 'none!important',
     border: `1.25px solid ${theme.palette.primary.main}`,
     background: theme.palette.background.secondary,
