@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.67268934.css",
-    "main.js": "/static/js/main.a9d6adb7.js",
+    "main.js": "/static/js/main.a3050fa1.js",
     "static/js/949.86b75e5d.chunk.js": "/static/js/949.86b75e5d.chunk.js",
     "static/js/332.48dc95f0.chunk.js": "/static/js/332.48dc95f0.chunk.js",
     "static/js/943.3f34dc7f.chunk.js": "/static/js/943.3f34dc7f.chunk.js",
@@ -59,6 +59,8 @@
     "static/media/buy-icon.svg": "/static/media/buy-icon.49885a8e5f573d02ecf3bf23d72cb212.svg",
     "static/media/finance-admin.svg": "/static/media/finance-admin.0237b379014d7224913ce5fa1b4edce4.svg",
     "static/media/discount-icon.svg": "/static/media/discount-icon.ad72e76c78272af0477057c8464ceaf5.svg",
+    "static/media/register.svg": "/static/media/register.61ac615b8b8df851cae44d007de3ab42.svg",
+    "static/media/dob.svg": "/static/media/dob.0ae4b13309929a890723929ca04f9659.svg",
     "static/media/sellers.svg": "/static/media/sellers.5ded553b98b2ecb18bef7c8cc11e0f3b.svg",
     "static/media/riders.svg": "/static/media/riders.a0c4318532908e452f1b16e8d792fd1e.svg",
     "static/media/collapse.svg": "/static/media/collapse.5edf4c7a3252bac6cc6847b4c1e45d90.svg",
@@ -82,6 +84,7 @@
     "static/media/thumbs-down.svg": "/static/media/thumbs-down.f5faf8cb7aeb7db5d8280c98107badc5.svg",
     "static/media/chat.svg": "/static/media/chat.b6ec59976c35a7ca533200122cc217cd.svg",
     "static/media/thumbs-up.svg": "/static/media/thumbs-up.fd44f324acac21ec907aad175822be56.svg",
+    "static/media/gender.svg": "/static/media/gender.4b00d0bb5a205b19ab5010e16d163ea1.svg",
     "static/media/supreme.svg": "/static/media/supreme.5f717bee23063abba5620b8fb5841c98.svg",
     "static/media/cart.svg": "/static/media/cart.3cd8e9dc41c559247171cb28ef31d46a.svg",
     "static/media/upload.svg": "/static/media/upload.f3d0d8cc101bc489475dc935fa5f6364.svg",
@@ -126,6 +129,6 @@
   },
   "entrypoints": [
     "static/css/main.67268934.css",
-    "static/js/main.a9d6adb7.js"
+    "static/js/main.a3050fa1.js"
   ]
 }
