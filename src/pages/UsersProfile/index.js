@@ -1,17 +1,20 @@
 /* eslint-disable no-unused-vars */
-import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Box, Button, Stack } from '@mui/material';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import ProfileSkeleton from '../../components/Skeleton/ProfileSkeleton';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import TopInfo from './TopInfo';
 import UserDetails from './UserDetails';
+import UserTabs from './UserTabs';
 
 export default function UserProfile() {
-  const [user, setUser] = useState({});
   const location = useLocation();
+  const [user, setUser] = useState(location?.state?.user);
+  const [open, setOpen] = useState(false);
   const params = useParams();
 
   const query = useQuery(
@@ -30,11 +33,9 @@ export default function UserProfile() {
     }
   );
 
-  useEffect(() => {}, []);
-
   return (
     <Box>
-      <PageTop title="User Profile" />
+      <PageTop title="User Profile" backButtonLabel="Back to Accounts" backTo="/accounts" />
       {query?.isLoading && <ProfileSkeleton></ProfileSkeleton>}
       {!query?.isLoading && (
         <Box
@@ -51,13 +52,32 @@ export default function UserProfile() {
               height: '100%',
               overflow: 'auto',
             }}
-          ></Box>
+          >
+            <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
+              <TopInfo user={user} />
+              <Button
+                disableRipple
+                variant="text"
+                color="primary"
+                onClick={() => {
+                  setOpen(true);
+                }}
+                sx={{
+                  textDecoration: 'underline',
+                  marginTop: '4px',
+                }}
+              >
+                Edit Account
+              </Button>
+            </Stack>
+            <UserTabs />
+          </Box>
           <Box
             sx={{
               paddingLeft: { sm: '0px', md: '50px' },
             }}
           >
-            <UserDetails user={location?.state?.user} />
+            <UserDetails user={user} />
           </Box>
         </Box>
       )}
