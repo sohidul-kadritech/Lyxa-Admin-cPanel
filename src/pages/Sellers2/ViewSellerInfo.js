@@ -135,20 +135,29 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
           </ShopInfo>
           <ShopInfo title="Child Sellers" sx={{ textTransform: 'capitalize' }} theme={theme}>
             {selectedSeller?.childSellers?.length > 0 ? (
-              <Box>
+              <Stack
+                direction="column"
+                gap="8px"
+                sx={{
+                  maxWidth: '250px',
+                  maxHeight: '250px',
+                  padding: '8px',
+                  borderRadius: '7px',
+                  border: `1px solid ${theme.palette.custom.border}`,
+                  overflow: 'auto',
+                }}
+              >
                 {selectedSeller?.childSellers?.map((seller, i) => (
-                  <Stack gap="4px">
-                    <Stack direction="row" gap="4px" alignItems="center">
-                      <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                        {i + 1}
-                      </Typography>
-                      <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                        {seller?.name}
-                      </Typography>
-                    </Stack>
+                  <Stack key={i} direction="row" gap="6px" alignItems="center">
+                    <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                      {i + 1}
+                    </Typography>
+                    <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                      {seller?.name}
+                    </Typography>
                   </Stack>
                 ))}
-              </Box>
+              </Stack>
             ) : (
               <Box>
                 <Stack gap="4px">
