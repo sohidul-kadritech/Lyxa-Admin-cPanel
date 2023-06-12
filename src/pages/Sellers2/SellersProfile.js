@@ -14,6 +14,7 @@ import ViewSellerInfo from './ViewSellerInfo';
 // import ViewShopInfo from './ViewShopInfo';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import useAccessAsUser from '../../helpers/useAccessAsUser';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
@@ -118,6 +119,8 @@ function SellersProfile({
   // eslint-disable-next-line no-unused-vars
   const [selectedMenu, setSelectedMenu] = useState('');
 
+  const accessAsUser = useAccessAsUser();
+
   useEffect(() => {
     setSearchResult(currentSeller?.shops);
   }, [currentSeller]);
@@ -127,7 +130,7 @@ function SellersProfile({
       console.log(e.target.value);
       const matchData = currentSeller?.shops.filter((obj) =>
         // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
+        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase())
       );
       console.log('matchData', matchData);
       setSearchResult(() => [...matchData]);
@@ -182,6 +185,9 @@ function SellersProfile({
       setOpenLyxaChargeSidebar(true);
       setIsEdit(true);
     }
+    if (menu === 'access_as_seller') {
+      accessAsUser('admin', 'seller', currentSeller);
+    }
   };
   const closeModal = () => {
     setSelectedMenu('');
@@ -222,7 +228,7 @@ function SellersProfile({
               }}
               inputProps={{
                 name: 'sort',
-                placeholder: 'sort',
+                placeholder: 'Sort',
                 value: sort,
                 items: sortOptions,
                 size: 'sm2',
@@ -238,7 +244,7 @@ function SellersProfile({
               }}
               inputProps={{
                 name: 'status',
-                placeholder: 'status',
+                placeholder: 'Status',
                 value: status,
                 items: statusTypeOptions,
                 size: 'sm2',
