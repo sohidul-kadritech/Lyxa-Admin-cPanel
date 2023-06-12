@@ -130,7 +130,7 @@ function SellersProfile({
       console.log(e.target.value);
       const matchData = currentSeller?.shops.filter((obj) =>
         // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase())
+        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
       );
       console.log('matchData', matchData);
       setSearchResult(() => [...matchData]);
@@ -278,7 +278,9 @@ function SellersProfile({
       )}
 
       <Drawer open={open} anchor="right">
-        {selectedMenu === '' && <ViewShopInfo selectedShop={selectedShop} onClose={closeModal} />}
+        {selectedMenu === '' && (
+          <ViewShopInfo selectedShop={{ ...selectedShop, seller: currentSeller }} onClose={closeModal} />
+        )}
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
         {selectedMenu === 'edit_shop' && <AddShop editShop={selectedShop} onClose={() => setOpen(false)} />}
       </Drawer>
