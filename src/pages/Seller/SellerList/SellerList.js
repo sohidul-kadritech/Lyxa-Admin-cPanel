@@ -17,6 +17,7 @@ import Search from '../../../components/Search';
 import TableImgItem from '../../../components/TableImgItem';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu';
 import { useGlobalContext } from '../../../context';
+import useAccessAsUser from '../../../helpers/useAccessAsUser';
 import {
   getAllSeller,
   setSellerStatusFalse,
@@ -32,6 +33,7 @@ function SellerList() {
 
   const [isZoom, setIsZoom] = useState(false);
   const [sellerImg] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const { dispatchCurrentUser } = useGlobalContext();
 
   const {
@@ -48,6 +50,7 @@ function SellerList() {
   } = useSelector((state) => state.sellerReducer);
   const { currentUser } = useGlobalContext();
   const { userType, adminType } = currentUser;
+  const accessAsUser = useAccessAsUser();
 
   useEffect(() => {
     dispatch(setSellerStatusFalse());
@@ -73,8 +76,7 @@ function SellerList() {
     }
 
     if (menu === 'View as Admin') {
-      history?.push(`/seller/dashboard/${item._id}`);
-      dispatchCurrentUser({ type: 'seller', payload: { seller: item } });
+      accessAsUser('admin', 'seller', item);
     }
   };
 
