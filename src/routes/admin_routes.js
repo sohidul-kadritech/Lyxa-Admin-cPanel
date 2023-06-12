@@ -102,6 +102,7 @@ import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySetti
 import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import Transactions from '../pages/Transactions/Transactions';
+import UserProfile from '../pages/UsersProfile';
 import Vat from '../pages/Vat';
 import Vat2 from '../pages/Vat2';
 
@@ -125,6 +126,7 @@ export const admin_routes = [
 
   // users
   { path: '/accounts', component: AccountList },
+  { path: '/accounts/:userId', component: UserProfile },
   { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
