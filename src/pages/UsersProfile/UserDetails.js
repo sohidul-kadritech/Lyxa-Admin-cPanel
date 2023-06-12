@@ -12,7 +12,7 @@ import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 
 export default function UserDetails({ user = {} }) {
-  const address = user?.address?.find((adrs) => adrs.primary) || user?.address?.at(0) || user?.address[0];
+  const address = user?.address?.find((adrs) => adrs.primary) || user?.address?.at(0);
   console.log(user);
 
   return (

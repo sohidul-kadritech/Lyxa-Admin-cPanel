@@ -6,18 +6,20 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-export default function TopInfo({ rider }) {
+export default function TopInfo({ user }) {
   const queryClient = useQueryClient();
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
-  const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
+  console.log(user);
+
+  const update = useMutation((data) => AXIOS.post(Api.USER_UPDATE, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
 
       if (data?.status) {
-        queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
-        rider.image = data?.data?.delivery?.image;
+        queryClient.invalidateQueries([Api.ALL_USERS]);
+        user.profile_photo = data?.data?.user?.profile_photo;
         setRender((prev) => !prev);
       }
     },
@@ -46,20 +48,20 @@ export default function TopInfo({ rider }) {
     }
 
     update.mutate({
-      id: rider?._id,
-      image: imgUrl,
+      id: user?._id,
+      profile_photo: imgUrl,
     });
   };
 
   return (
     <UserProfileInfo2
-      autoGenId={rider?.autoGenId}
-      image={rider?.image}
-      name={rider?.name}
-      reviews={rider?.reviews}
-      phone={rider?.phone}
+      autoGenId={user?.autoGenId}
+      image={user?.profile_photo}
+      name={user?.name}
+      reviews={user?.reviews}
+      phone={user?.phone_number}
       onDrop={onDrop}
-      rating={rider?.rating}
+      rating={0}
     />
   );
 }
