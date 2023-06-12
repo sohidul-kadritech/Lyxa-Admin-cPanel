@@ -12,6 +12,8 @@ import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
 import OrderAmountDetails from './OrderAmountDetails';
 import OrderIssues from './OrderIssues';
+import OrderRefundBeforeDelivered from './OrderRefundBeforeDelivered';
+import OrderRefundDetails from './OrderRefundDetails';
 import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
@@ -153,7 +155,15 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
             paddingBottom: 0,
           }}
         >
-          {userType === 'admin' ? <OrderAmountDetails order={order} /> : null}
+          <Stack gap={5}>
+            {userType === 'admin' ? <OrderAmountDetails order={order} /> : null}
+            {userType === 'admin' && order?.userCancelTnx?.length > 0 ? (
+              <OrderRefundBeforeDelivered order={order} />
+            ) : null}
+            {userType === 'admin' && order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 ? (
+              <OrderRefundDetails order={order} />
+            ) : null}
+          </Stack>
         </TabPanel>
       </Box>
     </Box>

@@ -1,7 +1,34 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
+import { TagsAndCuisines } from '../../pages/ShopProfile/helper';
 import CloseButton from '../Common/CloseButton';
 import Rating from '../Common/Rating';
+
+const getDeliveryFee = (selectedShop) => {
+  const isFreeDelivery =
+    selectedShop?.marketings?.length > 0
+      ? selectedShop?.marketings?.find(
+          // eslint-disable-next-line prettier/prettier
+          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive,
+        )
+      : null;
+  if (selectedShop.haveOwnDeliveryBoy && !isFreeDelivery) {
+    return {
+      status: true,
+      value: selectedShop?.deliveryFee,
+    };
+  }
+  if (selectedShop.haveOwnDeliveryBoy && isFreeDelivery) {
+    return {
+      status: true,
+      value: 0,
+    };
+  }
+  return {
+    status: false,
+    value: 0,
+  };
+};
 
 function ShopInfo({ title, theme, sx, children }) {
   return (
@@ -85,6 +112,11 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.shopName}
             </Typography>
           </ShopInfo>
+          <ShopInfo title="Shop Manager" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.name}
+            </Typography>
+          </ShopInfo>
 
           <ShopInfo title="E-mail" theme={theme}>
             <Typography variant="body4">{selectedShop?.email}</Typography>
@@ -113,11 +145,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
             </Typography>
           </ShopInfo>
           <ShopInfo title="Payment Options" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            {/* <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopType}
-            </Typography> */}
-
-            {selectedShop?.paymentOption.length > 0 ? (
+            {selectedShop?.paymentOption?.length > 0 ? (
               <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
                 {selectedShop?.paymentOption.join(', ')}
               </Typography>
@@ -132,18 +160,9 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
           </ShopInfo>
           <ShopInfo title="Tags & Cuisines" sx={{ textTransform: 'capitalize' }} theme={theme}>
             {selectedShop?.tags?.length > 0 || selectedShop?.cuisineType?.length > 0 ? (
-              <>
-                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.tags.join(', ')}
-                </Typography>
-                {/* <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.cuisineType.join(', ')}
-                </Typography> */}
-
-                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.cuisineType.map((item) => item.name).join(', ')}
-                </Typography>
-              </>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {TagsAndCuisines(selectedShop?.tags, selectedShop?.cuisineType)}
+              </Typography>
             ) : (
               <Box>
                 {' '}
@@ -172,21 +191,15 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Delivery Charge Apply" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryChargeApply ? 'Yes' : 'NO'}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Delivery Charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryFee}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Rider Fee (Per KM)" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryFeePerKm}
-            </Typography>
-          </ShopInfo>
+          {getDeliveryFee(selectedShop).status && (
+            <ShopInfo title="Delivery Charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {/* {selectedShop?.deliveryFee} */}
+                {getDeliveryFee(selectedShop)?.value}
+              </Typography>
+            </ShopInfo>
+          )}
+
           <ShopInfo title="Status" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.shopStatus}

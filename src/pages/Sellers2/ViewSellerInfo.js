@@ -37,14 +37,14 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" alignItems="center" gap={3}>
               <Avatar alt="user-image" src={selectedSeller?.profile_photo} sx={{ width: 36, height: 36 }}>
-                {selectedSeller?.name?.length && selectedSeller?.name[0]}
+                {selectedSeller?.name?.length > 0 && selectedSeller?.name[0]}
               </Avatar>
               <Stack gap={0.5}>
                 <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
                   {selectedSeller?.name}
                 </Typography>
                 <Typography variant="body4" color="#737373">
-                  {selectedSeller?.shops?.length || 0} Shops
+                  {selectedSeller?.shops?.length > 0 ? selectedSeller?.shops?.length : 0} Shops
                 </Typography>
               </Stack>
             </Stack>
@@ -70,6 +70,11 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
           >
             View Seller
           </Typography>
+          <ShopInfo title="Unique ID" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedSeller?.autoGenId}
+            </Typography>
+          </ShopInfo>
           <ShopInfo title="Seller Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedSeller?.name}
