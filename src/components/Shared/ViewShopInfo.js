@@ -74,6 +74,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.shopName}
             </Typography>
           </ShopInfo>
+
           <ShopInfo title="E-mail" theme={theme}>
             <Typography variant="body4">{selectedShop?.email}</Typography>
           </ShopInfo>
@@ -100,9 +101,111 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.shopType}
             </Typography>
           </ShopInfo>
+          <ShopInfo title="Payment Options" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            {/* <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.shopType}
+            </Typography> */}
+            {selectedShop?.paymentOption.length > 0 ? (
+              <Stack direction="row" gap="4px">
+                {selectedShop?.paymentOption.map((method, i) => (
+                  <Typography key={i} variant="body4" sx={{ textTransform: 'capitalize' }}>
+                    {method},
+                  </Typography>
+                ))}
+              </Stack>
+            ) : (
+              <Box>No Methods Found</Box>
+            )}
+          </ShopInfo>
+          <ShopInfo title="Tags & Cuisines" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            {selectedShop?.tags?.length > 0 || selectedShop?.cuisineType?.length > 0 ? (
+              <>
+                <Stack direction="row" gap="4px">
+                  {selectedShop?.tags.map((tags, i) => (
+                    <Typography key={i} variant="body4" sx={{ textTransform: 'capitalize' }}>
+                      {tags},
+                    </Typography>
+                  ))}
+                </Stack>
+                <Stack direction="row" gap="4px">
+                  {selectedShop?.cuisineType.map((cusine, i) => (
+                    <Typography key={i} variant="body4" sx={{ textTransform: 'capitalize' }}>
+                      {cusine?.name},
+                    </Typography>
+                  ))}
+                </Stack>
+              </>
+            ) : (
+              <Box>No Tags & Cuisines Found</Box>
+            )}
+          </ShopInfo>
+
+          <ShopInfo title="Dietary" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            {selectedShop?.dietary?.length > 0 ? (
+              <Stack direction="row" gap="4px">
+                {selectedShop?.dietary.map((dietary, i) => (
+                  <Typography key={i} variant="body4" sx={{ textTransform: 'capitalize' }}>
+                    {dietary},
+                  </Typography>
+                ))}
+              </Stack>
+            ) : (
+              <Box>No Tags & Cuisines Found</Box>
+            )}
+          </ShopInfo>
+          <ShopInfo title="Delivery Method" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Delivery Charge Apply" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.deliveryChargeApply ? 'Yes' : 'NO'}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Delivery Charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.deliveryFee}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Rider Fee (Per KM)" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.deliveryFeePerKm}
+            </Typography>
+          </ShopInfo>
           <ShopInfo title="Status" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.shopStatus}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank Account Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.account_name}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank Account Number" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.account_number}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.bank_name}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.bank_address}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.bank_postal_code}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Bank SWIFT" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.account_swift}
             </Typography>
           </ShopInfo>
         </Box>

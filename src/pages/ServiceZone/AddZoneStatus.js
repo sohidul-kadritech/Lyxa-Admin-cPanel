@@ -63,6 +63,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
       ...zoneAvailabilityData,
       zoneId: rowData._id,
       zoneAvailability: 'busy',
+      zoneStatus: 'active',
     });
   };
   return (
