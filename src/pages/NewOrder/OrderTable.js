@@ -1,7 +1,8 @@
 // project import
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 import Rating from '../../components/Common/Rating';
+import TableDateTime from '../../components/Common/TableDateTime';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -10,21 +11,18 @@ import PageSkeleton from './PageSkeleton';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, threeDotHandler, loading }) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  // const theme = useTheme();
-  // console.log('order table: ', orders, 'order fileter: ', orderType);
   const { general } = useGlobalContext();
   const currency = general?.currency?.code;
+  const history = useHistory();
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile'],
       id: 1,
-      headerName: 'ORDERS',
+      headerName: 'ACCOUNT',
       field: 'orders',
       flex: orderType === 'cancelled ' ? 1.5 : 1,
       sortable: false,
-      // minWidth: 270,
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="user-image"
@@ -32,16 +30,64 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
           name={row?.user?.name}
           subTitle={row?.orderId}
+          subTitleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    if (onRowClick) {
+                      onRowClick(row);
+                    }
+                  },
+                }
+              : undefined
+          }
+          titleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    history.push(`/accounts/${row?.user?._id}`);
+                  },
+                }
+              : undefined
+          }
         />
       ),
     },
     {
-      showFor: ['ongoing'],
+      showFor: ['riderProfile', 'userProfile'],
+      id: 2,
+      headerName: 'SHOP',
+      field: 'shop',
+      flex: 1,
+      minWidth: 240,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <UserAvatar
+          imgAlt="shop-image"
+          imgUrl={row?.shop?.shopLogo}
+          imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
+          name={row?.shop?.shopName}
+          titleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    history.push(`/shop/profile/${row?.shop?._id}`);
+                  },
+                }
+              : undefined
+          }
+        />
+      ),
+    },
+    {
+      showFor: ['ongoing', 'userProfile'],
       id: 2,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
       flex: 1,
-      // minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
@@ -50,21 +96,20 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'userProfile', 'riderProfile'],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
-      // minWidth: 240,
       sortable: false,
       flex: orderType === 'cancelled' ? 1.5 : 1,
-      renderCell: ({ value }) => <Typography variant="body4">{moment(value).format('MMM D, YYYY h:mm a')}</Typography>,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
       showFor: ['delivered', 'shopProfile'],
       id: 3,
       headerName: 'RIDER',
       field: 'deliveryBoy',
-      // minWidth: 270,
+      minWidth: 240,
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => (
@@ -73,31 +118,57 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           imgUrl={row?.deliveryBoy?.image}
           imgFallbackCharacter={row?.deliveryBoy?.name?.charAt(0)}
           name={row?.deliveryBoy?.name}
+          titleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    history.push(`/riders/${row?.deliveryBoy?._id}`);
+                  },
+                }
+              : undefined
+          }
         />
       ),
     },
     {
-      showFor: ['delivered', 'shopProfile'],
-      id: 3,
-      headerName: 'RATING',
+      showFor: ['riderProfile'],
+      id: 4,
+      headerName: 'RIDER RATING',
       field: 'rating',
       sortable: false,
       flex: 1,
-      // eslint-disable-next-line arrow-body-style, no-unused-vars
       renderCell: ({ row }) => {
-        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
-        if (rating) return <Rating amount={rating?.rating} />;
-        return '_';
+        const r = row?.reviews?.find((r) => r?.type === 'deliveryBoy');
+
+        if (r) {
+          return <Rating amount={r?.rating} />;
+        }
+
+        return <Typography variant="body4">_</Typography>;
       },
     },
     {
-      showFor: ['ongoing', 'cancelled', 'shopProfile'],
+      showFor: ['delivered', 'shopProfile'],
+      id: 3,
+      headerName: 'SHOP RATING',
+      field: 'rating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['ongoing', 'cancelled', 'shopProfile', 'userProfile'],
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
-      // minWidth: 200,
       sortable: false,
       flex: 1,
+      minWidth: 140,
       renderCell: ({ value }) => (
         <Chip
           label={orderStatusMap[value || '']}
@@ -117,8 +188,8 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PROFIT'}`,
       field: 'profit',
       sortable: false,
-      align: 'right',
-      headerAlign: 'right',
+      align: adminType === 'admin' ? 'center' : 'right',
+      headerAlign: adminType === 'admin' ? 'center' : 'right',
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">
@@ -126,10 +197,32 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         </Typography>
       ),
     },
+    {
+      showFor: ['riderProfile'],
+      id: 5,
+      headerName: 'NET PAYOUT',
+      field: 'payout',
+      sortable: false,
+      flex: 0.5,
+      minWidth: 140,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          fontWeight={600}
+          display="flex"
+          sx={{
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          {currency} {row?.deliveryBoyFee}
+        </Typography>
+      ),
+    },
   ];
 
   const newColumn = {
-    showFor: ['ongoing', 'delivered', 'cancelled'],
+    showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'userProfile'],
     id: 6,
     headerName: `ACTION`,
     sortable: false,
@@ -146,7 +239,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     ),
   };
 
-  // const newColumns = [];
   if (adminType === 'admin') {
     columns.push(newColumn);
   }
@@ -175,7 +267,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         onRowClick={onRowClick}
         sx={{
           '& .MuiDataGrid-row': {
-            cursor: 'pointer',
+            cursor: onRowClick ? 'pointer' : 'default',
           },
         }}
         components={{

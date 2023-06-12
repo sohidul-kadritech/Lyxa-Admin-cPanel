@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
+import ProfileSkeleton from '../../components/Skeleton/ProfileSkeleton';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import PageSkeleton from '../NewOrder/PageSkeleton';
 import AddRider from '../Riders/AddRider';
 import RiderDetails from './RiderDetails';
 import RiderTabs from './Tabs';
@@ -51,59 +53,69 @@ export default function RiderProfile() {
   return (
     <Box>
       <PageTop title="Rider Profile" backButtonLabel="Back to Riders" backTo={backRoute} />
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            lg: '1fr 300px',
-            md: '1fr',
-          },
-        }}
-      >
+      {query?.isLoading && (
+        <ProfileSkeleton>
+          <Box pt={5}>
+            <PageSkeleton />
+          </Box>
+        </ProfileSkeleton>
+      )}
+      {!query?.isLoading && (
         <Box
           sx={{
-            paddingRight: {
-              lg: '50px',
-              md: '0px',
-            },
-            paddingBottom: '30px',
-          }}
-        >
-          <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
-            <TopInfo rider={rider} />
-            <Button
-              disableRipple
-              variant="text"
-              color="primary"
-              onClick={() => {
-                setOpen(true);
-              }}
-              sx={{
-                textDecoration: 'underline',
-                marginTop: '4px',
-              }}
-            >
-              Edit Account
-            </Button>
-          </Stack>
-          <RiderTabs rider={rider} />
-        </Box>
-        <Box
-          sx={{
-            paddingLeft: {
-              lg: '50px',
-              md: '0px',
-            },
-            borderLeft: '1px solid',
-            borderColor: {
-              lg: 'custom.border',
-              md: 'transparent',
+            display: 'grid',
+            gridTemplateColumns: {
+              lg: '1fr 300px',
+              md: '1fr',
             },
           }}
         >
-          <RiderDetails rider={rider} />
+          <Box
+            sx={{
+              paddingRight: {
+                lg: '50px',
+                md: '0px',
+              },
+              paddingBottom: '30px',
+            }}
+          >
+            <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
+              <TopInfo rider={rider} />
+              <Button
+                disableRipple
+                variant="text"
+                color="primary"
+                onClick={() => {
+                  setOpen(true);
+                }}
+                sx={{
+                  textDecoration: 'underline',
+                  marginTop: '4px',
+                }}
+              >
+                Edit Account
+              </Button>
+            </Stack>
+            <RiderTabs rider={rider} />
+          </Box>
+          <Box
+            sx={{
+              paddingLeft: {
+                lg: '50px',
+                md: '0px',
+              },
+              borderLeft: '1px solid',
+              borderColor: {
+                lg: 'custom.border',
+                md: 'transparent',
+              },
+            }}
+          >
+            <RiderDetails rider={rider} />
+          </Box>
         </Box>
-      </Box>
+      )}
+
       <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
         <AddRider
           riderFor={rider?.deliveryBoyType === 'shopRider' ? 'shop' : 'global'}

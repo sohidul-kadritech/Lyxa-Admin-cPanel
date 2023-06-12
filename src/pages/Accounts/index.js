@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Box, Drawer } from '@mui/material';
+import { Box } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -21,7 +20,6 @@ const queryParamsInit = {
 };
 
 export default function AccountList() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [totalPage, setTotalPage] = useState(1);
 
@@ -59,9 +57,6 @@ export default function AccountList() {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
       />
-      <Drawer open={Boolean(sidebarOpen)} anchor="right">
-        <Box></Box>
-      </Drawer>
     </Box>
   );
 }

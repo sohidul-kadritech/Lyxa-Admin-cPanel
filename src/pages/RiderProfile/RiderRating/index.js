@@ -65,7 +65,6 @@ export default function RiderRating({ rider }) {
       <Grid container spacing={5} pb={7.5}>
         <InfoCard title="Positive" value={shopRatingsQuery.data?.data?.positive || 0} sm={6} md={4} lg={3} />
         <InfoCard title="Negative" value={shopRatingsQuery.data?.data?.negative || 0} sm={6} md={4} lg={3} />
-        <InfoCard title="Average Rating" value="75%" sm={6} md={4} lg={3} />
       </Grid>
       <ShopRatingTable rows={shopRatingsQuery?.data?.data?.orders} />
     </Box>
