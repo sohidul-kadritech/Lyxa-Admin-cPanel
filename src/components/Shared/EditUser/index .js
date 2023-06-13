@@ -5,14 +5,14 @@ import React, { useState } from 'react';
 // project import
 import { useMutation, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
-import SidebarContainer from '../../../components/Common/SidebarContainerSm';
-import StyledFormField from '../../../components/Form/StyledFormField';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import SidebarContainer from '../../Common/SidebarContainerSm';
+import StyledFormField from '../../Form/StyledFormField';
 import { creatUserData, createEditUserData, genderOptions, validateUser } from './helpers';
 
-export default function EditUser({ editUser, onClose }) {
+export default function EditUser({ editUser, onClose, onUpdateSuccess }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(createEditUserData(editUser));
   const [loading, setLoading] = useState(false);
@@ -39,6 +39,7 @@ export default function EditUser({ editUser, onClose }) {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
+        if (onUpdateSuccess) onUpdateSuccess(data?.data?.user);
         setLoading(false);
         queryClient.invalidateQueries([Api.ALL_USERS]);
         onClose();

@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import TabPanel from '../../components/Common/TabPanel';
 import UserOrders from './Orders';
 import UserRatings from './Rating';
+import UserTransactions from './Transactions';
 import UserChatList from './UserChats';
 
 export default function UserTabs() {
@@ -40,6 +41,9 @@ export default function UserTabs() {
         </TabPanel>
         <TabPanel value={currentTab} index={2}>
           <UserRatings />
+        </TabPanel>
+        <TabPanel value={currentTab} index={3}>
+          <UserTransactions />
         </TabPanel>
       </Box>
     </Box>

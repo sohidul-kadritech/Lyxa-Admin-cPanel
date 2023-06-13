@@ -1,35 +1,24 @@
-// project import
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import StyledCheckbox from '../../../components/Styled/StyledCheckbox';
-import StyledTable from '../../../components/Styled/StyledTable3';
+import LoadingOverlay from '../Common/LoadingOverlay';
+import StyledCheckbox from '../Styled/StyledCheckbox';
+import StyledTable from '../Styled/StyledTable3';
 
 export const getTrxType = (type) => {
-  let newType = '';
-  if (type === 'adminSettlebalanceShop') {
-    newType = 'Settle shop';
-  } else if (type === 'adminAddBalanceShop') {
-    newType = 'Add shop credit';
-  } else if (type === 'sellerCashInHandAdjust') {
-    newType = 'Adjust hand cash';
-  } else if (type === 'adminRemoveBalanceShop') {
-    newType = 'Remove shop credit';
-  } else if (type === 'deliveryBoyAmountSettle') {
-    newType = 'Settle Rider';
-  } else if (type === 'deliveryBoyAdminAmountReceivedCash') {
-    newType = 'Received rider cash';
-  } else if (type === 'deliveryBoyOrderDeliveredCash') {
-    newType = 'Order Delivered Cash';
-  } else {
-    newType = 'Unknown';
-  }
-
-  return newType;
+  let typeLabel = '';
+  if (type === 'adminSettlebalanceShop') typeLabel = 'Settle shop';
+  if (type === 'adminAddBalanceShop') typeLabel = 'Add shop credit';
+  if (type === 'sellerCashInHandAdjust') typeLabel = 'Adjust hand cash';
+  if (type === 'adminRemoveBalanceShop') typeLabel = 'Remove shop credit';
+  if (type === 'deliveryBoyAmountSettle') typeLabel = 'Settle Rider';
+  if (type === 'deliveryBoyAdminAmountReceivedCash') typeLabel = 'Received rider cash';
+  if (type === 'deliveryBoyOrderDeliveredCash') typeLabel = 'Order Delivered Cash';
+  else typeLabel = 'Unknown';
+  return typeLabel;
 };
 
-export default function TransactionssTable({ rows = [], showFor, loading, queryParams }) {
+export default function TransactionsTable({ rows = [], showFor, loading, queryParams = {} }) {
   const [allSelected, setAllSelected] = useState(false);
   const [render, setRender] = useState(false);
 

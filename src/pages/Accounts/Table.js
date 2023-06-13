@@ -6,10 +6,10 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
+import EditUser from '../../components/Shared/EditUser/index ';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
-import EditUser from './EditUser/index ';
 import TableSkeleton from './Skeleton';
 import ViewAccountInfo from './ViewAccount';
 

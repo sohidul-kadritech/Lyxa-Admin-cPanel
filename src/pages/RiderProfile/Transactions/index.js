@@ -1,11 +1,11 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -13,7 +13,6 @@ import AXIOS from '../../../network/axios';
 import { CardTitle } from '../Timestamp/helper';
 import MakePayment from './MakPayment';
 import SearchBar from './Searchbar';
-import TransactionsTable from './Table';
 
 export const queryParamsInit = {
   page: 1,
@@ -91,7 +90,7 @@ export default function RiderTransactions({ riderId, showFor }) {
 
   // on receive cash
   const receiveCashMutation = useMutation((data) => AXIOS.post(Api.RIDER_RECEIVED_PAYMENT, data), {
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries([Api.DELIVERY_TRX]);
       queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
       queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
@@ -186,7 +185,6 @@ export default function RiderTransactions({ riderId, showFor }) {
           </InfoCard>
         </Grid>
       )}
-
       <TransactionsTable
         loading={receiveCashMutation.isloading}
         rows={listQuery?.data?.data?.[showFor]}

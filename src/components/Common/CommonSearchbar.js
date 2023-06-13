@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -121,9 +121,11 @@ export default function SearchBar({
       )}
       {/* button */}
       {!hideFilters?.button && (
-        <Button variant="contained" size="small" onClick={onButtonClick}>
-          {buttonLabel}
-        </Button>
+        <Box flexShrink={0}>
+          <Button variant="contained" size="small" onClick={onButtonClick}>
+            {buttonLabel}
+          </Button>
+        </Box>
       )}
     </Stack>
   );
