@@ -70,7 +70,7 @@ export default function UserProfile() {
                 Edit Account
               </Button>
             </Stack>
-            <UserTabs />
+            <UserTabs user={user} />
           </Box>
           <Box
             sx={{

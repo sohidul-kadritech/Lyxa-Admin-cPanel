@@ -14,6 +14,7 @@ export const getTrxType = (type) => {
   if (type === 'deliveryBoyAmountSettle') typeLabel = 'Settle Rider';
   if (type === 'deliveryBoyAdminAmountReceivedCash') typeLabel = 'Received rider cash';
   if (type === 'deliveryBoyOrderDeliveredCash') typeLabel = 'Order Delivered Cash';
+  if (type === 'userBalanceAddAdmin') typeLabel = 'Add user credit';
   else typeLabel = 'Unknown';
   return typeLabel;
 };

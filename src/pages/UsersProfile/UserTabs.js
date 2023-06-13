@@ -7,7 +7,7 @@ import UserRatings from './Rating';
 import UserTransactions from './Transactions';
 import UserChatList from './UserChats';
 
-export default function UserTabs() {
+export default function UserTabs({ user }) {
   const location = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -34,7 +34,7 @@ export default function UserTabs() {
       </Tabs>
       <Box>
         <TabPanel value={currentTab} index={0}>
-          <UserOrders />
+          <UserOrders userId={user?._id} />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
           <UserChatList />
@@ -43,7 +43,7 @@ export default function UserTabs() {
           <UserRatings />
         </TabPanel>
         <TabPanel value={currentTab} index={3}>
-          <UserTransactions />
+          <UserTransactions user={user} />
         </TabPanel>
       </Box>
     </Box>

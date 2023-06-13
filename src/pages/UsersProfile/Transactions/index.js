@@ -1,51 +1,44 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-unused-vars */
 import { Box, Modal } from '@mui/material';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import TablePagination from '../../../components/Common/TablePagination';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import SearchBar from './Searchbar';
+import AddRemoveCredit from './AddRemoveCredit';
 
-const amountSx = {
-  fontSize: '30px!important',
-};
-
-const getTrxQueryParams = (shopId) => ({
+const queryParamsInit = (userId) => ({
   page: 1,
-  pageSize: 5,
-  shopId,
+  pageSize: 10,
   sortBy: 'DESC',
-  tnxFilter: {
-    startDate: moment().subtract(7, 'day'),
-    endDate: moment(),
-    type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
-    searchKey: '',
-    amountBy: 'DESC',
-    amountRange: '',
-  },
+  type: 'all',
+  startDate: moment().startOf('month').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  searchKey: '',
+  userId,
 });
 
-export default function UserTransactions({ shop }) {
-  const [queryParams, setQueryParams] = useState(getTrxQueryParams(shop?._id));
+export default function UserTransactions({ user }) {
+  console.log(user);
+  const [queryParams, setQueryParams] = useState(queryParamsInit(user?._id));
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
 
-  const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
-    onSuccess: (data) => {
-      setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-    },
-  });
-
-  const summary = query?.data?.data?.summary || {};
-
-  useEffect(() => {
-    setQueryParams(getTrxQueryParams(shop?._id));
-    setTotalPage(1);
-  }, [shop?._id]);
+  const query = useQuery(
+    [Api.DROP_PAY_LIST, queryParams],
+    () =>
+      AXIOS.get(Api.DROP_PAY_LIST, {
+        params: queryParams,
+      }),
+    {
+      onSuccess: (data) => {
+        setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+      },
+    }
+  );
 
   return (
     <Box>
@@ -53,13 +46,16 @@ export default function UserTransactions({ shop }) {
         <SearchBar
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          searchPlaceHolder="Search transactions"
-          onAddRemove={() => {
+          hideFilters={{
+            status: true,
+          }}
+          buttonLabel="Add / Remove Label"
+          onButtonClick={() => {
             setModalOpen(true);
           }}
         />
       </Box>
-      <TransactionsTable rows={query?.data?.data?.transections} showFor="transactions" />
+      <TransactionsTable rows={query?.data?.data?.transactionList} showFor="transactions" />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -67,22 +63,17 @@ export default function UserTransactions({ shop }) {
         }}
         totalPage={totalPage}
       />
-      {/* add/remove credit */}
       <Modal
         open={modalOpen}
         onClose={() => {
           setModalOpen(false);
         }}
       >
-        {/* <AddRemoveCredit
-          shopId={shop?._id}
-          dropAmount={summary?.totalDropGet}
-          shopAmount={summary?.toalShopProfile}
+        <AddRemoveCredit
           onClose={() => {
             setModalOpen(false);
           }}
-        /> */}
-        <Box></Box>
+        />
       </Modal>
     </Box>
   );
