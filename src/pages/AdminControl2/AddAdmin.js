@@ -42,7 +42,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
     console.log(isVarified);
 
     if (isVarified) {
-      addAdminQuery.mutate(generateData(newAdminData, isEdit));
+      addAdminQuery.mutate(generateData({ ...newAdminData, adminType }, isEdit));
     }
 
     // if (isVarified && isEdit) {
