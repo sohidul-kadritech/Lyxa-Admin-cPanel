@@ -18,6 +18,7 @@ const breadcrumbItems = [
 
 function ReferFriend() {
   const [currentTab, setCurrentTab] = useState(0);
+
   return (
     <Box>
       <PageTop

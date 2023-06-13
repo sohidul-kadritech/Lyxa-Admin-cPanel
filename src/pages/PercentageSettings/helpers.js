@@ -5,10 +5,6 @@ export const discountTypeOptions = [
     value: 'percentage',
     label: 'Percentage',
   },
-  {
-    value: 'amount',
-    label: 'Amount',
-  },
 ];
 
 export const generatedDataForRange = (data, allData, type) => {

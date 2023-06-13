@@ -147,20 +147,23 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           minHeight="48px"
         >
           <StyledAutocomplete
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  {inputProps.multiple && <Checkbox color="secondary" checked={selected} />}
-                  <span>{props.key}</span>
-                </div>
-              </li>
-            )}
+            renderOption={(props, option, { selected }) => {
+              console.log('props,', props, option, selected);
+              return (
+                <li {...props}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    {inputProps.multiple && <Checkbox color="secondary" checked={selected} />}
+                    <span>{props.key}</span>
+                  </div>
+                </li>
+              );
+            }}
             disableCloseOnSelect={inputProps.multiple}
             blurOnSelect={!inputProps.multiple}
             {...(inputProps || {})}
@@ -174,6 +177,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             }}
             readOnly={inputProps.readOnly}
           />
+
           {/* tags */}
           {inputProps.multiple &&
             inputProps.value.map((item, index) => {
@@ -189,7 +193,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                     inputProps.onChange(
                       undefined,
                       // eslint-disable-next-line prettier/prettier
-                      inputProps.value.filter((dItem, dIndex) => index !== dIndex)
+                      inputProps.value.filter((dItem, dIndex) => index !== dIndex),
                     );
                   }}
                 />

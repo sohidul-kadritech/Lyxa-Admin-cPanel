@@ -109,7 +109,7 @@ export default function Banking() {
               type: 'number',
               placeholder: 'XXXXXXXXXXXXXXXX24',
               name: 'iban',
-              value: shop?.account_swift,
+              value: shop?.account_number,
               sx: inputSx,
             }}
           />
