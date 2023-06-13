@@ -1,16 +1,19 @@
+/* eslint-disable no-unused-vars */
 import { Box, Drawer } from '@mui/material';
-import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { useRouteMatch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
+import replacePathValues from '../../helpers/replaceRoutePath';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import ShopBanner from './Banner';
 import ShopInfo from './Info';
+import ShopProfileSkeleton from './Sekleton';
 import ShopDetails from './ShopDetails';
 import ShopProfileTabs from './Tabs';
 import { createShopData } from './helper';
@@ -19,8 +22,61 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   const routeMatch = useRouteMatch();
   const history = useHistory();
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
-  const { shop, seller } = currentUser;
+  const { seller } = currentUser;
+  const [shop, setShop] = useState(routeMatch?.path !== '/shop/profile/:shopId' ? currentUser?.shop : {});
   const [open, setOpen] = useState(false);
+
+  const shopMutation = useMutation((data) => AXIOS.post(API_URL.EDIT_SHOP, data), {
+    onSuccess: (data) => {
+      successMsg(data?.status ? 'Successfully Updated' : data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        if (routeMatch?.path !== '/shop/profile/:shopId') currentUser.shop = data?.data?.shop;
+        setShop(data?.data?.shop);
+        setOpen(false);
+      }
+
+      setLoading(false);
+    },
+    onError: (error) => {
+      console.log(error);
+      setLoading(false);
+    },
+  });
+
+  const shopQuery = useQuery(
+    [API_URL.SINGLE_SHOP, { id: routeMatch?.params?.shopId }],
+    () =>
+      AXIOS.get(API_URL.SINGLE_SHOP, {
+        params: {
+          id: routeMatch?.params?.shopId,
+        },
+      }),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        setShop(data?.data?.shop);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (routeMatch?.path === '/shop/profile/:shopId') {
+      if (shopQuery?.data?.data?.shop?._id === routeMatch?.params?.shopId) {
+        setShop(shopQuery?.data?.data?.shop);
+      } else {
+        shopQuery.refetch();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (routeMatch?.path !== '/shop/profile/:shopId') {
+      setShop(currentUser?.shop);
+    }
+  }, [currentUser?.shop]);
 
   const menuHandler = (value) => {
     if (value === 'edit') {
@@ -30,37 +86,31 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     if (value === 'access-shop') {
       let routePath = '';
 
-      if (currentUser?.userType === 'seller') {
-        routePath = `/shop/dashboard/${shop._id}`;
-      } else {
-        const pathArr = routeMatch?.url?.split('/');
-        pathArr?.pop();
-        pathArr?.pop();
-        routePath = `${pathArr?.join('/')}/shop/dashboard/${shop._id}`;
+      if (routeMatch?.path === '/seller/dashboard/:sellerId/shops/list') {
+        routePath = replacePathValues('/seller/dashboard/:sellerId/shop/dashboard/:shopId', {
+          ...routeMatch?.params,
+          shopId: shop._id,
+        });
+
+        dispatchCurrentUser({ type: 'shop', payload: { shop } });
+        dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller, from: routeMatch?.url } });
+      }
+
+      if (routeMatch?.path === '/shops/list' || routeMatch?.path === '/shop/profile/:shopId') {
+        routePath = replacePathValues('/shop/dashboard/:shopId', {
+          shopId: shop._id,
+        });
+
+        dispatchCurrentUser({ type: 'shop', payload: { shop } });
+        dispatchShopTabs({
+          type: 'add-tab',
+          payload: { shop, location: routePath, seller: {}, from: routeMatch?.url },
+        });
       }
 
       history.push(routePath);
-      dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller, from: routeMatch?.url } });
     }
   };
-
-  const shopMutation = useMutation((data) => AXIOS.post(API_URL.EDIT_SHOP, data), {
-    onSuccess: (data) => {
-      if (data?.status) {
-        successMsg('Successfully Updated', 'success');
-        currentUser.shop = data?.data?.shop;
-        setOpen(false);
-      } else {
-        successMsg(data?.message);
-      }
-      setLoading(false);
-    },
-    onError: (error) => {
-      console.log(error);
-      setLoading(false);
-    },
-  });
 
   const onDrop = async (acceptedFiles, imageFor) => {
     const newFiles = acceptedFiles.map((file) =>
@@ -87,6 +137,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
     shopMutation.mutate({ ...shopData });
   };
+
+  if (shopQuery?.isLoading || !shop?._id) return <ShopProfileSkeleton />;
 
   return (
     <Box>
