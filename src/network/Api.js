@@ -162,6 +162,7 @@ export const TRACK_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/tracking`;
 export const DELIVERY_BOY_ORDERS = `${ADMIN_ENDPOINT}/order/delivery`;
 export const DELIVERY_BOY_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/get-current-location`;
 export const DELIVERY_BOY_SHOP_RATING = `${ADMIN_ENDPOINT}/order/delivery/shop-rating`;
+export const DELIVERY_BOY_CUSTOMER_RATING = `${ADMIN_ENDPOINT}/order/delivery/customer-rating`;
 
 //  SETTINGS
 export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
