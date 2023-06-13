@@ -1,9 +1,9 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { ReactComponent as MapIcon } from '../../../assets/icons/map-colored.svg';
+import { ReactComponent as MapIcon } from '../../../../assets/icons/map-colored.svg';
+import { StyledOrderDetailBox } from '../helpers';
 import OrderTrackingMap from './OrderTracking';
-import { StyledOrderDetailBox } from './helpers';
 
 export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {} }) {
   const [mapOpen, setOpen] = useState(false);

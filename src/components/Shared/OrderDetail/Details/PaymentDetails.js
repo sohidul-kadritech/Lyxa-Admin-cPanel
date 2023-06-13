@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { useGlobalContext } from '../../../context';
-import { StyledOrderDetailBox } from './helpers';
+import { useGlobalContext } from '../../../../context';
+import { StyledOrderDetailBox } from '../helpers';
 
 function StyledItem({ label, value, total, isNegative = false, isRejected = false }) {
   const theme = useTheme();

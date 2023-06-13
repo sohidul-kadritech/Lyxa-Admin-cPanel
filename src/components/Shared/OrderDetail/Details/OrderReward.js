@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { ReactComponent as RewardIcon } from '../../../assets/icons/reward-icon.svg';
+import { ReactComponent as RewardIcon } from '../../../../assets/icons/reward-icon.svg';
 
 export default function OrderReward({ points }) {
   return (

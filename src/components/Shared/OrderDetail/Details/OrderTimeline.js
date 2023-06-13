@@ -6,9 +6,9 @@ import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import { Typography, styled, useTheme } from '@mui/material';
 import moment from 'moment';
-import { ReactComponent as TimelineInactive } from '../../../assets/icons/time-inactive.svg';
-import { ReactComponent as TimelineChecked } from '../../../assets/icons/timeline-check.svg';
-import { StyledOrderDetailBox } from './helpers';
+import { ReactComponent as TimelineInactive } from '../../../../assets/icons/time-inactive.svg';
+import { ReactComponent as TimelineChecked } from '../../../../assets/icons/timeline-check.svg';
+import { StyledOrderDetailBox } from '../helpers';
 
 const StyledTimeline = styled(Timeline)(({ theme }) => ({
   marginBottom: 0,

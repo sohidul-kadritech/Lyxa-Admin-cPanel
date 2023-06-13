@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { StyledOrderDetailBox } from './helpers';
+import { StyledOrderDetailBox } from '../helpers';
 
 export default function CancelReason({ cancelReason }) {
   return (

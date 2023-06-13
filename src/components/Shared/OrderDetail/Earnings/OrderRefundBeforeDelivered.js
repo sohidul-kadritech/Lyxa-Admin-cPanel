@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { useGlobalContext } from '../../../context';
-import { StyledOrderDetailBox } from './helpers';
+import { useGlobalContext } from '../../../../context';
+import { StyledOrderDetailBox } from '../helpers';
 
 function StyledItem({
   label,
@@ -42,29 +42,27 @@ function StyledItem({
   );
 }
 
-export default function OrderRefundDetails({ order = {} }) {
+export default function OrderRefundBeforeDelivered({ order = {} }) {
   return (
-    <StyledOrderDetailBox title="Refund After Delivered">
-      <Box>
-        {order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 && (
-          <>
-            <Box pbsx={2.5} pt={2.5} borderBottom="1px solid #EEEEEE">
-              <StyledItem
-                pt={2.5}
-                pbsx={2.5}
-                label="Refund Type"
-                isCurrency={false}
-                value={order?.userRefundTnx[0]?.isPartialRefund ? 'Partial' : 'Full'}
-              />
-            </Box>
-            <StyledItem pbsx={2.5} label="Admin Cut" value={order?.userRefundTnx[0]?.adminCut} />
-            <StyledItem pbsx={2.5} label="Admin VAT Cut" value={order?.userRefundTnx[0]?.adminVatCut} />
-            <StyledItem pbsx={2.5} label="Rider Cut" value={order?.userRefundTnx[0]?.deliveryBoyCut} />
-            <StyledItem pbsx={2.5} label="Shop Cut" value={order?.userRefundTnx[0]?.shopCut} />
-            <StyledItem pbsx={2.5} label="Total Refund" value={order?.userRefundTnx[0]?.amount} total />
-          </>
-        )}
-      </Box>
+    <StyledOrderDetailBox title="Refund Before Delivered">
+      {order?.userCancelTnx?.length > 0 && (
+        <Box pt={2}>
+          <Box borderBottom="1px solid #EEEEEE">
+            <StyledItem
+              label="Refund Type"
+              isCurrency={false}
+              value={order?.userCancelTnx[0]?.isPartialRefund ? 'Partial' : 'Full'}
+            />
+          </Box>
+          <Box pt={3.5}>
+            <StyledItem label="Admin Cut" value={order?.userCancelTnx[0]?.adminCut} />
+            <StyledItem label="Admin VAT Cut" value={order?.userCancelTnx[0]?.adminVatCut} />
+            <StyledItem label="Rider Cut" value={order?.userCancelTnx[0]?.deliveryBoyCut} />
+            <StyledItem label="Shop Cut" value={order?.userCancelTnx[0]?.shopCut} />
+            <StyledItem label="Total Refund" value={order?.userCancelTnx[0]?.amount} total />
+          </Box>
+        </Box>
+      )}
     </StyledOrderDetailBox>
   );
 }

@@ -7,19 +7,10 @@ import { useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
-import CallUser from './CallUser';
-import CancelReason from './CancelReason';
-import DeliveryDetails from './DeliveryDetails';
-import OrderAmountDetails from './OrderAmountDetails';
-import OrderIssues from './OrderIssues';
-import OrderRefundBeforeDelivered from './OrderRefundBeforeDelivered';
-import OrderRefundDetails from './OrderRefundDetails';
-import OrderReward from './OrderReward';
-import OrderTimeline from './OrderTimeline';
-import PaymentDetails from './PaymentDetails';
-import PaymentMethod from './PaymentMethod';
-import Review from './Review';
-import OrderSummary from './Summary';
+import Details from './Details';
+import Earnings from './Earnings';
+import FlagDetails from './Flag';
+import Review from './Reviews';
 
 export default function OrderDetail({ order, onClose, hideIssues }) {
   const { currentUser } = useGlobalContext();
@@ -84,86 +75,49 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
               {moment(order?.createdAt).format('ddd DD, MMM, YYYY')}
             </Typography>
           </Stack>
-          <Tabs
-            value={currentTab}
-            onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-            }}
-            sx={{
-              '& .MuiTab-root': {
-                padding: '8px 12px',
-                textTransform: 'none',
-              },
-            }}
-          >
-            <Tab label="Order Details" />
-            <Tab label="Review" />
-            {userType === 'admin' && <Tab label="Earning Details" />}
-          </Tabs>
+          <Box sx={{ margin: '0 -8px' }}>
+            <Tabs
+              value={currentTab}
+              variant="scrollable"
+              scrollButtons="auto"
+              onChange={(event, newValue) => {
+                setCurrentTab(newValue);
+              }}
+              sx={{
+                '& .MuiTab-root': {
+                  padding: '8px 12px',
+                  textTransform: 'none',
+                },
+
+                '& .MuiTabScrollButton-root': {
+                  width: '15px',
+                },
+              }}
+            >
+              <Tab label="Order Details" />
+              <Tab label="Review" />
+              {userType === 'admin' && <Tab label="Earning Details" />}
+              <Tab label="Flag Details" />
+              <Tab label="Tickets" />
+              <Tab label="Rider Chat" />
+            </Tabs>
+          </Box>
         </Box>
         {/* order detail */}
-        <TabPanel
-          index={0}
-          value={currentTab}
-          sx={{
-            paddingTop: 0,
-            paddingBottom: 0,
-          }}
-        >
-          <Stack gap={5}>
-            {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
-            <OrderTimeline order={order} />
-            {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
-            <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
-            {order?.orderFor === 'global' && order?.deliveryBoy && (
-              <CallUser
-                user={{
-                  name: order?.deliveryBoy?.name,
-                  image: order?.deliveryBoy?.image,
-                  secondary: order?.orderStatus === 'delivered' ? 'Delivered' : 'Delivering',
-                  vehicleNumber: order?.deliveryBoy?.vehicleNumber,
-                  number: order?.deliveryBoy?.number,
-                }}
-              />
-            )}
-            <OrderSummary productsDetails={order?.productsDetails} />
-            <PaymentMethod method={order?.paymentMethod} />
-            {order?.summary?.reward?.points && userType === 'admin' ? (
-              <OrderReward points={order?.summary?.reward?.points} />
-            ) : null}
-            <PaymentDetails order={order} />
-          </Stack>
+        <TabPanel index={0} value={currentTab} noPadding>
+          <Details hideIssues={hideIssues} order={order} userType={userType} />
         </TabPanel>
         {/* review */}
-        <TabPanel
-          index={1}
-          value={currentTab}
-          sx={{
-            paddingTop: 0,
-            paddingBottom: 0,
-          }}
-        >
+        <TabPanel index={1} value={currentTab} noPadding>
           <Review reviews={order?.reviews} />
         </TabPanel>
-
-        {/* order details */}
-        <TabPanel
-          index={2}
-          value={currentTab}
-          sx={{
-            paddingTop: 0,
-            paddingBottom: 0,
-          }}
-        >
-          <Stack gap={5}>
-            {userType === 'admin' ? <OrderAmountDetails order={order} /> : null}
-            {userType === 'admin' && order?.userCancelTnx?.length > 0 ? (
-              <OrderRefundBeforeDelivered order={order} />
-            ) : null}
-            {userType === 'admin' && order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 ? (
-              <OrderRefundDetails order={order} />
-            ) : null}
-          </Stack>
+        {/* earning details */}
+        <TabPanel index={2} value={currentTab} noPadding>
+          <Earnings order={order} userType={userType} />
+        </TabPanel>
+        {/* flag details */}
+        <TabPanel index={userType === 'admin' ? 3 : 2} value={currentTab} noPadding>
+          <FlagDetails order={order} />
         </TabPanel>
       </Box>
     </Box>

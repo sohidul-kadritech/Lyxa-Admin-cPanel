@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { ReactComponent as StarIcon } from '../../../assets/icons/star.svg';
+import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
 
 export default function Rating({ review, isFirst, isLast }) {
   const theme = useTheme();
