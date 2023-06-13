@@ -71,9 +71,7 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
             View Seller
           </Typography>
           <ShopInfo title="Unique ID" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedSeller?.autoGenId}
-            </Typography>
+            <Typography variant="body4">{selectedSeller?.autoGenId}</Typography>
           </ShopInfo>
           <ShopInfo title="Seller Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
@@ -92,24 +90,29 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
             <Typography variant="body4">{selectedSeller?.phone_number}</Typography>
           </ShopInfo>
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.addressSeller?.address}</Typography>
+            <Typography variant="body4">
+              {selectedSeller?.addressSeller?.address},{selectedSeller?.addressSeller?.pin}
+            </Typography>
           </ShopInfo>
           <ShopInfo title="Total Order" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.totalOrder || 0}</Typography>
           </ShopInfo>
-          <ShopInfo title="Lyxa charge Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.dropPercentageType || 'Percentage'}</Typography>
+          <ShopInfo title="Seller charge Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedSeller?.sellerChargeType || 'Global'}
+            </Typography>
           </ShopInfo>
-          <ShopInfo
-            title={`Lyxa charge (${selectedSeller?.dropPercentageType || 'Percentage'})`}
-            sx={{ textTransform: 'capitalize' }}
-            theme={theme}
-          >
-            <Typography variant="body4">{selectedSeller?.dropPercentage || 0}</Typography>
+          <ShopInfo title="Lyxa charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4">
+              {selectedSeller?.sellerChargeType !== 'global'
+                ? selectedSeller?.dropPercentage
+                : selectedSeller?.globalDropPercentage || 0}
+              %
+            </Typography>
           </ShopInfo>
-          <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          {/* <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.addressSeller?.pin || '1233'}</Typography>
-          </ShopInfo>
+          </ShopInfo> */}
           <ShopInfo title="Seller Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedSeller?.sellerType}
@@ -138,7 +141,7 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
               alt="seller_contract_paper"
             ></img>
           </ShopInfo>
-          <ShopInfo title="Child Sellers" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          <ShopInfo title="Seller Team" sx={{ textTransform: 'capitalize' }} theme={theme}>
             {selectedSeller?.childSellers?.length > 0 ? (
               <Stack
                 direction="column"
@@ -168,7 +171,7 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
                 <Stack gap="4px">
                   <Stack direction="row" gap="4px" alignItems="center">
                     <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                      No Child Seller
+                      No Seller Team
                     </Typography>
                   </Stack>
                 </Stack>

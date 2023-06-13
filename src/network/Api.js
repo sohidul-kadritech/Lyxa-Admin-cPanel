@@ -171,6 +171,7 @@ export const UPDATE_ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-set
 export const UPDATE_APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting/edit`;
 export const APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting`;
 // REFER A FRIEND
+export const GET_REFER_A_FRIEND_HISTORY = `${ADMIN_ENDPOINT}/setting/referral-history`;
 export const GET_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting`;
 export const EDIT_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting/edit`;
 

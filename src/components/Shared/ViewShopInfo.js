@@ -103,9 +103,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
             </Typography>
           </ShopInfo>
           <ShopInfo title="Unique ID" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.autoGenId}
-            </Typography>
+            <Typography variant="body4">{selectedShop?.autoGenId}</Typography>
           </ShopInfo>
           <ShopInfo title="Shop Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>

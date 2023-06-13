@@ -1,5 +1,5 @@
 import { Delete } from '@mui/icons-material';
-import { Box, Button, Stack, debounce } from '@mui/material';
+import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
@@ -23,7 +23,8 @@ import {
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
+    // eslint-disable-next-line prettier/prettier
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
   );
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
@@ -40,7 +41,8 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     if (newFiles?.length) {
@@ -70,7 +72,8 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         successMsg(error?.message);
         setLoading(false);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   //  upload data
@@ -104,6 +107,10 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   //   },
   // });
 
+  const filterOptions = createFilterOptions({
+    stringify: ({ shopName, aoutGenId, _id }) => `${shopName} ${aoutGenId} ${_id}`,
+  });
+
   const shopsQuery = useMutation(
     () =>
       AXIOS.get(Api.ALL_SHOP, {
@@ -117,18 +124,24 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       }),
     {
       onSuccess: (data) => {
-        setSearchedShopOptions((prev) => data?.data?.shops || prev);
+        setSearchedShopOptions((prev) => {
+          console.log('shopData', data?.data?.shops?.length > 0 ? data?.data?.shops : prev);
+          return data?.data?.shops?.length > 0 ? data?.data?.shops : prev;
+        });
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const getShops = useMemo(
     () =>
       debounce((value) => {
+        console.log('value: ', value);
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
-    []
+    // eslint-disable-next-line prettier/prettier
+    [],
   );
 
   return (
@@ -281,7 +294,11 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                     value: rider.shopId,
                     placeholder: 'Choose',
                     noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
-                    getOptionLabel: (option) => option?.shopName,
+                    filterOptions: { filterOptions },
+                    getOptionLabel: (option) => {
+                      console.log('options: ', option?.shopName);
+                      return option?.shopName;
+                    },
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,
                     onChange: (e, v) => {
                       console.log('value: ', v);

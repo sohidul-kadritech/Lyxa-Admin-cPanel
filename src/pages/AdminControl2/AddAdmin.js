@@ -66,7 +66,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
             }}
             inputProps={{
               value: newAdminData?.name,
-              placeholder: 'Admin name',
+              placeholder: 'Name',
               type: 'text',
               name: 'name',
               onChange: changeHandler,

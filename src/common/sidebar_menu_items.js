@@ -216,13 +216,13 @@ export const admin_menu_items = [
         icon: AdminOrdersIcon,
         to: '/new-orders',
       },
+      // {
+      //   label: 'Sellers',
+      //   to: '/seller/list',
+      //   icon: SellersIcon,
+      // },
       {
         label: 'Sellers',
-        to: '/seller/list',
-        icon: SellersIcon,
-      },
-      {
-        label: 'Sellers2',
         to: '/seller/list2',
         icon: SellersIcon,
       },
@@ -261,13 +261,13 @@ export const admin_menu_items = [
         to: '/financials',
         icon: FinanceAdminIcon,
       },
+      // {
+      //   label: 'Team',
+      //   to: '/admin/list',
+      //   icon: TeamIcon,
+      // },
       {
         label: 'Team',
-        to: '/admin/list',
-        icon: TeamIcon,
-      },
-      {
-        label: 'Team2',
         to: '/admin/list2',
         icon: TeamIcon,
       },
