@@ -1,5 +1,7 @@
 // project import
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+
 import { useHistory } from 'react-router-dom';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
@@ -7,13 +9,51 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
+
+import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
+import RefundOrder from './RefundOrder';
+import { UpdateFlag } from './UpdateFlag';
+import UpdateOrderStatusForm from './UpdateOrderStatusForm';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
-export default function OrderTable({ orders = [], onRowClick, orderType, adminType, threeDotHandler, loading }) {
+export default function OrderTable({ orders = [], onRowClick, orderType, adminType, loading }) {
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.code;
   const history = useHistory();
+
+  const [updateStatusModal, setUpdateStatusModal] = useState(false);
+
+  const [flagModal, setFlagModal] = useState(false);
+
+  const [openCancelModal, setOpenCancelModal] = useState(false);
+
+  const [openRefundModal, setOpenRefundModal] = useState(false);
+
+  const [currentOrder, setCurrentOrder] = useState({});
+
+  const threeDotHandler = (menu, order) => {
+    if (menu === 'flag') {
+      setFlagModal(true);
+      setCurrentOrder(order);
+    }
+    if (menu === 'cancel_order') {
+      setCurrentOrder(order);
+      setOpenCancelModal(!openCancelModal);
+    }
+    if (menu === 'refund_order') {
+      setCurrentOrder(order);
+
+      setOpenRefundModal(!openRefundModal);
+    }
+    if (menu === 'update_status') {
+      setUpdateStatusModal(true);
+      setCurrentOrder(order);
+    }
+  };
+
+  // eslint-disable-next-line no-unused-vars
 
   const columns = [
     {
@@ -278,6 +318,54 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           ),
         }}
       />
+
+      {/* Update status */}
+      <Modal
+        open={updateStatusModal}
+        onClose={() => {
+          setUpdateStatusModal(false);
+        }}
+      >
+        <UpdateOrderStatusForm
+          onClose={() => setUpdateStatusModal(false)}
+          setCurrentOrder={setCurrentOrder}
+          currentOrder={currentOrder}
+        />
+      </Modal>
+      {/* FLAG ADD */}
+      <Modal
+        open={flagModal}
+        onClose={() => {
+          setFlagModal(false);
+        }}
+      >
+        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+      </Modal>
+      {/* Cancel order */}
+      <Modal
+        open={openCancelModal}
+        onClose={() => {
+          setOpenCancelModal(!openCancelModal);
+        }}
+        sx={{ zIndex: '10 !important' }}
+      >
+        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+      </Modal>
+      {/* Refund After Delivered */}
+      <Modal
+        open={openRefundModal}
+        onClose={() => {
+          setOpenRefundModal(!openRefundModal);
+        }}
+        sx={{ zIndex: '10 !important' }}
+      >
+        <RefundOrder
+          currentOrder={currentOrder}
+          onClose={() => {
+            setOpenRefundModal(false);
+          }}
+        />
+      </Modal>
     </Box>
   );
 }

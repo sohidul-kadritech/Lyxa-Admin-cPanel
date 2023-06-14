@@ -1,6 +1,30 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
+import { Stack, Tooltip, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import moment from 'moment';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+
+export function TitleWithToolTip({ title, tooltip }) {
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={2}>
+      <Typography variant="body1" fontWeight={600}>
+        {title}
+      </Typography>
+      <Tooltip
+        arrow
+        title={tooltip}
+        sx={{
+          '.MuiTooltip-popper': {
+            zIndex: '9999999 !important',
+          },
+        }}
+      >
+        <InfoIcon />
+      </Tooltip>
+    </Stack>
+  );
+}
 
 export const orderStatusMap = {
   placed: 'Pending',
@@ -12,6 +36,18 @@ export const orderStatusMap = {
   cancelled: 'Cancelled',
   refused: 'Rejected',
 };
+
+// flag type options
+export const butlerFlagTypeOptions = [
+  { label: 'User', value: 'user' },
+  { label: 'Butler', value: 'delivery' },
+];
+
+export const orderFlagTypeOptions = [
+  { label: 'User', value: 'user' },
+  { label: 'Rider', value: 'delivery' },
+  { label: 'Shop', value: 'shop' },
+];
 
 export const statusColorVariants = {
   placed: {
@@ -123,7 +159,7 @@ export const getOrderProfit = (order, adminType = 'shop') => {
 export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
-  console.log('Order status: ', order?.orderStatus);
+
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
     options.push({ label: 'Update Status', value: 'update_status' });
   }
@@ -145,7 +181,7 @@ export const getThreedotMenuOptions = (order, userType) => {
 
 export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
   const refundedVat = (vatPercentage / 100) * value;
-  console.log('refunded vat: ', refundedVat);
+
   if (refundedVat > adminVat) {
     return Number(adminVat.toFixed(2));
   }
@@ -155,33 +191,17 @@ export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
 };
 
 export const calculateTotalRefundedAmount = (deliveryBoy, admin, shop, vatForAdmin) => {
-  console.log(
-    'deliveryBoy',
-    deliveryBoy,
-    'admin',
-    admin,
-    'shop',
-    shop,
-    'vatforAdmin',
-    // eslint-disable-next-line prettier/prettier
-    vatForAdmin
-  );
-  return (deliveryBoy + admin + shop + Number(vatForAdmin)).toFixed(2);
+  const calculatedValue = (Number(deliveryBoy) + Number(admin) + Number(shop + Number(vatForAdmin))).toFixed(2);
+  return !calculatedValue && isNaN(calculatedValue) ? 0 : parseFloat(calculatedValue);
 };
 
 export const calculateTotalRefund = (array, refundType = '') => {
-  console.log('array', array, refundType);
   if (refundType !== 'none' && array.length > 0)
     return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   return 0;
 };
 
-export const returnNewValue = (value) => {
-  console.log(value);
-  return value;
-};
-
-// orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
+export const returnNewValue = (value) => value;
 
 export const getShopRefundedAmount = (adminEarning, shopEarning, vatAmount) =>
   adminEarning < 0 ? shopEarning + vatAmount.vatForShop + adminEarning : shopEarning + vatAmount.vatForShop;
@@ -192,4 +212,131 @@ export const getAdminRefundedAmount = (adminEarning, deliveryBoy, type = '') => 
   }
 
   return adminEarning < 0 ? deliveryBoy : adminEarning + deliveryBoy;
+};
+
+export const orderCancelDataFormation = (menu, order, orderCancel) => {
+  if (menu === 'cancel_order') {
+    if (order?.isButler) {
+      return {
+        ...orderCancel,
+        cancelReasonId: '',
+        cartType: order?.cart?.cartType,
+        otherReason: '',
+        deliveryBoy: order?.deliveryBoy,
+        orderFor: order?.orderFor,
+        orderActivity: order?.orderActivity,
+        paymentMethod: order?.paymentMethod,
+        orderId: order?._id,
+        refundType: 'none',
+        partialPayment: {
+          deliveryBoy: '',
+          admin: '',
+        },
+        vatAmount: order?.vatAmount,
+        summary: order?.summary,
+      };
+    }
+
+    return {
+      ...orderCancel,
+      cancelReasonId: '',
+      otherReason: '',
+      deliveryBoy: order?.deliveryBoy,
+      orderFor: order?.orderFor,
+      cartType: order?.cart?.cartType,
+      orderActivity: order?.orderActivity,
+      paymentMethod: order?.paymentMethod,
+      shop: order?.shop,
+      orderId: order?._id,
+      refundType: 'none',
+      vatAmount: order?.vatAmount,
+      partialPayment: {
+        deliveryBoy: '',
+        admin: '',
+      },
+      summary: order?.summary,
+    };
+  }
+
+  if (menu === 'refund_order') {
+    if (order?.isButler) {
+      return {
+        ...orderCancel,
+        cancelReasonId: '',
+        otherReason: '',
+        cartType: order?.cart?.cartType,
+        deliveryBoy: order?.deliveryBoy,
+        paymentMethod: order?.paymentMethod,
+        orderActivity: order?.orderActivity,
+        orderFor: order?.orderFor,
+        orderId: order?._id,
+        vatAmount: order?.vatAmount,
+        refundType: 'none',
+        partialPayment: {
+          deliveryBoy: '',
+          admin: '',
+        },
+        summary: order?.summary,
+      };
+    }
+
+    return {
+      ...orderCancel,
+      cancelReasonId: '',
+      otherReason: '',
+      cartType: order?.cart?.cartType,
+      deliveryBoy: order?.deliveryBoy,
+      paymentMethod: order?.paymentMethod,
+      orderFor: order?.orderFor,
+      orderActivity: order?.orderActivity,
+      shop: order?.shop,
+      orderId: order?._id,
+      refundType: 'none',
+      partialPayment: {
+        deliveryBoy: '',
+        admin: '',
+      },
+      vatAmount: order?.vatAmount,
+      summary: order?.summary,
+    };
+  }
+
+  return {};
+};
+
+export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appVat) => {
+  const riderAndAdmin = orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy;
+  const shopVatAdmin = orderPayment?.shop + orderCancel?.vatAmount?.vatForShop + orderPayment?.admin;
+  const shopVat = orderPayment?.shop + orderCancel?.vatAmount?.vatForShop;
+  if (orderCancel?.refundType !== 'full') {
+    return {
+      orderId: orderCancel?.orderId,
+      refundType: orderCancel?.refundType,
+      partialPayment: {
+        shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
+        admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
+        adminVat: getRefundedVatForAdmin(
+          orderCancel?.vatAmount?.vatForAdmin,
+          riderAndAdmin,
+          // eslint-disable-next-line prettier/prettier
+          appVat,
+        ),
+      },
+    };
+  }
+
+  return {
+    orderId: orderCancel?.orderId,
+    refundType: orderCancel?.refundType,
+    partialPayment: {
+      shop: orderPayment?.admin < 0 ? shopVatAdmin : shopVat,
+      admin: orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
+      adminVat: getRefundedVatForAdmin(
+        orderCancel?.vatAmount?.vatForAdmin,
+        orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
+        // eslint-disable-next-line prettier/prettier
+        appVat,
+      ),
+    },
+  };
 };

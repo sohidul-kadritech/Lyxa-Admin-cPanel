@@ -103,13 +103,6 @@ function Configuration() {
     populate();
   }, [getReferFriendSettings?.data?.data?.referralSetting]);
 
-  // const incrementHandler = (setValue) => {
-  //   setValue((prev) => prev + 1);
-  // };
-  // const decrementHandler = (setValue) => {
-  //   setValue((prev) => prev - 1);
-  // };
-
   const incrementHandler = (setValue) => {
     setValue((prev) => {
       if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
@@ -125,7 +118,7 @@ function Configuration() {
       return prev;
     });
   };
-  // eslint-disable-next-line no-unused-vars
+
   const updateConfigurationQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_REFER_A_FRIEND_SETTINGS, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -137,7 +130,6 @@ function Configuration() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const setTypeValidation = (type, setType, value) => {
     setHasChanged(true);
     if (type.includes(value)) {
@@ -148,7 +140,6 @@ function Configuration() {
     setType(oldType);
   };
 
-  // eslint-disable-next-line no-unused-vars
   const updateConfiguration = () => {
     const data = {
       sender_referralDiscountType: senderReferralDiscountType,
@@ -251,7 +242,6 @@ function Configuration() {
                     placeholder: 'Discount Type',
                     value: receiverReferralDiscountType,
                     items: discountTypeOptions,
-                    //   items: categories,
                     onChange: (e) => {
                       setTypeValidation(type, setType, typeList[4]);
                       setReceiverReferralDiscountType(() => {

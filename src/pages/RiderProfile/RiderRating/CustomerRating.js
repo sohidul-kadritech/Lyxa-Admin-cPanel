@@ -1,14 +1,22 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
+import OrderDetail from '../../../components/Shared/OrderDetail';
 import StyledTable from '../../../components/Styled/StyledTable3';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 
-export default function CustomerRating({ rows }) {
+export default function CustomerRating({ rows = [], loading }) {
+  const history = useHistory();
+  const [currentOrder, setCurrentOrder] = useState({});
+  const [open, setOpen] = useState(false);
+
   const columns = [
     {
       id: 1,
       headerName: 'RATING',
-      field: 'amount',
+      field: 'rating',
       flex: 1,
       sortable: false,
       renderCell: ({ value }) => <Rating amount={value} />,
@@ -19,7 +27,17 @@ export default function CustomerRating({ rows }) {
       field: 'user',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography
+          variant="body4"
+          sx={{ color: 'primary.main', cursor: 'pointer' }}
+          onClick={() => {
+            history.push(`/accounts/${value?._id}`);
+          }}
+        >
+          {value?.name}
+        </Typography>
+      ),
     },
     {
       id: 3,
@@ -27,7 +45,17 @@ export default function CustomerRating({ rows }) {
       field: 'shop',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          sx={{ color: 'primary.main', cursor: 'pointer' }}
+          onClick={() => {
+            history.push(`/shop/profile/${row?.order?.shop?._id}`);
+          }}
+        >
+          {row?.order?.shop?.shopName}
+        </Typography>
+      ),
     },
     {
       id: 4,
@@ -35,23 +63,42 @@ export default function CustomerRating({ rows }) {
       field: 'orderId',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          sx={{ color: 'primary.main', cursor: 'pointer' }}
+          onClick={() => {
+            setCurrentOrder(row?.order);
+            setOpen(true);
+          }}
+        >
+          {row?.order?.orderId}
+        </Typography>
+      ),
     },
     {
       id: 5,
       headerName: 'AMOUNT',
       field: 'amount',
+      align: 'center',
+      headerAlign: 'center',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => <Typography variant="body4">{row?.order?.summary?.totalAmount}</Typography>,
     },
     {
       id: 6,
       headerName: 'PAYMENT TYPE',
-      field: 'type',
+      field: 'paymentMethod',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: ({ row }) => (
+        <Typography variant="body4" textTransform="capitalize">
+          {row?.order?.paymentMethod}
+        </Typography>
+      ),
     },
     {
       id: 7,
@@ -59,37 +106,42 @@ export default function CustomerRating({ rows }) {
       sortable: false,
       field: 'createdAt',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
   ];
 
+  if (loading) return <TablePageSkeleton column={7} row={5} />;
+
   return (
-    <Box
-      sx={{
-        pr: 5,
-        pl: 3.5,
-        pt: 1,
-        pb: 1,
-        border: '1px solid #EEEEEE',
-        borderRadius: '7px',
-        background: '#fff',
-      }}
-    >
-      <StyledTable
-        columns={columns}
-        rows={rows}
-        getRowId={(row) => row?._id}
-        rowHeight={71}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No Flags found
-            </Stack>
-          ),
+    <>
+      <Box
+        sx={{
+          pr: 5,
+          pl: 3.5,
+          pt: 1,
+          pb: 1,
+          border: '1px solid #EEEEEE',
+          borderRadius: '7px',
+          background: '#fff',
         }}
-      />
-    </Box>
+      >
+        <StyledTable
+          columns={columns}
+          rows={rows}
+          getRowId={(row) => row?._id}
+          rowHeight={71}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No Flags found
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+        <OrderDetail order={currentOrder} onClose={() => setOpen(false)} />
+      </Drawer>
+    </>
   );
 }

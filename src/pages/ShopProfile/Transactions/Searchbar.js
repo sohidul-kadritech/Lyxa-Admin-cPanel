@@ -20,7 +20,6 @@ const sortOptions = [
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAddRemove }) {
   const { currentUser } = useGlobalContext();
-  // const [render, setRender] = useState(false);
 
   const updateSearch = useMemo(
     () =>

@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import AddRemoveCredit from './AddRemoveCredit';
 import SearchBar from './Searchbar';
-import ShopTransactionsTable from './TransactionsTable';
 
 const amountSx = {
   fontSize: '30px!important',
@@ -37,7 +37,7 @@ export default function ShopTransactions({ shop }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
 
-  const query = useQuery([Api.SHOP_TRX, queryParams.tnxFilter], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
+  const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
     onSuccess: (data) => {
       setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
     },
@@ -96,7 +96,7 @@ export default function ShopTransactions({ shop }) {
         <InfoCard title="Orders No" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
         <InfoCard title="Order Amount" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
       </Grid>
-      <ShopTransactionsTable rows={query?.data?.data?.transections} />
+      <TransactionsTable rows={query?.data?.data?.transections} type="transactions" />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
