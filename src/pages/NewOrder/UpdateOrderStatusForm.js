@@ -11,11 +11,98 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
 import CloseButton from '../../components/Common/CloseButton';
 import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 
-function UpdateOrderStatusForm({ updateStatusModal, resetUpdateStatusModal, newOrderStatus, ...props }) {
+function UpdateOrderStatusForm({
+  setCurrentOrderShop,
+  setCurrentOrder,
+  setCurrentOrderDelivery,
+  currentOrderDelivery,
+  onClose,
+  currentOrderShop,
+  currentOrder,
+}) {
+  const { socket } = useSelector((state) => state.socketReducer);
+  const [newOrderStatus, setNewOrderStatus] = useState('');
+  const queryClient = useQueryClient();
+  const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
+  // Update Status
+  const resetUpdateStatusModal = () => {
+    onClose();
+    setNewOrderStatus('');
+    setCurrentButlerSearchKey('');
+    setCurrentOrderDelivery({});
+    setCurrentOrder({});
+    setCurrentOrderShop({});
+  };
+
+  const getNearByDeliveryBoys = () => {
+    const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
+    return AXIOS.get(API, {
+      params: {
+        orderId: currentOrder?._id,
+      },
+    });
+  };
+
+  const nearByDeliveryBoysQuery = useQuery(
+    ['single-order-nearby-delivery-boys', { orderId: currentOrder?._id || '' }],
+    getNearByDeliveryBoys,
+    {
+      enabled: newOrderStatus === 'accepted_delivery_boy',
+      cacheTime: 0,
+      staleTime: 0,
+      onSuccess: (data) => {
+        if (!data?.status) {
+          successMsg(data?.message || 'Could not get delivery boys');
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+        successMsg(error?.message || 'Could not get delivery boys', 'error');
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+
+  const updateStatusMutation = useMutation(
+    (payload) => {
+      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_UPDATE_STATUS : Api.ORDRE_UPDATE_STATUS;
+      return AXIOS.post(API, payload.data);
+    },
+    {
+      onSuccess: (data, config) => {
+        console.log(data, config);
+        if (data.status) {
+          successMsg(data?.message, 'success');
+          queryClient.invalidateQueries(['all-orders']);
+          resetUpdateStatusModal();
+          // emit socket
+          if (config.service === 'regular') {
+            if (config?.data?.orderStatus === 'accepted_delivery_boy')
+              socket.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
+            else
+              socket.emit('updateOrder', {
+                orderId: config.data?.orderId,
+              });
+          }
+        } else {
+          successMsg(data?.message);
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+
   // Update order status
   const UpdateOrderStatus = () => {
     if (newOrderStatus === '') {
@@ -23,30 +110,31 @@ function UpdateOrderStatusForm({ updateStatusModal, resetUpdateStatusModal, newO
       return;
     }
 
-    if (newOrderStatus === 'accepted_delivery_boy' && !props?.currentOrderDelivery?._id) {
+    if (newOrderStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
       successMsg('Please select butler');
       return;
     }
 
     if (
       (newOrderStatus === 'delivered' || newOrderStatus === 'preparing') &&
-      !props?.currentOrderDelivery?._id &&
-      !props?.currentOrder?.shop?.haveOwnDeliveryBoy
+      !currentOrderDelivery?._id &&
+      !currentOrder?.shop?.haveOwnDeliveryBoy
     ) {
       successMsg(`Assign delivery boy first`);
       return;
     }
 
     const data = {};
-    data.orderId = props?.currentOrder?._id;
+    data.orderId = currentOrder?._id;
     data.orderStatus = newOrderStatus;
-    data.deliveryBoy = props?.currentOrderDelivery?._id || '';
-    data.shop = props?.currentOrderShop?._id || undefined;
+    data.deliveryBoy = currentOrderDelivery?._id || '';
+    data.shop = currentOrderShop?._id || undefined;
     console.log('===>', data);
-    // props?.updateStatusMutation.mutate({ service: props?.currentOrder?.isButler ? 'butler' : 'regular', data });
+    updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
 
   const updateOrderStatusOptions = (currentOrder) => {
+    console.log('current order: ', currentOrder);
     const list = [];
 
     currentOrder?.timeline?.forEach((item) => {
@@ -84,10 +172,10 @@ function UpdateOrderStatusForm({ updateStatusModal, resetUpdateStatusModal, newO
               value={newOrderStatus}
               label="Select Status"
               onChange={(e) => {
-                props.setNewOrderStatus(e.target.value);
+                setNewOrderStatus(e.target.value);
               }}
             >
-              {updateOrderStatusOptions(props?.currentOrder).map((item) => (
+              {updateOrderStatusOptions(currentOrder).map((item) => (
                 <MenuItem key={item.value} value={item.value} disabled={item.disabled}>
                   {item.label}
                 </MenuItem>
@@ -97,18 +185,18 @@ function UpdateOrderStatusForm({ updateStatusModal, resetUpdateStatusModal, newO
           {/* near by delivery boys */}
           {newOrderStatus === 'accepted_delivery_boy' && (
             <Autocomplete
-              value={props?.currentOrderDelivery}
-              disabled={props?.nearByDeliveryBoysQuery.isLoading || props?.nearByDeliveryBoysQuery?.isFetching}
+              value={currentOrderDelivery}
+              disabled={nearByDeliveryBoysQuery.isLoading || nearByDeliveryBoysQuery?.isFetching}
               onChange={(event, newValue) => {
-                props?.setCurrentOrderDelivery(newValue);
+                setCurrentOrderDelivery(newValue);
               }}
               getOptionLabel={(option) => option.name || ''}
               isOptionEqualToValue={(option, value) => option?._id === value?._id}
-              inputValue={props?.currentButlerSearchKey}
+              inputValue={currentButlerSearchKey}
               onInputChange={(event, newInputValue) => {
-                props?.setCurrentButlerSearchKey(newInputValue);
+                setCurrentButlerSearchKey(newInputValue);
               }}
-              options={props?.nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || []}
+              options={nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || []}
               sx={{ width: '100%' }}
               renderInput={(params) => <TextField {...params} label="Select " />}
               renderOption={(props, option) => (
@@ -121,7 +209,7 @@ function UpdateOrderStatusForm({ updateStatusModal, resetUpdateStatusModal, newO
           <Button
             variant="contained"
             color="primary"
-            disabled={props?.updateStatusMutation.isLoading}
+            disabled={updateStatusMutation?.isLoading}
             onClick={() => {
               UpdateOrderStatus();
             }}

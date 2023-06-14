@@ -2,6 +2,12 @@ import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 
+export const getSellerCredentials = (sellerData) => {
+  const parrentUser = [{ name: sellerData?.name }];
+  const childUsers = sellerData?.childSellers?.map((user) => ({ name: user?.name }));
+  return [...parrentUser, ...childUsers];
+};
+
 function ShopInfo({ title, theme, sx, children }) {
   return (
     <Box marginBottom="28px">
@@ -90,9 +96,10 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
             <Typography variant="body4">{selectedSeller?.phone_number}</Typography>
           </ShopInfo>
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">
-              {selectedSeller?.addressSeller?.address},{selectedSeller?.addressSeller?.pin}
-            </Typography>
+            <Typography variant="body4">{selectedSeller?.addressSeller?.address}</Typography>
+          </ShopInfo>
+          <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4">{selectedSeller?.addressSeller?.pin || '1233'}</Typography>
           </ShopInfo>
           <ShopInfo title="Total Order" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.totalOrder || 0}</Typography>
@@ -110,9 +117,6 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
               %
             </Typography>
           </ShopInfo>
-          {/* <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.addressSeller?.pin || '1233'}</Typography>
-          </ShopInfo> */}
           <ShopInfo title="Seller Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedSeller?.sellerType}
@@ -142,7 +146,7 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
             ></img>
           </ShopInfo>
           <ShopInfo title="Seller Team" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            {selectedSeller?.childSellers?.length > 0 ? (
+            {getSellerCredentials(selectedSeller)?.length > 0 ? (
               <Stack
                 direction="column"
                 gap="8px"
@@ -155,7 +159,7 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
                   overflow: 'auto',
                 }}
               >
-                {selectedSeller?.childSellers?.map((seller, i) => (
+                {getSellerCredentials(selectedSeller).map((seller, i) => (
                   <Stack key={i} direction="row" gap="6px" alignItems="center">
                     <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
                       {i + 1}

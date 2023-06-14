@@ -1,13 +1,83 @@
 import { Box, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../components/Common/CloseButton';
 import OptionsSelect from '../../components/Filter/OptionsSelect';
 import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
+import { butlerFlagTypeOptions, orderFlagTypeOptions } from './helpers';
 
-function UpdateFlag({ resetFlagModal, flagOptions, flagType, ...props }) {
+export function UpdateFlag({ currentOrder, onClose }) {
+  const [flagType, setFlagType] = useState([]);
+
+  const [flagComment, setFlagComment] = useState('');
+
+  const queryClient = useQueryClient();
+
+  const getFlagOptions = (currentOrder) => {
+    const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
+    const newOptions = [];
+    let isAllFlagged = true;
+
+    options.forEach((item) => {
+      if (!currentOrder?.deliveryBoy?._id && item.value === 'delivery') {
+        return;
+      }
+      if (currentOrder?.flag?.find((flagItem) => flagItem[item.value])) {
+        newOptions.push({
+          ...item,
+          isDisabled: true,
+        });
+      } else {
+        isAllFlagged = false;
+        newOptions.push({
+          ...item,
+        });
+      }
+    });
+
+    return {
+      options: newOptions,
+      isAllFlagged,
+    };
+  };
+
+  const flagOptions = useMemo(() => getFlagOptions(currentOrder), [currentOrder]);
+
+  const resetFlagModal = () => {
+    onClose();
+    setFlagType([]);
+    setFlagComment('');
+  };
+
+  const addFlagMutation = useMutation(
+    (payload) => {
+      console.log('payload data', payload.data);
+      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_ADD_FLAG : Api.SEND_ORDER_FLAG;
+      return AXIOS.post(API, payload.data);
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          queryClient.invalidateQueries(['all-orders']);
+          successMsg(data?.message, 'success');
+          resetFlagModal();
+        } else {
+          successMsg(data?.message);
+        }
+      },
+      onError: (error) => {
+        successMsg(error?.message);
+        console.log('api error: ', error);
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+
   const addOrderFlag = () => {
     console.log('triggerring order flaggin');
-    if (props?.flagComment.trim() === '') {
+    if (flagComment.trim() === '') {
       successMsg('Comment cannot be empty');
       return;
     }
@@ -18,25 +88,34 @@ function UpdateFlag({ resetFlagModal, flagOptions, flagType, ...props }) {
     }
 
     const data = {};
-    data.orderId = props?.currentOrder?._id;
-    data.comment = props?.flagComment.trim();
+    data.orderId = currentOrder?._id;
+    data.comment = flagComment.trim();
 
     flagType.forEach((item) => {
       if (item === 'user') {
-        data.user = props?.currentOrder?.user?._id;
+        data.user = currentOrder?.user?._id;
       }
       if (item === 'delivery') {
-        data.delivery = props?.currentOrder?.deliveryBoy?._id;
+        data.delivery = currentOrder?.deliveryBoy?._id;
       }
       if (item === 'shop') {
-        data.shop = props?.currentOrder?.shop?._id;
+        data.shop = currentOrder?.shop?._id;
       }
     });
 
-    console.log('add flag: ', { service: props?.currentOrder?.isButler ? 'butler' : 'regular', data });
+    console.log('add flag: ', { service: currentOrder?.isButler ? 'butler' : 'regular', data });
 
-    props?.addFlagMutation.mutate({ service: props?.currentOrder?.isButler ? 'butler' : 'regular', data });
+    addFlagMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
+
+  const handleFlagTypeChange = (value) => {
+    if (flagType.includes(value)) {
+      setFlagType((prev) => prev.filter((val) => val !== value));
+    } else {
+      setFlagType((prev) => [...prev, value]);
+    }
+  };
+
   return (
     <Paper
       sx={{
@@ -68,26 +147,21 @@ function UpdateFlag({ resetFlagModal, flagOptions, flagType, ...props }) {
           <Stack spacing={6}>
             <Stack direction="row" spacing={5} alignItems="center">
               <Typography variant="h5">Choose Type</Typography>
-              <OptionsSelect
-                value={flagType}
-                items={flagOptions.options}
-                onChange={props?.handleFlagTypeChange}
-                multiple
-              />
+              <OptionsSelect value={flagType} items={flagOptions.options} onChange={handleFlagTypeChange} multiple />
             </Stack>
             <TextField
               label="Comment"
               variant="outlined"
               fullWidth
-              value={props?.flagComment}
+              value={flagComment}
               onChange={(e) => {
-                props?.setFlagComment(e.target.value);
+                setFlagComment(e.target.value);
               }}
             />
             <Button
               variant="contained"
               color="primary"
-              disabled={props?.addFlagMutation.isLoading}
+              disabled={addFlagMutation.isLoading}
               fullWidth
               onClick={() => {
                 addOrderFlag();
@@ -101,5 +175,3 @@ function UpdateFlag({ resetFlagModal, flagOptions, flagType, ...props }) {
     </Paper>
   );
 }
-
-export default UpdateFlag;

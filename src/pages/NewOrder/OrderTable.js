@@ -1,8 +1,7 @@
 // project import
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
+
 import { useHistory } from 'react-router-dom';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
@@ -10,20 +9,16 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
-import { successMsg } from '../../helpers/successMsg';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
+
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
-import UpdateFlag from './UpdateFlag';
+import { UpdateFlag } from './UpdateFlag';
 import UpdateOrderStatusForm from './UpdateOrderStatusForm';
 import {
-  butlerFlagTypeOptions,
   getOrderProfit,
   getThreedotMenuOptions,
   orderCancelDataFormation,
-  orderFlagTypeOptions,
   orderStatusMap,
   statusColorVariants,
 } from './helpers';
@@ -42,33 +37,19 @@ const cancelOrderInit = {
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, loading }) {
   const { general } = useGlobalContext();
-  const { socket } = useSelector((state) => state.socketReducer);
+
   const currency = general?.currency?.code;
   const history = useHistory();
 
-  const [appVat, setAppVat] = useState(0);
-
-  const [deliverySearchKey, setDeliverySearchKey] = useState(null);
+  const [newRefundType, setNewRefundType] = useState('');
 
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
 
-  const [isOtherReason, setIsOtherReason] = useState(false);
-
   const [flagModal, setFlagModal] = useState(false);
-
-  const [flagType, setFlagType] = useState([]);
-
-  const [flagComment, setFlagComment] = useState('');
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
 
   const [openRefundModal, setOpenRefundModal] = useState(false);
-
-  const [newRefundType, setNewRefundType] = useState('');
-
-  const [newOrderStatus, setNewOrderStatus] = useState('');
-
-  const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
 
   const [currentOrderShop, setCurrentOrderShop] = useState({});
 
@@ -141,11 +122,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
   };
 
   // eslint-disable-next-line no-unused-vars
-  const resetFlagModal = () => {
-    setFlagModal(false);
-    setFlagType([]);
-    setFlagComment('');
-  };
 
   const columns = [
     {
@@ -371,205 +347,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     ),
   };
 
-  const queryClient = useQueryClient();
-
-  // Update Status
-  const resetUpdateStatusModal = () => {
-    setUpdateStatusModal(false);
-    setNewOrderStatus('');
-    setCurrentButlerSearchKey('');
-    setCurrentOrderDelivery({});
-    setCurrentOrder({});
-    setCurrentOrderShop({});
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const cancelOrderForButlarMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg(data.message, 'success');
-        setOpenCancelModal(false);
-        queryClient.invalidateQueries(Api.ORDER_LIST);
-      } else {
-        successMsg(data.message, 'error');
-      }
-    },
-  });
-
-  const cancelOrderByAdminMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg(data.message, 'success');
-        setOpenCancelModal(false);
-        queryClient.invalidateQueries(Api.ORDER_LIST);
-      } else {
-        successMsg(data.message, 'error');
-      }
-    },
-  });
-
-  const getFlagOptions = (currentOrder) => {
-    const options = currentOrder?.isButler ? butlerFlagTypeOptions : orderFlagTypeOptions;
-    const newOptions = [];
-    let isAllFlagged = true;
-
-    options.forEach((item) => {
-      if (!currentOrder?.deliveryBoy?._id && item.value === 'delivery') {
-        return;
-      }
-      if (currentOrder?.flag?.find((flagItem) => flagItem[item.value])) {
-        newOptions.push({
-          ...item,
-          isDisabled: true,
-        });
-      } else {
-        isAllFlagged = false;
-        newOptions.push({
-          ...item,
-        });
-      }
-    });
-
-    return {
-      options: newOptions,
-      isAllFlagged,
-    };
-  };
-
-  const handleFlagTypeChange = (value) => {
-    if (flagType.includes(value)) {
-      setFlagType((prev) => prev.filter((val) => val !== value));
-    } else {
-      setFlagType((prev) => [...prev, value]);
-    }
-  };
-
-  const flagOptions = useMemo(() => getFlagOptions(currentOrder), [currentOrder]);
-
-  const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () => AXIOS.get(Api.ALL_ORDER_CANCEL_REASON));
-
-  const getNearByDeliveryBoys = () => {
-    const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
-    return AXIOS.get(API, {
-      params: {
-        orderId: currentOrder?._id,
-      },
-    });
-  };
-
-  const updateStatusMutation = useMutation(
-    (payload) => {
-      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_UPDATE_STATUS : Api.ORDRE_UPDATE_STATUS;
-      return AXIOS.post(API, payload.data);
-    },
-    {
-      onSuccess: (data, config) => {
-        console.log(data, config);
-        if (data.status) {
-          successMsg(data?.message, 'success');
-          queryClient.invalidateQueries(['all-orders']);
-          resetUpdateStatusModal();
-          // emit socket
-          if (config.service === 'regular') {
-            if (config?.data?.orderStatus === 'accepted_delivery_boy')
-              socket.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
-            else
-              socket.emit('updateOrder', {
-                orderId: config.data?.orderId,
-              });
-          }
-        } else {
-          successMsg(data?.message);
-        }
-      },
-      onError: (error) => {
-        console.log('api error: ', error);
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
-
-  // eslint-disable-next-line no-unused-vars
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      if (data.status) {
-        console.log('app setttings; ', data?.data?.appSetting);
-        setAppVat(data?.data?.appSetting?.vat);
-      }
-    },
-  });
-
-  const refundOrderMutation = useMutation((data) => AXIOS.post(Api.REFUND_ORDER, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg(data.message, 'success');
-        queryClient.invalidateQueries(Api.ORDER_LIST);
-        setOpenRefundModal(false);
-      } else {
-        successMsg(data.message, 'warn');
-      }
-    },
-  });
-
-  const nearByDeliveryBoysQuery = useQuery(
-    ['single-order-nearby-delivery-boys', { orderId: currentOrder?._id || '' }],
-    getNearByDeliveryBoys,
-    {
-      enabled: newOrderStatus === 'accepted_delivery_boy',
-      cacheTime: 0,
-      staleTime: 0,
-      onSuccess: (data) => {
-        if (!data?.status) {
-          successMsg(data?.message || 'Could not get delivery boys');
-        }
-      },
-      onError: (error) => {
-        console.log('api error: ', error);
-        successMsg(error?.message || 'Could not get delivery boys', 'error');
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
-
-  const addFlagMutation = useMutation(
-    (payload) => {
-      console.log('payload data', payload.data);
-      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_ADD_FLAG : Api.SEND_ORDER_FLAG;
-      return AXIOS.post(API, payload.data);
-    },
-    {
-      onSuccess: (data) => {
-        if (data?.status) {
-          queryClient.invalidateQueries(['all-orders']);
-          successMsg(data?.message, 'success');
-          resetFlagModal();
-        } else {
-          successMsg(data?.message);
-        }
-      },
-      onError: (error) => {
-        successMsg(error?.message);
-        console.log('api error: ', error);
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
-
-  const updateRefundType = (type) => {
-    setOrderCancel({
-      ...orderCancel,
-      refundType: type,
-      partialPayment:
-        type === 'full'
-          ? orderPayment
-          : {
-              shop: '',
-              deliveryBoy: '',
-              admin: '',
-            },
-    });
-  };
-
   if (adminType === 'admin') {
     columns.push(newColumn);
   }
@@ -614,22 +391,18 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       <Modal
         open={updateStatusModal}
         onClose={() => {
-          resetUpdateStatusModal();
+          setUpdateStatusModal(false);
         }}
       >
         <UpdateOrderStatusForm
-          nearByDeliveryBoysQuery={nearByDeliveryBoysQuery}
+          onClose={() => setUpdateStatusModal(false)}
           updateStatusModal={updateStatusModal}
           currentOrderDelivery={currentOrderDelivery}
-          currentButlerSearchKey={currentButlerSearchKey}
           setCurrentOrderDelivery={setCurrentOrderDelivery}
-          resetUpdateStatusModal={resetUpdateStatusModal}
-          updateStatusMutation={updateStatusMutation}
-          setCurrentButlerSearchKey={setCurrentButlerSearchKey}
+          setCurrentOrder={setCurrentOrder}
+          setCurrentOrderShop={setCurrentOrderShop}
           currentOrder={currentOrder}
           currentOrderShop={currentOrderShop}
-          setNewOrderStatus={setNewOrderStatus}
-          newOrderStatus={newOrderStatus}
         />
       </Modal>
 
@@ -637,19 +410,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       <Modal
         open={flagModal}
         onClose={() => {
-          resetFlagModal();
+          setFlagModal(false);
         }}
       >
-        <UpdateFlag
-          addFlagMutation={addFlagMutation}
-          setFlagComment={setFlagComment}
-          flagComment={flagComment}
-          currentOrder={currentOrder}
-          handleFlagTypeChange={handleFlagTypeChange}
-          resetFlagModal={resetFlagModal}
-          flagOptions={flagOptions}
-          flagType={flagType}
-        />
+        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
       </Modal>
       {/* Cancel order */}
       <Modal
@@ -660,20 +424,12 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         sx={{ zIndex: '10 !important' }}
       >
         <OrderCancel
-          deliverySearchKey={deliverySearchKey}
-          cancelOrderByAdminMutation={cancelOrderByAdminMutation}
-          cancelOrderForButlarMutation={cancelOrderForButlarMutation}
           orderCancel={orderCancel}
-          appVat={appVat}
-          updateRefundType={updateRefundType}
-          getCancelReasonsQuery={getCancelReasonsQuery}
+          newRefundType={newRefundType}
           setOrderCancel={setOrderCancel}
           orderPayment={orderPayment}
           setOpenCancelModal={setOpenCancelModal}
-          setIsOtherReason={setIsOtherReason}
-          isOtherReason={isOtherReason}
-          setDeliverySearchKey={setDeliverySearchKey}
-          newRefundType={newRefundType}
+          currentOrder={currentOrder}
         />
       </Modal>
       {/* Refund After Delivered */}
@@ -685,20 +441,12 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         sx={{ zIndex: '10 !important' }}
       >
         <RefundOrder
-          deliverySearchKey={deliverySearchKey}
           orderCancel={orderCancel}
-          updateRefundType={updateRefundType}
-          appVat={appVat}
-          getCancelReasonsQuery={getCancelReasonsQuery}
           setOrderCancel={setOrderCancel}
           orderPayment={orderPayment}
           openRefundModal={openRefundModal}
           setOpenRefundModal={setOpenRefundModal}
-          setIsOtherReason={setIsOtherReason}
-          isOtherReason={isOtherReason}
-          setDeliverySearchKey={setDeliverySearchKey}
           newRefundType={newRefundType}
-          refundOrderMutation={refundOrderMutation}
         />
       </Modal>
     </Box>
