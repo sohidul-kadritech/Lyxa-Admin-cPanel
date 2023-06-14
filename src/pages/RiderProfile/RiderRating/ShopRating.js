@@ -7,8 +7,9 @@ import { ReactComponent as DownIcon } from '../../../assets/icons/thumbs-down.sv
 import { ReactComponent as UpIcon } from '../../../assets/icons/thumbs-up.svg';
 import OrderDetail from '../../../components/Shared/OrderDetail';
 import StyledTable from '../../../components/Styled/StyledTable3';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 
-export default function ShopRatingTable({ rows = [] }) {
+export default function ShopRatingTable({ rows = [], loading }) {
   const history = useHistory();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -130,6 +131,8 @@ export default function ShopRatingTable({ rows = [] }) {
       ),
     },
   ];
+
+  if (loading) return <TablePageSkeleton column={7} row={5} />;
 
   return (
     <>

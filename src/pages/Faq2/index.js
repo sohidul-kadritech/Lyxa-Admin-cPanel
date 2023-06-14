@@ -51,9 +51,9 @@ const breadcrumbItems = [
   },
 ];
 
-export function AddMenuButton({ title = 'Add', isIcon = true, ...props }) {
+export function AddMenuButton({ title = 'Add', isIcon = true, icon = <Add />, ...props }) {
   return (
-    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? <Add /> : ''} {...props}>
+    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? icon : ''} {...props}>
       {title}
     </Button>
   );
@@ -88,7 +88,6 @@ function Faq() {
 
   const [open, setOpen] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
   const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey, range }], () =>
     AXIOS.get(API_URL?.GET_CHAT_REASON, {
       params: {
@@ -102,7 +101,6 @@ function Faq() {
     }),
   );
 
-  // eslint-disable-next-line no-unused-vars
   const getChatFaq = useQuery([API_URL?.GET_FAQ, { status, searchKey, range }], () =>
     AXIOS.get(API_URL?.GET_FAQ, {
       params: {
@@ -122,7 +120,7 @@ function Faq() {
       }
     },
   });
-  // eslint-disable-next-line no-unused-vars
+
   const faqAddQuery = useMutation((data) => AXIOS.post(API_URL.ADD_FAQ, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -132,7 +130,7 @@ function Faq() {
       }
     },
   });
-  // eslint-disable-next-line no-unused-vars
+
   const faqUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_FAQ, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -145,7 +143,6 @@ function Faq() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const faqDeleteQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_FAQ, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -155,7 +152,6 @@ function Faq() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const reasonSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_CHAT_REASON, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -164,7 +160,6 @@ function Faq() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const reasonAddQuery = useMutation((data) => AXIOS.post(API_URL.ADD_CHAT_REASON, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -175,7 +170,6 @@ function Faq() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const reasonUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_CHAT_REASON, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -188,7 +182,6 @@ function Faq() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const reasonDeleteQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_CHAT_REASON, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -200,7 +193,6 @@ function Faq() {
 
   // three dot handler
   const threeDotHandler = (menu, item) => {
-    console.log('item----> ', item);
     if (menu === 'Edit') {
       setIsReadOnly(false);
       setIsEdit(true);
@@ -303,7 +295,6 @@ function Faq() {
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
               setType(() => (newValue === 0 ? 'orderSupport' : newValue === 1 ? 'accountSupport' : 'faq'));
-              // setIsSideBarOpen(false);
             }}
           >
             <Tab label="Order"></Tab>

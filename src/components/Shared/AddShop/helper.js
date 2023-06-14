@@ -60,6 +60,10 @@ export const validateShopDetails = (shopData, isEditShop) => {
     status.msg = 'Please provide shop name';
     return status;
   }
+  if (!shopData?.name?.trim()) {
+    status.msg = 'Please provide shop manager name';
+    return status;
+  }
 
   if (!shopData?.email?.trim()) {
     status.msg = 'Please provide shop email';
@@ -213,6 +217,7 @@ export const createEditShopData = async (shopData) => {
   return {
     id: shopData?._id,
     shopName: shopData?.shopName,
+    name: shopData?.name,
     email: shopData?.email,
     password: shopData?.password,
     phone_number: shopData?.phone_number,

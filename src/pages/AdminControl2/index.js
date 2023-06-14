@@ -27,6 +27,8 @@ function AdminControl() {
   // eslint-disable-next-line no-unused-vars
   const [isEdit, setIsEdit] = useState(false);
 
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+
   // eslint-disable-next-line no-unused-vars
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [open, setOpen] = useState(false);
@@ -60,6 +62,7 @@ function AdminControl() {
         successMsg(data.message, 'success');
         setOpen(false);
         setIsEdit(false);
+        setIsConfirmModal(false);
         queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN);
       } else {
         successMsg(data.message, 'warn');
@@ -130,6 +133,8 @@ function AdminControl() {
             editAdminQuery={editAdminQuery}
             setOpen={setOpen}
             setIsEdit={setIsEdit}
+            isConfirmModal={isConfirmModal}
+            setIsConfirmModal={setIsConfirmModal}
             setCurrentAdmin={setCurrentAdmin}
             data={getAllAdminQuery?.data?.data?.Admins}
           />

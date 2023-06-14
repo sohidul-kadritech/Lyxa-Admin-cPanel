@@ -12,6 +12,7 @@ import { statusTypeOptions } from '../Product1/helpers';
 import AddLyxaCharge from './AddLyxaCharge';
 import AddSeller from './AddSeller';
 import SellerList from './SellerList';
+import SellerPageSkeleton from './SellerPageSkeleton';
 import SellersProfile from './SellersProfile';
 import { previewGenerator } from './helpers';
 
@@ -149,47 +150,52 @@ function SellerList2() {
       </Stack>
 
       {/* Sellers Main Section */}
-      <Box marginTop="42px">
-        <Box>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: '600 !important',
-              color: theme.palette.text.secondary2,
-              marginBottom: '26px',
-              textTransform: 'uppercase',
-            }}
-          >
-            Sellers
-          </Typography>
-          <Stack direction="row" gap="22px">
-            {/* Sellers List --> left */}
-            <Box>
-              <SellerList
-                data={getAllSellersQuery?.data?.data?.sellers}
-                currentSeller={currentSeller}
-                setCurrentSeller={setCurrentSeller}
-              />
-            </Box>
-            {/* Seller Profile --> right */}
-            <Box flex={1}>
-              <SellersProfile
-                editSellerQuery={editSellerQuery}
-                editDocumentOpen={editDocumentOpen}
-                setEditDocumentOpen={setEditDocumentOpen}
-                isConfirmModal={isConfirmModal}
-                setIsConfirmModal={setIsConfirmModal}
-                setAddSidebarOpen={setOpen}
-                setOpenLyxaChargeSidebar={setOpenLyxaChargeSidebar}
-                setIsEdit={setIsEdit}
-                currentSeller={currentSeller}
-                replaceDocument={replaceDocument}
-                removeDocument={removeDocument}
-              />
-            </Box>
-          </Stack>
+
+      {getAllSellersQuery.isLoading ? (
+        <SellerPageSkeleton />
+      ) : (
+        <Box marginTop="42px">
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: '600 !important',
+                color: theme.palette.text.secondary2,
+                marginBottom: '26px',
+                textTransform: 'uppercase',
+              }}
+            >
+              Sellers
+            </Typography>
+            <Stack direction="row" gap="22px">
+              {/* Sellers List --> left */}
+              <Box>
+                <SellerList
+                  data={getAllSellersQuery?.data?.data?.sellers}
+                  currentSeller={currentSeller}
+                  setCurrentSeller={setCurrentSeller}
+                />
+              </Box>
+              {/* Seller Profile --> right */}
+              <Box flex={1}>
+                <SellersProfile
+                  editSellerQuery={editSellerQuery}
+                  editDocumentOpen={editDocumentOpen}
+                  setEditDocumentOpen={setEditDocumentOpen}
+                  isConfirmModal={isConfirmModal}
+                  setIsConfirmModal={setIsConfirmModal}
+                  setAddSidebarOpen={setOpen}
+                  setOpenLyxaChargeSidebar={setOpenLyxaChargeSidebar}
+                  setIsEdit={setIsEdit}
+                  currentSeller={currentSeller}
+                  replaceDocument={replaceDocument}
+                  removeDocument={removeDocument}
+                />
+              </Box>
+            </Stack>
+          </Box>
         </Box>
-      </Box>
+      )}
 
       <Drawer open={open} anchor="right">
         <AddSeller

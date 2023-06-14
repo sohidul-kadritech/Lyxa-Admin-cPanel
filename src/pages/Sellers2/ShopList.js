@@ -4,13 +4,14 @@ import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Avatar, Box, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import EditDocument from '../../components/Common/EditDocument';
 import Rating from '../../components/Common/Rating';
 import StyledTable from '../../components/Styled/StyledTable3';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
-
+import { useGlobalContext } from '../../context';
 // eslint-disable-next-line no-unused-vars
 const calculateTotal = (array) => {
   if (array.length > 0) return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -22,6 +23,7 @@ function ShopList({
   tabName = 'Shop List',
   setOpen,
   setSelectedShop,
+  currentSeller,
   replaceDocument,
   removeDocument,
   editSellerQuery,
@@ -32,6 +34,15 @@ function ShopList({
   const theme = useTheme();
 
   const [currentDocumet, setCurrentDocumet] = useState({});
+
+  const history = useHistory();
+
+  // eslint-disable-next-line no-unused-vars
+  const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+  // eslint-disable-next-line no-unused-vars
+  const { shop, seller } = currentUser;
+  // eslint-disable-next-line no-unused-vars
+  console.log('current user: ', currentUser);
 
   const allColumns = [
     {
@@ -55,6 +66,10 @@ function ShopList({
                   color: theme.palette.primary?.main,
                   cursor: 'pointer',
                   textTransform: 'capitalize',
+                }}
+                onClick={() => {
+                  history.push(`/shop/profile/${params?.row?._id}`);
+                  dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row, seller: currentSeller } } });
                 }}
               >
                 {params?.row?.shopName}
@@ -198,12 +213,7 @@ function ShopList({
       flex: 1,
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton
-            color="primary"
-            // onClick={() => {
-            //   downloadFile(row?.url);
-            // }}
-          >
+          <StyledIconButton color="primary">
             <DownloadIcon />
           </StyledIconButton>
           <StyledIconButton

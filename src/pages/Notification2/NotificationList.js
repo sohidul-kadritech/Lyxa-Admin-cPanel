@@ -10,11 +10,7 @@ import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { getSpecificUser } from './helpers';
 
-// eslint-disable-next-line no-unused-vars
 function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsConfirm }) {
-  // eslint-disable-next-line no-unused-vars
-  // const [isConfirm, setIsConfirm] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [id, setId] = useState('');
   const allColumns = [
     {
@@ -141,18 +137,10 @@ function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsCon
         columns={allColumns}
         rows={data}
         getRowId={(row) => row?._id}
-        //   onRowClick={({ row }) => {
-        //     setCurrentRating(row);
-        //     setIsEdit(true);
-        //     setIsRightBarOpen(true);
-        //   }}
         sx={{
           '& .MuiDataGrid-cell': {
             cursor: 'defualt',
           },
-          //   '& .MuiDataGrid-row:hover': {
-          //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          //   },
         }}
         components={{
           NoRowsOverlay: () => (
@@ -172,9 +160,6 @@ function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsCon
           setIsConfirm(false);
         }}
         onConfirm={() => {
-          // callDeleteFaq();
-          // setIsConfirm(false);
-          console.log('id: ', id);
           deleteQuery.mutate({ id });
         }}
       />

@@ -101,7 +101,8 @@ function ShopSettings() {
       newPayMentInformation,
       newDietary,
       newPriceRange,
-      newOrderCapacity
+      // eslint-disable-next-line prettier/prettier
+      newOrderCapacity,
     );
     if (data) {
       updateData.mutate(data);

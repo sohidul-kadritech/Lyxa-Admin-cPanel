@@ -76,6 +76,7 @@ export const USER_TRANSACTIONS = `${ADMIN_ENDPOINT}/user/get-user-transaction`;
 export const USER_ORDERS = `${ADMIN_ENDPOINT}/order/user`;
 export const USER_STATUS = `${ADMIN_ENDPOINT}/USER/update-status`;
 export const USER_UPDATE = `${ADMIN_ENDPOINT}/user/update`;
+export const USER_REVIEWS = `${ADMIN_ENDPOINT}/user/reviews`;
 
 // CATEGORY
 export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;
@@ -154,12 +155,14 @@ export const UPLOAD_PRODUCT_FILE = `${ADMIN_ENDPOINT}/product/import`;
 // DELIVERY MAN
 export const ADD_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/add`;
 export const ALL_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy`;
+export const DELETE_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/delete`;
 export const SINGLE_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/get-single-delivery-boy`;
 export const EDIT_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/update`;
 export const TRACK_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/tracking`;
 export const DELIVERY_BOY_ORDERS = `${ADMIN_ENDPOINT}/order/delivery`;
 export const DELIVERY_BOY_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/get-current-location`;
 export const DELIVERY_BOY_SHOP_RATING = `${ADMIN_ENDPOINT}/order/delivery/shop-rating`;
+export const DELIVERY_BOY_CUSTOMER_RATING = `${ADMIN_ENDPOINT}/order/delivery/customer-rating`;
 
 //  SETTINGS
 export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
@@ -168,6 +171,7 @@ export const UPDATE_ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-set
 export const UPDATE_APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting/edit`;
 export const APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting`;
 // REFER A FRIEND
+export const GET_REFER_A_FRIEND_HISTORY = `${ADMIN_ENDPOINT}/setting/referral-history`;
 export const GET_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting`;
 export const EDIT_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting/edit`;
 

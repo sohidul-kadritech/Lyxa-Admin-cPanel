@@ -37,7 +37,7 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                   variant="h2"
                   sx={{ textTransform: 'capitalize', fontWeight: '500 !important', fontSize: '30px !important' }}
                 >
-                  {data?.name}
+                  {data?.company_name}
                 </Typography>
                 <Typography variant="body4" sx={{ fontWeight: '600 !important', color: theme?.palette?.primary.main }}>
                   @account manager
@@ -256,6 +256,7 @@ function SellersProfile({
           </Stack>
           <ShopList
             setSelectedShop={setSelectedShop}
+            currentSeller={currentSeller}
             editSellerQuery={editSellerQuery}
             isConfirmModal={isConfirmModal}
             editDocumentOpen={editDocumentOpen}
