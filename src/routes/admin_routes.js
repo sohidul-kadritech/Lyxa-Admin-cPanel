@@ -82,6 +82,7 @@ import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLa
 import AccountList from '../pages/Accounts';
 import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
+import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
@@ -111,6 +112,7 @@ export const admin_routes = [
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
   { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
+  { path: '/orders', component: AdminOrders },
 
   { path: '/orders/list', component: ButlerOrderList },
   { path: '/orders/details/regular/:id', component: OrderDetails },
