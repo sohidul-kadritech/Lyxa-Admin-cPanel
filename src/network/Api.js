@@ -156,6 +156,7 @@ export const UPLOAD_PRODUCT_FILE = `${ADMIN_ENDPOINT}/product/import`;
 // DELIVERY MAN
 export const ADD_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/add`;
 export const ALL_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy`;
+export const DELETE_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/delete`;
 export const SINGLE_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/get-single-delivery-boy`;
 export const EDIT_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/update`;
 export const TRACK_DELIVERY_MAN = `${ADMIN_ENDPOINT}/delivery-boy/tracking`;

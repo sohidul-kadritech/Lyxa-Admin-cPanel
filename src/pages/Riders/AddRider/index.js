@@ -24,7 +24,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(
     // eslint-disable-next-line prettier/prettier
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
   );
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
@@ -42,7 +42,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     if (newFiles?.length) {
@@ -73,7 +73,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setLoading(false);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   //  upload data
@@ -97,15 +97,15 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     addRiderMutation.mutate(riderData);
   };
 
-  // const deleteRiderMutation = useMutation(() => AXIOS.post(Api.DELETE_DELIVERY_MAN, { id: editRider?._id }), {
-  //   onSuccess: (data) => {
-  //     successMsg(data?.message, data?.status ? 'success' : undefined);
-  //     if (data?.status) {
-  //       onClose();
-  //       queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
-  //     }
-  //   },
-  // });
+  const deleteRiderMutation = useMutation(() => AXIOS.post(Api.DELETE_DELIVERY_MAN, { id: editRider?._id }), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        onClose();
+        queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
+      }
+    },
+  });
 
   const filterOptions = createFilterOptions({
     stringify: ({ shopName, autoGenId, _id }) => {
@@ -133,7 +133,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         });
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getShops = useMemo(
@@ -144,7 +144,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -381,7 +381,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 variant="contained"
                 color="primary"
                 startIcon={<DropIcon />}
-                disabled={loading}
+                disabled={loading || deleteRiderMutation?.isLoading}
                 fullWidth
                 onClick={onSubmit}
               >
@@ -389,6 +389,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               </Button>
               {editRider?._id && !hideDelete && (
                 <Button
+                  disabled={loading || deleteRiderMutation?.isLoading}
                   variant="text"
                   disableRipple
                   color="error"
@@ -407,6 +408,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       </SidebarContainer>
       <ConfirmModal
         message="Do you want to delete this rider ?"
+        loading={deleteRiderMutation?.isLoading}
         isOpen={isConfirm}
         blurClose
         onCancel={() => {
@@ -414,6 +416,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         }}
         onConfirm={() => {
           setIsConfirm(false);
+          deleteRiderMutation.mutate();
         }}
       />
     </>
