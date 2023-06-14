@@ -228,12 +228,12 @@ export const admin_menu_items = [
       },
       {
         label: 'Shops',
-        to: '/shops/list',
+        to: '/shop',
         icon: ShopIcon,
       },
       {
-        label: 'Shops New',
-        to: '/shop',
+        label: 'Shops Old',
+        to: '/shops/list',
         icon: ShopIcon,
       },
       {

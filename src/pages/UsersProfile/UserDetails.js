@@ -5,9 +5,11 @@ import { ReactComponent as Dob } from '../../assets/icons/dob.svg';
 import { ReactComponent as Email } from '../../assets/icons/email.svg';
 import { ReactComponent as Gender } from '../../assets/icons/gender.svg';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
-import { ReactComponent as Balance } from '../../assets/icons/lyxa-pay.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as Register } from '../../assets/icons/register.svg';
+import { ReactComponent as Reward } from '../../assets/icons/reward-fill.svg';
+import { ReactComponent as Scale } from '../../assets/icons/scale.svg';
+import { ReactComponent as Check } from '../../assets/icons/timeline-check.svg';
 import { ReactComponent as Account } from '../../assets/icons/user.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
@@ -47,9 +49,9 @@ export default function UserDetails({ user = {} }) {
       {user?.gender && <ProfileSidebarInfo label="Gender" value={user?.gender} icon={Gender} />}
       <ProfileSidebarInfo label="Join Date" value={moment(user?.createdAt).format('MMM DD, YYYY')} icon={Calender} />
       <ProfileSidebarInfo label="Status" value={user?.status} icon={Warning} />
-      <ProfileSidebarInfo label="Lyxa Balance" value={(user?.tempBalance || 0)?.toFixed(2)} icon={Balance} />
-      <ProfileSidebarInfo label="Reward Points" value={(user?.tempRewardPoints || 0)?.toFixed(2)} icon={Balance} />
-      <ProfileSidebarInfo label="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} icon={Warning} />
+      <ProfileSidebarInfo label="Lyxa Balance" value={(user?.tempBalance || 0)?.toFixed(2)} icon={Scale} />
+      <ProfileSidebarInfo label="Reward Points" value={(user?.tempRewardPoints || 0)?.toFixed(2)} icon={Reward} />
+      <ProfileSidebarInfo label="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} icon={Check} />
       <ProfileSidebarInfo label="Register Type" value={user?.registerType} icon={Register} />
     </Box>
   );
