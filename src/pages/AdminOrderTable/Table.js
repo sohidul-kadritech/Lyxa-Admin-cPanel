@@ -1,4 +1,4 @@
-import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
+import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
@@ -9,8 +9,13 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
-import { getOrderProfit, orderStatusMap, statusColorVariants } from './helpers';
+import OrderCancel from '../NewOrder/OrderCancel';
+import RefundOrder from '../NewOrder/RefundOrder';
+import { UpdateFlag } from '../NewOrder/UpdateFlag';
+import UpdateOrderStatusForm from '../NewOrder/UpdateOrderStatusForm';
+import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
@@ -20,8 +25,34 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
   const { general } = useGlobalContext();
   const currency = general?.currency?.code;
 
-  const [open, setOpen] = useState(false);
-  const [order, setOrder] = useState(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [updateStatusModal, setUpdateStatusModal] = useState(false);
+  const [flagModal, setFlagModal] = useState(false);
+  const [openCancelModal, setOpenCancelModal] = useState(false);
+  const [openRefundModal, setOpenRefundModal] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState({});
+
+  const threeDotHandler = (menu, order) => {
+    if (menu === 'flag') {
+      setFlagModal(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'cancel_order') {
+      setCurrentOrder(order);
+      setOpenCancelModal(!openCancelModal);
+    }
+
+    if (menu === 'refund_order') {
+      setCurrentOrder(order);
+      setOpenRefundModal(!openRefundModal);
+    }
+
+    if (menu === 'update_status') {
+      setUpdateStatusModal(true);
+      setCurrentOrder(order);
+    }
+  };
 
   const columns = [
     {
@@ -31,6 +62,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       field: 'orders',
       flex: 1.5,
       sortable: false,
+      minWidth: 240,
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="user-image"
@@ -51,8 +83,9 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              setOrder(row);
-              setOpen(true);
+              console.log('triggered');
+              setCurrentOrder(row);
+              setDetailOpen(true);
             },
           }}
           titleProps={{
@@ -70,6 +103,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       headerName: `TYPE`,
       field: 'shopType',
       sortable: false,
+      minWidth: 120,
       flex: 1,
       renderCell: ({ row }) => <Typography variant="body4">{shopTypeLabelMap[row?.shop?.shopType]}</Typography>,
     },
@@ -101,6 +135,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       id: 4,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
+      minWidth: 150,
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
@@ -116,7 +151,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       field: 'orderStatus',
       sortable: false,
       flex: 1,
-      minWidth: 140,
+      minWidth: 180,
       renderCell: ({ value }) => (
         <Chip
           label={orderStatusMap[value || '']}
@@ -178,6 +213,23 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
         return <Typography variant="body4">_</Typography>;
       },
     },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled'],
+      id: 6,
+      headerName: `ACTION`,
+      sortable: false,
+      align: 'right',
+      headerAlign: 'right',
+      flex: 1,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            threeDotHandler(menu, params?.row);
+          }}
+          menuItems={getThreedotMenuOptions(params?.row, 'admin')}
+        />
+      ),
+    },
   ];
 
   if (shopType !== 'all') {
@@ -222,22 +274,70 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
         }}
         totalPage={totalPage}
       />
+      {/* order detail */}
       <Drawer
         anchor="right"
-        open={open}
+        open={detailOpen}
         onClose={() => {
-          setOpen(false);
-          setOrder({});
+          setDetailOpen(false);
+          setCurrentOrder({});
         }}
       >
         <OrderDetail
-          order={order}
+          order={currentOrder}
           onClose={() => {
-            setOpen(false);
-            setOrder({});
+            setDetailOpen(false);
+            setCurrentOrder({});
           }}
         />
       </Drawer>
+      {/* update status */}
+      <Modal
+        open={updateStatusModal}
+        onClose={() => {
+          setUpdateStatusModal(false);
+        }}
+      >
+        <UpdateOrderStatusForm
+          onClose={() => setUpdateStatusModal(false)}
+          setCurrentOrder={setCurrentOrder}
+          currentOrder={currentOrder}
+        />
+      </Modal>
+      {/* flag add */}
+      <Modal
+        open={flagModal}
+        onClose={() => {
+          setFlagModal(false);
+        }}
+      >
+        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+      </Modal>
+      {/*  cancel order */}
+      <Modal
+        open={openCancelModal}
+        onClose={() => {
+          setOpenCancelModal(!openCancelModal);
+        }}
+        sx={{ zIndex: '10 !important' }}
+      >
+        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+      </Modal>
+      {/* rerfund order */}
+      <Modal
+        open={openRefundModal}
+        onClose={() => {
+          setOpenRefundModal(!openRefundModal);
+        }}
+        sx={{ zIndex: '10 !important' }}
+      >
+        <RefundOrder
+          currentOrder={currentOrder}
+          onClose={() => {
+            setOpenRefundModal(false);
+          }}
+        />
+      </Modal>
     </>
   );
 }

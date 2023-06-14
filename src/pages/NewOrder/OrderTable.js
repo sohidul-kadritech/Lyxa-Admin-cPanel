@@ -332,7 +332,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           currentOrder={currentOrder}
         />
       </Modal>
-
       {/* FLAG ADD */}
       <Modal
         open={flagModal}
