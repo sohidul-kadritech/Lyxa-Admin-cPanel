@@ -14,13 +14,13 @@ function SellerFinancialsTable({ data = [], loading }) {
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
           <Box>
             <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-              {params?.row?.title}
+              {params?.row?.company_name}
             </Typography>
             <Typography
               variant="body3"
               sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', lineHeight: '1.5' }}
             >
-              {params?.row?.description}
+              {params?.row?.autoGenId}
             </Typography>
           </Box>
         </Stack>
@@ -38,7 +38,7 @@ function SellerFinancialsTable({ data = [], loading }) {
               variant="body1"
               style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
             >
-              {params?.row?.accountType !== 'deliveryBoy' ? params?.row?.accountType : 'Rider'}
+              {params?.row?.summary?.totalOrder}
             </Typography>
           </Box>
         </Stack>
@@ -53,8 +53,8 @@ function SellerFinancialsTable({ data = [], loading }) {
       minWidth: 100,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row }) => (
-        <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography>
+      renderCell: (params) => (
+        <Typography variant="body1"> {params?.row?.summary?.orderValue?.productAmount}</Typography>
       ),
     },
     {
@@ -66,9 +66,7 @@ function SellerFinancialsTable({ data = [], loading }) {
       minWidth: 100,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row }) => (
-        <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography>
-      ),
+      renderCell: (params) => <Typography variant="body1"> {params?.row?.summary?.orderValue?.deliveryFee}</Typography>,
     },
     {
       id: 4,
@@ -79,9 +77,7 @@ function SellerFinancialsTable({ data = [], loading }) {
       minWidth: 100,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row }) => (
-        <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography>
-      ),
+      renderCell: (params) => <Typography variant="body1">{params?.row?.summary?.totalDropGet}</Typography>,
     },
     {
       id: 4,

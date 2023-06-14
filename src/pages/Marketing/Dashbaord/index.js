@@ -60,7 +60,8 @@ export default function MarketingDashboard({ viewUserType }) {
           setCurrentShop(data?.data?.shop);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
@@ -68,7 +69,8 @@ export default function MarketingDashboard({ viewUserType }) {
       params: {
         marketingId: params?.id,
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   // orders graph
@@ -83,13 +85,15 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: orderRange.start,
           endDate: orderRange.end,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const oData = generateGraphData(
     ordersGraphQuery?.data?.data?.info || [],
     (item) => item.order,
-    (item) => moment(item?.date).format('MMMM DD')
+    // eslint-disable-next-line prettier/prettier
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const oGraphData = {
@@ -118,13 +122,15 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: customerRange.start,
           endDate: customerRange.end,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
-    (item) => moment(item?.date).format('MMMM DD')
+    // eslint-disable-next-line prettier/prettier
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const cGraphData = {
@@ -150,20 +156,22 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: amountRange.start,
           endDate: amountRange.end,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const aData = generateGraphData(
     amountGraphQuery?.data?.data?.info || [],
-    (item) => item.amount,
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => item.amountSpent,
+    // eslint-disable-next-line prettier/prettier
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const aGraphData = {
     labels: aData.labels,
     datasets: [
       {
-        label: 'Dataset 1',
+        label: 'Amount',
         data: aData.data,
         borderColor: 'rgba(21, 191, 202, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
@@ -184,13 +192,15 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: loyalityRange.start,
           endDate: loyalityRange.end,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const pData = generateGraphData(
     loyalityGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
-    (item) => moment(item?.date).format('MMMM DD')
+    // eslint-disable-next-line prettier/prettier
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const pGraphData = {
@@ -272,7 +282,8 @@ export default function MarketingDashboard({ viewUserType }) {
                     : 'decrease'
                 }
                 amount={`${Math.round(
-                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
+                  // eslint-disable-next-line prettier/prettier
+                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
                 )}%`}
               />
             }
@@ -291,7 +302,8 @@ export default function MarketingDashboard({ viewUserType }) {
                     : 'decrease'
                 }
                 amount={`${Math.round(
-                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+                  // eslint-disable-next-line prettier/prettier
+                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
                 )}%`}
               />
             }
