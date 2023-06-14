@@ -174,6 +174,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             }}
             readOnly={inputProps.readOnly}
           />
+
           {/* tags */}
           {inputProps.multiple &&
             inputProps.value.map((item, index) => {
@@ -189,7 +190,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                     inputProps.onChange(
                       undefined,
                       // eslint-disable-next-line prettier/prettier
-                      inputProps.value.filter((dItem, dIndex) => index !== dIndex)
+                      inputProps.value.filter((dItem, dIndex) => index !== dIndex),
                     );
                   }}
                 />

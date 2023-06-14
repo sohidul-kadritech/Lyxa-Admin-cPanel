@@ -8,30 +8,26 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { accountTypeOptionsAdd, generateData, notificationDataValidation, notificationTypeOptionsAdd } from './helpers';
 
-// eslint-disable-next-line no-unused-vars
-function AddNotification({ isEdit = false, onClose, notifiction, sendNotificationQuery, deleteNotificationQuery }) {
+function AddNotification({ isEdit = false, onClose, notifiction, sendNotificationQuery }) {
   const [currentNotificaion, setCurrentNotificaion] = useState(notifiction || {});
 
-  // eslint-disable-next-line no-unused-vars
   const [searchKeyShop, setSearchKeyShop] = useState('');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKeyUser, setSearchKeyUser] = useState('');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKeyRider, setSearchKeyRider] = useState('');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [searchedUserOptions, setSearchedUserOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [searchedRiderOptions, setSearchedRiderOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [selectedShopOptions, setSelectedShopOptions] = useState(null);
-  // eslint-disable-next-line no-unused-vars
+
   const [selectedRiderOptions, setSelectedRiderOptions] = useState(null);
-  // eslint-disable-next-line no-unused-vars
+
   const [selectedUserOptions, setSelectedUserOptions] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [userOptions, setUserOptions] = useState([]);
 
   const changeHandler = (event) => {
     setCurrentNotificaion((prev) => {

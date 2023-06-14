@@ -48,7 +48,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
           variant="body4"
           className="text-capitalize"
         >
-          {row?.name}
+          {row?.company_name}
         </Typography>
       ),
     },

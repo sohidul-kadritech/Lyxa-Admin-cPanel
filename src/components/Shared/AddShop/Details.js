@@ -79,6 +79,17 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
           onChange,
         }}
       />
+      {/* shop name */}
+      <StyledFormField
+        label="Shop Manager Name *"
+        intputType="text"
+        inputProps={{
+          value: shop?.name,
+          type: 'text',
+          name: 'name',
+          onChange,
+        }}
+      />
       {/* email */}
       <StyledFormField
         label="E-mail *"

@@ -26,7 +26,7 @@ export default function Banking() {
         <Grid xs={12} md={6}>
           {/* account name */}
           <StyledFormField
-            label="Bank Account Type"
+            label="Bank Name"
             intputType="text"
             inputProps={{
               readOnly: true,
@@ -109,7 +109,7 @@ export default function Banking() {
               type: 'number',
               placeholder: 'XXXXXXXXXXXXXXXX24',
               name: 'iban',
-              value: shop?.account_swift,
+              value: shop?.account_number,
               sx: inputSx,
             }}
           />

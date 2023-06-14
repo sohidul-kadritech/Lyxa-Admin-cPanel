@@ -1,5 +1,5 @@
 import { Delete } from '@mui/icons-material';
-import { Box, Button, Stack, debounce } from '@mui/material';
+import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
@@ -23,6 +23,7 @@ import {
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(
+    // eslint-disable-next-line prettier/prettier
     editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
   );
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
+        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -70,6 +72,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         successMsg(error?.message);
         setLoading(false);
       },
+      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -94,15 +97,22 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     addRiderMutation.mutate(riderData);
   };
 
-  // const deleteRiderMutation = useMutation(() => AXIOS.post(Api.DELETE_DELIVERY_MAN, { id: editRider?._id }), {
-  //   onSuccess: (data) => {
-  //     successMsg(data?.message, data?.status ? 'success' : undefined);
-  //     if (data?.status) {
-  //       onClose();
-  //       queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
-  //     }
-  //   },
-  // });
+  const deleteRiderMutation = useMutation(() => AXIOS.post(Api.DELETE_DELIVERY_MAN, { id: editRider?._id }), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+      if (data?.status) {
+        onClose();
+        queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
+      }
+    },
+  });
+
+  const filterOptions = createFilterOptions({
+    stringify: ({ shopName, autoGenId, _id }) => {
+      console.log(`===>: ${shopName} ${autoGenId} ${_id}`);
+      return `${shopName} ${autoGenId} ${_id}`;
+    },
+  });
 
   const shopsQuery = useMutation(
     () =>
@@ -117,17 +127,23 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       }),
     {
       onSuccess: (data) => {
-        setSearchedShopOptions((prev) => data?.data?.shops || prev);
+        setSearchedShopOptions((prev) => {
+          console.log('shopData', data?.data?.shops?.length > 0 ? data?.data?.shops : prev);
+          return data?.data?.shops?.length > 0 ? data?.data?.shops : prev;
+        });
       },
+      // eslint-disable-next-line prettier/prettier
     }
   );
 
   const getShops = useMemo(
     () =>
       debounce((value) => {
+        console.log('value: ', value);
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
+    // eslint-disable-next-line prettier/prettier
     []
   );
 
@@ -281,6 +297,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                     value: rider.shopId,
                     placeholder: 'Choose',
                     noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+                    filterOptions,
                     getOptionLabel: (option) => option?.shopName,
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,
                     onChange: (e, v) => {
@@ -364,7 +381,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 variant="contained"
                 color="primary"
                 startIcon={<DropIcon />}
-                disabled={loading}
+                disabled={loading || deleteRiderMutation?.isLoading}
                 fullWidth
                 onClick={onSubmit}
               >
@@ -372,6 +389,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               </Button>
               {editRider?._id && !hideDelete && (
                 <Button
+                  disabled={loading || deleteRiderMutation?.isLoading}
                   variant="text"
                   disableRipple
                   color="error"
@@ -390,6 +408,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       </SidebarContainer>
       <ConfirmModal
         message="Do you want to delete this rider ?"
+        loading={deleteRiderMutation?.isLoading}
         isOpen={isConfirm}
         blurClose
         onCancel={() => {
@@ -397,6 +416,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         }}
         onConfirm={() => {
           setIsConfirm(false);
+          deleteRiderMutation.mutate();
         }}
       />
     </>

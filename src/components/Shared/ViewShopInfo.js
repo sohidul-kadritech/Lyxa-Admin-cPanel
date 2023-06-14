@@ -1,7 +1,34 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
+import { AverageOrderValue, TagsAndCuisines, openingHours } from '../../pages/ShopProfile/helper';
 import CloseButton from '../Common/CloseButton';
 import Rating from '../Common/Rating';
+
+const getDeliveryFee = (selectedShop) => {
+  const isFreeDelivery =
+    selectedShop?.marketings?.length > 0
+      ? selectedShop?.marketings?.find(
+          // eslint-disable-next-line prettier/prettier
+          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive,
+        )
+      : null;
+  if (selectedShop.haveOwnDeliveryBoy && !isFreeDelivery) {
+    return {
+      status: true,
+      value: selectedShop?.deliveryFee,
+    };
+  }
+  if (selectedShop.haveOwnDeliveryBoy && isFreeDelivery) {
+    return {
+      status: true,
+      value: 0,
+    };
+  }
+  return {
+    status: false,
+    value: 0,
+  };
+};
 
 function ShopInfo({ title, theme, sx, children }) {
   return (
@@ -72,22 +99,42 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
           </Typography>
           <ShopInfo title="Seller" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.seller?.name}
+              {selectedShop?.seller?.company_name}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Unique ID" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.autoGenId}
-            </Typography>
+            <Typography variant="body4">{selectedShop?.autoGenId}</Typography>
           </ShopInfo>
           <ShopInfo title="Shop Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.shopName}
             </Typography>
           </ShopInfo>
+          <ShopInfo title="Shop Manager" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.name}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Shop Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.shopType}
+            </Typography>
+          </ShopInfo>
 
           <ShopInfo title="E-mail" theme={theme}>
             <Typography variant="body4">{selectedShop?.email}</Typography>
+          </ShopInfo>
+
+          <ShopInfo title="Location" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4">{selectedShop?.address?.address}</Typography>
+          </ShopInfo>
+          <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4">{selectedShop?.address?.pin || '1233'}</Typography>
+          </ShopInfo>
+          <ShopInfo title="Delivery by" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
+            </Typography>
           </ShopInfo>
           <ShopInfo title="Phone number" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedShop?.phone_number}</Typography>
@@ -101,23 +148,8 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               }}
             />
           </ShopInfo>
-          <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.address?.address}</Typography>
-          </ShopInfo>
-          <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.address?.pin || '1233'}</Typography>
-          </ShopInfo>
-          <ShopInfo title="Shop Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopType}
-            </Typography>
-          </ShopInfo>
           <ShopInfo title="Payment Options" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            {/* <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.shopType}
-            </Typography> */}
-
-            {selectedShop?.paymentOption.length > 0 ? (
+            {selectedShop?.paymentOption?.length > 0 ? (
               <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
                 {selectedShop?.paymentOption.join(', ')}
               </Typography>
@@ -130,20 +162,12 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               </Box>
             )}
           </ShopInfo>
+
           <ShopInfo title="Tags & Cuisines" sx={{ textTransform: 'capitalize' }} theme={theme}>
             {selectedShop?.tags?.length > 0 || selectedShop?.cuisineType?.length > 0 ? (
-              <>
-                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.tags.join(', ')}
-                </Typography>
-                {/* <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.cuisineType.join(', ')}
-                </Typography> */}
-
-                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-                  {selectedShop?.cuisineType.map((item) => item.name).join(', ')}
-                </Typography>
-              </>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {TagsAndCuisines(selectedShop?.tags, selectedShop?.cuisineType)}
+              </Typography>
             ) : (
               <Box>
                 {' '}
@@ -167,59 +191,77 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               </Box>
             )}
           </ShopInfo>
-          <ShopInfo title="Delivery Method" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Delivery Charge Apply" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryChargeApply ? 'Yes' : 'NO'}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Delivery Charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryFee}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Rider Fee (Per KM)" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.deliveryFeePerKm}
-            </Typography>
-          </ShopInfo>
+
+          {getDeliveryFee(selectedShop).status && (
+            <ShopInfo title="Delivery Charge" sx={{ textTransform: 'capitalize' }} theme={theme}>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {getDeliveryFee(selectedShop)?.value}
+              </Typography>
+            </ShopInfo>
+          )}
+
           <ShopInfo title="Status" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.shopStatus}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Bank Account Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
+
+          <ShopInfo title="Average Ord. Value" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.account_name}
+              {AverageOrderValue(selectedShop?.orderValue?.productAmount, selectedShop?.orderValue?.count)}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Bank Account Nr / IBAN" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.account_number}
-            </Typography>
+          <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            {openingHours(selectedShop?.normalHours)}
           </ShopInfo>
+          <Box sx={{ marginBottom: '16px' }}>
+            <Typography variant="h4" sx={{ textTransform: 'capitalize', fontSize: '16px', fontWeight: '600' }}>
+              Banking
+            </Typography>
+          </Box>
           <ShopInfo title="Bank Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.bank_name}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Bank Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          <ShopInfo
+            title="Account holder's full name/name of the enterprise"
+            sx={{ textTransform: 'capitalize' }}
+            theme={theme}
+          >
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.account_name}
+            </Typography>
+          </ShopInfo>
+
+          <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.bank_address}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Bank Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          <ShopInfo title="City" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.address?.city}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.bank_postal_code}
             </Typography>
           </ShopInfo>
-          <ShopInfo title="Bank SWIFT" sx={{ textTransform: 'capitalize' }} theme={theme}>
+          <ShopInfo title="IBAN" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.account_number}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="SWIFT" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.account_swift}
+            </Typography>
+          </ShopInfo>
+          <ShopInfo title="Payout Frequency" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+              {selectedShop?.payout_frequency}
             </Typography>
           </ShopInfo>
         </Box>

@@ -1,9 +1,9 @@
-/* eslint-disable no-unused-vars */
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
+import EditUser from '../../components/Shared/EditUser/index ';
 import ProfileSkeleton from '../../components/Skeleton/ProfileSkeleton';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -36,7 +36,7 @@ export default function UserProfile() {
   return (
     <Box>
       <PageTop title="User Profile" backButtonLabel="Back to Accounts" backTo="/accounts" />
-      {query?.isLoading && <ProfileSkeleton></ProfileSkeleton>}
+      {query?.isLoading && <ProfileSkeleton />}
       {!query?.isLoading && (
         <Box
           sx={{
@@ -70,7 +70,7 @@ export default function UserProfile() {
                 Edit Account
               </Button>
             </Stack>
-            <UserTabs />
+            <UserTabs user={user} />
           </Box>
           <Box
             sx={{
@@ -81,6 +81,18 @@ export default function UserProfile() {
           </Box>
         </Box>
       )}
+      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+        <EditUser
+          editUser={user}
+          onClose={() => setOpen(false)}
+          onUpdateSuccess={(data) => {
+            user.name = data?.name;
+            user.profile_photo = data?.profile_photo;
+            user.dob = data?.dob;
+            user.gender = data?.gender;
+          }}
+        />
+      </Drawer>
     </Box>
   );
 }

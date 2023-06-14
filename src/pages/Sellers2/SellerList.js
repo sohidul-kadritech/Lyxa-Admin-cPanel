@@ -36,6 +36,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
       backgroundColor: 'rgba(177, 177, 177, 0.2)',
     },
   };
+
   const styleForSellerListActive = {
     padding: '12px 20px 10px 20px',
     borderLeft: `4px solid ${theme.palette.danger.main}`,
@@ -67,7 +68,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
                 }}
               >
                 <SellerInfo
-                  sellerName={seller?.name}
+                  sellerName={seller?.company_name}
                   image={seller?.profile_photo}
                   shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
                 />

@@ -1,39 +1,53 @@
+/* eslint-disable import/no-named-as-default */
 // project import
 import { Edit, Visibility } from '@mui/icons-material';
-import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
-// eslint-disable-next-line import/no-named-as-default
+import FilterSelect from '../../components/Filter/FilterSelect';
+import EditUser from '../../components/Shared/EditUser/index ';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
-import EditUser from './EditUser/index ';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import TableSkeleton from './Skeleton';
 import ViewAccountInfo from './ViewAccount';
 
-const statusToLabelMap = {
-  active: 'Active',
-  inactive: 'Suspended',
-};
-
-const statusToColorMap = {
-  inactive: {
-    color: '#FFB017',
-    background: 'rgba(255, 176, 23, 0.15)',
+const listFilterOptions = [
+  {
+    label: 'Active',
+    value: 'active',
   },
-
-  active: {
-    color: '#417C45',
-    background: '#DCFCE7',
+  {
+    label: 'Inactive',
+    value: 'inactive',
   },
-};
+];
 
 export default function UsersTable({ users = [], page, setPage, totalPage, loading }) {
+  const queryClient = useQueryClient();
   const history = useHistory();
+  const [render, setRender] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(null);
   const [selectedUser, setSelectedUser] = useState({});
+
+  const userMuation = useMutation((data) => AXIOS.post(Api.USER_UPDATE, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        queryClient.invalidateQueries([Api.ALL_USERS]);
+      }
+    },
+  });
+
+  const onStatusChange = (newStatus, user) => {
+    user.status = newStatus;
+    setRender(!render);
+    userMuation.mutate({ id: user?._id, status: newStatus });
+  };
 
   const columns = [
     {
@@ -66,9 +80,9 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       field: 'zone',
       flex: 1,
       sortable: false,
-      renderCell: () => (
+      renderCell: ({ value }) => (
         <Typography variant="body4" className="text-capitalize">
-          empty
+          {value?.zoneName || '_'}
         </Typography>
       ),
     },
@@ -110,16 +124,26 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       field: 'status',
       sortable: false,
       flex: 1,
-      renderCell: ({ value }) => (
-        <Chip
-          label={statusToLabelMap[value || '']}
+      renderCell: ({ value, row }) => (
+        <FilterSelect
+          items={listFilterOptions}
           sx={{
-            height: 'auto',
-            padding: '12px 23px',
-            borderRadius: '40px',
-            ...(statusToColorMap[value] || {}),
+            background: value === 'active' ? '#DCFCE7' : '#FEE2E2',
+            '&:hover': {
+              background: value === 'active' ? '#DCFCE7' : '#FEE2E2',
+            },
+            '& .MuiInputBase-input': {
+              color: value === 'active' ? '#417C45' : '#DD5B63',
+            },
+            '& .MuiSelect-icon': {
+              color: value === 'active' ? '#417C45' : '#DD5B63',
+            },
           }}
-          variant="contained"
+          size="lg1"
+          value={value}
+          onChange={(e) => {
+            onStatusChange(e.target.value, row);
+          }}
         />
       ),
     },

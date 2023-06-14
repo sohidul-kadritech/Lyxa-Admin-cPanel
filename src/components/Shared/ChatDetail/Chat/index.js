@@ -1,5 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import OrderIssues from '../../OrderDetail/OrderIssues';
+import OrderIssues from '../../OrderDetail/Details/OrderIssues';
 
 import ChatBox from './ChatBox';
 

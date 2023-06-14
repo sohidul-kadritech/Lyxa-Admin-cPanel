@@ -82,7 +82,10 @@ import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLa
 import AccountList from '../pages/Accounts';
 import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
+import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
+import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
+import ShopFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopFinancialsSpecificSellers';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
@@ -111,6 +114,7 @@ export const admin_routes = [
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
   { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
+  { path: '/orders', component: AdminOrders },
 
   { path: '/orders/list', component: ButlerOrderList },
   { path: '/orders/details/regular/:id', component: OrderDetails },
@@ -178,9 +182,14 @@ export const admin_routes = [
   // app wallet
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
   { path: '/add-wallet/seller-transactions', component: SellerTransactions },
+  { path: '/add-wallet/seller-transactions2', component: FinancialsForSeller },
   {
     path: '/app-wallet/seller/shops-transactions',
     component: ShopsTransactions,
+  },
+  {
+    path: '/app-wallet/seller/shops-transactions2',
+    component: ShopFinancialsSpecificSellers,
   },
 
   // transations
