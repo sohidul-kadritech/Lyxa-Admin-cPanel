@@ -12,7 +12,7 @@ const linkStyle = (isActive) => ({
   color: `${isActive ? '#363636' : '#737373'}`,
 });
 
-export default function BreadCrumbs({ items, sx, ...props }) {
+export default function BreadCrumbs({ items, isBreadCrumbsTitleShow = false, breadCrumbsTitle, sx, ...props }) {
   const { length } = items;
 
   return (
@@ -23,9 +23,10 @@ export default function BreadCrumbs({ items, sx, ...props }) {
         sx={{
           fontSize: '19px',
           lineHeight: '23px',
+          textTransform: 'capitalize',
         }}
       >
-        {items[length - 1].label}
+        {!isBreadCrumbsTitleShow ? items[length - 1].label : breadCrumbsTitle}
       </Typography>
       <Breadcrumbs separator="/">
         {items.map((item, index) => (

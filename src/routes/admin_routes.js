@@ -85,6 +85,7 @@ import AdminFinancials from '../pages/AdminFinancials';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
+import ShopFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopFinancialsSpecificSellers';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
@@ -185,6 +186,10 @@ export const admin_routes = [
   {
     path: '/app-wallet/seller/shops-transactions',
     component: ShopsTransactions,
+  },
+  {
+    path: '/app-wallet/seller/shops-transactions2',
+    component: ShopFinancialsSpecificSellers,
   },
 
   // transations

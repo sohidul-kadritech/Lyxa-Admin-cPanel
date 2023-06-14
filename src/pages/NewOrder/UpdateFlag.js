@@ -60,7 +60,7 @@ export function UpdateFlag({ currentOrder, onClose }) {
     {
       onSuccess: (data) => {
         if (data?.status) {
-          queryClient.invalidateQueries(['all-orders']);
+          queryClient.invalidateQueries(Api.ORDER_LIST);
           successMsg(data?.message, 'success');
           resetFlagModal();
         } else {

@@ -4,9 +4,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWith } from './helpers';
 
-function SellerFinancialsTable({ data = [], loading }) {
+function ShopFinancialsTable({ data = [], loading }) {
   const { general } = useGlobalContext();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
@@ -22,7 +21,7 @@ function SellerFinancialsTable({ data = [], loading }) {
   const allColumns = [
     {
       id: 1,
-      headerName: `SELLER NAME`,
+      headerName: `SHOP NAME`,
       field: 'title',
       flex: 1,
       renderCell: (params) => (
@@ -42,7 +41,7 @@ function SellerFinancialsTable({ data = [], loading }) {
                 sellerShopsTrxs(params?.row?._id, params?.row?.company_name);
               }}
             >
-              {params?.row?.company_name}
+              {params?.row?.shopName}
             </Typography>
             <Typography
               variant="body3"
@@ -56,7 +55,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
     {
       id: 2,
-      headerName: <HeaderWith title="ORDERS" tooltip="Number of orders" />,
+      headerName: `ORDERS`,
       field: 'order',
       flex: 1,
       sortable: false,
@@ -76,7 +75,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 3,
       field: 'order_amount',
-      headerName: <HeaderWith title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />,
+      headerName: 'ORDER AMOUNT',
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -84,29 +83,27 @@ function SellerFinancialsTable({ data = [], loading }) {
         <Typography variant="body1">
           {' '}
           {currency}
-          {params?.row?.summary?.orderValue?.productAmount.toFixed(2)}
+          {params?.row?.summary?.orderValue?.productAmount}
         </Typography>
       ),
     },
     {
       id: 4,
       field: 'delivery_fee',
-      headerName: <HeaderWith title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
+      headerName: `DELIVERY FEE (${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.deliveryFee.toFixed(2)}
+          {currency} {params?.row?.summary?.orderValue?.deliveryFee}
         </Typography>
       ),
     },
     {
       id: 5,
       field: 'lyxa_profit',
-      headerName: <HeaderWith title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
+      headerName: `LYXA PROFIT (${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -119,45 +116,28 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
     {
       id: 6,
-      field: 'total_unsettle_amount',
-      headerName: (
-        <HeaderWith title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
-      ),
-
+      headerName: `UNSETTLED AMOUNT (${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
           {currency}
-          {params?.row?.summary?.totalSellerUnsettle.toFixed(2)}
+          {params?.row?.summary?.totalShopUnsettle.toFixed(2)}
         </Typography>
       ),
     },
     {
       id: 7,
       field: 'seller_profit',
-      headerName: (
-        <HeaderWith
-          title={`SELLER PROFIT (${currency})`}
-          tooltip={
-            <Typography>
-              Paid (seller earning) Unpaid (unsettled){' '}
-              <Box component="span" sx={{ color: '#FF0000' }}>
-                (previously unsettled)
-              </Box>
-            </Typography>
-          }
-        />
-      ),
-
+      headerName: `SHOP PROFIT (${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
           {currency}
-          {params?.row?.summary?.totalSellerEarning.toFixed(2)}
+          {params?.row?.summary?.totalShopEarning}
         </Typography>
       ),
     },
@@ -193,4 +173,4 @@ function SellerFinancialsTable({ data = [], loading }) {
   );
 }
 
-export default SellerFinancialsTable;
+export default ShopFinancialsTable;

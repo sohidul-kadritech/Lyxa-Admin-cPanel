@@ -12,6 +12,8 @@ export default function PageTop({
   title,
   titleSx,
   subtitle,
+  isBreadCrumbsTitleShow,
+  breadCrumbsTitle,
   tag,
   ...rest
 }) {
@@ -39,6 +41,8 @@ export default function PageTop({
       )}
       {breadcrumbItems && (
         <BreadCrumbs
+          isBreadCrumbsTitleShow={isBreadCrumbsTitleShow}
+          breadCrumbsTitle={breadCrumbsTitle}
           items={breadcrumbItems}
           sx={{
             pb: subtitle ? 2 : 0,
