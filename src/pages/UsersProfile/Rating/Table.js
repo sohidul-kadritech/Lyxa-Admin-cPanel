@@ -9,7 +9,6 @@ import OrderDetail from '../../../components/Shared/OrderDetail';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
 export default function ShopRatingTable({ rows = [], type }) {
-  // const history = useHistory();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
@@ -20,7 +19,11 @@ export default function ShopRatingTable({ rows = [], type }) {
       field: 'reivew',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => {
+        const t2 = row?.reviewTags?.join(', ');
+        const t1 = `${row?.reviewDes}${t2 && row?.reviewDes ? ',' : ''} ${t2}`;
+        return <Typography variant="body4">{t1 || '_'}</Typography>;
+      },
     },
     {
       id: 2,

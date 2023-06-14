@@ -9,7 +9,6 @@ import UserChatList from './UserChats';
 
 export default function UserTabs({ user }) {
   const location = useLocation();
-
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
 
@@ -40,7 +39,7 @@ export default function UserTabs({ user }) {
           <UserChatList />
         </TabPanel>
         <TabPanel value={currentTab} index={2}>
-          <UserRatings />
+          <UserRatings user={user} />
         </TabPanel>
         <TabPanel value={currentTab} index={3}>
           <UserTransactions user={user} />
