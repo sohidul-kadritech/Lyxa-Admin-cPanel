@@ -5,6 +5,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import Flags from './Flags';
 import Orders from './Orders';
 
 const orderFilterToTabValueMap = {
@@ -34,6 +35,7 @@ export default function AdminOrders() {
         <Tab label="Ongoing" />
         <Tab label="Delivered" />
         <Tab label="Incomplete" />
+        <Tab label="Flags" />
       </Tabs>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
@@ -44,6 +46,9 @@ export default function AdminOrders() {
         </TabPanel>
         <TabPanel index={2} value={currentTab} noPadding>
           <Orders type={orderFilterToTabValueMap[currentTab]} />
+        </TabPanel>
+        <TabPanel index={3} value={currentTab} noPadding>
+          <Flags />
         </TabPanel>
       </Box>
     </Box>
