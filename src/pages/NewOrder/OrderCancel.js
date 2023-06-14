@@ -12,11 +12,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Form } from 'reactstrap';
 import CloseButton from '../../components/Common/CloseButton';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import {
   TitleWithToolTip,
   calculateTotalRefundedAmount,
@@ -24,10 +27,69 @@ import {
   getRefundedVatForAdmin,
 } from './helpers';
 
-function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherReason, ...props }) {
+function OrderCancel({ setOpenCancelModal, newRefundType, currentOrder, orderPayment, orderCancel, setOrderCancel }) {
+  const [deliverySearchKey, setDeliverySearchKey] = useState(null);
+  const [appVat, setAppVat] = useState(0);
+
+  const [isOtherReason, setIsOtherReason] = useState(false);
+
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line no-unused-vars
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('app setttings; ', data?.data?.appSetting);
+        setAppVat(data?.data?.appSetting?.vat);
+      }
+    },
+  });
+  const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () => AXIOS.get(Api.ALL_ORDER_CANCEL_REASON));
+
+  const cancelOrderForButlarMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
+    onSuccess: (data) => {
+      console.log('data response: ', data);
+      if (data.success) {
+        successMsg(data.message, 'success');
+        console.log('data status true');
+        setOpenCancelModal(false);
+        queryClient.invalidateQueries(Api.ORDER_LIST);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+
+  const cancelOrderByAdminMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
+    onSuccess: (data) => {
+      console.log('data response: ', data);
+      if (data.success) {
+        successMsg(data.message, 'success');
+        console.log('data status true');
+        setOpenCancelModal(false);
+        queryClient.invalidateQueries(Api.ORDER_LIST);
+      } else {
+        successMsg(data.message, 'error');
+      }
+    },
+  });
+  const updateRefundType = (type) => {
+    setOrderCancel({
+      ...orderCancel,
+      refundType: type,
+      partialPayment:
+        type === 'full'
+          ? orderPayment
+          : {
+              shop: '',
+              deliveryBoy: '',
+              admin: '',
+            },
+    });
+  };
+
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
-    const oldOrderPayment = props?.orderPayment;
+    const oldOrderPayment = orderPayment;
     const { admin, deliveryBoy, shop } = oldOrderPayment;
     const forShop =
       admin < 0
@@ -36,7 +98,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
         : shop + orderCancel.vatAmount.vatForShop;
 
     // const forAdmin = orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
-    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, props?.newRefundType);
+    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, newRefundType);
 
     if (Number(value) <= 0) {
       setOrderCancel({
@@ -90,7 +152,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
       partialPayment: { deliveryBoy, admin, shop },
     } = orderCancel;
 
-    if (props?.currentOrder?.isButler) {
+    if (currentOrder?.isButler) {
       if (orderCancel.refundType === 'partial' && !deliveryBoy && !admin) {
         successMsg('Enter Minimum One Partial Amount');
         return;
@@ -102,7 +164,6 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
         otherReason: orderCancel?.otherReason,
         refundType: orderCancel?.refundType,
         partialPayment: {
-          // eslint-disable-next-line no-unsafe-optional-chaining
           shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
           deliveryBoy: orderCancel?.partialPayment?.deliveryBoy ? orderCancel?.partialPayment?.deliveryBoy : 0,
           admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
@@ -111,7 +172,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
             // eslint-disable-next-line no-unsafe-optional-chaining
             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
             // eslint-disable-next-line prettier/prettier
-            props?.appVat,
+            appVat,
             // eslint-disable-next-line prettier/prettier
           ),
         },
@@ -120,7 +181,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
 
       delete data.deliveryBoy;
 
-      props?.cancelOrderForButlarMutation.mutate(data);
+      cancelOrderForButlarMutation.mutate(data);
     } else {
       if (orderCancel.refundType === 'partial' && !shop && !deliveryBoy && !admin) {
         successMsg('Enter Minimum One Partial Amount');
@@ -142,14 +203,14 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  props?.appVat,
+                  appVat,
                   // eslint-disable-next-line prettier/prettier
                 ),
               }
             : {},
         cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       };
-      props?.cancelOrderByAdminMutation.mutate(data);
+      cancelOrderByAdminMutation.mutate(data);
     }
   };
 
@@ -185,12 +246,12 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
             }}
             getOptionLabel={(option) => (option.name ? option.name : '')}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
-            inputValue={props?.deliverySearchKey}
+            inputValue={deliverySearchKey}
             onInputChange={(event, newInputValue) => {
-              props?.setDeliverySearchKey(newInputValue);
+              setDeliverySearchKey(newInputValue);
             }}
             id="controllable-states-demo"
-            options={props?.getCancelReasonsQuery?.data?.data?.cancelReason || []}
+            options={getCancelReasonsQuery?.data?.data?.cancelReason || []}
             sx={{ width: '100%' }}
             renderInput={(params) => (
               <TextField
@@ -212,7 +273,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
               control={
                 <Checkbox
                   checked={isOtherReason}
-                  onChange={(e) => props?.setIsOtherReason(e.target.checked)}
+                  onChange={(e) => setIsOtherReason(e.target.checked)}
                   name="otherReason"
                 />
               }
@@ -247,7 +308,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
               name="row-radio-buttons-group"
               value={orderCancel?.refundType}
               onChange={(e) => {
-                props?.updateRefundType(e.target.value);
+                updateRefundType(e.target.value);
               }}
               required
             >
@@ -273,7 +334,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                 label={
                   <TitleWithToolTip
                     // eslint-disable-next-line no-unsafe-optional-chaining
-                    title={`Lyxa Refund: ${props?.orderPayment?.admin < 0 ? 0 : props?.orderPayment?.admin}`}
+                    title={`Lyxa Refund: ${orderPayment?.admin < 0 ? 0 : orderPayment?.admin}`}
                     tooltip="Lyxa Earning"
                   />
                 }
@@ -300,15 +361,15 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                       <TitleWithToolTip
                         title={`Shop Refund: ${
                           // eslint-disable-next-line no-unsafe-optional-chaining
-                          props?.orderPayment?.admin < 0
+                          orderPayment?.admin < 0
                             ? // eslint-disable-next-line no-unsafe-optional-chaining
-                              props?.orderPayment?.shop +
+                              orderPayment?.shop +
                               // eslint-disable-next-line no-unsafe-optional-chaining
                               orderCancel?.vatAmount?.vatForShop +
                               // eslint-disable-next-line no-unsafe-optional-chaining
-                              props?.orderPayment?.admin
+                              orderPayment?.admin
                             : // eslint-disable-next-line no-unsafe-optional-chaining
-                              props?.orderPayment?.shop + orderCancel?.vatAmount?.vatForShop
+                              orderPayment?.shop + orderCancel?.vatAmount?.vatForShop
                         }`}
                         tooltip="Shop Earning+VAT"
                       />
@@ -335,7 +396,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
               {orderCancel?.orderFor === 'global' && (
                 <Box className="refund_item_wrapper">
                   <StyledFormField
-                    label={<span>Delivery boy Earning: {props?.orderPayment?.deliveryBoy}</span>}
+                    label={<span>Delivery boy Earning: {orderPayment?.deliveryBoy}</span>}
                     intputType="text"
                     containerProps={{
                       sx: {
@@ -347,7 +408,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                       value: orderCancel?.partialPayment?.deliveryBoy,
                       type: 'number',
                       min: 0,
-                      max: props?.orderPayment?.deliveryBoy,
+                      max: orderPayment?.deliveryBoy,
                       name: 'deliveryBoy',
                       placeholder: 'Enter Delivery Amount',
                       onChange: updateRefundAmount,
@@ -375,7 +436,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  props?.appVat,
+                  appVat,
                   // eslint-disable-next-line prettier/prettier
                 ),
               ) || 0
@@ -389,10 +450,10 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
             // eslint-disable-next-line no-unsafe-optional-chaining
             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
             // eslint-disable-next-line prettier/prettier
-            props?.appVat,
+            appVat,
           ) > 0 &&
             orderCancel.refundType !== 'full' &&
-            props?.orderPayment?.admin > 0 && (
+            orderPayment?.admin > 0 && (
               <Typography variant="body1" fontWeight={600}>
                 Admin VAT Refunded:{' '}
                 {getRefundedVatForAdmin(
@@ -400,7 +461,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  props?.appVat,
+                  appVat,
                 )}
               </Typography>
             )}
@@ -411,7 +472,7 @@ function OrderCancel({ setOpenCancelModal, orderCancel, setOrderCancel, isOtherR
               variant="contained"
               className="px-4"
               type="submit"
-              disabled={props?.cancelOrderByAdminMutation?.isLoading || props?.cancelOrderForButlarMutation?.isLoading}
+              disabled={cancelOrderByAdminMutation?.isLoading || cancelOrderForButlarMutation?.isLoading}
             >
               Confirm
             </Button>

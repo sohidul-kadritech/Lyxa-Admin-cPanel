@@ -4,6 +4,7 @@ import { Box, Stack } from '@mui/material';
 import { ReactComponent as AverageIcon } from '../../assets/icons/averageIcon.svg';
 import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
+import { ReactComponent as Dietary } from '../../assets/icons/dietary.svg';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
@@ -16,7 +17,14 @@ export default function ShopDetails({ shop }) {
   return (
     <Stack gap="40px" flexDirection="column">
       <ProfileSidebarInfo label="Seller" value={shop?.shopName} icon={CalenderIcon} />
-      <ProfileSidebarInfo label="Unique ID" value={shop?.autoGenId} icon={HashIcon} />
+      <ProfileSidebarInfo
+        label="Unique ID"
+        value={shop?.autoGenId}
+        icon={HashIcon}
+        valueSx={{
+          textTransform: 'none',
+        }}
+      />
       <ProfileSidebarInfo label="Shop Type" value={shop?.shopType} icon={CalenderIcon} />
       <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Loacation} />
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />
@@ -34,6 +42,11 @@ export default function ShopDetails({ shop }) {
         label="Tags & cuisines"
         value={TagsAndCuisines(shop?.tags, shop?.cuisineType)}
         icon={TagIcon}
+      />
+      <ProfileSidebarInfo
+        label="Dietary"
+        value={shop?.dietary?.length > 0 ? shop?.dietary?.join(', ') : 'No dietary found'}
+        icon={Dietary}
       />
       <ProfileSidebarInfo
         label="Average Ord. Value"

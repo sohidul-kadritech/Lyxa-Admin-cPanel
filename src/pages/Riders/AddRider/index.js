@@ -108,7 +108,10 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   // });
 
   const filterOptions = createFilterOptions({
-    stringify: ({ shopName, aoutGenId, _id }) => `${shopName} ${aoutGenId} ${_id}`,
+    stringify: ({ shopName, autoGenId, _id }) => {
+      console.log(`===>: ${shopName} ${autoGenId} ${_id}`);
+      return `${shopName} ${autoGenId} ${_id}`;
+    },
   });
 
   const shopsQuery = useMutation(
@@ -294,9 +297,12 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                     value: rider.shopId,
                     placeholder: 'Choose',
                     noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
-                    filterOptions: { filterOptions },
+                    filterOptions,
                     getOptionLabel: (option) => {
-                      console.log('options: ', option?.shopName);
+                      console.log('options: ', option?.shopName, option?.autoGenId);
+                      if (option?.autoGenId) {
+                        return option?.shopName;
+                      }
                       return option?.shopName;
                     },
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,

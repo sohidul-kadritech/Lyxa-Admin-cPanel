@@ -26,7 +26,7 @@ export default function Banking() {
         <Grid xs={12} md={6}>
           {/* account name */}
           <StyledFormField
-            label="Bank Account Type"
+            label="Bank Name"
             intputType="text"
             inputProps={{
               readOnly: true,

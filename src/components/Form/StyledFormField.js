@@ -147,23 +147,20 @@ export default function StyledFormField({ containerProps, label, labelProps, int
           minHeight="48px"
         >
           <StyledAutocomplete
-            renderOption={(props, option, { selected }) => {
-              console.log('props,', props, option, selected);
-              return (
-                <li {...props}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {inputProps.multiple && <Checkbox color="secondary" checked={selected} />}
-                    <span>{props.key}</span>
-                  </div>
-                </li>
-              );
-            }}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {inputProps.multiple && <Checkbox color="secondary" checked={selected} />}
+                  <span>{props.key}</span>
+                </div>
+              </li>
+            )}
             disableCloseOnSelect={inputProps.multiple}
             blurOnSelect={!inputProps.multiple}
             {...(inputProps || {})}

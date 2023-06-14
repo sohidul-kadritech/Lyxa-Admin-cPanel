@@ -1,9 +1,12 @@
 import { Box, Button, FormControl, FormControlLabel, Paper, Radio, RadioGroup, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Form } from 'reactstrap';
 import CloseButton from '../../components/Common/CloseButton';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import {
   TitleWithToolTip,
   calculateTotalRefund,
@@ -15,13 +18,52 @@ import {
 
 function RefundOrder({
   setOpenRefundModal,
+  newRefundType,
   setOrderCancel,
   openRefundModal,
   orderCancel,
-  updateRefundType,
   orderPayment,
-  ...props
 }) {
+  const [appVat, setAppVat] = useState(0);
+
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line no-unused-vars
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('app setttings; ', data?.data?.appSetting);
+        setAppVat(data?.data?.appSetting?.vat);
+      }
+    },
+  });
+
+  const refundOrderMutation = useMutation((data) => AXIOS.post(Api.REFUND_ORDER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data.message, 'success');
+        queryClient.invalidateQueries(Api.ORDER_LIST);
+        setOpenRefundModal(false);
+      } else {
+        successMsg(data.message, 'warn');
+      }
+    },
+  });
+
+  const updateRefundType = (type) => {
+    setOrderCancel({
+      ...orderCancel,
+      refundType: type,
+      partialPayment:
+        type === 'full'
+          ? orderPayment
+          : {
+              shop: '',
+              deliveryBoy: '',
+              admin: '',
+            },
+    });
+  };
+
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
     const oldOrderPayment = orderPayment;
@@ -32,7 +74,7 @@ function RefundOrder({
           shop + orderCancel.vatAmount.vatForShop + deliveryBoy
         : shop + orderCancel.vatAmount.vatForShop;
 
-    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, props?.newRefundType);
+    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, newRefundType);
 
     if (Number(value) <= 0) {
       setOrderCancel({
@@ -97,7 +139,7 @@ function RefundOrder({
 
     delete data.deliveryBoy;
     // console.log('data-->', generateRefundAfterDeliveredData(orderCancel, orderPayment, props?.appVat));
-    props?.refundOrderMutation.mutate(generateRefundAfterDeliveredData(orderCancel, orderPayment, props?.appVat));
+    refundOrderMutation.mutate(generateRefundAfterDeliveredData(orderCancel, orderPayment, appVat));
   };
 
   return (
@@ -231,7 +273,7 @@ function RefundOrder({
                             // eslint-disable-next-line no-unsafe-optional-chaining
                             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                             // eslint-disable-next-line prettier/prettier
-                            props?.appVat,
+                            appVat,
                           ),
                         ],
                         // eslint-disable-next-line prettier/prettier
@@ -246,7 +288,7 @@ function RefundOrder({
                 // eslint-disable-next-line no-unsafe-optional-chaining
                 orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
-                props?.appVat,
+                appVat,
               ) > 0 &&
                 orderCancel.refundType !== 'full' && (
                   <Typography variant="body1" fontWeight={600}>
@@ -256,7 +298,7 @@ function RefundOrder({
                       // eslint-disable-next-line no-unsafe-optional-chaining
                       orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                       // eslint-disable-next-line prettier/prettier
-                      props?.appVat,
+                      appVat,
                     )}
                   </Typography>
                 )}
@@ -269,7 +311,7 @@ function RefundOrder({
               variant="contained"
               className="px-4"
               type="submit"
-              disabled={props?.refundOrderMutation?.isLoading}
+              disabled={refundOrderMutation?.isLoading}
             >
               Confirm
             </Button>
