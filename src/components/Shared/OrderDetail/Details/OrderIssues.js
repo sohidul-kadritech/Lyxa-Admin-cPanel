@@ -18,7 +18,7 @@ export default function OrderIssues({ flags = [] }) {
       <Stack gap={1}>
         {flags?.map((item) => (
           <Typography variant="body2" fontSize={14} lineHeight="22px" key={item?._id}>
-            <span style={{ textTransform: 'capitalize' }}>{item?.type}</span> - {item?.comment}
+            <span style={{ textTransform: 'capitalize', fontWeight: 700 }}>{item?.type}</span> - {item?.comment}
           </Typography>
         ))}
       </Stack>

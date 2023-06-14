@@ -6,8 +6,8 @@ export function StyledListItem({ label, isCurrency, value }) {
   const currency = general?.currency?.code?.toUpperCase();
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Typography variant="body4" color="textPrimary" fontWeight={600} textTransform="capitalize">
+    <Stack direction="row" alignItems="baseline" justifyContent="space-between" gap="10px">
+      <Typography variant="body4" color="textPrimary" fontWeight={600} textTransform="capitalize" flexShrink={0}>
         {label}
       </Typography>
       <Typography variant="body4" textTransform="capitalize">

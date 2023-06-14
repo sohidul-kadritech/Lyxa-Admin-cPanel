@@ -8,6 +8,30 @@ import FlagSummary from './Summary';
 export default function FlagDetails({ order }) {
   const [buttonsOpen, setButtonsOpen] = useState(false);
 
+  // const flagResolve = useMutation(
+  //   () =>
+  //   AXIOS.post(Api.RESOLVE_FLAG, {
+  //       id: flag?._id,
+  //       resolved: true,
+  //     }),
+  //   {
+  //     onError: (error) => {
+  //       console.log(error);
+  //       successMsg(error, 'error');
+  //     },
+
+  //     onSuccess: (data) => {
+  //       if (data?.status) {
+  //         successMsg(data?.message, 'success');
+  //         closeSideBar();
+  //         queryClient.invalidateQueries({ queryKey: ['flagged_orders'] });
+  //       } else {
+  //         successMsg(data?.message, 'warn');
+  //       }
+  //     },
+  //   }
+  // );
+
   return (
     <Box>
       {!order?.flag?.length && (
