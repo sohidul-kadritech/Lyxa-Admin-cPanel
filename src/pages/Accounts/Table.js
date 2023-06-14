@@ -66,9 +66,9 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       field: 'zone',
       flex: 1,
       sortable: false,
-      renderCell: () => (
+      renderCell: ({ value }) => (
         <Typography variant="body4" className="text-capitalize">
-          empty
+          {value?.zoneName || '_'}
         </Typography>
       ),
     },
