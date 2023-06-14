@@ -34,7 +34,7 @@ export default function EditUser({ editUser, onClose, onUpdateSuccess }) {
     }));
   };
 
-  // product mutation
+  // user mutation
   const userMuation = useMutation((data) => AXIOS.post(Api.USER_UPDATE, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
