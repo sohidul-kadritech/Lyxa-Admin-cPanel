@@ -13,20 +13,53 @@ import {
   generateRefundAfterDeliveredData,
   getAdminRefundedAmount,
   getRefundedVatForAdmin,
+  orderCancelDataFormation,
   returnNewValue,
 } from './helpers';
 
-function RefundOrder({
-  setOpenRefundModal,
-  newRefundType,
-  setOrderCancel,
-  openRefundModal,
-  orderCancel,
-  orderPayment,
-}) {
+const cancelOrderInit = {
+  cancelReasonId: '',
+  orderId: null,
+  otherReason: '',
+  refundType: 'none',
+  deliveryBoy: {},
+  partialPayment: {
+    deliveryBoy: '',
+    admin: '',
+  },
+};
+
+const getOrderPayment = (currentOrder) => {
+  console.log('order payment: ', {
+    shop: currentOrder?.sellerEarnings,
+    deliveryBoy: currentOrder?.deliveryBoyFee,
+    admin: currentOrder?.dropCharge?.totalDropAmount,
+  });
+  if (currentOrder?.isButler) {
+    return {
+      deliveryBoy: currentOrder?.deliveryBoyFee,
+      admin: currentOrder?.dropCharge,
+    };
+  }
+
+  return {
+    shop: currentOrder?.sellerEarnings,
+    deliveryBoy: currentOrder?.deliveryBoyFee,
+    admin: currentOrder?.dropCharge?.totalDropAmount,
+  };
+};
+
+function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
   const [appVat, setAppVat] = useState(0);
+  const [orderCancel, setOrderCancel] = useState(
+    // eslint-disable-next-line no-use-before-define, prettier/prettier
+    orderCancelDataFormation('refund_order', currentOrder, cancelOrderInit),
+  );
+  // eslint-disable-next-line no-unused-vars
+  const [orderPayment, setOrderPayment] = useState(getOrderPayment(currentOrder));
 
   const queryClient = useQueryClient();
+
   // eslint-disable-next-line no-unused-vars
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -74,7 +107,7 @@ function RefundOrder({
           shop + orderCancel.vatAmount.vatForShop + deliveryBoy
         : shop + orderCancel.vatAmount.vatForShop;
 
-    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, newRefundType);
+    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, currentOrder?.orderStatus);
 
     if (Number(value) <= 0) {
       setOrderCancel({
@@ -156,7 +189,7 @@ function RefundOrder({
           <Typography variant="h3">Refund Order</Typography>
           <CloseButton
             onClick={() => {
-              setOpenRefundModal(!openRefundModal);
+              onClose();
             }}
           />
         </Stack>
@@ -185,9 +218,9 @@ function RefundOrder({
                   <TitleWithToolTip
                     title={`Lyxa Refund: ${
                       orderPayment?.admin < 0
-                        ? returnNewValue(orderPayment?.deliveryBoy) || 0
+                        ? returnNewValue(orderPayment?.deliveryBoy).toFixed(2) || 0
                         : // eslint-disable-next-line no-unsafe-optional-chaining
-                          orderPayment?.admin + orderPayment?.deliveryBoy
+                          (orderPayment?.admin + orderPayment?.deliveryBoy).toFixed(2)
                     }`}
                     tooltip="Lyxa Earning+Rider Earning"
                   />
@@ -220,8 +253,8 @@ function RefundOrder({
                                 orderPayment?.shop,
                                 orderCancel?.vatAmount?.vatForShop,
                                 orderPayment?.admin,
-                              ])
-                            : calculateTotalRefund([orderPayment?.shop, orderCancel?.vatAmount?.vatForShop])
+                              ]).toFixed(2)
+                            : calculateTotalRefund([orderPayment?.shop, orderCancel?.vatAmount?.vatForShop]).toFixed(2)
                         }`}
                         tooltip="Shop Earning+Shop VAT"
                       />
@@ -299,7 +332,7 @@ function RefundOrder({
                       orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                       // eslint-disable-next-line prettier/prettier
                       appVat,
-                    )}
+                    ).toFixed(2)}
                   </Typography>
                 )}
             </>

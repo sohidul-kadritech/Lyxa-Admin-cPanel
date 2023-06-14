@@ -23,6 +23,7 @@ function ShopList({
   tabName = 'Shop List',
   setOpen,
   setSelectedShop,
+  currentSeller,
   replaceDocument,
   removeDocument,
   editSellerQuery,
@@ -68,7 +69,7 @@ function ShopList({
                 }}
                 onClick={() => {
                   history.push(`/shop/profile/${params?.row?._id}`);
-                  dispatchCurrentUser({ type: 'shop', payload: { shop: params?.row } });
+                  dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row, seller: currentSeller } } });
                 }}
               >
                 {params?.row?.shopName}

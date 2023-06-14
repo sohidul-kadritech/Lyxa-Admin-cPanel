@@ -15,33 +15,13 @@ import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
 import UpdateOrderStatusForm from './UpdateOrderStatusForm';
-import {
-  getOrderProfit,
-  getThreedotMenuOptions,
-  orderCancelDataFormation,
-  orderStatusMap,
-  statusColorVariants,
-} from './helpers';
-
-const cancelOrderInit = {
-  cancelReasonId: '',
-  orderId: null,
-  otherReason: '',
-  refundType: 'none',
-  deliveryBoy: {},
-  partialPayment: {
-    deliveryBoy: '',
-    admin: '',
-  },
-};
+import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, loading }) {
   const { general } = useGlobalContext();
 
   const currency = general?.currency?.code;
   const history = useHistory();
-
-  const [newRefundType, setNewRefundType] = useState('');
 
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
 
@@ -51,73 +31,25 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
 
   const [openRefundModal, setOpenRefundModal] = useState(false);
 
-  const [currentOrderShop, setCurrentOrderShop] = useState({});
-
   const [currentOrder, setCurrentOrder] = useState({});
-
-  const [currentOrderDelivery, setCurrentOrderDelivery] = useState({});
-
-  const [orderCancel, setOrderCancel] = useState(cancelOrderInit);
-
-  const [orderPayment, setOrderPayment] = useState({
-    deliveryBoy: 0,
-    admin: 0,
-  });
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
-      setNewRefundType('');
       setFlagModal(true);
       setCurrentOrder(order);
     }
     if (menu === 'cancel_order') {
-      setNewRefundType('');
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
-
-      if (order?.isButler) {
-        setOrderPayment({
-          deliveryBoy: order?.deliveryBoyFee,
-          admin: order?.dropCharge,
-        });
-        console.log('order', order);
-        setOrderCancel(orderCancelDataFormation('cancel_order', order, orderCancel));
-      } else {
-        setOrderPayment({
-          shop: order?.sellerEarnings,
-          deliveryBoy: order?.deliveryBoyFee,
-          admin: order?.dropCharge?.totalDropAmount,
-        });
-
-        setOrderCancel(orderCancelDataFormation('cancel_order', order, orderCancel));
-      }
     }
     if (menu === 'refund_order') {
       setCurrentOrder(order);
-      setNewRefundType('delivered');
+
       setOpenRefundModal(!openRefundModal);
-      if (order?.isButler) {
-        setOrderPayment({
-          deliveryBoy: order?.deliveryBoyFee,
-          admin: order?.dropCharge,
-        });
-        setOrderCancel(orderCancelDataFormation('refund_order', order, orderCancel));
-      } else {
-        setOrderPayment({
-          shop: order?.sellerEarnings,
-          deliveryBoy: order?.deliveryBoyFee,
-          admin: order?.dropCharge?.totalDropAmount,
-        });
-        console.log('order?.deliveryBoyFee', order?.deliveryBoyFee);
-        setOrderCancel(orderCancelDataFormation('refund_order', order, orderCancel));
-      }
     }
     if (menu === 'update_status') {
-      setNewRefundType('');
       setUpdateStatusModal(true);
       setCurrentOrder(order);
-      setCurrentOrderShop(order?.shop);
-      setCurrentOrderDelivery(order?.deliveryBoy || {});
     }
   };
 
@@ -396,13 +328,8 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       >
         <UpdateOrderStatusForm
           onClose={() => setUpdateStatusModal(false)}
-          updateStatusModal={updateStatusModal}
-          currentOrderDelivery={currentOrderDelivery}
-          setCurrentOrderDelivery={setCurrentOrderDelivery}
           setCurrentOrder={setCurrentOrder}
-          setCurrentOrderShop={setCurrentOrderShop}
           currentOrder={currentOrder}
-          currentOrderShop={currentOrderShop}
         />
       </Modal>
 
@@ -423,14 +350,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <OrderCancel
-          orderCancel={orderCancel}
-          newRefundType={newRefundType}
-          setOrderCancel={setOrderCancel}
-          orderPayment={orderPayment}
-          setOpenCancelModal={setOpenCancelModal}
-          currentOrder={currentOrder}
-        />
+        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
       </Modal>
       {/* Refund After Delivered */}
       <Modal
@@ -441,12 +361,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         sx={{ zIndex: '10 !important' }}
       >
         <RefundOrder
-          orderCancel={orderCancel}
-          setOrderCancel={setOrderCancel}
-          orderPayment={orderPayment}
-          openRefundModal={openRefundModal}
-          setOpenRefundModal={setOpenRefundModal}
-          newRefundType={newRefundType}
+          currentOrder={currentOrder}
+          onClose={() => {
+            setOpenRefundModal(false);
+          }}
         />
       </Modal>
     </Box>

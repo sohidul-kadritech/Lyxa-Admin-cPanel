@@ -19,17 +19,11 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-function UpdateOrderStatusForm({
-  setCurrentOrderShop,
-  setCurrentOrder,
-  setCurrentOrderDelivery,
-  currentOrderDelivery,
-  onClose,
-  currentOrderShop,
-  currentOrder,
-}) {
+function UpdateOrderStatusForm({ setCurrentOrder, onClose, currentOrder }) {
   const { socket } = useSelector((state) => state.socketReducer);
   const [newOrderStatus, setNewOrderStatus] = useState('');
+  const [currentOrderShop, setCurrentOrderShop] = useState(currentOrder?.shop || {});
+  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(currentOrder?.deliveryBoy || {});
   const queryClient = useQueryClient();
   const [currentButlerSearchKey, setCurrentButlerSearchKey] = useState('');
   // Update Status
@@ -81,7 +75,7 @@ function UpdateOrderStatusForm({
         console.log(data, config);
         if (data.status) {
           successMsg(data?.message, 'success');
-          queryClient.invalidateQueries(['all-orders']);
+          queryClient.invalidateQueries(Api.ORDER_LIST);
           resetUpdateStatusModal();
           // emit socket
           if (config.service === 'regular') {
