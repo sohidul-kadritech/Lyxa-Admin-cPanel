@@ -7,6 +7,5 @@ export const generateGraphData = (items, getData, getLabel) => {
     data.push(getData(item));
   });
 
-  console.log('data===>', { labels, data });
   return { labels, data };
 };

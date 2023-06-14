@@ -51,9 +51,9 @@ const breadcrumbItems = [
   },
 ];
 
-export function AddMenuButton({ title = 'Add', isIcon = true, ...props }) {
+export function AddMenuButton({ title = 'Add', isIcon = true, icon = <Add />, ...props }) {
   return (
-    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? <Add /> : ''} {...props}>
+    <Button variant="contained" color="primary" size="small" startIcon={isIcon ? icon : ''} {...props}>
       {title}
     </Button>
   );
