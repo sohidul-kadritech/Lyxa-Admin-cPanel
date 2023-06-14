@@ -61,7 +61,6 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
             </span>
           }
           subTitle={value?.orderId}
-          console={console.log(value)}
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {

@@ -1,12 +1,15 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 import { ReactComponent as FlagIcon } from '../../../../assets/icons/order-flag.svg';
 import { StyledOrderDetailBox } from '../helpers';
 import { StyledListItem } from './ListItem';
 import FlagSummary from './Summary';
 
 export default function FlagDetails({ order }) {
+  const [buttonsOpen, setButtonsOpen] = useState(false);
+
   return (
-    <Stack gap={4}>
+    <Box>
       {!order?.flag?.length && (
         <Stack pt={30} pb={3}>
           <Typography textAlign="center" variant="body1">
@@ -15,7 +18,7 @@ export default function FlagDetails({ order }) {
         </Stack>
       )}
       {order?.flag?.length && (
-        <>
+        <Stack gap={4}>
           <StyledOrderDetailBox
             title={
               <span>
@@ -41,8 +44,35 @@ export default function FlagDetails({ order }) {
           <StyledOrderDetailBox title="Summary">
             <FlagSummary order={order} />
           </StyledOrderDetailBox>
-        </>
+          <Stack direction="column" gap="15px" pt="100px">
+            <Button variant="contained" color="primary" fullWidth onClick={() => setButtonsOpen(!buttonsOpen)}>
+              {buttonsOpen ? 'Less' : 'More'}
+            </Button>
+            {buttonsOpen && (
+              <>
+                <Button variant="contained" color="primary" fullWidth onClick={() => setButtonsOpen(!buttonsOpen)}>
+                  Resolve Issue
+                </Button>
+                <Button variant="outlined" color="primary" fullWidth>
+                  Contact Rider
+                </Button>
+                <Button variant="outlined" color="primary" fullWidth>
+                  Contact Store
+                </Button>
+                <Button variant="outlined" color="primary" fullWidth>
+                  Contact Customer
+                </Button>
+                <Button variant="outlined" color="primary" fullWidth>
+                  Assign new rider
+                </Button>
+                <Button variant="outlined" color="error" fullWidth>
+                  Cancel Order
+                </Button>
+              </>
+            )}
+          </Stack>
+        </Stack>
       )}
-    </Stack>
+    </Box>
   );
 }

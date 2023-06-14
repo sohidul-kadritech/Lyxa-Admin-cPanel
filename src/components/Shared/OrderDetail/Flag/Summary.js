@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack } from '@mui/material';
+import moment from 'moment';
 import { StyledListItem } from './ListItem';
 
 export default function FlagSummary({ order }) {
@@ -38,7 +39,7 @@ export default function FlagSummary({ order }) {
     },
     {
       label: 'Created At',
-      value: new Date(order?.orderId?.createdAt).toLocaleString(),
+      value: moment(order?.orderId?.createdAt)?.format('MMM DD, YYYY'),
     },
     {
       label: 'Payment Type',
@@ -46,20 +47,20 @@ export default function FlagSummary({ order }) {
     },
     {
       label: 'Product Amount',
-      value: order?.summary?.productAmount,
+      value: (order?.summary?.productAmount || 0).toFixed(2),
       hide: order?.orderType === 'butler',
     },
     {
       label: 'Product Delivery Fee',
-      value: order?.summary?.deliveryFee,
+      value: (order?.summary?.deliveryFee || 0).toFixed(2),
     },
     {
       label: 'Vat',
-      value: order?.summary?.vat,
+      value: (order?.summary?.vat || 0).toFixed(2),
     },
     {
       label: 'Total Amount',
-      value: (order?.summary?.totalAmount + order?.summary?.vat || 0).toFixed(),
+      value: (order?.summary?.totalAmount + order?.summary?.vat || 0).toFixed(2),
     },
   ];
 
