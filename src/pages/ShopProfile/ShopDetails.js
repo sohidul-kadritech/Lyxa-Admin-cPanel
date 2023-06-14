@@ -16,7 +16,7 @@ import { AverageOrderValue, TagsAndCuisines, openingHours } from './helper';
 export default function ShopDetails({ shop }) {
   return (
     <Stack gap="40px" flexDirection="column">
-      <ProfileSidebarInfo label="Seller" value={shop?.shopName} icon={CalenderIcon} />
+      <ProfileSidebarInfo label="Seller" value={shop?.seller?.company_name} icon={CalenderIcon} />
       <ProfileSidebarInfo
         label="Unique ID"
         value={shop?.autoGenId}

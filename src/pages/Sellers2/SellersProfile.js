@@ -256,6 +256,7 @@ function SellersProfile({
           </Stack>
           <ShopList
             setSelectedShop={setSelectedShop}
+            currentSeller={currentSeller}
             editSellerQuery={editSellerQuery}
             isConfirmModal={isConfirmModal}
             editDocumentOpen={editDocumentOpen}

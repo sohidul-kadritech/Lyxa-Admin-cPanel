@@ -298,13 +298,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                     placeholder: 'Choose',
                     noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
                     filterOptions,
-                    getOptionLabel: (option) => {
-                      console.log('options: ', option?.shopName, option?.autoGenId);
-                      if (option?.autoGenId) {
-                        return option?.shopName;
-                      }
-                      return option?.shopName;
-                    },
+                    getOptionLabel: (option) => option?.shopName,
                     isOptionEqualToValue: (option, value) => option?._id === value?._id,
                     onChange: (e, v) => {
                       console.log('value: ', v);

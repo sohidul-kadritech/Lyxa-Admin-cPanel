@@ -9,6 +9,10 @@ const pagesList = [
     to: '/add-wallet/seller-transactions',
   },
   {
+    label: 'For Sellers2',
+    to: '/add-wallet/seller-transactions2',
+  },
+  {
     label: 'For Account (Lyxa Pay)',
     to: '/lyxa-pay',
   },

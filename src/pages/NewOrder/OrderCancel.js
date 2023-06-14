@@ -25,14 +25,47 @@ import {
   calculateTotalRefundedAmount,
   getAdminRefundedAmount,
   getRefundedVatForAdmin,
+  orderCancelDataFormation,
 } from './helpers';
 
-function OrderCancel({ setOpenCancelModal, newRefundType, currentOrder, orderPayment, orderCancel, setOrderCancel }) {
+const cancelOrderInit = {
+  cancelReasonId: '',
+  orderId: null,
+  otherReason: '',
+  refundType: 'none',
+  deliveryBoy: {},
+  partialPayment: {
+    deliveryBoy: '',
+    admin: '',
+  },
+};
+
+const getOrderPayment = (currentOrder) => {
+  if (currentOrder?.isButler) {
+    return {
+      deliveryBoy: currentOrder?.deliveryBoyFee,
+      admin: currentOrder?.dropCharge,
+    };
+  }
+  return {
+    shop: currentOrder?.sellerEarnings,
+    deliveryBoy: currentOrder?.deliveryBoyFee,
+    admin: currentOrder?.dropCharge?.totalDropAmount,
+  };
+};
+
+function OrderCancel({ setOpenCancelModal, currentOrder }) {
+  const [orderCancel, setOrderCancel] = useState(
+    // eslint-disable-next-line prettier/prettier
+    orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit),
+  );
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [appVat, setAppVat] = useState(0);
 
-  const [isOtherReason, setIsOtherReason] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [orderPayment, setOrderPayment] = useState(getOrderPayment(currentOrder));
 
+  const [isOtherReason, setIsOtherReason] = useState(false);
   const queryClient = useQueryClient();
   // eslint-disable-next-line no-unused-vars
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
@@ -72,6 +105,7 @@ function OrderCancel({ setOpenCancelModal, newRefundType, currentOrder, orderPay
       }
     },
   });
+
   const updateRefundType = (type) => {
     setOrderCancel({
       ...orderCancel,
@@ -98,7 +132,7 @@ function OrderCancel({ setOpenCancelModal, newRefundType, currentOrder, orderPay
         : shop + orderCancel.vatAmount.vatForShop;
 
     // const forAdmin = orderPayment?.admin < 0 ? 0 : admin + deliveryBoy;
-    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, newRefundType);
+    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, currentOrder?.orderStatus);
 
     if (Number(value) <= 0) {
       setOrderCancel({
