@@ -4,27 +4,28 @@ import { useEffect, useState } from 'react';
 import LoadingOverlay from '../Common/LoadingOverlay';
 import StyledCheckbox from '../Styled/StyledCheckbox';
 import StyledTable from '../Styled/StyledTable3';
-
-export const getTrxType = (type) => {
-  let typeLabel = '';
-  if (type === 'adminSettlebalanceShop') typeLabel = 'Settle shop';
-  if (type === 'adminAddBalanceShop') typeLabel = 'Add shop credit';
-  if (type === 'sellerCashInHandAdjust') typeLabel = 'Adjust hand cash';
-  if (type === 'adminRemoveBalanceShop') typeLabel = 'Remove shop credit';
-  if (type === 'deliveryBoyAmountSettle') typeLabel = 'Settle Rider';
-  if (type === 'deliveryBoyAdminAmountReceivedCash') typeLabel = 'Received rider cash';
-  if (type === 'deliveryBoyOrderDeliveredCash') typeLabel = 'Order Delivered Cash';
-  if (type === 'userBalanceAddAdmin') typeLabel = 'Add user credit';
-  else typeLabel = 'Unknown';
+//
+export const getTrxType = (trxType) => {
+  let typeLabel = 'Unknown';
+  if (trxType === 'adminSettlebalanceShop') typeLabel = 'Settle shop';
+  if (trxType === 'adminAddBalanceShop') typeLabel = 'Add shop credit';
+  if (trxType === 'sellerCashInHandAdjust') typeLabel = 'Adjust hand cash';
+  if (trxType === 'adminRemoveBalanceShop') typeLabel = 'Remove shop credit';
+  if (trxType === 'deliveryBoyAmountSettle') typeLabel = 'Settle Rider';
+  if (trxType === 'deliveryBoyAdminAmountReceivedCash') typeLabel = 'Received rider cash';
+  if (trxType === 'deliveryBoyOrderDeliveredCash') typeLabel = 'Order Delivered Cash';
+  if (trxType === 'userBalanceAddAdmin') typeLabel = 'Lyxa';
+  if (trxType === 'userBalanceWithdrawAdmin') typeLabel = 'Lyxa';
+  if (trxType === 'userPayAfterReceivedOrderByCard') typeLabel = 'Card';
   return typeLabel;
 };
 
-export default function TransactionsTable({ rows = [], showFor, loading, queryParams = {} }) {
+export default function TransactionsTable({ rows = [], type, loading, queryParams = {} }) {
   const [allSelected, setAllSelected] = useState(false);
   const [render, setRender] = useState(false);
 
   useEffect(() => {
-    if (showFor === 'cashOrderList') {
+    if (type === 'cashOrderList') {
       setAllSelected(false);
       rows?.forEach((row) => {
         row.selected = false;
@@ -34,7 +35,7 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
 
   const columns = [
     {
-      showFor: ['transactions', 'cashOrderList'],
+      type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 1,
       headerName: 'TRANSACTION ID',
       field: 'autoGenId',
@@ -44,17 +45,35 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
-      showFor: ['transactions', 'cashOrderList'],
+      type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 2,
       headerName: 'AMOUNT',
-      field: showFor === 'transactions' ? 'amount' : 'receivedAmount',
+      field: type === 'cashOrderList' ? 'receivedAmount' : 'amount',
       flex: 1,
       minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value, row }) => {
+        if (type === 'user-transactions') {
+          const sign =
+            row?.type === 'userBalanceAddAdmin' || row?.type === 'userCancelOrderGetWallet'
+              ? '+'
+              : row?.type === 'userBalanceWithdrawAdmin'
+              ? '-'
+              : '';
+
+          return (
+            <Typography variant="body4">
+              {sign}
+              {value}
+            </Typography>
+          );
+        }
+
+        return <Typography variant="body4">{value}</Typography>;
+      },
     },
     {
-      showFor: ['transactions', 'cashOrderList'],
+      type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 3,
       headerName: 'TYPE',
       field: 'type',
@@ -64,7 +83,7 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
       renderCell: ({ value }) => <Typography variant="body4">{getTrxType(value)}</Typography>,
     },
     {
-      showFor: ['transactions', 'cashOrderList'],
+      type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 4,
       headerName: `DATE`,
       sortable: false,
@@ -82,7 +101,7 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
       ),
     },
     {
-      showFor: ['transactions'],
+      type: ['transactions'],
       id: 5,
       headerName: 'ADMIN',
       field: 'adminBy',
@@ -92,7 +111,7 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
       renderCell: ({ value }) => <Typography variant="body4">{value?.name}</Typography>,
     },
     {
-      showFor: ['cashOrderList'],
+      type: ['cashOrderList'],
       id: 6,
       renderHeader: () => (
         <Stack
@@ -163,7 +182,7 @@ export default function TransactionsTable({ rows = [], showFor, loading, queryPa
     >
       {loading && <LoadingOverlay />}
       <StyledTable
-        columns={columns.filter((col) => col.showFor.includes(showFor))}
+        columns={columns.filter((col) => col.type.includes(type))}
         rows={rows}
         getRowId={(row) => row?._id}
         rowHeight={71}

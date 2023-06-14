@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -19,6 +20,9 @@ export default function AddRemoveCredit({ userId, onClose }) {
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(userId));
   const [maxValue, setMaxValue] = useState(null);
+  const [type, setType] = useState('');
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.code;
 
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -26,16 +30,22 @@ export default function AddRemoveCredit({ userId, onClose }) {
     },
   });
 
-  const creditMutation = useMutation((data) => AXIOS.post(Api.ADD_USER_BALANCE, data), {
-    onSuccess: (data) => {
-      successMsg(data?.message, data?.status ? 'success' : undefined);
-
-      if (data?.status) {
-        queryClient.invalidateQueries([Api.DROP_PAY_LIST, { userId }]);
-        onClose();
-      }
+  const creditMutation = useMutation(
+    (data) => {
+      const api = type === 'add' ? Api.ADD_USER_BALANCE : Api.REMOVE_USER_BALANCE;
+      return AXIOS.post(api, data);
     },
-  });
+    {
+      onSuccess: (data) => {
+        successMsg(data?.message, data?.status ? 'success' : undefined);
+
+        if (data?.status) {
+          queryClient.invalidateQueries([Api.DROP_PAY_LIST, { userId }]);
+          onClose();
+        }
+      },
+    }
+  );
 
   const addRemoveCredit = () => {
     if (data?.amount < 0) {
@@ -83,12 +93,12 @@ export default function AddRemoveCredit({ userId, onClose }) {
               gap: '25px',
             }}
             items={typeOptions}
-            value={data.type}
-            onChange={(e) => setData({ ...data, type: e.target.value })}
+            value={type}
+            onChange={(e) => setType(e.target.value)}
           />
         </Box>
         <StyledFormField
-          label="Amount *"
+          label={`Amount * (max ${maxValue || 0} ${currency})`}
           intputType="text"
           inputProps={{
             type: 'number',

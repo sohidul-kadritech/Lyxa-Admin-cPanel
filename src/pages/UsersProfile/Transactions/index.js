@@ -44,6 +44,7 @@ export default function UserTransactions({ user }) {
     <Box>
       <Box pb={7.5}>
         <SearchBar
+          searchPlaceHolder="Search trasactions"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           hideFilters={{
@@ -55,7 +56,7 @@ export default function UserTransactions({ user }) {
           }}
         />
       </Box>
-      <TransactionsTable rows={query?.data?.data?.transactionList} showFor="transactions" />
+      <TransactionsTable rows={query?.data?.data?.transactionList} type="user-transactions" />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -70,6 +71,7 @@ export default function UserTransactions({ user }) {
         }}
       >
         <AddRemoveCredit
+          userId={user?._id}
           onClose={() => {
             setModalOpen(false);
           }}

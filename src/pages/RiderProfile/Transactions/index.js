@@ -188,7 +188,7 @@ export default function RiderTransactions({ riderId, showFor }) {
       <TransactionsTable
         loading={receiveCashMutation.isloading}
         rows={listQuery?.data?.data?.[showFor]}
-        showFor={showFor}
+        type={showFor}
         queryParams={queryParams}
       />
       <TablePagination
