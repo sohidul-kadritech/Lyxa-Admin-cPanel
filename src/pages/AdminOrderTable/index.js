@@ -12,6 +12,7 @@ const orderFilterToTabValueMap = {
   0: 'ongoing',
   1: 'delivered',
   2: 'cancelled',
+  4: 'low-rating',
 };
 
 export default function AdminOrders() {
@@ -36,6 +37,7 @@ export default function AdminOrders() {
         <Tab label="Delivered" />
         <Tab label="Incomplete" />
         <Tab label="Flags" />
+        <Tab label="Low Rating" />
       </Tabs>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
@@ -49,6 +51,9 @@ export default function AdminOrders() {
         </TabPanel>
         <TabPanel index={3} value={currentTab} noPadding>
           <Flags />
+        </TabPanel>
+        <TabPanel index={4} value={currentTab} noPadding>
+          <Orders type={orderFilterToTabValueMap[currentTab]} />
         </TabPanel>
       </Box>
     </Box>

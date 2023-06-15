@@ -48,6 +48,16 @@ function ShopList({
     {
       id: 1,
       showFor: ['Shop List'],
+      headerName: '',
+      field: 'rowNumber',
+      flex: 1,
+      sortable: false,
+      maxWidth: 90,
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+    },
+    {
+      id: 1,
+      showFor: ['Shop List'],
       headerName: `SHOP NAME`,
       field: 'shopName',
       sortable: false,
@@ -251,7 +261,12 @@ function ShopList({
     >
       <StyledTable
         columns={allColumns.filter((column) => column.showFor.includes(tabName))}
-        rows={data || []}
+        rows={
+          data.map((shop, i) => {
+            shop.rowNumber = i + 1;
+            return shop;
+          }) || []
+        }
         getRowHeight={() => 'auto'}
         getRowId={(row) => row?._id}
         sx={{
@@ -277,7 +292,6 @@ function ShopList({
           setCurrentDocumet({});
         }}
         onConfirm={() => {
-          // setIsConfirmModal(false);
           removeDocument(currentDocumet);
         }}
       />

@@ -18,7 +18,7 @@ const sortOptions = [
   },
 ];
 
-export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAddRemove }) {
+export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAddRemove, onMakePayment }) {
   const { currentUser } = useGlobalContext();
 
   const updateSearch = useMemo(
@@ -26,7 +26,8 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
-    []
+    // eslint-disable-next-line prettier/prettier
+    [],
   );
 
   return (
@@ -87,11 +88,18 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
       />
       {currentUser?.userType === 'admin' && (
-        <Box flexShrink={0}>
-          <Button variant="contained" size="small" color="primary" onClick={onAddRemove}>
-            Add/Remove Credit
-          </Button>
-        </Box>
+        <>
+          <Box flexShrink={0}>
+            <Button variant="contained" size="small" color="primary" onClick={onAddRemove}>
+              Add/Remove Credit
+            </Button>
+          </Box>
+          <Box flexShrink={0}>
+            <Button size="small" variant="contained" onClick={onMakePayment}>
+              Make Payment
+            </Button>
+          </Box>
+        </>
       )}
     </Stack>
   );

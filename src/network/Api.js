@@ -285,6 +285,10 @@ export const CREATE_NOTIFICATION = `${ADMIN_ENDPOINT}/notification/add`;
 export const GET_NOTIFICATIONS = `${ADMIN_ENDPOINT}/notification`;
 export const UPDATE_NOTIFICATION_STATUS = `${ADMIN_ENDPOINT}/notification/delete`;
 
+// Privacy
+export const GET_PRIVACY = `${ADMIN_ENDPOINT}/setting/app-setting/privacy`;
+export const UPDATE_PRIVACY = `${ADMIN_ENDPOINT}/setting/app-setting/privacy/edit`;
+
 // TERMS AND CONDITIONS
 export const UPDATE_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms/edit`;
 export const GET_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms`;
@@ -320,6 +324,7 @@ export const DELETE_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/delete`;
 // FLAGS
 export const GET_ALL_FLAGS = `${ADMIN_ENDPOINT}/flag`;
 export const RESOLVE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-flag`;
+export const GET_ALL_FLAGGED_ORDERS = `${ADMIN_ENDPOINT}/flag/order`;
 
 // MARKETING
 export const GET_MARKETING_SETTINGS = `${ADMIN_ENDPOINT}/marketing`;

@@ -9,7 +9,6 @@ import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
 import Details from './Details';
 import Earnings from './Earnings';
-import FlagDetails from './Flag';
 import Review from './Reviews';
 
 export default function OrderDetail({ order, onClose, hideIssues }) {
@@ -97,7 +96,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
               <Tab label="Order Details" />
               <Tab label="Review" />
               {userType === 'admin' && <Tab label="Earning Details" />}
-              <Tab label="Flag Details" />
+              {/* <Tab label="Flag Details" /> */}
               <Tab label="Tickets" />
               <Tab label="Rider Chat" />
             </Tabs>
@@ -116,9 +115,9 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           <Earnings order={order} userType={userType} />
         </TabPanel>
         {/* flag details */}
-        <TabPanel index={userType === 'admin' ? 3 : 2} value={currentTab} noPadding>
+        {/* <TabPanel index={userType === 'admin' ? 3 : 2} value={currentTab} noPadding>
           <FlagDetails order={order} />
-        </TabPanel>
+        </TabPanel> */}
       </Box>
     </Box>
   );

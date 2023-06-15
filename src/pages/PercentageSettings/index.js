@@ -239,6 +239,7 @@ function PercentageSettings2() {
                   value: globalChargeType || '',
                   items: discountTypeOptions,
                   //   items: categories,
+                  readOnly: true,
                   onChange: (e) => {
                     setGlobalCharge(0);
                     setHasChanged(true);

@@ -1,6 +1,7 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -17,6 +18,11 @@ import SellersProfile from './SellersProfile';
 import { previewGenerator } from './helpers';
 
 function SellerList2() {
+  // eslint-disable-next-line no-unused-vars
+  const routeMatch = useRouteMatch();
+
+  console.log('routeMatch', routeMatch?.params?.sellerId);
+
   const [status, setStatus] = useState('all');
 
   const [searchKey, setSearchKey] = useState('');
@@ -31,7 +37,9 @@ function SellerList2() {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
   const [currentSeller, setCurrentSeller] = useState({});
+
   const theme = useTheme();
 
   const queryClient = useQueryClient();
@@ -48,13 +56,36 @@ function SellerList2() {
       onSuccess: (data) => {
         if (data.status) {
           console.log(data?.data?.sellers[0]);
-          setCurrentSeller(data?.data?.sellers[0]);
+          if (!routeMatch?.params?.sellerId) {
+            setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0]);
+          }
         }
       },
       // eslint-disable-next-line prettier/prettier
     },
   );
 
+  const getSingleSellersQuery = useQuery(
+    [API_URL.SINGLE_SELLER, { id: routeMatch?.params?.sellerId }],
+    () =>
+      AXIOS.get(API_URL.SINGLE_SELLER, {
+        params: {
+          id: routeMatch?.params?.sellerId,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          console.log(data?.data?.seller);
+          if (routeMatch?.params?.sellerId) {
+            setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.seller);
+          }
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+  console.log(getSingleSellersQuery?.data?.data);
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -151,7 +182,7 @@ function SellerList2() {
 
       {/* Sellers Main Section */}
 
-      {getAllSellersQuery.isLoading ? (
+      {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
         <SellerPageSkeleton />
       ) : (
         <Box marginTop="42px">
@@ -212,6 +243,7 @@ function SellerList2() {
               ? {
                   ...currentSeller,
                   password: '',
+                  sellerAddress: currentSeller?.addressSeller,
                   sellerStatus: currentSeller?.status,
                   profile_photo: previewGenerator(currentSeller?.profile_photo),
                   certificate_of_incorporation: previewGenerator(currentSeller?.certificate_of_incorporation),

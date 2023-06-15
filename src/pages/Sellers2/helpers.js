@@ -18,10 +18,6 @@ export const getThreedotMenuOptions = [
     label: 'Update Lyxa Charge',
     value: 'update_lyxa_charge',
   },
-  // {
-  //   label: 'Go to Financials',
-  //   value: 'go_to_financials',
-  // },
 ];
 
 export const sellerShopTabType = {
@@ -58,11 +54,11 @@ export const validateSellersData = (data, isEdit = false) => {
     return false;
   }
 
-  if (!data?.addressSeller?.address) {
+  if (!data?.sellerAddress?.address) {
     successMsg('Provide seller address');
     return false;
   }
-  if (!data?.addressSeller?.pin) {
+  if (!data?.sellerAddress?.pin) {
     successMsg('Provide seller Zip code');
     return false;
   }

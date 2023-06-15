@@ -17,7 +17,6 @@ const getQueryParamsInit = (type) => ({
   endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
   orderType: 'all',
-  model: 'order',
 });
 
 const tabsOptions = [

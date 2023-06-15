@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack, Tab, Tabs } from '@mui/material';
 import jsPDF from 'jspdf';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -11,6 +11,8 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
+import SellerInvoice from './Invoices';
 import SellerFinancialsTable from './SellerFinancialsTable';
 
 const breadcrumbItems = [
@@ -100,25 +102,33 @@ function FinancialsForSeller() {
           <Tab label="Invoices"></Tab>
         </Tabs>
       </Box>
-      <Box>
-        <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
-          <AddMenuButton
-            title="Download"
-            icon={<DownloadIcon />}
-            onClick={() => {
-              downloadPdf();
-            }}
-          />
-        </Stack>
-      </Box>
+
+      {currentTab !== 1 && (
+        <Box>
+          <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
+            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
+            <DateRange range={range} setRange={setRange} />
+            <AddMenuButton
+              title="Download"
+              icon={<DownloadIcon />}
+              onClick={() => {
+                downloadPdf();
+              }}
+            />
+          </Stack>
+        </Box>
+      )}
+
       <Box sx={{ marginBottom: '30px' }}>
         <TabPanel index={0} value={currentTab} noPadding>
-          <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+          {getSellerTnx?.isLoading ? (
+            <TablePageSkeleton row={8} column={7} />
+          ) : (
+            <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+          )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
-          <Typography>Invoices</Typography>
+          <SellerInvoice />
         </TabPanel>
       </Box>
     </Box>

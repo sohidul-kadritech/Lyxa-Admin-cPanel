@@ -84,6 +84,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
               placeholder: 'Email',
               type: 'text',
               name: 'email',
+              readOnly: isEdit,
               onChange: changeHandler,
               //   readOnly: isReadOnly,
             }}

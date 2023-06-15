@@ -12,7 +12,8 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
-import ShopFinancialsTable from './ShopFinancialsTable';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
+import ShopsFinancialsTable from './ShopsFinancialsTable';
 
 const getBreadCrumbItems = (searchUrl) => {
   const breadcrumbItems = [
@@ -25,7 +26,7 @@ const getBreadCrumbItems = (searchUrl) => {
       to: '/add-wallet/seller-transactions2',
     },
     {
-      label: 'Shop List',
+      label: 'Shops List',
       to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'companyName',
@@ -36,7 +37,7 @@ const getBreadCrumbItems = (searchUrl) => {
   return breadcrumbItems;
 };
 
-function ShopFinancialsSpecificSellers() {
+function ShopsFinancialsSpecificSellers() {
   const [range, setRange] = useState({ ...dateRangeInit });
 
   const [searchKey, setSearchKey] = useState('');
@@ -45,7 +46,10 @@ function ShopFinancialsSpecificSellers() {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const getSellerShopsTnx = useQuery(
-    [API_URL.SELLER_TRX, { searchKey, startDate: range.start, endDate: range.end }],
+    [
+      API_URL.SELLER_TRX,
+      { searchKey, startDate: range.start, endDate: range.end, sellerId: searchParams.get('sellerId') },
+    ],
     () =>
       AXIOS.get(API_URL.SELLER_TRX, {
         params: { sellerId: searchParams.get('sellerId'), searchKey, startDate: range.start, endDate: range.end },
@@ -122,10 +126,14 @@ function ShopFinancialsSpecificSellers() {
         </Stack>
       </Box>
       <Box sx={{ marginBottom: '30px' }}>
-        <ShopFinancialsTable data={getSellerShopsTnx?.data?.data?.shops} />
+        {getSellerShopsTnx.isLoading ? (
+          <TablePageSkeleton row={3} column={7} />
+        ) : (
+          <ShopsFinancialsTable loading={getSellerShopsTnx?.isLoading} data={getSellerShopsTnx?.data?.data?.shops} />
+        )}
       </Box>
     </Box>
   );
 }
 
-export default ShopFinancialsSpecificSellers;
+export default ShopsFinancialsSpecificSellers;

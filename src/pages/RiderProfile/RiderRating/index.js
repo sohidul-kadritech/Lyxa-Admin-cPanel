@@ -28,7 +28,7 @@ const tabsOptions = [
 
 export default function RiderRating({ rider }) {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, deliveryBoyId: rider._id });
-  const [currentTab, setCurrentTab] = useState('shop');
+  const [currentTab, setCurrentTab] = useState('customer');
 
   const shopRatingsQuery = useQuery([Api.DELIVERY_BOY_SHOP_RATING, queryParams], () =>
     AXIOS.get(Api.DELIVERY_BOY_SHOP_RATING, {

@@ -18,6 +18,8 @@ const StyledButton = styled('a')(({ theme }) => ({
 }));
 
 export default function CallUser({ user, userType }) {
+  console.log(user);
+
   return (
     <StyledOrderDetailBox>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
