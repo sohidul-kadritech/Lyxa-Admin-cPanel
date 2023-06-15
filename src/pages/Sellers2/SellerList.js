@@ -44,6 +44,12 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     backgroundColor: 'rgba(177, 177, 177, 0.2)',
   };
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     document.getElementById(`seller_${currentSeller?._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  //   }, 100);
+  // }, []);
+  document.getElementById(`seller_${currentSeller?._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   return (
     <Box
       sx={{
@@ -61,6 +67,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
           <>
             {data.map((seller, i) => (
               <Box
+                id={`seller_${seller._id}`}
                 key={i}
                 sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
                 onClick={() => {

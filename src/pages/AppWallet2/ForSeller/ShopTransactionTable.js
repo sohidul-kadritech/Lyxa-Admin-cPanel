@@ -5,38 +5,27 @@ import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
-function ShopFinancialsTable({ data = [], loading }) {
+function ShopTransactionTable({ data = [], loading }) {
   // eslint-disable-next-line no-unused-vars
   const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
   const history = useHistory();
+  const gotToShopTrxs = (shopId, shopName) => {
+    history.push({
+      pathname: `/add-wallet/shop-transactions2`,
+      search: `?shopId=${shopId}&shopName=${shopName}`,
+    });
+  };
   const allColumns = [
     {
       id: 1,
-      headerName: `SHOP NAME`,
+      headerName: `Trx ID`,
       field: 'title',
       flex: 1,
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
           <Box>
-            <Typography
-              variant="body1"
-              style={{
-                color: theme.palette.primary.main,
-                textTransform: 'capitalize',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                width: '100%',
-                cursor: 'pointer',
-              }}
-              onClick={() => {
-                history.push(`/shop/profile/${params?.row?._id}`);
-                dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row } } });
-              }}
-            >
-              {params?.row?.shopName}
-            </Typography>
             <Typography
               variant="body3"
               sx={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', lineHeight: '1.5' }}
@@ -49,8 +38,8 @@ function ShopFinancialsTable({ data = [], loading }) {
     },
     {
       id: 2,
-      headerName: `ORDERS`,
-      field: 'order',
+      headerName: `AMOUNT`,
+      field: 'amount',
       flex: 1,
       sortable: false,
       renderCell: (params) => (
@@ -68,8 +57,23 @@ function ShopFinancialsTable({ data = [], loading }) {
     },
     {
       id: 3,
-      field: 'order_amount',
+      field: 'TRANSACTION TYPE',
       headerName: 'ORDER AMOUNT',
+      sortable: false,
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => (
+        <Typography variant="body1">
+          {' '}
+          {currency}
+          {params?.row?.summary?.orderValue?.productAmount}
+        </Typography>
+      ),
+    },
+    {
+      id: 3,
+      field: 'DATE',
+      headerName: 'date',
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -84,54 +88,13 @@ function ShopFinancialsTable({ data = [], loading }) {
     {
       id: 4,
       field: 'delivery_fee',
-      headerName: `DELIVERY FEE (${currency})`,
+      headerName: `Admin (${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
           {currency} {params?.row?.summary?.orderValue?.deliveryFee}
-        </Typography>
-      ),
-    },
-    {
-      id: 5,
-      field: 'lyxa_profit',
-      headerName: `LYXA PROFIT (${currency})`,
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalDropGet.toFixed(2)}
-        </Typography>
-      ),
-    },
-    {
-      id: 6,
-      headerName: `UNSETTLED AMOUNT (${currency})`,
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalShopUnsettle.toFixed(2)}
-        </Typography>
-      ),
-    },
-    {
-      id: 7,
-      field: 'seller_profit',
-      headerName: `SHOP PROFIT (${currency})`,
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalShopEarning}
         </Typography>
       ),
     },
@@ -149,10 +112,16 @@ function ShopFinancialsTable({ data = [], loading }) {
       <StyledTable
         columns={allColumns}
         rows={data}
+        onRowClick={({ row }) => {
+          gotToShopTrxs(row?._id, row?.shopName);
+        }}
         getRowId={(row) => row?._id}
         sx={{
           '& .MuiDataGrid-cell': {
-            cursor: 'defualt',
+            cursor: 'pointer',
+          },
+          '& .MuiDataGrid-row:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
           },
         }}
         components={{
@@ -167,4 +136,4 @@ function ShopFinancialsTable({ data = [], loading }) {
   );
 }
 
-export default ShopFinancialsTable;
+export default ShopTransactionTable;

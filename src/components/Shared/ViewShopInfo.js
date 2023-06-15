@@ -233,15 +233,9 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.account_name}
             </Typography>
           </ShopInfo>
-
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.bank_address}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="City" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.address?.city}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>

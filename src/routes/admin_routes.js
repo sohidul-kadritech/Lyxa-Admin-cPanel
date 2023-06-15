@@ -85,7 +85,8 @@ import AdminFinancials from '../pages/AdminFinancials';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
-import ShopFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopFinancialsSpecificSellers';
+import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
+import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
 import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
@@ -138,6 +139,7 @@ export const admin_routes = [
   // sellers
   { path: '/seller/list', component: SellerList },
   { path: '/seller/list2', component: SellerList2 },
+  { path: '/seller/list2/:sellerId', component: SellerList2 },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
@@ -189,13 +191,17 @@ export const admin_routes = [
   },
   {
     path: '/app-wallet/seller/shops-transactions2',
-    component: ShopFinancialsSpecificSellers,
+    component: ShopsFinancialsSpecificSellers,
   },
 
   // transations
   {
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,
+  },
+  {
+    path: '/add-wallet/shop-transactions2',
+    component: ShopFinancialsTransaction,
   },
   {
     path: '/add-wallet/delivery-transactions',

@@ -285,6 +285,10 @@ export const CREATE_NOTIFICATION = `${ADMIN_ENDPOINT}/notification/add`;
 export const GET_NOTIFICATIONS = `${ADMIN_ENDPOINT}/notification`;
 export const UPDATE_NOTIFICATION_STATUS = `${ADMIN_ENDPOINT}/notification/delete`;
 
+// Privacy
+export const GET_PRIVACY = `${ADMIN_ENDPOINT}/setting/app-setting/privacy`;
+export const UPDATE_PRIVACY = `${ADMIN_ENDPOINT}/setting/app-setting/privacy/edit`;
+
 // TERMS AND CONDITIONS
 export const UPDATE_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms/edit`;
 export const GET_CONDITION = `${ADMIN_ENDPOINT}/setting/app-setting/terms`;
