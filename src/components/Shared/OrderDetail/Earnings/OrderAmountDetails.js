@@ -43,10 +43,6 @@ function StyledItem({
 }
 
 export default function OrderAmountDetails({ order = {} }) {
-  const totalLyxaProfit =
-    order?.summary?.deliveryFee -
-      order?.deliveryBoyFee +
-      (order?.dropCharge?.totalDropAmount - order?.deliveryBoyFee) || 0;
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
   return (
     <StyledOrderDetailBox title="Order Amount Details">
@@ -69,7 +65,7 @@ export default function OrderAmountDetails({ order = {} }) {
           <StyledItem label="Lyxa Order Profit" value={(order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)} />
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
-          <StyledItem label="Total Lyxa Profit" value={(totalLyxaProfit || 0).toFixed(2)} total />
+          <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} total />
           <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} ptxs={3.5} pbsx={1} />
         </Box>
       </Box>

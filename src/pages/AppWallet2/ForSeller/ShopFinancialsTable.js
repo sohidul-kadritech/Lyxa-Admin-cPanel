@@ -158,7 +158,7 @@ function ShopFinancialsTable({ data = [], loading }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Notification Found'}
+              {loading ? 'Loading...' : 'No Shop Found'}
             </Stack>
           ),
         }}
