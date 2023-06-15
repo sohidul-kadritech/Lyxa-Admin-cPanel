@@ -29,9 +29,7 @@ export default function Detail({ order, hideIssues, userType }) {
       )}
       <OrderSummary productsDetails={order?.productsDetails} />
       <PaymentMethod method={order?.paymentMethod} />
-      {order?.summary?.reward?.points && userType === 'admin' ? (
-        <OrderReward points={order?.summary?.reward?.points} />
-      ) : null}
+      {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       <PaymentDetails order={order} />
     </Stack>
   );

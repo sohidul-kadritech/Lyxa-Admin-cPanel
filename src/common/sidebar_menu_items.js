@@ -214,13 +214,8 @@ export const admin_menu_items = [
       {
         label: 'Orders',
         icon: AdminOrdersIcon,
-        to: '/new-orders',
+        to: '/orders',
       },
-      // {
-      //   label: 'Sellers',
-      //   to: '/seller/list',
-      //   icon: SellersIcon,
-      // },
       {
         label: 'Sellers',
         to: '/seller/list2',
