@@ -212,6 +212,7 @@ function SellerList2() {
               ? {
                   ...currentSeller,
                   password: '',
+                  sellerAddress: currentSeller?.addressSeller,
                   sellerStatus: currentSeller?.status,
                   profile_photo: previewGenerator(currentSeller?.profile_photo),
                   certificate_of_incorporation: previewGenerator(currentSeller?.certificate_of_incorporation),

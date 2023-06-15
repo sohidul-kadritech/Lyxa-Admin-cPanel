@@ -6,6 +6,7 @@ import FilterSelect from '../../components/Filter/FilterSelect';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../context';
 
 const listFilterOptions = [
   {
@@ -30,6 +31,11 @@ function AdminTeamList({
 }) {
   const theme = useTheme();
   const [rowId, setRowId] = useState('');
+
+  // eslint-disable-next-line no-unused-vars
+  const { currentUser, userType } = useGlobalContext();
+
+  console.log('==>', currentUser);
 
   const onStatusChange = (value, item) => {
     item.status = value;
@@ -164,6 +170,7 @@ function AdminTeamList({
           </StyledIconButton>
           {/* Delete */}
           <StyledIconButton
+            disabled={params?.row?._id === currentUser?.admin?._id}
             onClick={() => {
               setIsConfirmModal(true);
               setRowId(params?.row?._id);
