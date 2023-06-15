@@ -24,8 +24,10 @@ import {
 
 export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const queryClient = useQueryClient();
+  const [render, setRender] = useState(false);
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
+  // eslint-disable-next-line no-unused-vars
   const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
   const [shopSearchKey, setShopSearchKey] = useState('');
   const [userSearchKey, setUserSearchKey] = useState('');
@@ -37,9 +39,9 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
     setCoupon((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const commonCheckHandler = (event, property) => {
-    setChecked((prev) => ({ ...prev, [property]: event.target.checked }));
-  };
+  // const commonCheckHandler = (event, property) => {
+  //   setChecked((prev) => ({ ...prev, [property]: event.target.checked }));
+  // };
 
   // shops query
   const shopsQuery = useMutation(
@@ -125,7 +127,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       return;
     }
 
-    const couponData = createCouponUploaData(coupon, checked, couponType);
+    const couponData = createCouponUploaData(coupon, couponType);
     couponMutation.mutate(couponData);
   };
 
@@ -160,6 +162,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             variant="text"
             sx={{ fontWeight: 600, position: 'absolute', right: '20px', top: '49px' }}
             onClick={autoGenCodeQuery.refetch}
+            disableRipple
           >
             Generate
           </Button>
@@ -284,39 +287,50 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             name: 'couponAmountLimit',
             value: coupon.couponAmountLimit,
             onChange: commonChangeHandler,
-            disabled: !checked.couponAmountLimit,
-            checked: checked.couponAmountLimit,
-            onToggle: (event) => commonCheckHandler(event, 'couponAmountLimit'),
+            disabled: coupon.couponAmountLimit < 1,
+            checked: coupon.couponAmountLimit >= 1,
+            onToggle: () => {
+              coupon.couponAmountLimit = coupon.couponAmountLimit > 0 ? 0 : 1;
+              setRender(!render);
+            },
           }}
         />
         {/* user limit */}
         <StyledFormField
-          label="User limit"
+          label="Order Limit By User"
           intputType="text-toggle"
           inputProps={{
             type: 'number',
             name: 'couponUserLimit',
             value: coupon.couponUserLimit,
             onChange: commonChangeHandler,
-            disabled: !checked.couponUserLimit,
-            checked: checked.couponUserLimit,
-            onToggle: (event) => commonCheckHandler(event, 'couponUserLimit'),
+            disabled: coupon.couponUserLimit < 1,
+            checked: coupon.couponUserLimit >= 1,
+            onToggle: () => {
+              coupon.couponUserLimit = coupon.couponUserLimit > 0 ? 0 : 1;
+              setRender(!render);
+            },
           }}
         />
         {/* order limit */}
-        <StyledFormField
-          label="Order limit"
-          intputType="text-toggle"
-          inputProps={{
-            type: 'number',
-            name: 'couponOrderLimit',
-            value: coupon.couponOrderLimit,
-            onChange: commonChangeHandler,
-            disabled: !checked.couponOrderLimit,
-            checked: checked.couponOrderLimit,
-            onToggle: (event) => commonCheckHandler(event, 'couponOrderLimit'),
-          }}
-        />
+        {couponType !== 'individual_user' && (
+          <StyledFormField
+            label="Total Order Limit"
+            intputType="text-toggle"
+            inputProps={{
+              type: 'number',
+              name: 'couponOrderLimit',
+              value: coupon.couponOrderLimit,
+              onChange: commonChangeHandler,
+              disabled: coupon.couponOrderLimit < 1,
+              checked: coupon.couponOrderLimit >= 1,
+              onToggle: () => {
+                coupon.couponOrderLimit = coupon.couponOrderLimit > 0 ? 0 : 1;
+                setRender(!render);
+              },
+            }}
+          />
+        )}
         {/* min order */}
         <StyledFormField
           label="Min. Order"
@@ -326,12 +340,14 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             name: 'couponMinimumOrderValue',
             value: coupon.couponMinimumOrderValue,
             onChange: commonChangeHandler,
-            disabled: !checked.couponMinimumOrderValue,
-            checked: checked.couponMinimumOrderValue,
-            onToggle: (event) => commonCheckHandler(event, 'couponMinimumOrderValue'),
+            disabled: coupon.couponMinimumOrderValue < 1,
+            checked: coupon.couponMinimumOrderValue >= 1,
+            onToggle: () => {
+              coupon.couponMinimumOrderValue = coupon.couponMinimumOrderValue > 0 ? 0 : 1;
+              setRender(!render);
+            },
           }}
         />
-
         {/* type */}
         {couponType !== 'global' && (
           <StyledFormField

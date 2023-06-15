@@ -25,7 +25,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
     },
     {
       id: 2,
-      headerName: <span style={{ display: 'inline-block', paddingLeft: '30px' }}>ITEM</span>,
+      headerName: <span style={{ display: 'inline-block', paddingLeft: '30px' }}>SHOP NAME</span>,
       field: 'item',
       flex: 1.5,
       sortable: false,
@@ -67,6 +67,12 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
           imgAlt="logo"
           imgUrl={value?.profile_photo}
           imgStyle="circular"
+          titleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              history?.push(`/seller/list2/${value?._id}`);
+            },
+          }}
           imgFallbackCharacter={value?.company_name?.charAt(0)}
           name={value?.company_name}
         />

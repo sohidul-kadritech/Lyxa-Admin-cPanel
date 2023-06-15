@@ -1,14 +1,18 @@
 // project import
 import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-// import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
+import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import OrderDetail from '../../../components/Shared/OrderDetail';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
-export default function ShopRatingTable({ rows = [], type }) {
+export default function ShopRatingTable({ rows = [], type, queryParams, setQueryParams, totalPage, user, loading }) {
+  const history = useHistory();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
@@ -17,12 +21,16 @@ export default function ShopRatingTable({ rows = [], type }) {
       id: 1,
       headerName: 'REVIEW',
       field: 'reivew',
-      flex: 1,
+      flex: 2,
       sortable: false,
       renderCell: ({ row }) => {
         const t2 = row?.reviewTags?.join(', ');
         const t1 = `${row?.reviewDes}${t2 && row?.reviewDes ? ',' : ''} ${t2}`;
-        return <Typography variant="body4">{t1 || '_'}</Typography>;
+        return (
+          <Typography className="text-dots" variant="body4" pr={7.5}>
+            {t1 || '_'}
+          </Typography>
+        );
       },
     },
     {
@@ -31,13 +39,28 @@ export default function ShopRatingTable({ rows = [], type }) {
       field: 'shop',
       flex: 1,
       sortable: false,
+      minWidth: 250,
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="shop-image"
-          imgUrl={row?.shop?.shopLogo}
-          imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
-          name={row?.shop?.shopName}
-          subTitle={row?.orderId}
+          imgUrl={row?.order?.shop?.shopLogo}
+          imgFallbackCharacter={row?.order?.shop?.shopName?.charAt(0)}
+          name={row?.order?.shop?.shopName}
+          subTitle={row?.order?.orderId}
+          subTitleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              row.order.user = user;
+              setCurrentOrder(row?.order);
+              setSidebarOpen(true);
+            },
+          }}
+          titleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              history.push(`/shop/profile/${row?.order?.shop?._id}`);
+            },
+          }}
         />
       ),
     },
@@ -58,6 +81,10 @@ export default function ShopRatingTable({ rows = [], type }) {
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
   ];
+
+  if (loading) {
+    return <TableSkeleton columns={['text', 'avatar', 'text', 'text']} rows={5} />;
+  }
 
   return (
     <>
@@ -86,6 +113,13 @@ export default function ShopRatingTable({ rows = [], type }) {
           }}
         />
       </Box>
+      <TablePagination
+        currentPage={queryParams?.page}
+        lisener={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
+        }}
+        totalPage={totalPage}
+      />
       <Drawer open={sidebarOpen} anchor="right">
         <OrderDetail
           order={currentOrder}

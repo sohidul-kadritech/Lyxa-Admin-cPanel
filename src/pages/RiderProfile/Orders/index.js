@@ -21,7 +21,6 @@ export const queryParamsInit = {
   searchKey: '',
   shop: '',
   orderType: 'all',
-  model: 'order',
 };
 
 export default function RiderOrders({ riderId }) {

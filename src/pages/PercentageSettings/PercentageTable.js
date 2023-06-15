@@ -53,28 +53,15 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
       ),
     },
     {
-      id: 2,
-      headerName: 'CHARGE TYPE',
-      field: 'chargeType',
-      flex: 1,
-      //   minWidth: 200,
-      sortable: false,
-      renderCell: ({ row }) => (
-        <Typography variant="body4" className="text-capitalize">
-          {row?.dropPercentageType}
-        </Typography>
-      ),
-    },
-    {
       id: 3,
-      headerName: 'CHARGE',
+      headerName: 'CHARGE (Percentage)',
       field: 'charge',
       flex: 1,
       //   minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
-          {row?.dropPercentage}
+          {row?.dropPercentage}%
         </Typography>
       ),
     },

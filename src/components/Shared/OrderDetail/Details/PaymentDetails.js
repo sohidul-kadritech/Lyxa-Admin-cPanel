@@ -53,14 +53,14 @@ export default function PaymentDetails({ order = {} }) {
             value={(order?.summary?.discount || 0).toFixed(2)}
           />
         )}
-        {order?.summary?.doubleMenuItemPrice > 0 && (
+        {/* {order?.summary?.doubleMenuItemPrice > 0 && (
           <StyledItem
-            label="Duble Deals"
+            label="Double Deals"
             isNegative
-            isRejected
+            isRejected={false}
             value={(order?.summary?.doubleMenuItemPrice || 0).toFixed(2)}
           />
-        )}
+        )} */}
         {order?.summary?.reward?.amount > 0 && (
           <StyledItem
             label="Rewards"

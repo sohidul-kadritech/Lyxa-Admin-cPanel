@@ -62,7 +62,8 @@ export const validateCoupon = (coupon, couponType) => {
     return error;
   }
 
-  if (!coupon?.couponValue && coupon?.couponDiscountType !== 'free_delivery') {
+  // if (!coupon?.couponValue && coupon?.couponDiscountType !== 'free_delivery') {
+  if (!coupon?.couponValue) {
     error.message = 'Coupon value cannot be empty!';
     return error;
   }
@@ -80,10 +81,10 @@ export const validateCoupon = (coupon, couponType) => {
       return error;
     }
 
-    if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
-      error.message = 'Must have cuopon shop category or custom shop!';
-      return error;
-    }
+    // if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
+    //   error.message = 'Must have cuopon shop category or custom shop!';
+    //   return error;
+    // }
   }
 
   if (couponType === 'custom_coupon') {
@@ -101,15 +102,8 @@ export const validateCoupon = (coupon, couponType) => {
   return { status: true };
 };
 
-export const createCouponUploaData = (coupon, checked) => {
-  const { couponAmountLimit, couponUserLimit, couponOrderLimit, couponMinimumOrderValue } = coupon;
-
-  const data = {
-    couponAmountLimit: checked.couponAmountLimit ? couponAmountLimit : 0,
-    couponUserLimit: checked.couponUserLimit ? couponUserLimit : 0,
-    couponOrderLimit: checked.couponOrderLimit ? couponOrderLimit : 0,
-    couponMinimumOrderValue: checked.couponMinimumOrderValue ? couponMinimumOrderValue : 0,
-  };
+export const createCouponUploaData = (coupon) => {
+  const data = {};
 
   data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
   data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);

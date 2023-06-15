@@ -26,6 +26,7 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
+        queryClient.invalidateQueries([Api.SHOP_TRX]);
         queryClient.invalidateQueries([Api.DELIVERY_TRX]);
         queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
         queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
