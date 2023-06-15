@@ -3,13 +3,14 @@
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import MakePayment from '../../RiderProfile/Transactions/MakPayment';
 import AddRemoveCredit from './AddRemoveCredit';
 import SearchBar from './Searchbar';
 
@@ -35,7 +36,10 @@ const getTrxQueryParams = (shopId) => ({
 export default function ShopTransactions({ shop }) {
   const [queryParams, setQueryParams] = useState(getTrxQueryParams(shop?._id));
   const [modalOpen, setModalOpen] = useState(false);
+  const [makePayment, setMakePayment] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
+
+  const queryClient = useQueryClient();
 
   const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
     onSuccess: (data) => {
@@ -56,6 +60,9 @@ export default function ShopTransactions({ shop }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search transactions"
+        onMakePayment={() => {
+          setMakePayment(true);
+        }}
         onAddRemove={() => {
           setModalOpen(true);
         }}
@@ -119,6 +126,25 @@ export default function ShopTransactions({ shop }) {
             setModalOpen(false);
           }}
         />
+      </Modal>
+
+      <Modal
+        open={makePayment}
+        onClose={() => {
+          setMakePayment(false);
+          queryClient.invalidateQueries([Api.SHOP_TRX]);
+        }}
+      >
+        <Box>
+          <MakePayment
+            type="shop"
+            id={shop?._id}
+            amount={summary?.totalShopUnsettle || 0}
+            onClose={() => {
+              setMakePayment(false);
+            }}
+          />
+        </Box>
       </Modal>
     </Box>
   );

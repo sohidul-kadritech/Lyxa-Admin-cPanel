@@ -13,7 +13,7 @@ import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import ShopFinancialsTable from './ShopFinancialsTable';
+import ShopsFinancialsTable from './ShopsFinancialsTable';
 
 const getBreadCrumbItems = (searchUrl) => {
   const breadcrumbItems = [
@@ -26,7 +26,7 @@ const getBreadCrumbItems = (searchUrl) => {
       to: '/add-wallet/seller-transactions2',
     },
     {
-      label: 'Shop List',
+      label: 'Shops List',
       to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'companyName',
@@ -37,7 +37,7 @@ const getBreadCrumbItems = (searchUrl) => {
   return breadcrumbItems;
 };
 
-function ShopFinancialsSpecificSellers() {
+function ShopsFinancialsSpecificSellers() {
   const [range, setRange] = useState({ ...dateRangeInit });
 
   const [searchKey, setSearchKey] = useState('');
@@ -129,11 +129,11 @@ function ShopFinancialsSpecificSellers() {
         {getSellerShopsTnx.isLoading ? (
           <TablePageSkeleton row={3} column={7} />
         ) : (
-          <ShopFinancialsTable loading={getSellerShopsTnx?.isLoading} data={getSellerShopsTnx?.data?.data?.shops} />
+          <ShopsFinancialsTable loading={getSellerShopsTnx?.isLoading} data={getSellerShopsTnx?.data?.data?.shops} />
         )}
       </Box>
     </Box>
   );
 }
 
-export default ShopFinancialsSpecificSellers;
+export default ShopsFinancialsSpecificSellers;

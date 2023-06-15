@@ -1,5 +1,6 @@
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
@@ -7,6 +8,7 @@ import { ReactComponent as PhoneIcon } from '../../assets/icons/phone.svg';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
+import * as API_URL from '../../network/Api';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
@@ -117,8 +119,9 @@ function SellersProfile({
   const [selectedShop, setSelectedShop] = useState({});
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line no-unused-vars
   const [selectedMenu, setSelectedMenu] = useState('');
-
   const accessAsUser = useAccessAsUser();
 
   useEffect(() => {
@@ -283,7 +286,18 @@ function SellersProfile({
           <ViewShopInfo selectedShop={{ ...selectedShop, seller: currentSeller }} onClose={closeModal} />
         )}
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
-        {selectedMenu === 'edit_shop' && <AddShop editShop={selectedShop} onClose={() => setOpen(false)} />}
+        {selectedMenu === 'edit_shop' && (
+          <AddShop
+            editShop={selectedShop}
+            onClose={() => {
+              setOpen(() => {
+                queryClient.invalidateQueries(API_URL.ALL_SELLER);
+                queryClient.invalidateQueries(API_URL.SINGLE_SELLER);
+                return false;
+              });
+            }}
+          />
+        )}
       </Drawer>
     </Box>
   );

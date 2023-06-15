@@ -59,7 +59,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
       onError: (error) => {
         console.log(error);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   useEffect(() => {
@@ -116,7 +117,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     successMsg('Uploading...');

@@ -70,7 +70,8 @@ export default function RiderTransactions({ riderId, showFor }) {
           setSummary(data?.data?.deliveryBoy[0]?.summary);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   useEffect(() => {
@@ -85,7 +86,8 @@ export default function RiderTransactions({ riderId, showFor }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   // on receive cash
@@ -214,6 +216,9 @@ export default function RiderTransactions({ riderId, showFor }) {
             amount={summary?.totalUnSettleAmount || 0}
             onClose={() => {
               setMakePayment(false);
+              queryClient.invalidateQueries([showForToApiMap?.cashOrderList?.get]);
+              queryClient.invalidateQueries([showForToApiMap?.transactions?.get]);
+              queryClient.invalidateQueries([Api.DELIVERY_TRX]);
             }}
           />
         </Box>

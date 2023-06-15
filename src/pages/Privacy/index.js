@@ -11,6 +11,7 @@ import PageTop from '../../components/Common/PageTop';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import TermsAndConditionsSkeleton from '../TermsAndConditons2/TermsAndConditionsSkeleton';
 
 const breadcrumbItems = [
   {
@@ -44,9 +45,9 @@ function PrivacySettings() {
   const [condition, setCondition] = useState('');
   // eslint-disable-next-line no-unused-vars
   const { data: conditions, isLoading } = useQuery(
-    [API_URL.GET_CONDITION, { type }],
+    [API_URL.GET_PRIVACY, { type }],
     () =>
-      AXIOS.get(API_URL.GET_CONDITION, {
+      AXIOS.get(API_URL.GET_PRIVACY, {
         params: {
           type,
         },
@@ -54,6 +55,7 @@ function PrivacySettings() {
       }),
     {
       onSuccess: (data) => {
+        console.log('data==>', data);
         if (data.status) {
           setLoading(false);
           const value = data.data;
@@ -68,7 +70,7 @@ function PrivacySettings() {
               console.log('content state: ', contentState);
               const outputEditorState = EditorState.createWithContent(contentState);
               console.log('outputEditor state: ', outputEditorState);
-              //   setEditorState(outputEditorState);
+              setEditorState(outputEditorState);
             }
           } else {
             // setEditorState(EditorState.createEmpty());
@@ -87,18 +89,20 @@ function PrivacySettings() {
     setCondition(draftToHtml(convertToRaw(state.getCurrentContent())));
   };
 
-  const termsUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_CONDITION, data), {
+  const privacyUpdateQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_PRIVACY, data), {
     onSuccess: (data, argx) => {
       console.log('argument: ', argx);
       if (data.status) {
-        successMsg(`Terms & Conditions are updated !(${type})`, 'success');
+        successMsg(`${data.message} !(${type})`, 'success');
+      } else {
+        successMsg(data.message, 'error');
       }
     },
   });
 
   // eslint-disable-next-line no-unused-vars
   const handleSubmit = () => {
-    termsUpdateQuery.mutate({ type, description: condition });
+    privacyUpdateQuery.mutate({ type, description: condition });
   };
 
   return (
@@ -148,36 +152,38 @@ function PrivacySettings() {
           />
         </Box>
       )} */}
-
-      <Box
-      //   sx={{ marginTop: '30px' }}
-      >
-        <Editor
-          onEditorStateChange={updateDescription}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          editorState={editorState}
-          defaultEditorState={editorState}
-          placeholder="Enter Terms And Conditions"
-          onChange={(e) => console.log(e)}
-          editorStyle={{
-            minHeight: '400px',
-            maxHeight: '400px',
-          }}
-        />
-      </Box>
-
-      <Stack flexDirection="row" justifyContent="flex-end" alignContent="flex-end" sx={{ marginTop: '30px' }}>
-        <Button
-          variant="contained"
-          //   onClick={handleSubmit}
-          disabled={termsUpdateQuery?.isLoading}
-          startIcon={<ArrowDownward />}
-        >
-          Save Item
-        </Button>
-      </Stack>
+      {loading ? (
+        <TermsAndConditionsSkeleton />
+      ) : (
+        <>
+          {' '}
+          <Box>
+            <Editor
+              onEditorStateChange={updateDescription}
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              editorState={editorState}
+              defaultEditorState={editorState}
+              placeholder="Enter Terms And Conditions"
+              onChange={(e) => console.log(e)}
+              editorStyle={{
+                maxHeight: '400px',
+              }}
+            />
+          </Box>
+          <Stack flexDirection="row" justifyContent="flex-end" alignContent="flex-end" sx={{ marginTop: '30px' }}>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={privacyUpdateQuery?.isLoading}
+              startIcon={<ArrowDownward />}
+            >
+              Save Item
+            </Button>
+          </Stack>
+        </>
+      )}
     </Box>
   );
 }
