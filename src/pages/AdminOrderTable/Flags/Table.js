@@ -10,15 +10,6 @@ import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { orderStatusMap, statusColorVariants } from '../../NewOrder/helpers';
 
-const flagTypeMap = {
-  user: 'User',
-  delivery: 'Rider',
-  shop: 'Shop',
-  refused: 'Refused',
-  auto: 'Auto Cancel',
-  delay: 'Delay',
-};
-
 export default function Table({ orders = [], queryParams, setQueryParams, totalPage, loading }) {
   const history = useHistory();
 
@@ -27,44 +18,30 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered'],
-      id: 2,
-      headerName: `COMMENT`,
-      field: 'comment',
-      sortable: false,
-      minWidth: 240,
-      flex: 2,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
-    },
-    {
       showFor: ['ongoing', 'delivered', 'cancelled'],
       id: 1,
       headerName: 'ACCOUNT',
-      field: 'orderId',
+      field: 'user',
       flex: 1.5,
       sortable: false,
       minWidth: 240,
-      renderCell: ({ value }) => (
+      renderCell: ({ value, row }) => (
         <UserAvatar
           imgAlt="user-image"
-          imgUrl={value?.user?.profile_photo}
-          imgFallbackCharacter={value?.user?.name?.charAt(0) || 'C'}
+          imgUrl={value?.profile_photo}
+          imgFallbackCharacter={value?.name?.charAt(0) || 'C'}
           name={
             <span>
-              {value?.user?.name}
-              {value?.flag?.length ? (
-                <>
-                  &nbsp;&nbsp;
-                  <FlagIcon color="#DD5B63" />
-                </>
-              ) : null}
+              {value?.name}
+              &nbsp;&nbsp;
+              <FlagIcon color="#DD5B63" />
             </span>
           }
-          subTitle={value?.orderId}
+          subTitle={row?.orderId}
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              setCurrentOrder(value);
+              setCurrentOrder(row);
               setDetailOpen(true);
             },
           }}
@@ -85,7 +62,21 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
       sortable: false,
       minWidth: 120,
       flex: 1,
-      renderCell: ({ value }) => <Typography variant="body4">{flagTypeMap[value]}</Typography>,
+      renderCell: ({ row }) => {
+        const types = [];
+
+        row?.flag?.forEach((item) => {
+          if (types.indexOf(item?.type) === -1) {
+            types.push(item?.type);
+          }
+        });
+
+        return (
+          <Typography variant="body4" textTransform="capitalize">
+            {types?.join(', ')}
+          </Typography>
+        );
+      },
     },
     {
       showFor: ['ongoing', 'delivered', 'cancelled'],
@@ -106,12 +97,12 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
       minWidth: 180,
       renderCell: ({ row }) => (
         <Chip
-          label={orderStatusMap[row?.orderId?.orderStatus || '']}
+          label={orderStatusMap[row?.orderStatus || '']}
           sx={{
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            ...(statusColorVariants[row?.orderId?.orderStatus] || {}),
+            ...(statusColorVariants[row?.orderStatus] || {}),
           }}
           variant="contained"
         />
@@ -120,7 +111,7 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
   ];
 
   if (loading) {
-    return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />;
+    return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text']} rows={7} />;
   }
 
   return (
