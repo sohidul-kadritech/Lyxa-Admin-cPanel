@@ -6,18 +6,11 @@ import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
 function ShopFinancialsTable({ data = [], loading }) {
-  const { general } = useGlobalContext();
+  // eslint-disable-next-line no-unused-vars
+  const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
-
   const history = useHistory();
-
-  const sellerShopsTrxs = (sellerId, companyName) => {
-    history.push({
-      pathname: `/app-wallet/seller/shops-transactions2`,
-      search: `?sellerId=${sellerId}&companyName=${companyName}`,
-    });
-  };
   const allColumns = [
     {
       id: 1,
@@ -38,7 +31,8 @@ function ShopFinancialsTable({ data = [], loading }) {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                sellerShopsTrxs(params?.row?._id, params?.row?.company_name);
+                history.push(`/shop/profile/${params?.row?._id}`);
+                dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row } } });
               }}
             >
               {params?.row?.shopName}

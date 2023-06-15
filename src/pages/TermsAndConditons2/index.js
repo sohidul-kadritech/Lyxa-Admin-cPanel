@@ -141,7 +141,6 @@ function TermsAndConditions() {
             placeholder="Enter Terms And Conditions"
             onChange={(e) => console.log(e)}
             editorStyle={{
-              minHeight: '400px',
               maxHeight: '400px',
             }}
           />

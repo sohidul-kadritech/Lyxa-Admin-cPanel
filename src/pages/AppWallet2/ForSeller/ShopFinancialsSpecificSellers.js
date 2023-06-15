@@ -12,6 +12,7 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import ShopFinancialsTable from './ShopFinancialsTable';
 
 const getBreadCrumbItems = (searchUrl) => {
@@ -45,7 +46,10 @@ function ShopFinancialsSpecificSellers() {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const getSellerShopsTnx = useQuery(
-    [API_URL.SELLER_TRX, { searchKey, startDate: range.start, endDate: range.end }],
+    [
+      API_URL.SELLER_TRX,
+      { searchKey, startDate: range.start, endDate: range.end, sellerId: searchParams.get('sellerId') },
+    ],
     () =>
       AXIOS.get(API_URL.SELLER_TRX, {
         params: { sellerId: searchParams.get('sellerId'), searchKey, startDate: range.start, endDate: range.end },
@@ -122,7 +126,11 @@ function ShopFinancialsSpecificSellers() {
         </Stack>
       </Box>
       <Box sx={{ marginBottom: '30px' }}>
-        <ShopFinancialsTable data={getSellerShopsTnx?.data?.data?.shops} />
+        {getSellerShopsTnx.isLoading ? (
+          <TablePageSkeleton row={3} column={7} />
+        ) : (
+          <ShopFinancialsTable loading={getSellerShopsTnx?.isLoading} data={getSellerShopsTnx?.data?.data?.shops} />
+        )}
       </Box>
     </Box>
   );

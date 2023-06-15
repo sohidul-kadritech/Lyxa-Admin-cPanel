@@ -10,10 +10,10 @@ function generateArray(n) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function TablePageSkeleton({ row, column, gap = '30px' }) {
+function TablePageSkeleton({ row, column, gap = '20px' }) {
   return (
     <Box>
-      <Stack flexDirection="row" gap={gap} marginBottom="30px">
+      <Stack flexDirection="row" gap={gap} marginBottom="10px">
         {generateArray(column).map((item, i) => {
           console.log(i);
           return <Skeleton sx={{ flex: '1' }} key={i} width="150px" height="40px" />;
@@ -26,7 +26,7 @@ function TablePageSkeleton({ row, column, gap = '30px' }) {
             <Stack flexDirection="row" gap={gap}>
               {generateArray(column).map((item, i) => {
                 console.log(i);
-                return <Skeleton sx={{ flex: '1' }} key={i} width="150px" height="30px" />;
+                return <Skeleton sx={{ flex: '1' }} key={i} width="150px" height="20px" />;
               })}
             </Stack>
           );

@@ -11,6 +11,7 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import SellerFinancialsTable from './SellerFinancialsTable';
 
 const breadcrumbItems = [
@@ -115,7 +116,11 @@ function FinancialsForSeller() {
       </Box>
       <Box sx={{ marginBottom: '30px' }}>
         <TabPanel index={0} value={currentTab} noPadding>
-          <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+          {getSellerTnx?.isLoading ? (
+            <TablePageSkeleton row={8} column={7} />
+          ) : (
+            <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+          )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
           <Typography>Invoices</Typography>
