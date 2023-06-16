@@ -28,7 +28,7 @@ export default function AttributeItem({ attributeItem, onDelete, readOnly }) {
         }}
         placeholder="$"
         sx={{
-          width: '78px',
+          width: '115px',
           flexShirk: 0,
           texAlign: 'center',
         }}

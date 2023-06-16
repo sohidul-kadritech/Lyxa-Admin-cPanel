@@ -166,7 +166,7 @@ export const productInit = () => ({
   seoDescription: '',
   price: '',
   images: [],
-  attributes: [productAttrInit()],
+  attributes: [],
   addons: [],
   dietary: [],
   note: '',
@@ -307,7 +307,7 @@ export const validateCategory = (category) => {
   };
 };
 
-export const validateProduct = (product) => {
+export const validateProduct = (product, hasAttribute) => {
   const status = {
     status: false,
     msg: null,
@@ -347,6 +347,11 @@ export const validateProduct = (product) => {
 
   if (!product?.images?.length) {
     status.msg = 'Product image cannot be empty';
+    return status;
+  }
+
+  if (product?.type === 'food' && hasAttribute === 'yes' && !product?.attributes?.length) {
+    status.msg = 'Please add at least one attribute';
     return status;
   }
 

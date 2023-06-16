@@ -164,7 +164,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
     if (editProduct?._id) {
       if (editProduct?.type === 'food') {
-        if (editProduct?.attributes?.length && editProduct?.attributes[0]?.items?.length) {
+        if (editProduct?.attributes?.length) {
           setHasAttribute('yes');
         }
       }
@@ -244,7 +244,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   );
 
   const uploadProduct = async () => {
-    const productValidation = validateProduct(product);
+    const productValidation = validateProduct(product, hasAttribute);
     if (!productValidation.status) {
       successMsg(productValidation?.msg);
       return;
