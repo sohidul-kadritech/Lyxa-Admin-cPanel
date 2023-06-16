@@ -21,14 +21,6 @@ function RiderFinancialsTable({ data = [], loading }) {
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
-  //   trx?.name,
-  //   trx?.summary?.orderValue?.count ?? 0,
-  //   trx?.summary?.totalDeliveyFee,
-  //   trx?.summary?.dropEarning,
-  //   trx?.summary?.totalUnSettleAmount,
-  //   trx?.summary?.riderEarning,
-  //   trx?.summary.totalCashInHand,
-  //   trx?.summary.settleAmount,
 
   const allColumns = [
     {
@@ -159,6 +151,8 @@ function RiderFinancialsTable({ data = [], loading }) {
     {
       id: 6,
       field: 'settled_cash',
+      align: 'right',
+      headerAlign: 'right',
       headerName: (
         <HeaderWithToolTips
           title={`SETTLED CASH (${currency})`}
@@ -192,7 +186,7 @@ function RiderFinancialsTable({ data = [], loading }) {
         columns={allColumns}
         rows={data}
         onRowClick={({ row }) => {
-          history?.push(`/riders/${row?._id}`);
+          history?.push(`/riders/${row?._id}?financials=riders`);
         }}
         getRowId={(row) => row?._id}
         sx={{
@@ -206,7 +200,7 @@ function RiderFinancialsTable({ data = [], loading }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Seller Found'}
+              {loading ? 'Loading...' : 'No Transaction Found'}
             </Stack>
           ),
         }}

@@ -23,6 +23,7 @@ function InvoiceTable({ data = [], loading = false }) {
       id: 1,
       headerName: `NAME`,
       field: 'title',
+      sortable: false,
       flex: 1.5,
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" sx={{ padding: '10px 0px !important' }}>

@@ -17,11 +17,15 @@ const pagesList = [
     to: '/lyxa-pay',
   },
   {
-    label: 'For Riders',
-    to: '/add-wallet/delivery-transactions',
+    label: 'For Account (Lyxa Pay)2',
+    to: '/lyxa-pay2',
   },
+  // {
+  //   label: 'For Riders',
+  //   to: '/add-wallet/delivery-transactions',
+  // },
   {
-    label: 'For Riders2',
+    label: 'For Riders',
     to: '/add-wallet/delivery-transactions2',
   },
   {

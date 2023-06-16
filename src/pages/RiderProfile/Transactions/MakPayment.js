@@ -20,6 +20,7 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  console.log('currency==========>', general?.currency);
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
   const paymentMutation = useMutation(() => AXIOS.post(typeToApiMap[type], payment), {

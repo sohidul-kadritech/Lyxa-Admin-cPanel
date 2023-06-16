@@ -53,7 +53,7 @@ export const paymentInformationValidation = (paymentmethod) => {
 
 function ShopSettings() {
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+  const { shop, adminType } = currentUser;
   console.log('special instruction: ', shop?.specialInstructions);
   const [newShop, setNewShop] = useState(deepClone(shop));
 
@@ -62,6 +62,8 @@ function ShopSettings() {
   const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive || '');
 
   const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
+
+  const [newDeliveryFee, setNewDeliveryFee] = useState(newShop?.deliveryFee || 0);
 
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount || 0);
 
@@ -83,13 +85,13 @@ function ShopSettings() {
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data.status ? 'success' : undefined);
-      console.log('================>', data?.data?.shop?.specialInstructions);
       if (data?.status) {
         shop.paymentOption = data?.data?.shop.paymentOption || shop.paymentOption;
         shop.maxDiscount = data?.data?.shop.maxDiscount || shop?.maxDiscount;
         shop.expensive = data?.data?.shop.expensive || shop.expensive;
         shop.dietary = data?.data?.shop.dietary || shop.dietary;
         shop.specialInstructions = data?.data?.shop?.specialInstructions;
+        shop.deliveryFee = data?.data?.shop?.deliveryFee;
         shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
         set_has_unsaved_change(false);
@@ -105,10 +107,12 @@ function ShopSettings() {
       newPayMentInformation,
       newDietary,
       newPriceRange,
-      // eslint-disable-next-line prettier/prettier
       newOrderCapacity,
-      // eslint-disable-next-line prettier/prettier
       newSpecialInstructions,
+      newDeliveryFee,
+      OwnDeliveryBoy,
+      // eslint-disable-next-line prettier/prettier
+      adminType,
     );
     if (data) {
       updateData.mutate(data);
@@ -131,6 +135,7 @@ function ShopSettings() {
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
     setNewMaxDiscount(shop?.maxDiscount?.toString() || '');
     setNewOrderCapacity(shop?.orderCapacity || 0);
+    setNewDeliveryFee(shop?.deliveryFee || 0);
     setNewSpecialInstructions(() => {
       console.log('shop?.specialInstructions==========>', shop?.specialInstructions);
       return shop?.specialInstructions || false;
@@ -256,7 +261,7 @@ function ShopSettings() {
             <ShopSettingsSection2
               boxSx={{
                 // width: '100%',
-                paddingBottom: '29px',
+                paddingBottom: '20px',
               }}
               buttonType={2}
               title="Delivery Settings"
@@ -265,9 +270,41 @@ function ShopSettings() {
               options={DeliverySettings}
               action={OwnDeliveryBoyHandler}
               isButton
-              readOnly
+              readOnly={adminType !== 'admin'}
               isMethod
             />
+            {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}
+            {OwnDeliveryBoy && (
+              <Box
+                sx={{
+                  paddingBottom: '21px',
+                  paddingTop: '0px',
+                }}
+              >
+                <Typography sx={TypoSx}>Delivery Fee</Typography>
+                <Box
+                  sx={{
+                    marginTop: '15px',
+                  }}
+                >
+                  <IncrementDecrementButton
+                    currentValue={newDeliveryFee}
+                    setValue={(value) => {
+                      set_has_unsaved_change(true);
+                      if (typeof value === 'function') {
+                        setNewDeliveryFee(value);
+                      } else if (Number(value) <= 1) setNewDeliveryFee(1);
+                      else setNewDeliveryFee(value);
+                    }}
+                    incrementHandler={incrementOrder}
+                    decrementHandler={decrementOrder}
+                    setTypeValidation={() => {
+                      set_has_unsaved_change(true);
+                    }}
+                  />
+                </Box>
+              </Box>
+            )}
             <Divider variant="middle" sx={{ background: '#000000' }} />
             <MinimumOrder
               boxSx={{
