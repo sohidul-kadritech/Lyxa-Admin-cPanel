@@ -7,6 +7,7 @@ import OrderReward from './OrderReward';
 import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
+import ResolveOrderFlag from './ResolveFlag';
 import OrderSummary from './Summary';
 
 export default function Detail({ order, hideIssues, userType }) {
@@ -38,6 +39,7 @@ export default function Detail({ order, hideIssues, userType }) {
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       <PaymentDetails order={order} />
+      <ResolveOrderFlag order={order} />
     </Stack>
   );
 }

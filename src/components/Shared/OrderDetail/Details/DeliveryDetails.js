@@ -7,7 +7,6 @@ import OrderTrackingMap from './OrderTracking';
 
 export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {} }) {
   const [mapOpen, setOpen] = useState(false);
-  // console.log(pickUpLocation);
 
   return (
     <StyledOrderDetailBox

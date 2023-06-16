@@ -56,12 +56,16 @@ const timelineStatusNoteMap = {
   order_on_the_way: 'Your order is on the move',
   delivered: 'Your order has been delivered!',
   cancelled: 'Order got cancelled',
+  refunded: 'Order was refunded',
 };
+
+// order?.isRefundedAfterDelivered;
 
 export default function OrderTimeline({ order = {}, ...props }) {
   const theme = useTheme();
   const orderTimeline = [...(order?.timeline || [])];
 
+  // order got cancelled
   if (order?.orderStatus === 'cancelled') {
     orderTimeline?.push({
       active: true,
@@ -72,6 +76,20 @@ export default function OrderTimeline({ order = {}, ...props }) {
       }`,
     });
   }
+
+  // order got refunded
+  if (order?.isRefundedAfterDelivered) {
+    const trx = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
+
+    orderTimeline?.push({
+      active: true,
+      createdAt: trx?.createdAt,
+      status: 'refunded',
+      note: `Order was ${trx?.isPartialRefund ? 'partialy' : 'fully'} refunded`,
+    });
+  }
+
+  console.log(order);
 
   return (
     <StyledOrderDetailBox title="Order Timeline">
@@ -116,7 +134,9 @@ export default function OrderTimeline({ order = {}, ...props }) {
                   {timeline?.active ? moment(timeline?.createdAt).format('hh:mm a') : '_'}
                 </span>
                 <span>
-                  {timeline?.status === 'cancelled' ? timeline?.note : timelineStatusNoteMap[timeline?.status]}
+                  {timeline?.status === 'cancelled' || timeline?.status === 'refunded'
+                    ? timeline?.note
+                    : timelineStatusNoteMap[timeline?.status]}
                 </span>
               </Typography>
             </TimelineContent>
