@@ -3,7 +3,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWith } from './helpers';
+import { HeaderWithToolTips } from './helpers';
 
 function SellerFinancialsTable({ data = [], loading }) {
   const { general } = useGlobalContext();
@@ -58,7 +58,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
     {
       id: 2,
-      headerName: <HeaderWith title="ORDERS" tooltip="Number of orders" />,
+      headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
       field: 'order',
       flex: 1,
       sortable: false,
@@ -78,7 +78,9 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 3,
       field: 'order_amount',
-      headerName: <HeaderWith title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />,
+      headerName: (
+        <HeaderWithToolTips title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
+      ),
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -93,7 +95,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 4,
       field: 'delivery_fee',
-      headerName: <HeaderWith title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
+      headerName: <HeaderWithToolTips title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -108,7 +110,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 5,
       field: 'lyxa_profit',
-      headerName: <HeaderWith title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
+      headerName: <HeaderWithToolTips title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -123,7 +125,7 @@ function SellerFinancialsTable({ data = [], loading }) {
       id: 6,
       field: 'total_unsettle_amount',
       headerName: (
-        <HeaderWith title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
+        <HeaderWithToolTips title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
       ),
 
       sortable: false,
@@ -139,8 +141,10 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 7,
       field: 'seller_profit',
+      align: 'right',
+      headerAlign: 'right',
       headerName: (
-        <HeaderWith
+        <HeaderWithToolTips
           title={`SELLER PROFIT (${currency})`}
           tooltip={
             <Typography>
@@ -192,7 +196,7 @@ function SellerFinancialsTable({ data = [], loading }) {
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Seller Found'}
+              {loading ? 'Loading...' : 'No Transaction Found'}
             </Stack>
           ),
         }}

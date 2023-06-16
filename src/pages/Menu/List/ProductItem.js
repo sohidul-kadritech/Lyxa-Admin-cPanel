@@ -38,7 +38,8 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
           setUpdatedProduct(data?.data?.product || {});
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   // stock update
@@ -62,7 +63,8 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
       onSuccess: (data) => {
         console.log(data);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const handleFavouriteChange = (product) => {
@@ -245,7 +247,9 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
           }}
           sx={{
             '& .MuiInputBase-root': {
-              maxWidth: '70px',
+              width: `${
+                product?.price.toString().length > 0 ? ((product.price.toString().length || 1) + 4) * 10 : '100'
+              }px`,
               padding: '9px 14px 9px 12px',
             },
 

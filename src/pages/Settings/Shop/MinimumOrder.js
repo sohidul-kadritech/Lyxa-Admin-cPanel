@@ -16,7 +16,7 @@ export default function MinimumOrder({
   const theme = useTheme();
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   console.log('currency', currency);
   return (

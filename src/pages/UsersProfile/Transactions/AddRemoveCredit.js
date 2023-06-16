@@ -22,7 +22,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
   const [maxValue, setMaxValue] = useState(null);
   const [type, setType] = useState('');
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {

@@ -4,12 +4,12 @@ import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
+  // {
+  //   label: 'For Sellers',
+  //   to: '/add-wallet/seller-transactions',
+  // },
   {
     label: 'For Sellers',
-    to: '/add-wallet/seller-transactions',
-  },
-  {
-    label: 'For Sellers2',
     to: '/add-wallet/seller-transactions2',
   },
   {
@@ -17,8 +17,16 @@ const pagesList = [
     to: '/lyxa-pay',
   },
   {
+    label: 'For Account (Lyxa Pay)2',
+    to: '/lyxa-pay2',
+  },
+  // {
+  //   label: 'For Riders',
+  //   to: '/add-wallet/delivery-transactions',
+  // },
+  {
     label: 'For Riders',
-    to: '/add-wallet/delivery-transactions',
+    to: '/add-wallet/delivery-transactions2',
   },
   {
     label: 'For VAT',

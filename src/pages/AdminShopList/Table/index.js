@@ -3,11 +3,11 @@ import { useHistory } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
-import TableSkeleton from './TableSkeleton';
 
 export default function ShopListTable({ shops, setPage, page, totalPage, loading, handleMenuClick, menuItems }) {
   const history = useHistory();
@@ -108,7 +108,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{(value || 0).toFixed(2)}</Typography>,
     },
     {
       id: 7,
@@ -131,7 +131,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
 
   return (
     <Box>
-      {loading && <TableSkeleton />}
+      {loading && <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />}
       {!loading && (
         <>
           <StyledBox

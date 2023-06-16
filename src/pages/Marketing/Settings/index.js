@@ -42,7 +42,7 @@ import {
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -55,7 +55,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [serverState, setServerState] = useState({});
   const [pageMode, setPageMode] = useState(-1);
-  // eslint-disable-next-line no-unused-vars
+  const [isScheduled, setIsScheduled] = useState(false);
   const [entireMenu, setEntireMenu] = useState(true);
 
   // reward settings
@@ -72,15 +72,17 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
           page: 1,
-          pageSize: 100,
+          pageSize: 1000,
           type: 'all',
           status: 'all',
           shop: shop?._id,
         },
       }),
     {
+      enabled: false,
       onSuccess: (data) => {
         const types = {};
+        // console.log('products ===================>', productsQuery?.data);
 
         data?.data?.products?.forEach((product) => {
           if (product?.marketing) {
@@ -100,6 +102,23 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       },
     }
   );
+
+  const transformedProducts = useMemo(
+    () =>
+      deepClone(productsQuery?.data?.data?.products || [])?.map((p) => {
+        p.marketing = undefined;
+        p.discountPercentage = 0;
+        p.reward = undefined;
+        return p;
+      }),
+    [productsQuery?.data]
+  );
+
+  console.log({ transformedProducts });
+
+  useEffect(() => {
+    productsQuery.refetch();
+  }, []);
 
   // deal settings query
   const dealSettingsQuery = useQuery(
@@ -147,10 +166,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
-  console.log({ featuredAmount });
+  // console.log({ featuredAmount });
 
   const setLocalData = (data) => {
-    console.log({ data });
+    // console.log({ data });
 
     setProducts(data?.products);
     setDuration(data?.duration);
@@ -180,19 +199,28 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     }
   );
 
-  console.log(marketingQuery?.data);
+  // console.log(marketingQuery?.data);
 
   useEffect(() => {
     if (marketingQuery?.data !== undefined) {
+      // does have marketing
       if (marketingQuery?.data?.isMarketing) {
         if (marketingQuery?.data?.data?.marketing?.status === 'active') {
-          setIsPageDisabled(true);
-          setPageMode(1);
+          if (marketingQuery.data?.data?.marketing?.isActive) {
+            // marketing is active
+            setIsPageDisabled(true);
+            setPageMode(1);
+          } else {
+            // marketing is scheduled
+            setIsScheduled(true);
+            setIsPageDisabled(true);
+            setPageMode(1);
+          }
         } else {
+          // marketing is inactive
           setPageMode(0);
           setIsPageDisabled(false);
         }
-
         setServerState(marketingQuery?.data?.data?.marketing);
         const newData = deepClone(marketingQuery?.data?.data?.marketing);
         setLocalData(newData);
@@ -201,6 +229,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setHasChanged(true);
         }
       } else {
+        // does not have marketing
         setPageMode(0);
         setIsPageDisabled(false);
       }
@@ -219,7 +248,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setProducts([]);
         } else {
           setGlobalRewardBundle('');
-          setProducts(deepClone(productsQuery?.data?.data?.products || []));
+          setProducts(deepClone(transformedProducts));
         }
 
         setConfirmModal(false);
@@ -236,7 +265,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       });
     } else {
       if (event.target.value === 'multiple') {
-        setProducts(deepClone(productsQuery?.data?.data?.products || []));
+        setProducts(deepClone(transformedProducts));
       } else {
         setProducts([]);
       }
@@ -294,7 +323,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const updateLoyaltySettings = (status) => {
     let prb = null;
 
-    // eslint-disable-next-line array-callback-return, consistent-return
     const productsData = products.map((item) => {
       // reward
       if (!item?._id) {
@@ -315,7 +343,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           rewardCategory: item?.rewardCategory,
           rewardBundle: item?.rewardBundle,
           reward: {
-            amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
+            amount: (item.price - (item?.price / 100) * item?.rewardBundle).toFixed(2),
             points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
           },
         };
@@ -391,7 +419,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         type: marketingType,
         creatorType,
         products: productsData,
-        duration,
+        duration: {
+          start: moment(duration?.start).format('YYYY-MM-DD'),
+          end: moment(duration?.end).format('YYYY-MM-DD'),
+        },
         spendLimit: spendLimitChecked ? spendLimit : 0,
         status: status || 'active',
         itemSelectionType: itemSelectType,
@@ -456,7 +487,11 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
             fullWidth
             value={params.row}
             disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
-            options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}
+            readOnly={productsQuery.isLoading || itemSelectType === 'multiple'}
+            console={console.log(
+              createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)
+            )}
+            options={createGroupedList(transformedProducts || [], params?.row?.category?.name)}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
               const index = products.findIndex((item) => item?._id === params.row?._id);
@@ -614,7 +649,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               {marketingType === 'reward' && (
                 <Typography variant="body1" color={theme.palette.primary.main}>
                   {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                  {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
+                  {(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle).toFixed(2)}
                 </Typography>
               )}
               {/* percentage */}
@@ -730,13 +765,34 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
             }}
             pb={2}
           >
-            <Typography variant="h4" pb={3}>
-              {marketingType === 'reward' && 'Loyalty Program'}
-              {marketingType === 'percentage' && 'Discounted Items'}
-              {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
-              {marketingType === 'free_delivery' && '$0 Delivery fee'}
-              {marketingType === 'featured' && 'Featured'}
-            </Typography>
+            <Stack direction="row" alignItems="center" gap={4} pb={3}>
+              <Typography variant="h4">
+                {marketingType === 'reward' && 'Loyalty Program'}
+                {marketingType === 'percentage' && 'Discounted Items'}
+                {marketingType === 'double_menu' && 'Buy 1, Get 1 Free'}
+                {marketingType === 'free_delivery' && '$0 Delivery fee'}
+                {marketingType === 'featured' && 'Featured'}
+              </Typography>
+              {/* <Button
+                variant="contained"
+                sx={{
+                  fontSize: '11px',
+                  lineHeight: '24px',
+                  background: '#F6F8FA',
+                  color: '#5E97A9',
+                  gap: '0px',
+                  padding: '5px 15px',
+                  textTransform: 'capitalize',
+
+                  '&:hover': {
+                    background: '#F6F8FA',
+                  },
+                }}
+              >
+                Scheduled
+              </Button> */}
+            </Stack>
+
             <Typography variant="body2" color={theme.palette.text.primary2}>
               {marketingType === 'reward' &&
                 'Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item, giving them more incentive to order from your business.'}
@@ -760,7 +816,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   onChange={(closed) => {
                     seCurrentExpanedTab(closed ? 0 : -1);
                   }}
-                  disabled={isPageDisabled || productsQuery?.isLoading}
+                  disabled={isPageDisabled || productsQuery?.isLoading || !productsQuery?.data?.data}
                 >
                   <Box position="relative">
                     <StyledRadioGroup
@@ -1190,25 +1246,27 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     >
                       Edit Promotion
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="danger"
-                      disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
-                      rounded
-                      onClick={() => {
-                        setConfirmModal(true);
-                        setConfirmAction({
-                          message: 'Are you sure?. Your campaign will be deactivaed.',
-                          onCancel: () => setConfirmModal(false),
-                          onConfirm: () => {
-                            updateLoyaltySettings('inactive');
-                            setConfirmModal(false);
-                          },
-                        });
-                      }}
-                    >
-                      Pause Promotion
-                    </Button>
+                    {!isScheduled && (
+                      <Button
+                        variant="contained"
+                        color="danger"
+                        disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
+                        rounded
+                        onClick={() => {
+                          setConfirmModal(true);
+                          setConfirmAction({
+                            message: 'Are you sure?. Your campaign will be deactivaed.',
+                            onCancel: () => setConfirmModal(false),
+                            onConfirm: () => {
+                              updateLoyaltySettings('inactive');
+                              setConfirmModal(false);
+                            },
+                          });
+                        }}
+                      >
+                        Pause Promotion
+                      </Button>
+                    )}
                   </Stack>
                 )}
               </Stack>

@@ -18,7 +18,7 @@ import {
 function AdminLog() {
   const dispatch = useDispatch();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const { loading, adminLogType, logSortBy, adminLogs, paging, hasNextPage, hasPreviousPage, currentPage } =
     useSelector((state) => state.settingsReducer);

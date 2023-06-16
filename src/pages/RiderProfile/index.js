@@ -14,6 +14,25 @@ import RiderDetails from './RiderDetails';
 import RiderTabs from './Tabs';
 import TopInfo from './TopInfo';
 
+const getBreadCrumbItems = (searchUrl, id) => {
+  const breadcrumbItems = [
+    {
+      label: 'Financials',
+      to: '/financials',
+    },
+    {
+      label: 'Rider List',
+      to: '/add-wallet/delivery-transactions2',
+    },
+    {
+      label: 'Rider Profile',
+      to: `/riders/${id}?financials=${searchUrl.get('financials')}`,
+    },
+  ];
+
+  return breadcrumbItems;
+};
+
 export default function RiderProfile() {
   const location = useLocation();
   const routeMatch = useRouteMatch();
@@ -28,6 +47,7 @@ export default function RiderProfile() {
   }, []);
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  console.log('=====> financial: ', searchParams.get('financials'));
   const [open, setOpen] = useState(false);
   const params = useParams();
   const [rider, setRider] = useState(location?.state?.rider);
@@ -47,12 +67,21 @@ export default function RiderProfile() {
           setRider(data?.data?.delivery);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
     <Box>
-      <PageTop title="Rider Profile" backButtonLabel="Back to Riders" backTo={backRoute} />
+      <PageTop
+        title={`${searchParams.get('financials') === 'riders' ? '' : 'Rider Profile'}`}
+        // title="Rider Profile"
+        breadcrumbItems={
+          searchParams.get('financials') === 'riders' ? getBreadCrumbItems(searchParams, params?.riderId) : undefined
+        }
+        backButtonLabel={`${searchParams.get('financials') === 'riders' ? 'Back to Financials' : 'Back to Riders'}`}
+        backTo={`${searchParams.get('financials') === 'riders' ? '/financials' : backRoute}`}
+      />
       {query?.isLoading && (
         <ProfileSkeleton>
           <Box pt={5}>
@@ -96,7 +125,7 @@ export default function RiderProfile() {
                 Edit Account
               </Button>
             </Stack>
-            <RiderTabs rider={rider} />
+            <RiderTabs isFinancials={searchParams.get('financials') === 'riders'} rider={rider} />
           </Box>
           <Box
             sx={{

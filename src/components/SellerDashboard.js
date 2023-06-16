@@ -21,7 +21,7 @@ function SellerDashboard({ summary }) {
   // const shop = useSelector((store) => store.Login.admin.shop);
   const { currentUser, general } = useGlobalContext();
   const { shop } = currentUser;
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   let topSummaryData = [
     {

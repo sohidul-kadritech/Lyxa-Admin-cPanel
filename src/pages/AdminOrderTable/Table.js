@@ -23,7 +23,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
   const history = useHistory();
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [updateStatusModal, setUpdateStatusModal] = useState(false);

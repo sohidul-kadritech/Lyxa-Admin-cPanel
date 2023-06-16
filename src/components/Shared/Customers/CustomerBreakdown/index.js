@@ -74,7 +74,7 @@ function AmountItem({ amount, title }) {
 export default function CustomerBreakdown({ title, customerType, range, details = {} }) {
   const theme = useTheme();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const sales = customerTypeProps[customerType]?.sales || '';
   const orders = customerTypeProps[customerType]?.orders || '';

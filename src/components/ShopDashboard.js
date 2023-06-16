@@ -20,7 +20,7 @@ function ShopDashboard({ summary }) {
   // const { haveOwnDeliveryBoy } = useSelector((store) => store.Login.admin);
   // console.log(haveOwnDeliveryBoy);
   const { currentUser, general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
   const { shop } = currentUser;
 
   let topSummaryData = [

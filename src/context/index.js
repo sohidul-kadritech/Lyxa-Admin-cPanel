@@ -15,6 +15,8 @@ export default function ContextProvider({ children }) {
   const [shopTabs, dispatchShopTabs] = useReducer(shopTabsReducer, shopTabsInit);
   const [general, dispatchGeneral] = useReducer(generalReducer, generalInit);
 
+  console.log(general);
+
   const value = useMemo(
     () => ({ currentUser, dispatchCurrentUser, shopTabs, dispatchShopTabs, general, dispatchGeneral }),
     [currentUser, shopTabs]

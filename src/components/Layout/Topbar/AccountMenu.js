@@ -46,14 +46,14 @@ export default function AccountMenu({ anchorEl, handleClose }) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <StyledMenuItem
+        {/* <StyledMenuItem
           onClick={() => {
             setChangePassword(true);
             handleClose();
           }}
         >
           Password
-        </StyledMenuItem>
+        </StyledMenuItem> */}
         <StyledMenuItem
           onClick={() => {
             _logout();

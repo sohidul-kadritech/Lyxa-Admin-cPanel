@@ -103,7 +103,7 @@ export default function App() {
 
   return (
     <Box>
-      {adminDataIsLoading && (
+      {(adminDataIsLoading || settingsQuery?.isLoading) && (
         <Box
           sx={{
             height: '100vh',
@@ -112,7 +112,7 @@ export default function App() {
           <CircularLoader />
         </Box>
       )}
-      {!adminDataIsLoading && <Router />}
+      {!adminDataIsLoading && !settingsQuery?.isLoading && <Router />}
     </Box>
   );
 }

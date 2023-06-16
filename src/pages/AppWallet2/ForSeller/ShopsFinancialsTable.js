@@ -130,7 +130,9 @@ function ShopsFinancialsTable({ data = [], loading }) {
     },
     {
       id: 7,
-      field: 'seller_profit',
+      field: 'shop_profit',
+      align: 'right',
+      headerAlign: 'right',
       headerName: `SHOP PROFIT (${currency})`,
       sortable: false,
       flex: 1,

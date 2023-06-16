@@ -94,7 +94,7 @@ function SingleDeliveryTransactions() {
   // const { userType } = useSelector((store) => store.Login.admin);
   const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const callApi = async (deiveryId, page = 1) => {
     setLoading(true);

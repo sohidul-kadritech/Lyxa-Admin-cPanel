@@ -46,20 +46,13 @@ export default function RiderOrders({ riderId }) {
   return (
     <Box>
       <SearchBar searchPlaceHolder="Search Orders" queryParams={queryParams} setQueryParams={setQueryParams} />
-      {/* <OrderTable
-        orders={ordersQuery?.data?.data?.orders}
-        onOrderDetail={(order) => {
-          setCurrentOrder(order);
-          setSidebarOpen(true);
-        }}
-      /> */}
       <OrderTable
         loading={ordersQuery?.isLoading}
         orderType="riderProfile"
         orders={ordersQuery?.data?.data?.orders}
         threeDotHandler={() => {}}
         adminType="admin"
-        onRowClick={(order) => {
+        onViewDetail={(order) => {
           setCurrentOrder(order);
           setSidebarOpen(true);
         }}

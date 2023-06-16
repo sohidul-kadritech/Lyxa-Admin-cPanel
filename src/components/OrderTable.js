@@ -340,7 +340,7 @@ function OrderTable({ orders = [], status, loading }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const goToDetails = (id) => {
     history.push(`/orders/details/${id}`);

@@ -62,7 +62,7 @@ function OrderInfo({ items = [] }) {
 function SummaryInfo({ title, value }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   return (
     <div className="item">
@@ -142,7 +142,7 @@ function OrderDetails() {
   const [selectedImg] = useState(null);
   const [orderTimeline, setOrderTimeline] = useState([]);
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const getProperOrderTimeline = (orderObj) => {
     if (orderObj?.orderFor === 'specific') {

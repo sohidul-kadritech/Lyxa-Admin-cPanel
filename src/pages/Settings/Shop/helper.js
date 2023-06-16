@@ -47,8 +47,58 @@ export function createShopSettingsData(
   newPayMentInformation,
   newDietary,
   newPriceRange,
-  newOrderCapacity
+  newOrderCapacity,
+  newSpecialInstructions,
+  newDeliveryFee,
+  OwnDeliveryBoy,
+  // eslint-disable-next-line prettier/prettier
+  adminType,
 ) {
+  console.log('specialInstructions', newSpecialInstructions);
+
+  if (adminType === 'admin')
+    return {
+      id: shop?._id,
+      shopName: shop?.shopName,
+      password: '',
+      isCuisine: shop?.isCuisine,
+      maxDiscount: newMaxDiscount,
+      minOrderAmount: minimumOrder,
+      email: shop?.email,
+      phone_number: shop?.phone,
+      shopType: shop?.shopType,
+      shopLogo: shop?.shopLogo,
+      shopBanner: shop?.shopBanner,
+      shopStatus: shop?.shopStatus,
+      shopDescription: 'desrcriptions',
+      tags: shop?.tags,
+      tagsId: shop?.tagsId,
+      orderCapacity: newOrderCapacity,
+      paymentOption: newPayMentInformation,
+      dietary: newDietary,
+      liveStatus: shop?.liveStatus,
+      cuisineType: shop?.cuisinesList,
+      dietaryType: shop?.dietaryType,
+      expensive: newPriceRange,
+      deliveryType: OwnDeliveryBoy ? 'self' : 'drop',
+      deliveryFee: newDeliveryFee,
+      specialInstructions: newSpecialInstructions,
+      shopAddress: {
+        address: shop?.address.address,
+        latitude: shop?.address.latitude,
+        longitude: shop?.address.longitude,
+        city: shop?.address.city,
+        state: shop?.address.state,
+        country: shop?.address.country,
+        placeId: shop?.address.placeId,
+        pin: shop?.address.pin,
+        primary: true,
+        note: shop?.address.note,
+      },
+      bank_name: shop?.bank_name,
+      account_name: shop?.account_name,
+      account_number: shop?.account_number,
+    };
   return {
     id: shop?._id,
     shopName: shop?.shopName,
@@ -74,6 +124,7 @@ export function createShopSettingsData(
     expensive: newPriceRange,
     deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
     deliveryFee: shop?.deliveryFee,
+    specialInstructions: newSpecialInstructions,
     shopAddress: {
       address: shop?.address.address,
       latitude: shop?.address.latitude,

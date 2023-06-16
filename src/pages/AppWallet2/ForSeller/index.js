@@ -14,6 +14,7 @@ import { dateRangeInit } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import SellerInvoice from './Invoices';
 import SellerFinancialsTable from './SellerFinancialsTable';
+import { convertDate } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -32,11 +33,13 @@ function FinancialsForSeller() {
   const [searchKey, setSearchKey] = useState('');
 
   //   const [open, setOpen] = useState(false);
-  const getSellerTnx = useQuery([API_URL.SELLERS_TRX, { searchKey, startDate: range.start, endDate: range.end }], () =>
-    AXIOS.get(API_URL.SELLERS_TRX, {
-      params: { searchKey, startDate: range.start, endDate: range.end },
-      // eslint-disable-next-line prettier/prettier
-    }),
+  const getSellerTnx = useQuery(
+    [API_URL.SELLERS_TRX, { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) }],
+    () =>
+      AXIOS.get(API_URL.SELLERS_TRX, {
+        params: { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) },
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   // GENERATE PDF

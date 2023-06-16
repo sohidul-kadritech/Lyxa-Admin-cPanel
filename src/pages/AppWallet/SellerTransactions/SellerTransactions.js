@@ -24,7 +24,7 @@ function SellerTransactions() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const {
     loading,
