@@ -149,10 +149,11 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
+  // eslint-disable-next-line max-len
+  // const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
-  if (adminType === 'shop') return (totalAmount - order?.dropCharge?.dropChargeFromOrder)?.toFixed(2);
+  if (adminType === 'shop') return order?.sellerEarnings;
   return totalPayment;
 };
 
@@ -319,7 +320,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
           orderCancel?.vatAmount?.vatForAdmin,
           riderAndAdmin,
           // eslint-disable-next-line prettier/prettier
-          appVat,
+          appVat
         ),
       },
     };
@@ -335,7 +336,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
         orderCancel?.vatAmount?.vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
         // eslint-disable-next-line prettier/prettier
-        appVat,
+        appVat
       ),
     },
   };

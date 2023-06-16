@@ -53,8 +53,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
-
   const columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile'],
