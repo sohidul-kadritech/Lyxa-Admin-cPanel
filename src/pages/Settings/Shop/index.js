@@ -261,7 +261,7 @@ function ShopSettings() {
             <ShopSettingsSection2
               boxSx={{
                 // width: '100%',
-                paddingBottom: '29px',
+                paddingBottom: '20px',
               }}
               buttonType={2}
               title="Delivery Settings"
@@ -273,11 +273,12 @@ function ShopSettings() {
               readOnly={adminType !== 'admin'}
               isMethod
             />
-            <Divider variant="middle" sx={{ background: '#000000' }} />
+            {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}
             {OwnDeliveryBoy && (
               <Box
                 sx={{
-                  paddingTop: '21px',
+                  paddingBottom: '21px',
+                  paddingTop: '0px',
                 }}
               >
                 <Typography sx={TypoSx}>Delivery Fee</Typography>
@@ -304,6 +305,7 @@ function ShopSettings() {
                 </Box>
               </Box>
             )}
+            <Divider variant="middle" sx={{ background: '#000000' }} />
             <MinimumOrder
               boxSx={{
                 paddingTop: '21px',
