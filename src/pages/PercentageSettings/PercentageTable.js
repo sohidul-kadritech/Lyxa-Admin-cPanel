@@ -2,6 +2,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-named-as-default
+import { useHistory } from 'react-router-dom';
+// eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -11,6 +13,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
   const theme = useTheme();
   console.log(data);
   const [searchResult, setSearchResult] = useState([...data]);
+  const history = useHistory();
 
   useEffect(() => {
     setSearchResult(data);
@@ -32,7 +35,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
       id: 1,
       headerName: 'SELLER',
       field: 'name',
-      flex: 1,
+      flex: 1.5,
       //   minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
@@ -47,6 +50,10 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
           }}
           variant="body4"
           className="text-capitalize"
+          onClick={() => {
+            // e.stopPropagation();
+            history?.push(`/seller/list2/${row?._id}`);
+          }}
         >
           {row?.company_name}
         </Typography>
@@ -56,7 +63,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
       id: 3,
       headerName: 'CHARGE (Percentage)',
       field: 'charge',
-      flex: 1,
+      flex: 1.5,
       //   minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
@@ -122,7 +129,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
             rowHeight={71}
             sx={{
               '& .MuiDataGrid-row': {
-                cursor: 'pointer',
+                cursor: 'default',
               },
             }}
             components={{

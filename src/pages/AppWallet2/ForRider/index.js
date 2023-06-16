@@ -1,5 +1,4 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
-import jsPDF from 'jspdf';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
@@ -10,11 +9,10 @@ import DateRange from '../../../components/StyledCharts/DateRange';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
-import { dateRangeInit } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import SellerInvoice from './Invoices';
-import SellerFinancialsTable from './SellerFinancialsTable';
-import { convertDate } from './helpers';
+import { dateRangeInit } from '../../Vat2/helpers';
+import RiderInvoice from './Invoices';
+import RiderFinancialsTable from './Table';
 
 const breadcrumbItems = [
   {
@@ -22,63 +20,23 @@ const breadcrumbItems = [
     to: '/financials',
   },
   {
-    label: 'For Sellers',
+    label: 'For Riders',
     to: '#',
   },
 ];
-function FinancialsForSeller() {
+function RidersTransaction() {
   const [currentTab, setCurrentTab] = useState(0);
   const [range, setRange] = useState({ ...dateRangeInit });
 
+  // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
 
-  //   const [open, setOpen] = useState(false);
-  const getSellerTnx = useQuery(
-    [API_URL.SELLERS_TRX, { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) }],
-    () =>
-      AXIOS.get(API_URL.SELLERS_TRX, {
-        params: { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const getSellerTnx = useQuery([API_URL.DELIVERY_TRX, { searchKey, startDate: range.start, endDate: range.end }], () =>
+    AXIOS.get(API_URL.DELIVERY_TRX, {
+      params: { pageSize: 50, searchKey, startDate: range.start, endDate: range.end },
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
-
-  // GENERATE PDF
-  const downloadPdf = () => {
-    const unit = 'pt';
-    const size = 'A4'; // Use A1, A2, A3 or A4
-    const orientation = 'portrait'; // portrait or landscape
-    // eslint-disable-next-line new-cap
-    const doc = new jsPDF(orientation, unit, size);
-    doc.setFontSize(15);
-    const title = 'Seller Transactions';
-    const headers = [
-      ['Seller', 'Total Orders', 'Order amount', 'Delivery fee', 'Lyxa earning', 'Unsettled amount', 'Seller earning'],
-    ];
-    const marginLeft = 40;
-
-    const data = getSellerTnx?.data?.data?.sellers.map((trx) => [
-      trx?.company_name,
-      trx?.summary.totalOrder,
-      trx?.summary.orderValue?.productAmount.toFixed(2),
-      trx?.summary.orderValue?.deliveryFee,
-      trx?.summary.totalDropGet.toFixed(2),
-      trx?.summary.totalSellerUnsettle.toFixed(2),
-      trx?.summary.totalSellerEarning,
-    ]);
-
-    console.log('downloadPdf before ==>', getSellerTnx?.data?.data?.sellers);
-    console.log('downloadPdf after ==>', data);
-    const content = {
-      startY: 50,
-      head: headers,
-      body: data,
-    };
-
-    doc.text(title, marginLeft, 40);
-    doc.autoTable(content);
-    doc.save('sellerTransactions.pdf');
-  };
-
   return (
     <Box>
       <PageTop
@@ -101,7 +59,7 @@ function FinancialsForSeller() {
             setCurrentTab(newValue);
           }}
         >
-          <Tab label="Seller LIst"></Tab>
+          <Tab label="Rider LIst"></Tab>
           <Tab label="Invoices"></Tab>
         </Tabs>
       </Box>
@@ -114,9 +72,9 @@ function FinancialsForSeller() {
             <AddMenuButton
               title="Download"
               icon={<DownloadIcon />}
-              onClick={() => {
-                downloadPdf();
-              }}
+              //   onClick={() => {
+              //     downloadPdf();
+              //   }}
             />
           </Stack>
         </Box>
@@ -127,15 +85,15 @@ function FinancialsForSeller() {
           {getSellerTnx?.isLoading ? (
             <TablePageSkeleton row={8} column={7} />
           ) : (
-            <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+            <RiderFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.deliveryBoy} />
           )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
-          <SellerInvoice />
+          <RiderInvoice />
         </TabPanel>
       </Box>
     </Box>
   );
 }
 
-export default FinancialsForSeller;
+export default RidersTransaction;
