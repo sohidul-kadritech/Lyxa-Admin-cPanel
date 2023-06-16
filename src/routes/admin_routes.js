@@ -84,6 +84,7 @@ import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
+import RidersTransactions from '../pages/AppWallet2/ForRider';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
@@ -203,9 +204,14 @@ export const admin_routes = [
     path: '/add-wallet/shop-transactions2',
     component: ShopFinancialsTransaction,
   },
+  // for rider
   {
     path: '/add-wallet/delivery-transactions',
     component: DeliveryTransactions,
+  },
+  {
+    path: '/add-wallet/delivery-transactions2',
+    component: RidersTransactions,
   },
   {
     path: '/add-wallet/single-delivery-transactions/:id',

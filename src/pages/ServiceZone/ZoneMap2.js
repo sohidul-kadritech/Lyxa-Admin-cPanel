@@ -1,7 +1,7 @@
-import { Typography } from '@mui/material';
+import { Avatar, Stack, Typography } from '@mui/material';
 import L from 'leaflet';
 import React, { useEffect, useRef, useState } from 'react';
-import { FeatureGroup, MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { FeatureGroup, MapContainer, Marker, Polygon, TileLayer, Tooltip } from 'react-leaflet';
 import { convertedLonLatToLatLon } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
@@ -57,16 +57,19 @@ function ZoneMap2({ infoData, polygon, zoneName }) {
 
       <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
       <Polygon positions={convertedLonLatToLatLon(polygon[0]).slice(0, -1)} pathOptions={{ color: `#000000` }}>
-        <Popup>
-          <Typography sx={{ textTransform: 'capitalize' }}>{`${zoneName} Zone`}</Typography>
-        </Popup>
+        <Tooltip direction="top" offset={[-15, -10]} opacity={1} sticky>
+          <Typography sx={{ textTransform: 'capitalize' }}>{`${zoneName} (current zone)`}</Typography>
+        </Tooltip>
       </Polygon>
       {infoData.map((data) => (
         <Marker position={[data?.location?.coordinates[1], data?.location?.coordinates[0]]}>
-          <Popup>
-            {' '}
-            <Typography sx={{ textTransform: 'capitalize' }}>{data?.name}</Typography>
-          </Popup>
+          <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
+            <Stack direction="row" gap="5.2px" alignItems="center">
+              {' '}
+              <Avatar src={data?.shopLogo} width="36px" height="36px"></Avatar>
+              <Typography sx={{ textTransform: 'capitalize' }}>{data?.shopName}</Typography>
+            </Stack>
+          </Tooltip>
         </Marker>
       ))}
     </MapContainer>

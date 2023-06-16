@@ -208,7 +208,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
 
           <ShopInfo title="Average Ord. Value" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {AverageOrderValue(selectedShop?.orderValue?.productAmount, selectedShop?.orderValue?.count)}
+              {AverageOrderValue(selectedShop?.orderValue?.productAmount, selectedShop?.orderValue?.count).toFixed(2)}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>

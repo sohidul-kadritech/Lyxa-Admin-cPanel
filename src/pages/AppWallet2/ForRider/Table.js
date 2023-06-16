@@ -3,9 +3,9 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWithToolTips } from './helpers';
+import { HeaderWithToolTips } from '../ForSeller/helpers';
 
-function SellerFinancialsTable({ data = [], loading }) {
+function RiderFinancialsTable({ data = [], loading }) {
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
 
@@ -14,17 +14,27 @@ function SellerFinancialsTable({ data = [], loading }) {
 
   const history = useHistory();
 
+  // eslint-disable-next-line no-unused-vars
   const sellerShopsTrxs = (sellerId, companyName) => {
     history.push({
       pathname: `/app-wallet/seller/shops-transactions2`,
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
+  //   trx?.name,
+  //   trx?.summary?.orderValue?.count ?? 0,
+  //   trx?.summary?.totalDeliveyFee,
+  //   trx?.summary?.dropEarning,
+  //   trx?.summary?.totalUnSettleAmount,
+  //   trx?.summary?.riderEarning,
+  //   trx?.summary.totalCashInHand,
+  //   trx?.summary.settleAmount,
+
   const allColumns = [
     {
       id: 1,
-      headerName: `SELLER NAME`,
-      field: 'title',
+      headerName: `RIDER NAME`,
+      field: 'name',
       flex: 1,
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
@@ -41,10 +51,10 @@ function SellerFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/seller/list2/${params?.row?._id}`);
+                history?.push(`/riders/${params?.row?._id}`);
               }}
             >
-              {params?.row?.company_name}
+              {params?.row?.name}
             </Typography>
             <Typography
               variant="body3"
@@ -77,23 +87,6 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
     {
       id: 3,
-      field: 'order_amount',
-      headerName: (
-        <HeaderWithToolTips title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
-      ),
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.productAmount.toFixed(2)}
-        </Typography>
-      ),
-    },
-    {
-      id: 4,
       field: 'delivery_fee',
       headerName: <HeaderWithToolTips title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
       sortable: false,
@@ -103,12 +96,12 @@ function SellerFinancialsTable({ data = [], loading }) {
         <Typography variant="body1">
           {' '}
           {currency}
-          {params?.row?.summary?.orderValue?.deliveryFee.toFixed(2)}
+          {(params?.row?.summary?.totalDeliveyFee || 0).toFixed(2)}
         </Typography>
       ),
     },
     {
-      id: 5,
+      id: 4,
       field: 'lyxa_profit',
       headerName: <HeaderWithToolTips title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
       sortable: false,
@@ -116,42 +109,40 @@ function SellerFinancialsTable({ data = [], loading }) {
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
+          {' '}
           {currency}
-          {params?.row?.summary?.totalDropGet.toFixed(2)}
+          {(params?.row?.summary?.dropEarning || 0).toFixed(2)}
         </Typography>
       ),
     },
     {
-      id: 6,
-      field: 'total_unsettle_amount',
+      id: 5,
+      field: 'unsettled_amount',
       headerName: (
-        <HeaderWithToolTips title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
+        <HeaderWithToolTips
+          title={`UNSETTLED AMOUNT (${currency})`}
+          tooltip="Paid 
+      Unpaid"
+        />
       ),
-
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
           {currency}
-          {params?.row?.summary?.totalSellerUnsettle.toFixed(2)}
+          {(params?.row?.summary?.totalUnSettleAmount || 0).toFixed(2)}
         </Typography>
       ),
     },
     {
-      id: 7,
-      field: 'seller_profit',
+      id: 6,
+      field: 'cash_order',
       headerName: (
         <HeaderWithToolTips
-          title={`SELLER PROFIT (${currency})`}
-          tooltip={
-            <Typography>
-              Paid (seller earning) Unpaid (unsettled){' '}
-              <Box component="span" sx={{ color: '#FF0000' }}>
-                (previously unsettled)
-              </Box>
-            </Typography>
-          }
+          title={`CASH ORDER (${currency})`}
+          tooltip="Cash in hand
+        settled cash"
         />
       ),
 
@@ -161,7 +152,28 @@ function SellerFinancialsTable({ data = [], loading }) {
       renderCell: (params) => (
         <Typography variant="body1">
           {currency}
-          {params?.row?.summary?.totalSellerEarning.toFixed(2)}
+          {(params?.row?.summary.totalCashInHand || 0).toFixed(2)}
+        </Typography>
+      ),
+    },
+    {
+      id: 6,
+      field: 'settled_cash',
+      headerName: (
+        <HeaderWithToolTips
+          title={`SETTLED CASH (${currency})`}
+          tooltip="Cash in hand
+        settled cash"
+        />
+      ),
+
+      sortable: false,
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => (
+        <Typography variant="body1">
+          {currency}
+          {(params?.row?.summary?.settleAmount || 0).toFixed(2)}
         </Typography>
       ),
     },
@@ -180,7 +192,7 @@ function SellerFinancialsTable({ data = [], loading }) {
         columns={allColumns}
         rows={data}
         onRowClick={({ row }) => {
-          sellerShopsTrxs(row?._id, row?.company_name);
+          history?.push(`/riders/${row?._id}`);
         }}
         getRowId={(row) => row?._id}
         sx={{
@@ -203,4 +215,4 @@ function SellerFinancialsTable({ data = [], loading }) {
   );
 }
 
-export default SellerFinancialsTable;
+export default RiderFinancialsTable;

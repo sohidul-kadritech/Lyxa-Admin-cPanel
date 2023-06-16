@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import StyledTable from '../../components/Styled/StyledTable3';
+import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import { colorList, createDataForTable } from './helper';
 
 function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
@@ -138,32 +139,36 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
           marginBottom: '30px 0px',
         }}
       >
-        <StyledTable
-          columns={columns}
-          rows={tempAllZones || []}
-          onRowClick={(data) => {
-            setIsSideBarOpen(true);
-            setCurrentRowData(data?.row);
-          }}
-          getRowId={(row) => row?._id}
-          sx={{
-            '& .MuiDataGrid-row': {
-              borderLeft: `4px solid transparent`,
-            },
-            '& .MuiDataGrid-row:hover, .MuiDataGrid-row:active': {
-              backgroundColor: 'rgba(177,177,177,0.20)!important',
-              borderLeft: `4px solid ${theme.palette.danger.main}`,
-            },
-            cursor: 'pointer',
-          }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? 'Loading...' : 'No zone found'}
-              </Stack>
-            ),
-          }}
-        />
+        {loading ? (
+          <TablePageSkeleton row={4} column={5} />
+        ) : (
+          <StyledTable
+            columns={columns}
+            rows={tempAllZones || []}
+            onRowClick={(data) => {
+              setIsSideBarOpen(true);
+              setCurrentRowData(data?.row);
+            }}
+            getRowId={(row) => row?._id}
+            sx={{
+              '& .MuiDataGrid-row': {
+                borderLeft: `4px solid transparent`,
+              },
+              '& .MuiDataGrid-row:hover, .MuiDataGrid-row:active': {
+                backgroundColor: 'rgba(177,177,177,0.20)!important',
+                borderLeft: `4px solid ${theme.palette.danger.main}`,
+              },
+              cursor: 'pointer',
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  {loading ? 'Loading...' : 'No zone found'}
+                </Stack>
+              ),
+            }}
+          />
+        )}
       </Box>
     </Box>
   );

@@ -47,8 +47,11 @@ export function createShopSettingsData(
   newPayMentInformation,
   newDietary,
   newPriceRange,
-  newOrderCapacity
+  newOrderCapacity,
+  // eslint-disable-next-line prettier/prettier
+  newSpecialInstructions,
 ) {
+  console.log('specialInstructions', newSpecialInstructions);
   return {
     id: shop?._id,
     shopName: shop?.shopName,
@@ -74,6 +77,7 @@ export function createShopSettingsData(
     expensive: newPriceRange,
     deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
     deliveryFee: shop?.deliveryFee,
+    specialInstructions: newSpecialInstructions,
     shopAddress: {
       address: shop?.address.address,
       latitude: shop?.address.latitude,

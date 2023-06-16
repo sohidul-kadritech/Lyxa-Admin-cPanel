@@ -85,7 +85,14 @@ function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName })
         <Box sx={{ width: '100%', height: '400px' }}>
           <ZoneMap2 polygon={polygon} infoData={createZoneInfoData(infoData)} zoneName={zoneName} />
         </Box>
-        <Stack flexDirection="row" flexWrap="wrap" gap="14px">
+        <Stack
+          flexDirection="row"
+          flexWrap="wrap"
+          alignItems="center"
+          // justifyContent="center"
+          alignContent="center"
+          gap="14px"
+        >
           <>
             {createZoneInfoData(infoData).map((data, i) => (
               <Box sx={zoneConsumerSx} key={i}>

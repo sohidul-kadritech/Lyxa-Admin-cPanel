@@ -1,11 +1,10 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 import { AvatarSkeleton, Status, Text } from './Elements';
 
-// eslint-disable-next-line no-unused-vars
-const getElement = (e) => {
-  if (e === 'avatar') return <AvatarSkeleton />;
-  if (e === 'text') return <Text />;
-  if (e === 'status') return <Status />;
+const getElement = (c) => {
+  if (c === 'avatar') return <AvatarSkeleton />;
+  if (c === 'text') return <Text />;
+  if (c === 'status') return <Status />;
 
   return <Text />;
 };
@@ -13,14 +12,14 @@ const getElement = (e) => {
 function Column({ columns }) {
   return (
     <Stack gap={10} direction="row" alignItems="center">
-      {columns?.map((e, i) => (
+      {columns?.map((c, i) => (
         <Box
           key={i}
           sx={{
             flex: 1,
           }}
         >
-          {getElement(e)}
+          {getElement(c)}
         </Box>
       ))}
     </Stack>
