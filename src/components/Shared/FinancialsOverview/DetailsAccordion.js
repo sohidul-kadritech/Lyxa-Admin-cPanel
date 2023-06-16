@@ -59,7 +59,7 @@ export default function DetailsAccordion({
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const Icon = open ? ExpandLess : ExpandMore;
 

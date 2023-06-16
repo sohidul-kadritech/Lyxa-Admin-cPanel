@@ -11,7 +11,7 @@ const skeletons_count = new Array(5).fill(0);
 export default function BundleProducts({ onClose, rewardBundle }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const productsQuery = useQuery(
     [

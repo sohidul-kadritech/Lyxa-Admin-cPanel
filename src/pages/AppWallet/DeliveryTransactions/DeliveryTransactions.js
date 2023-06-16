@@ -39,7 +39,7 @@ function DeliveryTransactions() {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const dispatch = useDispatch();
   const history = useHistory();

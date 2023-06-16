@@ -11,7 +11,7 @@ export default function SettingsTable({ rows = [], onEdit, onStatusChange }) {
   const [render, setRender] = useState(false);
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const columns = [
     {

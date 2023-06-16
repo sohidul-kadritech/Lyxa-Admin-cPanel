@@ -34,7 +34,7 @@ import { useGlobalContext } from '../context';
 function AdminDashboard({ summary, topActivity }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const topSummaryData = [
     {

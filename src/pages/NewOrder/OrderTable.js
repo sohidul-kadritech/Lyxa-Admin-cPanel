@@ -20,7 +20,7 @@ import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVari
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
   const { general } = useGlobalContext();
 
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
   const history = useHistory();
 
   const [updateStatusModal, setUpdateStatusModal] = useState(false);

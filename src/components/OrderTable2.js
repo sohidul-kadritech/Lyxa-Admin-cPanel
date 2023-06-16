@@ -203,7 +203,7 @@ export default function ButlerOrderTable({ orders, loading, onRowClick }) {
   // const {general} = useGlobalContext();
   const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
   console.log(currency);
 
   const { socket } = useSelector((state) => state.socketReducer);

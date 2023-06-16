@@ -42,7 +42,7 @@ import {
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const theme = useTheme();
   const queryClient = useQueryClient();

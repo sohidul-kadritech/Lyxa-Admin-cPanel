@@ -16,7 +16,7 @@ function ProductTable({ products, loading }) {
   const history = useHistory();
   const dispatch = useDispatch();
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   // eslint-disable-next-line no-unused-vars
   const [selectedImg, setSelectedImg] = useState(null);
