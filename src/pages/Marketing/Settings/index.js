@@ -82,7 +82,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       enabled: false,
       onSuccess: (data) => {
         const types = {};
-        console.log('products ===================>', productsQuery?.data);
+        // console.log('products ===================>', productsQuery?.data);
 
         data?.data?.products?.forEach((product) => {
           if (product?.marketing) {
@@ -107,10 +107,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     () =>
       deepClone(productsQuery?.data?.data?.products || [])?.map((p) => {
         p.marketing = undefined;
+        p.discountPercentage = 0;
+        p.reward = undefined;
         return p;
       }),
     [productsQuery?.data]
   );
+
+  console.log({ transformedProducts });
 
   useEffect(() => {
     productsQuery.refetch();
@@ -162,10 +166,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
-  console.log({ featuredAmount });
+  // console.log({ featuredAmount });
 
   const setLocalData = (data) => {
-    console.log({ data });
+    // console.log({ data });
 
     setProducts(data?.products);
     setDuration(data?.duration);
@@ -195,7 +199,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     }
   );
 
-  console.log(marketingQuery?.data);
+  // console.log(marketingQuery?.data);
 
   useEffect(() => {
     if (marketingQuery?.data !== undefined) {
@@ -217,7 +221,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setPageMode(0);
           setIsPageDisabled(false);
         }
-
         setServerState(marketingQuery?.data?.data?.marketing);
         const newData = deepClone(marketingQuery?.data?.data?.marketing);
         setLocalData(newData);
@@ -245,7 +248,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setProducts([]);
         } else {
           setGlobalRewardBundle('');
-          setProducts(deepClone(productsQuery?.data?.data?.products || []));
+          setProducts(deepClone(transformedProducts));
         }
 
         setConfirmModal(false);
@@ -262,7 +265,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       });
     } else {
       if (event.target.value === 'multiple') {
-        setProducts(deepClone(productsQuery?.data?.data?.products || []));
+        setProducts(deepClone(transformedProducts));
       } else {
         setProducts([]);
       }
@@ -340,7 +343,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           rewardCategory: item?.rewardCategory,
           rewardBundle: item?.rewardBundle,
           reward: {
-            amount: Math.round(item.price - (item?.price / 100) * item?.rewardBundle),
+            amount: (item.price - (item?.price / 100) * item?.rewardBundle).toFixed(2),
             points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
           },
         };
@@ -485,7 +488,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
             value={params.row}
             disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
             readOnly={productsQuery.isLoading || itemSelectType === 'multiple'}
-            options={createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)}
+            console={console.log(
+              createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)
+            )}
+            options={createGroupedList(transformedProducts || [], params?.row?.category?.name)}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
               const index = products.findIndex((item) => item?._id === params.row?._id);
@@ -643,7 +649,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               {marketingType === 'reward' && (
                 <Typography variant="body1" color={theme.palette.primary.main}>
                   {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                  {Math.round(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle)}
+                  {(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle).toFixed(2)}
                 </Typography>
               )}
               {/* percentage */}
