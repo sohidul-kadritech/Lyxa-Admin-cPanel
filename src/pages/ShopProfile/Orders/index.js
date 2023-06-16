@@ -47,8 +47,8 @@ export default function ShopOrders({ shop, onViewDetail }) {
       <Box paddingTop="30px" />
       <OrderTable
         adminType={currentUser?.userType}
-        onRowClick={(params) => {
-          onViewDetail(params?.row);
+        onViewDetail={(order) => {
+          onViewDetail(order);
         }}
         orders={ordersQuery?.data?.data.orders}
         orderType="shopProfile"

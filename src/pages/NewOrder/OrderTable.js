@@ -17,7 +17,7 @@ import { UpdateFlag } from './UpdateFlag';
 import UpdateOrderStatusForm from './UpdateOrderStatusForm';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
-export default function OrderTable({ orders = [], onRowClick, orderType, adminType, loading }) {
+export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
   const { general } = useGlobalContext();
 
   const currency = general?.currency?.code;
@@ -75,9 +75,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
               ? {
                   sx: { color: 'primary.main', cursor: 'pointer' },
                   onClick: () => {
-                    if (onRowClick) {
-                      onRowClick(row);
-                    }
+                    if (onViewDetail) onViewDetail(row);
                   },
                 }
               : undefined
