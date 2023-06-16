@@ -37,7 +37,7 @@ const marketingTypesInit = {
 const getApliedDeals = (marketings, currentUserType) => {
   const options = { ...marketingTypesInit };
   marketings?.forEach((item) => {
-    console.log(item?.creatorType);
+    // console.log(item?.creatorType);
     if (item?.creatorType !== currentUserType) {
       options[item?.type] = true;
     }
@@ -74,8 +74,6 @@ export default function Marketing({ viewUserType }) {
   const routeMatch = useRouteMatch();
   console.log(routeMatch);
   console.log({ params });
-
-  // "/seller/dashboard/:sellerId/shop/dashboard/:shopId/marketing"
 
   const shopQuery = useQuery(
     [
@@ -118,9 +116,11 @@ export default function Marketing({ viewUserType }) {
       setActiveDeals(activeDeals);
 
       const appliedDeals = getApliedDeals(shop?.marketings, 'shop');
+      console.log('shop marketing ===>', shop?.marketings);
       setAppliedDeals(appliedDeals);
     } else if (shopQuery?.data?.status) {
       setCurrentShop(shopQuery?.data?.data?.shop || {});
+      console.log('other part marketing ===>', shop?.marketings);
 
       const activeDeals = getActiveDeals(
         dealSettingsQuery?.data?.data?.dealSetting || [],
@@ -241,7 +241,8 @@ export default function Marketing({ viewUserType }) {
 
   const __readonly = viewUserType === 'shop' && userType === 'admin';
 
-  console.log(shopQuery?.data?.data?.shop);
+  console.log({ appliedDeals });
+  console.log({ activeDeals });
 
   return (
     <Box sx={{ pt: 8.5 }}>
@@ -350,7 +351,6 @@ export default function Marketing({ viewUserType }) {
         <MarketingSettings
           shop={currentShop}
           creatorType={viewUserType}
-          // readOnly={__readonly}
           marketingType={currentModal}
           onDelete={() => {
             setCurrentModal(null);
