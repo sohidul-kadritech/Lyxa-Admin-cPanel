@@ -1,11 +1,21 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
+import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWithToolTips } from './helpers';
 
-function SellerFinancialsTable({ data = [], loading }) {
+// eslint-disable-next-line no-unused-vars
+const getStyleForAmount = (value) => {
+  if (value?.row?.type === 'userBalanceAddAdmin' || value?.row?.type === 'userCancelOrderGetWallet')
+    return { color: 'green' };
+
+  if (value?.row?.type === 'userBalanceWithdrawAdmin') return { color: 'red' };
+
+  return null;
+};
+
+function AccountTable({ data = [], loading }) {
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
 
@@ -14,17 +24,20 @@ function SellerFinancialsTable({ data = [], loading }) {
 
   const history = useHistory();
 
+  // eslint-disable-next-line no-unused-vars
   const sellerShopsTrxs = (sellerId, companyName) => {
     history.push({
       pathname: `/app-wallet/seller/shops-transactions2`,
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
+
   const allColumns = [
     {
       id: 1,
-      headerName: `SELLER NAME`,
-      field: 'title',
+      headerName: `ACCOUNT NAME`,
+      field: 'name',
+      sortable: false,
       flex: 1,
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
@@ -41,10 +54,10 @@ function SellerFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/seller/list2/${params?.row?._id}`);
+                history?.push(`/accounts/${params?.row?._id}`);
               }}
             >
-              {params?.row?.company_name}
+              {params?.row?.user?.name}
             </Typography>
             <Typography
               variant="body3"
@@ -56,115 +69,69 @@ function SellerFinancialsTable({ data = [], loading }) {
         </Stack>
       ),
     },
-    {
-      id: 2,
-      headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
-      field: 'order',
-      flex: 1,
-      sortable: false,
-      renderCell: (params) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <Box>
-            <Typography
-              variant="body1"
-              style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
-            >
-              {params?.row?.summary?.totalOrder}
-            </Typography>
-          </Box>
-        </Stack>
-      ),
-    },
-    {
-      id: 3,
-      field: 'order_amount',
-      headerName: (
-        <HeaderWithToolTips title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
-      ),
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.productAmount.toFixed(2)}
-        </Typography>
-      ),
-    },
+
     {
       id: 4,
-      field: 'delivery_fee',
-      headerName: <HeaderWithToolTips title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
+      field: 'amount',
+      headerName: `AMOUNT(${currency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.deliveryFee.toFixed(2)}
-        </Typography>
-      ),
+
+      renderCell: ({ row }) => {
+        const sign =
+          row?.type === 'userBalanceAddAdmin' || row?.type === 'userCancelOrderGetWallet'
+            ? '+'
+            : row?.type === 'userBalanceWithdrawAdmin'
+            ? '-'
+            : '';
+
+        return (
+          <Typography variant="body4">
+            {sign}
+            {row?.amount}
+          </Typography>
+        );
+      },
     },
     {
       id: 5,
-      field: 'lyxa_profit',
-      headerName: <HeaderWithToolTips title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
+      field: 'email',
+      headerName: `E-MAIL`,
+      sortable: false,
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => <Typography variant="body1">{params?.row?.user?.email || ''}</Typography>,
+    },
+    {
+      id: 6,
+      field: 'deposite',
+      headerName: `DEPOSIT BY`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalDropGet.toFixed(2)}
+          {params?.row?.type === 'userPayAfterReceivedOrderByCard' ? 'Card' : 'Lyxa'}
         </Typography>
       ),
     },
     {
       id: 6,
-      field: 'total_unsettle_amount',
-      headerName: (
-        <HeaderWithToolTips title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
-      ),
-
-      sortable: false,
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalSellerUnsettle.toFixed(2)}
-        </Typography>
-      ),
-    },
-    {
-      id: 7,
-      field: 'seller_profit',
+      field: 'date',
+      headerName: `DATE`,
       align: 'right',
       headerAlign: 'right',
-      headerName: (
-        <HeaderWithToolTips
-          title={`SELLER PROFIT (${currency})`}
-          tooltip={
-            <Typography>
-              Paid (seller earning) Unpaid (unsettled){' '}
-              <Box component="span" sx={{ color: '#FF0000' }}>
-                (previously unsettled)
-              </Box>
-            </Typography>
-          }
-        />
-      ),
-
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {currency}
-          {params?.row?.summary?.totalSellerEarning.toFixed(2)}
-        </Typography>
+      renderCell: ({ row }) => (
+        <Stack gap={1.5}>
+          <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
+          <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
+            {moment(row?.createdAt)?.format('hh:mm A')}
+          </Typography>
+        </Stack>
       ),
     },
   ];
@@ -182,7 +149,7 @@ function SellerFinancialsTable({ data = [], loading }) {
         columns={allColumns}
         rows={data}
         onRowClick={({ row }) => {
-          sellerShopsTrxs(row?._id, row?.company_name);
+          history?.push(`/riders/${row?._id}?financials=riders`);
         }}
         getRowId={(row) => row?._id}
         sx={{
@@ -205,4 +172,4 @@ function SellerFinancialsTable({ data = [], loading }) {
   );
 }
 
-export default SellerFinancialsTable;
+export default AccountTable;

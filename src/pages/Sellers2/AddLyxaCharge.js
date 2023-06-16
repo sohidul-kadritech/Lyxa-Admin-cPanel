@@ -6,7 +6,7 @@ import { successMsg } from '../../helpers/successMsg';
 import { discountTypeOptions } from '../PercentageSettings/helpers';
 
 const intial = {
-  dropPercentageType: '',
+  dropPercentageType: 'percentage',
   dropPercentage: '',
 };
 // eslint-disable-next-line no-unused-vars
@@ -52,6 +52,7 @@ function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
             name: 'dropPercentageType',
             items: discountTypeOptions,
             onChange: changeHandler,
+            readOnly: true,
           }}
         />
         <StyledFormField

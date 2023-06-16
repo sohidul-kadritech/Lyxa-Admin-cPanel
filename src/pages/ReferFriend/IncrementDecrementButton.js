@@ -16,7 +16,7 @@ function IncrementDecrementButton({
     <Box
       sx={{
         marginTop: '6px',
-        padding: '16px 0px',
+        padding: '12px 0px',
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'inline-block',

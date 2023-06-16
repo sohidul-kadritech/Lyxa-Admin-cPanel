@@ -84,6 +84,7 @@ import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
+import AccountFinancials from '../pages/AppWallet2/ForAccount';
 import RidersTransactions from '../pages/AppWallet2/ForRider';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
@@ -181,6 +182,7 @@ export const admin_routes = [
 
   // drop pay
   { path: '/lyxa-pay', component: DropPayList },
+  { path: '/lyxa-pay2', component: AccountFinancials },
 
   // app wallet
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },

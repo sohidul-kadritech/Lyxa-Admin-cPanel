@@ -1,4 +1,5 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
+import jsPDF from 'jspdf';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
@@ -9,8 +10,8 @@ import DateRange from '../../../components/StyledCharts/DateRange';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
+import { dateRangeInit } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import { dateRangeInit } from '../../Vat2/helpers';
 import RiderInvoice from './Invoices';
 import RiderFinancialsTable from './Table';
 
@@ -31,12 +32,63 @@ function RidersTransaction() {
   // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
 
-  const getSellerTnx = useQuery([API_URL.DELIVERY_TRX, { searchKey, startDate: range.start, endDate: range.end }], () =>
-    AXIOS.get(API_URL.DELIVERY_TRX, {
-      params: { pageSize: 50, searchKey, startDate: range.start, endDate: range.end },
-      // eslint-disable-next-line prettier/prettier
-    }),
+  const getDeliveryTnx = useQuery(
+    [API_URL.DELIVERY_TRX, { searchKey, startDate: range.start, endDate: range.end }],
+    () =>
+      AXIOS.get(API_URL.DELIVERY_TRX, {
+        params: { pageSize: 50, searchKey, startDate: range.start, endDate: range.end },
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
+  // GENERATE PDF
+  const downloadPdf = () => {
+    const unit = 'pt';
+    const size = 'A4'; // Use A1, A2, A3 or A4
+    const orientation = 'portrait'; // portrait or landscape
+
+    // eslint-disable-next-line new-cap
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = `Delivery Boys Transactions`;
+    const headers = [
+      [
+        'Name',
+        'Total Orders',
+        'Delivery fee',
+        'Lyxa earning',
+        'Unsettled amount',
+        'Delivery earning',
+        'Cash in hand',
+        'Settled cash',
+      ],
+    ];
+    const marginLeft = 40;
+
+    const data = getDeliveryTnx?.data?.data?.deliveryBoy.map((trx) => [
+      trx?.name,
+      trx?.summary?.orderValue?.count ?? 0,
+      trx?.summary?.totalDeliveyFee,
+      trx?.summary?.dropEarning,
+      trx?.summary?.totalUnSettleAmount,
+      trx?.summary?.riderEarning,
+      trx?.summary.totalCashInHand,
+      trx?.summary.settleAmount,
+    ]);
+
+    console.log('===>data', data);
+    const content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(`DeliveryBoysTransactions.pdf`);
+  };
+
   return (
     <Box>
       <PageTop
@@ -72,9 +124,9 @@ function RidersTransaction() {
             <AddMenuButton
               title="Download"
               icon={<DownloadIcon />}
-              //   onClick={() => {
-              //     downloadPdf();
-              //   }}
+              onClick={() => {
+                downloadPdf();
+              }}
             />
           </Stack>
         </Box>
@@ -82,10 +134,10 @@ function RidersTransaction() {
 
       <Box sx={{ marginBottom: '30px' }}>
         <TabPanel index={0} value={currentTab} noPadding>
-          {getSellerTnx?.isLoading ? (
+          {getDeliveryTnx?.isLoading ? (
             <TablePageSkeleton row={8} column={7} />
           ) : (
-            <RiderFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.deliveryBoy} />
+            <RiderFinancialsTable loading={getDeliveryTnx?.isLoading} data={getDeliveryTnx?.data?.data?.deliveryBoy} />
           )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
