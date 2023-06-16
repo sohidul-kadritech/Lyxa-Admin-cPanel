@@ -4,12 +4,12 @@ import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
+  // {
+  //   label: 'For Sellers',
+  //   to: '/add-wallet/seller-transactions',
+  // },
   {
     label: 'For Sellers',
-    to: '/add-wallet/seller-transactions',
-  },
-  {
-    label: 'For Sellers2',
     to: '/add-wallet/seller-transactions2',
   },
   {
@@ -19,6 +19,10 @@ const pagesList = [
   {
     label: 'For Riders',
     to: '/add-wallet/delivery-transactions',
+  },
+  {
+    label: 'For Riders2',
+    to: '/add-wallet/delivery-transactions2',
   },
   {
     label: 'For VAT',

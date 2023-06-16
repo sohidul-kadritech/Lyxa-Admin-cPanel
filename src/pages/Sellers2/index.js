@@ -21,8 +21,6 @@ function SellerList2() {
   // eslint-disable-next-line no-unused-vars
   const routeMatch = useRouteMatch();
 
-  console.log('routeMatch', routeMatch?.params?.sellerId);
-
   const [status, setStatus] = useState('all');
 
   const [searchKey, setSearchKey] = useState('');
@@ -55,7 +53,6 @@ function SellerList2() {
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log(data?.data?.sellers[0]);
           if (!routeMatch?.params?.sellerId) {
             setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0]);
           }
@@ -76,7 +73,6 @@ function SellerList2() {
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log(data?.data?.seller);
           if (routeMatch?.params?.sellerId) {
             setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.seller);
           }
@@ -85,7 +81,7 @@ function SellerList2() {
       // eslint-disable-next-line prettier/prettier
     },
   );
-  console.log(getSingleSellersQuery?.data?.data);
+
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -118,6 +114,7 @@ function SellerList2() {
   const editSellerQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_SELLER, data), {
     onSuccess: (data) => {
       if (data.status) {
+        setCurrentSeller(data?.data?.seller);
         setOpen(false);
         successMsg(data.message, 'success');
         queryClient.invalidateQueries(API_URL.ALL_SELLER);
@@ -132,11 +129,9 @@ function SellerList2() {
   });
 
   const replaceDocument = (document) => {
-    // console.log('documents: ', document);
     editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: document.url });
   };
   const removeDocument = (document) => {
-    // console.log('remove--documents: ', document);
     editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: '' });
   };
 
