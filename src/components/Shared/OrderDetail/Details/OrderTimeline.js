@@ -85,7 +85,7 @@ export default function OrderTimeline({ order = {}, ...props }) {
       active: true,
       createdAt: trx?.createdAt,
       status: 'refunded',
-      note: `Order was ${trx?.isPartialRefund ? 'partialy' : 'fully'} refunded`,
+      note: `Order was ${trx?.isPartialRefund ? 'partially' : 'fully'} refunded`,
     });
   }
 

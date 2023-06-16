@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import { useState } from 'react';
 import CallUser from './CallUser';
 import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
@@ -11,6 +12,9 @@ import ResolveOrderFlag from './ResolveFlag';
 import OrderSummary from './Summary';
 
 export default function Detail({ order, hideIssues, userType }) {
+  // eslint-disable-next-line no-unused-vars
+  const [render, setRender] = useState(false);
+
   return (
     <Stack gap={5}>
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
@@ -39,7 +43,7 @@ export default function Detail({ order, hideIssues, userType }) {
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       <PaymentDetails order={order} />
-      <ResolveOrderFlag order={order} />
+      <ResolveOrderFlag order={order} setRender={setRender} />
     </Stack>
   );
 }

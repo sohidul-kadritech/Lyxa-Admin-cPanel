@@ -5,12 +5,11 @@ import { StyledOrderDetailBox } from '../helpers';
 
 export default function OrderSummary({ productsDetails = [] }) {
   const theme = useTheme();
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
-
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
-
   const totalProductQuantity = productsDetails.reduce((prev, curr) => curr?.productQuantity + prev, 0);
+
+  console.log(productsDetails);
 
   return (
     <StyledOrderDetailBox

@@ -6,7 +6,7 @@ import { successMsg } from '../../../../helpers/successMsg';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 
-export default function ResolveOrderFlag({ order }) {
+export default function ResolveOrderFlag({ order, setRender }) {
   const queryClient = useQueryClient();
   const [buttonsOpen, setButtonsOpen] = useState(false);
   const isAllResolved = order?.flag?.reduce((acc, curr) => acc && curr?.isResolved, true);
@@ -27,6 +27,8 @@ export default function ResolveOrderFlag({ order }) {
 
         const cFlag = order?.flag?.find((f) => f?._id !== data?.data?._id);
         cFlag.isResolved = true;
+        setRender((prev) => !prev);
+        setRender((prev) => !prev);
 
         queryClient.invalidateQueries([Api.GET_ALL_FLAGGED_ORDERS]);
         queryClient.invalidateQueries([Api.ORDER_LIST]);
@@ -40,6 +42,8 @@ export default function ResolveOrderFlag({ order }) {
     order?.flag?.forEach((f) => {
       setToResolve((prev) => prev + 1);
       if (!f.isResolved) {
+        f.isResolved = true;
+        setRender((prev) => !prev);
         flagResolve.mutate({
           id: f?._id,
           resolved: true,
@@ -84,12 +88,12 @@ export default function ResolveOrderFlag({ order }) {
               Contact Customer
             </Button>
           )}
-          <Button variant="outlined" color="primary" fullWidth>
+          {/* <Button variant="outlined" color="primary" fullWidth>
             Assign new rider
-          </Button>
-          <Button variant="outlined" color="error" fullWidth>
+          </Button> */}
+          {/* <Button variant="outlined" color="error" fullWidth>
             Cancel Order
-          </Button>
+          </Button> */}
         </>
       )}
     </Stack>

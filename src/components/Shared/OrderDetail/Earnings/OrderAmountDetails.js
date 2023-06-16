@@ -13,20 +13,12 @@ function StyledItem({
   ptxs,
   isCurrency = true,
 }) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const theme = useTheme();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      pb={total ? 0 : pbsx}
-      pt={ptxs}
-      // borderTop={total ? '1px solid #EEEEEE' : undefined}
-    >
+    <Stack direction="row" alignItems="center" justifyContent="space-between" pb={total ? 0 : pbsx} pt={ptxs}>
       <Typography variant="body2" color="textPrimary" lineHeight="22px" fontWeight={total ? 700 : undefined}>
         {label}
       </Typography>
