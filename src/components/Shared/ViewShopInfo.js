@@ -208,7 +208,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
 
           <ShopInfo title="Average Ord. Value" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {AverageOrderValue(selectedShop?.orderValue?.productAmount, selectedShop?.orderValue?.count)}
+              {AverageOrderValue(selectedShop?.orderValue?.productAmount, selectedShop?.orderValue?.count).toFixed(2)}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>
@@ -233,15 +233,9 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.account_name}
             </Typography>
           </ShopInfo>
-
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.bank_address}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="City" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.address?.city}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>

@@ -10,11 +10,11 @@ import RiderRating from './RiderRating';
 import RiderTimeStamp from './Timestamp';
 import RiderTransactions from './Transactions';
 
-export default function RiderTabs({ rider }) {
+export default function RiderTabs({ rider, isFinancials }) {
   const location = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
+  const [currentTab, setCurrentTab] = useState(isFinancials ? 1 : Number(searchParams?.get('tabId')) || 0);
 
   return (
     <Box>

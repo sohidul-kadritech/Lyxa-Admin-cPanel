@@ -1,13 +1,14 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import { useHistory } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWith } from './helpers';
+import { HeaderWithToolTips } from './helpers';
 
 function SellerFinancialsTable({ data = [], loading }) {
   const { general } = useGlobalContext();
+  // eslint-disable-next-line import/no-named-as-default
+
   const theme = useTheme();
   const currency = general?.currency?.symbol;
 
@@ -38,8 +39,9 @@ function SellerFinancialsTable({ data = [], loading }) {
                 width: '100%',
                 cursor: 'pointer',
               }}
-              onClick={() => {
-                sellerShopsTrxs(params?.row?._id, params?.row?.company_name);
+              onClick={(e) => {
+                e.stopPropagation();
+                history?.push(`/seller/list2/${params?.row?._id}`);
               }}
             >
               {params?.row?.company_name}
@@ -56,7 +58,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
     {
       id: 2,
-      headerName: <HeaderWith title="ORDERS" tooltip="Number of orders" />,
+      headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
       field: 'order',
       flex: 1,
       sortable: false,
@@ -76,7 +78,9 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 3,
       field: 'order_amount',
-      headerName: <HeaderWith title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />,
+      headerName: (
+        <HeaderWithToolTips title={`ORDER AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
+      ),
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -91,7 +95,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 4,
       field: 'delivery_fee',
-      headerName: <HeaderWith title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
+      headerName: <HeaderWithToolTips title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -106,7 +110,7 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 5,
       field: 'lyxa_profit',
-      headerName: <HeaderWith title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
+      headerName: <HeaderWithToolTips title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -121,7 +125,7 @@ function SellerFinancialsTable({ data = [], loading }) {
       id: 6,
       field: 'total_unsettle_amount',
       headerName: (
-        <HeaderWith title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
+        <HeaderWithToolTips title={`UNSETTLED AMOUNT (${currency})`} tooltip="Amount of orders without delivery fee" />
       ),
 
       sortable: false,
@@ -137,8 +141,10 @@ function SellerFinancialsTable({ data = [], loading }) {
     {
       id: 7,
       field: 'seller_profit',
+      align: 'right',
+      headerAlign: 'right',
       headerName: (
-        <HeaderWith
+        <HeaderWithToolTips
           title={`SELLER PROFIT (${currency})`}
           tooltip={
             <Typography>
@@ -175,16 +181,22 @@ function SellerFinancialsTable({ data = [], loading }) {
       <StyledTable
         columns={allColumns}
         rows={data}
+        onRowClick={({ row }) => {
+          sellerShopsTrxs(row?._id, row?.company_name);
+        }}
         getRowId={(row) => row?._id}
         sx={{
           '& .MuiDataGrid-cell': {
-            cursor: 'defualt',
+            cursor: 'pointer',
+          },
+          '& .MuiDataGrid-row:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
           },
         }}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Notification Found'}
+              {loading ? 'Loading...' : 'No Transaction Found'}
             </Stack>
           ),
         }}

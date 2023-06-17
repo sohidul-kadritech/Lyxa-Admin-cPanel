@@ -26,7 +26,7 @@ export const varifyUserData = (data, isEdit) => {
     successMsg('Password not matched');
     return false;
   }
-  if (data?.confirm_password && data?.password && data?.password !== data?.confirm_password && isEdit) {
+  if ((data?.confirm_password || data?.password) && data?.password !== data?.confirm_password && isEdit) {
     successMsg('Password not matched');
     return false;
   }

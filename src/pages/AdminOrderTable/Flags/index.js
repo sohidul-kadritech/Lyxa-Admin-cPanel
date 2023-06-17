@@ -1,11 +1,11 @@
-/* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
+import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import SearchBar from '../../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../../components/Styled/StyledTab2';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import SearchBar from './Searchbar';
 import Table from './Table';
 
 const tabsOptions = [
@@ -14,27 +14,16 @@ const tabsOptions = [
 ];
 
 const queryParamsInit = {
-  model: '',
+  category: '',
+  orderStatus: '',
   type: '',
-  resolved: '',
-  sortBy: 'DESC',
+  resolved: false,
   page: 1,
   pageSize: 25,
-};
-
-const fetchFlags = async (sortBy, flagTypeKey, resolveType, currentPage) => {
-  const { data, status } = await AXIOS.get(Api.GET_ALL_FLAGS, {
-    params: {
-      model: '',
-      type: flagTypeKey,
-      resolved: resolveType,
-      sortBy,
-      page: currentPage,
-      pageSize: 25,
-    },
-  });
-
-  return status ? data : {};
+  sortBy: '',
+  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  searchKey: '',
 };
 
 export default function Flags() {
@@ -44,7 +33,7 @@ export default function Flags() {
 
   const query = useQuery(
     [Api.GET_ALL_FLAGS, queryParams],
-    () => AXIOS.get(Api.GET_ALL_FLAGS, { params: queryParams }),
+    () => AXIOS.get(Api.GET_ALL_FLAGGED_ORDERS, { params: queryParams }),
     {
       onSuccess: (data) => {
         console.log(data);

@@ -26,9 +26,9 @@ const tabValueToTypeMap = { 0: 'food', 1: 'grocery', 2: 'pharmacy' };
 const menuItems = [
   { label: 'View Shop', value: 'view' },
   { label: 'Access as Shop', value: 'access' },
+  { label: 'Go to marketing', value: 'marketing' },
   { label: 'Edit Shop', value: 'edit' },
 ];
-
 export default function ShopList() {
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -62,6 +62,10 @@ export default function ShopList() {
       history.push(routePath);
       dispatchCurrentUser({ type: 'shop', payload: { shop } });
       dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller: {}, from: routeMatch?.url } });
+    }
+
+    if (menu === 'marketing') {
+      history.push(`/shops/marketing/${shop?._id}`, shop);
     }
   };
 

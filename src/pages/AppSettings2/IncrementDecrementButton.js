@@ -12,13 +12,14 @@ function IncrementDecrementButton({
   types,
   type,
   setTypeValidation,
+  isValidateType = true,
 }) {
   const theme = useTheme();
   return (
     <Box
       sx={{
         marginTop: '6px',
-        padding: '20px 0px',
+        padding: '12px 0px',
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'inline-block',
@@ -32,7 +33,7 @@ function IncrementDecrementButton({
             sx={{ fontSize: '32px', fontWeight: 600 }}
             onClick={() => {
               decrementHandler(setValue);
-              setTypeValidation(types, setType, type);
+              if (isValidateType) setTypeValidation(types, setType, type);
             }}
           >
             -
@@ -41,17 +42,18 @@ function IncrementDecrementButton({
             intputType="text"
             containerProps={{
               sx: {
-                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '50'}px`,
+                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '60'}px`,
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
+                marginLeft: '0 !important',
               },
             }}
             inputProps={{
               type: 'number',
               min: '0',
               name: 'incrementdecrement',
-              placeholder: 'value',
+              placeholder: '0',
               value: currentValue || '',
               sx: {
                 padding: '0 0',
@@ -62,7 +64,7 @@ function IncrementDecrementButton({
               onChange: (e) => {
                 if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
                 else setValue(e.target.value);
-                setTypeValidation(types, setType, type);
+                if (isValidateType) setTypeValidation(types, setType, type);
               },
               //   readOnly: Boolean(newProductCategory) || productReadonly,
             }}
@@ -72,7 +74,7 @@ function IncrementDecrementButton({
             sx={{ fontSize: '32px', marginLeft: '0 !important' }}
             onClick={() => {
               incrementHandler(setValue);
-              setTypeValidation(types, setType, type);
+              if (isValidateType) setTypeValidation(types, setType, type);
             }}
           >
             +

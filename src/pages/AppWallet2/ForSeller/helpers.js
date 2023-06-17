@@ -1,7 +1,8 @@
 import { Stack, Tooltip, Typography } from '@mui/material';
+import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 
-export function HeaderWith({ title, tooltip }) {
+export function HeaderWithToolTips({ title, tooltip }) {
   return (
     <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={0.5}>
       <Typography
@@ -25,3 +26,5 @@ export function HeaderWith({ title, tooltip }) {
     </Stack>
   );
 }
+
+export const convertDate = (originalDate) => moment(originalDate).format('YYYY-MM-DD');

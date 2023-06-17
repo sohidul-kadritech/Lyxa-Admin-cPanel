@@ -19,13 +19,15 @@ const typeToApiMap = { shop: Api.SHOP_MAKE_PAYMENT, rider: Api.RIDER_MAKE_PAYMEN
 export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
+  console.log('currency==========>', general?.currency);
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
   const paymentMutation = useMutation(() => AXIOS.post(typeToApiMap[type], payment), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
+        queryClient.invalidateQueries([Api.SHOP_TRX]);
         queryClient.invalidateQueries([Api.DELIVERY_TRX]);
         queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
         queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);

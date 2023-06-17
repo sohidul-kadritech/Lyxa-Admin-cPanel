@@ -11,6 +11,8 @@ export const generalInit = {
 };
 
 export const generalReducer = (state, { type, payload }) => {
+  console.log({ type, payload });
+
   switch (type) {
     case 'currency':
       return {

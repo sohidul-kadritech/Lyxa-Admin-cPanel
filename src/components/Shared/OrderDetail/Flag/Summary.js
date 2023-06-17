@@ -4,42 +4,28 @@ import moment from 'moment';
 import { StyledListItem } from './ListItem';
 
 export default function FlagSummary({ order }) {
+  console.log(order);
+
   const orderDetailsList = [
     {
       label: 'Order Type',
       value: order?.isButler ? 'Butler' : order?.shop?.shopType,
-      itemSx: {
-        '& .value': {
-          textTransform: 'capitalize',
-        },
-      },
     },
     {
       label: 'Order Id',
       value: order?.orderId,
-      link: true,
-      to: order?.orderId?.isButler
-        ? `/orders/details/regular/${order?.orderId?._id}`
-        : `/orders/details/butler/${order?.orderId?._id}`,
     },
     {
       label: 'Order Staus',
       value: order?.orderStatus,
-      itemSx: {
-        '& .value': {
-          textTransform: 'capitalize',
-        },
-      },
     },
     {
       label: 'Rider Id',
-      value: order?.orderId?.deliveryBoy?.autoGenId ? order?.orderId?.deliveryBoy?.autoGenId : 'Not Assigned',
-      link: !!order?.orderId?.deliveryBoy,
-      to: `/deliveryman/details/${order?.orderId?.deliveryBoy}`,
+      value: order?.deliveryBoy?.autoGenId || 'Not Assigned',
     },
     {
       label: 'Created At',
-      value: moment(order?.orderId?.createdAt)?.format('MMM DD, YYYY'),
+      value: moment(order?.createdAt)?.format('MMM DD, YYYY'),
     },
     {
       label: 'Payment Type',
@@ -60,7 +46,7 @@ export default function FlagSummary({ order }) {
     },
     {
       label: 'Total Amount',
-      value: (order?.summary?.totalAmount + order?.summary?.vat || 0).toFixed(2),
+      value: (order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0).toFixed(2),
     },
   ];
 

@@ -2,9 +2,13 @@ import { Email } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { ReactComponent as AreaCovered } from '../../assets/icons/areaCovered.svg';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as LogoutIcon } from '../../assets/icons/logout.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
+import { ReactComponent as Shift } from '../../assets/icons/shift.svg';
+import { ReactComponent as VehicleNumber } from '../../assets/icons/vehicleNumber.svg';
+import { ReactComponent as VehicleType } from '../../assets/icons/vehicleType.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -52,10 +56,10 @@ export default function RiderDetails({ rider }) {
       />
       <ProfileSidebarInfo label="Phone number" value={rider?.number} icon={Phone} />
       <ProfileSidebarInfo label="Location" value={rider?.address} icon={Loacation} />
-      <ProfileSidebarInfo label="Vehicle Type" value={rider?.vehicleType} icon={Loacation} />
-      <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={Loacation} />
-      <ProfileSidebarInfo label="Area Covered" value="Rampura" icon={Loacation} />
-      <ProfileSidebarInfo label="Shift" value={rider?.shift} icon={Loacation} />
+      <ProfileSidebarInfo label="Vehicle Type" value={rider?.vehicleType} icon={VehicleType} />
+      <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={VehicleNumber} />
+      <ProfileSidebarInfo label="Area Covered" value="Rampura" icon={AreaCovered} />
+      <ProfileSidebarInfo label="Shift" value={rider?.shift} icon={Shift} />
       <Box>
         <Button
           variant="text"

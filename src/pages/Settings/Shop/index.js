@@ -53,8 +53,8 @@ export const paymentInformationValidation = (paymentmethod) => {
 
 function ShopSettings() {
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
-
+  const { shop, adminType } = currentUser;
+  console.log('special instruction: ', shop?.specialInstructions);
   const [newShop, setNewShop] = useState(deepClone(shop));
 
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
@@ -63,7 +63,12 @@ function ShopSettings() {
 
   const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
 
+  const [newDeliveryFee, setNewDeliveryFee] = useState(newShop?.deliveryFee || 0);
+
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount || 0);
+
+  // eslint-disable-next-line no-unused-vars
+  const [newSpecialInstructions, setNewSpecialInstructions] = useState(newShop?.specialInstructions || false);
 
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
 
@@ -85,9 +90,10 @@ function ShopSettings() {
         shop.maxDiscount = data?.data?.shop.maxDiscount || shop?.maxDiscount;
         shop.expensive = data?.data?.shop.expensive || shop.expensive;
         shop.dietary = data?.data?.shop.dietary || shop.dietary;
+        shop.specialInstructions = data?.data?.shop?.specialInstructions;
+        shop.deliveryFee = data?.data?.shop?.deliveryFee;
         shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
-
         set_has_unsaved_change(false);
       }
     },
@@ -101,8 +107,12 @@ function ShopSettings() {
       newPayMentInformation,
       newDietary,
       newPriceRange,
-      // eslint-disable-next-line prettier/prettier
       newOrderCapacity,
+      newSpecialInstructions,
+      newDeliveryFee,
+      OwnDeliveryBoy,
+      // eslint-disable-next-line prettier/prettier
+      adminType,
     );
     if (data) {
       updateData.mutate(data);
@@ -111,13 +121,9 @@ function ShopSettings() {
     }
   };
 
-  const actionHandler = (isActive, title) => {
-    const oldShop = newShop;
-    const index = oldShop.paymentOption.indexOf(title.toLowerCase());
-    if (index !== -1) oldShop.paymentOption.splice(index, 1); // remove 1 element at index
-    else oldShop.paymentOption.push(title.toLowerCase());
-
-    setNewShop(oldShop);
+  const actionHandler = (isActive) => {
+    set_has_unsaved_change(true);
+    setNewSpecialInstructions(!isActive);
     return !isActive;
   };
 
@@ -129,19 +135,16 @@ function ShopSettings() {
     setOwnDeliveryBoy(shop?.haveOwnDeliveryBoy);
     setNewMaxDiscount(shop?.maxDiscount?.toString() || '');
     setNewOrderCapacity(shop?.orderCapacity || 0);
+    setNewDeliveryFee(shop?.deliveryFee || 0);
+    setNewSpecialInstructions(() => {
+      console.log('shop?.specialInstructions==========>', shop?.specialInstructions);
+      return shop?.specialInstructions || false;
+    });
   };
 
   useEffect(() => {
     populateStateFromShop();
   }, []);
-
-  const buttonListGeneral = [
-    {
-      actionTitle: 'Allow customers to add special instructions to individual items',
-      action: actionHandler,
-      isChecked: true,
-    },
-  ];
 
   const incrementOrder = (setValue) => {
     set_has_unsaved_change(true);
@@ -208,7 +211,14 @@ function ShopSettings() {
       <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
         <PageTop title="Settings" />
         <Box>
-          <ShopSettingsSection buttonType={1} title="General" isButton buttonList={buttonListGeneral} />
+          <ShopSettingsSection
+            buttonType={1}
+            title="General"
+            isButton
+            actionTitle="Allow customers to add special instructions to individual items"
+            isChecked={newSpecialInstructions}
+            action={actionHandler}
+          />
           <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
@@ -251,7 +261,7 @@ function ShopSettings() {
             <ShopSettingsSection2
               boxSx={{
                 // width: '100%',
-                paddingBottom: '29px',
+                paddingBottom: '20px',
               }}
               buttonType={2}
               title="Delivery Settings"
@@ -260,9 +270,41 @@ function ShopSettings() {
               options={DeliverySettings}
               action={OwnDeliveryBoyHandler}
               isButton
-              readOnly
+              readOnly={adminType !== 'admin'}
               isMethod
             />
+            {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}
+            {OwnDeliveryBoy && (
+              <Box
+                sx={{
+                  paddingBottom: '21px',
+                  paddingTop: '0px',
+                }}
+              >
+                <Typography sx={TypoSx}>Delivery Fee</Typography>
+                <Box
+                  sx={{
+                    marginTop: '15px',
+                  }}
+                >
+                  <IncrementDecrementButton
+                    currentValue={newDeliveryFee}
+                    setValue={(value) => {
+                      set_has_unsaved_change(true);
+                      if (typeof value === 'function') {
+                        setNewDeliveryFee(value);
+                      } else if (Number(value) <= 1) setNewDeliveryFee(1);
+                      else setNewDeliveryFee(value);
+                    }}
+                    incrementHandler={incrementOrder}
+                    decrementHandler={decrementOrder}
+                    setTypeValidation={() => {
+                      set_has_unsaved_change(true);
+                    }}
+                  />
+                </Box>
+              </Box>
+            )}
             <Divider variant="middle" sx={{ background: '#000000' }} />
             <MinimumOrder
               boxSx={{
@@ -303,7 +345,6 @@ function ShopSettings() {
                   <IncrementDecrementButton
                     currentValue={newOrderCapacity}
                     setValue={(value) => {
-                      console.log({ value });
                       if (typeof value === 'function') {
                         setNewOrderCapacity(value);
                       } else if (Number(value) <= 1) setNewOrderCapacity(1);

@@ -88,7 +88,7 @@ function ShopDetails() {
   const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
 
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const getShop = async () => {
     const data = await callApi(id, SINGLE_SHOP, 'shop');

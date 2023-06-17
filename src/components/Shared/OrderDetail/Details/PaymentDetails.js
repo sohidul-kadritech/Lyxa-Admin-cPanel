@@ -1,12 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 
-function StyledItem({ label, value, total, isNegative = false, isRejected = false }) {
+function StyledItem({ label, value, total, noBorder, border, isNegative = false, isRejected = false }) {
   const theme = useTheme();
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   return (
     <Stack
@@ -15,7 +16,7 @@ function StyledItem({ label, value, total, isNegative = false, isRejected = fals
       justifyContent="space-between"
       pb={total ? 0 : 3.5}
       pt={total ? 2.5 : 0}
-      borderTop={total ? '1px solid #EEEEEE' : undefined}
+      borderTop={total && !noBorder ? '1px solid #EEEEEE' : undefined}
     >
       <Typography variant="body2" color="textPrimary" lineHeight="22px" fontWeight={total ? 700 : undefined}>
         {label}
@@ -34,7 +35,8 @@ function StyledItem({ label, value, total, isNegative = false, isRejected = fals
 
 export default function PaymentDetails({ order = {} }) {
   console.log('Order details: ', order);
-
+  const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
+  const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
   return (
@@ -53,14 +55,14 @@ export default function PaymentDetails({ order = {} }) {
             value={(order?.summary?.discount || 0).toFixed(2)}
           />
         )}
-        {order?.summary?.doubleMenuItemPrice > 0 && (
+        {/* {order?.summary?.doubleMenuItemPrice > 0 && (
           <StyledItem
-            label="Duble Deals"
+            label="Double Deals"
             isNegative
-            isRejected
+            isRejected={false}
             value={(order?.summary?.doubleMenuItemPrice || 0).toFixed(2)}
           />
-        )}
+        )} */}
         {order?.summary?.reward?.amount > 0 && (
           <StyledItem
             label="Rewards"
@@ -71,6 +73,12 @@ export default function PaymentDetails({ order = {} }) {
         )}
         {order?.summary?.vat > 0 && <StyledItem label="VAT" value={(order?.summary?.vat || 0).toFixed(2)} />}
         <StyledItem label="Total" value={(totalPayment || 0).toFixed(2)} total />
+        {order?.isRefundedAfterDelivered && (
+          <StyledItem label="Total Refunded" value={(refund?.amount || 0).toFixed(2)} total noBorder />
+        )}
+        {order?.orderStatus === 'cancelled' && (
+          <StyledItem label="Total Refunded" value={(cancel?.amount || 0).toFixed(2)} total noBorder />
+        )}
       </Box>
     </StyledOrderDetailBox>
   );

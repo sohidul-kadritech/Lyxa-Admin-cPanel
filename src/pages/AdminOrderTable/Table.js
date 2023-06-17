@@ -23,7 +23,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
   const history = useHistory();
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
@@ -56,7 +56,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 1,
       headerName: 'ACCOUNT',
       field: 'orders',
@@ -98,7 +98,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       ),
     },
     {
-      showFor: ['ongoing', 'delivered'],
+      showFor: ['ongoing', 'delivered', 'low-rating'],
       id: 2,
       headerName: `TYPE`,
       field: 'shopType',
@@ -108,7 +108,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       renderCell: ({ row }) => <Typography variant="body4">{shopTypeLabelMap[row?.shop?.shopType]}</Typography>,
     },
     {
-      showFor: ['ongoing', 'delivered'],
+      showFor: ['ongoing', 'delivered', 'low-rating'],
       id: 3,
       headerName: 'SHOP',
       field: 'shop',
@@ -131,7 +131,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       ),
     },
     {
-      showFor: ['ongoing', 'delivered'],
+      showFor: ['ongoing', 'delivered', 'low-rating'],
       id: 4,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
@@ -166,7 +166,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 6,
       headerName: 'DATE',
       field: 'createdAt',
@@ -175,7 +175,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 7,
       headerName: `ORDER AMOUNT`,
       field: 'profit',
@@ -188,7 +188,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       ),
     },
     {
-      showFor: ['delivered'],
+      showFor: ['delivered', 'low-rating'],
       id: 8,
       headerName: 'ORDER RATING',
       field: 'shopRating',
@@ -201,7 +201,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       },
     },
     {
-      showFor: ['delivered'],
+      showFor: ['delivered', 'low-rating'],
       id: 8,
       headerName: 'Rider RATING',
       field: 'riderRating',
@@ -214,7 +214,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       },
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 6,
       headerName: `ACTION`,
       sortable: false,

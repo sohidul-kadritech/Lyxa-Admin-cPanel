@@ -21,7 +21,7 @@ import { getSellerTrx, updateShopsTrxEndDate, updateShopsTrxStartDate } from '..
 function ShopsTransactions() {
   const { loading, sellerTrxs, shopsTrxStartDate, shopsTrxEndDate } = useSelector((state) => state.appWalletReducer);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const columns = [
     {

@@ -48,7 +48,7 @@ function UserDetails() {
   // const { account_type, adminType } = useSelector((store) => store.Login.admin);
   const { currentUser, general } = useGlobalContext();
   const { userType } = currentUser;
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   const [user, setUser] = useState({});
   const [balAddModal, setBalAddModal] = useState(false);

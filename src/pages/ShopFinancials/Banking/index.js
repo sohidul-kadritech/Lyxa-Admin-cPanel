@@ -68,21 +68,7 @@ export default function Banking() {
             }}
           />
         </Grid>
-        <Grid xs={12} md={6}>
-          {/* address */}
-          <StyledFormField
-            label="City"
-            intputType="text"
-            inputProps={{
-              readOnly: true,
-              type: 'text',
-              placeholder: 'Vegan Pizza',
-              name: 'city',
-              value: shop.address?.city,
-              sx: inputSx,
-            }}
-          />
-        </Grid>
+
         <Grid xs={12} md={6}>
           {/* postal code */}
           <StyledFormField

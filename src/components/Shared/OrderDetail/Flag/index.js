@@ -34,19 +34,19 @@ export default function FlagDetails({ order }) {
 
   return (
     <Box>
-      {!order?.flag?.length && (
+      {!order?.flag?.length ? (
         <Stack pt={30} pb={3}>
           <Typography textAlign="center" variant="body1">
             No Flags
           </Typography>
         </Stack>
-      )}
-      {order?.flag?.length && (
+      ) : (
         <Stack gap={4}>
           <StyledOrderDetailBox
             title={
               <span>
-                <FlagIcon color="#DD5B63" /> Flag Details
+                Flag Details&nbsp;&nbsp;
+                <FlagIcon color="#DD5B63" />
               </span>
             }
           >

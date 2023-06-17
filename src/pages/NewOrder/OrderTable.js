@@ -17,10 +17,10 @@ import { UpdateFlag } from './UpdateFlag';
 import UpdateOrderStatusForm from './UpdateOrderStatusForm';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
-export default function OrderTable({ orders = [], onRowClick, orderType, adminType, loading }) {
+export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
   const { general } = useGlobalContext();
 
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
   const history = useHistory();
 
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
@@ -53,8 +53,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
-
   const columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile'],
@@ -75,9 +73,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
               ? {
                   sx: { color: 'primary.main', cursor: 'pointer' },
                   onClick: () => {
-                    if (onRowClick) {
-                      onRowClick(row);
-                    }
+                    if (onViewDetail) onViewDetail(row);
                   },
                 }
               : undefined

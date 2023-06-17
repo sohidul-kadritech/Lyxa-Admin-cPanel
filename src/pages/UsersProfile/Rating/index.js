@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -21,10 +22,11 @@ const tabsOptions = [
 
 export default function UserRatings({ user }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(user?._id, 'shop'));
+  const [totalPage, setTotalPage] = useState(1);
 
   const query = useQuery([Api.USER_REVIEWS, queryParams], () => AXIOS.get(Api.USER_REVIEWS, { params: queryParams }), {
     onSuccess: (data) => {
-      console.log(data);
+      setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
     },
   });
 
@@ -35,15 +37,31 @@ export default function UserRatings({ user }) {
           options={tabsOptions}
           value={queryParams.type}
           onChange={(value) => {
-            setQueryParams((prev) => ({ ...prev, type: value }));
+            setQueryParams((prev) => ({ ...prev, type: value, page: 1 }));
           }}
         />
       </Box>
       <TabPanel index="shop" noPadding value={queryParams.type}>
-        <ShopRatingTable rows={query?.data?.data?.reviews} type="shop" />
+        <ShopRatingTable
+          user={user}
+          rows={query?.data?.data?.reviews}
+          type="shop"
+          totalPage={totalPage}
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          loading={query?.isLoading}
+        />
       </TabPanel>
       <TabPanel index="deliveryBoy" noPadding value={queryParams.type}>
-        <ShopRatingTable rows={query?.data?.data?.reviews} type="rider" />
+        <ShopRatingTable
+          user={user}
+          rows={query?.data?.data?.reviews}
+          type="rider"
+          totalPage={totalPage}
+          queryParams={queryParams}
+          loading={query?.isLoading}
+          setQueryParams={setQueryParams}
+        />
       </TabPanel>
     </Box>
   );

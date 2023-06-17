@@ -12,7 +12,7 @@ export default function ShopPreview({ shop, loading }) {
   // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code;
+  const currency = general?.currency?.symbol;
 
   if (loading) {
     return <ComponentSkeleton />;

@@ -3,7 +3,7 @@ import { useGlobalContext } from '../../../../context';
 
 export function StyledListItem({ label, isCurrency, value }) {
   const { general } = useGlobalContext();
-  const currency = general?.currency?.code?.toUpperCase();
+  const currency = general?.currency?.symbol;
 
   return (
     <Stack direction="row" alignItems="baseline" justifyContent="space-between" gap="10px">
