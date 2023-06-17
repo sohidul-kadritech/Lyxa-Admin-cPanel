@@ -1,10 +1,10 @@
 {
   "files": {
     "main.css": "/static/css/main.67268934.css",
-    "main.js": "/static/js/main.40c58131.js",
-    "static/js/949.86b75e5d.chunk.js": "/static/js/949.86b75e5d.chunk.js",
-    "static/js/332.48dc95f0.chunk.js": "/static/js/332.48dc95f0.chunk.js",
-    "static/js/943.3f34dc7f.chunk.js": "/static/js/943.3f34dc7f.chunk.js",
+    "main.js": "/static/js/main.72d75dd8.js",
+    "static/js/949.c6135bca.chunk.js": "/static/js/949.c6135bca.chunk.js",
+    "static/js/332.95362465.chunk.js": "/static/js/332.95362465.chunk.js",
+    "static/js/943.1a876dda.chunk.js": "/static/js/943.1a876dda.chunk.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.aee5e39f.chunk.js": "/static/js/867.aee5e39f.chunk.js",
@@ -56,11 +56,14 @@
     "static/media/delivery-icon.svg": "/static/media/delivery-icon.2ab961dea3f0eb873984ff560d27a953.svg",
     "static/media/cash.svg": "/static/media/cash.bf15cf536b310a094e6de5c17b29d5d6.svg",
     "static/media/lyxa-pay.svg": "/static/media/lyxa-pay.518a4f681fc189193a848e9e70ddddd6.svg",
+    "static/media/vehicleNumber.svg": "/static/media/vehicleNumber.6ed54a1847f37b792a7a25d26f97254d.svg",
     "static/media/buy-icon.svg": "/static/media/buy-icon.49885a8e5f573d02ecf3bf23d72cb212.svg",
     "static/media/finance-admin.svg": "/static/media/finance-admin.0237b379014d7224913ce5fa1b4edce4.svg",
+    "static/media/vehicleType.svg": "/static/media/vehicleType.5fff8228f57c3aefc0b03c4fea188491.svg",
     "static/media/discount-icon.svg": "/static/media/discount-icon.ad72e76c78272af0477057c8464ceaf5.svg",
     "static/media/register.svg": "/static/media/register.61ac615b8b8df851cae44d007de3ab42.svg",
     "static/media/dob.svg": "/static/media/dob.0ae4b13309929a890723929ca04f9659.svg",
+    "static/media/areaCovered.svg": "/static/media/areaCovered.25148bfc3f9c48667c4904ec5e1c9263.svg",
     "static/media/sellers.svg": "/static/media/sellers.5ded553b98b2ecb18bef7c8cc11e0f3b.svg",
     "static/media/riders.svg": "/static/media/riders.a0c4318532908e452f1b16e8d792fd1e.svg",
     "static/media/collapse.svg": "/static/media/collapse.5edf4c7a3252bac6cc6847b4c1e45d90.svg",
@@ -119,6 +122,7 @@
     "static/media/order-flag.svg": "/static/media/order-flag.9b56d9503980d88e036471844c76a3ef.svg",
     "static/media/search.svg": "/static/media/search.cac6b16e25170e472a7503e45c522632.svg",
     "static/media/logout.svg": "/static/media/logout.19ba31264b2635f42576ab12982a541d.svg",
+    "static/media/shift.svg": "/static/media/shift.5c8e078e01db6c8e2c747b1e292d24de.svg",
     "static/media/delete-icon.svg": "/static/media/delete-icon.920e34927a7844d29da7aceaca21f3ff.svg",
     "static/media/login-user.svg": "/static/media/login-user.8e8ed31e7905a587199bc20911336b42.svg",
     "static/media/heart.svg": "/static/media/heart.2b7858e3b2580587c6591d0e3d9131d7.svg",
@@ -134,6 +138,6 @@
   },
   "entrypoints": [
     "static/css/main.67268934.css",
-    "static/js/main.40c58131.js"
+    "static/js/main.72d75dd8.js"
   ]
 }
