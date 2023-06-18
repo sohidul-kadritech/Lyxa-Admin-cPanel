@@ -67,7 +67,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   // shop products
   const productsQuery = useQuery(
-    ['shop-all-products'],
+    [Api.ALL_PRODUCT],
     () =>
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
@@ -297,25 +297,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
     onSuccess: (data, args) => {
       if (data?.status) {
-        setServerState((prev) => data?.data?.marketing || prev);
         successMsg('Settings successfully updated', 'success');
-
-        if (data?.data?.marketing?.products?.length > 0) {
-          setHasChanged(true);
-        }
-
-        setHasGlobalChange(false);
-
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
-        queryClient.invalidateQueries([`shop-all-products`]);
-
-        if (args.status === 'inactive') {
-          setPageMode(0);
-          setIsPageDisabled(false);
-        } else {
-          setPageMode(1);
-          setIsPageDisabled(true);
-        }
+        queryClient.invalidateQueries([Api.ALL_PRODUCT]);
+        onClose();
       }
     },
   });
@@ -443,8 +428,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
         if (data?.status) {
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
-          queryClient.invalidateQueries([`shop-all-products`]);
-
+          queryClient.invalidateQueries([Api.ALL_PRODUCT]);
           onDelete();
         }
       },
