@@ -89,7 +89,6 @@ import RidersTransactions from '../pages/AppWallet2/ForRider';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
-import NewOrders from '../pages/NewOrder';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
 import PrivacySettings from '../pages/Privacy';
@@ -116,7 +115,7 @@ export const admin_routes = [
   // dashboard
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
-  { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
+  // { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
   { path: '/orders', component: AdminOrders },
 
   { path: '/orders/list', component: ButlerOrderList },
@@ -128,7 +127,7 @@ export const admin_routes = [
   // vat
   { path: '/vat2', component: Vat },
   { path: '/vat', component: Vat2 },
-  { path: '/riders', component: () => <RiderList viewUserType="admin" /> },
+  { path: '/riders', component: RiderList, componentProps: { viewUserType: 'admin' } },
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
@@ -148,15 +147,19 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
+  { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
+  // { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
-  { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  // { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  { path: '/shops/marketing/:id', component: Marketing, componentProps: { viewUserType: 'admin' } },
   {
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
-    component: () => <MarketingDashboard viewUserType="admin" />,
+    component: MarketingDashboard,
+    componentProps: { viewUserType: 'admin' },
   },
+
   { path: '/shop', component: AdminShopList },
   { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
