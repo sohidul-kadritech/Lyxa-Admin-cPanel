@@ -47,7 +47,7 @@ function AccountFinancials() {
       AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
         params: { startDate: range.start, endDate: range.end },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   console.log(getDashboardSummary?.data?.data?.summary);
@@ -58,7 +58,7 @@ function AccountFinancials() {
       AXIOS.get(API_URL.DROP_PAY_LIST, {
         params: { pageSize: 50, searchKey, sortBy, startDate: range.start, endDate: range.end },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
   // GENERATE PDF
   const downloadPdf = () => {
@@ -80,10 +80,10 @@ function AccountFinancials() {
       trx?.amount ?? 0,
       trx?.user?.email,
       trx?.type === 'userPayAfterReceivedOrderByCard' ? 'Card' : 'Lyxa',
-      moment(trx?.createdAt)?.format('MMM DD, YYYY'),
-      trx?.summary?.riderEarning,
-      trx?.summary.totalCashInHand,
-      trx?.summary.settleAmount,
+      `${moment(trx?.createdAt)?.format('MMM DD, YYYY')}, ${moment(trx?.createdAt)?.format('hh:mm A')}`,
+      // trx?.summary?.riderEarning,
+      // trx?.summary.totalCashInHand,
+      // trx?.summary.settleAmount,
     ]);
 
     console.log('===>data', data);
