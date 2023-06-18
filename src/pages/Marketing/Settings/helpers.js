@@ -1,5 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography, styled, useTheme } from '@mui/material';
-import _ from 'lodash';
 import moment from 'moment';
 
 // constants
@@ -21,10 +21,68 @@ export const confirmActionInit = {
 };
 
 // helper functions
-export const createGroupedList = (products, category) => {
-  const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-  return productsList.filter((item) => !item?.marketing && (!category || item?.category?.name === category));
+// export const createGroupedList = (products, category) => {
+//   const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
+//   return productsList.filter((item) => !item?.marketing && (!category || item?.category?.name === category));
+// };
+
+export const createProductData = (products, { marketingType, rewardAmount, maxDiscount }) => {
+  let prb = null;
+
+  const data = products.map((item) => {
+    // reward
+    if (!item?._id) {
+      prb = 'Please remove empty items from list!';
+    }
+
+    if (marketingType === 'reward' && !item?.rewardCategory) {
+      prb = 'Please select category for product!';
+    }
+
+    if (marketingType === 'reward' && !item?.rewardBundle) {
+      prb = 'Please select reward bundle for product!';
+    }
+
+    if (marketingType === 'reward') {
+      return {
+        id: item?._id,
+        rewardCategory: item?.rewardCategory,
+        rewardBundle: item?.rewardBundle,
+        reward: {
+          amount: (item.price - (item?.price / 100) * item?.rewardBundle).toFixed(2),
+          points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
+        },
+      };
+    }
+
+    // percentage
+    if (marketingType === 'percentage' && !item?.discountPercentage) {
+      prb = 'Please select percentage bundle for product!';
+    }
+
+    if (marketingType === 'percentage') {
+      const discountAmount = (item?.price / 100) * item?.discountPercentage;
+
+      return {
+        id: item?._id,
+        discountPercentage: item?.discountPercentage,
+        discountPrice: item?.price - (maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount),
+        discount: maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount,
+      };
+    }
+
+    return {
+      id: item?._id,
+    };
+  });
+
+  if (prb) return prb;
+
+  return data;
 };
+
+export const createGroupedList = (products, category) =>
+  products.filter((item) => !category || item?.category?.name === category);
 
 export const createGroupedDataRow = (products) => {
   const categoryMap = {};
