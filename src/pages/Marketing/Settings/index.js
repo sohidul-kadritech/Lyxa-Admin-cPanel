@@ -28,6 +28,7 @@ import {
   CommonTitle,
   ItemsTitle,
   confirmActionInit,
+  createProductData,
   durationInit,
   getCurrentFeaturedWeekOption,
   getDurationLeft,
@@ -289,62 +290,16 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   });
 
   const updateLoyaltySettings = (status) => {
-    let prb = null;
-
-    const productsData = products.map((item) => {
-      // reward
-      if (!item?._id) {
-        prb = 'Please remove empty items from list!';
-      }
-
-      if (marketingType === 'reward' && !item?.rewardCategory) {
-        prb = 'Please select category for product!';
-      }
-
-      if (marketingType === 'reward' && !item?.rewardBundle) {
-        prb = 'Please select reward bundle for product!';
-      }
-
-      if (marketingType === 'reward') {
-        return {
-          id: item?._id,
-          rewardCategory: item?.rewardCategory,
-          rewardBundle: item?.rewardBundle,
-          reward: {
-            amount: (item.price - (item?.price / 100) * item?.rewardBundle).toFixed(2),
-            points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
-          },
-        };
-      }
-
-      // percentage
-      if (marketingType === 'percentage' && !item?.discountPercentage) {
-        prb = 'Please select percentage bundle for product!';
-      }
-
-      if (marketingType === 'percentage') {
-        const discountAmount = (item?.price / 100) * item?.discountPercentage;
-        return {
-          id: item?._id,
-          discountPercentage: item?.discountPercentage,
-          discountPrice:
-            item?.price - (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount),
-          discount: shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount,
-        };
-      }
-
-      return {
-        id: item?._id,
-      };
-    });
+    // will be array if no issue else string
+    const productsData = createProductData(products, { marketingType, rewardAmount, maxDiscount: shop?.maxDiscount });
 
     if (marketingType !== 'free_delivery' && marketingType !== 'featured' && products?.length === 0) {
       successMsg('Products cannot be empty!', 'warn');
       return;
     }
 
-    if (prb) {
-      successMsg(prb, 'warn');
+    if (typeof productsData === 'string') {
+      successMsg(productsData, 'warn');
       return;
     }
 
