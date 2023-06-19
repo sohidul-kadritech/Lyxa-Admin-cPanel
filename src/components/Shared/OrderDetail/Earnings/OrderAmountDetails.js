@@ -42,16 +42,22 @@ export default function OrderAmountDetails({ order = {} }) {
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
+        <StyledItem label="Buy 1 Get 1 (admin)" value="xxx" />
+        <StyledItem label="Rewards (admin)" value="xxx" />
+        <StyledItem label="Discount (admin)" value="xxx" />
+        <StyledItem label="Buy 1 Get 1  (shop)" value="xxx" />
+        <StyledItem label="Rewards (shop)" value="xxx" />
+        <StyledItem label="Discount (shop)" value="xxx" />
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
           <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
+          <StyledItem label="Deal compensation amount" value="xxx" />
         </Box>
         {/* 
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem label="Double Menu (admin)" value={(order?.sellerEarnings || 0).toFixed(2)} />
           <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
         </Box> */}
-
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem
             label="Rider Profit"
@@ -68,11 +74,11 @@ export default function OrderAmountDetails({ order = {} }) {
             />
           )}
           <StyledItem label="Lyxa Order Profit" value={(order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)} />
+          <StyledItem label="Deal compensation amount" value="xxx" />
         </Box>
-
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
-          <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} total />
-          <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} ptxs={3.5} pbsx={1} />
+          <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} />
+          <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} />
         </Box>
       </Box>
     </StyledOrderDetailBox>
