@@ -48,24 +48,49 @@ export default function Payout({ paymentDetails }) {
             {paymentDetails?.orderValue?.productAmountOnline > 0 && (
               <PriceItem title="Online" amount={paymentDetails?.orderValue?.productAmountOnline} />
             )}
-            {paymentDetails?.orderValue?.totalDiscount > 0 && (
+            {/* shop */}
+            {paymentDetails?.orderValue?.totalShopDiscount > 0 && (
               <PriceItem
-                title="Discount applied"
-                amount={paymentDetails?.orderValue?.totalDiscount}
+                title="Discount applied by shop"
+                amount={paymentDetails?.orderValue?.totalShopDiscount}
                 amountStatus="minus"
               />
             )}
-            {paymentDetails?.orderValue?.totalDoubleMenuItemPrice > 0 && (
+            {paymentDetails?.orderValue?.totalAdminDiscount > 0 && (
               <PriceItem
-                title="Buy 1 Get 1"
-                amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
+                title="Discount applied by lyxa"
+                amount={paymentDetails?.orderValue?.totalAdminDiscount}
+                amountStatus="minus"
+              />
+            )}
+
+            {paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice > 0 && (
+              <PriceItem
+                title="Buy 1 Get 1 applied by shop"
+                amount={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
                 amountStatus="secondary"
               />
             )}
-            {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
+            {paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice > 0 && (
               <PriceItem
-                title="Loyalty points"
-                amount={paymentDetails?.orderValue?.totalRewardAmount}
+                title="Buy 1 Get 1 applied by lyxa"
+                amount={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
+                amountStatus="secondary"
+              />
+            )}
+
+            {paymentDetails?.orderValue?.totalShopRewardAmount > 0 && (
+              <PriceItem
+                title="Loyalty points applied by shop"
+                amount={paymentDetails?.orderValue?.totalShopRewardAmount}
+                amountStatus="minus"
+              />
+            )}
+
+            {paymentDetails?.orderValue?.totalAdminRewardAmount > 0 && (
+              <PriceItem
+                title="Loyalty points applied by lyxa"
+                amount={paymentDetails?.orderValue?.totalAdminRewardAmount}
                 amountStatus="minus"
               />
             )}

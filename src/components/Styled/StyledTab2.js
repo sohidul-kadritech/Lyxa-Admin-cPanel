@@ -25,11 +25,23 @@ const StyledTab = styled(Box)(({ theme }) => ({
   },
 }));
 
-function TabItem({ tab, onSelect, isActive }) {
+const sizeProps = {
+  small: {
+    width: 'auto',
+    fontWeight: '500',
+    fontSize: '12px',
+    height: '27px',
+    padding: '0 12px',
+  },
+};
+
+function TabItem({ tab, onSelect, isActive, size }) {
   return (
     <StyledTab
+      sx={size ? sizeProps[size] : undefined}
       className={isActive ? 'active' : ''}
-      onClick={() => {
+      onClick={(event) => {
+        event.stopPropagation();
         onSelect(tab?.value);
       }}
     >
@@ -38,11 +50,11 @@ function TabItem({ tab, onSelect, isActive }) {
   );
 }
 
-export default function StyledTabs2({ options, onChange, value }) {
+export default function StyledTabs2({ options, onChange, value, size }) {
   return (
-    <Stack direction="row" alignItems="center" gap={4}>
+    <Stack direction="row" alignItems="center" gap={size === 'small' ? 2 : 4}>
       {options?.map((tab) => (
-        <TabItem key={tab?.value} tab={tab} isActive={value === tab.value} onSelect={onChange} />
+        <TabItem key={tab?.value} tab={tab} isActive={value === tab.value} onSelect={onChange} size={size} />
       ))}
     </Stack>
   );
