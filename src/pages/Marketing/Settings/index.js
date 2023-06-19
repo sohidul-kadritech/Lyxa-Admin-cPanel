@@ -656,7 +656,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 Title={
                   <CommonTitle
                     title="Spend Limit"
-                    subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
+                    subTitle={currentExpanedTab === 2 ? 'Set your spending limit' : 'Pay per order'}
                   />
                 }
                 disabled={isPageDisabled}
@@ -671,7 +671,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         color: theme.palette.text.danger,
                       },
                     }}
-                    label="Set maximum weekly spending limit"
+                    label="Set maximum spending limit"
                     control={
                       <Checkbox
                         sx={{
