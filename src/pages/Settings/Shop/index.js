@@ -1,23 +1,22 @@
 import { Box } from '@material-ui/core';
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { cloneDeep, isNaN, isNumber } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
+import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import Axios from '../../../network/axios';
 import MinimumOrder from './MinimumOrder';
 import { ShopSettingsSection2 } from './ShopSettingsSection/ShopSettingsSection2';
 import { General as ShopSettingsSection } from './ShopSettingsSection/index';
-
-// data
-
-import ConfirmModal from '../../../components/Common/ConfirmModal';
-import StyledSwitch from '../../../components/Styled/StyledSwitch';
-import { useGlobalContext } from '../../../context';
-import { successMsg } from '../../../helpers/successMsg';
+// import AXIOS from '../../../network/axios';
 import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
+import { ShopSettingsSection3 } from './ShopSettingsSection/ShopSettingsSection3';
 import {
   DeliverySettings,
   DietarySettings,
@@ -51,6 +50,18 @@ export const paymentInformationValidation = (paymentmethod) => {
   return false;
 };
 
+const filterTagsAndCuisine = (tagsCuisine) => {
+  const tagsOptions = [];
+  const cuisinesOptions = [];
+
+  tagsCuisine?.forEach((tag) => {
+    if (tag?.type === 'tag') tagsOptions.push(tag);
+    else cuisinesOptions.push(tag);
+  });
+
+  return { tagsOptions, cuisinesOptions };
+};
+
 function ShopSettings() {
   const { currentUser } = useGlobalContext();
   const { shop, adminType } = currentUser;
@@ -66,6 +77,10 @@ function ShopSettings() {
   const [newDeliveryFee, setNewDeliveryFee] = useState(newShop?.deliveryFee || 0);
 
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount || 0);
+
+  const [newTags, setNewTags] = useState(newShop?.tagsId || []);
+
+  const [newCusines, setNewCusines] = useState(newShop?.cuisineType || []);
 
   // eslint-disable-next-line no-unused-vars
   const [newSpecialInstructions, setNewSpecialInstructions] = useState(newShop?.specialInstructions || false);
@@ -94,6 +109,8 @@ function ShopSettings() {
         shop.deliveryFee = data?.data?.shop?.deliveryFee;
         shop.minOrderAmount = data?.data?.shop.minOrderAmount || shop.minOrderAmount;
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
+        shop.tagsId = data?.data?.shop.tagsId || shop.tagsId;
+        shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
         set_has_unsaved_change(false);
       }
     },
@@ -111,8 +128,9 @@ function ShopSettings() {
       newSpecialInstructions,
       newDeliveryFee,
       OwnDeliveryBoy,
-      // eslint-disable-next-line prettier/prettier
       adminType,
+      newTags,
+      newCusines
     );
     if (data) {
       updateData.mutate(data);
@@ -140,6 +158,8 @@ function ShopSettings() {
       console.log('shop?.specialInstructions==========>', shop?.specialInstructions);
       return shop?.specialInstructions || false;
     });
+    setNewCusines(shop?.cuisineType || []);
+    setNewTags(newShop?.tagsId || []);
   };
 
   useEffect(() => {
@@ -200,11 +220,27 @@ function ShopSettings() {
   };
 
   // Handle max discount
-
   const maxDiscountHandler = (value) => {
     setNewMaxDiscount(value);
     set_has_unsaved_change(true);
   };
+
+  const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES], () =>
+    Axios.get(Api.GET_ALL_TAGS_AND_CUSINES, {
+      params: {
+        page: 1,
+        pageSize: 500,
+        shopType: shop?.shopType,
+      },
+    })
+  );
+
+  const { tagsOptions, cuisinesOptions } = useMemo(
+    () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
+    [tagsQuery?.data]
+  );
+
+  console.log({ shop });
 
   return (
     <>
@@ -257,6 +293,30 @@ function ShopSettings() {
               multiple
             />
           </Box>
+          <Box sx={boxSx2}>
+            <ShopSettingsSection3
+              boxSx={section2Sx}
+              setHasChanged={set_has_unsaved_change}
+              title="Tags"
+              options={tagsOptions}
+              loading={tagsQuery?.isLoading}
+              value={newTags}
+              setValue={setNewTags}
+            />
+          </Box>
+          {shop?.shopType === 'food' && (
+            <Box sx={boxSx2}>
+              <ShopSettingsSection3
+                boxSx={section2Sx}
+                setHasChanged={set_has_unsaved_change}
+                title="Cuisine"
+                options={cuisinesOptions}
+                loading={tagsQuery?.isLoading}
+                value={newCusines}
+                setValue={setNewCusines}
+              />
+            </Box>
+          )}
           <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
@@ -401,13 +461,36 @@ function ShopSettings() {
             </Button>
             <Button
               onClick={() => {
+                // if (!paymentInformationValidation(newPayMentInformation)) {
+                //   set_has_unsaved_change(false);
+                // } else if (newTags?.length === 0) {
+                //   successMsg('Please add atleast one tag!');
+                // } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
+                //   updateShopSettings();
+                // } else {
+                //   successMsg('Please make some changes first!');
+                // }
                 if (!paymentInformationValidation(newPayMentInformation)) {
                   set_has_unsaved_change(false);
-                } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
-                  updateShopSettings();
-                } else {
-                  successMsg('Please make some changes first!');
+                  return;
                 }
+
+                if (!has_unsaved_change) {
+                  successMsg('Please make some changes first!');
+                  return;
+                }
+
+                if (newTags?.length < 1) {
+                  successMsg('Please choose atleast one tag!');
+                  return;
+                }
+
+                if (newCusines?.length < 1 && shop?.shopType === 'food') {
+                  successMsg('Please add atleast one cuisine!');
+                  return;
+                }
+
+                updateShopSettings();
               }}
               variant="contained"
               color="primary"
