@@ -11,7 +11,7 @@ export const getQueryParamsInit = (params) => ({
   ...params,
 });
 
-export const menuOtions = (userType) => {
+export const menuOtions = (userType, currentRoute) => {
   const options = [
     {
       label: 'Edit Shop',
@@ -19,7 +19,7 @@ export const menuOtions = (userType) => {
     },
   ];
 
-  if (userType !== 'shop') {
+  if (userType !== 'shop' && currentRoute?.search('shop/dashboard') === -1) {
     options?.push({
       label: 'Access as Shop',
       value: 'access-shop',
