@@ -46,10 +46,10 @@ const getpagesList = () => [
     label: 'Invoice Configuration',
     to: '#',
   },
-  // {
-  //   label: 'Percentages',
-  //   to: '/percentage-setting',
-  // },
+  {
+    label: 'Default Chat Message',
+    to: '/admin/default-chat-message',
+  },
   {
     label: 'Percentages',
     to: '/percentage-setting2',

@@ -254,7 +254,6 @@ export const admin_routes = [
 
   //  settings
   { path: '/app/settings', component: AppSettings },
-
   { path: '/testing', component: AdminSettings2 },
 
   { path: '/settings/app-settings', component: Appsettings2 },
