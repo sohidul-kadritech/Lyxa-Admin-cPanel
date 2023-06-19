@@ -75,7 +75,8 @@ export default function Overview({ viewUserType }) {
     query?.data?.data?.summary?.orderValue?.totalDiscount +
     query?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice +
     query?.data?.data?.summary?.orderValue?.totalRewardAmount +
-    query?.data?.data?.summary?.freeDeliveryShopCut;
+    query?.data?.data?.summary?.freeDeliveryShopCut +
+    query?.data?.data?.summary?.totalFeaturedAmount;
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>

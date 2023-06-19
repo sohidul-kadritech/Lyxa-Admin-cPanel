@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { React } from 'react';
 import { useHistory } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
 import TablePagination from '../../../components/Common/TablePagination';
@@ -9,9 +10,75 @@ import StyledBox from '../../../components/StyledCharts/StyledBox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
 
-export default function ShopListTable({ shops, setPage, page, totalPage, loading, handleMenuClick, menuItems }) {
+// const IconButton = styled('span')(() => ({
+//   width: '30px',
+//   height: '30px',
+//   display: 'inline-flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   color: 'rgba(54, 54, 54, 0.5)',
+//   borderRadius: '50%',
+
+//   '& .MuiSvgIcon-root': {
+//     width: '16px',
+//     height: '16px',
+//   },
+
+//   '&:hover': {
+//     background: 'rgba(0, 0, 0, 0.05)',
+//   },
+// }));
+
+/*
+  sortByOrders: '',
+  sortByAvgTime: '',
+  sortByRating: '',
+  sortByProfit: '',
+*/
+
+// function CommonHeader({ title, filter, queryParams, refetch }) {
+//   const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
+//   const [render, setRender] = useState(false);
+
+//   const onClick = () => {
+//     let val = '';
+//     if (queryParams[filter] === 'asc') val = 'desc';
+//     if (queryParams[filter] === 'desc') val = '';
+//     if (queryParams[filter] === '') val = 'asc';
+
+//     props.forEach((p) => {
+//       queryParams[p] = '';
+//     });
+
+//     queryParams[filter] = val;
+
+//     setRender(!render);
+//     refetch();
+//   };
+
+//   return (
+//     <Stack direction="row" alignItems="center" gap="2px" sx={{ cursor: 'pointer' }} onClick={onClick}>
+//       <span>{title}</span>
+//       {queryParams[filter] !== '' && (
+//         <IconButton>{queryParams[filter] === 'desc' ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}</IconButton>
+//       )}
+//     </Stack>
+//   );
+// }
+
+export default function ShopListTable({
+  shops,
+  totalPage,
+  loading,
+  handleMenuClick,
+  menuItems,
+  queryParams,
+  setQueryParams,
+}) {
   const history = useHistory();
   const { dispatchCurrentUser } = useGlobalContext();
+
+  console.log({ queryParams });
 
   const column = [
     {
@@ -80,20 +147,29 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
     },
     {
       id: 4,
+      sortable: false,
       headerName: 'ORDERS',
+      // renderHeader: () => (
+      //   <CommonHeader title="ORDERS" filter="sortByOrders" queryParams={queryParams} refetch={refetch} />
+      // ),
       field: 'totalOrder',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
       id: 4,
+      sortable: false,
       headerName: 'AVG.TIME',
+      // renderHeader: () => (
+      //   <CommonHeader title="AVG.TIME" filter="sortByAvgTime" queryParams={queryParams} refetch={refetch} />
+      // ),
       field: 'avgOrderDeliveryTime',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
       id: 5,
+      sortable: false,
       headerName: 'RATING',
       field: 'rating',
       flex: 1,
@@ -103,6 +179,7 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
     },
     {
       id: 6,
+      sortable: false,
       headerName: 'PROFIT',
       field: 'totalProfit',
       flex: 1,
@@ -161,7 +238,11 @@ export default function ShopListTable({ shops, setPage, page, totalPage, loading
               }}
             />
           </StyledBox>
-          <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+          <TablePagination
+            currentPage={queryParams?.page}
+            lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+            totalPage={totalPage}
+          />
         </>
       )}
     </Box>

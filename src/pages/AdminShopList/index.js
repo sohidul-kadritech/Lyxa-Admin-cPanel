@@ -2,13 +2,14 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
-import SearchBar from '../../components/Common/CommonSearchbar';
+// import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import SearchBar from './Searchbar';
 import ShopListTable from './Table';
 
 const queryParamsInit = (type) => ({
@@ -19,6 +20,10 @@ const queryParamsInit = (type) => ({
   type,
   shopStatus: 'all',
   liveStatus: 'all',
+  sortByOrders: '',
+  sortByAvgTime: '',
+  sortByRating: '',
+  sortByProfit: '',
 });
 
 const tabValueToTypeMap = { 0: 'food', 1: 'grocery', 2: 'pharmacy' };
@@ -90,29 +95,17 @@ export default function ShopList() {
         <Tab label="Pharmacy" />
       </Tabs>
       <Box pt="30px" pb="30px">
-        <SearchBar
-          queryParams={queryParams}
-          setQueryParams={setQueryParams}
-          searchPlaceHolder="Search shops"
-          hideFilters={{
-            button: true,
-            status: true,
-            startDate: true,
-            endDate: true,
-            sort: true,
-          }}
-        />
+        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search shops" />
       </Box>
       <ShopListTable
         shops={shopsQuery?.data?.data?.shops}
         loading={shopsQuery?.isLoading}
-        page={queryParams.page}
+        queryParams={queryParams}
         totalPage={totalPage}
-        setPage={(page) => {
-          setQueryParams((prev) => ({ ...prev, page }));
-        }}
+        setQueryParams={setQueryParams}
         menuItems={menuItems}
         handleMenuClick={handleMenuClick}
+        refetch={shopsQuery?.refetch}
       />
       <Drawer
         anchor="right"
