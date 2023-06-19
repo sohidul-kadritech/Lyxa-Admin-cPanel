@@ -24,7 +24,7 @@ import ProfitChart from './ProfitChart';
 const marketingSpentTypeOptions = [
   { label: 'All', value: 'all' },
   { label: 'Shop', value: 'shop' },
-  { label: 'Admin', value: 'admin' },
+  { label: 'Lyxa', value: 'admin' },
 ];
 
 const dateRangeItit = {
