@@ -5,6 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Avatar, Box, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import EditDocument from '../../components/Common/EditDocument';
 import Rating from '../../components/Common/Rating';
@@ -36,7 +37,7 @@ function ShopList({
   const [currentDocumet, setCurrentDocumet] = useState({});
 
   const history = useHistory();
-
+  const routeMatch = useRouteMatch();
   // eslint-disable-next-line no-unused-vars
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
   // eslint-disable-next-line no-unused-vars
@@ -78,7 +79,10 @@ function ShopList({
                   textTransform: 'capitalize',
                 }}
                 onClick={() => {
-                  history.push(`/shop/profile/${params?.row?._id}`);
+                  history.push({
+                    pathname: `/shop/profile/${params?.row?._id}`,
+                    state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
+                  });
                   dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row, seller: currentSeller } } });
                 }}
               >

@@ -23,6 +23,10 @@ const getpagesList = () => [
     to: '/settings/categories/list',
   },
   {
+    label: 'Categories List2',
+    to: '/settings/categories/list2',
+  },
+  {
     label: 'Chat',
     to: '/customer-support',
   },
@@ -91,7 +95,7 @@ const filterPages = (searchKey, pages) => {
     page?.label
       ?.toLowerCase()
       // eslint-disable-next-line prettier/prettier
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
   );
 };
 

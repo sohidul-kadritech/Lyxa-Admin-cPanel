@@ -1,13 +1,16 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 // eslint-disable-next-line import/no-named-as-default
-import { useHistory } from 'react-router-dom';
+
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
 function ShopsFinancialsTable({ data = [], loading }) {
   // eslint-disable-next-line no-unused-vars
   const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
+  const routeMatch = useRouteMatch();
+  console.log('routeMatch', routeMatch);
   const theme = useTheme();
   const currency = general?.currency?.symbol;
   const history = useHistory();
@@ -38,7 +41,10 @@ function ShopsFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history.push(`/shop/profile/${params?.row?._id}`);
+                history.push({
+                  pathname: `/shop/profile/${params?.row?._id}`,
+                  state: { from: `${routeMatch?.path}`, backToLabel: 'Back to Financials' },
+                });
                 dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row } } });
               }}
             >

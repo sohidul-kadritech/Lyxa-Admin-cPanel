@@ -1,6 +1,6 @@
 import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import OrderDetail from '../../../components/Shared/OrderDetail';
@@ -11,7 +11,7 @@ export default function CustomerRating({ rows = [], loading }) {
   const history = useHistory();
   const [currentOrder, setCurrentOrder] = useState({});
   const [open, setOpen] = useState(false);
-
+  const routeMatch = useRouteMatch();
   const columns = [
     {
       id: 1,
@@ -50,7 +50,10 @@ export default function CustomerRating({ rows = [], loading }) {
           variant="body4"
           sx={{ color: 'primary.main', cursor: 'pointer' }}
           onClick={() => {
-            history.push(`/shop/profile/${row?.order?.shop?._id}`);
+            history.push({
+              pathname: `/shop/profile/${row?.order?.shop?._id}`,
+              state: { from: routeMatch?.path, backToLabel: 'Back to categories' },
+            });
           }}
         >
           {row?.order?.shop?.shopName}

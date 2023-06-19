@@ -75,12 +75,11 @@ export default function RiderProfile() {
     <Box>
       <PageTop
         title={`${searchParams.get('financials') === 'riders' ? '' : 'Rider Profile'}`}
-        // title="Rider Profile"
+        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
+        backTo={location?.state ? location?.state?.from : undefined}
         breadcrumbItems={
           searchParams.get('financials') === 'riders' ? getBreadCrumbItems(searchParams, params?.riderId) : undefined
         }
-        backButtonLabel={`${searchParams.get('financials') === 'riders' ? 'Back to Financials' : 'Back to Riders'}`}
-        backTo={`${searchParams.get('financials') === 'riders' ? '/financials' : backRoute}`}
       />
       {query?.isLoading && (
         <ProfileSkeleton>

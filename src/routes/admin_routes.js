@@ -89,6 +89,8 @@ import RidersTransactions from '../pages/AppWallet2/ForRider';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
+import AdBanner from '../pages/Banner2';
+import CategoryList2 from '../pages/CategoryList';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
 import PrivacySettings from '../pages/Privacy';
@@ -283,6 +285,7 @@ export const admin_routes = [
   { path: '/settings/products/unit-types', component: UnitTypes },
   { path: '/settings/ratings', component: RatingSettings2 },
   { path: '/settings/categories/list', component: CategoryList },
+  { path: '/settings/categories/list2', component: CategoryList2 },
   { path: '/settings/categories/edit/:id', component: CategoryAdd },
   { path: '/settings/category/details/:id', component: CategoryDetails },
 
@@ -308,6 +311,7 @@ export const admin_routes = [
   { path: '/display/filter-containers', component: FilterContainers },
   { path: '/display/tags-cusines', component: TagsAndCusines },
   { path: '/display/banner', component: BannerPage },
+  { path: '/display/banner2', component: AdBanner },
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
   { path: '/admin/requested-area', component: RequestedArea },

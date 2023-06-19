@@ -2,7 +2,7 @@
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import UserAvatar from '../../components/Common/UserAvatar';
@@ -10,6 +10,7 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 
+import {} from 'react-router-dom/cjs/react-router-dom.min';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
@@ -22,7 +23,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
 
   const currency = general?.currency?.symbol;
   const history = useHistory();
-
+  const routeMatch = useRouteMatch();
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
 
   const [flagModal, setFlagModal] = useState(false);
@@ -110,7 +111,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
               ? {
                   sx: { color: 'primary.main', cursor: 'pointer' },
                   onClick: () => {
-                    history.push(`/shop/profile/${row?.shop?._id}`);
+                    history.push({
+                      pathname: `/shop/profile/${row?.shop?._id}`,
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Order List' },
+                    });
                   },
                 }
               : undefined

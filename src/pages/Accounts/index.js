@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import * as Api from '../../network/Api';
@@ -22,7 +23,7 @@ const queryParamsInit = {
 export default function AccountList() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [totalPage, setTotalPage] = useState(1);
-
+  const location = useLocation();
   const query = useQuery(
     [Api.ALL_USERS, queryParams],
     () =>
@@ -34,12 +35,17 @@ export default function AccountList() {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
     <Box pb={9}>
-      <PageTop title="Accounts" />
+      <PageTop
+        title="Accounts"
+        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
+        backTo={location?.state ? location?.state?.from : undefined}
+      />
       <Box pb={7.5}>
         <SearchBar
           searchPlaceHolder="Search accounts"
