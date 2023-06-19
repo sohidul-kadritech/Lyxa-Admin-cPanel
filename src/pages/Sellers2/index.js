@@ -1,7 +1,7 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -20,6 +20,7 @@ import { previewGenerator } from './helpers';
 function SellerList2() {
   // eslint-disable-next-line no-unused-vars
   const routeMatch = useRouteMatch();
+  const location = useLocation();
 
   const [status, setStatus] = useState('all');
 
@@ -140,6 +141,8 @@ function SellerList2() {
       {/* Sellers Page Top Section */}
       <PageTop
         title="Seller List"
+        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
+        backTo={location?.state ? location?.state?.from : undefined}
         sx={{
           position: 'sticky',
           top: '-2px',

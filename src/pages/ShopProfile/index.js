@@ -2,8 +2,8 @@
 import { Box, Drawer } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useRouteMatch } from 'react-router-dom';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
@@ -20,6 +20,9 @@ import { createShopData } from './helper';
 
 export default function ShopProfile({ setLoading = () => {}, loading }) {
   const routeMatch = useRouteMatch();
+  const location = useLocation();
+  console.log('location:===>', location);
+  console.log('location:===>', location?.state?.backToLabel);
   const history = useHistory();
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
   const { seller } = currentUser;
@@ -144,7 +147,11 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
   return (
     <Box>
-      <PageTop title="Profie" />
+      <PageTop
+        title="Profie"
+        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
+        backTo={location?.state ? location?.state?.from : undefined}
+      />
       <Box
         sx={{
           display: 'grid',

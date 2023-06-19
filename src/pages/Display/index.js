@@ -9,6 +9,10 @@ const pagesList = [
     to: '/display/banner/',
   },
   {
+    label: 'Ads Banner2',
+    to: '/display/banner2',
+  },
+  {
     label: 'Tags & Cuisines',
     to: '/display/tags-cusines',
   },

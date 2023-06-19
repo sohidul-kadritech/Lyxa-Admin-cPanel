@@ -17,7 +17,8 @@ import {
 function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lisener }) {
   const route = useHistory();
   const [bannerViewStyle, setBannerViewStyle] = useState(
-    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list'
+    // eslint-disable-next-line prettier/prettier
+    localStorage.getItem('bannerView') ? localStorage.getItem('bannerView') : 'list',
   );
 
   const [setting_Menu, setsetting_Menu] = useState(false);
@@ -100,7 +101,7 @@ function Breadcrumb({ breadcrumbItem, maintitle, title, loading, callBanner, lis
             </Dropdown>
             <Button
               onClick={() => {
-                route.push('add');
+                route.push('/display/banner/add');
               }}
             >
               Add New

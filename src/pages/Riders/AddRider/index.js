@@ -22,9 +22,10 @@ import {
 
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
+
   const [rider, setRider] = useState(
     // eslint-disable-next-line prettier/prettier
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
   );
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
@@ -42,7 +43,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
 
     if (newFiles?.length) {
@@ -73,7 +74,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setLoading(false);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   //  upload data
@@ -133,7 +134,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         });
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getShops = useMemo(
@@ -144,7 +145,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    []
+    [],
   );
 
   return (

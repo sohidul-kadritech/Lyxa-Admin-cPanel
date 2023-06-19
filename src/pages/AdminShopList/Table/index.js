@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { React } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
@@ -77,9 +76,7 @@ export default function ShopListTable({
 }) {
   const history = useHistory();
   const { dispatchCurrentUser } = useGlobalContext();
-
-  console.log({ queryParams });
-
+  const routeMatch = useRouteMatch();
   const column = [
     {
       id: 1,
@@ -115,7 +112,10 @@ export default function ShopListTable({
             titleProps={{
               sx: { color: 'primary.main', cursor: 'pointer' },
               onClick: () => {
-                history?.push(`/shop/profile/${row?._id}`);
+                history?.push({
+                  pathname: `/shop/profile/${row?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
+                });
                 dispatchCurrentUser({ type: 'shop', payload: { shop: row } });
               },
             }}

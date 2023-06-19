@@ -2,7 +2,7 @@
 import { Box, Drawer, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as DownIcon } from '../../../assets/icons/thumbs-down.svg';
 import { ReactComponent as UpIcon } from '../../../assets/icons/thumbs-up.svg';
 import OrderDetail from '../../../components/Shared/OrderDetail';
@@ -13,6 +13,7 @@ export default function ShopRatingTable({ rows = [], loading }) {
   const history = useHistory();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
+  const routeMatch = useRouteMatch();
 
   const columns = [
     {
@@ -45,7 +46,10 @@ export default function ShopRatingTable({ rows = [], loading }) {
             cursor: 'pointer',
           }}
           onClick={() => {
-            history.push(`/shop/profile/${row?.shop?._id}`);
+            history.push({
+              pathname: `/shop/profile/${row?.shop?._id}`,
+              state: { from: routeMatch?.path, backToLabel: 'Back to categories' },
+            });
           }}
         >
           {row?.shop?.shopName}

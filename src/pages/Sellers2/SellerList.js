@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
   return (
@@ -49,13 +49,17 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     if (sellerRef.current) {
       sellerRef.current?.scrollIntoView({
         behavior: 'smooth',
-        top: sellerContainer.current.offsetTop + 10,
+        // top: sellerContainer.current.offsetTop + 10,
       });
     }
   };
   useLayoutEffect(() => {
     handlePageLoad();
-  }, []);
+  }, [currentSeller]);
+
+  useEffect(() => {
+    handlePageLoad();
+  }, [currentSeller]);
 
   return (
     <Box
