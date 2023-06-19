@@ -78,7 +78,9 @@ export default function Payout({ paymentDetails }) {
             // Shop-powered deliveries: 10%.
             // VAT inclusive"
             titleAmount={Math.abs(paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback)}
-            titleAmountStatus={paymentDetails?.totalDropGet > 0 ? 'minus' : ''}
+            titleAmountStatus={
+              paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback > 0 ? 'minus' : ''
+            }
           />
 
           {/* total vat */}
@@ -103,7 +105,7 @@ export default function Payout({ paymentDetails }) {
                 paymentDetails?.freeDeliveryShopCut +
                   paymentDetails?.totalFeaturedAmount +
                   // eslint-disable-next-line prettier/prettier
-                  paymentDetails?.totalRefundAmount,
+                  paymentDetails?.totalRefundAmount
               )}
               titleAmountStatus={`${
                 paymentDetails?.freeDeliveryShopCut +
@@ -182,9 +184,9 @@ export default function Payout({ paymentDetails }) {
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 3 : -1);
               }}
-              sx={{
-                borderBottom: '0',
-              }}
+              // sx={{
+              //   borderBottom: '0',
+              // }}
             />
           )}
 

@@ -37,10 +37,11 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
   });
 
   const onSubmit = () => {
-    if (payment?.amount <= 0) {
-      successMsg('Amount must be greater than 0', 'error');
-      return;
-    }
+    // bounds
+    // if (payment?.amount <= 0) {
+    //   successMsg('Amount must be greater than 0', 'error');
+    //   return;
+    // }
 
     if (payment?.amount > amount) {
       successMsg('Amount is greater than remaining amount', 'error');
