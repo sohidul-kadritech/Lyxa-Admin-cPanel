@@ -1,5 +1,5 @@
 import { Box, Button, Drawer, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
@@ -11,8 +11,29 @@ import TopInfo from './TopInfo';
 import UserDetails from './UserDetails';
 import UserTabs from './UserTabs';
 
+const getBreadCrumbItems = (searchUrl, id) => {
+  const breadcrumbItems = [
+    {
+      label: 'Financials',
+      to: '/financials',
+    },
+    {
+      label: 'User List',
+      to: '/lyxa-pay2',
+    },
+    {
+      label: 'User Profile',
+      to: `/accounts/${id}?financials=${searchUrl.get('financials')}`,
+    },
+  ];
+
+  return breadcrumbItems;
+};
+
 export default function UserProfile() {
   const location = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [user, setUser] = useState(location?.state?.user);
   const [open, setOpen] = useState(false);
   const params = useParams();
@@ -30,12 +51,20 @@ export default function UserProfile() {
           setUser(data?.data?.user);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
     <Box>
-      <PageTop title="User Profile" backButtonLabel="Back to Accounts" backTo="/accounts" />
+      <PageTop
+        title={`${searchParams.get('financials') === 'user' ? '' : 'User Profile'}`}
+        breadcrumbItems={
+          searchParams.get('financials') === 'user' ? getBreadCrumbItems(searchParams, params?.userId) : undefined
+        }
+        backButtonLabel="Back to Accounts"
+        backTo="/accounts"
+      />
       {query?.isLoading && <ProfileSkeleton />}
       {!query?.isLoading && (
         <Box
