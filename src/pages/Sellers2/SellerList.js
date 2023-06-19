@@ -49,7 +49,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     if (sellerRef.current) {
       sellerRef.current?.scrollIntoView({
         behavior: 'smooth',
-        top: sellerContainer.current.offsetTop,
+        top: sellerContainer.current.offsetTop + 10,
       });
     }
   };

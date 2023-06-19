@@ -54,7 +54,7 @@ function AccountTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/accounts/${params?.row?._id}`);
+                history?.push(`/accounts/${params?.row?.user?._id}`);
               }}
             >
               {params?.row?.user?.name}
@@ -148,17 +148,17 @@ function AccountTable({ data = [], loading }) {
       <StyledTable
         columns={allColumns}
         rows={data}
-        // onRowClick={({ row }) => {
-        //   history?.push(`/riders/${row?._id}?financials=riders`);
-        // }}
+        onRowClick={({ row }) => {
+          history?.push(`/accounts/${row?.user?._id}?financials=user`);
+        }}
         getRowId={(row) => row?._id}
         sx={{
           '& .MuiDataGrid-cell': {
             cursor: 'pointer',
           },
-          // '& .MuiDataGrid-row:hover': {
-          //   backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          // },
+          '& .MuiDataGrid-row:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
+          },
         }}
         components={{
           NoRowsOverlay: () => (

@@ -14,7 +14,7 @@ import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { sortOptions } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import { dateRangeInit } from '../../Vat2/helpers';
+import { dateRangeInitFinancial } from '../ForSeller/helpers';
 import AddRemoveCredit from './AddRemoveCredit';
 import AccountTable from './Table';
 
@@ -29,7 +29,7 @@ const breadcrumbItems = [
   },
 ];
 function AccountFinancials() {
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [range, setRange] = useState({ ...dateRangeInitFinancial });
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
 
@@ -47,7 +47,7 @@ function AccountFinancials() {
       AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
         params: { startDate: range.start, endDate: range.end },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   console.log(getDashboardSummary?.data?.data?.summary);
@@ -58,7 +58,7 @@ function AccountFinancials() {
       AXIOS.get(API_URL.DROP_PAY_LIST, {
         params: { pageSize: 50, searchKey, sortBy, startDate: range.start, endDate: range.end },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
   // GENERATE PDF
   const downloadPdf = () => {
