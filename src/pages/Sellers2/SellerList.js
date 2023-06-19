@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
   return (
@@ -25,6 +25,8 @@ function SellerInfo({ sellerName, image, shopNumber }) {
 // eslint-disable-next-line no-unused-vars
 function SellerList({ data = [], currentSeller, setCurrentSeller }) {
   console.log(data);
+  const sellerRef = useRef(null);
+  const sellerContainer = useRef(null);
   const theme = useTheme();
   const styleForSellerList = {
     padding: '12px 20px 10px 20px',
@@ -43,13 +45,18 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
     cursor: 'pointer',
     backgroundColor: 'rgba(177, 177, 177, 0.2)',
   };
+  const handlePageLoad = () => {
+    if (sellerRef.current) {
+      sellerRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        top: sellerContainer.current.offsetTop,
+      });
+    }
+  };
+  useLayoutEffect(() => {
+    handlePageLoad();
+  }, []);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     document.getElementById(`seller_${currentSeller?._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  //   }, 100);
-  // }, []);
-  document.getElementById(`seller_${currentSeller?._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   return (
     <Box
       sx={{
@@ -62,13 +69,14 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
         overflow: 'auto',
       }}
     >
-      <Stack>
+      <Stack ref={sellerContainer}>
         {data.length > 0 ? (
           <>
             {data.map((seller, i) => (
               <Box
                 id={`seller_${seller._id}`}
                 key={i}
+                ref={currentSeller?._id !== seller?._id ? sellerRef : null}
                 sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
                 onClick={() => {
                   setCurrentSeller(seller);

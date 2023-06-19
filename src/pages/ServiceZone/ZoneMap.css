@@ -3,3 +3,12 @@
   height: 100%;
   border-radius: 7px;
 }
+.custom-tooltip {
+  color: white;
+  font-weight: 600;
+  background-color: black;
+}
+
+.custom-tooltip::before {
+  border-top-color: black;
+}
