@@ -36,26 +36,40 @@ function StyledItem({
 
 export default function OrderAmountDetails({ order = {} }) {
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
+  console.log(order?.shop);
+
   return (
-    <StyledOrderDetailBox title="Order Amount Details">
+    <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
           <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
         </Box>
+        {/* 
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
-          <StyledItem label="Rider Profit" value={(order?.deliveryBoyFee || 0).toFixed(2)} />
-        </Box>
+          <StyledItem label="Double Menu (admin)" value={(order?.sellerEarnings || 0).toFixed(2)} />
+          <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
+        </Box> */}
+
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem
-            label="Lyxa Delivery Profit"
-            isNegative
-            isRejected
-            value={(order?.dropCharge?.dropChargeFromDelivery || 0).toFixed(2)}
+            label="Rider Profit"
+            isCurrency={!order?.shop?.haveOwnDeliveryBoy}
+            value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : (order?.deliveryBoyFee || 0).toFixed(2)}
           />
+        </Box>
+
+        <Box pt={3.5} borderTop="1px solid #EEEEEE">
+          {!order?.shop?.haveOwnDeliveryBoy && (
+            <StyledItem
+              label="Lyxa Delivery Profit"
+              value={(order?.dropCharge?.dropChargeFromDelivery || 0).toFixed(2)}
+            />
+          )}
           <StyledItem label="Lyxa Order Profit" value={(order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)} />
         </Box>
+
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
           <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} total />
           <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} ptxs={3.5} pbsx={1} />
