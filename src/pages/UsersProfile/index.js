@@ -62,8 +62,8 @@ export default function UserProfile() {
         breadcrumbItems={
           searchParams.get('financials') === 'user' ? getBreadCrumbItems(searchParams, params?.userId) : undefined
         }
-        backButtonLabel="Back to Accounts"
-        backTo="/accounts"
+        backButtonLabel={searchParams.get('financials') === 'user' ? 'Back to Financials' : 'Back to Accounts'}
+        backTo={searchParams.get('financials') === 'user' ? '/financials' : '/accounts'}
       />
       {query?.isLoading && <ProfileSkeleton />}
       {!query?.isLoading && (
