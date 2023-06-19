@@ -8,7 +8,7 @@ import { useGlobalContext } from '../../../context';
 
 export default function OrderTable({ orders = [], onRowClick, onOrderDetail }) {
   const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol_native;
+  const currency = general?.currency?.symbol;
 
   const columns = [
     {
