@@ -75,7 +75,10 @@ export default function ShopListTable({
   setQueryParams,
 }) {
   const history = useHistory();
-  const { dispatchCurrentUser } = useGlobalContext();
+  const { dispatchCurrentUser, general } = useGlobalContext();
+
+  const { currency } = general;
+  console.log(currency);
   const routeMatch = useRouteMatch();
   const column = [
     {
@@ -137,7 +140,10 @@ export default function ShopListTable({
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history?.push(`/seller/list2/${value?._id}`);
+              history?.push({
+                pathname: `/seller/list2/${value?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
+              });
             },
           }}
           imgFallbackCharacter={value?.company_name?.charAt(0)}
@@ -180,12 +186,17 @@ export default function ShopListTable({
     {
       id: 6,
       sortable: false,
-      headerName: 'PROFIT',
+      headerName: `PROFIT${currency?.symbol}`,
       field: 'totalProfit',
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      renderCell: ({ value }) => <Typography variant="body4">{(value || 0).toFixed(2)}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">
+          {currency?.symbol}
+          {(value || 0).toFixed(2)}
+        </Typography>
+      ),
     },
     {
       id: 7,

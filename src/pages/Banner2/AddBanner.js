@@ -71,7 +71,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
     () =>
       AXIOS.get(API_URL.ALL_SHOP, {
         params: {
-          type: 'all',
+          type: shopType,
           shopStatus: 'all',
           page: 1,
           pageSize: 15,
@@ -104,7 +104,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
     () =>
       AXIOS.get(API_URL.ALL_PRODUCT, {
         params: {
-          type: shopType,
+          // type: ,
           page: 1,
           pageSize: 15,
           searchKey: searchKeyProduct,
@@ -202,7 +202,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
               readOnly: isReadOnly,
               placeholder: 'Click Options',
               items: clickableLinkOption,
-              value: newBanner?.clickType,
+              value: newBanner?.clickType || '',
               onChange: onChangeHandler,
             }}
           />
@@ -226,7 +226,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
       )}
       {/* For Shop */}
 
-      {newBanner?.clickType === 'shop' && newBanner?.isClickable === 'yes' && (
+      {newBanner?.clickType === 'shop' && newBanner?.isClickable === 'yes' && !isEdit && !isReadOnly && (
         <Box position="relative">
           <Box sx={{ marginTop: '20px' }}>
             <StyledFormField
@@ -246,7 +246,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
         </Box>
       )}
 
-      {newBanner?.clickType === 'shop' && newBanner?.isClickable === 'yes' && shopType && (
+      {newBanner?.clickType === 'shop' && newBanner?.isClickable === 'yes' && (
         <Box position="relative">
           <StyledFormField
             label="Select Shop *"
@@ -256,7 +256,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
               maxHeight: '110px',
               readOnly: isReadOnly,
               options: searchedShopOptions,
-              value: newBanner?.shopIdForClickGo || '',
+              value: newBanner?.shopId || '',
               placeholder: 'Choose',
               noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
               filterOptions,
@@ -269,7 +269,6 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
               onInputChange: (e) => {
                 getShops(e?.target?.value);
               },
-
               sx: {
                 '& .MuiFormControl-root': {
                   minWidth: '200px',
@@ -281,7 +280,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
       )}
 
       {/* For Product */}
-      {newBanner?.clickType === 'product' && newBanner?.isClickable === 'yes' && shopType && (
+      {newBanner?.clickType === 'product' && newBanner?.isClickable === 'yes' && (
         <Box position="relative">
           <StyledFormField
             label="Select Product *"

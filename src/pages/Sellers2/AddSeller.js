@@ -81,7 +81,10 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
       }
     });
 
-    newSellerData.sellerAddress = newAddress;
+    newSellerData.sellerAddress = {
+      ...newAddress,
+      pin: newSellerData.sellerAddress.pin ? newSellerData.sellerAddress.pin : '',
+    };
     setRender(!render);
   };
 

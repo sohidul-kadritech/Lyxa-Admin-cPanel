@@ -5,6 +5,7 @@ import { useLocation, useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import StyledTabs2 from '../../components/Styled/StyledTab2';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -15,7 +16,7 @@ import AddSeller from './AddSeller';
 import SellerList from './SellerList';
 import SellerPageSkeleton from './SellerPageSkeleton';
 import SellersProfile from './SellersProfile';
-import { previewGenerator } from './helpers';
+import { previewGenerator, tabsOptions } from './helpers';
 
 function SellerList2() {
   // eslint-disable-next-line no-unused-vars
@@ -38,17 +39,32 @@ function SellerList2() {
   const [loading, setLoading] = useState(false);
 
   const [currentSeller, setCurrentSeller] = useState({});
-
+  const [zoneId, setZoneId] = useState('');
+  const [zoneItems, setZoneItems] = useState([]);
+  const [currentTab, setCurrentTab] = useState('all');
   const theme = useTheme();
 
   const queryClient = useQueryClient();
+  // eslint-disable-next-line no-unused-vars
+  const zonesQuery = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE), {
+    onSuccess: (data) => {
+      if (data.status) {
+        const zones = data?.data?.zones;
+        console.log('zones', zones);
+        setZoneItems([{ zoneName: 'All', _id: 'all' }, ...zones]);
+      }
+    },
+  });
+
   const getAllSellersQuery = useQuery(
-    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey }],
+    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey, zoneId, sellerType: currentTab }],
     () =>
       AXIOS.get(API_URL.ALL_SELLER, {
         params: {
           sellerStatus: status,
           searchKey,
+          sellerType: currentTab,
+          zoneId: zoneId === 'all' ? null : zoneId,
         },
       }),
     {
@@ -168,6 +184,23 @@ function SellerList2() {
             onChange: (e) => setStatus(e.target.value),
           }}
         />
+        <StyledFormField
+          intputType="select"
+          containerProps={{
+            sx: { padding: '0px 0px' },
+          }}
+          inputProps={{
+            name: 'zoneId',
+            size: 'sm2',
+            placeholder: 'Select Zone',
+            value: zoneId,
+            items: zoneItems || [],
+            getLabel: (option) => option?.zoneName,
+            getValue: (option) => option?._id,
+            getDisplayValue: (currentValue) => zoneItems?.find((zone) => zone?._id === currentValue)?.zoneName,
+            onChange: (e) => setZoneId(e.target.value),
+          }}
+        />
         <AddMenuButton
           onClick={() => {
             setOpen(() => {
@@ -177,7 +210,7 @@ function SellerList2() {
           }}
         />
       </Stack>
-
+      <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
 
       {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
@@ -200,6 +233,7 @@ function SellerList2() {
               {/* Sellers List --> left */}
               <Box>
                 <SellerList
+                  loading={getAllSellersQuery.isLoading || getSingleSellersQuery.isLoading}
                   data={getAllSellersQuery?.data?.data?.sellers}
                   currentSeller={currentSeller}
                   setCurrentSeller={setCurrentSeller}

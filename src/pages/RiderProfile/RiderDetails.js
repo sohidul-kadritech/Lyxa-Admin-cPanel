@@ -16,6 +16,7 @@ import AXIOS from '../../network/axios';
 
 export default function RiderDetails({ rider }) {
   const [, setRender] = useState(false);
+  console.log('rider', rider);
   const queryClient = useQueryClient();
 
   const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {

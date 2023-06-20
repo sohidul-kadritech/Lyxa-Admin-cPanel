@@ -182,3 +182,10 @@ export const generateDataForSellerDocuments = (data) => [
     type: 'certificate_of_incorporation',
   },
 ];
+
+export const tabsOptions = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'food', label: 'Restaurant' },
+  { value: 'grocery', label: 'Grocery' },
+  { value: 'pharmacy', label: 'Pharmacy' },
+];
