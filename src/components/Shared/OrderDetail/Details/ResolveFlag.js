@@ -12,43 +12,33 @@ export default function ResolveOrderFlag({ order, setRender }) {
   const isAllResolved = order?.flag?.reduce((acc, curr) => acc && curr?.isResolved, true);
   const [toResolve, setToResolve] = useState(0);
 
-  const flagResolve = useMutation((data) => AXIOS.post(Api.RESOLVE_FLAG, data), {
+  const flagResolve = useMutation((data) => AXIOS.post(Api.RESOLVE_MULTIPLE_FLAG, data), {
     onError: (error) => {
       console.log(error);
       successMsg(error, 'error');
     },
 
     onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+
       if (data?.status) {
-        setToResolve((prev) => {
-          if (prev === 1) successMsg(data?.message, 'success');
-          return prev - 1;
+        order?.flag?.forEach((f) => {
+          f.isResolved = true;
         });
 
-        const cFlag = order?.flag?.find((f) => f?._id !== data?.data?._id);
-        cFlag.isResolved = true;
         setRender((prev) => !prev);
-        setRender((prev) => !prev);
-
         queryClient.invalidateQueries([Api.GET_ALL_FLAGGED_ORDERS]);
         queryClient.invalidateQueries([Api.ORDER_LIST]);
-      } else {
-        successMsg(data?.message, 'warn');
       }
     },
   });
 
   const resolveAll = () => {
-    order?.flag?.forEach((f) => {
-      setToResolve((prev) => prev + 1);
-      if (!f.isResolved) {
-        f.isResolved = true;
-        setRender((prev) => !prev);
-        flagResolve.mutate({
-          id: f?._id,
-          resolved: true,
-        });
-      }
+    const flagIds = order?.flag?.map((f) => f?._id);
+
+    flagResolve.mutate({
+      flagIds,
+      resolved: true,
     });
   };
 

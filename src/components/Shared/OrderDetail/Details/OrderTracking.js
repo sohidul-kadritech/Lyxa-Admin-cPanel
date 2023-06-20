@@ -1,8 +1,15 @@
+/* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import CustomerLocation from '../../../../assets/icons/customer-location.png';
+import GroceryLocation from '../../../../assets/icons/grocery-location.png';
+import PharmacyLocation from '../../../../assets/icons/pharmacy-location.png';
+import ReturantLocation from '../../../../assets/icons/restaurant-location.png';
 
-export default function OrderTrackingMap({ pickup, dropoff }) {
+const shopTypeToIconMap = { grocery: GroceryLocation, pharmacy: PharmacyLocation, food: ReturantLocation };
+
+export default function OrderTrackingMap({ pickup, dropoff, shopType }) {
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState('');
@@ -15,7 +22,7 @@ export default function OrderTrackingMap({ pickup, dropoff }) {
   useEffect(() => {
     let isMounted = true;
 
-    const directionsRenderer_ = new google.maps.DirectionsRenderer();
+    const directionsRenderer_ = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     const directionsService_ = new google.maps.DirectionsService();
     setdirectionsRenderer(directionsRenderer_);
     setdirectionsService(directionsService_);
@@ -26,6 +33,29 @@ export default function OrderTrackingMap({ pickup, dropoff }) {
       disableDefaultUI: true,
     });
 
+    // icons --
+    const userIcon = {
+      url: CustomerLocation,
+      scaledSize: new google.maps.Size(23, 46),
+    };
+
+    const shopIcon = {
+      url: shopTypeToIconMap[shopType],
+      scaledSize: new google.maps.Size(23, 46),
+    };
+
+    new google.maps.Marker({
+      position: { lat: pickup?.latitude, lng: pickup?.longitude },
+      icon: shopIcon,
+      map,
+    });
+
+    new google.maps.Marker({
+      position: { lat: dropoff?.latitude, lng: dropoff?.longitude },
+      icon: userIcon,
+      map,
+    });
+
     function calculateAndDisplayRoute(directionsService, directionsRenderer) {
       directionsService
         .route({
@@ -33,7 +63,6 @@ export default function OrderTrackingMap({ pickup, dropoff }) {
           destination: { lat: dropoff?.latitude, lng: dropoff?.longitude },
           travelMode: google?.maps?.TravelMode.DRIVING,
         })
-
         .then((response) => {
           const route = response.routes[0];
           directionsRenderer.setDirections(response);

@@ -13,12 +13,29 @@ import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import { menuOtions } from './helper';
 
+export const getShopStatusColor = (shop) => {
+  let color = '#417C45';
+
+  if (shop?.liveStatus === 'offline') {
+    color = '#363636';
+  }
+
+  if (shop?.liveStatus === 'busy') {
+    color = '#DD5B63';
+  }
+
+  if (shop?.status === 'inactive') {
+    color = '#FFAB09';
+  }
+
+  return color;
+};
+
 export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
-  console.log({ routeMatch });
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
@@ -51,7 +68,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
           }}
         >
           {/* Active Badges */}
-          <Box sx={{ background: '#417C45', width: '11px', height: '11px', borderRadius: '50%' }} />
+          <Box sx={{ background: getShopStatusColor(shop), width: '11px', height: '11px', borderRadius: '50%' }} />
           <Box>
             <Typography
               variant="h2"

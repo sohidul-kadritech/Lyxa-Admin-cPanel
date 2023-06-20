@@ -89,9 +89,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         if (keys.length >= 2) {
           setEntireMenu(false);
         } else if (keys.length === 1 && marketingType !== keys[0]) {
-          // if (marketingType !== keys[0]) {
           setEntireMenu(false);
-          // }
         }
       },
     }
@@ -284,6 +282,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         successMsg('Settings successfully updated', 'success');
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
         queryClient.invalidateQueries([Api.ALL_PRODUCT]);
+        // queryClient.invalidateQueries()
         onClose();
       }
     },

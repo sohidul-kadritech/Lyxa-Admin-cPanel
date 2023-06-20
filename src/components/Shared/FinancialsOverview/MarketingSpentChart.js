@@ -1,29 +1,59 @@
+import { Stack } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import StyledTabs2 from '../../Styled/StyledTab2';
 import ChartBox from '../../StyledCharts/ChartBox';
 import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
+import { marketingSpentTypeOptions } from './helpers';
 
-const generateData = (data) => {
+const generateData = (data, marketingSpentType = '') => {
+  const typeNameMap = {
+    all: {
+      discount: 'totalDiscount',
+      points: 'totalRewardAmount',
+      doubleDeal: 'totalDoubleMenuItemPrice',
+      freeDelivery: 'freeDeliveryShopCut',
+      featureAmount: 'totalFeaturedAmount',
+    },
+    shop: {
+      discount: 'totalShopDiscount',
+      points: 'totalShopRewardAmount',
+      doubleDeal: 'totalShopDoubleMenuItemPrice',
+      freeDelivery: 'freeDeliveryShopCut',
+      featureAmount: 'totalFeaturedAmount',
+    },
+    admin: {
+      discount: 'totalAdminDiscount',
+      points: 'totalAdminRewardAmount',
+      doubleDeal: 'totalAdminDoubleMenuItemPrice',
+      freeDelivery: 'freeDeliveryDropCut',
+    },
+  };
+
   const discount = [];
   const points = [];
   const doubleDeal = [];
   const freeDelivery = [];
   const featureAmount = [];
   const date = [];
-  // const featured = [];
 
   data?.forEach((node) => {
+    const dprop = typeNameMap[marketingSpentType]?.discount;
+    const pprop = typeNameMap[marketingSpentType]?.points;
+    const douprop = typeNameMap[marketingSpentType]?.doubleDeal;
+    const freeprop = typeNameMap[marketingSpentType]?.freeDelivery;
+    const feaprop = typeNameMap[marketingSpentType]?.featureAmount;
+
     date.push(moment(node?.date).format('MMMM DD'));
-    discount.push(node?.totalDiscount);
-    points.push(node?.totalRewardAmount);
-    doubleDeal.push(node?.totalDoubleMenuItemPrice);
-    freeDelivery.push(node?.freeDeliveryShopCut);
-    featureAmount.push(node?.totalFeaturedAmount);
-    console.log(node);
+    discount.push(node?.[dprop]);
+    points.push(node?.[pprop]);
+    doubleDeal.push(node?.[douprop]);
+    freeDelivery.push(node?.[freeprop]);
+    featureAmount.push(node?.[feaprop]);
   });
 
   return { discount, points, doubleDeal, freeDelivery, featureAmount, date };
@@ -37,6 +67,7 @@ const dateRangeItit = {
 export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
+  const [marketingSpentType, setMarketingSpentType] = useState('all');
 
   const marketingSpentQuery = useQuery(
     [
@@ -60,9 +91,10 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
       })
   );
 
-  console.log('marketing data: ', marketingSpentQuery?.data?.data);
-
-  const chartdata = generateData(marketingSpentQuery?.data?.data?.info);
+  const chartdata = useMemo(
+    () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
+    [marketingSpentType, marketingSpentQuery?.data]
+  );
 
   const lineChartData = {
     labels: chartdata.date,
@@ -84,7 +116,7 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
       {
         label: 'Double Deal',
         data: chartdata.doubleDeal,
-        borderColor: 'rgba(21, 191, 100, 1)',
+        borderColor: 'rgba(21, 255, 0, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
@@ -95,18 +127,40 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
-      {
-        label: 'Featured',
-        data: chartdata.featureAmount,
-        borderColor: 'rgba(76, 153, 0, 1)',
-        backgroundColor: 'rgba(21, 191, 202, 0)',
-        borderWidth: 1,
-      },
     ],
   };
 
+  if (marketingSpentType !== 'admin') {
+    lineChartData?.datasets.push({
+      label: 'Featured',
+      data: chartdata.featureAmount,
+      borderColor: 'rgba(76, 153, 0, 1)',
+      backgroundColor: 'rgba(21, 191, 202, 0)',
+      borderWidth: 1,
+    });
+  }
+
   return (
-    <ChartBox chartHeight={325} dateRange={range} setDateRange={setRange} title="Marketing Spent" sm={12} xl={6}>
+    <ChartBox
+      chartHeight={325}
+      dateRange={range}
+      setDateRange={setRange}
+      title={
+        <Stack alignItems="center" gap={6} direction="row" justifyContent="space-between" pr={4}>
+          <span>Marketing Spent</span>
+          <StyledTabs2
+            size="small"
+            options={marketingSpentTypeOptions}
+            value={marketingSpentType}
+            onChange={(value) => {
+              setMarketingSpentType(value);
+            }}
+          />
+        </Stack>
+      }
+      sm={12}
+      xl={6}
+    >
       <StyledAreaChart data={lineChartData} />
     </ChartBox>
   );

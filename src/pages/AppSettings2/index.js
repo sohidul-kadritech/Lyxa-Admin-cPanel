@@ -132,7 +132,7 @@ function Appsettings2() {
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || 0);
     setNearByShopKmForUserHomeScreen(
       // eslint-disable-next-line prettier/prettier
-      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0,
+      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0
     );
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
     // eslint-disable-next-line no-unused-vars
@@ -185,7 +185,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -197,7 +197,7 @@ function Appsettings2() {
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
     setNearByShopKmForUserHomeScreen(
       // eslint-disable-next-line prettier/prettier
-      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0,
+      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0
     );
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
@@ -227,7 +227,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type,
+        type
       ) &&
       type === 'text'
     ) {
@@ -299,7 +299,7 @@ function Appsettings2() {
     const updateDUnits = separatesUpdatedData(
       oldUnits.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name),
+      units.map((unit) => unit.name)
     );
 
     // if (hasChanged) updateQuery.mutate(data);
@@ -342,7 +342,7 @@ function Appsettings2() {
               <Stack gap="10px" justifyContent="center">
                 <InputBox
                   title="Max total EST items price"
-                  endAdornment={`${currency?.symbol_native}`}
+                  endAdornment={`${currency?.symbol}`}
                   inputValue={`${maxTotalEstItemsPriceForButler}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
@@ -367,7 +367,7 @@ function Appsettings2() {
                 />
               </Stack>
             </StyledBox>
-            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${currency?.symbol_native})`}>
+            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${currency?.symbol})`}>
               <IncrementDecrementButton
                 incrementHandler={incrementByOneHandler}
                 decrementHandler={decrementByOneHandler}
@@ -438,7 +438,7 @@ function Appsettings2() {
                 setType={setType}
               />
             </StyledBox>
-            <StyledBox title={`Maximum Discount for Shops (${currency?.symbol_native})`}>
+            <StyledBox title={`Maximum Discount for Shops (${currency?.symbol})`}>
               <Taglist
                 listContainerSx={{
                   mb: 2.5,
