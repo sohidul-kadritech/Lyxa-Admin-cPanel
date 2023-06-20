@@ -33,7 +33,9 @@ export default function OrderIssues({ flags = [] }) {
               color={item?.isResolved ? undefined : '#dd5b63'}
             >
               <span style={{ textTransform: 'capitalize', fontWeight: 700 }}>{item?.type}</span>{' '}
-              <span style={{ fontSize: 13 }}>- Flagged on {moment(item?.createdAt).format('MMM DD, YYYY')}</span>
+              <span style={{ fontSize: 13 }}>
+                - Flagged on {moment(item?.createdAt).format('hh:mm A MMM DD, YYYY')}
+              </span>
             </Typography>
             <Typography variant="body2" fontSize={12} lineHeight="22px">
               {item?.comment}

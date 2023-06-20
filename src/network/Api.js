@@ -324,6 +324,7 @@ export const DELETE_NEW_RATING = `${ADMIN_ENDPOINT}/setting/rating/delete`;
 // FLAGS
 export const GET_ALL_FLAGS = `${ADMIN_ENDPOINT}/flag`;
 export const RESOLVE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-flag`;
+export const RESOLVE_MULTIPLE_FLAG = `${ADMIN_ENDPOINT}/flag/resolved-multiple-flag`;
 export const GET_ALL_FLAGGED_ORDERS = `${ADMIN_ENDPOINT}/flag/order`;
 
 // MARKETING
