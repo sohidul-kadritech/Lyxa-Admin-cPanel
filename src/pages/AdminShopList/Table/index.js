@@ -8,6 +8,7 @@ import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
+import { getShopStatusColor } from '../../ShopProfile/Info';
 
 // const IconButton = styled('span')(() => ({
 //   width: '30px',
@@ -102,7 +103,7 @@ export default function ShopListTable({
             sx={{
               width: '11px',
               height: '11px',
-              backgroundColor: row?.liveStatus === 'online' ? 'success.main' : 'error.main',
+              backgroundColor: getShopStatusColor(row),
               borderRadius: '50%',
             }}
           />
