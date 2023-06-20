@@ -1,8 +1,12 @@
 import { Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import FilterSelect from '../../components/Filter/FilterSelect';
+import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 
 const orderSortOptions = [
   {
@@ -64,19 +68,35 @@ const profitSortOptions = [
   },
 ];
 
-/*
-  : '',
-*/
+// eslint-disable-next-line no-unused-vars
+const zoneOptions = [
+  {
+    label: 'All',
+    value: 'all',
+  },
+];
 
 const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
+  const [zoneItems, setZoneItems] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
+    onSuccess: (data) => {
+      if (data.status) {
+        const zones = data?.data?.zones;
+        console.log('zones', zones);
+        setZoneItems([{ zoneName: 'All', _id: 'all' }, ...zones]);
+      }
+    },
+  });
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
-    []
+    // eslint-disable-next-line prettier/prettier
+    [],
   );
 
   const commonChangeHandler = (prop, value) => {
@@ -154,6 +174,22 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
         onChange={(e) => {
           commonChangeHandler('sortByProfit', e.target.value);
+        }}
+      />
+      {/* zone */}
+
+      <StyledFormField
+        intputType="select"
+        inputProps={{
+          name: 'zoneId',
+          size: 'sm',
+          placeholder: 'Select Zone',
+          value: queryParams.zoneId,
+          items: zoneItems || [],
+          getLabel: (option) => option?.zoneName,
+          getValue: (option) => option?._id,
+          getDisplayValue: (currentValue) => zoneItems?.find((zone) => zone?._id === currentValue)?.zoneName,
+          onChange: (e) => commonChangeHandler('zoneId', e.target.value),
         }}
       />
     </Stack>

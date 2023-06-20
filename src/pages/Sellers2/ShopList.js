@@ -4,7 +4,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Avatar, Box, Modal, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import EditDocument from '../../components/Common/EditDocument';
@@ -38,6 +38,8 @@ function ShopList({
 
   const history = useHistory();
   const routeMatch = useRouteMatch();
+  const paramsQuery = useParams();
+
   // eslint-disable-next-line no-unused-vars
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
   // eslint-disable-next-line no-unused-vars
@@ -81,7 +83,10 @@ function ShopList({
                 onClick={() => {
                   history.push({
                     pathname: `/shop/profile/${params?.row?._id}`,
-                    state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
+                    state: {
+                      from: paramsQuery.sellerId ? `/seller/list2/${paramsQuery.sellerId}` : routeMatch?.path,
+                      backToLabel: 'Back to Seller List',
+                    },
                   });
                   dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row, seller: currentSeller } } });
                 }}

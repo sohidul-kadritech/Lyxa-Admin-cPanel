@@ -52,7 +52,7 @@ export default function CustomerRating({ rows = [], loading }) {
           onClick={() => {
             history.push({
               pathname: `/shop/profile/${row?.order?.shop?._id}`,
-              state: { from: routeMatch?.path, backToLabel: 'Back to categories' },
+              state: { from: routeMatch?.path, backToLabel: 'Back to Customer Rating' },
             });
           }}
         >

@@ -23,8 +23,9 @@ function SellerInfo({ sellerName, image, shopNumber }) {
   );
 }
 // eslint-disable-next-line no-unused-vars
-function SellerList({ data = [], currentSeller, setCurrentSeller }) {
+function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true }) {
   console.log(data);
+
   const sellerRef = useRef(null);
   const sellerContainer = useRef(null);
   const theme = useTheme();
@@ -55,11 +56,11 @@ function SellerList({ data = [], currentSeller, setCurrentSeller }) {
   };
   useLayoutEffect(() => {
     handlePageLoad();
-  }, [currentSeller]);
+  }, [loading]);
 
   useEffect(() => {
     handlePageLoad();
-  }, [currentSeller]);
+  }, [loading]);
 
   return (
     <Box

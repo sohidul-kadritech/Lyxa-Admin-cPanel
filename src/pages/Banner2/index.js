@@ -198,6 +198,7 @@ function AdBanner() {
             isEdit || isReadOnly
               ? {
                   ...rowData,
+                  clickType: rowData?.clickType ? rowData?.clickType : 'link',
                   isClickable: rowData?.isClickable ? 'yes' : 'no',
                   image: previewGenerator(rowData?.image),
                 }

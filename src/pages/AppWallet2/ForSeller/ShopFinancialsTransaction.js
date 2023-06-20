@@ -20,11 +20,18 @@ const getBreadCrumbItems = (searchUrl) => {
       to: '/add-wallet/seller-transactions2',
     },
     {
-      label: 'Shop List',
-      to: `/add-wallet/shop-transactions2?shopId=${searchUrl.get('shopName')}&shopName=${searchUrl.get(
+      label: 'Shops List',
+      to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
+        // eslint-disable-next-line prettier/prettier
+        'companyName',
+      )}`,
+    },
+    {
+      label: searchUrl.get('shopName'),
+      to: `/add-wallet/shop-transactions2?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'shopName',
-      )}`,
+      )}&sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get('companyName')}`,
     },
   ];
 

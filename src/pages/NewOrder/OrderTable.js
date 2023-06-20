@@ -84,7 +84,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
               ? {
                   sx: { color: 'primary.main', cursor: 'pointer' },
                   onClick: () => {
-                    history.push(`/accounts/${row?.user?._id}`);
+                    history.push({
+                      pathname: `/accounts/${row?.user?._id}`,
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                    });
                   },
                 }
               : undefined
@@ -113,7 +116,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
                   onClick: () => {
                     history.push({
                       pathname: `/shop/profile/${row?.shop?._id}`,
-                      state: { from: routeMatch?.path, backToLabel: 'Back to Order List' },
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
                     });
                   },
                 }

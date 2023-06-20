@@ -6,7 +6,7 @@ function SellerPageSkeleton() {
   return (
     <Box>
       <Stack direction="row" gap="22px">
-        <Box sx={{ width: '278px', borderRadius: '7px' }}>
+        <Box sx={{ width: '278px', borderRadius: '7px', marginTop: '42px' }}>
           <Skeleton width="100%" height="550px" />
         </Box>
         <Box flex={1}>

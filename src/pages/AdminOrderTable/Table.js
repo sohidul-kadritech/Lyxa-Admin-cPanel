@@ -24,6 +24,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
@@ -92,7 +93,10 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/accounts/${row?.user?._id}`);
+              history.push({
+                pathname: `/accounts/${row?.user?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+              });
             },
           }}
         />
@@ -127,7 +131,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
             onClick: () => {
               history.push({
                 pathname: `/shop/profile/${row?.shop?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Order Table' },
+                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
               });
             },
           }}
