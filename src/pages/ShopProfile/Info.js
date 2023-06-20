@@ -179,7 +179,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             >
               <CartIcon style={{ width: '17px', height: '17px' }} />
               <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
-                Min. {currency?.symbol_native}
+                Min. {currency?.symbol}
                 {shop?.minOrderAmount}
               </Typography>
             </Box>
