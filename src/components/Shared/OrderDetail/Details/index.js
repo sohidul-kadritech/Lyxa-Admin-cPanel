@@ -31,7 +31,11 @@ export default function Detail({ order, hideIssues, userType }) {
           }}
         />
       )}
-      <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
+      <DeliveryDetails
+        deliveryDetails={order?.dropOffLocation}
+        pickUpLocation={order?.pickUpLocation}
+        shopType={order?.shop?.shopType}
+      />
       <CallUser
         user={{
           name: order?.shop?.shopName,
