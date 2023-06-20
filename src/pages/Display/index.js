@@ -4,12 +4,12 @@ import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
+  // {
+  //   label: 'Ads Banner',
+  //   to: '/display/banner/',
+  // },
   {
     label: 'Ads Banner',
-    to: '/display/banner/',
-  },
-  {
-    label: 'Ads Banner2',
     to: '/display/banner2',
   },
   {

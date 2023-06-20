@@ -55,6 +55,10 @@ const getpagesList = () => [
     to: '/admin/default-chat-message',
   },
   {
+    label: 'Default Chat Message2',
+    to: '/admin/default-chat-message2',
+  },
+  {
     label: 'Percentages',
     to: '/percentage-setting2',
   },
@@ -65,6 +69,10 @@ const getpagesList = () => [
   {
     label: 'Admin Log',
     to: '/add-wallet/admin-log-history',
+  },
+  {
+    label: 'Admin Log2',
+    to: '/add-wallet/admin-log-history2',
   },
   {
     label: 'Database Collection',

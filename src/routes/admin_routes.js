@@ -82,6 +82,7 @@ import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLa
 import AccountList from '../pages/Accounts';
 import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
+import AdminLogs from '../pages/AdminLogs';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
 import AccountFinancials from '../pages/AppWallet2/ForAccount';
@@ -91,6 +92,7 @@ import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinanci
 import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
 import AdBanner from '../pages/Banner2';
 import CategoryList2 from '../pages/CategoryList';
+import DefaultChat2 from '../pages/DefaultChat2';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
 import PrivacySettings from '../pages/Privacy';
@@ -191,6 +193,7 @@ export const admin_routes = [
 
   // app wallet
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
+  { path: '/add-wallet/admin-log-history2', component: AdminLogs },
   { path: '/add-wallet/seller-transactions', component: SellerTransactions },
   { path: '/add-wallet/seller-transactions2', component: FinancialsForSeller },
   {
@@ -265,6 +268,7 @@ export const admin_routes = [
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
+  { path: '/admin/default-chat-message2', component: DefaultChat2 },
   { path: '/admin/database/collections', component: DatabaseSettings },
 
   // settings
