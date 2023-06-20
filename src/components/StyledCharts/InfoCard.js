@@ -56,6 +56,7 @@ export default function InfoCard({ value, title, Tag, isDropdown, children, valu
                 sx={{
                   lineHeight: '24px',
                   fontWeight: '600',
+                  flex: 1,
                 }}
               >
                 {title}

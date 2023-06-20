@@ -20,7 +20,6 @@ export default function Detail({ order, hideIssues, userType }) {
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
       <OrderTimeline order={order} />
       {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
-      <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
       {order?.orderFor === 'global' && order?.deliveryBoy && (
         <CallUser
           user={{
@@ -32,6 +31,7 @@ export default function Detail({ order, hideIssues, userType }) {
           }}
         />
       )}
+      <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
       <CallUser
         user={{
           name: order?.shop?.shopName,

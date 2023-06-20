@@ -3,12 +3,16 @@ import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 
+import { useGlobalContext } from '../../../context';
 import StyledBox from '../../StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
+import { CommonOrderAmountTooltipText } from './helpers';
 
 export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
 
   console.log('currentExpandTab', currentExpanedTab);
 
@@ -49,49 +53,49 @@ export default function Payout({ paymentDetails }) {
               <PriceItem title="Online" amount={paymentDetails?.orderValue?.productAmountOnline} />
             )}
             {/* shop */}
-            {paymentDetails?.orderValue?.totalShopDiscount > 0 && (
+
+            {paymentDetails?.orderValue?.totalDiscount > 0 && (
               <PriceItem
-                title="Discount applied by shop"
-                amount={paymentDetails?.orderValue?.totalShopDiscount}
+                title="Discount"
+                amount={paymentDetails?.orderValue?.totalDiscount}
                 amountStatus="minus"
-              />
-            )}
-            {paymentDetails?.orderValue?.totalAdminDiscount > 0 && (
-              <PriceItem
-                title="Discount applied by lyxa"
-                amount={paymentDetails?.orderValue?.totalAdminDiscount}
-                amountStatus="minus"
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDiscount}
+                    byShop={paymentDetails?.orderValue?.totalShopDiscount}
+                    currency={currency}
+                  />
+                }
               />
             )}
 
-            {paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice > 0 && (
+            {paymentDetails?.orderValue?.totalDoubleMenuItemPrice > 0 && (
               <PriceItem
-                title="Buy 1 Get 1 applied by shop"
-                amount={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
+                title="Buy 1 Get 1"
+                amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
                 amountStatus="secondary"
-              />
-            )}
-            {paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice > 0 && (
-              <PriceItem
-                title="Buy 1 Get 1 applied by lyxa"
-                amount={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
-                amountStatus="secondary"
-              />
-            )}
-
-            {paymentDetails?.orderValue?.totalShopRewardAmount > 0 && (
-              <PriceItem
-                title="Loyalty points applied by shop"
-                amount={paymentDetails?.orderValue?.totalShopRewardAmount}
-                amountStatus="minus"
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byShop={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
+                    currency={currency}
+                  />
+                }
               />
             )}
 
-            {paymentDetails?.orderValue?.totalAdminRewardAmount > 0 && (
+            {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
               <PriceItem
-                title="Loyalty points applied by lyxa"
-                amount={paymentDetails?.orderValue?.totalAdminRewardAmount}
+                title="Loyalty points"
+                amount={paymentDetails?.orderValue?.totalRewardAmount}
                 amountStatus="minus"
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byShop={paymentDetails?.orderValue?.totalShopRewardAmount}
+                    byAdmin={paymentDetails?.orderValue?.totalAdminRewardAmount}
+                    currency={currency}
+                  />
+                }
               />
             )}
           </DetailsAccordion>
@@ -99,9 +103,6 @@ export default function Payout({ paymentDetails }) {
           {/* lyxa fees */}
           <DetailsAccordion
             title="Lyxa fees"
-            // tooltip="Fee for Lyxa-powered deliveries: 80%
-            // Shop-powered deliveries: 10%.
-            // VAT inclusive"
             titleAmount={Math.abs(paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback)}
             titleAmountStatus={
               paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback > 0 ? 'minus' : ''

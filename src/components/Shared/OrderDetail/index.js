@@ -60,7 +60,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           </Stack>
           {/* heading */}
           <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
-            <Typography variant="h5" fontSize={19} lineHeight="21px" fontWeight={700}>
+            <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
               Order# {order?.orderId}
             </Typography>
             <Typography
