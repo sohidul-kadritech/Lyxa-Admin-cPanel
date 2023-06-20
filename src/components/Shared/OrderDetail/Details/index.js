@@ -5,11 +5,12 @@ import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
+import OrderSummary from './OrderSummary';
 import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
 import ResolveOrderFlag from './ResolveFlag';
-import OrderSummary from './Summary';
+// import OrderSummary from './Summary';
 
 export default function Detail({ order, hideIssues, userType }) {
   // eslint-disable-next-line no-unused-vars
@@ -43,7 +44,7 @@ export default function Detail({ order, hideIssues, userType }) {
           number: order?.shop?.phone_number,
         }}
       />
-      <OrderSummary productsDetails={order?.productsDetails} />
+      <OrderSummary order={order} />
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       <PaymentDetails order={order} />

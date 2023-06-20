@@ -18,7 +18,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
 
-  console.log(order);
+  console.log({ order });
 
   return (
     <Box

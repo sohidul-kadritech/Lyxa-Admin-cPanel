@@ -12,10 +12,14 @@ function StyledItem({
   pbsx = 3.5,
   ptxs,
   isCurrency = true,
+  hideZero,
 }) {
   const theme = useTheme();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+
+  // eslint-disable-next-line prettier/prettier, react/jsx-no-useless-fragment
+  if (hideZero && Math.abs(value) === 0) return <></>;
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" pb={total ? 0 : pbsx} pt={ptxs}>
@@ -36,28 +40,29 @@ function StyledItem({
 
 export default function OrderAmountDetails({ order = {} }) {
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
-  console.log(order?.shop);
+
+  console.log({ order });
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
-        <StyledItem label="Buy 1 Get 1 (admin)" value="xxx" />
-        <StyledItem label="Rewards (admin)" value="xxx" />
-        <StyledItem label="Discount (admin)" value="xxx" />
-        <StyledItem label="Buy 1 Get 1  (shop)" value="xxx" />
-        <StyledItem label="Rewards (shop)" value="xxx" />
-        <StyledItem label="Discount (shop)" value="xxx" />
+        <StyledItem label="Rewards (admin)" value={order?.rewardRedeemCut?.rewardAdminCut} hideZero />
+        <StyledItem label="Rewards (shop)" value={order?.rewardRedeemCut?.rewardShopCut} hideZero />
+        <StyledItem
+          label="Buy 1 Get 1 (admin) "
+          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
+          hideZero
+        />
+        <StyledItem label="Buy 1 Get 1  (shop)" value={order?.doubleMenuItemPrice?.doubleMenuItemPriceShop} hideZero />
+        <StyledItem label="Discount (admin)" value={order?.discountCut?.discountAdminCut} hideZero />
+        <StyledItem label="Discount (shop)" value={order?.discountCut?.discountShopCut} hideZero />
+
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
           <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
-          <StyledItem label="Deal compensation amount" value="xxx" />
+          <StyledItem label="Deal compensation amount" value={order?.doubleMenuCut?.doubleMenuAdminCut} hideZero />
         </Box>
-        {/* 
-        <Box pt={3.5} borderTop="1px solid #EEEEEE">
-          <StyledItem label="Double Menu (admin)" value={(order?.sellerEarnings || 0).toFixed(2)} />
-          <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
-        </Box> */}
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem
             label="Rider Profit"
@@ -65,7 +70,6 @@ export default function OrderAmountDetails({ order = {} }) {
             value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : (order?.deliveryBoyFee || 0).toFixed(2)}
           />
         </Box>
-
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           {!order?.shop?.haveOwnDeliveryBoy && (
             <StyledItem
@@ -74,7 +78,7 @@ export default function OrderAmountDetails({ order = {} }) {
             />
           )}
           <StyledItem label="Lyxa Order Profit" value={(order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)} />
-          <StyledItem label="Deal compensation amount" value="xxx" />
+          <StyledItem label="Deal compensation amount" value={order?.doubleMenuCut?.doubleMenuShopCut} hideZero />
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
           <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} />
