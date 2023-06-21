@@ -41,8 +41,10 @@ export default function NewOrders({ showFor }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
+
+  console.log({ showFor });
 
   return (
     <Box pb={9}>

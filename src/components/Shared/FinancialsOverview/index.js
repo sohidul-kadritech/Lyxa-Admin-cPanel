@@ -3,7 +3,7 @@
 // third party
 import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 // local
@@ -12,6 +12,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import DateRange from '../../StyledCharts/DateRange';
 
+import StyledTabs2 from '../../Styled/StyledTab2';
 import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../StyledCharts/InfoCard';
 import MarketingSpentChart from './MarketingSpentChart';
@@ -19,22 +20,13 @@ import OrderAmountChart from './OrderAmontChat';
 import PayoutDetails from './PayoutDetails';
 import PriceItem from './PriceItem';
 import ProfitChart from './ProfitChart';
-
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
-
-export function calculateDateDifference(date1, date2, unit) {
-  const momentDate1 = moment(date1);
-  const momentDate2 = moment(date2);
-  const difference = momentDate2.diff(momentDate1, unit);
-  return difference;
-}
+import { calculateDateDifference, dateRangeItit, getMarketingTypeValues, marketingSpentTypeOptions } from './helpers';
 
 export default function Overview({ viewUserType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { currentUser, general } = useGlobalContext();
+
+  const [marketingSpentType, setMarketingSpentType] = useState('all');
 
   const { shop, seller } = currentUser;
   const currency = general?.currency;
@@ -70,12 +62,12 @@ export default function Overview({ viewUserType }) {
       })
   );
 
-  console.log('shopDashBoard: ', query.data?.data?.summary);
-  const marketingSpentAmount =
-    query?.data?.data?.summary?.orderValue?.totalDiscount +
-    query?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice +
-    query?.data?.data?.summary?.orderValue?.totalRewardAmount +
-    query?.data?.data?.summary?.freeDeliveryShopCut;
+  const marketingSpentValues = useMemo(
+    () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
+    [query?.data, marketingSpentType]
+  );
+
+  console.log('shopDashBoard:', query.data?.data?.summary);
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
@@ -105,9 +97,8 @@ export default function Overview({ viewUserType }) {
         </Stack>
       </Grid>
       <InfoCard
-        console={console.log(query?.data?.data)}
         title="Total Profit"
-        value={`${currency?.symbol_native} ${(query?.data?.data?.summary?.totalProfit || 0).toFixed(2)}`}
+        value={`${currency?.symbol} ${(query?.data?.data?.summary?.totalProfit || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
             status={`${
@@ -140,9 +131,21 @@ export default function Overview({ viewUserType }) {
         lg={4}
       />
       <InfoCard
-        title="Marketing Spent"
+        title={
+          <Stack alignItems="center" gap={6} direction="row" justifyContent="space-between" pr={4}>
+            <span>Marketing Spent</span>
+            <StyledTabs2
+              size="small"
+              options={marketingSpentTypeOptions}
+              value={marketingSpentType}
+              onChange={(value) => {
+                setMarketingSpentType(value);
+              }}
+            />
+          </Stack>
+        }
         isDropdown
-        value={`${currency?.symbol_native} ${(marketingSpentAmount || 0).toFixed(2)}`}
+        value={`${currency?.symbol} ${(marketingSpentValues?.sum || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
             status={
@@ -158,11 +161,13 @@ export default function Overview({ viewUserType }) {
         lg={4}
       >
         <Stack gap={3}>
-          <PriceItem title="Discount" amount={query?.data?.data?.summary?.orderValue?.totalDiscount} />
-          <PriceItem title="Buy 1 Get 1" amount={query?.data?.data?.summary?.orderValue?.totalDoubleMenuItemPrice} />
-          <PriceItem title="Loyalty points" amount={query?.data?.data?.summary?.orderValue?.totalRewardAmount} />
-          <PriceItem title="Free delivery" amount={query?.data?.data?.summary?.freeDeliveryShopCut} />
-          <PriceItem title="Featured" amount={query?.data?.data?.summary?.totalFeaturedAmount} />
+          <PriceItem title="Discount" amount={marketingSpentValues.totalDiscount} />
+          <PriceItem title="Buy 1 Get 1" amount={marketingSpentValues?.totalDoubleMenuItemPrice} />
+          <PriceItem title="Loyalty points" amount={marketingSpentValues?.totalRewardAmount} />
+          <PriceItem title="Free delivery" amount={marketingSpentValues?.freeDeliveryShopCut} />
+          {marketingSpentType !== 'admin' && (
+            <PriceItem title="Featured" amount={query?.data?.data?.summary?.totalFeaturedAmount} />
+          )}
         </Stack>
       </InfoCard>
       <PayoutDetails paymentDetails={query?.data?.data?.summary} />

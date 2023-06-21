@@ -12,12 +12,12 @@ const pagesList = [
     label: 'For Sellers',
     to: '/add-wallet/seller-transactions2',
   },
+  // {
+  //   label: 'For Account (Lyxa Pay)',
+  //   to: '/lyxa-pay',
+  // },
   {
     label: 'For Account (Lyxa Pay)',
-    to: '/lyxa-pay',
-  },
-  {
-    label: 'For Account (Lyxa Pay)2',
     to: '/lyxa-pay2',
   },
   // {

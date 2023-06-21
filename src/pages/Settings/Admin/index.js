@@ -23,6 +23,10 @@ const getpagesList = () => [
     to: '/settings/categories/list',
   },
   {
+    label: 'Categories List2',
+    to: '/settings/categories/list2',
+  },
+  {
     label: 'Chat',
     to: '/customer-support',
   },
@@ -46,10 +50,14 @@ const getpagesList = () => [
     label: 'Invoice Configuration',
     to: '#',
   },
-  // {
-  //   label: 'Percentages',
-  //   to: '/percentage-setting',
-  // },
+  {
+    label: 'Default Chat Message',
+    to: '/admin/default-chat-message',
+  },
+  {
+    label: 'Default Chat Message2',
+    to: '/admin/default-chat-message2',
+  },
   {
     label: 'Percentages',
     to: '/percentage-setting2',
@@ -61,6 +69,10 @@ const getpagesList = () => [
   {
     label: 'Admin Log',
     to: '/add-wallet/admin-log-history',
+  },
+  {
+    label: 'Admin Log2',
+    to: '/add-wallet/admin-log-history2',
   },
   {
     label: 'Database Collection',
@@ -91,7 +103,7 @@ const filterPages = (searchKey, pages) => {
     page?.label
       ?.toLowerCase()
       // eslint-disable-next-line prettier/prettier
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
   );
 };
 

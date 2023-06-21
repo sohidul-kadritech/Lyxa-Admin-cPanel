@@ -1,3 +1,4 @@
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
@@ -25,7 +26,7 @@ export const sellerShopTabType = {
   1: 'Documents',
 };
 
-export const validateSellersData = (data, isEdit = false) => {
+export const validateSellersData = (data, adminType, isEdit = false) => {
   console.log('generated Data', data);
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!data?.name) {
@@ -42,6 +43,10 @@ export const validateSellersData = (data, isEdit = false) => {
   }
   if (!data?.phone_number) {
     successMsg('Provide seller phone number');
+    return false;
+  }
+  if (!isValidPhoneNumber(data?.phone_number)) {
+    successMsg('Provide valid phone number');
     return false;
   }
   if (!data?.password && !isEdit) {
@@ -66,7 +71,7 @@ export const validateSellersData = (data, isEdit = false) => {
     successMsg('Select seller type');
     return false;
   }
-  if (!data?.sellerStatus) {
+  if (!data?.sellerStatus && adminType === 'admin') {
     successMsg('Select seller status');
     return false;
   }
@@ -181,4 +186,11 @@ export const generateDataForSellerDocuments = (data) => [
     url: data?.certificate_of_incorporation,
     type: 'certificate_of_incorporation',
   },
+];
+
+export const tabsOptions = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'food', label: 'Restaurant' },
+  { value: 'grocery', label: 'Grocery' },
+  { value: 'pharmacy', label: 'Pharmacy' },
 ];

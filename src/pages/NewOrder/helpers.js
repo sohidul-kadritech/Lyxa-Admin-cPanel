@@ -120,6 +120,10 @@ export const getQueryParamsInit = (showFor, currentUser) => {
     return { ...queryParamsInit, shop: currentUser?.shop?._id };
   }
 
+  if (showFor === 'seller') {
+    return { ...queryParamsInit, seller: currentUser?.seller?._id };
+  }
+
   return { ...queryParamsInit };
 };
 

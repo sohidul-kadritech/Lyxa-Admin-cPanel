@@ -10,7 +10,10 @@ import UserChatList from './UserChats';
 export default function UserTabs({ user }) {
   const location = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  const [currentTab, setCurrentTab] = useState(Number(searchParams?.get('tabId')) || 0);
+  const [currentTab, setCurrentTab] = useState(
+    // eslint-disable-next-line prettier/prettier
+    searchParams.get('financials') === 'user' ? 3 : Number(searchParams?.get('tabId')) || 0,
+  );
 
   return (
     <Box>

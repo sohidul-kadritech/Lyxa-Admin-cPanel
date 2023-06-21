@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
 import { useHistory } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { HeaderWithToolTips } from '../ForSeller/helpers';
@@ -11,7 +12,7 @@ function RiderFinancialsTable({ data = [], loading }) {
 
   const theme = useTheme();
   const currency = general?.currency?.symbol;
-
+  const routeMatch = useRouteMatch();
   const history = useHistory();
 
   // eslint-disable-next-line no-unused-vars
@@ -43,7 +44,10 @@ function RiderFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/riders/${params?.row?._id}`);
+                history?.push({
+                  pathname: `/riders/${params?.row?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Rider Financials' },
+                });
               }}
             >
               {params?.row?.name}
@@ -186,7 +190,11 @@ function RiderFinancialsTable({ data = [], loading }) {
         columns={allColumns}
         rows={data}
         onRowClick={({ row }) => {
-          history?.push(`/riders/${row?._id}?financials=riders`);
+          history?.push({
+            pathname: `/riders/${row?._id}`,
+            search: 'financials=riders',
+            state: { from: routeMatch?.path, backToLabel: 'Back to Rider Financials' },
+          });
         }}
         getRowId={(row) => row?._id}
         sx={{

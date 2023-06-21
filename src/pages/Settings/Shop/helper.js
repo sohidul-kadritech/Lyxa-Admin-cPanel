@@ -53,8 +53,21 @@ export function createShopSettingsData(
   OwnDeliveryBoy,
   // eslint-disable-next-line prettier/prettier
   adminType,
+  newTags,
+  newCusines
 ) {
-  console.log('specialInstructions', newSpecialInstructions);
+  const tags = [];
+  const cuisineType = [];
+  const tagsId = [];
+
+  newTags?.forEach((tag) => {
+    tags.push(tag?.name);
+    tagsId.push(tag?._id);
+  });
+
+  newCusines?.forEach((cuisine) => {
+    cuisineType.push(cuisine?._id);
+  });
 
   if (adminType === 'admin')
     return {
@@ -71,13 +84,13 @@ export function createShopSettingsData(
       shopBanner: shop?.shopBanner,
       shopStatus: shop?.shopStatus,
       shopDescription: 'desrcriptions',
-      tags: shop?.tags,
-      tagsId: shop?.tagsId,
+      tags,
+      tagsId,
+      cuisineType,
       orderCapacity: newOrderCapacity,
       paymentOption: newPayMentInformation,
       dietary: newDietary,
       liveStatus: shop?.liveStatus,
-      cuisineType: shop?.cuisinesList,
       dietaryType: shop?.dietaryType,
       expensive: newPriceRange,
       deliveryType: OwnDeliveryBoy ? 'self' : 'drop',
@@ -99,7 +112,11 @@ export function createShopSettingsData(
       account_name: shop?.account_name,
       account_number: shop?.account_number,
     };
+
   return {
+    tags,
+    tagsId,
+    cuisineType,
     id: shop?._id,
     shopName: shop?.shopName,
     password: '',
@@ -113,13 +130,10 @@ export function createShopSettingsData(
     shopBanner: shop?.shopBanner,
     shopStatus: shop?.shopStatus,
     shopDescription: 'desrcriptions',
-    tags: shop?.tags,
-    tagsId: shop?.tagsId,
     orderCapacity: newOrderCapacity,
     paymentOption: newPayMentInformation,
     dietary: newDietary,
     liveStatus: shop?.liveStatus,
-    cuisineType: shop?.cuisinesList,
     dietaryType: shop?.dietaryType,
     expensive: newPriceRange,
     deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',

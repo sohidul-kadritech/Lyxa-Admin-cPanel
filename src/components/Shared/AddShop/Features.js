@@ -155,7 +155,6 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
           />
         )}
       </Stack>
-
       {/* payment method */}
       <StyledFormField
         intputType="optionsSelect"

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useLocation, useParams, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import ProfileSkeleton from '../../components/Skeleton/ProfileSkeleton';
@@ -50,6 +50,7 @@ export default function RiderProfile() {
   console.log('=====> financial: ', searchParams.get('financials'));
   const [open, setOpen] = useState(false);
   const params = useParams();
+  const queryClient = useQueryClient();
   const [rider, setRider] = useState(location?.state?.rider);
 
   const query = useQuery(
@@ -75,12 +76,11 @@ export default function RiderProfile() {
     <Box>
       <PageTop
         title={`${searchParams.get('financials') === 'riders' ? '' : 'Rider Profile'}`}
-        // title="Rider Profile"
+        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
+        backTo={location?.state ? location?.state?.from : undefined}
         breadcrumbItems={
           searchParams.get('financials') === 'riders' ? getBreadCrumbItems(searchParams, params?.riderId) : undefined
         }
-        backButtonLabel={`${searchParams.get('financials') === 'riders' ? 'Back to Financials' : 'Back to Riders'}`}
-        backTo={`${searchParams.get('financials') === 'riders' ? '/financials' : backRoute}`}
       />
       {query?.isLoading && (
         <ProfileSkeleton>
@@ -154,6 +154,7 @@ export default function RiderProfile() {
           onClose={() => setOpen(false)}
           onUpdateSuccess={(data) => {
             setRider(data?.data?.delivery);
+            queryClient.invalidateQueries(Api.SINGLE_DELIVERY_MAN);
           }}
         />
       </Drawer>

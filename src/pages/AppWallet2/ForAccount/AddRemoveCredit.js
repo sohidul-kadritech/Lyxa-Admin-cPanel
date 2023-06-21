@@ -56,7 +56,7 @@ function AddRemoveCredit({ onClose }) {
         });
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -100,7 +100,7 @@ function AddRemoveCredit({ onClose }) {
 
     const data = { api, data: { userId: user?.id, amount, adminNote, userNote } };
     console.log(data);
-    // creditMutation.mutate(data);
+    creditMutation.mutate(data);
   };
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function AddRemoveCredit({ onClose }) {
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   const filterOptions = createFilterOptions({

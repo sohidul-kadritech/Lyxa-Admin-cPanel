@@ -90,8 +90,14 @@ export default function Layout() {
           }}
         >
           <Switch>
-            {routes.map((route) => (
-              <Route exact {...route} key={route.path} />
+            {routes.map(({ component: Component, componentProps, path, ...props }) => (
+              <Route
+                exact
+                path={path}
+                key={path}
+                render={(routeProps) => <Component {...routeProps} {...componentProps} />}
+                {...props}
+              />
             ))}
           </Switch>
         </Box>

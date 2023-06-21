@@ -82,14 +82,14 @@ export default function ChildLayout({
       >
         {childFor === 'shop' ? (
           <CacheSwitch>
-            {routes?.map(({ path, component: Component, ...props }) => (
+            {routes?.map(({ path, component: Component, componentProps, ...props }) => (
               <CacheRoute
                 when="always"
                 multiple
                 exact
                 key={path}
                 path={path}
-                component={Component}
+                render={(...routeProps) => <Component {...routeProps} {...componentProps} />}
                 cacheKey={path}
                 saveScrollPosition
                 {...props}
@@ -98,8 +98,14 @@ export default function ChildLayout({
           </CacheSwitch>
         ) : (
           <Switch>
-            {routes?.map(({ path, component: Component, ...props }) => (
-              <Route exact key={path} path={path} component={Component} {...props} />
+            {routes?.map(({ path, component: Component, componentProps, ...props }) => (
+              <Route
+                exact
+                key={path}
+                path={path}
+                render={(...routeProps) => <Component {...routeProps} {...componentProps} />}
+                {...props}
+              />
             ))}
           </Switch>
         )}

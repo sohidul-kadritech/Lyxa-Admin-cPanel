@@ -96,7 +96,18 @@ function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName })
           <>
             {createZoneInfoData(infoData).map((data, i) => (
               <Box sx={zoneConsumerSx} key={i}>
-                <Typography sx={{ textAlign: 'center', fontWeight: '600', fontSize: '16px' }}>{data?.name}</Typography>
+                <Typography
+                  sx={{
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    fontWeight: '600',
+                    fontSize: '16px',
+                  }}
+                >
+                  {data?.name}
+                </Typography>
               </Box>
             ))}
 

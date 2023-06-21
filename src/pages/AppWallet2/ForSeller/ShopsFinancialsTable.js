@@ -1,20 +1,29 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 // eslint-disable-next-line import/no-named-as-default
-import { useHistory } from 'react-router-dom';
+
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
 function ShopsFinancialsTable({ data = [], loading }) {
   // eslint-disable-next-line no-unused-vars
   const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
+  const routeMatch = useRouteMatch();
+  const { search } = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+
+  console.log('routeMatch', routeMatch);
   const theme = useTheme();
   const currency = general?.currency?.symbol;
   const history = useHistory();
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
       pathname: `/add-wallet/shop-transactions2`,
-      search: `?shopId=${shopId}&shopName=${shopName}`,
+      search: `?shopId=${shopId}&shopName=${shopName}&sellerId=${searchParams.get(
+        // eslint-disable-next-line prettier/prettier
+        'sellerId',
+      )}&companyName=${searchParams.get('companyName')}`,
     });
   };
   const allColumns = [
@@ -38,7 +47,16 @@ function ShopsFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history.push(`/shop/profile/${params?.row?._id}`);
+                history.push({
+                  pathname: `/shop/profile/${params?.row?._id}`,
+                  state: {
+                    from: `${routeMatch?.path}?sellerId=${searchParams.get('sellerId')}&companyName=${searchParams.get(
+                      // eslint-disable-next-line prettier/prettier
+                      'companyName',
+                    )}`,
+                    backToLabel: 'Back to Seller Transaction',
+                  },
+                });
                 dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row } } });
               }}
             >

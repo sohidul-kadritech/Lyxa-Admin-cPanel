@@ -25,7 +25,8 @@ import {
 
 export default function AddShop({ onClose, editShop }) {
   const { currentUser } = useGlobalContext();
-  const { seller } = currentUser;
+
+  const { seller, adminType } = currentUser;
   const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,8 @@ export default function AddShop({ onClose, editShop }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
     setShop((prev) => ({
       ...prev,
@@ -78,7 +80,8 @@ export default function AddShop({ onClose, editShop }) {
         console.log(error);
         setLoading(false);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES], () =>
@@ -88,7 +91,8 @@ export default function AddShop({ onClose, editShop }) {
         pageSize: 500,
         shopType: seller?.sellerType,
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const onSubmitShop = async () => {
@@ -109,7 +113,7 @@ export default function AddShop({ onClose, editShop }) {
     let isValid = { status: true };
 
     if (currentTab === 0) {
-      isValid = validateShopDetails(shop, editShop?._id);
+      isValid = validateShopDetails(shop, editShop?._id, adminType);
     }
 
     if (currentTab === 1 && !editShop?._id) {
@@ -175,7 +179,7 @@ export default function AddShop({ onClose, editShop }) {
       </Box>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
-          <ShopDetails shop={shop} onChange={onChangeHandler} onDrop={onDrop} />
+          <ShopDetails setShop={setShop} shop={shop} onChange={onChangeHandler} onDrop={onDrop} />
         </TabPanel>
         {!editShop?._id && (
           <TabPanel index={1} value={currentTab} noPadding>

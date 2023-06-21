@@ -1,6 +1,7 @@
 import { Delete } from '@mui/icons-material';
-import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
+import { Box, Button, Stack, createFilterOptions, debounce, useTheme } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
@@ -22,14 +23,18 @@ import {
 
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
+  // eslint-disable-next-line no-unused-vars
+  const theme = useTheme();
+
   const [rider, setRider] = useState(
     // eslint-disable-next-line prettier/prettier
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
   );
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
   const [isConfirm, setIsConfirm] = useState(false);
+
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE));
 
   // input handler
@@ -42,7 +47,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
 
     if (newFiles?.length) {
@@ -73,13 +78,17 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setLoading(false);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   //  upload data
   const onSubmit = async () => {
     const isValid = validateRider(rider, !!editRider?._id);
 
+    if (!isValidPhoneNumber(rider?.number)) {
+      successMsg('Provide Valid number');
+      return;
+    }
     if (!isValid?.status) {
       successMsg(isValid.msg);
       return;
@@ -123,6 +132,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
           page: 1,
           pageSize: 15,
           searchKey: searchKeyShop,
+          deliveryBoyType: 'shopRider',
         },
       }),
     {
@@ -133,7 +143,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         });
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getShops = useMemo(
@@ -144,7 +154,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    []
+    [],
   );
 
   return (
@@ -164,17 +174,20 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 onChange: commonChangeHandler,
               }}
             />
-            {/* Phone Number */}
+
             <StyledFormField
-              label="Phone Number"
-              intputType="text"
+              label="Phone Number *"
+              intputType="phoneNumber"
               inputProps={{
-                type: 'number',
-                name: 'number',
-                value: rider.number,
-                onChange: commonChangeHandler,
+                value: rider?.number,
+                type: 'text',
+                name: 'phone_number',
+                onChange: (value) => {
+                  setRider((prev) => ({ ...prev, number: value }));
+                },
               }}
             />
+
             {/* E-mail address */}
             <StyledFormField
               label="E-mail address"
@@ -366,16 +379,18 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               }}
             />
             {/* status */}
-            <StyledFormField
-              label="Status"
-              intputType="select"
-              inputProps={{
-                name: 'status',
-                value: rider.status,
-                items: statusOptions,
-                onChange: commonChangeHandler,
-              }}
-            />
+            {editRider?._id && (
+              <StyledFormField
+                label="Status"
+                intputType="select"
+                inputProps={{
+                  name: 'status',
+                  value: rider.status,
+                  items: statusOptions,
+                  onChange: commonChangeHandler,
+                }}
+              />
+            )}
             <Stack pt={10} pb={6} gap={5}>
               <Button
                 variant="contained"

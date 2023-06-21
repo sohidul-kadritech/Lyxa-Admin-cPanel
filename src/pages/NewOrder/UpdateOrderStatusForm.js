@@ -62,7 +62,7 @@ function UpdateOrderStatusForm({ setCurrentOrder, onClose, currentOrder }) {
         successMsg(error?.message || 'Could not get delivery boys', 'error');
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const updateStatusMutation = useMutation(
@@ -94,7 +94,7 @@ function UpdateOrderStatusForm({ setCurrentOrder, onClose, currentOrder }) {
         console.log('api error: ', error);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // Update order status
@@ -134,6 +134,7 @@ function UpdateOrderStatusForm({ setCurrentOrder, onClose, currentOrder }) {
     currentOrder?.timeline?.forEach((item) => {
       if (item.status === 'placed') return;
       if (item.status === 'accepted_delivery_boy' ? false : currentOrder?.orderStatus === item?.status) return;
+      if (item?.status === 'accepted_delivery_boy' && currentOrder?.shop?.haveOwnDeliveryBoy) return;
 
       list.push({
         value: item?.status,

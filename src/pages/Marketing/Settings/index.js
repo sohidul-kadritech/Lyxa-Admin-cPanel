@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
@@ -16,7 +15,6 @@ import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
-import StyledAutocomplete from '../../../components/Styled/StyledAutocomplete';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
@@ -25,14 +23,12 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
-import ProductTable from './ProductTable';
+import MarketingProductsTable from './ProductsTable';
 import {
   CommonTitle,
-  GroupHeader,
   ItemsTitle,
   confirmActionInit,
-  createGroupedDataRow,
-  createGroupedList,
+  createProductData,
   durationInit,
   getCurrentFeaturedWeekOption,
   getDurationLeft,
@@ -50,7 +46,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [isPageDisabled, setIsPageDisabled] = useState(false);
   const [termAndCondition, setTermAndCondition] = useState(false);
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
-  const [render, setRender] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(confirmActionInit);
   const [serverState, setServerState] = useState({});
@@ -67,7 +62,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   // shop products
   const productsQuery = useQuery(
-    ['shop-all-products'],
+    [Api.ALL_PRODUCT],
     () =>
       AXIOS.get(Api.ALL_PRODUCT, {
         params: {
@@ -82,7 +77,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       enabled: false,
       onSuccess: (data) => {
         const types = {};
-        // console.log('products ===================>', productsQuery?.data);
 
         data?.data?.products?.forEach((product) => {
           if (product?.marketing) {
@@ -94,27 +88,20 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
         if (keys.length >= 2) {
           setEntireMenu(false);
-        } else if (keys.length === 1) {
-          if (marketingType !== keys[0]) {
-            setEntireMenu(false);
-          }
+        } else if (keys.length === 1 && marketingType !== keys[0]) {
+          setEntireMenu(false);
         }
       },
     }
   );
 
-  const transformedProducts = useMemo(
+  const productOptions = useMemo(
     () =>
-      deepClone(productsQuery?.data?.data?.products || [])?.map((p) => {
-        p.marketing = undefined;
-        p.discountPercentage = 0;
-        p.reward = undefined;
-        return p;
-      }),
+      (productsQuery?.data?.data?.products || []).filter(
+        (p) => p.marketing === undefined || p?.marketing?.type === marketingType
+      ),
     [productsQuery?.data]
   );
-
-  console.log({ transformedProducts });
 
   useEffect(() => {
     productsQuery.refetch();
@@ -166,11 +153,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
-  // console.log({ featuredAmount });
-
   const setLocalData = (data) => {
-    // console.log({ data });
-
     setProducts(data?.products);
     setDuration(data?.duration);
     setSpendLimit(data?.spendLimit);
@@ -198,8 +181,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       enabled: queryEnabled,
     }
   );
-
-  // console.log(marketingQuery?.data);
 
   useEffect(() => {
     if (marketingQuery?.data !== undefined) {
@@ -237,35 +218,39 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     }
   }, [marketingQuery?.data]);
 
+  const selectionChangeConfirm = (value) => {
+    // removing previous selection information
+    productOptions?.forEach((p) => {
+      p.marketing = undefined;
+      p.discountPercentage = 0;
+      p.reward = undefined;
+    });
+
+    // common for both
+    setItemSelectType(value);
+    setHasChanged(false);
+    setHasGlobalChange(true);
+    setConfirmModal(false);
+
+    if (value === 'single') {
+      setProducts([]);
+    } else {
+      setGlobalRewardBundle('');
+      setProducts(productOptions);
+    }
+  };
+
   const onProductSelectChange = (event) => {
     if (hasChanged && products?.length > 0) {
-      // open confirm modal
       setConfirmModal(true);
-
-      // onconfirm
-      const confirmFunc = (value) => {
-        if (value === 'single') {
-          setProducts([]);
-        } else {
-          setGlobalRewardBundle('');
-          setProducts(deepClone(transformedProducts));
-        }
-
-        setConfirmModal(false);
-
-        setItemSelectType(value);
-        setHasChanged(false);
-        setHasGlobalChange(true);
-      };
-
       setConfirmAction({
         message: 'Changing selection type will reset product list?',
         onCancel: () => setConfirmModal(false),
-        onConfirm: () => confirmFunc(event.target.value),
+        onConfirm: () => selectionChangeConfirm(event.target.value),
       });
     } else {
       if (event.target.value === 'multiple') {
-        setProducts(deepClone(transformedProducts));
+        setProducts(productOptions);
       } else {
         setProducts([]);
       }
@@ -276,12 +261,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     }
   };
 
-  const removeProduct = (product) => {
-    setProducts((prev) => prev.filter((item) => item?._id !== product?._id));
-  };
-
   const discardChanges = () => {
     const newData = deepClone(serverState);
+
     if (newData?.products?.length > 0) {
       setHasChanged(true);
     }
@@ -295,88 +277,28 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   // update loyalty settings
   const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
-    onSuccess: (data, args) => {
+    onSuccess: (data) => {
       if (data?.status) {
-        setServerState((prev) => data?.data?.marketing || prev);
         successMsg('Settings successfully updated', 'success');
-
-        if (data?.data?.marketing?.products?.length > 0) {
-          setHasChanged(true);
-        }
-
-        setHasGlobalChange(false);
-
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
-        queryClient.invalidateQueries([`shop-all-products`]);
-
-        if (args.status === 'inactive') {
-          setPageMode(0);
-          setIsPageDisabled(false);
-        } else {
-          setPageMode(1);
-          setIsPageDisabled(true);
-        }
+        queryClient.invalidateQueries([Api.ALL_PRODUCT]);
+        // queryClient.invalidateQueries()
+        onClose();
       }
     },
   });
 
   const updateLoyaltySettings = (status) => {
-    let prb = null;
-
-    const productsData = products.map((item) => {
-      // reward
-      if (!item?._id) {
-        prb = 'Please remove empty items from list!';
-      }
-
-      if (marketingType === 'reward' && !item?.rewardCategory) {
-        prb = 'Please select category for product!';
-      }
-
-      if (marketingType === 'reward' && !item?.rewardBundle) {
-        prb = 'Please select reward bundle for product!';
-      }
-
-      if (marketingType === 'reward') {
-        return {
-          id: item?._id,
-          rewardCategory: item?.rewardCategory,
-          rewardBundle: item?.rewardBundle,
-          reward: {
-            amount: (item.price - (item?.price / 100) * item?.rewardBundle).toFixed(2),
-            points: Math.round(((item?.price / 100) * item?.rewardBundle) / rewardAmount),
-          },
-        };
-      }
-
-      // percentage
-      if (marketingType === 'percentage' && !item?.discountPercentage) {
-        prb = 'Please select percentage bundle for product!';
-      }
-
-      if (marketingType === 'percentage') {
-        const discountAmount = (item?.price / 100) * item?.discountPercentage;
-        return {
-          id: item?._id,
-          discountPercentage: item?.discountPercentage,
-          discountPrice:
-            item?.price - (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount),
-          discount: shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount,
-        };
-      }
-
-      return {
-        id: item?._id,
-      };
-    });
+    // will be array if no issue else string
+    const productsData = createProductData(products, { marketingType, rewardAmount, maxDiscount: shop?.maxDiscount });
 
     if (marketingType !== 'free_delivery' && marketingType !== 'featured' && products?.length === 0) {
       successMsg('Products cannot be empty!', 'warn');
       return;
     }
 
-    if (prb) {
-      successMsg(prb, 'warn');
+    if (typeof productsData === 'string') {
+      successMsg(productsData, 'warn');
       return;
     }
 
@@ -443,8 +365,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
         if (data?.status) {
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
-          queryClient.invalidateQueries([`shop-all-products`]);
-
+          queryClient.invalidateQueries([Api.ALL_PRODUCT]);
           onDelete();
         }
       },
@@ -454,250 +375,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
     ? dealSettingsQuery?.data?.data?.dealSetting[0]?.percentageBundle
     : [];
-
-  const allColumns = [
-    {
-      id: 1,
-      showFor: ['reward', 'percentage', 'double_menu'],
-      headerName: `Item`,
-      sortable: false,
-      field: 'product',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return (
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: 600,
-                color: '#737373',
-                fontStyle: 'italic',
-                pl: 1.5,
-              }}
-            >
-              {params?.row?.categoryName !== 'undefined' ? params?.row?.categoryName : 'Select'}
-            </Typography>
-          );
-        }
-
-        return (
-          <StyledAutocomplete
-            fullWidth
-            value={params.row}
-            disabled={productsQuery.isLoading || itemSelectType === 'multiple'}
-            readOnly={productsQuery.isLoading || itemSelectType === 'multiple'}
-            console={console.log(
-              createGroupedList(productsQuery?.data?.data?.products || [], params?.row?.category?.name)
-            )}
-            options={createGroupedList(transformedProducts || [], params?.row?.category?.name)}
-            isOptionEqualToValue={(option, value) => option?._id === value?._id}
-            onChange={(event, newValue) => {
-              const index = products.findIndex((item) => item?._id === params.row?._id);
-              products[index] = newValue;
-              setRender(!render);
-              setHasChanged(true);
-              setHasGlobalChange(true);
-            }}
-            getOptionLabel={(option) => option?.name || 'Select Product'}
-            getOptionDisabled={(option) => !!products?.find((item) => item?._id === option?._id)}
-            loading={productsQuery.isLoading || productsQuery.isFetching}
-            groupBy={(option) => option?.category?.name}
-            renderGroup={(params) => (
-              <li key={params.key}>
-                <GroupHeader>{params.group}</GroupHeader>
-                <ul
-                  style={{
-                    padding: 0,
-                  }}
-                >
-                  {params.children}
-                </ul>
-              </li>
-            )}
-            renderOption={(props, option) => (
-              <li {...props}>
-                <span>{option?.name}</span>
-                <span>
-                  {currency} {option?.price}
-                </span>
-              </li>
-            )}
-          />
-        );
-      },
-    },
-    {
-      id: 2,
-      headerName: `Point Percentage`,
-      showFor: ['reward', 'percentage'],
-      sortable: false,
-      field: 'rewardBundle',
-      flex: 1,
-      align: 'left',
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        return (
-          <FilterSelect
-            items={
-              marketingType === 'percentage'
-                ? shopPercentageDeals
-                : rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle || []
-            }
-            placeholder="Select Percentage"
-            disabled={!params.row?.price}
-            getKey={(item) => item}
-            getValue={(item) => item}
-            getLabel={(item) => item}
-            getDisplayValue={(value) => `${value}`}
-            onChange={(e) => {
-              if (marketingType === 'percentage') {
-                params.row.discountPercentage = Number(e.target.value);
-              } else {
-                params.row.rewardBundle = Number(e.target.value);
-              }
-              setRender(!render);
-              setHasChanged(true);
-              setHasGlobalChange(true);
-            }}
-            value={
-              marketingType === 'percentage' ? params?.row?.discountPercentage || '' : params.row?.rewardBundle || ''
-            }
-          />
-        );
-      },
-    },
-    {
-      id: 3,
-      headerName: `Category`,
-      showFor: ['reward'],
-      sortable: false,
-      field: 'rewardCategory',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      minWidth: 180,
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        return (
-          <FilterSelect
-            items={rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory || []}
-            disabled={!params.row?.price}
-            value={params.row?.rewardCategory || ''}
-            getKey={(item) => item?._id}
-            getValue={(item) => item?._id}
-            getLabel={(item) => item?.name}
-            getDisplayValue={(value) =>
-              rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory?.find((item) => item?._id === value)
-                ?.name || ''
-            }
-            placeholder="Select Category"
-            onChange={(e) => {
-              params.row.rewardCategory = e.target.value;
-              setRender(!render);
-              setHasChanged(true);
-              setHasGlobalChange(true);
-            }}
-          />
-        );
-      },
-    },
-    {
-      id: 5,
-      headerName: `Final Price`,
-      showFor: ['reward', 'percentage', 'double_menu'],
-      sortable: false,
-      field: 'calc',
-      flex: 1,
-      align: marketingType === 'double_menu' ? 'center' : 'left',
-      headerAlign: marketingType === 'double_menu' ? 'center' : 'left',
-      minWidth: 180,
-      renderCell: (params) => {
-        if (params?.row?.isCategoryHeader) {
-          return <></>;
-        }
-
-        if (
-          marketingType === 'reward' &&
-          !(params?.row?.price && params?.row?.rewardBundle && rewardAmount !== undefined)
-        ) {
-          return <>--</>;
-        }
-
-        if (marketingType === 'percentage' && !params?.row?.discountPercentage) {
-          return <>--</>;
-        }
-
-        if (marketingType === 'double_menu' && !params?.row?.price) {
-          return <>--</>;
-        }
-
-        // for percentage only
-        const discountAmount = (params?.row?.price / 100) * params?.row?.discountPercentage;
-
-        return (
-          <Stack direction="row" alignItems="center" gap={1.5}>
-            <Stack direction="row" alignItems="center" gap={1.5}>
-              {/* reward */}
-              {marketingType === 'reward' && (
-                <Typography variant="body1" color={theme.palette.primary.main}>
-                  {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                  {(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle).toFixed(2)}
-                </Typography>
-              )}
-              {/* percentage */}
-              {marketingType === 'percentage' && (
-                <Typography variant="body1" color={theme.palette.text.danger}>
-                  {currency}{' '}
-                  {(
-                    params?.row?.price -
-                    (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount)
-                  )?.toFixed(2)}{' '}
-                </Typography>
-              )}
-              {/* double_menu */}
-              {marketingType === 'double_menu' && (
-                <Typography variant="body1" color={theme.palette.text.danger}>
-                  {currency} {params?.row?.price}
-                </Typography>
-              )}
-              {/* second */}
-              <Typography
-                sx={{
-                  color: '#A3A3A3',
-                  fontWeight: 500,
-                  textDecoration: 'line-through',
-                }}
-                variant="body1"
-              >
-                {/* reward/percentage  */}
-                {marketingType === 'reward' || (marketingType === 'percentage' && `${currency} ${params?.row?.price}`)}
-                {/* double_menu */}
-                {marketingType === 'double_menu' && `${currency} ${params?.row?.price * 2} `}
-              </Typography>
-            </Stack>
-            {itemSelectType !== 'multiple' && (
-              <CloseButton
-                color="primary"
-                size="sm"
-                onClick={() => {
-                  removeProduct(params.row);
-                  setHasChanged(true);
-                }}
-              />
-            )}
-          </Stack>
-        );
-      },
-    },
-  ];
 
   return (
     <Box
@@ -773,26 +450,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 {marketingType === 'free_delivery' && '$0 Delivery fee'}
                 {marketingType === 'featured' && 'Featured'}
               </Typography>
-              {/* <Button
-                variant="contained"
-                sx={{
-                  fontSize: '11px',
-                  lineHeight: '24px',
-                  background: '#F6F8FA',
-                  color: '#5E97A9',
-                  gap: '0px',
-                  padding: '5px 15px',
-                  textTransform: 'capitalize',
-
-                  '&:hover': {
-                    background: '#F6F8FA',
-                  },
-                }}
-              >
-                Scheduled
-              </Button> */}
             </Stack>
-
             <Typography variant="body2" color={theme.palette.text.primary2}>
               {marketingType === 'reward' &&
                 'Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item, giving them more incentive to order from your business.'}
@@ -886,9 +544,21 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                           minWidth: '850px',
                         }}
                       >
-                        <ProductTable
-                          columns={allColumns.filter((column) => column.showFor.includes(marketingType))}
-                          rows={createGroupedDataRow(products || [])}
+                        <MarketingProductsTable
+                          isFetching={productsQuery.isFetching}
+                          isLoading={productsQuery?.isLoading}
+                          itemSelectType={itemSelectType}
+                          marketingType={marketingType}
+                          productOptions={productOptions}
+                          setHasGlobalChange={setHasGlobalChange}
+                          setProductsChanged={setHasChanged}
+                          setValues={setProducts}
+                          values={products}
+                          shop={shop}
+                          percentageDealsOptions={shopPercentageDeals}
+                          rewardAmount={rewardAmount}
+                          rewardCategoryOptions={rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory}
+                          rewardDealOptions={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle}
                         />
                       </Box>
                     </Box>
@@ -985,7 +655,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 Title={
                   <CommonTitle
                     title="Spend Limit"
-                    subTitle={currentExpanedTab === 2 ? 'Set your weekly spending limit' : 'Pay per order'}
+                    subTitle={currentExpanedTab === 2 ? 'Set your spending limit' : 'Pay per order'}
                   />
                 }
                 disabled={isPageDisabled}
@@ -1000,7 +670,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         color: theme.palette.text.danger,
                       },
                     }}
-                    label="Set maximum weekly spending limit"
+                    label="Set maximum spending limit"
                     control={
                       <Checkbox
                         sx={{
@@ -1058,7 +728,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     }}
                     InputProps={{
                       startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                      endAdornment: <InputAdornment position="end">/week</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">/total</InputAdornment>,
                     }}
                   />
                 </Stack>

@@ -29,7 +29,7 @@ function ZoneMap({
   const [currentLocationName, setCurrentLocationName] = useState(currentZoneName || '');
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
-    currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
+    currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter
   );
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
@@ -92,7 +92,7 @@ function ZoneMap({
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
       // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error),
+      (error) => console.log(error)
     );
     location.then((res) => {
       console.log('current location: ', res?.data);
@@ -109,7 +109,7 @@ function ZoneMap({
   const handleFlyTo = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
       // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error),
+      (error) => console.log(error)
     );
     location.then((res) => {
       console.log('current location: ', res?.data);
@@ -195,7 +195,7 @@ function ZoneMap({
               positions={convertedLonLatToLatLon(loc?.zoneGeometry?.coordinates[0]).slice(0, -1)}
             >
               {/* <Popup>{loc.zoneName}</Popup> */}
-              <Tooltip background="red" direction="top" offset={[0, 0]} opacity={1} sticky>
+              <Tooltip background="red" direction="top" className="custom-tooltip" offset={[0, 0]} opacity={1} sticky>
                 {loc.zoneName}
               </Tooltip>
             </Polygon>
@@ -205,13 +205,7 @@ function ZoneMap({
 
           {/* Location marker here */}
           <Marker position={[center?.lat, center?.lon]}>
-            <Tooltip
-              direction="top"
-              offset={[-15, -10]}
-              opacity={1}
-              pathOptions={{ backgroundColor: 'black' }}
-              permanent
-            >
+            <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
               <Typography
                 sx={{
                   textTransform: 'capitalize',

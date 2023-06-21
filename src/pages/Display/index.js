@@ -4,9 +4,13 @@ import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
+  // {
+  //   label: 'Ads Banner',
+  //   to: '/display/banner/',
+  // },
   {
     label: 'Ads Banner',
-    to: '/display/banner/',
+    to: '/display/banner2',
   },
   {
     label: 'Tags & Cuisines',

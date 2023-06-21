@@ -30,13 +30,17 @@ export default function RiderList({ viewUserType }) {
 
   const query = useQuery(
     [Api.ALL_DELIVERY_MAN, queryParams],
-    () => AXIOS.get(Api.ALL_DELIVERY_MAN, { params: queryParams }),
+    () =>
+      AXIOS.get(Api.ALL_DELIVERY_MAN, {
+        params: { ...queryParams, zoneId: queryParams?.zoneId === 'all' ? null : queryParams?.zoneId },
+      }),
     {
       onSuccess: (data) => {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
