@@ -4,6 +4,7 @@ import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } fro
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledInput from '../../components/Styled/StyledInput';
+import { useGlobalContext } from '../../context';
 import { statusTypeOptions } from '../Faq2/helpers';
 import { createSellerData, sellerTypeOption, validateSellersData } from './helpers';
 
@@ -25,6 +26,8 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
+  const { currentUser } = useGlobalContext();
+  const { adminType } = currentUser;
 
   const changeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -97,7 +100,7 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
   };
 
   const onSubmitSeller = async () => {
-    const isValid = validateSellersData(newSellerData, isEdit);
+    const isValid = validateSellersData(newSellerData, adminType, isEdit);
     console.log(isValid);
     if (isValid) {
       const generatedData = await createSellerData(newSellerData, isEdit);
@@ -161,19 +164,17 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
           //   readOnly: isReadOnly,
         }}
       />
+
       <StyledFormField
         label="Phone Number *"
-        intputType="text"
-        containerProps={{
-          sx: { padding: '14px 0' },
-        }}
+        intputType="phoneNumber"
         inputProps={{
           value: newSellerData?.phone_number,
-          placeholder: 'Phone number',
           type: 'text',
           name: 'phone_number',
-          onChange: changeHandler,
-          //   readOnly: isReadOnly,
+          onChange: (value) => {
+            setNewSellerData((prev) => ({ ...prev, phone_number: value }));
+          },
         }}
       />
 
@@ -293,21 +294,23 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
           //   readOnly: isReadOnly,
         }}
       />
-      <StyledFormField
-        label="Status *"
-        intputType="select"
-        containerProps={{
-          sx: { padding: '14px 0' },
-        }}
-        inputProps={{
-          name: 'sellerStatus',
-          placeholder: 'Status',
-          value: newSellerData?.sellerStatus || '',
-          items: statusTypeOptions,
-          onChange: changeHandler,
-          //   readOnly: isReadOnly,
-        }}
-      />
+      {adminType === 'admin' && (
+        <StyledFormField
+          label="Status *"
+          intputType="select"
+          containerProps={{
+            sx: { padding: '14px 0' },
+          }}
+          inputProps={{
+            name: 'sellerStatus',
+            placeholder: 'Status',
+            value: newSellerData?.sellerStatus || '',
+            items: statusTypeOptions,
+            onChange: changeHandler,
+            //   readOnly: isReadOnly,
+          }}
+        />
+      )}
 
       <StyledFormField
         label="Profile Photo *"

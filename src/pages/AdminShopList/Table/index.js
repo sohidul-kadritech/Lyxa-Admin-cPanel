@@ -187,7 +187,7 @@ export default function ShopListTable({
     {
       id: 6,
       sortable: false,
-      headerName: `PROFIT${currency?.symbol}`,
+      headerName: `PROFIT`,
       field: 'totalProfit',
       flex: 1,
       align: 'center',

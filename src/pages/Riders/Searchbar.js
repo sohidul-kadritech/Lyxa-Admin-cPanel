@@ -13,7 +13,7 @@ import AXIOS from '../../network/axios';
 import StyledFormField from '../../components/Form/StyledFormField';
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAdd }) {
-  const [zoneItems, setZoneItems] = useState([]);
+  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
     onSuccess: (data) => {
@@ -73,6 +73,10 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       />
       <StyledFormField
         intputType="select"
+        tooltip="Zone"
+        sx={{
+          minWidth: 'auto',
+        }}
         inputProps={{
           name: 'zoneId',
           size: 'sm',

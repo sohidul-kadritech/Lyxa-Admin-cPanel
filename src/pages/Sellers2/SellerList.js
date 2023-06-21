@@ -1,5 +1,6 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
   return (
@@ -25,7 +26,9 @@ function SellerInfo({ sellerName, image, shopNumber }) {
 // eslint-disable-next-line no-unused-vars
 function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true }) {
   console.log(data);
-
+  const params = useParams();
+  const history = useHistory();
+  console.log('params', params);
   const sellerRef = useRef(null);
   const sellerContainer = useRef(null);
   const theme = useTheme();
@@ -48,19 +51,32 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
   };
   const handlePageLoad = () => {
     if (sellerRef.current) {
+      console.log('current element paisi', sellerRef.current);
       sellerRef.current?.scrollIntoView({
         behavior: 'smooth',
-        // top: sellerContainer.current.offsetTop + 10,
+        block: 'start',
       });
+    } else {
+      console.log('current element painai', sellerRef.current);
     }
   };
   useLayoutEffect(() => {
     handlePageLoad();
-  }, [loading]);
+  }, [loading, data]);
 
   useEffect(() => {
     handlePageLoad();
-  }, [loading]);
+  }, [loading, data]);
+
+  useEffect(() => {
+    history.listen(() => {
+      setTimeout(() => {
+        if (sellerRef.current) {
+          sellerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 0);
+    });
+  }, [history]);
 
   return (
     <Box
@@ -81,7 +97,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
               <Box
                 id={`seller_${seller._id}`}
                 key={i}
-                ref={currentSeller?._id !== seller?._id ? sellerRef : null}
+                ref={currentSeller?._id === seller?._id ? sellerRef : undefined}
                 sx={currentSeller?._id !== seller?._id ? styleForSellerList : styleForSellerListActive}
                 onClick={() => {
                   setCurrentSeller(seller);

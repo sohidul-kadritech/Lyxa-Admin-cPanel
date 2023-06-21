@@ -1,21 +1,24 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { isNaN } from 'lodash';
 import React from 'react';
 import TablePagination from '../../../components/Common/TablePagination';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { allColumns, getNewValue } from './helpers';
+import { allColumns } from './helpers';
 
 // eslint-disable-next-line no-unused-vars
 function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage }) {
   const theme = useTheme();
 
   const { general } = useGlobalContext();
+  // eslint-disable-next-line no-unused-vars
   const { currency } = general;
 
   const getValue = (type, value) => {
     // const state = store.getState();
+
     // const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
-    console.log('get value: ', getNewValue(type, value));
+
     let newValue = null;
     if (!value || value.length <= 0) {
       newValue = 0;
@@ -75,9 +78,10 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
       );
     } else if (type === 'globalDropCharge' || type === 'specificSellerDropCharge' || type === 'sellerDropChargeReset') {
       newValue = (
-        <span>{`${value?.dropPercentage ?? 0} ${
-          value?.dropPercentageType === 'parcentage' ? '%' : currency?.symbol
-        }`}</span>
+        <Typography variant="body4">{`${value?.dropPercentage ?? 0}${
+          '%'
+          // value?.dropPercentageType === 'parcentage' ? '%' : currency?.symbol
+        }`}</Typography>
       );
     } else if (
       type === 'globalDeliveryCut' ||
@@ -94,6 +98,18 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           ))}
         </Stack>
       );
+    } else if (
+      (typeof value === 'string' || typeof value === 'number') &&
+      value !== undefined &&
+      !isNaN(value) &&
+      value !== null &&
+      value !== 'undefined' &&
+      value !== 'null'
+    ) {
+      console.log('value:', value, ' type: ', typeof value);
+      if (value) {
+        newValue = value;
+      } else newValue = 0;
     } else {
       newValue = 0;
     }
@@ -128,7 +144,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? 'Loading...' : 'No Banner Found'}
+                {loading ? 'Loading...' : 'No Logs Found'}
               </Stack>
             ),
           }}

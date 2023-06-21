@@ -39,8 +39,8 @@ function SellerList2() {
   const [loading, setLoading] = useState(false);
 
   const [currentSeller, setCurrentSeller] = useState({});
-  const [zoneId, setZoneId] = useState('');
-  const [zoneItems, setZoneItems] = useState([]);
+  const [zoneId, setZoneId] = useState('all');
+  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
   const [currentTab, setCurrentTab] = useState('all');
   const theme = useTheme();
 
@@ -51,7 +51,7 @@ function SellerList2() {
       if (data.status) {
         const zones = data?.data?.zones;
         console.log('zones', zones);
-        setZoneItems([{ zoneName: 'All', _id: 'all' }, ...zones]);
+        setZoneItems([...zoneItems, ...zones]);
       }
     },
   });
@@ -172,6 +172,7 @@ function SellerList2() {
 
         <StyledFormField
           intputType="select"
+          tooltip="Select Status"
           containerProps={{
             sx: { padding: '0px 0px' },
           }}
@@ -186,6 +187,7 @@ function SellerList2() {
         />
         <StyledFormField
           intputType="select"
+          tooltip="Select Zone"
           containerProps={{
             sx: { padding: '0px 0px' },
           }}

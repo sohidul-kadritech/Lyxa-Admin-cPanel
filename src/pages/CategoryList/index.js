@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -12,6 +12,7 @@ import { statusTypeOptions } from '../CancelReason2/helper';
 import { sortOptions } from '../Faq2/helpers';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import CategoryTable from './CategoryTable';
+import ViewCategory from './ViewCategory';
 
 const breadcrumbItems = [
   {
@@ -35,6 +36,9 @@ function CategoryList2() {
   const [sortBy, setSortBy] = useState('desc');
   const [status, setStatus] = useState('active');
   const [type, setType] = useState('food');
+  const [open, setOpen] = useState(true);
+
+  const [selectedCategory, setSelectedCategory] = useState({});
 
   //   const [range, setRange] = useState({ ...dateRangeInit });
 
@@ -130,6 +134,8 @@ function CategoryList2() {
           <TablePageSkeleton row={5} column={4} />
         ) : (
           <CategoryTable
+            setOpen={setOpen}
+            setSelectedCategory={setSelectedCategory}
             updateQuery={updateQuery}
             data={getCategoryQuery?.data?.data?.categories}
             loading={getCategoryQuery?.isLoading}
@@ -137,6 +143,15 @@ function CategoryList2() {
           />
         )}
       </Box>
+
+      <Drawer open={open} anchor="right">
+        <ViewCategory
+          onClose={() => {
+            setOpen(false);
+          }}
+          selectedCategory={selectedCategory}
+        />
+      </Drawer>
     </Box>
   );
 }

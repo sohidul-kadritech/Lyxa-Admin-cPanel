@@ -1,3 +1,4 @@
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { deepClone } from '../../../helpers/deepClone';
 import { getImageUrl } from '../../../helpers/images';
 
@@ -46,7 +47,7 @@ export const getShopEditData = (shop) => {
   };
 };
 
-export const validateShopDetails = (shopData, isEditShop) => {
+export const validateShopDetails = (shopData, isEditShop, adminType) => {
   console.log(shopData);
 
   const status = {
@@ -90,6 +91,10 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
+  if (!isValidPhoneNumber(shopData?.phone_number)) {
+    status.msg = 'Please provide valid phone number';
+    return status;
+  }
   if (!shopData?.shopAddress?.address) {
     status.msg = 'Please provide shop address';
     return status;
@@ -110,10 +115,10 @@ export const validateShopDetails = (shopData, isEditShop) => {
     return status;
   }
 
-  // if (!shopData?.shopStatus) {
-  //   status.msg = 'Please Select shop Shop Status';
-  //   return status;
-  // }
+  if (!shopData?.shopStatus && adminType === 'admin') {
+    status.msg = 'Please Select shop Shop Status';
+    return status;
+  }
 
   return { status: true };
 };

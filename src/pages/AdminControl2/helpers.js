@@ -1,3 +1,4 @@
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { successMsg } from '../../helpers/successMsg';
 
 export const varifyUserData = (data, isEdit) => {
@@ -32,6 +33,11 @@ export const varifyUserData = (data, isEdit) => {
   }
   if (!data?.number) {
     successMsg('Please provide your phone number');
+    return false;
+  }
+
+  if (!isValidPhoneNumber(data?.number)) {
+    successMsg('Provide Valid phone number');
     return false;
   }
   if (!data?.status) {

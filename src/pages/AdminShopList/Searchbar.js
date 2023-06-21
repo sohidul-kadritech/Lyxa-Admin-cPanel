@@ -68,25 +68,17 @@ const profitSortOptions = [
   },
 ];
 
-// eslint-disable-next-line no-unused-vars
-const zoneOptions = [
-  {
-    label: 'All',
-    value: 'all',
-  },
-];
-
 const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
-  const [zoneItems, setZoneItems] = useState([]);
+  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
     onSuccess: (data) => {
       if (data.status) {
         const zones = data?.data?.zones;
         console.log('zones', zones);
-        setZoneItems([{ zoneName: 'All', _id: 'all' }, ...zones]);
+        setZoneItems([...zoneItems, ...zones]);
       }
     },
   });
@@ -180,6 +172,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
 
       <StyledFormField
         intputType="select"
+        tooltip="Sort by Zone"
         inputProps={{
           name: 'zoneId',
           size: 'sm',

@@ -11,10 +11,10 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import { sortOptions, statusTypeOptions } from '../Faq2/helpers';
-import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import { previewGenerator } from '../Sellers2/helpers';
 import { dateRangeInit } from '../Vat2/helpers';
 import AddBanner from './AddBanner';
+import BannerTableSkeleton from './BannerTableSkeleton';
 import AddBannerTable from './Table';
 
 const breadcrumbItems = [
@@ -173,7 +173,8 @@ function AdBanner() {
       </Box>
       <Box>
         {getBannerListQuery.isLoading ? (
-          <TablePageSkeleton row={5} column={4} />
+          // <TablePageSkeleton row={5} column={4} />
+          <BannerTableSkeleton row={5} column={4} />
         ) : (
           <AddBannerTable
             type={type}
