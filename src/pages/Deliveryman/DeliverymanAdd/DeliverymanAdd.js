@@ -189,14 +189,14 @@ function DeliverymanAdd() {
           id,
           status: activeStatus?.value,
           // eslint-disable-next-line prettier/prettier
-        })
+        }),
       );
     } else {
       dispatch(
         addDeliveryMan({
           ...data,
           // eslint-disable-next-line prettier/prettier
-        })
+        }),
       );
     }
   };
@@ -306,7 +306,7 @@ function DeliverymanAdd() {
         preview: URL.createObjectURL(file),
         formattedSize: formatBytes(file.size),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
 
     if (type === 'nid') {

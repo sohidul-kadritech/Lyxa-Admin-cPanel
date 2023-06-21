@@ -24,7 +24,7 @@ const queryParamsInit = (type) => ({
   sortByAvgTime: '',
   sortByRating: '',
   sortByProfit: '',
-  zoneId: '',
+  zoneId: 'all',
 });
 
 const tabValueToTypeMap = { 0: 'food', 1: 'grocery', 2: 'pharmacy' };

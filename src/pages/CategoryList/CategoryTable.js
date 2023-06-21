@@ -7,7 +7,7 @@ import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 
-function CategoryTable({ data, loading, updateQuery, type }) {
+function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, setOpen }) {
   const theme = useTheme();
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -32,11 +32,10 @@ function CategoryTable({ data, loading, updateQuery, type }) {
             subTitle={row?.autoGenId}
             titleProps={{
               sx: { color: 'primary.main', cursor: 'pointer' },
-              //   onClick: () => {
-              //     history.push(`/accounts/${row?._id}`, {
-              //       user: row,
-              //     });
-              //   },
+              onClick: () => {
+                setOpen(true);
+                setSelectedCategory(row);
+              },
             }}
           />
         </Stack>

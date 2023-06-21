@@ -2,8 +2,10 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { useGlobalContext } from '../../../context';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledInput from '../../Styled/StyledInput';
+import { statusOptions } from './helper';
 
 const addressInit = {
   address: '',
@@ -18,9 +20,12 @@ const addressInit = {
   note: '',
 };
 
-export default function ShopDetails({ shop, onChange, onDrop }) {
+export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
   const [render, setRender] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
+
+  const { currentUser } = useGlobalContext();
+  const { adminType } = currentUser;
 
   console.log({ selectedAddress });
 
@@ -121,14 +126,18 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
       {/* phone  */}
       <StyledFormField
         label="Phone Number *"
-        intputType="text"
+        intputType="phoneNumber"
         inputProps={{
           value: shop?.phone_number,
           type: 'text',
           name: 'phone_number',
-          onChange,
+          onChange: (value) => {
+            console.log('value', value);
+            setShop((prev) => ({ ...prev, phone_number: value }));
+          },
         }}
       />
+
       <Stack
         gap={2}
         sx={{
@@ -242,16 +251,18 @@ export default function ShopDetails({ shop, onChange, onDrop }) {
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
       />
-      {/* <StyledFormField
-        label="Status *"
-        intputType="select"
-        inputProps={{
-          name: 'shopStatus',
-          value: shop?.shopStatus,
-          items: statusOptions,
-          onChange,
-        }}
-      /> */}
+      {adminType === 'admin' && (
+        <StyledFormField
+          label="Status *"
+          intputType="select"
+          inputProps={{
+            name: 'shopStatus',
+            value: shop?.shopStatus,
+            items: statusOptions,
+            onChange,
+          }}
+        />
+      )}
     </Box>
   );
 }
