@@ -121,7 +121,7 @@ export function CoverPhotoButton({ label, onDrop, loading }) {
 }
 
 export function AverageOrderValue(totalProductsAmount, totalOrder) {
-  return totalProductsAmount / totalOrder || 0;
+  return (totalProductsAmount / totalOrder || 0).toFixed(2);
 }
 
 export function TagsAndCuisines(tags, cuisines) {

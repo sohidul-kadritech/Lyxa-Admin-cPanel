@@ -2,14 +2,20 @@
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import ButlerLocation from '../../../../assets/icons/butler-location.png';
 import CustomerLocation from '../../../../assets/icons/customer-location.png';
 import GroceryLocation from '../../../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../../../assets/icons/restaurant-location.png';
 
-const shopTypeToIconMap = { grocery: GroceryLocation, pharmacy: PharmacyLocation, food: ReturantLocation };
+const orderTypeToIconMap = {
+  grocery: GroceryLocation,
+  pharmacy: PharmacyLocation,
+  food: ReturantLocation,
+  butler: ButlerLocation,
+};
 
-export default function OrderTrackingMap({ pickup, dropoff, shopType }) {
+export default function OrderTrackingMap({ pickup, dropoff, orderType }) {
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState('');
@@ -40,7 +46,7 @@ export default function OrderTrackingMap({ pickup, dropoff, shopType }) {
     };
 
     const shopIcon = {
-      url: shopTypeToIconMap[shopType],
+      url: orderTypeToIconMap[orderType],
       scaledSize: new google.maps.Size(23, 46),
     };
 

@@ -5,7 +5,7 @@ import { ReactComponent as MapIcon } from '../../../../assets/icons/map-colored.
 import { StyledOrderDetailBox } from '../helpers';
 import OrderTrackingMap from './OrderTracking';
 
-export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {}, shopType }) {
+export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation = {}, orderType }) {
   const [mapOpen, setOpen] = useState(false);
 
   return (
@@ -43,7 +43,7 @@ export default function DeliveryDetails({ deliveryDetails = {}, pickUpLocation =
       <Accordion expanded={mapOpen}>
         <AccordionSummary sx={{ display: 'none' }}></AccordionSummary>
         <AccordionDetails sx={{ padding: '0', paddingTop: '10px' }}>
-          <OrderTrackingMap pickup={pickUpLocation} dropoff={deliveryDetails} shopType={shopType} />
+          <OrderTrackingMap pickup={pickUpLocation} dropoff={deliveryDetails} orderType={orderType} />
         </AccordionDetails>
       </Accordion>
     </StyledOrderDetailBox>

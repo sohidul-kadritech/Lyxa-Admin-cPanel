@@ -35,7 +35,7 @@ export default function Detail({ order, hideIssues, userType }) {
       <DeliveryDetails
         deliveryDetails={order?.dropOffLocation}
         pickUpLocation={order?.pickUpLocation}
-        shopType={order?.shop?.shopType}
+        orderType={order?.isButler ? 'butler' : order?.shop?.shopType}
       />
       <CallUser
         user={{
