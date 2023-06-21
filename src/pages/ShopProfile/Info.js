@@ -1,6 +1,7 @@
 import { AccessTime } from '@mui/icons-material';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
@@ -12,10 +13,29 @@ import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import { menuOtions } from './helper';
 
+export const getShopStatusColor = (shop) => {
+  let color = '#417C45';
+
+  if (shop?.liveStatus === 'offline') {
+    color = '#363636';
+  }
+
+  if (shop?.liveStatus === 'busy') {
+    color = '#DD5B63';
+  }
+
+  if (shop?.status === 'inactive') {
+    color = '#FFAB09';
+  }
+
+  return color;
+};
+
 export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
+  const routeMatch = useRouteMatch();
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
@@ -48,7 +68,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
           }}
         >
           {/* Active Badges */}
-          <Box sx={{ background: '#417C45', width: '11px', height: '11px', borderRadius: '50%' }} />
+          <Box sx={{ background: getShopStatusColor(shop), width: '11px', height: '11px', borderRadius: '50%' }} />
           <Box>
             <Typography
               variant="h2"
@@ -69,7 +89,10 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
               @account manager
             </Typography>
             <Box>
-              <ThreeDotsMenu menuItems={menuOtions(currentUser?.userType)} handleMenuClick={menuHandler} />
+              <ThreeDotsMenu
+                menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}
+                handleMenuClick={menuHandler}
+              />
             </Box>
           </Box>
         </Box>
@@ -173,7 +196,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             >
               <CartIcon style={{ width: '17px', height: '17px' }} />
               <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
-                Min. {currency?.symbol_native}
+                Min. {currency?.symbol}
                 {shop?.minOrderAmount}
               </Typography>
             </Box>

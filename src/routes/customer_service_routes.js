@@ -24,7 +24,7 @@ import RiderList from '../pages/Riders';
 export const customer_service_routes = [
   { path: `/ongoing-tickets`, component: OngoingTickets },
   { path: `/past-tickets`, component: PastTickets },
-  { path: `/riders`, component: () => <RiderList viewUserType="admin" /> },
+  { path: `/riders`, component: RiderList, componentProps: { viewUserType: 'admin' } },
   { path: `/riders/:riderId`, component: RiderProfile },
   { path: `/orders/list`, component: OrdersList },
   { path: `/orders/details/:id`, component: OrderDetails },

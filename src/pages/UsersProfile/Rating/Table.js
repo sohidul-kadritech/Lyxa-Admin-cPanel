@@ -1,7 +1,7 @@
 // project import
 import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import TablePagination from '../../../components/Common/TablePagination';
@@ -12,7 +12,7 @@ import StyledTable from '../../../components/Styled/StyledTable3';
 
 export default function ShopRatingTable({ rows = [], type, queryParams, setQueryParams, totalPage, user, loading }) {
   const history = useHistory();
-
+  const routeMatch = useRouteMatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
@@ -58,7 +58,10 @@ export default function ShopRatingTable({ rows = [], type, queryParams, setQuery
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/shop/profile/${row?.order?.shop?._id}`);
+              history.push({
+                pathname: `/shop/profile/${row?.order?.shop?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to User Profile' },
+              });
             },
           }}
         />

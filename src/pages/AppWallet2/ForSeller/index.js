@@ -10,11 +10,10 @@ import DateRange from '../../../components/StyledCharts/DateRange';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
-import { dateRangeInit } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import SellerInvoice from './Invoices';
 import SellerFinancialsTable from './SellerFinancialsTable';
-import { convertDate } from './helpers';
+import { convertDate, dateRangeInitFinancial } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -28,7 +27,7 @@ const breadcrumbItems = [
 ];
 function FinancialsForSeller() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [range, setRange] = useState({ ...dateRangeInitFinancial });
 
   const [searchKey, setSearchKey] = useState('');
 

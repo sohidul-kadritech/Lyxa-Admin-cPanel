@@ -1,6 +1,7 @@
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
@@ -21,8 +22,9 @@ const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Ph
 
 export default function Table({ orders = [], shopType, queryParams, setQueryParams, totalPage, orderType, loading }) {
   const history = useHistory();
-
+  const routeMatch = useRouteMatch();
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
@@ -91,7 +93,10 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/accounts/${row?.user?._id}`);
+              history.push({
+                pathname: `/accounts/${row?.user?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+              });
             },
           }}
         />
@@ -124,7 +129,10 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/shop/profile/${row?.shop?._id}`);
+              history.push({
+                pathname: `/shop/profile/${row?.shop?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+              });
             },
           }}
         />

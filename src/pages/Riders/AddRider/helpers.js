@@ -48,7 +48,6 @@ export const validateRider = (rider, isEditRider) => {
     status: false,
     msg: null,
   };
-
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 
   if (!rider?.name?.trim()) {
@@ -141,7 +140,7 @@ export const validateRider = (rider, isEditRider) => {
     return status;
   }
 
-  if (!rider?.status) {
+  if (!rider?.status && rider?._id) {
     status.msg = 'Rider status cannot be empty!';
     return status;
   }

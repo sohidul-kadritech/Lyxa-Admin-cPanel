@@ -74,7 +74,7 @@ export const getQueryParamsInit = (viewUserType, shopId) => ({
   status: '',
   liveStatus: '',
   shift: '',
-  zoneId: '',
+  zoneId: 'all',
   deliveryBoyType: viewUserType === 'admin' ? 'dropRider' : 'shopRider ',
   shopId: viewUserType === 'shop' ? shopId : undefined,
 });

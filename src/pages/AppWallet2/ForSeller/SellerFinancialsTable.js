@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { HeaderWithToolTips } from './helpers';
@@ -8,7 +9,7 @@ import { HeaderWithToolTips } from './helpers';
 function SellerFinancialsTable({ data = [], loading }) {
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
-
+  const routeMatch = useRouteMatch();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
 
@@ -41,7 +42,10 @@ function SellerFinancialsTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/seller/list2/${params?.row?._id}`);
+                history?.push({
+                  pathname: `/seller/list2/${params?.row?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Seller Transactions' },
+                });
               }}
             >
               {params?.row?.company_name}

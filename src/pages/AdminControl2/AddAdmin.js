@@ -123,7 +123,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
           />
           <StyledFormField
             label="Phone Number *"
-            intputType="text"
+            intputType="phoneNumber"
             containerProps={{
               sx: { padding: '14px 0' },
             }}
@@ -132,10 +132,13 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
               placeholder: 'Phone number',
               type: 'number',
               name: 'number',
-              onChange: changeHandler,
+              onChange: (value) => {
+                setNewAdminData((prev) => ({ ...prev, number: value }));
+              },
               //   readOnly: isReadOnly,
             }}
           />
+
           <StyledFormField
             label="Status *"
             intputType="select"

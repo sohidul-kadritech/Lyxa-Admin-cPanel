@@ -82,6 +82,7 @@ import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLa
 import AccountList from '../pages/Accounts';
 import AdminControl from '../pages/AdminControl2';
 import AdminFinancials from '../pages/AdminFinancials';
+import AdminLogs from '../pages/AdminLogs';
 import AdminOrders from '../pages/AdminOrderTable';
 import Appsettings2 from '../pages/AppSettings2';
 import AccountFinancials from '../pages/AppWallet2/ForAccount';
@@ -89,7 +90,9 @@ import RidersTransactions from '../pages/AppWallet2/ForRider';
 import FinancialsForSeller from '../pages/AppWallet2/ForSeller';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import ShopsFinancialsSpecificSellers from '../pages/AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
-import NewOrders from '../pages/NewOrder';
+import AdBanner from '../pages/Banner2';
+import CategoryList2 from '../pages/CategoryList';
+import DefaultChat2 from '../pages/DefaultChat2';
 import Notification from '../pages/Notification2';
 import PercentageSettings2 from '../pages/PercentageSettings';
 import PrivacySettings from '../pages/Privacy';
@@ -116,7 +119,7 @@ export const admin_routes = [
   // dashboard
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
-  { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
+  // { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
   { path: '/orders', component: AdminOrders },
 
   { path: '/orders/list', component: ButlerOrderList },
@@ -128,7 +131,7 @@ export const admin_routes = [
   // vat
   { path: '/vat2', component: Vat },
   { path: '/vat', component: Vat2 },
-  { path: '/riders', component: () => <RiderList viewUserType="admin" /> },
+  { path: '/riders', component: RiderList, componentProps: { viewUserType: 'admin' } },
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
@@ -148,15 +151,19 @@ export const admin_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
+  { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
+  // { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
-  { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  // { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
+  { path: '/shops/marketing/:id', component: Marketing, componentProps: { viewUserType: 'admin' } },
   {
     path: '/shops/marketing/dashboard/:shopId/:type/:id',
-    component: () => <MarketingDashboard viewUserType="admin" />,
+    component: MarketingDashboard,
+    componentProps: { viewUserType: 'admin' },
   },
+
   { path: '/shop', component: AdminShopList },
   { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
@@ -186,6 +193,7 @@ export const admin_routes = [
 
   // app wallet
   { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
+  { path: '/add-wallet/admin-log-history2', component: AdminLogs },
   { path: '/add-wallet/seller-transactions', component: SellerTransactions },
   { path: '/add-wallet/seller-transactions2', component: FinancialsForSeller },
   {
@@ -251,7 +259,6 @@ export const admin_routes = [
 
   //  settings
   { path: '/app/settings', component: AppSettings },
-
   { path: '/testing', component: AdminSettings2 },
 
   { path: '/settings/app-settings', component: Appsettings2 },
@@ -261,6 +268,7 @@ export const admin_routes = [
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
   { path: '/admin/default-chat-message', component: DefaultChat },
+  { path: '/admin/default-chat-message2', component: DefaultChat2 },
   { path: '/admin/database/collections', component: DatabaseSettings },
 
   // settings
@@ -280,6 +288,7 @@ export const admin_routes = [
   { path: '/settings/products/unit-types', component: UnitTypes },
   { path: '/settings/ratings', component: RatingSettings2 },
   { path: '/settings/categories/list', component: CategoryList },
+  { path: '/settings/categories/list2', component: CategoryList2 },
   { path: '/settings/categories/edit/:id', component: CategoryAdd },
   { path: '/settings/category/details/:id', component: CategoryDetails },
 
@@ -305,6 +314,7 @@ export const admin_routes = [
   { path: '/display/filter-containers', component: FilterContainers },
   { path: '/display/tags-cusines', component: TagsAndCusines },
   { path: '/display/banner', component: BannerPage },
+  { path: '/display/banner2', component: AdBanner },
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
   { path: '/admin/requested-area', component: RequestedArea },

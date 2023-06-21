@@ -14,7 +14,7 @@ import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { sortOptions } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import { dateRangeInit } from '../../Vat2/helpers';
+import { dateRangeInitFinancial } from '../ForSeller/helpers';
 import AddRemoveCredit from './AddRemoveCredit';
 import AccountTable from './Table';
 
@@ -29,7 +29,7 @@ const breadcrumbItems = [
   },
 ];
 function AccountFinancials() {
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [range, setRange] = useState({ ...dateRangeInitFinancial });
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
 
@@ -80,10 +80,10 @@ function AccountFinancials() {
       trx?.amount ?? 0,
       trx?.user?.email,
       trx?.type === 'userPayAfterReceivedOrderByCard' ? 'Card' : 'Lyxa',
-      moment(trx?.createdAt)?.format('MMM DD, YYYY'),
-      trx?.summary?.riderEarning,
-      trx?.summary.totalCashInHand,
-      trx?.summary.settleAmount,
+      `${moment(trx?.createdAt)?.format('MMM DD, YYYY')}, ${moment(trx?.createdAt)?.format('hh:mm A')}`,
+      // trx?.summary?.riderEarning,
+      // trx?.summary.totalCashInHand,
+      // trx?.summary.settleAmount,
     ]);
 
     console.log('===>data', data);

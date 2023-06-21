@@ -16,6 +16,7 @@ import AXIOS from '../../network/axios';
 
 export default function RiderDetails({ rider }) {
   const [, setRender] = useState(false);
+  console.log('rider', rider);
   const queryClient = useQueryClient();
 
   const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
@@ -58,7 +59,7 @@ export default function RiderDetails({ rider }) {
       <ProfileSidebarInfo label="Location" value={rider?.address} icon={Loacation} />
       <ProfileSidebarInfo label="Vehicle Type" value={rider?.vehicleType} icon={VehicleType} />
       <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={VehicleNumber} />
-      <ProfileSidebarInfo label="Area Covered" value="Rampura" icon={AreaCovered} />
+      <ProfileSidebarInfo label="Area Covered" value={rider?.zone?.zoneName} icon={AreaCovered} />
       <ProfileSidebarInfo label="Shift" value={rider?.shift} icon={Shift} />
       <Box>
         <Button

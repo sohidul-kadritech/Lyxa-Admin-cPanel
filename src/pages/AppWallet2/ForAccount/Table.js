@@ -2,6 +2,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
@@ -18,7 +19,7 @@ const getStyleForAmount = (value) => {
 function AccountTable({ data = [], loading }) {
   const { general } = useGlobalContext();
   // eslint-disable-next-line import/no-named-as-default
-
+  const routeMatch = useRouteMatch();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
 
@@ -54,7 +55,10 @@ function AccountTable({ data = [], loading }) {
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                history?.push(`/accounts/${params?.row?._id}`);
+                history?.push({
+                  pathname: `/accounts/${params?.row?.user?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
+                });
               }}
             >
               {params?.row?.user?.name}
@@ -149,7 +153,11 @@ function AccountTable({ data = [], loading }) {
         columns={allColumns}
         rows={data}
         onRowClick={({ row }) => {
-          history?.push(`/riders/${row?._id}?financials=riders`);
+          history?.push({
+            pathname: `/accounts/${row?.user?._id}`,
+            search: 'financials=user',
+            state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
+          });
         }}
         getRowId={(row) => row?._id}
         sx={{
