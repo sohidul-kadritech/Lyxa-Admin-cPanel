@@ -55,14 +55,6 @@ export default function PaymentDetails({ order = {} }) {
             value={(order?.summary?.discount || 0).toFixed(2)}
           />
         )}
-        {/* {order?.summary?.doubleMenuItemPrice > 0 && (
-          <StyledItem
-            label="Double Deals"
-            isNegative
-            isRejected={false}
-            value={(order?.summary?.doubleMenuItemPrice || 0).toFixed(2)}
-          />
-        )} */}
         {order?.summary?.reward?.amount > 0 && (
           <StyledItem
             label="Rewards"
@@ -73,6 +65,15 @@ export default function PaymentDetails({ order = {} }) {
         )}
         {order?.summary?.vat > 0 && <StyledItem label="VAT" value={(order?.summary?.vat || 0).toFixed(2)} />}
         <StyledItem label="Total" value={(totalPayment || 0).toFixed(2)} total />
+        {/* if group order */}
+        {order?.cart?.cartType === 'group' && (
+          <Box>
+            {order?.cart?.cartItems?.map((user) => {
+              const total = user?.isPaid ? user?.summary?.cash + user?.summary?.wallet + user?.summary?.card || 0 : 0;
+              return <StyledItem label={user?.user?.name} value={(total || 0).toFixed(2)} total />;
+            })}
+          </Box>
+        )}
         {order?.isRefundedAfterDelivered && (
           <StyledItem label="Total Refunded" value={(refund?.amount || 0).toFixed(2)} total noBorder />
         )}

@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { StyledOrderDetailBox } from '../../helpers';
+import GroupOrder from './GroupOrder';
 import RegularOrder from './RegularOrder';
 
 export default function OrderSummary({ order }) {
@@ -21,7 +22,7 @@ export default function OrderSummary({ order }) {
         </span>
       }
     >
-      <RegularOrder order={order} />
+      {order?.cart?.cartType === 'group' ? <GroupOrder order={order} /> : <RegularOrder order={order} />}
     </StyledOrderDetailBox>
   );
 }
