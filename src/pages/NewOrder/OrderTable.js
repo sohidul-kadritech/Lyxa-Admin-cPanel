@@ -236,7 +236,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">
-          {currency} {getOrderProfit(row, adminType)}
+          {currency} {(getOrderProfit(row, adminType) || 0)?.toFixed(2)}
         </Typography>
       ),
     },

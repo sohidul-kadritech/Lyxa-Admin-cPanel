@@ -4,7 +4,7 @@ import React from 'react';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 
-const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
+export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
   <span
     {...props}
     ref={ref}
@@ -158,7 +158,7 @@ export default function OrderAmountDetails({ order = {} }) {
           <StyledItem
             label="Deal compensation amount"
             value={order?.doubleMenuCut?.doubleMenuAdminCut}
-            tooltip="This amount in alreay included"
+            tooltip="This amount in already included in shop profit"
             hideZero
             isRejected
           />
@@ -182,7 +182,7 @@ export default function OrderAmountDetails({ order = {} }) {
           <StyledItem
             label="Deal compensation amount"
             value={order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut}
-            tooltip="This amount in alreay included"
+            tooltip="This amount in already included lyxa profit"
             hideZero
             isRejected
           />
