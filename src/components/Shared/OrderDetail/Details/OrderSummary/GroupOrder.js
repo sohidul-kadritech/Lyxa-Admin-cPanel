@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Box, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import Product from './Product';
 
@@ -58,9 +58,20 @@ export default function GroupOrder({ order }) {
     <Box pt={1}>
       {groups?.map((grp, gi, { length: gl }) => (
         <Box key={grp?.user?._id} pb={gi === gl - 1 ? 0 : 5}>
-          <Typography variant="inherit" fontSize={15} fontWeight={700} pb={2}>
-            {grp?.user?.name}
-          </Typography>
+          <Stack direction="row" alignItems="center" pb={2} gap={1.5}>
+            <Avatar
+              src={grp?.user?.profile_photo}
+              sx={{
+                width: '32px',
+                height: '32px',
+              }}
+            >
+              {grp?.user?.name?.charAt(0)}
+            </Avatar>
+            <Typography variant="inherit" fontSize={15} fontWeight={600}>
+              {grp?.user?.name}
+            </Typography>
+          </Stack>
           <Box>
             {grp?.products?.map((product, i, { length: l }) => (
               <Product product={product} key={product._id} isFirst={i === 0} isLast={i === l - 1} />

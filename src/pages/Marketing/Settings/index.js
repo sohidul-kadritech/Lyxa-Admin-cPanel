@@ -728,7 +728,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     }}
                     InputProps={{
                       startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                      endAdornment: <InputAdornment position="end">/week</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">/total</InputAdornment>,
                     }}
                   />
                 </Stack>

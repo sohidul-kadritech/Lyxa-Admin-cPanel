@@ -3,6 +3,7 @@ import { useState } from 'react';
 import CallUser from './CallUser';
 import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
+import GroupOrderSettings from './GroupOrderSettings';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderSummary from './OrderSummary';
@@ -10,7 +11,6 @@ import OrderTimeline from './OrderTimeline';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
 import ResolveOrderFlag from './ResolveFlag';
-// import OrderSummary from './Summary';
 
 export default function Detail({ order, hideIssues, userType }) {
   // eslint-disable-next-line no-unused-vars
@@ -47,6 +47,7 @@ export default function Detail({ order, hideIssues, userType }) {
       <OrderSummary order={order} />
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
+      {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
       <PaymentDetails order={order} />
       <ResolveOrderFlag order={order} setRender={setRender} />
     </Stack>
