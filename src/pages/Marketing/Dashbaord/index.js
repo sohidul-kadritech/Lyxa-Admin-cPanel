@@ -1,3 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
@@ -13,7 +15,6 @@ import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecre
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
-import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
@@ -21,9 +22,7 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import PageSkeleton from './PageSkeleton';
-import ProductsInfoList from './ProductsInfoList';
-import { ViewMoreTag, dateRangeItit } from './helpers';
-import { ProductsInfoListData } from './mock';
+import { dateRangeItit } from './helpers';
 
 const mTypeMap = {
   double_menu: 'Buy 1, Get 1 Free',
@@ -36,8 +35,6 @@ const mTypeMap = {
 export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
-
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { shop, userType } = currentUser;
 
@@ -60,17 +57,28 @@ export default function MarketingDashboard({ viewUserType }) {
           setCurrentShop(data?.data?.shop);
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
+
+  const marketingQuery = useQuery([`marketing-settings`], () =>
+    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+      params: {
+        creatorType: viewUserType,
+        type: params?.type,
+        shop: params?.shopId,
+      },
+    })
+  );
+
+  const marketingDurationTime = moment(marketingQuery?.data?.data?.marketing?.duration?.start).diff(moment(), 'day');
+  console.log(marketingDurationTime);
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
     AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
       params: {
         marketingId: params?.id,
       },
-      // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   // orders graph
@@ -82,18 +90,18 @@ export default function MarketingDashboard({ viewUserType }) {
       AXIOS.get(Api.GET_MARKETING_DASHBOARD_ORDER_GRAPH, {
         params: {
           marketingId: params?.id,
-          startDate: orderRange.start,
-          endDate: orderRange.end,
+          startDate: moment(orderRange.start).format('YYYY-MM-DD'),
+          endDate: moment(orderRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const oData = generateGraphData(
     ordersGraphQuery?.data?.data?.info || [],
     (item) => item.order,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD'),
+    (item) => moment(item?.date).format('MMMM DD')
   );
 
   const oGraphData = {
@@ -119,18 +127,17 @@ export default function MarketingDashboard({ viewUserType }) {
       AXIOS.get(Api.GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH, {
         params: {
           marketingId: params?.id,
-          startDate: customerRange.start,
-          endDate: customerRange.end,
+          startDate: moment(customerRange.start).format('YYYY-MM-DD'),
+          endDate: moment(customerRange.end).format('YYYY-MM-DD'),
         },
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD'),
+    (item) => moment(item?.date).format('MMMM DD')
   );
 
   const cGraphData = {
@@ -153,18 +160,18 @@ export default function MarketingDashboard({ viewUserType }) {
       AXIOS.get(Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH, {
         params: {
           marketingId: params?.id,
-          startDate: amountRange.start,
-          endDate: amountRange.end,
+          startDate: moment(amountRange.start).format('YYYY-MM-DD'),
+          endDate: moment(amountRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const aData = generateGraphData(
     amountGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD'),
+    (item) => moment(item?.date).format('MMMM DD')
   );
 
   const aGraphData = {
@@ -189,18 +196,17 @@ export default function MarketingDashboard({ viewUserType }) {
       AXIOS.get(Api.GET_MARKETING_DASHBOARD_LOYALTY_POINTS_GRAPH, {
         params: {
           marketingId: params?.id,
-          startDate: loyalityRange.start,
-          endDate: loyalityRange.end,
+          startDate: moment(loyalityRange.start).format('YYYY-MM-DD'),
+          endDate: moment(loyalityRange.end).format('YYYY-MM-DD'),
         },
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const pData = generateGraphData(
     loyalityGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD'),
+    (item) => moment(item?.date).format('MMMM DD')
   );
 
   const pGraphData = {
@@ -216,7 +222,7 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const breadCrumbItems = [
     {
-      label: 'Marketing',
+      label: 'Marketings',
       to: params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing',
     },
     {
@@ -266,7 +272,7 @@ export default function MarketingDashboard({ viewUserType }) {
           <InfoCard
             title="Ongoing Promotions on Items"
             value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
-            Tag={<ViewMoreTag />}
+            // Tag={<ViewMoreTag />}
             sm={6}
             md={4}
             lg={4}
@@ -277,14 +283,17 @@ export default function MarketingDashboard({ viewUserType }) {
             Tag={
               <IncreaseDecreaseTag
                 status={
-                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth > 0
+                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >
+                  0
                     ? 'increase'
                     : 'decrease'
                 }
+                console={console.log(marketingInfoQuery?.data?.data?.summary)}
                 amount={`${Math.round(
-                  // eslint-disable-next-line prettier/prettier
-                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
-                )}%`}
+                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
+                )}% in ${marketingDurationTime || 1} days`}
               />
             }
             sm={6}
@@ -297,21 +306,24 @@ export default function MarketingDashboard({ viewUserType }) {
             Tag={
               <IncreaseDecreaseTag
                 status={
-                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth > 0
+                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >
+                  0
                     ? 'increase'
                     : 'decrease'
                 }
                 amount={`${Math.round(
                   // eslint-disable-next-line prettier/prettier
-                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
-                )}%`}
+                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+                )}% in ${marketingDurationTime || 1} days`}
               />
             }
             sm={6}
             md={4}
             lg={4}
           />
-          {params?.type === 'reward' && (
+          {/* {params?.type === 'reward' && (
             <>
               <Grid sm={12} md={12} lg={5}>
                 <StyledBox>
@@ -336,7 +348,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 <StyledBarChart data={pGraphData} />
               </ChartBox>
             </>
-          )}
+          )} */}
           <ChartBox
             chartHeight={245}
             dateRange={orderRange}
