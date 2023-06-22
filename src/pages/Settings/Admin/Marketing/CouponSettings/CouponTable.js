@@ -126,7 +126,7 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
     },
     {
       id: 7,
-      headerName: `USER LIMIT`,
+      headerName: `USER ORDER LIMIT`,
       sortable: false,
       field: 'couponUserLimit',
       flex: 1,

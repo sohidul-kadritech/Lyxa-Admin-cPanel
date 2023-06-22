@@ -37,13 +37,15 @@ export default function Detail({ order, hideIssues, userType }) {
         pickUpLocation={order?.pickUpLocation}
         orderType={order?.isButler ? 'butler' : order?.shop?.shopType}
       />
-      <CallUser
-        user={{
-          name: order?.shop?.shopName,
-          image: order?.shop?.shopLogo,
-          number: order?.shop?.phone_number,
-        }}
-      />
+      {!order?.isButler && (
+        <CallUser
+          user={{
+            name: order?.shop?.shopName,
+            image: order?.shop?.shopLogo,
+            number: order?.shop?.phone_number,
+          }}
+        />
+      )}
       <OrderSummary order={order} />
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}

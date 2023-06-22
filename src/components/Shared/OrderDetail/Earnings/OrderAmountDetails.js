@@ -98,8 +98,6 @@ function StyledItem({
 export default function OrderAmountDetails({ order = {} }) {
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
-  console.log({ order });
-
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
@@ -182,7 +180,7 @@ export default function OrderAmountDetails({ order = {} }) {
           <StyledItem
             label="Deal compensation amount"
             value={order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut}
-            tooltip="This amount in already included lyxa profit"
+            tooltip="This amount already in included lyxa profit"
             hideZero
             isRejected
           />
