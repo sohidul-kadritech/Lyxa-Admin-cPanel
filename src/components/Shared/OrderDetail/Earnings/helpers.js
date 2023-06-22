@@ -16,6 +16,7 @@ export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
       fontSize: '11px',
       alignItems: 'center',
       justifyContent: 'center',
+      cursor: 'default',
     }}
   >
     i
