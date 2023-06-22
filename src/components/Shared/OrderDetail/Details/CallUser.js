@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography, styled } from '@mui/material';
+import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
 import { ReactComponent as PhoneIcon } from '../../../../assets/icons/phone.svg';
 import { StyledOrderDetailBox } from '../helpers';
 
@@ -17,11 +17,14 @@ const StyledButton = styled('a')(({ theme }) => ({
   },
 }));
 
-export default function CallUser({ user, userType }) {
+export default function CallUser({ user, userType, disableContainerStyle }) {
   console.log(user);
 
+  // container
+  const Container = disableContainerStyle ? Box : StyledOrderDetailBox;
+
   return (
-    <StyledOrderDetailBox>
+    <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack direction="row" alignItems="center" gap="14px">
           <Avatar alt="rider-image" src={user?.image} sx={{ width: 36, height: 36 }}>
@@ -55,6 +58,6 @@ export default function CallUser({ user, userType }) {
           </StyledButton>
         </Stack>
       </Stack>
-    </StyledOrderDetailBox>
+    </Container>
   );
 }
