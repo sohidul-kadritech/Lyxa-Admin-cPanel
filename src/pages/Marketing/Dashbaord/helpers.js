@@ -21,5 +21,5 @@ export const marketingDurationTime = (start, end) => {
   // if campaign ended
   if (moment().isAfter(moment(end))) return 'During campaign';
   const duration = moment().diff(moment(start), 'hours');
-  return `${Math.ceil(duration / 24)} days`;
+  return `${Math.ceil(duration / 24) || 1} days`;
 };

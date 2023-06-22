@@ -57,7 +57,7 @@ export default function ShopList() {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleMenuClick = (menu, shop) => {
@@ -79,7 +79,7 @@ export default function ShopList() {
     }
 
     if (menu === 'marketing') {
-      history.push(`/shops/marketing/${shop?._id}`, shop);
+      history.push(`/shops/${shop?._id}/marketing`, shop);
     }
   };
 

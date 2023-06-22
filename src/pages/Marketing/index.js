@@ -37,7 +37,6 @@ const marketingTypesInit = {
 const getApliedDeals = (marketings, currentUserType) => {
   const options = { ...marketingTypesInit };
   marketings?.forEach((item) => {
-    // console.log(item?.creatorType);
     if (item?.creatorType !== currentUserType) {
       options[item?.type] = true;
     }
@@ -72,7 +71,7 @@ export default function Marketing({ viewUserType }) {
   const [currentShop, setCurrentShop] = useState(viewUserType === 'shop' ? shop : {});
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
   const routeMatch = useRouteMatch();
-  console.log(routeMatch);
+  console.log({ routeMatch });
   console.log({ params });
 
   const shopQuery = useQuery(
@@ -116,12 +115,9 @@ export default function Marketing({ viewUserType }) {
       setActiveDeals(activeDeals);
 
       const appliedDeals = getApliedDeals(shop?.marketings, 'shop');
-      console.log('shop marketing ===>', shop?.marketings);
       setAppliedDeals(appliedDeals);
     } else if (shopQuery?.data?.status) {
       setCurrentShop(shopQuery?.data?.data?.shop || {});
-      console.log('other part marketing ===>', shop?.marketings);
-
       const activeDeals = getActiveDeals(
         dealSettingsQuery?.data?.data?.dealSetting || [],
         shopQuery?.data?.data?.shop?.shopType
@@ -225,9 +221,11 @@ export default function Marketing({ viewUserType }) {
     } else if (viewUserType === 'shop' && userType === 'shop') {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
     } else if (viewUserType === 'shop' && userType === 'seller') {
-      history.push(`/shop/dashboard/64777aed8f332425af4f3373/marketing/dashboard/${marketingType}/${marketing?._id}`);
+      history.push(`/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
+    } else if (viewUserType === 'shop' && userType === 'admin') {
+      history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}`);
     } else {
-      history.push(`/shops/marketing/dashboard/${currentShop?._id}/${marketingType}/${marketing?._id}`);
+      history.push(`/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
     }
   };
 
@@ -239,7 +237,8 @@ export default function Marketing({ viewUserType }) {
     !rewardSettingsQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 
-  const __readonly = viewUserType === 'shop' && userType === 'admin';
+  const __readonly = false;
+  // const __readonly = viewUserType === 'shop' && userType === 'admin';
 
   console.log({ appliedDeals });
   console.log({ activeDeals });
@@ -263,7 +262,6 @@ export default function Marketing({ viewUserType }) {
             loading={__loading || discountSettingsQuery?.isFetching}
             disabled={appliedDeals.percentage || !activeDeals.percentage}
             status={getPromotionStatus(discountSettingsQuery, 'percentage', activeDeals)}
-            // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
             ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
             onOpen={() => {
               if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {

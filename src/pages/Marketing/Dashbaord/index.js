@@ -7,6 +7,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../../components/Common/PageTop';
 
 // project import
@@ -35,6 +36,8 @@ const mTypeMap = {
 export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
+  const routeMatch = useRouteMatch();
+
   const { currentUser } = useGlobalContext();
   const { shop, userType } = currentUser;
 
@@ -60,14 +63,29 @@ export default function MarketingDashboard({ viewUserType }) {
     }
   );
 
-  const marketingQuery = useQuery([`marketing-settings`], () =>
-    AXIOS.get(Api.GET_MARKETING_SETTINGS, {
-      params: {
-        creatorType: viewUserType,
-        type: params?.type,
-        shop: params?.shopId,
+  const marketingQuery = useQuery(
+    [`marketing-settings`],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_SETTINGS, {
+        params: {
+          creatorType: viewUserType,
+          type: params?.type,
+          shop: params?.shopId,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        // marketing does not exist
+        if (!data?.status) {
+          history?.goForward();
+        }
       },
-    })
+
+      onError: (error) => {
+        console.log(error);
+        history?.goForward();
+      },
+    }
   );
 
   const marketingDuration = marketingDurationTime(
@@ -75,7 +93,7 @@ export default function MarketingDashboard({ viewUserType }) {
     marketingQuery?.data?.data?.marketing?.duration?.end
   );
 
-  console.log(moment().utc());
+  console.log({ params });
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
     AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
@@ -251,10 +269,11 @@ export default function MarketingDashboard({ viewUserType }) {
   }, [__loading]);
 
   const getBackToUrl = (viewUserType) => {
-    if (viewUserType === 'shop' && userType === 'shop') return '/marketing';
-    if (viewUserType === 'shop' && userType === 'seller') return `/shop/dashboard/${params?.shopId}/marketing`;
-    if (viewUserType === 'admin') return `/shops/marketing/${params?.shopId}`;
-    return '';
+    const routeSeg = routeMatch?.url?.split('/');
+    routeSeg?.pop();
+    routeSeg?.pop();
+    routeSeg?.pop();
+    return routeSeg?.join('/');
   };
 
   return (
@@ -265,8 +284,10 @@ export default function MarketingDashboard({ viewUserType }) {
         backTo={getBackToUrl(viewUserType)}
         addButtonLabel="Manage Promotions"
         onAdd={() => {
+          if (viewUserType === 'shop' && userType === 'admin') return;
           setIsModalOpen(true);
         }}
+        onAddDisabled={viewUserType === 'shop' && userType === 'admin'}
       />
       {__loading && isInitialLoad ? (
         <PageSkeleton />
@@ -395,11 +416,7 @@ export default function MarketingDashboard({ viewUserType }) {
             setIsModalOpen(false);
           }}
           onDelete={() => {
-            if (params?.shopId) {
-              history.push(`/shops/marketing/${currentShop?._id}`);
-            } else {
-              history.push(`/marketing`);
-            }
+            history.replace(getBackToUrl(viewUserType));
           }}
         />
       </MSettingsModal>
