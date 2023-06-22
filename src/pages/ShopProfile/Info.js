@@ -11,7 +11,7 @@ import Rating from '../../components/Common/Rating';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
-import { menuOtions } from './helper';
+import { TagsAndCuisines, menuOtions } from './helper';
 
 export const getShopStatusColor = (shop) => {
   let color = '#417C45';
@@ -100,7 +100,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
           <Stack direction="row" alignItems="center">
             <InfoListItem
               isFirst
-              title={shop?.tags?.join(',')}
+              title={TagsAndCuisines(shop?.tags, shop?.cuisineType)}
               titleSx={{
                 color: 'text.secondary2',
               }}
