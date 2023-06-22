@@ -129,6 +129,24 @@ export const colorList = [
   '#6A5ACD', // SlateBlue
 ];
 
+export const getZoneStatusColor = (zone) => {
+  let color = '#417C45';
+  console.log(zone);
+
+  if (zone?.zoneAvailability === 'busy') {
+    color = '#DD5B63';
+  }
+
+  if (zone?.zoneStatus === 'inactive') {
+    color = '#FFAB09';
+  }
+
+  console.log('zone zoneAvailability', zone?.zoneAvailability);
+  console.log('zone Status', zone?.zoneStatus);
+
+  return color;
+};
+
 const getZoneStatsById = async (id) => {
   // API_URL.GET_STAT_ZONE
 
@@ -145,13 +163,15 @@ const getZoneStatsById = async (id) => {
 // Map overViewData generator
 export const createDataForTable = async (data) => {
   const col = await Promise.all(
-    data.map(async ({ _id, zoneName, zoneGeometry }, index) => {
+    data.map(async ({ _id, zoneName, zoneGeometry, zoneAvailability, zoneStatus }, index) => {
       const stats = await getZoneStatsById(_id);
       return {
         _id,
         colorId: index + 1,
         zoneName,
         stats,
+        zoneAvailability,
+        zoneStatus,
         zoneGeometry,
       };
       // eslint-disable-next-line prettier/prettier

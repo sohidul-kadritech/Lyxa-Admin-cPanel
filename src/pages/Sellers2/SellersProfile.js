@@ -1,5 +1,6 @@
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { parsePhoneNumber } from 'react-phone-number-input';
 import { useQueryClient } from 'react-query';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
@@ -33,8 +34,8 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
         </Avatar>
         <Box flex={1}>
           <Stack gap="13px">
-            <Stack direction="row">
-              <Stack flex={1} direction="row" alignItems="center" gap="16px">
+            <Stack direction="row" flexWrap="wrap">
+              <Stack flex={1} direction="row" alignItems="center" flexWrap="wrap" gap="16px">
                 <Typography
                   variant="h2"
                   sx={{ textTransform: 'capitalize', fontWeight: '500 !important', fontSize: '30px !important' }}
@@ -54,16 +55,15 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                 />
               </Box>
             </Stack>
-            <Stack direction="row" gap="16px">
+            <Stack direction="row" flexWrap="wrap" gap="16px">
               <Stack direction="row" alignItems="center" gap="5.4px">
                 <LocationIcon />{' '}
                 <Typography
                   variant="h4"
-                  flex={1}
                   sx={{
                     fontWeight: '500!important',
-                    maxWidth: '350px',
                     overflow: 'hidden',
+                    maxWidth: '350px',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                   }}
@@ -108,6 +108,7 @@ function SellersProfile({
   editSellerQuery,
   editDocumentOpen,
   setEditDocumentOpen,
+  refatch,
 }) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
@@ -288,7 +289,13 @@ function SellersProfile({
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
         {selectedMenu === 'edit_shop' && (
           <AddShop
-            editShop={selectedShop}
+            refetch={refatch}
+            editShop={{
+              ...selectedShop,
+              phone_number: parsePhoneNumber(selectedShop?.phone_number)
+                ? selectedShop?.phone_number
+                : `+880${selectedShop?.phone_number}`,
+            }}
             onClose={() => {
               setOpen(() => {
                 queryClient.invalidateQueries(API_URL.ALL_SELLER);

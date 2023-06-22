@@ -12,7 +12,12 @@ import IncrementDecrementButton from '../ReferFriend/IncrementDecrementButton';
 import AddRange from './AddRange';
 import PercentageTable from './PercentageTable';
 import RangeTable from './RangeTable';
-import { discountTypeOptions, generatedDataForRange, generatedDataForRangeDelete } from './helpers';
+import {
+  discountTypeOptions,
+  generatedDataForRange,
+  generatedDataForRangeDelete,
+  validateGlobalCharge,
+} from './helpers';
 
 const breadcrumbItems = [
   {
@@ -97,6 +102,7 @@ function PercentageSettings2() {
   const setGlobalDropCharge = useMutation((data) => AXIOS.post(API_URL.SET_DELIVERY_FEE, data), {
     onSuccess: (data) => {
       if (data.status) {
+        queryClient.invalidateQueries(API_URL.GET_DELIVERY_FEE);
         successMsg(data.message, 'success');
       } else {
         successMsg(data.message, 'error');
@@ -183,6 +189,17 @@ function PercentageSettings2() {
     if (indexToTypeTracker[currentTab] === 'seller') {
       deleteSellerRange.mutate({ sellerId: selectedRange._id });
     }
+  };
+
+  const updateGlobarCharge = () => {
+    if (hasChanged) {
+      const isValid = validateGlobalCharge(getGlobalDropCharge?.data?.data?.charge, { globalCharge, globalChargeType });
+      if (isValid) {
+        setGlobalDropCharge.mutate({ dropPercentage: globalCharge, dropPercentageType: globalChargeType });
+        return;
+      }
+    }
+    successMsg('Please make a change first!');
   };
 
   return (
@@ -277,13 +294,7 @@ function PercentageSettings2() {
               Discard
             </Button>
             <Button
-              onClick={() => {
-                if (hasChanged) {
-                  setGlobalDropCharge.mutate({ dropPercentage: globalCharge, dropPercentageType: globalChargeType });
-                } else {
-                  successMsg('Please make a change first!');
-                }
-              }}
+              onClick={updateGlobarCharge}
               variant="contained"
               color="primary"
               disabled={setGlobalDropCharge?.isLoading}

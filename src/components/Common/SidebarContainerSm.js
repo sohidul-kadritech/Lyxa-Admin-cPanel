@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import CloseButton from './CloseButton';
 
-export default function SidebarContainer({ onClose, title, children }) {
+export default function SidebarContainer({ onClose, title, children, ...props }) {
   const theme = useTheme();
 
   return (
@@ -51,6 +51,7 @@ export default function SidebarContainer({ onClose, title, children }) {
       <Box
         sx={{
           flex: 1,
+          ...props.sx,
         }}
       >
         {children}

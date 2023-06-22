@@ -22,6 +22,7 @@ const addressInit = {
 };
 
 function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, setLoading }) {
+  console.log('sellerData: ', sellerData);
   const [newSellerData, setNewSellerData] = useState(sellerData);
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);

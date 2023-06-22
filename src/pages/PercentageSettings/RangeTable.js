@@ -13,7 +13,7 @@ import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
 function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loading }) {
   console.log('=====>range data', data);
-  // eslint-disable-next-line no-unused-vars
+
   const [searchResult, setSearchResult] = useState([...data]);
 
   useEffect(() => {
@@ -22,8 +22,6 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loadin
 
   const searchResultHandler = (e) => {
     if (e.target.value) {
-      // name.toLowerCase().includes(key.toLowerCase());
-      // eslint-disable-next-line no-unused-vars
       const matchData = data.filter(
         // eslint-disable-next-line prettier/prettier
         (item) => item?.to.toString() === e.target.value || item?.from.toString() === e.target.value,

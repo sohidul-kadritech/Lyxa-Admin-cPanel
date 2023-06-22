@@ -275,6 +275,7 @@ export const REJECT_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/reject`;
 export const GET_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message`;
 export const ADD_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message`;
 export const EDIT_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/update`;
+export const DELETE_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/delete`;
 export const CLOSE_CONVERSATION = `${ADMIN_ENDPOINT}/user-chat-request/close`;
 
 // TERMS AND CONDITIONS
