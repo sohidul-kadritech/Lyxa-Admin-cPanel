@@ -20,6 +20,20 @@ import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVari
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
+const filterColumns = (columns, shopType, orderType) => {
+  let cols = columns.filter((col) => col?.showFor?.includes(orderType));
+
+  if (shopType !== 'all') {
+    cols = cols.filter((col) => col.headerName !== 'TYPE');
+  }
+
+  if (shopType === 'butler') {
+    cols = cols.filter((col) => col.headerName !== 'SHOP' && col.headerName !== 'ORDER RATING');
+  }
+
+  return cols;
+};
+
 export default function Table({ orders = [], shopType, queryParams, setQueryParams, totalPage, orderType, loading }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -56,7 +70,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     }
   };
 
-  const columns = [
+  let columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 1,
@@ -248,7 +262,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
 
   if (shopType !== 'all') {
     // remove type column
-    columns.splice(1, 1);
+    columns = columns.filter((col) => col.headerName !== 'TYPE');
   }
 
   // if(shopType !== 'all'){
@@ -276,7 +290,8 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
         }}
       >
         <StyledTable
-          columns={columns.filter((col) => col?.showFor?.includes(orderType))}
+          // columns={columns.filter((col) => col?.showFor?.includes(orderType))}
+          columns={filterColumns(columns, shopType, orderType)}
           rows={orders}
           getRowId={(row) => row?._id}
           rowHeight={71}
