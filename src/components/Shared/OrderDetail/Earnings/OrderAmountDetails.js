@@ -1,101 +1,13 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
-
-export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
-  <span
-    {...props}
-    ref={ref}
-    style={{
-      border: '1px solid',
-      borderRadius: '50%',
-      width: '16px',
-      height: '16px',
-      display: 'inline-flex',
-      textAlign: 'center',
-      fontSize: '11px',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
-    i
-  </span>
-));
-
-function StyledItem({
-  label,
-  value,
-  total,
-  isNegative = false,
-  isRejected = false,
-  pbsx = 3.5,
-  ptxs,
-  isCurrency = true,
-  hideZero,
-  tooltip,
-}) {
-  const theme = useTheme();
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
-
-  // eslint-disable-next-line prettier/prettier, react/jsx-no-useless-fragment
-  if (hideZero && Math.abs(value) === 0) return <></>;
-
-  return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between" pb={total ? 0 : pbsx} pt={ptxs}>
-      <Typography
-        variant="body2"
-        lineHeight="22px"
-        className={`${isRejected ? 'rejected' : ''} ${total ? 'total' : ''}`}
-        sx={{
-          color: '#363636',
-
-          '&.rejected': {
-            color: '#b9b9b9',
-          },
-
-          '&.total': {
-            fontWeight: '700',
-          },
-        }}
-      >
-        {label}{' '}
-        {tooltip && (
-          <Tooltip title={tooltip}>
-            <CustomInfoIcon />
-          </Tooltip>
-        )}
-      </Typography>
-      <Typography
-        variant="body2"
-        lineHeight="22px"
-        className={`${isNegative ? 'negative' : ''} ${isRejected ? 'rejected' : ''} ${total ? 'total' : ''}`}
-        sx={{
-          color: '#737373',
-
-          '&.negative': {
-            color: theme.palette.danger.main,
-          },
-
-          '&.rejected': {
-            color: '#b9b9b9',
-          },
-
-          '&.total': {
-            color: '#363636',
-            fontWeight: '700',
-          },
-        }}
-      >
-        {isCurrency ? currency : ''} {value}
-      </Typography>
-    </Stack>
-  );
-}
+import { StyledItem } from './helpers';
 
 export default function OrderAmountDetails({ order = {} }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
   return (
@@ -103,14 +15,32 @@ export default function OrderAmountDetails({ order = {} }) {
       <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
         <StyledItem
-          label="Rewards (admin)"
-          value={order?.rewardRedeemCut?.rewardAdminCut}
+          label="Loyalty Points"
+          value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
           hideZero
-          tooltip="Reward point cut that lyxa pays"
+          tooltip={
+            <Box>
+              <span>Total Loyalty Points cut from lyxa and shop</span>
+              <ul
+                style={{
+                  padding: '4px 16px',
+                  marginBottom: '0',
+                  minWidth: '180px',
+                }}
+              >
+                <li>
+                  Applied by lyxa {currency} {order?.rewardRedeemCut?.rewardAdminCut || 0}
+                </li>
+                <li>
+                  Applied by shop {currency} {order?.rewardRedeemCut?.rewardShopCut || 0}
+                </li>
+              </ul>
+            </Box>
+          }
         />
         <StyledItem
           label="Rewards (shop)"
-          value={order?.rewardRedeemCut?.rewardShopCut}
+          // value={}
           hideZero
           tooltip="Reward point cut that shop pays"
         />
@@ -150,17 +80,20 @@ export default function OrderAmountDetails({ order = {} }) {
           hideZero
           tooltip="Free Delivery added by shop"
         />
-        <Box pt={3.5} borderTop="1px solid #EEEEEE">
-          <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
-          <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
-          <StyledItem
-            label="Deal compensation amount"
-            value={order?.doubleMenuCut?.doubleMenuAdminCut}
-            tooltip="This amount in already included in shop profit"
-            hideZero
-            isRejected
-          />
-        </Box>
+        {/* not needed for butler order */}
+        {!order?.isButler && (
+          <Box pt={3.5} borderTop="1px solid #EEEEEE">
+            <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
+            <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
+            <StyledItem
+              label="Deal compensation amount"
+              value={order?.doubleMenuCut?.doubleMenuAdminCut}
+              tooltip="This amount in already included in shop profit"
+              hideZero
+              isRejected
+            />
+          </Box>
+        )}
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem
             label="Rider Profit"

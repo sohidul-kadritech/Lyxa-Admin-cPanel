@@ -2,7 +2,7 @@
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
-import { CustomInfoIcon } from './OrderAmountDetails';
+import { CustomInfoIcon } from './helpers';
 
 function StyledItem({
   label,
