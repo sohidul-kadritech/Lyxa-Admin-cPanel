@@ -5,66 +5,6 @@ import TabPanel from '../../components/Common/TabPanel';
 import ZoneMap2 from './ZoneMap2';
 import { createZoneInfoData } from './helper';
 
-// eslint-disable-next-line no-unused-vars
-const riderStatic = [
-  {
-    id: 1,
-    name: 'Rider A',
-  },
-  {
-    id: 2,
-    name: 'Rider B',
-  },
-  {
-    id: 3,
-    name: 'Rider C',
-  },
-  {
-    id: 3,
-    name: 'Rider C',
-  },
-];
-
-// eslint-disable-next-line no-unused-vars
-const orderStatic = [
-  {
-    id: 1,
-    name: 'Rider A',
-  },
-  {
-    id: 2,
-    name: 'Rider B',
-  },
-  {
-    id: 3,
-    name: 'Rider C',
-  },
-  {
-    id: 4,
-    name: 'Rider C',
-  },
-];
-
-// eslint-disable-next-line no-unused-vars
-const store = [
-  {
-    id: 1,
-    name: 'Rider A',
-  },
-  {
-    id: 2,
-    name: 'Rider B',
-  },
-  {
-    id: 3,
-    name: 'Rider C',
-  },
-  {
-    id: 4,
-    name: 'Rider C',
-  },
-];
-
 function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName }) {
   console.log('infoData', infoData, polygon);
   console.log('infodata new: ', createZoneInfoData(infoData));

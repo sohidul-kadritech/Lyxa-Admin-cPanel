@@ -1,5 +1,6 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { parsePhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
@@ -56,6 +57,8 @@ function SellerList2() {
     },
   });
 
+  console.log('currentSeller:', currentSeller);
+
   const getAllSellersQuery = useQuery(
     [API_URL.ALL_SELLER, { sellerStatus: status, searchKey, zoneId, sellerType: currentTab }],
     () =>
@@ -71,7 +74,12 @@ function SellerList2() {
       onSuccess: (data) => {
         if (data.status) {
           if (!routeMatch?.params?.sellerId) {
-            setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0]);
+            const updatedCurrentSeller = data?.data?.sellers.find((seller) => currentSeller?._id === seller?._id);
+            if (updatedCurrentSeller) {
+              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0]);
+            } else {
+              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0]);
+            }
           }
         }
       },
@@ -231,7 +239,7 @@ function SellerList2() {
             >
               Sellers
             </Typography>
-            <Stack direction="row" gap="22px">
+            <Stack direction="row" flexWrap="wrap-reverse" gap="22px">
               {/* Sellers List --> left */}
               <Box>
                 <SellerList
@@ -244,6 +252,9 @@ function SellerList2() {
               {/* Seller Profile --> right */}
               <Box flex={1}>
                 <SellersProfile
+                  refatch={() => {
+                    getAllSellersQuery.refetch();
+                  }}
                   editSellerQuery={editSellerQuery}
                   editDocumentOpen={editDocumentOpen}
                   setEditDocumentOpen={setEditDocumentOpen}
@@ -277,6 +288,9 @@ function SellerList2() {
               ? {
                   ...currentSeller,
                   password: '',
+                  phone_number: parsePhoneNumber(currentSeller?.phone_number)
+                    ? currentSeller?.phone_number
+                    : `+880${currentSeller?.phone_number}`,
                   sellerAddress: currentSeller?.addressSeller,
                   sellerStatus: currentSeller?.status,
                   profile_photo: previewGenerator(currentSeller?.profile_photo),

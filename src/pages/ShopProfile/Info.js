@@ -24,7 +24,7 @@ export const getShopStatusColor = (shop) => {
     color = '#DD5B63';
   }
 
-  if (shop?.status === 'inactive') {
+  if (shop?.shopStatus === 'inactive') {
     color = '#FFAB09';
   }
 

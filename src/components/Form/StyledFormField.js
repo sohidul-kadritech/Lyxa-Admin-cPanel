@@ -1,6 +1,7 @@
 import { Box, Checkbox, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import ImagePreview from '../Common/ImagePreview';
 import LoadingOverlay from '../Common/LoadingOverlay';
 import FilterDate from '../Filter/FilterDate';

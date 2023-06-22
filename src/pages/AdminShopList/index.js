@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 // import SearchBar from '../../components/Common/CommonSearchbar';
+import { parsePhoneNumber } from 'react-phone-number-input';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
@@ -126,7 +127,15 @@ export default function ShopList() {
       >
         {open === 'edit' && (
           <AddShop
-            editShop={currentShop}
+            refetch={() => {
+              shopsQuery.refetch();
+            }}
+            editShop={{
+              ...currentShop,
+              phone_number: parsePhoneNumber(currentShop?.phone_number)
+                ? currentShop?.phone_number
+                : `+880${currentShop?.phone_number}`,
+            }}
             onClose={() => {
               setOpen(null);
               setCurrentShop({});

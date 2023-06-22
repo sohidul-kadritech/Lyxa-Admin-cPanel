@@ -13,6 +13,8 @@ function IncrementDecrementButton({
   type,
   setTypeValidation,
   isValidateType = true,
+  isChangeOthers = false,
+  changeOthers,
 }) {
   const theme = useTheme();
   return (
@@ -54,7 +56,7 @@ function IncrementDecrementButton({
               min: '0',
               name: 'incrementdecrement',
               placeholder: '0',
-              value: currentValue || '',
+              value: currentValue || 0,
               sx: {
                 padding: '0 0',
                 textAlign: 'center',
@@ -65,6 +67,7 @@ function IncrementDecrementButton({
                 if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
                 else setValue(e.target.value);
                 if (isValidateType) setTypeValidation(types, setType, type);
+                if (isChangeOthers) changeOthers();
               },
               //   readOnly: Boolean(newProductCategory) || productReadonly,
             }}

@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
@@ -27,6 +27,7 @@ function SellerInfo({ sellerName, image, shopNumber }) {
 function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true }) {
   console.log(data);
   const params = useParams();
+  // eslint-disable-next-line no-unused-vars
   const history = useHistory();
   console.log('params', params);
   const sellerRef = useRef(null);
@@ -49,6 +50,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
     cursor: 'pointer',
     backgroundColor: 'rgba(177, 177, 177, 0.2)',
   };
+  // eslint-disable-next-line no-unused-vars
   const handlePageLoad = () => {
     if (sellerRef.current) {
       console.log('current element paisi', sellerRef.current);
@@ -60,23 +62,23 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
       console.log('current element painai', sellerRef.current);
     }
   };
-  useLayoutEffect(() => {
-    handlePageLoad();
-  }, [loading, data]);
+  // useLayoutEffect(() => {
+  //   handlePageLoad();
+  // }, [loading, data]);
 
-  useEffect(() => {
-    handlePageLoad();
-  }, [loading, data]);
+  // useEffect(() => {
+  //   handlePageLoad();
+  // }, [loading, data]);
 
-  useEffect(() => {
-    history.listen(() => {
-      setTimeout(() => {
-        if (sellerRef.current) {
-          sellerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 0);
-    });
-  }, [history]);
+  // useEffect(() => {
+  //   history.listen(() => {
+  //     setTimeout(() => {
+  //       if (sellerRef.current) {
+  //         sellerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //       }
+  //     }, 0);
+  //   });
+  // }, [history]);
 
   return (
     <Box
