@@ -22,7 +22,7 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import PageSkeleton from './PageSkeleton';
-import { dateRangeItit } from './helpers';
+import { dateRangeItit, marketingDurationTime } from './helpers';
 
 const mTypeMap = {
   double_menu: 'Buy 1, Get 1 Free',
@@ -70,8 +70,12 @@ export default function MarketingDashboard({ viewUserType }) {
     })
   );
 
-  const marketingDurationTime = moment(marketingQuery?.data?.data?.marketing?.duration?.start).diff(moment(), 'day');
-  console.log(marketingDurationTime);
+  const marketingDuration = marketingDurationTime(
+    marketingQuery?.data?.data?.marketing?.duration?.start,
+    marketingQuery?.data?.data?.marketing?.duration?.end
+  );
+
+  console.log(moment().utc());
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
     AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
@@ -258,7 +262,6 @@ export default function MarketingDashboard({ viewUserType }) {
       <PageTop
         breadcrumbItems={breadCrumbItems}
         backButtonLabel="Back to Marketing"
-        // backTo={viewUserType ? `/shops/marketing/${params?.shopId}` : '/marketing'}
         backTo={getBackToUrl(viewUserType)}
         addButtonLabel="Manage Promotions"
         onAdd={() => {
@@ -272,7 +275,6 @@ export default function MarketingDashboard({ viewUserType }) {
           <InfoCard
             title="Ongoing Promotions on Items"
             value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
-            // Tag={<ViewMoreTag />}
             sm={6}
             md={4}
             lg={4}
@@ -284,16 +286,15 @@ export default function MarketingDashboard({ viewUserType }) {
               <IncreaseDecreaseTag
                 status={
                   marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >
+                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >=
                   0
                     ? 'increase'
                     : 'decrease'
                 }
-                console={console.log(marketingInfoQuery?.data?.data?.summary)}
                 amount={`${Math.round(
                   marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
                     marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
-                )}% in ${marketingDurationTime || 1} days`}
+                )}% in ${marketingDuration}`}
               />
             }
             sm={6}
@@ -307,16 +308,15 @@ export default function MarketingDashboard({ viewUserType }) {
               <IncreaseDecreaseTag
                 status={
                   marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >
+                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >=
                   0
                     ? 'increase'
                     : 'decrease'
                 }
                 amount={`${Math.round(
-                  // eslint-disable-next-line prettier/prettier
                   marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
                     marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
-                )}% in ${marketingDurationTime || 1} days`}
+                )}% in ${marketingDuration}`}
               />
             }
             sm={6}
