@@ -23,14 +23,16 @@ import {
   validateShopFeatures,
 } from './helper';
 
-export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
-  const { currentUser } = useGlobalContext();
-
-  const { seller, adminType } = currentUser;
+export default function AddShop({ onClose, editShop, seller: customSeller, refetch = () => {} }) {
   const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(false);
+  const { currentUser } = useGlobalContext();
+  const { seller: currentSeller, adminType } = currentUser;
+
+  const [seller] = useState(customSeller?._id ? customSeller : currentSeller);
   const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
+
+  const [loading, setLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
   const tabMax = editShop?._id ? 1 : 2;
 
@@ -48,8 +50,7 @@ export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
     setShop((prev) => ({
       ...prev,
@@ -69,11 +70,11 @@ export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
         if (data?.status) {
           if (editShop?._id) {
             updateShopData(editShop, data?.data?.shop);
-            refetch();
           } else {
             queryClient.invalidateQueries([Api.ALL_SHOP]);
           }
           onClose();
+          refetch();
         }
       },
 
@@ -81,8 +82,7 @@ export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
         console.log(error);
         setLoading(false);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES], () =>
@@ -92,8 +92,7 @@ export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
         pageSize: 500,
         shopType: seller?.sellerType,
       },
-      // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const onSubmitShop = async () => {

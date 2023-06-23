@@ -1,3 +1,9 @@
+import moment from 'moment';
+
+const dateRangeInit = {
+  startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+};
 export const getQueryParamsInit = {
   page: 1,
   pageSize: 20,
@@ -5,6 +11,7 @@ export const getQueryParamsInit = {
   sortBy: 'desc',
   status: '',
   type: 'all',
+  ...dateRangeInit,
 };
 
 export const adminLogTypeOptions = [
@@ -14,22 +21,44 @@ export const adminLogTypeOptions = [
   { label: 'Secondary Currency', value: 'secondaryCurrency' },
   { label: 'Accepted Currency', value: 'acceptedCurrency' },
   { label: 'VAT', value: 'vat' },
-  { label: 'Max Discount', value: 'maxDiscount' },
-  { label: 'Near By ShopKm', value: 'nearByShopKm' },
-  { label: 'Near By ShopKm For User Home Screen', value: 'nearByShopKmForUserHomeScreen' },
-  { label: 'Search Delivery Boy Km', value: 'searchDeliveryBoyKm' },
-  { label: 'Max Total Est Items For Butler', value: 'maxTotalEstItemsPriceForButler' },
-  { label: 'Max Total Est Items For Butler', value: 'maxTotalEstItemsPriceForButler' },
-  { label: 'Max Distance For Butler', value: 'maxDistanceForButler' },
-  { label: 'Max Customer Service Value', value: 'maxCustomerServiceValue' },
-  // percentage settings
-  { label: 'Global Lyxa Charge', value: 'globalDropCharge' },
+  { label: 'Maximum Discount for Shops', value: 'maxDiscount' },
+  { label: 'Shop Distance (KM)', value: 'nearByShopKm' },
+  { label: 'Near Shop Distance in Home Screen (KM)', value: 'nearByShopKmForUserHomeScreen' },
+  { label: 'Delivery Boy Search Area (KM)', value: 'searchDeliveryBoyKm' },
+  { label: 'Max Total EST Items Price for Butler', value: 'maxTotalEstItemsPriceForButler' },
+  { label: 'Maximum Distance for Butler', value: 'maxDistanceForButler' },
+  { label: 'Lyxa Pay Limit (Customer Service)', value: 'maxCustomerServiceValue' },
+  // Percentage settings
+  { label: 'Global Lyxa charge (Percentage)', value: 'globalDropCharge' },
   { label: 'Global Delivery Cut', value: 'globalDeliveryCut' },
   { label: 'Global Delivery Cut For Butler', value: 'globalDeliveryCutForButler' },
-  { label: 'Specific Seller Drop Charge', value: 'specificSellerDropCharge' },
-  { label: 'Specific Seller Delivery Cut', value: 'specificSellerDeliveryCut' },
-  { label: 'Seller Lyxa Charge Reset', value: 'sellerDropChargeReset' },
+  { label: 'Specific Seller Lyxa Charge', value: 'specificSellerDropCharge' },
+  // { label: 'Specific Seller Delivery Cut', value: 'specificSellerDeliveryCut' },
+  // { label: 'Seller Lyxa Charge Reset', value: 'sellerDropChargeReset' },
 ];
+
+export const getTypeName = (type) => {
+  const getData = {
+    currency: 'App Currency',
+    secondaryCurrency: 'Secondary Currency',
+    acceptedCurrency: 'Accepted Currency',
+    vat: 'VAT',
+    maxDiscount: 'Maximum Discount for Shops',
+    nearByShopKm: 'Shop Distance (KM)',
+    nearByShopKmForUserHomeScreen: 'Near Shop Distance in Home Screen (KM)',
+    searchDeliveryBoyKm: 'Delivery Boy Search Area (KM)',
+    maxTotalEstItemsPriceForButler: 'Max Total EST Items Price for Butler',
+    maxDistanceForButler: 'Maximum Distance for Butler',
+    maxCustomerServiceValue: 'Lyxa Pay Limit (Customer Service)',
+    globalDropCharge: 'Global Lyxa charge (Percentage)',
+    globalDeliveryCut: 'Global Delivery Cut',
+    globalDeliveryCutForButler: 'Global Delivery Cut for Butler',
+    specificSellerDropCharge: 'Specific Seller Lyxa Charge',
+    // specificSellerDeliveryCut: 'Specific Seller Delivery Cut',
+    // sellerDropChargeReset: 'Seller Lyxa Charge Reset',
+  };
+  return getData[type];
+};
 
 export function dataFilterForAdminLogs(data) {
   const filteredData = data.filter((item) => adminLogTypeOptions.some((option) => option.value === item.type));

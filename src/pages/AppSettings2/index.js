@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -12,6 +12,7 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import InputBox from '../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
+import AppSettingsSkeleton from './AppSettingsSkeleton';
 import IncrementDecrementButton from './IncrementDecrementButton';
 import { appSettingsValidateData, separatesUpdatedData } from './helpers';
 
@@ -323,7 +324,7 @@ function Appsettings2() {
       />
       <Box sx={{ backgroundColor: '#ffffff', borderRadius: '7px', padding: '30px' }}>
         {getShopSettingsData.isLoading || getAllUnits.isLoading ? (
-          <Typography>Loading...</Typography>
+          <AppSettingsSkeleton />
         ) : (
           <>
             <StyledBox title="Butler">

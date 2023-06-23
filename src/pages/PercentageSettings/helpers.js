@@ -7,15 +7,54 @@ export const discountTypeOptions = [
   },
 ];
 
-export const generatedDataForRange = (data, allData, type) => {
-  if (type === 'butler') {
+export const getIndexFromRange = (range, changedRange) => {
+  const index = range.findIndex(
+    // eslint-disable-next-line prettier/prettier
+    (item) =>
+      item.from.toString() === changedRange.from.toString() && item.to.toString() === changedRange.to.toString(),
+  );
+  return index;
+};
+
+export const getInitialDataForAddRange = (editedData) => {
+  if (!editedData) {
+    return {
+      from: 0,
+      to: 0,
+      charge: 0,
+      deliveryPersonCut: 0,
+    };
+  }
+
+  return { ...editedData, from: editedData?.from ? editedData?.from : '0' };
+};
+
+export const generatedDataForRange = (data, allData, type, isEdit) => {
+  if (type === 'butler' && !isEdit) {
     return {
       deliveryRangeButler: [...allData, data],
     };
   }
-  if (type === 'delivery') {
+  if (type === 'butler' && isEdit) {
+    const index = getIndexFromRange(allData, data);
+    allData[index].charge = data?.charge;
+    allData[index].deliveryPersonCut = data?.deliveryPersonCut;
+    return {
+      deliveryRangeButler: [...allData],
+    };
+  }
+
+  if (type === 'delivery' && !isEdit) {
     return {
       deliveryRange: [...allData, data],
+    };
+  }
+  if (type === 'delivery' && isEdit) {
+    const index = getIndexFromRange(allData, data);
+    allData[index].charge = data?.charge;
+    allData[index].deliveryPersonCut = data?.deliveryPersonCut;
+    return {
+      deliveryRange: [...allData],
     };
   }
   return false;
@@ -73,10 +112,6 @@ export const validateRange = (allValue, newValue) => {
     return false;
   });
 
-  // array.sort((a, b) => b.to - a.to);
-
-  console.log('existingRange: ', existingRange);
-
   if (existingRange.length > 0) {
     successMsg('Range is already exist!');
   } else {
@@ -98,6 +133,47 @@ export const validateRange = (allValue, newValue) => {
 export const validateGlobalCharge = (oldValue, newValue) => {
   if (oldValue?.dropPercentage !== newValue?.globalCharge) {
     return true;
+  }
+  return false;
+};
+
+export const validateEditeCharge = (allData, currentData, oldData) => {
+  if (
+    oldData?.charge.toString() === currentData?.charge.toString() &&
+    oldData?.deliveryPersonCut.toString() === currentData?.deliveryPersonCut.toString()
+  ) {
+    successMsg('Please make a change !');
+    return false;
+  }
+
+  if (
+    oldData?.charge.toString() !== currentData?.charge.toString() &&
+    oldData?.deliveryPersonCut.toString() === currentData?.deliveryPersonCut.toString()
+  ) {
+    if (getIndexFromRange(allData, currentData) < 0) {
+      successMsg('Range s Not Found');
+    }
+    return getIndexFromRange(allData, currentData) > -1;
+  }
+
+  if (
+    oldData?.charge.toString() === currentData?.charge.toString() &&
+    oldData?.deliveryPersonCut.toString() !== currentData?.deliveryPersonCut.toString()
+  ) {
+    if (getIndexFromRange(allData, currentData) < 0) {
+      successMsg('Range s Not Found');
+    }
+    return getIndexFromRange(allData, currentData) > -1;
+  }
+
+  if (
+    oldData?.charge.toString() !== currentData?.charge.toString() &&
+    oldData?.deliveryPersonCut.toString() !== currentData?.deliveryPersonCut.toString()
+  ) {
+    if (getIndexFromRange(allData, currentData) < 0) {
+      successMsg('Range s Not Found');
+    }
+    return getIndexFromRange(allData, currentData) > -1;
   }
   return false;
 };

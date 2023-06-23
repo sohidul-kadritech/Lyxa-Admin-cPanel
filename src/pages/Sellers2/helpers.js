@@ -19,6 +19,14 @@ export const getThreedotMenuOptions = [
     label: 'Update Lyxa Charge',
     value: 'update_lyxa_charge',
   },
+  {
+    label: 'Go to Financials',
+    value: 'go_to_financials',
+  },
+  {
+    label: 'Add Shop',
+    value: 'add_shop',
+  },
 ];
 
 export const sellerShopTabType = {
@@ -138,7 +146,7 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     return {
       ...sellerData,
       id: sellerData._id,
-      password: sellerData.password ? sellerData.password : '',
+      password: sellerData.password ? sellerData.password : undefined,
       profile_photo,
       certificate_of_incorporation,
       national_id,

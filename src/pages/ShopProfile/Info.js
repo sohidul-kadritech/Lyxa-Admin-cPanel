@@ -13,6 +13,7 @@ import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import { TagsAndCuisines, menuOtions } from './helper';
 
+// function is used in multiple places
 export const getShopStatusColor = (shop) => {
   let color = '#417C45';
 
