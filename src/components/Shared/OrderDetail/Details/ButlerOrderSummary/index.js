@@ -35,8 +35,12 @@ export default function ButlerOrderSummary({ order }) {
         }
       >
         {order?.orderType === 'delivery_only' && (
-          <Typography variant="body2" color="textPrimary" lineHeight="22px">
-            {order?.itemDescription}
+          <Typography
+            variant="body2"
+            color={order?.itemDescription ? 'textPrimary' : 'text.secondary2'}
+            lineHeight="22px"
+          >
+            {order?.itemDescription || 'Empty'}
           </Typography>
         )}
         {order?.orderType === 'purchase_delivery' && (
