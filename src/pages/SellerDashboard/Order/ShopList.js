@@ -7,6 +7,7 @@ import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getShopStatusColor } from '../../ShopProfile/Info';
 
 export default function ShopList() {
   const theme = useTheme();
@@ -48,7 +49,7 @@ export default function ShopList() {
             sx={{
               width: '11px',
               height: '11px',
-              backgroundColor: row?.liveStatus === 'online' ? 'success.main' : 'error.main',
+              backgroundColor: getShopStatusColor(row),
               borderRadius: '50%',
             }}
           />
@@ -103,7 +104,7 @@ export default function ShopList() {
       align: 'right',
       headerAlign: 'right',
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{(value || 0).toFixed(2)}</Typography>,
     },
   ];
 
