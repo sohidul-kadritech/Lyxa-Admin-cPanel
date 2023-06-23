@@ -1,19 +1,31 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 
-function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, setOpen }) {
+function CategoryTable({
+  data = [],
+  onViewContent,
+  loading,
+  updateQuery,
+  type,
+  queryParams,
+  setQueryParams,
+  totalPage,
+}) {
   const theme = useTheme();
   const history = useHistory();
   const routeMatch = useRouteMatch();
+  const [render, setRender] = useState(false);
   console.log('routeMatch', routeMatch);
-  // eslint-disable-next-line no-unused-vars
-  const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
+  const { dispatchCurrentUser } = useGlobalContext();
+
   const allColumns = [
     {
       id: 1,
@@ -33,8 +45,7 @@ function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, 
             titleProps={{
               sx: { color: 'primary.main', cursor: 'pointer' },
               onClick: () => {
-                setOpen(true);
-                setSelectedCategory(row);
+                onViewContent(row);
               },
             }}
           />
@@ -90,7 +101,6 @@ function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, 
         </Stack>
       ),
     },
-
     {
       id: 4,
       headerName: ``,
@@ -105,9 +115,11 @@ function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, 
           <StyledSwitch
             checked={row?.status === 'active'}
             onChange={() => {
+              row.status = row?.status === 'active' ? 'inactive' : 'active';
+              setRender(!render);
               updateQuery.mutate({
                 id: row?._id,
-                status: row?.status === 'active' ? 'inactive' : 'active',
+                status: row?.status,
               });
             }}
           />
@@ -115,38 +127,36 @@ function CategoryTable({ data, setSelectedCategory, loading, updateQuery, type, 
       ),
     },
   ];
+
   return (
-    <Box
-      sx={{
-        padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
-      }}
-    >
-      <StyledTable
-        columns={allColumns.filter((col) => col?.showFor?.includes(type))}
-        rows={data || []}
-        getRowId={(row) => row?._id}
-        rowHeight={72}
+    <>
+      <Box
         sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'default',
-          },
-          //   '& .MuiDataGrid-row:hover': {
-          //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          //   },
+          padding: '7.5px 16px  2px',
+          border: `1px solid ${theme.palette.custom.border}`,
+          borderRadius: '7px',
         }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No category Found'}
-            </Stack>
-          ),
-        }}
+      >
+        <StyledTable
+          columns={allColumns.filter((col) => col?.showFor?.includes(type))}
+          rows={data}
+          getRowId={(row) => row?._id}
+          rowHeight={72}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                {loading ? 'Loading...' : 'No category Found'}
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+      <TablePagination
+        currentPage={queryParams?.page}
+        lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+        totalPage={totalPage}
       />
-    </Box>
+    </>
   );
 }
 
