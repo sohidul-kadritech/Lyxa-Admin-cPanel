@@ -84,7 +84,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getSingleSellersQuery = useQuery(
@@ -104,7 +104,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -254,6 +254,7 @@ function SellerList2() {
                 <SellersProfile
                   refatch={() => {
                     getAllSellersQuery.refetch();
+                    console.log('re-fetched');
                   }}
                   editSellerQuery={editSellerQuery}
                   editDocumentOpen={editDocumentOpen}

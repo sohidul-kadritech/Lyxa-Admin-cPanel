@@ -19,6 +19,14 @@ export const getThreedotMenuOptions = [
     label: 'Update Lyxa Charge',
     value: 'update_lyxa_charge',
   },
+  {
+    label: 'Go to Financials',
+    value: 'go_to_financials',
+  },
+  {
+    label: 'Add Shop',
+    value: 'add_shop',
+  },
 ];
 
 export const sellerShopTabType = {
