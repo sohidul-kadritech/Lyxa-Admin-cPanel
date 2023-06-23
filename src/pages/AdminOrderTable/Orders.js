@@ -17,6 +17,7 @@ const getQueryParamsInit = (type) => ({
   endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
   orderType: 'all',
+  model: '',
 });
 
 const tabsOptions = [
@@ -24,6 +25,7 @@ const tabsOptions = [
   { value: 'food', label: 'Restaurant' },
   { value: 'grocery', label: 'Grocery' },
   { value: 'pharmacy', label: 'Pharmacy' },
+  { value: 'butler', label: 'Butler' },
 ];
 
 export default function Orders({ type }) {
@@ -51,7 +53,9 @@ export default function Orders({ type }) {
         options={tabsOptions}
         onChange={(value) => {
           setCurrentTab(value);
-          setQueryParams((prev) => ({ ...prev, orderType: value, page: 1 }));
+          if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
+          else if (value === 'butler') setQueryParams((prev) => ({ ...prev, orderType: '', model: value, page: 1 }));
+          else setQueryParams((prev) => ({ ...prev, orderType: value, model: 'order', page: 1 }));
         }}
       />
       <Box pt={7.5} pb={7.5}>

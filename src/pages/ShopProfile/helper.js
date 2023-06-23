@@ -126,7 +126,11 @@ export function AverageOrderValue(totalProductsAmount, totalOrder) {
 
 export function TagsAndCuisines(tags, cuisines) {
   console.log(tags, cuisines);
-  return ` ${tags?.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
+  // eslint-disable-next-line max-len
+  // return ` ${tags?.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
+  return ` ${cuisines?.map((cuisines) => cuisines.name).join(', ')}${
+    tags?.length && cuisines?.length ? ', ' : ''
+  }${tags?.join(', ')}`;
 }
 
 export function convertTimeToAmPm(time) {

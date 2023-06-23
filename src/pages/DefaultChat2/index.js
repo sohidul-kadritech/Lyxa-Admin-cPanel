@@ -1,6 +1,7 @@
 import { Box, Drawer } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
@@ -28,6 +29,7 @@ const getQueryParamsInit = {
 function DefaultChat2() {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit);
   const [, setTotalPage] = useState(1);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const [isEdit, setIsEdit] = useState(false);
@@ -60,6 +62,7 @@ function DefaultChat2() {
       }
     },
   });
+
   const updateMessageQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_DEFAULT_CHAT, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -68,6 +71,18 @@ function DefaultChat2() {
         setOpen(false);
       } else {
         successMsg(data.messages, 'error');
+      }
+    },
+  });
+  const deleteMessageQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_DEFAULT_CHAT, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(API_URL.GET_DEFAULT_CHAT);
+        successMsg(data.messages, 'success');
+        setOpen(false);
+        setIsConfirmModal(false);
+      } else {
+        successMsg(data.error, 'error');
       }
     },
   });
@@ -118,6 +133,7 @@ function DefaultChat2() {
           isReadOnly={isReadOnly}
           rowData={isEdit || isReadOnly ? rowData : {}}
           addQuery={isEdit ? updateMessageQuery : addMessageQuery}
+          setIsConfirmModal={setIsConfirmModal}
           onClose={() => {
             setOpen(false);
             setIsEdit(false);
@@ -126,6 +142,18 @@ function DefaultChat2() {
           }}
         />
       </Drawer>
+
+      <ConfirmModal
+        message="Are you sure you want to delete this message?"
+        isOpen={isConfirmModal}
+        loading={deleteMessageQuery?.isLoading}
+        onCancel={() => {
+          setIsConfirmModal(false);
+        }}
+        onConfirm={() => {
+          deleteMessageQuery.mutate({ messageId: rowData?._id });
+        }}
+      />
     </Box>
   );
 }

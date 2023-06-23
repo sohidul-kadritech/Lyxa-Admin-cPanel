@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
 import { useState } from 'react';
-import CallUser from './CallUser';
+import ButlerOrderSummary from './ButlerOrderSummary';
 import CancelReason from './CancelReason';
 import DeliveryDetails from './DeliveryDetails';
 import GroupOrderSettings from './GroupOrderSettings';
@@ -21,7 +21,7 @@ export default function Detail({ order, hideIssues, userType }) {
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
       <OrderTimeline order={order} />
       {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
-      {order?.orderFor === 'global' && order?.deliveryBoy && (
+      {/* {order?.orderFor === 'global' && order?.deliveryBoy && (
         <CallUser
           user={{
             name: order?.deliveryBoy?.name,
@@ -31,20 +31,24 @@ export default function Detail({ order, hideIssues, userType }) {
             number: order?.deliveryBoy?.number,
           }}
         />
-      )}
+      )} */}
       <DeliveryDetails
-        deliveryDetails={order?.dropOffLocation}
-        pickUpLocation={order?.pickUpLocation}
-        orderType={order?.isButler ? 'butler' : order?.shop?.shopType}
+        order={order}
+        // deliveryDetails={order?.dropOffLocation}
+        // pickUpLocation={order?.pickUpLocation}
+        // orderType={order?.isButler ? 'butler' : order?.shop?.shopType}
       />
-      <CallUser
-        user={{
-          name: order?.shop?.shopName,
-          image: order?.shop?.shopLogo,
-          number: order?.shop?.phone_number,
-        }}
-      />
-      <OrderSummary order={order} />
+      {/* {!order?.isButler && (
+        <CallUser
+          user={{
+            name: order?.shop?.shopName,
+            image: order?.shop?.shopLogo,
+            number: order?.shop?.phone_number,
+          }}
+        />
+      )} */}
+      {order?.isButler && <ButlerOrderSummary order={order} />}
+      {!order?.isButler && <OrderSummary order={order} />}
       <PaymentMethod method={order?.paymentMethod} />
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}

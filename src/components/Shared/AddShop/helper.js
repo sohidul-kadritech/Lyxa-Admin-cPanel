@@ -30,10 +30,6 @@ export const statusOptions = [
     label: 'Inactive',
     value: 'inactive',
   },
-  {
-    label: 'Blocked',
-    value: 'blocked',
-  },
 ];
 
 export const getShopEditData = (shop) => {

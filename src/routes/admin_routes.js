@@ -119,7 +119,7 @@ export const admin_routes = [
   // dashboard
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
-  // { path: '/new-orders', component: () => <NewOrders showFor="admin" /> },
+
   { path: '/orders', component: AdminOrders },
 
   { path: '/orders/list', component: ButlerOrderList },
@@ -152,14 +152,12 @@ export const admin_routes = [
 
   // shops
   { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
-  // { path: '/shops/list', component: () => <ShopList viewUserType="admin" /> },
   { path: '/shops/add', component: ShopAdd },
   { path: '/shops/edit/:id', component: ShopAdd },
   { path: '/shops/details/:id', component: ShopDetails },
-  // { path: '/shops/marketing/:id', component: () => <Marketing viewUserType="admin" /> },
-  { path: '/shops/marketing/:id', component: Marketing, componentProps: { viewUserType: 'admin' } },
+  { path: '/shops/:id/marketing/', component: Marketing, componentProps: { viewUserType: 'admin' } },
   {
-    path: '/shops/marketing/dashboard/:shopId/:type/:id',
+    path: '/shops/:shopId/marketing/dashboard/:type/:id',
     component: MarketingDashboard,
     componentProps: { viewUserType: 'admin' },
   },
@@ -204,8 +202,6 @@ export const admin_routes = [
     path: '/app-wallet/seller/shops-transactions2',
     component: ShopsFinancialsSpecificSellers,
   },
-
-  // transations
   {
     path: '/add-wallet/shop-transactions',
     component: SingleShopTransactions,

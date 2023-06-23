@@ -131,6 +131,9 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     };
   }
 
+  console.log('seller data : ', sellerData);
+  console.log('contract paper : ', sellerContractPaper);
+
   if (isEdit) {
     return {
       ...sellerData,

@@ -2,7 +2,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import StyledTable from '../../components/Styled/StyledTable3';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
-import { colorList, createDataForTable } from './helper';
+import { createDataForTable, getZoneStatusColor } from './helper';
 
 function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
   const [loading, setIsloading] = useState(true);
@@ -28,7 +28,7 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
               width: '14px',
               height: '14px',
               borderRadius: '50%',
-              background: `${colorList[value.row.colorId % 50]}`,
+              background: `${getZoneStatusColor(value?.row)}`,
             }}
           ></Box>{' '}
           <Typography sx={{ color: theme.palette.primary.main, textTransform: 'capitalize' }}>

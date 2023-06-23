@@ -18,18 +18,15 @@ const getpagesList = () => [
     label: 'Products',
     to: '/settings/products',
   },
+  // {
+  //   label: 'Categories List',
+  //   to: '/settings/categories/list',
+  // },
   {
     label: 'Categories List',
-    to: '/settings/categories/list',
-  },
-  {
-    label: 'Categories List2',
     to: '/settings/categories/list2',
   },
-  {
-    label: 'Chat',
-    to: '/customer-support',
-  },
+
   {
     label: 'Rating',
     to: '/settings/ratings',
@@ -46,16 +43,13 @@ const getpagesList = () => [
     label: 'Notifications',
     to: '/settings/notifications',
   },
-  {
-    label: 'Invoice Configuration',
-    to: '#',
-  },
+
+  // {
+  //   label: 'Default Chat Message',
+  //   to: '/admin/default-chat-message',
+  // },
   {
     label: 'Default Chat Message',
-    to: '/admin/default-chat-message',
-  },
-  {
-    label: 'Default Chat Message2',
     to: '/admin/default-chat-message2',
   },
   {
@@ -66,12 +60,12 @@ const getpagesList = () => [
     label: 'App Settings',
     to: '/settings/app-settings',
   },
+  // {
+  //   label: 'Admin Log',
+  //   to: '/add-wallet/admin-log-history',
+  // },
   {
     label: 'Admin Log',
-    to: '/add-wallet/admin-log-history',
-  },
-  {
-    label: 'Admin Log2',
     to: '/add-wallet/admin-log-history2',
   },
   {
@@ -93,6 +87,14 @@ const getpagesList = () => [
   {
     label: 'Transaction',
     to: '/admin/transactions',
+  },
+  {
+    label: 'Chat',
+    to: '/customer-support',
+  },
+  {
+    label: 'Invoice Configuration',
+    to: '#',
   },
 ];
 

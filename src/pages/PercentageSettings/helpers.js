@@ -94,3 +94,10 @@ export const validateRange = (allValue, newValue) => {
   }
   return false;
 };
+
+export const validateGlobalCharge = (oldValue, newValue) => {
+  if (oldValue?.dropPercentage !== newValue?.globalCharge) {
+    return true;
+  }
+  return false;
+};

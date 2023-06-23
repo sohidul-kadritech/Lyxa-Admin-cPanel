@@ -15,7 +15,7 @@ const orderTypeToIconMap = {
   butler: ButlerLocation,
 };
 
-export default function OrderTrackingMap({ pickup, dropoff, orderType }) {
+export default function OrderTrackingMap({ pickup = {}, dropoff = {}, orderType = '' }) {
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState('');

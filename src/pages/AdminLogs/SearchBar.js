@@ -1,28 +1,30 @@
-import { Stack } from '@mui/material';
+import { Stack, debounce } from '@mui/material';
+import { useMemo } from 'react';
 import FilterSelect from '../../components/Filter/FilterSelect';
 
+import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { adminLogTypeOptions } from './helpers';
 
 // eslint-disable-next-line no-unused-vars
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
-  //   const updateSearch = useMemo(
-  //     () =>
-  //       debounce((e) => {
-  //         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
-  //       }, 300),
-  //     // eslint-disable-next-line prettier/prettier
-  //     [],
-  //   );
+  const updateSearch = useMemo(
+    () =>
+      debounce((e) => {
+        setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
+      }, 300),
+    // eslint-disable-next-line prettier/prettier
+    [],
+  );
 
   return (
     <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
-      {/* <StyledSearchBar
+      <StyledSearchBar
         fullWidth
         placeholder={searchPlaceHolder}
         onChange={(e) => {
           updateSearch(e);
         }}
-      /> */}
+      />
 
       {/* sort */}
       {/* <FilterSelect
