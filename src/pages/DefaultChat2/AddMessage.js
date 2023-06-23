@@ -6,12 +6,13 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
 
 // eslint-disable-next-line no-unused-vars
-function AddMessage({ onClose, addQuery, isReadOnly, rowData = undefined, isEdit }) {
+function AddMessage({ onClose, addQuery, isReadOnly, setIsConfirmModal, rowData = undefined, isEdit }) {
   const theme = useTheme();
   const [message, setMessage] = useState(rowData?.message || '');
   const addMessageHandler = () => {
     if (!message) {
       successMsg('Please provide message');
+      return;
     }
 
     if (!isEdit) {
@@ -22,10 +23,11 @@ function AddMessage({ onClose, addQuery, isReadOnly, rowData = undefined, isEdit
   };
   return (
     <SidebarContainer title={isEdit ? 'Edit Phrase' : isReadOnly ? 'View Phrase' : 'Create Phrase'} onClose={onClose}>
-      <Stack justifyContent="space-between" sx={{ marginTop: '20px', paddingBottom: '20px', height: '60vh' }}>
+      <Stack justifyContent="space-between" sx={{ marginTop: '20px', paddingBottom: '20px', height: '85vh' }}>
         <StyledFormField
-          label="Message *"
+          label="Description *"
           intputType="textarea"
+          sx={{ flex: '1' }}
           inputProps={{
             multiline: true,
             type: 'text',
@@ -36,7 +38,7 @@ function AddMessage({ onClose, addQuery, isReadOnly, rowData = undefined, isEdit
           }}
         />
 
-        <Stack direction="column" gap="16px" margin="30px 0px" justifyContent="center">
+        <Stack direction="column" gap="16px" margin="30px 0px" justifyContent="end" flex="1">
           <Button
             disabled={addQuery?.isLoading || isReadOnly}
             fullWidth
@@ -46,18 +48,20 @@ function AddMessage({ onClose, addQuery, isReadOnly, rowData = undefined, isEdit
           >
             Save Item
           </Button>
-          <Button
-            disabled={addQuery?.isLoading || isReadOnly}
-            fullWidth
-            //   onClick={uploadHanlder}
-            disableFocusRipple
-            disableRipple
-            variant="text"
-            sx={{ color: theme.palette.danger.main }}
-            startIcon={<DeleteForeverOutlined />}
-          >
-            Delete Item
-          </Button>
+          {isEdit && (
+            <Button
+              disabled={addQuery?.isLoading || isReadOnly}
+              fullWidth
+              onClick={() => setIsConfirmModal(true)}
+              disableFocusRipple
+              disableRipple
+              variant="text"
+              sx={{ color: theme.palette.danger.main }}
+              startIcon={<DeleteForeverOutlined />}
+            >
+              Delete Item
+            </Button>
+          )}
         </Stack>
       </Stack>
     </SidebarContainer>

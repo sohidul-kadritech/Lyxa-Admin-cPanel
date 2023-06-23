@@ -8,6 +8,7 @@ export default function PageTop({
   backTo,
   backButtonLabel,
   onAdd,
+  onAddDisabled,
   addButtonLabel,
   title,
   titleSx,
@@ -32,6 +33,7 @@ export default function PageTop({
                 borderRadius: '8px',
                 padding: '11px 30px',
               }}
+              disabled={onAddDisabled}
               onClick={onAdd}
             >
               {addButtonLabel}

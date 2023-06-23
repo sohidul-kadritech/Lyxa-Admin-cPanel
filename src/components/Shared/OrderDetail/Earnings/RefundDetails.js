@@ -42,7 +42,7 @@ function StyledItem({
   );
 }
 
-export default function OrderRefundDetails({ order = {} }) {
+export default function RefundDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Refund After Delivered">
       {order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 && (

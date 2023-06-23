@@ -13,6 +13,17 @@ import ModalContainer from '../ServiceZone/ModalContainer';
 import RequestedAreaSkeleton from './RequestedAreaSkeleton';
 import RequestedAreaTable from './RequestedAreaTable';
 
+const breadcrumbItems = [
+  {
+    label: 'Settings',
+    to: '/settings',
+  },
+  {
+    label: 'New Area Requested',
+    to: '#',
+  },
+];
+
 function PointerWrapper() {
   return <LocationOnIcon style={{ transform: 'scale(1.5)' }} />;
 }
@@ -42,7 +53,10 @@ function RequestedArea() {
   return (
     <Box>
       <PageTop
-        title="New Area Requested"
+        // title="New Area Requested"
+        backButtonLabel="Back to Settings"
+        breadcrumbItems={breadcrumbItems}
+        backTo="/settings"
         sx={{
           position: 'sticky',
           top: '-2px',

@@ -54,7 +54,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           <Typography variant="body4">points: {value.points}</Typography>
         </Stack>
       );
-    } else if (type === 'maxDiscount' || type === 'maxCustomerServiceValue' || type === 'nearByShopKm') {
+    } else if (type === 'maxCustomerServiceValue' || type === 'nearByShopKm') {
       newValue = value;
     } else if (type === 'rewardBundle') {
       newValue = (
@@ -62,6 +62,16 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           {value.map((item) => (
             <Typography variant="body4" key={item}>
               {item}
+            </Typography>
+          ))}
+        </Stack>
+      );
+    } else if (type === 'maxDiscount') {
+      newValue = (
+        <Stack gap="4px" padding="16px 0px">
+          {value.map((item) => (
+            <Typography variant="body4" key={item}>
+              {item}%
             </Typography>
           ))}
         </Stack>

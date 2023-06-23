@@ -7,7 +7,7 @@ import { successMsg } from '../../helpers/successMsg';
 import StyledFileDropzone from '../Styled/StyledFileDropzone';
 import CloseButton from './CloseButton';
 
-export default function EditDocument({ onClose, document, onReplaceDoc, loading }) {
+export default function EditDocument({ onClose, document, onReplaceDoc, loading, previewOnly }) {
   const [currentFile, setCurrentFile] = useState(document?.url);
   const [files, setFiles] = useState([]);
 
@@ -16,7 +16,7 @@ export default function EditDocument({ onClose, document, onReplaceDoc, loading 
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     if (newFiles?.length) {
@@ -42,14 +42,14 @@ export default function EditDocument({ onClose, document, onReplaceDoc, loading 
   return (
     <Box
       sx={{
-        padding: '12px 16px 16px',
+        padding: previewOnly ? '12px 16px 32px' : '12px 16px 16px',
         backgroundColor: '#fff',
         borderRadius: '8px',
         minWidth: 'min(800px, 90vw)',
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center" pb={4}>
-        <Typography variant="h6">Edit Document</Typography>
+        <Typography variant="h6">{previewOnly ? 'Preview' : 'Edit Document'}</Typography>
         <CloseButton size="sm" onClick={onClose} />
       </Stack>
       <Box
@@ -70,19 +70,24 @@ export default function EditDocument({ onClose, document, onReplaceDoc, loading 
       >
         <img src={currentFile} alt="doc" />
       </Box>
-      <Stack gap="20px" pt={8.5}>
-        <StyledFileDropzone onDrop={onDrop} multiple={false} maxFiles={1} />
-        <Button
-          variant="contained"
-          fullWidth
-          disabled={!files.length || uploadDoc.isLoading || loading}
-          onClick={() => {
-            uploadDoc.mutate();
-          }}
-        >
-          Replace
-        </Button>
-      </Stack>
+      {!previewOnly && (
+        <Stack gap="20px" pt={8.5}>
+          <StyledFileDropzone onDrop={onDrop} multiple={false} maxFiles={1} />
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={!files.length || uploadDoc.isLoading || loading}
+            onClick={() => {
+              uploadDoc.mutate();
+            }}
+          >
+            Replace
+          </Button>
+        </Stack>
+      )}
+      {/* {
+        previewOnly && (<Box />)
+      } */}
     </Box>
   );
 }

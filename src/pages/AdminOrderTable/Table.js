@@ -1,5 +1,5 @@
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
@@ -19,6 +19,20 @@ import UpdateOrderStatusForm from '../NewOrder/UpdateOrderStatusForm';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
+
+const filterColumns = (columns, shopType, orderType) => {
+  let cols = columns.filter((col) => col?.showFor?.includes(orderType));
+
+  if (shopType !== 'all') {
+    cols = cols.filter((col) => col.headerName !== 'TYPE');
+  }
+
+  if (shopType === 'butler') {
+    cols = cols.filter((col) => col.headerName !== 'SHOP' && col.headerName !== 'ORDER RATING');
+  }
+
+  return cols;
+};
 
 export default function Table({ orders = [], shopType, queryParams, setQueryParams, totalPage, orderType, loading }) {
   const history = useHistory();
@@ -110,7 +124,9 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       sortable: false,
       minWidth: 120,
       flex: 1,
-      renderCell: ({ row }) => <Typography variant="body4">{shopTypeLabelMap[row?.shop?.shopType]}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{row?.isButler ? 'Butler' : shopTypeLabelMap[row?.shop?.shopType]}</Typography>
+      ),
     },
     {
       showFor: ['ongoing', 'delivered', 'low-rating'],
@@ -120,23 +136,27 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
       flex: 1,
       minWidth: 240,
       sortable: false,
-      renderCell: ({ row }) => (
-        <UserAvatar
-          imgAlt="shop-image"
-          imgUrl={row?.shop?.shopLogo}
-          imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
-          name={row?.shop?.shopName}
-          titleProps={{
-            sx: { color: 'primary.main', cursor: 'pointer' },
-            onClick: () => {
-              history.push({
-                pathname: `/shop/profile/${row?.shop?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
-              });
-            },
-          }}
-        />
-      ),
+      renderCell: ({ row }) => {
+        if (row?.isButler) return '_';
+
+        return (
+          <UserAvatar
+            imgAlt="shop-image"
+            imgUrl={row?.shop?.shopLogo}
+            imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
+            name={row?.shop?.shopName}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push({
+                  pathname: `/shop/profile/${row?.shop?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                });
+              },
+            }}
+          />
+        );
+      },
     },
     {
       showFor: ['ongoing', 'delivered', 'low-rating'],
@@ -211,7 +231,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     {
       showFor: ['delivered', 'low-rating'],
       id: 8,
-      headerName: 'Rider RATING',
+      headerName: 'RIDER RATING',
       field: 'riderRating',
       sortable: false,
       flex: 1,
@@ -240,13 +260,13 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     },
   ];
 
-  if (shopType !== 'all') {
-    columns.splice(1, 1);
-  }
+  const filteredColumns = useMemo(() => filterColumns(columns, shopType, orderType), [shopType, orderType]);
 
   if (loading) {
     return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />;
   }
+
+  console.log({ orderType });
 
   return (
     <>
@@ -262,7 +282,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
         }}
       >
         <StyledTable
-          columns={columns.filter((col) => col?.showFor?.includes(orderType))}
+          columns={filteredColumns}
           rows={orders}
           getRowId={(row) => row?._id}
           rowHeight={71}

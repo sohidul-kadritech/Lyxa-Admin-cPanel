@@ -103,7 +103,7 @@ export const allColumns = (getValue) => [
     align: 'right',
     flex: 1,
     renderCell: ({ row }) => (
-      <Stack gap={1.5}>
+      <Stack gap={1.5} sx={{ padding: '16px 0px' }}>
         <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
         <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
           {moment(row?.createdAt)?.format('hh:mm A')}

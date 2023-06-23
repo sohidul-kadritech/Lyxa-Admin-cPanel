@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { parsePhoneNumber } from 'react-phone-number-input';
 import { useQuery, useQueryClient } from 'react-query';
 import { useLocation, useParams, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
@@ -150,7 +151,7 @@ export default function RiderProfile() {
           riderFor={rider?.deliveryBoyType === 'shopRider' ? 'shop' : 'global'}
           riderShop={rider?.deliveryBoyType === 'shopRider' ? shop : undefined}
           hideDelete
-          editRider={rider}
+          editRider={{ ...rider, number: parsePhoneNumber(rider?.number) ? rider?.number : `+880${rider?.number}` }}
           onClose={() => setOpen(false)}
           onUpdateSuccess={(data) => {
             setRider(data?.data?.delivery);

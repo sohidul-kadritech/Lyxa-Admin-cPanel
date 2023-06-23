@@ -20,7 +20,7 @@ const breadcrumbItems = [
     to: '/settings',
   },
   {
-    label: 'Category List',
+    label: 'Categories List',
     to: '#',
   },
 ];
@@ -36,7 +36,7 @@ function CategoryList2() {
   const [sortBy, setSortBy] = useState('desc');
   const [status, setStatus] = useState('active');
   const [type, setType] = useState('food');
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState({});
 

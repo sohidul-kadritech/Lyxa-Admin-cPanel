@@ -100,8 +100,22 @@ export default function ShopTransactions({ shop }) {
             )}
           </Stack>
         </InfoCard>
-        <InfoCard title="Orders No" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
-        <InfoCard title="Order Amount" value={'pending' || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
+        <InfoCard
+          title="Orders No"
+          value={(summary?.totalExpectedOrder || 0).toFixed(2)}
+          sm={6}
+          md={4}
+          lg={3}
+          valueSx={amountSx}
+        />
+        <InfoCard
+          title="Order Amount"
+          value={(summary?.totalProductAmount || 0).toFixed(2)}
+          sm={6}
+          md={4}
+          lg={3}
+          valueSx={amountSx}
+        />
       </Grid>
       <TransactionsTable rows={query?.data?.data?.transections} type="transactions" />
       <TablePagination

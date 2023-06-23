@@ -23,7 +23,7 @@ import {
   validateShopFeatures,
 } from './helper';
 
-export default function AddShop({ onClose, editShop }) {
+export default function AddShop({ onClose, editShop, refetch = () => 0 }) {
   const { currentUser } = useGlobalContext();
 
   const { seller, adminType } = currentUser;
@@ -69,6 +69,7 @@ export default function AddShop({ onClose, editShop }) {
         if (data?.status) {
           if (editShop?._id) {
             updateShopData(editShop, data?.data?.shop);
+            refetch();
           } else {
             queryClient.invalidateQueries([Api.ALL_SHOP]);
           }

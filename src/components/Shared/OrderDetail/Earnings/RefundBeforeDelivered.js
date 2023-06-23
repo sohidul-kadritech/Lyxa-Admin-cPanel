@@ -2,7 +2,7 @@
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
-import { CustomInfoIcon } from './OrderAmountDetails';
+import { CustomInfoIcon } from './helpers';
 
 function StyledItem({
   label,
@@ -49,7 +49,7 @@ function StyledItem({
   );
 }
 
-export default function OrderRefundBeforeDelivered({ order = {} }) {
+export default function RefundBeforeDelivered({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       {order?.userCancelTnx?.length > 0 && (

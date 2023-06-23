@@ -72,6 +72,9 @@ export default function DetailsAccordion({
       {...props}
     >
       <StyledAccordionSummary
+        sx={{
+          cursor: children?.length ? undefined : 'initial !important',
+        }}
         // className={`${containerRef.current?.childNodes?.length === 0 ? 'icon-hidden' : ''}`}
         expandIcon={
           <Icon
@@ -88,7 +91,7 @@ export default function DetailsAccordion({
             </Typography>
             {tooltip && (
               <Tooltip title={tooltip}>
-                <InfoIcon />
+                <InfoIcon style={{ cursor: 'pointer' }} />
               </Tooltip>
             )}
           </Stack>

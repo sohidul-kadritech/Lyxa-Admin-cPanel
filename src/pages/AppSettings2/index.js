@@ -13,7 +13,7 @@ import AXIOS from '../../network/axios';
 import InputBox from '../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 import IncrementDecrementButton from './IncrementDecrementButton';
-import { separatesUpdatedData } from './helpers';
+import { appSettingsValidateData, separatesUpdatedData } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -81,47 +81,47 @@ function Appsettings2() {
   // eslint-disable-next-line no-unused-vars
   const [lyxaLimit, setLyxaLimit] = useState(25);
 
-  const getShopSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS));
-
-  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT));
-
-  // eslint-disable-next-line no-unused-vars
   const [deletedUnitId, setDeletedUnitId] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [maxTotalEstItemsPriceForButler, setMaxTotalEstItemsPriceForButler] = useState(0);
-  // eslint-disable-next-line no-unused-vars
+
   const [maxDistanceForButler, setMaxDistanceForButler] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const [maxCustomerServiceValue, setMaxCustomerServiceValue] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const [vat, setVat] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const [searchDeliveryBoyKm, setSearchDeliveryBoyKm] = useState([]);
 
-  // eslint-disable-next-line no-unused-vars
   const [nearByShopKm, setNearByShopKm] = useState(0);
   const [nearByShopKmForUserHomeScreen, setNearByShopKmForUserHomeScreen] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const [maxDiscount, setMaxDiscount] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [units, setUnits] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [oldUnits, setOldUnits] = useState([]);
 
-  // eslint-disable-next-line no-unused-vars
   const [currency, setCurrency] = useState(initialCurrency);
 
-  // eslint-disable-next-line no-unused-vars
-  const [type, setType] = useState([]);
+  const [isConfirm, setIsconfirm] = useState(false);
+
+  const [hasChanged, setHasChanged] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
-  const [isConfirm, setIsconfirm] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [hasChanged, setHasChanged] = useState(false);
+  const [oldAppSettings, setOldAppSettings] = useState([]);
+
+  // Get all shop settings data
+  const getShopSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOldAppSettings(getShopSettingsData?.data?.data?.appSetting);
+      }
+    },
+  });
+
+  // Get all unit data
+  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT));
 
   useEffect(() => {
     setMaxTotalEstItemsPriceForButler(getShopSettingsData?.data?.data?.appSetting?.maxTotalEstItemsPriceForButler || 0);
@@ -130,19 +130,14 @@ function Appsettings2() {
     setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || 0);
-    setNearByShopKmForUserHomeScreen(
-      // eslint-disable-next-line prettier/prettier
-      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0
-    );
+    setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
-    // eslint-disable-next-line no-unused-vars
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
-
     setUnits(getAllUnits?.data?.data || []);
     setOldUnits(getAllUnits?.data?.data || []);
   }, [getShopSettingsData?.data?.data, getAllUnits?.data?.data]);
 
-  // eslint-disable-next-line no-unused-vars
+  // update data
   const updateQuery2 = useMutation(
     async (data) => {
       if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length > 0) {
@@ -159,11 +154,9 @@ function Appsettings2() {
         const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
         return [response1];
       }
-
       const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
       const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
       const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
-
       return [response1, response2, response3];
     },
     {
@@ -171,49 +164,38 @@ function Appsettings2() {
         if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
+          setOldAppSettings(data[0]?.data?.appSetting);
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 2 && data[0].status && data[1].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
+          setOldAppSettings(data[0]?.data?.appSetting);
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 1 && data[0].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
+          setOldAppSettings(data[0]?.data?.appSetting);
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else {
           successMsg('Something Went Wrong');
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
-  // eslint-disable-next-line no-unused-vars
+  // reset data
   const populateData = () => {
     setMaxTotalEstItemsPriceForButler(getShopSettingsData?.data?.data?.appSetting?.maxTotalEstItemsPriceForButler || 0);
     setMaxDistanceForButler(getShopSettingsData?.data?.data?.appSetting?.maxDistanceForButler || 0);
     setMaxCustomerServiceValue(getShopSettingsData?.data?.data?.appSetting?.maxCustomerServiceValue || 0);
     setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
     setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
-    setNearByShopKmForUserHomeScreen(
-      // eslint-disable-next-line prettier/prettier
-      getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0
-    );
+    setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
     setUnits(getAllUnits?.data?.data || []);
-    setType([]);
-  };
-
-  const setTypeValidation = (type, setType, value) => {
-    setHasChanged(true);
-    if (type.includes(value)) {
-      return;
-    }
-    const oldType = type;
-    oldType.push(value);
-    setType(oldType);
   };
 
   const addNewBundleItem = (bundle, setBundle, oldbundle, type = 'number') => {
@@ -227,7 +209,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type
+        type,
       ) &&
       type === 'text'
     ) {
@@ -248,14 +230,17 @@ function Appsettings2() {
   // Handle Incremented by one
 
   const incrementByOneHandler = (setValue) => {
+    setHasChanged(true);
     setValue((prev) => {
       if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
       if (prev === '') return 1;
       return prev;
     });
   };
+
   // Handle decremented by one
   const decrementByOneHandler = (setValue) => {
+    setHasChanged(true);
     setValue((prev) => {
       if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
       if (prev === '' || prev <= 0) return 0;
@@ -266,14 +251,17 @@ function Appsettings2() {
   // Handle Incremented by five
 
   const incrementByFiveHandler = (setValue) => {
+    setHasChanged(true);
     setValue((prev) => {
       if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 5;
       if (prev === '') return 1;
       return prev;
     });
   };
+
   // Handle decremented by one
   const decrementByFiveHandler = (setValue) => {
+    setHasChanged(true);
     setValue((prev) => {
       if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 5;
       if (prev === '' || prev <= 0) return 0;
@@ -282,7 +270,6 @@ function Appsettings2() {
   };
 
   const updateData = () => {
-    // setting/app-setting/edit
     const appsettignsData = {
       maxTotalEstItemsPriceForButler,
       nearByShopKm,
@@ -293,20 +280,21 @@ function Appsettings2() {
       searchDeliveryBoyKm,
       currency,
       vat,
-      type,
     };
+
+    const generatedData = appSettingsValidateData(oldAppSettings, appsettignsData);
 
     const updateDUnits = separatesUpdatedData(
       oldUnits.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name)
+      units.map((unit) => unit.name),
     );
 
     // if (hasChanged) updateQuery.mutate(data);
 
     if (hasChanged) {
       updateQuery2.mutate({
-        appSettings: appsettignsData,
+        appSettings: generatedData,
         addUnit: {
           nameList: updateDUnits,
         },
@@ -348,8 +336,8 @@ function Appsettings2() {
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
                   onInputChange={(e) => {
+                    setHasChanged(true);
                     setMaxTotalEstItemsPriceForButler(e?.target?.value);
-                    setTypeValidation(type, setType, 'maxTotalEstItemsPriceForButler');
                   }}
                 />
                 <InputBox
@@ -360,35 +348,36 @@ function Appsettings2() {
                   inputValue={`${maxDistanceForButler}`}
                   inputType="number"
                   onInputChange={(e) => {
+                    setHasChanged(true);
                     setMaxDistanceForButler(e?.target?.value);
-
-                    setTypeValidation(type, setType, 'maxDistanceForButler');
                   }}
                 />
               </Stack>
             </StyledBox>
             <StyledBox title={`Lyxa Pay Limit (Customer Service) (${currency?.symbol})`}>
               <IncrementDecrementButton
+                isChangeOthers
+                changeOthers={() => {
+                  setHasChanged(true);
+                }}
                 incrementHandler={incrementByOneHandler}
                 decrementHandler={decrementByOneHandler}
                 setValue={setMaxCustomerServiceValue}
-                types={type}
-                type="maxCustomerServiceValue"
-                setTypeValidation={setTypeValidation}
-                setType={setType}
+                isValidateType={false}
                 currentValue={maxCustomerServiceValue}
               />
             </StyledBox>
             <StyledBox title="VAT (Percentage)">
               <IncrementDecrementButton
+                isChangeOthers
+                changeOthers={() => {
+                  setHasChanged(true);
+                }}
+                isValidateType={false}
                 incrementHandler={incrementByOneHandler}
                 decrementHandler={decrementByOneHandler}
                 setValue={setVat}
                 currentValue={vat}
-                setTypeValidation={setTypeValidation}
-                types={type}
-                type="vat"
-                setType={setType}
               />
             </StyledBox>
 
@@ -401,41 +390,43 @@ function Appsettings2() {
                 addButtonLabel="Add"
                 items={searchDeliveryBoyKm || []}
                 onAdd={(value) => {
-                  setTypeValidation(type, setType, 'searchDeliveryBoyKm');
                   if (searchDeliveryBoyKm?.length <= 2) {
+                    setHasChanged(true);
                     addNewBundleItem(value, setSearchDeliveryBoyKm, searchDeliveryBoyKm);
                   } else {
                     successMsg('Maximum 3 items can add ');
                   }
                 }}
                 onDelete={(item) => {
-                  setTypeValidation(type, setType, 'searchDeliveryBoyKm');
+                  setHasChanged(true);
                   setSearchDeliveryBoyKm((prev) => prev.filter((value) => value !== item));
                 }}
               />
             </StyledBox>
             <StyledBox title="Shop Distance (KM)">
               <IncrementDecrementButton
+                isChangeOthers
+                changeOthers={() => {
+                  setHasChanged(true);
+                }}
+                isValidateType={false}
                 incrementHandler={incrementByFiveHandler}
                 decrementHandler={decrementByFiveHandler}
                 setValue={setNearByShopKm}
                 currentValue={nearByShopKm}
-                setTypeValidation={setTypeValidation}
-                types={type}
-                type="nearByShopKm"
-                setType={setType}
               />
             </StyledBox>
             <StyledBox title="Near Shop Distance in Home Screen (KM)">
               <IncrementDecrementButton
+                isChangeOthers
+                changeOthers={() => {
+                  setHasChanged(true);
+                }}
+                isValidateType={false}
                 incrementHandler={incrementByFiveHandler}
                 decrementHandler={decrementByFiveHandler}
                 setValue={setNearByShopKmForUserHomeScreen}
                 currentValue={nearByShopKmForUserHomeScreen}
-                setTypeValidation={setTypeValidation}
-                types={type}
-                type="nearByShopKm"
-                setType={setType}
               />
             </StyledBox>
             <StyledBox title={`Maximum Discount for Shops (${currency?.symbol})`}>
@@ -447,11 +438,11 @@ function Appsettings2() {
                 addButtonLabel="Add"
                 items={maxDiscount || []}
                 onAdd={(value) => {
-                  setTypeValidation(type, setType, 'maxDiscount');
+                  setHasChanged(true);
                   addNewBundleItem(value, setMaxDiscount, maxDiscount);
                 }}
                 onDelete={(item) => {
-                  setTypeValidation(type, setType, 'maxDiscount');
+                  setHasChanged(true);
                   setMaxDiscount((prev) => prev.filter((value) => value !== item));
                 }}
               />
@@ -467,11 +458,10 @@ function Appsettings2() {
                 addButtonLabel="Add"
                 items={units.map((u) => u.name) || []}
                 onAdd={(value) => {
-                  // setTypeValidation(type, setType, 'maxDiscount');
+                  setHasChanged(true);
                   addNewBundleItem(value, setUnits, units, 'text');
                 }}
                 onDelete={(item) => {
-                  // setTypeValidation(type, setType, 'maxDiscount');
                   setHasChanged(true);
                   setUnits((prev) => {
                     setDeletedUnitId((deletedUnit) => {
@@ -504,8 +494,8 @@ function Appsettings2() {
                   }),
                   //   items: categories,
                   onChange: (e) => {
+                    setHasChanged(true);
                     const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
-                    setTypeValidation(type, setType, 'currency');
                     setCurrency(selectedCurrency);
                   },
                   //   readOnly: Boolean(newProductCategory) || productReadonly,

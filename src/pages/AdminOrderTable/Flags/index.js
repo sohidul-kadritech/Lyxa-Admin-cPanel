@@ -10,7 +10,7 @@ import Table from './Table';
 
 const tabsOptions = [
   { value: 'unresolved', label: 'Unresolved' },
-  { value: 'resolved', label: 'Resolve' },
+  { value: 'resolved', label: 'Resolved' },
 ];
 
 const queryParamsInit = {
