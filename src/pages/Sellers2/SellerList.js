@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
@@ -62,23 +62,30 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
       console.log('current element painai', sellerRef.current);
     }
   };
-  // useLayoutEffect(() => {
-  //   handlePageLoad();
-  // }, [loading, data]);
 
-  // useEffect(() => {
-  //   handlePageLoad();
-  // }, [loading, data]);
+  // eslint-disable-next-line no-unused-vars
+  const scrollToTop = () => {
+    if (sellerRef.current) {
+      console.log('scrolltop:', sellerRef.current.scrollHeight);
+      sellerRef.current.scrollTop = 0;
+    }
+  };
 
-  // useEffect(() => {
-  //   history.listen(() => {
-  //     setTimeout(() => {
-  //       if (sellerRef.current) {
-  //         sellerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //       }
-  //     }, 0);
-  //   });
-  // }, [history]);
+  // eslint-disable-next-line no-unused-vars
+  const scrollToBottom = () => {
+    if (sellerRef.current) {
+      console.log('scrollbottom:', sellerRef.current.scrollHeight);
+      sellerRef.current.scrollTop = sellerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    if (sellerRef.current) {
+      scrollToBottom();
+    } else {
+      scrollToTop();
+    }
+  }, [currentSeller]);
 
   return (
     <Box

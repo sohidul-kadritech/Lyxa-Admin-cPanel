@@ -1,5 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
+import { getTypeName } from '../helpers';
 
 export const allColumns = (getValue) => [
   {
@@ -15,12 +16,11 @@ export const allColumns = (getValue) => [
           sx={{
             fontSize: '15px',
             fontWeight: '500',
-            textTransform: 'capitalize',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
         >
-          {row?.type}
+          {getTypeName(row?.type)}
         </Typography>
       </Stack>
     ),

@@ -131,40 +131,54 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
   };
 
   return (
-    <Box>
+    <>
       <Box
         sx={{
-          padding: '7.5px 16px  2px',
           maxHeight: '480px',
           overflow: 'auto',
+          position: 'relative',
           border: `1px solid ${theme.palette.custom.border}`,
           borderRadius: '7px',
+          top: 0,
         }}
       >
-        <StyledTable
-          columns={allColumns(getValue)}
-          rows={data || []}
-          getRowId={(row) => row?._id}
-          //   rowHeight={72}
-          getRowHeight={() => 'auto'}
+        <Box
           sx={{
-            '& .MuiDataGrid-cell': {
-              cursor: 'pointer',
-            },
-            //   '& .MuiDataGrid-row:hover': {
-            //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-            //   },
+            padding: '7.5px 16px  2px',
           }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? 'Loading...' : 'No Logs Found'}
-              </Stack>
-            ),
-          }}
-        />
+        >
+          <StyledTable
+            columns={allColumns(getValue)}
+            rows={data || []}
+            getRowId={(row) => row?._id}
+            getRowHeight={() => 'auto'}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                position: 'sticky',
+                top: '-2px',
+                backgroundColor: theme?.palette?.primary?.contrastText,
+                zIndex: theme.zIndex.mobileStepper - 1,
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                marginTop: '0 !important',
+              },
+              '& .MuiDataGrid-main': {
+                overflow: 'visible',
+              },
+              '& .MuiDataGrid-cell': {
+                cursor: 'default',
+              },
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  {loading ? 'Loading...' : 'No Logs Found'}
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
       </Box>
-
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -172,7 +186,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
         }}
         totalPage={totalPage}
       />
-    </Box>
+    </>
   );
 }
 
