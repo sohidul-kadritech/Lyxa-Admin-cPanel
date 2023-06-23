@@ -1,14 +1,15 @@
 import { Stack } from '@mui/material';
-import OrderAmountDetails from './OrderAmountDetails';
-import OrderRefundBeforeDelivered from './OrderRefundBeforeDelivered';
-import OrderRefundDetails from './OrderRefundDetails';
+import AmountDetails from './AmountDetails';
+import ButlerAmountDetails from './ButlerAmountDetails';
+import BeforeDelivered from './RefundBeforeDelivered';
+import OrderRefundDetails from './RefundDetails';
 
-export default function Earnings({ userType, order }) {
+export default function Earnings({ order }) {
   return (
     <Stack gap={5}>
-      {userType === 'admin' ? <OrderAmountDetails order={order} /> : null}
-      {userType === 'admin' && order?.userCancelTnx?.length > 0 ? <OrderRefundBeforeDelivered order={order} /> : null}
-      {userType === 'admin' && order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 ? (
+      {order?.isButler ? <ButlerAmountDetails order={order} /> : <AmountDetails order={order} />}
+      {order?.userCancelTnx?.length > 0 ? <BeforeDelivered order={order} /> : null}
+      {order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 ? (
         <OrderRefundDetails order={order} />
       ) : null}
     </Stack>

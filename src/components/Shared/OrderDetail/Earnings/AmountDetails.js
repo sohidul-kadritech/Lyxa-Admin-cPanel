@@ -5,7 +5,7 @@ import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 import { StyledItem } from './helpers';
 
-export default function OrderAmountDetails({ order = {} }) {
+export default function AmountDetails({ order = {} }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;

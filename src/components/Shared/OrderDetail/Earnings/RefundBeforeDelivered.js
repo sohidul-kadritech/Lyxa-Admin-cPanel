@@ -49,7 +49,7 @@ function StyledItem({
   );
 }
 
-export default function OrderRefundBeforeDelivered({ order = {} }) {
+export default function RefundBeforeDelivered({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       {order?.userCancelTnx?.length > 0 && (
