@@ -1,3 +1,9 @@
+import moment from 'moment';
+
+const dateRangeInit = {
+  startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+};
 export const getQueryParamsInit = {
   page: 1,
   pageSize: 20,
@@ -5,6 +11,7 @@ export const getQueryParamsInit = {
   sortBy: 'desc',
   status: '',
   type: 'all',
+  ...dateRangeInit,
 };
 
 export const adminLogTypeOptions = [
