@@ -1,5 +1,5 @@
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
@@ -70,7 +70,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     }
   };
 
-  let columns = [
+  const columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
       id: 1,
@@ -260,15 +260,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     },
   ];
 
-  if (shopType !== 'all') {
-    // remove type column
-    columns = columns.filter((col) => col.headerName !== 'TYPE');
-  }
-
-  // if(shopType !== 'all'){
-  //       // remove type column
-  //       columns.splice(1, 1);
-  // }
+  const filteredColumns = useMemo(() => filterColumns(columns, shopType, orderType), [shopType, orderType]);
 
   if (loading) {
     return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />;
@@ -290,8 +282,7 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
         }}
       >
         <StyledTable
-          // columns={columns.filter((col) => col?.showFor?.includes(orderType))}
-          columns={filterColumns(columns, shopType, orderType)}
+          columns={filteredColumns}
           rows={orders}
           getRowId={(row) => row?._id}
           rowHeight={71}
