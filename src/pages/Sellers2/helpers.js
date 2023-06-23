@@ -138,7 +138,7 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     return {
       ...sellerData,
       id: sellerData._id,
-      password: sellerData.password ? sellerData.password : '',
+      password: sellerData.password ? sellerData.password : undefined,
       profile_photo,
       certificate_of_incorporation,
       national_id,

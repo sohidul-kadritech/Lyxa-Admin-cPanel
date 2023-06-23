@@ -81,7 +81,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
         <Stack gap="4px" padding="16px 0px">
           {value.map((item) => (
             <Typography variant="body4" key={item}>
-              {item}KM
+              {item} km
             </Typography>
           ))}
         </Stack>
