@@ -33,7 +33,7 @@ function AddRange({ onClose, allData, callForUpdate, editedData, isEdit, isLoadi
         label="Range From *"
         intputType="text"
         containerProps={{
-          sx: { padding: '14px 0' },
+          sx: { padding: '14px 0', opacity: `${isEdit ? '0.50' : '1'}` },
         }}
         inputProps={{
           name: 'from',
@@ -48,7 +48,7 @@ function AddRange({ onClose, allData, callForUpdate, editedData, isEdit, isLoadi
         label="Range To *"
         intputType="text"
         containerProps={{
-          sx: { padding: '14px 0' },
+          sx: { padding: '14px 0', opacity: `${isEdit ? '0.50' : '1'}` },
         }}
         inputProps={{
           name: 'to',

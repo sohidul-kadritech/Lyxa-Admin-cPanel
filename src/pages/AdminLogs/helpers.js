@@ -32,9 +32,9 @@ export const adminLogTypeOptions = [
   { label: 'Global Lyxa charge (Percentage)', value: 'globalDropCharge' },
   { label: 'Global Delivery Cut', value: 'globalDeliveryCut' },
   { label: 'Global Delivery Cut For Butler', value: 'globalDeliveryCutForButler' },
-  { label: 'Specific Seller Drop Charge', value: 'specificSellerDropCharge' },
-  { label: 'Specific Seller Delivery Cut', value: 'specificSellerDeliveryCut' },
-  { label: 'Seller Lyxa Charge Reset', value: 'sellerDropChargeReset' },
+  { label: 'Specific Seller Lyxa Charge', value: 'specificSellerDropCharge' },
+  // { label: 'Specific Seller Delivery Cut', value: 'specificSellerDeliveryCut' },
+  // { label: 'Seller Lyxa Charge Reset', value: 'sellerDropChargeReset' },
 ];
 
 export const getTypeName = (type) => {
@@ -53,9 +53,9 @@ export const getTypeName = (type) => {
     globalDropCharge: 'Global Lyxa charge (Percentage)',
     globalDeliveryCut: 'Global Delivery Cut',
     globalDeliveryCutForButler: 'Global Delivery Cut for Butler',
-    specificSellerDropCharge: 'Specific Seller Drop Charge',
-    specificSellerDeliveryCut: 'Specific Seller Delivery Cut',
-    sellerDropChargeReset: 'Seller Lyxa Charge Reset',
+    specificSellerDropCharge: 'Specific Seller Lyxa Charge',
+    // specificSellerDeliveryCut: 'Specific Seller Delivery Cut',
+    // sellerDropChargeReset: 'Seller Lyxa Charge Reset',
   };
   return getData[type];
 };
