@@ -1,7 +1,7 @@
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { parsePhoneNumber } from 'react-phone-number-input';
 import { useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
@@ -9,7 +9,6 @@ import { ReactComponent as PhoneIcon } from '../../assets/icons/phone.svg';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import * as API_URL from '../../network/Api';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
@@ -124,6 +123,7 @@ function SellersProfile({
   // eslint-disable-next-line no-unused-vars
   const [selectedMenu, setSelectedMenu] = useState('');
   const accessAsUser = useAccessAsUser();
+  const history = useHistory();
 
   useEffect(() => {
     setSearchResult(currentSeller?.shops);
@@ -134,7 +134,7 @@ function SellersProfile({
       console.log(e.target.value);
       const matchData = currentSeller?.shops.filter((obj) =>
         // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
+        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase())
       );
       console.log('matchData', matchData);
       setSearchResult(() => [...matchData]);
@@ -175,15 +175,14 @@ function SellersProfile({
 
   const threeDotHandler = (menu) => {
     setSelectedMenu(menu);
-    console.log('menu-->', menu);
+    console.log('=======>', menu);
+
     if (menu === 'view') {
       setOpen(true);
-      return;
     }
     if (menu === 'edit_seller') {
       setAddSidebarOpen(true);
       setIsEdit(true);
-      return;
     }
     if (menu === 'update_lyxa_charge') {
       setOpenLyxaChargeSidebar(true);
@@ -192,7 +191,18 @@ function SellersProfile({
     if (menu === 'access_as_seller') {
       accessAsUser('admin', 'seller', currentSeller);
     }
+    // app-wallet/seller/shops-transactions2?sellerId=6475cb7cc347e067ba447ab2&companyName=Burger%20King
+    if (menu === 'go_to_financials') {
+      history.push(
+        `/app-wallet/seller/shops-transactions2?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`
+      );
+    }
+    if (menu === 'add_shop') {
+      setSelectedShop({});
+      setOpen(true);
+    }
   };
+
   const closeModal = () => {
     setSelectedMenu('');
     setOpen(false);
@@ -224,7 +234,6 @@ function SellersProfile({
           </Box>
           <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
             <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
-
             <StyledFormField
               intputType="select"
               containerProps={{
@@ -237,10 +246,8 @@ function SellersProfile({
                 items: sortOptions,
                 size: 'sm2',
                 onChange: sortHandler,
-                // onChange: (e) => setSort(e.target.value),
               }}
             />
-
             <StyledFormField
               intputType="select"
               containerProps={{
@@ -253,8 +260,6 @@ function SellersProfile({
                 items: statusTypeOptions,
                 size: 'sm2',
                 onChange: statusShopHandler,
-
-                // onChange: (e) => setStatus(e.target.value),
               }}
             />
           </Stack>
@@ -287,21 +292,20 @@ function SellersProfile({
           <ViewShopInfo selectedShop={{ ...selectedShop, seller: currentSeller }} onClose={closeModal} />
         )}
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
-        {selectedMenu === 'edit_shop' && (
+        {(selectedMenu === 'edit_shop' || selectedMenu === 'add_shop') && (
           <AddShop
             refetch={refatch}
-            editShop={{
-              ...selectedShop,
-              phone_number: parsePhoneNumber(selectedShop?.phone_number)
-                ? selectedShop?.phone_number
-                : `+880${selectedShop?.phone_number}`,
-            }}
+            // editShop={{
+            //   ...selectedShop,
+            //   phone_number: parsePhoneNumber(selectedShop?.phone_number)
+            //     ? selectedShop?.phone_number
+            //     : `+880${selectedShop?.phone_number}`,
+            // }}
+            editShop={selectedShop}
+            seller={currentSeller}
             onClose={() => {
-              setOpen(() => {
-                queryClient.invalidateQueries(API_URL.ALL_SELLER);
-                queryClient.invalidateQueries(API_URL.SINGLE_SELLER);
-                return false;
-              });
+              setOpen(() => false);
+              setSelectedShop({});
             }}
           />
         )}

@@ -51,16 +51,16 @@ export const typeList = [
 
 export const appSettingsValidateData = (oldData, newData) => {
   const newType = [];
-  if (newData?.nearByShopKm?.toString() !== oldData?.nearByShopKm?.toString()) {
+  if (parseInt(newData?.nearByShopKm, 10) !== parseInt(oldData?.nearByShopKm, 10)) {
     newType.push(typeList[0]);
   }
-  if (newData?.maxDistanceForButler?.toString() !== oldData?.maxDistanceForButler?.toString()) {
+  if (parseInt(newData?.maxDistanceForButler, 10) !== parseInt(oldData?.maxDistanceForButler, 10)) {
     newType.push(typeList[1]);
   }
   if (!hasDuplicates(newData?.maxDiscount, oldData?.maxDiscount)) {
     newType.push(typeList[2]);
   }
-  if (newData?.maxCustomerServiceValue?.toString() !== oldData?.maxCustomerServiceValue?.toString()) {
+  if (parseInt(newData?.maxCustomerServiceValue, 10) !== parseInt(oldData?.maxCustomerServiceValue, 10)) {
     newType.push(typeList[3]);
   }
   if (!hasDuplicates(newData?.searchDeliveryBoyKm, oldData?.searchDeliveryBoyKm)) {
@@ -69,13 +69,13 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (newData?.currency?.code?.toString() !== oldData?.currency?.code?.toString()) {
     newType.push(typeList[5]);
   }
-  if (newData?.vat?.toString() !== oldData?.vat?.toString()) {
+  if (parseInt(newData?.vat, 10) !== parseInt(oldData?.vat, 10)) {
     newType.push(typeList[6]);
   }
-  if (newData?.maxTotalEstItemsPriceForButler?.toString() !== oldData?.maxTotalEstItemsPriceForButler?.toString()) {
+  if (parseInt(newData?.maxTotalEstItemsPriceForButler, 10) !== parseInt(oldData?.maxTotalEstItemsPriceForButler, 10)) {
     newType.push(typeList[7]);
   }
-  if (newData?.nearByShopKmForUserHomeScreen?.toString() !== oldData?.nearByShopKmForUserHomeScreen?.toString()) {
+  if (parseInt(newData?.nearByShopKmForUserHomeScreen, 10) !== parseInt(oldData?.nearByShopKmForUserHomeScreen, 10)) {
     newType.push(typeList[8]);
   }
   // if (newData?.secondaryCurrency !== oldData?.secondaryCurrency) {
@@ -87,8 +87,19 @@ export const appSettingsValidateData = (oldData, newData) => {
   // if (newData?.acceptedCurrency !== oldData?.acceptedCurrency) {
   //   newType.push(typeList[11]);
   // }
+
   console.log('types:', newType);
   console.log('newData', newData, ' oldData', oldData);
 
-  return { ...newData, vat: newData?.vat ? newData?.vat : 0, type: newType };
+  const maxCustomerServiceValue = parseInt(newData?.maxCustomerServiceValue, 10)
+    ? parseInt(newData?.maxCustomerServiceValue, 10)
+    : '0';
+
+  const nearByShopKmForUserHomeScreen = parseInt(newData?.nearByShopKmForUserHomeScreen, 10)
+    ? parseInt(newData?.nearByShopKmForUserHomeScreen, 10)
+    : '0';
+  const nearByShopKm = parseInt(newData?.nearByShopKm, 10) ? parseInt(newData?.nearByShopKm, 10) : '0';
+  const vat = parseInt(newData?.vat, 10) ? parseInt(newData?.vat, 10) : '0';
+
+  return { ...newData, vat, maxCustomerServiceValue, nearByShopKm, nearByShopKmForUserHomeScreen, type: newType };
 };

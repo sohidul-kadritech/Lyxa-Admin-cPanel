@@ -1,4 +1,4 @@
-import { isValidPhoneNumber } from 'react-phone-number-input';
+import { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 import { deepClone } from '../../../helpers/deepClone';
 import { getImageUrl } from '../../../helpers/images';
 
@@ -36,6 +36,7 @@ export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
   return {
     ...clone,
+    phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+880${shop?.phone_number}`,
     shopAddress: clone?.address,
     password: '',
     shopLogo: [{ preview: shop.shopLogo }],

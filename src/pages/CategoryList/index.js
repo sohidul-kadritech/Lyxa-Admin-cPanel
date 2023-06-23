@@ -1,16 +1,13 @@
-import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { statusTypeOptions } from '../CancelReason2/helper';
-import { sortOptions } from '../Faq2/helpers';
-import TablePageSkeleton from '../Notification2/TablePageSkeleton';
+// import TablePageSkeleton from '../Notification2/TablePageSkeleton';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import CategoryTable from './CategoryTable';
 import ViewCategory from './ViewCategory';
 
@@ -31,129 +28,94 @@ const bannerTypeIndex = {
   2: 'grocery',
 };
 
-function CategoryList2() {
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  sortBy: 'DESC',
+  type: 'food',
+  searchKey: '',
+  status: '',
+  userType: 'admin',
+};
+
+export default function CategoryList2() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [sortBy, setSortBy] = useState('desc');
-  const [status, setStatus] = useState('active');
-  const [type, setType] = useState('food');
   const [open, setOpen] = useState(false);
 
+  const [queryParams, setQueryParams] = useState(queryParamsInit);
+  const [totalPage, setTotalPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState({});
 
-  //   const [range, setRange] = useState({ ...dateRangeInit });
-
-  const [searchKey, setSearchKey] = useState('');
-
-  // eslint-disable-next-line no-unused-vars
-  const queryClient = useQueryClient();
-
-  const getCategoryQuery = useQuery(
-    [API_URL.GET_ALL_CATEGORY, { sortBy, searchKey, status, type, userType: 'admin' }],
+  const query = useQuery(
+    [API_URL.GET_ALL_CATEGORY, queryParams],
     () =>
-      // eslint-disable-next-line prettier/prettier
       AXIOS.get(API_URL.GET_ALL_CATEGORY, {
-        params: { sortBy, status, searchKey, type, userType: 'admin' },
-        // eslint-disable-next-line prettier/prettier
+        params: queryParams,
       }),
+    {
+      onSuccess: (data) => {
+        setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+      },
+    }
   );
 
-  const updateQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_CATEGORY, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg(data.message, 'success');
-        queryClient.invalidateQueries(API_URL.GET_ALL_CATEGORY);
-      }
-    },
-  });
+  const updateQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_CATEGORY, data));
 
   return (
-    <Box>
-      <PageTop
-        backButtonLabel="Back to Settings"
-        breadcrumbItems={breadcrumbItems}
-        backTo="/settings"
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
-      />
-
+    <Box pb={10}>
+      <PageTop backButtonLabel="Back to Settings" breadcrumbItems={breadcrumbItems} backTo="/settings" />
       <Box sx={{ marginBottom: '30px' }}>
         <Tabs
           value={currentTab}
           onChange={(event, newValue) => {
             setCurrentTab(newValue);
-            setType(bannerTypeIndex[newValue]);
+            setQueryParams((prev) => ({ ...prev, type: bannerTypeIndex[newValue], page: 1 }));
           }}
         >
-          <Tab label="Food"></Tab>
-          <Tab label="Pharmacy"></Tab>
-          <Tab label="Grocery"></Tab>
+          <Tab label="Food" />
+          <Tab label="Pharmacy" />
+          <Tab label="Grocery" />
         </Tabs>
       </Box>
-      <Box>
-        <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          {/* <DateRange range={range} setRange={setRange} /> */}
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sortBy',
-              placeholder: 'sortBy',
-              value: sortBy,
-              items: sortOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSortBy(e.target.value),
-            }}
-          />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'status',
-              placeholder: 'status',
-              value: status,
-              items: statusTypeOptions,
-              size: 'sm2',
-              onChange: (e) => setStatus(e.target.value),
-            }}
-          />
-        </Stack>
+      <Box pb={7.5}>
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          searchPlaceHolder="Search Category"
+          hideFilters={{
+            button: true,
+            startDate: true,
+            endDate: true,
+          }}
+        />
       </Box>
       <Box>
-        {getCategoryQuery.isLoading ? (
-          <TablePageSkeleton row={5} column={4} />
+        {query.isLoading ? (
+          <TableSkeleton rows={7} columns={['avatar', 'text', 'text', 'text']} />
         ) : (
           <CategoryTable
-            setOpen={setOpen}
-            setSelectedCategory={setSelectedCategory}
+            onViewContent={(category) => {
+              setOpen(true);
+              setSelectedCategory(category);
+            }}
             updateQuery={updateQuery}
-            data={getCategoryQuery?.data?.data?.categories}
-            loading={getCategoryQuery?.isLoading}
-            type={type}
+            data={query?.data?.data?.categories}
+            loading={query?.isLoading}
+            type={queryParams.type}
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            totalPage={totalPage}
           />
         )}
       </Box>
-
       <Drawer open={open} anchor="right">
         <ViewCategory
           onClose={() => {
             setOpen(false);
           }}
-          selectedCategory={selectedCategory}
+          category={selectedCategory}
         />
       </Drawer>
     </Box>
   );
 }
-
-export default CategoryList2;

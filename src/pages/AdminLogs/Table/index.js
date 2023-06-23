@@ -6,24 +6,19 @@ import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { allColumns } from './helpers';
 
-// eslint-disable-next-line no-unused-vars
 function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage }) {
   const theme = useTheme();
 
   const { general } = useGlobalContext();
-  // eslint-disable-next-line no-unused-vars
+
   const { currency } = general;
 
   const getValue = (type, value) => {
-    // const state = store.getState();
-
-    // const currency = state.settingsReducer.appSettingsOptions.currency.code.toUpperCase();
-
     let newValue = null;
     if (!value || value.length <= 0) {
       newValue = 0;
     } else if (type === 'currency') {
-      newValue = value?.symbol;
+      newValue = `${value?.code} (${value?.symbol})`;
     } else if (type === 'adminCutForReward') {
       newValue = value;
     } else if (type === 'minSpendLimit') {
@@ -43,19 +38,27 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
     } else if (type === 'redeemReward') {
       newValue = (
         <Stack gap="4px" padding="16px 0px">
-          <Typography variant="body4">amount: {value.amount}</Typography>
+          <Typography variant="body4">
+            amount: {currency?.symbol}
+            {value.amount}
+          </Typography>
           <Typography variant="body4">points: {value.points}</Typography>
         </Stack>
       );
     } else if (type === 'getReward') {
       newValue = (
         <Stack gap="4px" padding="16px 0px">
-          <Typography variant="body4">amount: {value.amount}</Typography>
+          <Typography variant="body4">
+            amount: {currency?.symbol}
+            {value.amount}
+          </Typography>
           <Typography variant="body4">points: {value.points}</Typography>
         </Stack>
       );
-    } else if (type === 'maxCustomerServiceValue' || type === 'nearByShopKm') {
-      newValue = value;
+    } else if (type === 'maxCustomerServiceValue' || type === 'maxTotalEstItemsPriceForButler') {
+      newValue = `${currency?.symbol}${value}`;
+    } else if (type === 'nearByShopKm' || type === 'nearByShopKmForUserHomeScreen' || type === 'maxDistanceForButler') {
+      newValue = `${value}km`;
     } else if (type === 'rewardBundle') {
       newValue = (
         <Stack gap="4px" padding="8px 0px">
@@ -81,7 +84,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
         <Stack gap="4px" padding="16px 0px">
           {value.map((item) => (
             <Typography variant="body4" key={item}>
-              {item}KM
+              {item} km
             </Typography>
           ))}
         </Stack>
@@ -104,7 +107,8 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
             <Typography
               key={`${item?.from}_${item?.to}`}
               variant="body4"
-            >{`(${item?.from} - ${item?.to} km)- charge:${item?.charge} rider:${item?.deliveryPersonCut}`}</Typography>
+              // eslint-disable-next-line max-len
+            >{`(${item?.from} - ${item?.to} km) - charge: ${currency?.symbol}${item?.charge} rider: ${currency?.symbol}${item?.deliveryPersonCut}`}</Typography>
           ))}
         </Stack>
       );
@@ -127,40 +131,54 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
   };
 
   return (
-    <Box>
+    <>
       <Box
         sx={{
-          padding: '7.5px 16px  2px',
           maxHeight: '480px',
           overflow: 'auto',
+          position: 'relative',
           border: `1px solid ${theme.palette.custom.border}`,
           borderRadius: '7px',
+          top: 0,
         }}
       >
-        <StyledTable
-          columns={allColumns(getValue)}
-          rows={data || []}
-          getRowId={(row) => row?._id}
-          //   rowHeight={72}
-          getRowHeight={() => 'auto'}
+        <Box
           sx={{
-            '& .MuiDataGrid-cell': {
-              cursor: 'pointer',
-            },
-            //   '& .MuiDataGrid-row:hover': {
-            //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-            //   },
+            padding: '7.5px 16px  2px',
           }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? 'Loading...' : 'No Logs Found'}
-              </Stack>
-            ),
-          }}
-        />
+        >
+          <StyledTable
+            columns={allColumns(getValue)}
+            rows={data || []}
+            getRowId={(row) => row?._id}
+            getRowHeight={() => 'auto'}
+            sx={{
+              '& .MuiDataGrid-columnHeaders': {
+                position: 'sticky',
+                top: '-2px',
+                backgroundColor: theme?.palette?.primary?.contrastText,
+                zIndex: theme.zIndex.mobileStepper - 1,
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                marginTop: '0 !important',
+              },
+              '& .MuiDataGrid-main': {
+                overflow: 'visible',
+              },
+              '& .MuiDataGrid-cell': {
+                cursor: 'default',
+              },
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  {loading ? 'Loading...' : 'No Logs Found'}
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
       </Box>
-
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -168,7 +186,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
         }}
         totalPage={totalPage}
       />
-    </Box>
+    </>
   );
 }
 

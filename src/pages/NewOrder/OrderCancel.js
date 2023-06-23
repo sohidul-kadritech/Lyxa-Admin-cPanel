@@ -57,7 +57,7 @@ const getOrderPayment = (currentOrder) => {
 function OrderCancel({ setOpenCancelModal, currentOrder }) {
   const [orderCancel, setOrderCancel] = useState(
     // eslint-disable-next-line prettier/prettier
-    orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit),
+    orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit)
   );
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
   const [appVat, setAppVat] = useState(0);
@@ -81,7 +81,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
   const cancelOrderForButlarMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
     onSuccess: (data) => {
       console.log('data response: ', data);
-      if (data.success) {
+      if (data.status) {
         successMsg(data.message, 'success');
         console.log('data status true');
         setOpenCancelModal(false);
@@ -206,7 +206,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
             // eslint-disable-next-line no-unsafe-optional-chaining
             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
             // eslint-disable-next-line prettier/prettier
-            appVat,
+            appVat
             // eslint-disable-next-line prettier/prettier
           ),
         },
@@ -237,7 +237,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  appVat,
+                  appVat
                   // eslint-disable-next-line prettier/prettier
                 ),
               }
@@ -470,9 +470,9 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  appVat,
+                  appVat
                   // eslint-disable-next-line prettier/prettier
-                ),
+                )
               ) || 0
         }`}
               tooltip="Lyxa Earning+Lyxa Vat+Shop Earning+Shop VAT+Delivery Boy Earning"
@@ -484,7 +484,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
             // eslint-disable-next-line no-unsafe-optional-chaining
             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
             // eslint-disable-next-line prettier/prettier
-            appVat,
+            appVat
           ) > 0 &&
             orderCancel.refundType !== 'full' &&
             orderPayment?.admin > 0 && (
@@ -495,7 +495,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
                   // eslint-disable-next-line no-unsafe-optional-chaining
                   orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                   // eslint-disable-next-line prettier/prettier
-                  appVat,
+                  appVat
                 )}
               </Typography>
             )}

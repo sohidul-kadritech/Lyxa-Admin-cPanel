@@ -173,7 +173,12 @@ export const getThreedotMenuOptions = (order, userType) => {
     options.push({ label: 'Cancel Order', value: 'cancel_order' });
   }
 
-  if (userType === 'admin' && order?.orderStatus === 'delivered' && !order?.isRefundedAfterDelivered) {
+  if (
+    userType === 'admin' &&
+    order?.orderStatus === 'delivered' &&
+    !order?.isRefundedAfterDelivered &&
+    !order?.isButler
+  ) {
     options.push({ label: 'Refund Order', value: 'refund_order' });
   }
 
