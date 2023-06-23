@@ -30,7 +30,7 @@ export const allColumns = (getValue) => [
     headerName: `OLD VALUE`,
     field: 'old_value',
     sortable: false,
-    flex: 1,
+    flex: 1.5,
     renderCell: ({ row }) => (
       <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
         <Typography
@@ -53,7 +53,7 @@ export const allColumns = (getValue) => [
     headerName: `NEW VALUE`,
     field: 'new_value',
     sortable: false,
-    flex: 1,
+    flex: 1.5,
     renderCell: ({ row }) => (
       <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
         <Typography

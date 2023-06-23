@@ -1,3 +1,9 @@
+import moment from 'moment';
+
+const dateRangeInit = {
+  startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+};
 export const getQueryParamsInit = {
   page: 1,
   pageSize: 20,
@@ -5,6 +11,7 @@ export const getQueryParamsInit = {
   sortBy: 'desc',
   status: '',
   type: 'all',
+  ...dateRangeInit,
 };
 
 export const adminLogTypeOptions = [
@@ -19,10 +26,9 @@ export const adminLogTypeOptions = [
   { label: 'Near By ShopKm For User Home Screen', value: 'nearByShopKmForUserHomeScreen' },
   { label: 'Search Delivery Boy Km', value: 'searchDeliveryBoyKm' },
   { label: 'Max Total Est Items For Butler', value: 'maxTotalEstItemsPriceForButler' },
-  { label: 'Max Total Est Items For Butler', value: 'maxTotalEstItemsPriceForButler' },
   { label: 'Max Distance For Butler', value: 'maxDistanceForButler' },
   { label: 'Max Customer Service Value', value: 'maxCustomerServiceValue' },
-  // percentage settings
+  // Percentage settings
   { label: 'Global Lyxa Charge', value: 'globalDropCharge' },
   { label: 'Global Delivery Cut', value: 'globalDeliveryCut' },
   { label: 'Global Delivery Cut For Butler', value: 'globalDeliveryCutForButler' },

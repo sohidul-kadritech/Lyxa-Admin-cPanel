@@ -85,10 +85,15 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
       }
     });
 
-    newSellerData.sellerAddress = {
-      ...newAddress,
-      pin: newSellerData.sellerAddress.pin ? newSellerData.sellerAddress.pin : '',
-    };
+    setNewSellerData((prev) => ({
+      ...prev,
+      sellerAddress: { ...newAddress, pin: newSellerData?.sellerAddress?.pin ? newSellerData?.sellerAddress?.pin : '' },
+    }));
+
+    // newSellerData.sellerAddress = {
+    //   ...newAddress,
+    //   pin: newSellerData.sellerAddress.pin ? newSellerData.sellerAddress.pin : '',
+    // };
     setRender(!render);
   };
 
@@ -271,7 +276,7 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
           sx: { padding: '14px 0' },
         }}
         inputProps={{
-          value: newSellerData?.addressSeller?.pin,
+          value: newSellerData?.sellerAddress?.pin,
           placeholder: 'Zip code',
           type: 'text',
           name: 'pin',

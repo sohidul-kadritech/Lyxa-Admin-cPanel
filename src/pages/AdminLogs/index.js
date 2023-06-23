@@ -55,7 +55,7 @@ function AdminLogs() {
         }}
       />
       <Box>
-        <SearchBar searchPlaceHolder="Search..." queryParams={queryParams} setQueryParams={setQueryParams} />
+        <SearchBar searchPlaceHolder="Search by Type" queryParams={queryParams} setQueryParams={setQueryParams} />
       </Box>
 
       <Box>
