@@ -41,9 +41,12 @@ function PercentageSettings2() {
   const [currentTab, setCurrentTab] = useState(0);
   const [globalChargeType, setGlobalChargeType] = useState('percentage');
   const [globalCharge, setGlobalCharge] = useState(0);
+
   // eslint-disable-next-line no-unused-vars
-  const [searchResult, setSearchResult] = useState([]);
+  const [editedData, setEditedData] = useState({});
+
   const [isConfirm, setIsConfirm] = useState(false);
+
   const [selectedRange, setSelectedRange] = useState({});
 
   const [type, setType] = useState('global');
@@ -51,6 +54,9 @@ function PercentageSettings2() {
   const [hasChanged, setHasChanged] = useState(true);
 
   const [open, setOpen] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars
+  const [isEdit, setIsEdit] = useState(false);
 
   const [isConfirmDelete, setIsConfirmDelete] = useState(false);
 
@@ -154,7 +160,7 @@ function PercentageSettings2() {
         ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
         : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler;
 
-    const generatedData = generatedDataForRange(newRange, allData, indexToTypeTracker[currentTab]);
+    const generatedData = generatedDataForRange(newRange, allData, indexToTypeTracker[currentTab], isEdit);
 
     if (generatedData && generatedData?.deliveryRange) {
       addDeliveryCutRange.mutate(generatedData);
@@ -221,9 +227,7 @@ function PercentageSettings2() {
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
-
           setType(indexToTypeTracker[newValue]);
-          //   setLoading(true);
         }}
       >
         <Tab label="Global"></Tab>
@@ -245,11 +249,6 @@ function PercentageSettings2() {
               </Typography>
               <StyledFormField
                 intputType="select"
-                containerProps={{
-                  sx: {
-                    // width: '125px',
-                  },
-                }}
                 inputProps={{
                   name: 'discountType',
                   placeholder: 'Lyxa charge type',
@@ -265,6 +264,7 @@ function PercentageSettings2() {
                 }}
               />
             </Stack>
+
             <Stack>
               <Typography variant="h6" sx={{ fontWeight: '600' }}>
                 Lyxa charge ({globalChargeType})
@@ -328,9 +328,11 @@ function PercentageSettings2() {
             />
           ) : (
             <RangeTable
+              setIsEdit={setIsEdit}
               setSelectedRange={setSelectedRange}
               setIsConfirm={setIsConfirmDelete}
               setOpen={setOpen}
+              setEditedData={setEditedData}
               data={
                 indexToTypeTracker[currentTab] === 'delivery'
                   ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
@@ -361,12 +363,14 @@ function PercentageSettings2() {
 
       <Drawer open={open} anchor="right">
         <AddRange
+          isEdit={isEdit}
           allData={
             indexToTypeTracker[currentTab] === 'delivery'
               ? getGlobalDropCharge?.data?.data?.charge?.deliveryRange
               : getGlobalDropCharge?.data?.data?.charge?.deliveryRangeButler
           }
           callForUpdate={addRangeHandler}
+          editedData={isEdit ? editedData : undefined}
           onClose={() => setOpen(false)}
           isLoading={addDeliveryCutRange.isLoading || addDeliveryCutRangeForButler.isLoading}
         />

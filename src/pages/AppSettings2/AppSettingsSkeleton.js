@@ -3,7 +3,7 @@ import React from 'react';
 
 function Row({ type }) {
   return (
-    <Box>
+    <Box marginTop="24px">
       {type === 'type1' && (
         <Stack gap="10px">
           {/* title */}
@@ -50,7 +50,7 @@ function Row({ type }) {
 
 function AppSettingsSkeleton() {
   return (
-    <Stack gap="30px">
+    <Stack gap="32px">
       {/* butler */}
       <Row type="type1" />
       {/* customer service */}

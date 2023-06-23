@@ -4,6 +4,8 @@ import { Box, Stack, Typography } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
 import { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-named-as-default
+import { Edit } from '@mui/icons-material';
+// eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
@@ -11,7 +13,7 @@ import { useGlobalContext } from '../../context';
 import { AddMenuButton } from '../Faq2';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
-function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loading }) {
+function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, setEditedData, loading, setIsEdit }) {
   console.log('=====>range data', data);
 
   const [searchResult, setSearchResult] = useState([...data]);
@@ -23,8 +25,12 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loadin
   const searchResultHandler = (e) => {
     if (e.target.value) {
       const matchData = data.filter(
-        // eslint-disable-next-line prettier/prettier
-        (item) => item?.to.toString() === e.target.value || item?.from.toString() === e.target.value,
+        (item) =>
+          item?.to.toString() === e.target.value ||
+          item?.from.toString() === e.target.value ||
+          item?.charge.toString() === e.target.value ||
+          // eslint-disable-next-line prettier/prettier
+          item?.deliveryPersonCut.toString() === e.target.value,
       );
       console.log(matchData);
       setSearchResult(() => [...matchData]);
@@ -32,6 +38,7 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loadin
       setSearchResult(() => [...data]);
     }
   };
+
   const { general } = useGlobalContext();
   const { currency } = general;
   console.log('currency', currency);
@@ -100,22 +107,36 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loadin
       sortable: false,
       // eslint-disable-next-line no-unused-vars
       renderCell: (params) => (
-        <StyledIconButton
-          color="primary"
-          // disabled={params?.row?.isNotEditable}
-          sx={{
-            '&.Mui-disabled': {
-              color: '#c1c1c1',
-              backgroundColor: '#F3F6F9',
-            },
-          }}
-          onClick={() => {
-            setSelectedRange(params.row);
-            setIsConfirm(true);
-          }}
-        >
-          <DeleteIcon />
-        </StyledIconButton>
+        <Stack direction="row" alignItems="center" gap={3}>
+          <StyledIconButton
+            onClick={() => {
+              setOpen(true);
+              setEditedData(params?.row);
+              setIsEdit(true);
+              // setSelectedShop(params?.row);
+            }}
+            color="primary"
+          >
+            <Edit />
+          </StyledIconButton>
+          <StyledIconButton
+            color="primary"
+            // disabled={params?.row?.isNotEditable}
+            sx={{
+              '&.Mui-disabled': {
+                color: '#c1c1c1',
+                backgroundColor: '#F3F6F9',
+              },
+            }}
+            onClick={() => {
+              setSelectedRange(params.row);
+              setIsConfirm(true);
+              setEditedData({});
+            }}
+          >
+            <DeleteIcon />
+          </StyledIconButton>
+        </Stack>
       ),
     },
   ];
@@ -126,6 +147,7 @@ function RangeTable({ data = [], setSelectedRange, setIsConfirm, setOpen, loadin
         <AddMenuButton
           onClick={() => {
             setOpen(true);
+            setIsEdit(false);
           }}
         />
       </Stack>
