@@ -26,7 +26,6 @@ import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop), []);
@@ -75,7 +74,7 @@ export default function MenuPage() {
       setFavorites((prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites') || prev);
       setBestSellers((prev) => createCatagory(productsQuery?.data?.data || {}, 'bestseller') || prev);
     }
-  }, []);
+  }, [currentUser?.shop]);
 
   // product search
   const onSearch = (str) => {
