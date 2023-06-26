@@ -1,6 +1,5 @@
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
-import { parsePhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
@@ -57,6 +56,7 @@ function AdminControl() {
       }
     },
   });
+
   const deleteAdminQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_ADMIN, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -71,7 +71,6 @@ function AdminControl() {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const editAdminQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_ADMIN, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -85,7 +84,6 @@ function AdminControl() {
     },
   });
 
-  console.log('getAllAdminQuery', getAllAdminQuery?.data?.data?.Admins);
   return (
     <Box>
       <PageTop
@@ -150,17 +148,7 @@ function AdminControl() {
           isEdit={isEdit}
           addAdminQuery={isEdit ? editAdminQuery : addAdminQuery}
           adminType={adminType}
-          currentAdmin={
-            currentAdmin
-              ? {
-                  ...currentAdmin,
-                  number: parsePhoneNumber(currentAdmin?.phone_number)
-                    ? currentAdmin?.phone_number
-                    : `+880${currentAdmin?.phone_number}`,
-                  password: '',
-                }
-              : null
-          }
+          currentAdmin={currentAdmin}
         />
       </Drawer>
     </Box>

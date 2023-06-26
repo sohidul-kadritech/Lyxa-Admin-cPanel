@@ -10,6 +10,7 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { dateRangeInit } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
+import useGeoLocation from '../ServiceZone/useGeoLocation';
 import RequestedAreaSkeleton from './RequestedAreaSkeleton';
 import RequestedAreaTable from './RequestedAreaTable';
 
@@ -29,20 +30,31 @@ function PointerWrapper() {
 }
 function RequestedArea() {
   const [range, setRange] = useState({ ...dateRangeInit });
-  // eslint-disable-next-line no-unused-vars
+
+  // const defaultProps = {
+  //   center: {
+  //     lat: 0,
+  //     lng: 0,
+  //   },
+  //   zoom: 12,
+  // };
+  const { coordinates } = useGeoLocation();
+
   const [currentArea, setCurrentArea] = useState([
     {
       location: {
-        coordinates: [0, 0],
+        coordinates: [coordinates?.lon, coordinates?.lat],
       },
     },
   ]);
+
   const [open, setOpen] = useState(false);
   const theme = useTheme();
+
   const [zoemLevel, setZoomLevel] = useState(12);
 
-  // eslint-disable-next-line no-unused-vars
-  const [isSinglePoint, setIsSinglePoint] = useState(false);
+  const [, setIsSinglePoint] = useState(false);
+
   const getRequestedAreaQuery = useQuery([API_URL.REQUESTED_AREA, { startDate: range.start, endDate: range.end }], () =>
     AXIOS.get(API_URL.REQUESTED_AREA, {
       params: { startDate: range.start, endDate: range.end },
@@ -53,7 +65,6 @@ function RequestedArea() {
   return (
     <Box>
       <PageTop
-        // title="New Area Requested"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -76,14 +87,16 @@ function RequestedArea() {
             setOpen(() => {
               setZoomLevel(0);
               setCurrentArea(
-                getRequestedAreaQuery?.data?.data?.areas || [
-                  {
-                    location: {
-                      coordinates: [0, 0],
-                    },
-                  },
-                  // eslint-disable-next-line prettier/prettier
-                ],
+                getRequestedAreaQuery?.data?.data?.areas?.length > 0
+                  ? getRequestedAreaQuery?.data?.data?.areas
+                  : [
+                      {
+                        location: {
+                          coordinates: [coordinates?.lon, coordinates?.lat],
+                        },
+                      },
+                      // eslint-disable-next-line prettier/prettier
+                    ],
               );
               return true;
             })
@@ -143,7 +156,6 @@ function RequestedArea() {
                 width: '100%',
                 height: '100%',
                 borderRadius: '7px',
-                // backgroundColor: 'red',
                 overflow: 'hidden',
               }}
             >
@@ -151,10 +163,8 @@ function RequestedArea() {
                 bootstrapURLKeys={{
                   key: GOOGLE_API_KEY,
                   language: 'en',
-                  region: 'US',
                   libraries: ['places'],
                 }}
-                // style={{ borderRadius: '7px' }}
                 yesIWantToUseGoogleMapApiInternals
                 defaultCenter={{
                   lat: currentArea[0]?.location?.coordinates[1],
@@ -162,11 +172,26 @@ function RequestedArea() {
                 }}
                 defaultZoom={zoemLevel}
               >
-                {currentArea.map((area, i) => (
+                {currentArea?.map((area, i) => (
                   <PointerWrapper key={i} lat={area?.location?.coordinates[1]} lng={area?.location?.coordinates[0]} />
                 ))}
               </GoogleMapReact>
             </Box>
+            {/* <div style={{ height: '600px', width: '100%' }}>
+              <GoogleMapReact
+                bootstrapURLKeys={{
+                  key: GOOGLE_API_KEY,
+                  language: 'en',
+                  region: 'US',
+                  libraries: ['places'],
+                }}
+                yesIWantToUseGoogleMapApiInternals
+                defaultCenter={defaultProps.center}
+                defaultZoom={defaultProps.zoom}
+              >
+                <PointerWrapper lat={0} lng={0} />
+              </GoogleMapReact>
+            </div> */}
           </Box>
         </ModalContainer>
       </Modal>

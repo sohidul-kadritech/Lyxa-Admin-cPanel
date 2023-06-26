@@ -43,7 +43,9 @@ export const allColumns = (getValue) => [
             textOverflow: 'ellipsis',
           }}
         >
-          {getValue(row?.type, row?.oldValue)}
+          {row?.type === 'specificSellerDropCharge'
+            ? getValue(row?.type, { ...row, value: row?.oldValue, seller: undefined })
+            : getValue(row?.type, row?.oldValue)}
         </Typography>
       </Stack>
     ),
@@ -66,7 +68,9 @@ export const allColumns = (getValue) => [
             textOverflow: 'ellipsis',
           }}
         >
-          {getValue(row?.type, row?.newValue)}
+          {row?.type === 'specificSellerDropCharge'
+            ? getValue(row?.type, { ...row, value: row?.newValue })
+            : getValue(row?.type, row?.newValue)}
         </Typography>
       </Stack>
     ),

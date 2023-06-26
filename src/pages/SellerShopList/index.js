@@ -2,8 +2,9 @@
 import { Box, Drawer, Typography } from '@mui/material';
 
 // project import
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
@@ -18,16 +19,36 @@ import { filterShops, filtersInit } from './helper';
 export default function SellerShopList() {
   const { currentUser, dispatchCurrentUser } = useGlobalContext();
   const { seller, shop: currentShop } = currentUser;
+
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [queryEnabled, setQueryEnabled] = useState(true);
+
   const [filters, setFilters] = useState(filtersInit);
   const [shops, setShops] = useState([]);
+
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location?.search), [location?.search]);
 
   const setCurrentShop = (data) => {
     const currShopSellerId = typeof currentShop?.seller === 'string' ? currentShop?.seller : currentShop?.seller?._id;
 
-    if (data?.data?.shops?.length && (!currentShop?._id || currShopSellerId !== seller?._id)) {
-      dispatchCurrentUser({ type: 'shop', payload: { shop: data?.data?.shops[0] } });
+    // if no shop set or set shop is not of this seller or set not query shop
+    if (!currentShop?._id || currShopSellerId !== seller?._id || searchParams.get('shopId') !== currentShop?._id) {
+      let shop = {};
+
+      // default first shop in list
+      if (data?.data?.shops?.length) {
+        shop = data?.data?.shops[0] || shop;
+      }
+
+      // queried shop
+      if (searchParams.get('shopId')) {
+        const searchedShop = data?.data?.shops?.find((s) => s?._id === searchParams.get('shopId'));
+        shop = searchedShop || shop;
+      }
+
+      dispatchCurrentUser({ type: 'shop', payload: { shop } });
     }
   };
 
@@ -35,8 +56,11 @@ export default function SellerShopList() {
     [Api.ALL_SHOP, { sellerId: seller?._id }],
     () => AXIOS.get(Api.ALL_SHOP, { params: { sellerId: seller?._id } }),
     {
+      enabled: queryEnabled,
       onSuccess: (data) => {
         if (data?.status) {
+          setQueryEnabled(false);
+
           setShops(data?.data?.shops);
           setCurrentShop(data);
         }

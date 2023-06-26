@@ -52,7 +52,7 @@ function PercentageTable({ data = [], setSelectedRange, setIsConfirm, loading })
           className="text-capitalize"
           onClick={() => {
             // e.stopPropagation();
-            history?.push(`/seller/list2/${row?._id}`);
+            history?.push(`/seller/list/${row?._id}`);
           }}
         >
           {row?.company_name}

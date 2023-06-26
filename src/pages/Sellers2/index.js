@@ -1,6 +1,5 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { parsePhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
@@ -17,7 +16,7 @@ import AddSeller from './AddSeller';
 import SellerList from './SellerList';
 import SellerPageSkeleton from './SellerPageSkeleton';
 import SellersProfile from './SellersProfile';
-import { previewGenerator, tabsOptions } from './helpers';
+import { tabsOptions } from './helpers';
 
 function SellerList2() {
   // eslint-disable-next-line no-unused-vars
@@ -167,17 +166,18 @@ function SellerList2() {
         title="Seller List"
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
+        sx={
+          {
+            // position: 'sticky',
+            // top: '-2px',
+            // zIndex: '999',
+            // backgroundColor: '#fbfbfb',
+            // fontWeight: 700,
+          }
+        }
       />
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-
         <StyledFormField
           intputType="select"
           tooltip="Select Status"
@@ -222,11 +222,10 @@ function SellerList2() {
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
-
       {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
         <SellerPageSkeleton />
       ) : (
-        <Box marginTop="42px">
+        <Box marginTop="42px" pb={12}>
           <Box>
             <Typography
               variant="body2"
@@ -273,7 +272,6 @@ function SellerList2() {
           </Box>
         </Box>
       )}
-
       <Drawer open={open} anchor="right">
         <AddSeller
           onClose={() => {
@@ -286,19 +284,7 @@ function SellerList2() {
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
           sellerData={
             isEdit
-              ? {
-                  ...currentSeller,
-                  password: '',
-                  phone_number: parsePhoneNumber(currentSeller?.phone_number)
-                    ? currentSeller?.phone_number
-                    : `+880${currentSeller?.phone_number}`,
-                  sellerAddress: currentSeller?.addressSeller,
-                  sellerStatus: currentSeller?.status,
-                  profile_photo: previewGenerator(currentSeller?.profile_photo),
-                  certificate_of_incorporation: previewGenerator(currentSeller?.certificate_of_incorporation),
-                  national_id: previewGenerator(currentSeller?.national_id),
-                  sellerContractPaper: previewGenerator(currentSeller?.sellerContractPaper),
-                }
+              ? currentSeller
               : {
                   sellerStatus: '',
                   sellerType: '',

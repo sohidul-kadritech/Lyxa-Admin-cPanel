@@ -195,9 +195,19 @@ function UpdateOrderStatusForm({ setCurrentOrder, onClose, currentOrder }) {
               sx={{ width: '100%' }}
               renderInput={(params) => <TextField {...params} label="Select " />}
               renderOption={(props, option) => (
-                <Box component="li" {...props} key={option._id}>
-                  {option.name}
-                </Box>
+                <Stack
+                  direction="row"
+                  sx={{
+                    justifyContent: 'space-between !important',
+                  }}
+                  width="100%"
+                  component="li"
+                  {...props}
+                  key={option._id}
+                >
+                  <span> {option.name}</span>
+                  <span>{(option.shopDistance || 0).toFixed(3)} km</span>
+                </Stack>
               )}
             />
           )}

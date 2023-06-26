@@ -110,7 +110,7 @@ function RequestedAreaTable({ areas = [], setCurrentArea, setIsSinglePoint, setO
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">
-              No found
+              No request found
             </Stack>
           ),
         }}

@@ -1,6 +1,6 @@
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
-import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
+import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import NewOrders from '../pages/NewOrder';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import SellerDashboard from '../pages/SellerDashboard';
@@ -23,7 +23,7 @@ import Users from '../pages/Users2';
 
 export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: SellerDashboard },
-  { path: `${prefix}/orders/list`, component: NewOrders, componentProps: { showFor: 'seller' } },
+  { path: `${prefix}/orders/list`, component: NewOrders, componentProps: { showFor: 'shop' } },
   { path: `${prefix}/orders/details/:id`, component: OrderDetails },
   { path: `${prefix}/shops/list`, component: SellerShopList },
   { path: `${prefix}/users`, component: Users, componentProps: { userType: 'seller' } },
@@ -34,7 +34,8 @@ export const seller_routes = (prefix = '') => [
   },
   {
     path: `${prefix}/add-wallet/shop-transactions`,
-    component: SingleShopTransactions,
+    component: ShopFinancialsTransaction,
+    componentProps: { viewUserType: 'seller' },
   },
   {
     path: `${prefix}/shop/dashboard/:shopId`,

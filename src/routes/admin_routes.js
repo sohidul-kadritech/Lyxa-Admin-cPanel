@@ -5,18 +5,12 @@ import Dashboard from '../pages/Dashboard/index';
 
 // Gallery
 import AddBanner from '../pages/Banner/AddBanner';
-import BannerPage from '../pages/Banner/BannerPage';
 
 // User List
-import AdminList from '../pages/AdminControl/Admins/AdminList.js/AdminList';
 import CreateAdmin from '../pages/AdminControl/Admins/CreateAdmin/CreateAdmin';
 import Role from '../pages/AdminControl/Role/Role';
 import AdminShopList from '../pages/AdminShopList';
-import AdminLogHistory from '../pages/AppWallet/AdminLogHistory/AdminLogHistory';
-import DeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
 import PaymentHistory from '../pages/AppWallet/PaymentHistory/PaymentHistory';
-import PercentageSetting from '../pages/AppWallet/PercentageSetting/PercentageSetting';
-import SellerTransactions from '../pages/AppWallet/SellerTransactions/SellerTransactions';
 import ButlerCancelOrders from '../pages/Butler/ButlerCanceledOrders';
 import ButlerOrderDetails from '../pages/Butler/ButlerOrderDetails';
 import DatabaseSettings from '../pages/DatabaseSettings/DatabaseSettings';
@@ -24,12 +18,10 @@ import DealsAdd from '../pages/Deals/DealsAdd/DealsAdd';
 import DealsList from '../pages/Deals/DealsList/DealsList';
 import DeliverymanAdd from '../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
 import DeliverymanList from '../pages/Deliveryman/DeliverymanList/DeliverymanList';
-import DropPayList from '../pages/DropPay/DropPayList/DropPayList';
 import Faq from '../pages/Faq';
 import Faq2 from '../pages/Faq2';
 import Marketing from '../pages/Marketing';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
-import SellerList from '../pages/Seller/SellerList/SellerList';
 import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
@@ -41,14 +33,11 @@ import AppSettings from '../pages/AppSettings/AppSettings';
 import SingleDeliveryTransactions from '../pages/AppWallet/DeliveryTransactions/SingleDeliveryTransactions';
 import DropTransactions from '../pages/AppWallet/DropsTansactions/DropTransactions';
 import DropTransactionsDetails from '../pages/AppWallet/DropsTansactions/dropTransactionsDetails';
-import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
-import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
 import ButlerOrderList from '../pages/Butler';
 import CancelReason from '../pages/CancelReason/CancelReason';
 import CancelReason2 from '../pages/CancelReason2';
 import CategoryAdd from '../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
 import CategoryDetails from '../pages/Categories&Tags/Category/CategoryDetails/CategoryDetails';
-import CategoryList from '../pages/Categories&Tags/Category/CategoryList/CategoryList';
 import TagAdd from '../pages/Categories&Tags/Tags/TagAdd/TagAdd';
 import TagsList from '../pages/Categories&Tags/Tags/TagsList/TagsList';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
@@ -68,7 +57,6 @@ import AdminLog from '../pages/AppWallet/PercentageSetting/AdminLog';
 import ButlerFlaggedOrder from '../pages/Butler/ButlerFlaggedOrders';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
-import DefaultChat from '../pages/DefaultChat/DefaultChat';
 import DisplaySettings from '../pages/Display';
 import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
@@ -142,9 +130,8 @@ export const admin_routes = [
   { path: '/users/transactions/:id', component: UserTransaction },
 
   // sellers
-  { path: '/seller/list', component: SellerList },
-  { path: '/seller/list2', component: SellerList2 },
-  { path: '/seller/list2/:sellerId', component: SellerList2 },
+  { path: '/seller/list', component: SellerList2 },
+  { path: '/seller/list/:sellerId', component: SellerList2 },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },
   { path: '/seller/details/:id', component: SellerDetails },
@@ -186,37 +173,27 @@ export const admin_routes = [
   { path: '/deals/edit/:id', component: DealsAdd },
 
   // drop pay
-  { path: '/lyxa-pay', component: DropPayList },
-  { path: '/lyxa-pay2', component: AccountFinancials },
+
+  { path: '/lyxa-pay', component: AccountFinancials },
 
   // app wallet
-  { path: '/add-wallet/admin-log-history', component: AdminLogHistory },
-  { path: '/add-wallet/admin-log-history2', component: AdminLogs },
-  { path: '/add-wallet/seller-transactions', component: SellerTransactions },
-  { path: '/add-wallet/seller-transactions2', component: FinancialsForSeller },
+  { path: '/add-wallet/admin-log-history', component: AdminLogs },
+
+  { path: '/add-wallet/seller-transactions', component: FinancialsForSeller },
+
   {
     path: '/app-wallet/seller/shops-transactions',
-    component: ShopsTransactions,
-  },
-  {
-    path: '/app-wallet/seller/shops-transactions2',
     component: ShopsFinancialsSpecificSellers,
   },
+
   {
     path: '/add-wallet/shop-transactions',
-    component: SingleShopTransactions,
-  },
-  {
-    path: '/add-wallet/shop-transactions2',
     component: ShopFinancialsTransaction,
   },
+
   // for rider
   {
     path: '/add-wallet/delivery-transactions',
-    component: DeliveryTransactions,
-  },
-  {
-    path: '/add-wallet/delivery-transactions2',
     component: RidersTransactions,
   },
   {
@@ -244,14 +221,13 @@ export const admin_routes = [
   { path: '/tags/add', component: TagAdd },
 
   // admin control
-  { path: '/admin/list', component: AdminList },
-  { path: '/admin/list2', component: AdminControl },
+  // { path: '/admin/list', component: AdminList },
+  { path: '/admin/list', component: AdminControl },
   { path: '/admin/create', component: CreateAdmin },
   { path: '/admin/edit/:id', component: CreateAdmin },
   { path: '/admin/role', component: Role },
 
-  { path: '/percentage-setting', component: PercentageSetting },
-  { path: '/percentage-setting2', component: PercentageSettings2 },
+  { path: '/percentage-setting', component: PercentageSettings2 },
 
   //  settings
   { path: '/app/settings', component: AppSettings },
@@ -263,8 +239,7 @@ export const admin_routes = [
   { path: '/settings/refer-friend', component: ReferFriend },
   { path: '/admin/cancel-reason', component: CancelReason },
   { path: '/settings/cancel-reason', component: CancelReason2 },
-  { path: '/admin/default-chat-message', component: DefaultChat },
-  { path: '/admin/default-chat-message2', component: DefaultChat2 },
+  { path: '/admin/default-chat-message', component: DefaultChat2 },
   { path: '/admin/database/collections', component: DatabaseSettings },
 
   // settings
@@ -283,8 +258,7 @@ export const admin_routes = [
   { path: '/settings/products/details/:id', component: ProductDetails },
   { path: '/settings/products/unit-types', component: UnitTypes },
   { path: '/settings/ratings', component: RatingSettings2 },
-  { path: '/settings/categories/list', component: CategoryList },
-  { path: '/settings/categories/list2', component: CategoryList2 },
+  { path: '/settings/categories/list', component: CategoryList2 },
   { path: '/settings/categories/edit/:id', component: CategoryAdd },
   { path: '/settings/category/details/:id', component: CategoryDetails },
 
@@ -309,8 +283,8 @@ export const admin_routes = [
   { path: '/display/list-containers', component: ListContainers },
   { path: '/display/filter-containers', component: FilterContainers },
   { path: '/display/tags-cusines', component: TagsAndCusines },
-  { path: '/display/banner', component: BannerPage },
-  { path: '/display/banner2', component: AdBanner },
+  // { path: '/display/banner', component: BannerPage },
+  { path: '/display/banner', component: AdBanner },
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
   { path: '/admin/requested-area', component: RequestedArea },

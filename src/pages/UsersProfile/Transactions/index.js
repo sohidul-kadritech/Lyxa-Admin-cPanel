@@ -50,7 +50,7 @@ export default function UserTransactions({ user }) {
           hideFilters={{
             status: true,
           }}
-          buttonLabel="Add / Remove Label"
+          buttonLabel="Add / Remove Credit"
           onButtonClick={() => {
             setModalOpen(true);
           }}

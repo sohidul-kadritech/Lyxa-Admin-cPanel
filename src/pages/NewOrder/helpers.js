@@ -155,9 +155,8 @@ export const fiterOrders = (orders = [], filter) => {
 export const getOrderProfit = (order, adminType = 'shop') => {
   // eslint-disable-next-line max-len
   // const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
-  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
-
   if (adminType === 'shop') return order?.sellerEarnings;
+  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
   return totalPayment;
 };
 
