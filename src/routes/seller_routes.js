@@ -23,7 +23,7 @@ import Users from '../pages/Users2';
 
 export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: SellerDashboard },
-  { path: `${prefix}/orders/list`, component: NewOrders, componentProps: { showFor: 'seller' } },
+  { path: `${prefix}/orders/list`, component: NewOrders, componentProps: { showFor: 'shop' } },
   { path: `${prefix}/orders/details/:id`, component: OrderDetails },
   { path: `${prefix}/shops/list`, component: SellerShopList },
   { path: `${prefix}/users`, component: Users, componentProps: { userType: 'seller' } },
