@@ -91,6 +91,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         page: 1,
         pageSize: 500,
         shopType: seller?.sellerType,
+        status: 'active',
       },
     })
   );

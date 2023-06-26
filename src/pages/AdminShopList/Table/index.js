@@ -142,7 +142,7 @@ export default function ShopListTable({
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
               history?.push({
-                pathname: `/seller/list2/${value?._id}`,
+                pathname: `/seller/list/${value?._id}`,
                 state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
               });
             },

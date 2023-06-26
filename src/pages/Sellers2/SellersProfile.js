@@ -134,7 +134,7 @@ function SellersProfile({
       console.log(e.target.value);
       const matchData = currentSeller?.shops.filter((obj) =>
         // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase())
+        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
       );
       console.log('matchData', matchData);
       setSearchResult(() => [...matchData]);
@@ -191,10 +191,10 @@ function SellersProfile({
     if (menu === 'access_as_seller') {
       accessAsUser('admin', 'seller', currentSeller);
     }
-    // app-wallet/seller/shops-transactions2?sellerId=6475cb7cc347e067ba447ab2&companyName=Burger%20King
     if (menu === 'go_to_financials') {
       history.push(
-        `/app-wallet/seller/shops-transactions2?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`
+        // eslint-disable-next-line prettier/prettier
+        `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`,
       );
     }
     if (menu === 'add_shop') {
@@ -295,12 +295,6 @@ function SellersProfile({
         {(selectedMenu === 'edit_shop' || selectedMenu === 'add_shop') && (
           <AddShop
             refetch={refatch}
-            // editShop={{
-            //   ...selectedShop,
-            //   phone_number: parsePhoneNumber(selectedShop?.phone_number)
-            //     ? selectedShop?.phone_number
-            //     : `+880${selectedShop?.phone_number}`,
-            // }}
             editShop={selectedShop}
             seller={currentSeller}
             onClose={() => {

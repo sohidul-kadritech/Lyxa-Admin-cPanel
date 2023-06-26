@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 function SellerInfo({ sellerName, image, shopNumber }) {
@@ -23,16 +24,16 @@ function SellerInfo({ sellerName, image, shopNumber }) {
     </Box>
   );
 }
-// eslint-disable-next-line no-unused-vars
 function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true }) {
-  console.log(data);
+  const theme = useTheme();
   const params = useParams();
-  // eslint-disable-next-line no-unused-vars
+  const [hasScrolled, setHasScrolled] = useState(false);
+
   const history = useHistory();
-  console.log('params', params);
+
   const sellerRef = useRef(null);
   const sellerContainer = useRef(null);
-  const theme = useTheme();
+
   const styleForSellerList = {
     padding: '12px 20px 10px 20px',
     borderLeft: `4px solid transparent`,
@@ -50,56 +51,57 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
     cursor: 'pointer',
     backgroundColor: 'rgba(177, 177, 177, 0.2)',
   };
-  // eslint-disable-next-line no-unused-vars
+
   const handlePageLoad = () => {
     if (sellerRef.current) {
-      console.log('current element paisi', sellerRef.current);
+      // console.log('current element paisi', sellerRef.current);
       sellerRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
     } else {
-      console.log('current element painai', sellerRef.current);
+      // console.log('current element painai', sellerRef.current);
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const scrollToTop = () => {
     if (sellerRef.current) {
-      console.log('scrolltop:', sellerRef.current.scrollHeight);
-      sellerRef.current.scrollTop = 0;
-    }
-  };
+      setHasScrolled(true);
 
-  // eslint-disable-next-line no-unused-vars
-  const scrollToBottom = () => {
-    if (sellerRef.current) {
-      console.log('scrollbottom:', sellerRef.current.scrollHeight);
-      sellerRef.current.scrollTop = sellerRef.current.scrollHeight;
+      sellerContainer?.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+
+      sellerRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     }
   };
 
   useEffect(() => {
-    if (sellerRef.current) {
-      scrollToBottom();
-    } else {
-      scrollToTop();
+    if (sellerRef.current && !hasScrolled && !loading) {
+      setTimeout(() => {
+        scrollToTop();
+      }, 650);
     }
-  }, [currentSeller]);
+  });
 
   return (
     <Box
+      ref={sellerContainer}
       sx={{
         backgroundColor: theme.palette.primary.contrastText,
         padding: '13px 0px 21px',
         width: '278px',
         borderRadius: '7px',
         border: `1px solid ${theme.palette.custom.border}`,
-        maxHeight: '60vh',
-        overflow: 'auto',
+        maxHeight: '500px',
+        overflow: 'scroll',
       }}
     >
-      <Stack ref={sellerContainer}>
+      <Stack>
         {data.length > 0 ? (
           <>
             {data.map((seller, i) => (

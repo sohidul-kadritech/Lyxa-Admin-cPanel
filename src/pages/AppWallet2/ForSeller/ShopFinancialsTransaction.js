@@ -2,45 +2,48 @@ import { Box } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 
 import { useQuery } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PageTop from '../../../components/Common/PageTop';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 import ShopTransactions from '../../ShopProfile/Transactions';
 
-const getBreadCrumbItems = (searchUrl) => {
-  const breadcrumbItems = [
+const getBreadCrumbItems = (searchUrl, viewUserType) => {
+  let breadcrumbItems = [
     {
       label: 'Financials',
       to: '/financials',
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions2',
+      to: '/add-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
-      to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
+      to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'companyName',
+        'companyName'
       )}`,
     },
     {
       label: searchUrl.get('shopName'),
-      to: `/add-wallet/shop-transactions2?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
+      to: `/add-wallet/shop-transactions?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'shopName',
+        'shopName'
       )}&sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get('companyName')}`,
     },
   ];
 
+  if (viewUserType === 'seller') {
+    breadcrumbItems = breadcrumbItems.filter((item) => item.label !== 'Shops List' && item.label !== 'Sellers List');
+  }
+
   return breadcrumbItems;
 };
 
-function ShopFinancialsTransaction() {
-  // eslint-disable-next-line no-unused-vars
-  const history = useHistory();
+function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
+  console.log({ viewUserType });
   // eslint-disable-next-line no-unused-vars
   const { search } = useLocation();
   // eslint-disable-next-line no-unused-vars
@@ -48,8 +51,6 @@ function ShopFinancialsTransaction() {
 
   // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
-
-  // API -----> SHOP_TRX
 
   const getSellerShopsTnx = useQuery([API_URL.SHOP_TRX, { id: searchParams.get('shopId') }], () =>
     AXIOS.post(API_URL.SHOP_TRX, {
@@ -68,8 +69,9 @@ function ShopFinancialsTransaction() {
         //   adminBy: shopTrxBy?._id,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
+
   console.log(getSellerShopsTnx?.data?.data?.transections);
   return (
     <Box>
@@ -77,7 +79,7 @@ function ShopFinancialsTransaction() {
         isBreadCrumbsTitleShow
         breadCrumbsTitle={searchParams.get('shopName')}
         backButtonLabel="Back to Financials"
-        breadcrumbItems={getBreadCrumbItems(searchParams)}
+        breadcrumbItems={getBreadCrumbItems(searchParams, viewUserType)}
         backTo="/financials"
         sx={{
           position: 'sticky',

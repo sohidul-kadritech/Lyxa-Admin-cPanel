@@ -34,7 +34,6 @@ export default function ShopFinancials() {
       >
         <Overview viewUserType="shop" />
       </TabPanel>
-
       <TabPanel
         index={1}
         value={currentTab}

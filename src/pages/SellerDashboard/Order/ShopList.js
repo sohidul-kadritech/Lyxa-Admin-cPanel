@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import { useQuery } from 'react-query';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as StarIcon } from '../../../assets/icons/star.svg';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
@@ -11,6 +13,9 @@ import { getShopStatusColor } from '../../ShopProfile/Info';
 
 export default function ShopList() {
   const theme = useTheme();
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
+
   const { currentUser } = useGlobalContext();
   const { seller } = currentUser;
 
@@ -39,7 +44,7 @@ export default function ShopList() {
     },
     {
       id: 2,
-      headerName: <span style={{ display: 'inline-block', paddingLeft: '30px' }}>ITEM</span>,
+      headerName: <span style={{ display: 'inline-block', paddingLeft: '30px' }}>SHOP</span>,
       field: 'item',
       flex: 1.5,
       sortable: false,
@@ -59,6 +64,14 @@ export default function ShopList() {
             imgStyle="circular"
             imgFallbackCharacter={row?.shopName?.charAt(0)}
             name={row?.shopName}
+            subTitle={row?.autoGenId}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push(`${routeMatch?.url}shops/list?shopId=${row?._id}`);
+                console.log({ routeMatch });
+              },
+            }}
           />
         </Stack>
       ),

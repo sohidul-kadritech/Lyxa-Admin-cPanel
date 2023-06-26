@@ -27,11 +27,8 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
 
   const [flagModal, setFlagModal] = useState(false);
-
   const [openCancelModal, setOpenCancelModal] = useState(false);
-
   const [openRefundModal, setOpenRefundModal] = useState(false);
-
   const [currentOrder, setCurrentOrder] = useState({});
 
   const threeDotHandler = (menu, order) => {
@@ -69,16 +66,12 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
           name={row?.user?.name}
           subTitle={row?.orderId}
-          subTitleProps={
-            adminType === 'admin'
-              ? {
-                  sx: { color: 'primary.main', cursor: 'pointer' },
-                  onClick: () => {
-                    if (onViewDetail) onViewDetail(row);
-                  },
-                }
-              : undefined
-          }
+          subTitleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              if (onViewDetail) onViewDetail(row);
+            },
+          }}
           titleProps={
             adminType === 'admin'
               ? {
@@ -155,24 +148,30 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       minWidth: 240,
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <UserAvatar
-          imgAlt="rider-image"
-          imgUrl={row?.deliveryBoy?.image}
-          imgFallbackCharacter={row?.deliveryBoy?.name?.charAt(0)}
-          name={row?.deliveryBoy?.name}
-          titleProps={
-            adminType === 'admin'
-              ? {
-                  sx: { color: 'primary.main', cursor: 'pointer' },
-                  onClick: () => {
-                    history.push(`/riders/${row?.deliveryBoy?._id}`);
-                  },
-                }
-              : undefined
-          }
-        />
-      ),
+      renderCell: ({ row }) => {
+        if (!row?.deliveryBoy) {
+          return '_';
+        }
+
+        return (
+          <UserAvatar
+            imgAlt="rider-image"
+            imgUrl={row?.deliveryBoy?.image}
+            imgFallbackCharacter={row?.deliveryBoy?.name?.charAt(0)}
+            name={row?.deliveryBoy?.name}
+            titleProps={
+              adminType === 'admin'
+                ? {
+                    sx: { color: 'primary.main', cursor: 'pointer' },
+                    onClick: () => {
+                      history.push(`/riders/${row?.deliveryBoy?._id}`);
+                    },
+                  }
+                : undefined
+            }
+          />
+        );
+      },
     },
     {
       showFor: ['riderProfile'],

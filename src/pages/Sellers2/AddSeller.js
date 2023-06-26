@@ -6,7 +6,7 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import StyledInput from '../../components/Styled/StyledInput';
 import { useGlobalContext } from '../../context';
 import { statusTypeOptions } from '../Faq2/helpers';
-import { createSellerData, sellerTypeOption, validateSellersData } from './helpers';
+import { createSellerData, getEditSellerData, sellerTypeOption, validateSellersData } from './helpers';
 
 const addressInit = {
   address: '',
@@ -23,7 +23,7 @@ const addressInit = {
 
 function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, setLoading }) {
   console.log('sellerData: ', sellerData);
-  const [newSellerData, setNewSellerData] = useState(sellerData);
+  const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData));
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
@@ -90,10 +90,6 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
       sellerAddress: { ...newAddress, pin: newSellerData?.sellerAddress?.pin ? newSellerData?.sellerAddress?.pin : '' },
     }));
 
-    // newSellerData.sellerAddress = {
-    //   ...newAddress,
-    //   pin: newSellerData.sellerAddress.pin ? newSellerData.sellerAddress.pin : '',
-    // };
     setRender(!render);
   };
 

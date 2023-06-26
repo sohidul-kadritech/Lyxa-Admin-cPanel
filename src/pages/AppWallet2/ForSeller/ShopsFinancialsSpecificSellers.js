@@ -23,13 +23,13 @@ const getBreadCrumbItems = (searchUrl) => {
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions2',
+      to: '/add-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
-      to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
+      to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'companyName',
+        'companyName'
       )}`,
     },
   ];
@@ -37,27 +37,28 @@ const getBreadCrumbItems = (searchUrl) => {
   return breadcrumbItems;
 };
 
-function ShopsFinancialsSpecificSellers() {
-  const [range, setRange] = useState({ ...dateRangeInit });
+// used as whole page or just table
 
+function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId }) {
+  const [range, setRange] = useState({ ...dateRangeInit });
   const [searchKey, setSearchKey] = useState('');
   const { search } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
+  const sellerId = viewUserType === 'admin' ? searchParams.get('sellerId') : customSellerId;
+
   const getSellerShopsTnx = useQuery(
-    [
-      API_URL.SELLER_TRX,
-      { searchKey, startDate: range.start, endDate: range.end, sellerId: searchParams.get('sellerId') },
-    ],
+    [API_URL.SELLER_TRX, { searchKey, startDate: range.start, endDate: range.end, sellerId }],
     () =>
       AXIOS.get(API_URL.SELLER_TRX, {
-        params: { sellerId: searchParams.get('sellerId'), searchKey, startDate: range.start, endDate: range.end },
-        // eslint-disable-next-line prettier/prettier
-      }),
+        params: { sellerId, searchKey, startDate: range.start, endDate: range.end },
+      })
   );
 
-  console.log('sellers Shop: ', getSellerShopsTnx?.data?.data);
+  // console.log('sellerId', sellerId);
+  // console.log('query data', getSellerShopsTnx?.data);
+
   // GENERATE PDF
   const downloadPdf = () => {
     const unit = 'pt';
@@ -70,6 +71,7 @@ function ShopsFinancialsSpecificSellers() {
     const headers = [
       ['Seller', 'Total Orders', 'Order amount', 'Delivery fee', 'Lyxa earning', 'Unsettled amount', 'Seller earning'],
     ];
+
     const marginLeft = 40;
 
     const data = getSellerShopsTnx?.data?.data?.shops.map((trx) => [
@@ -82,8 +84,6 @@ function ShopsFinancialsSpecificSellers() {
       trx?.summary.totalShopEarning,
     ]);
 
-    console.log('downloadPdf before ==>', getSellerShopsTnx?.data?.data?.sellers);
-    console.log('downloadPdf after ==>', data);
     const content = {
       startY: 50,
       head: headers,
@@ -97,21 +97,22 @@ function ShopsFinancialsSpecificSellers() {
 
   return (
     <Box>
-      <PageTop
-        isBreadCrumbsTitleShow
-        breadCrumbsTitle={searchParams.get('companyName')}
-        backButtonLabel="Back to Financials"
-        breadcrumbItems={getBreadCrumbItems(searchParams)}
-        backTo="/financials"
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
-      />
-
+      {viewUserType === 'admin' && (
+        <PageTop
+          isBreadCrumbsTitleShow
+          breadCrumbsTitle={searchParams.get('companyName')}
+          backButtonLabel="Back to Financials"
+          breadcrumbItems={getBreadCrumbItems(searchParams)}
+          backTo="/financials"
+          sx={{
+            position: 'sticky',
+            top: '-2px',
+            zIndex: '999',
+            backgroundColor: '#fbfbfb',
+            fontWeight: 700,
+          }}
+        />
+      )}
       <Box>
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
@@ -129,7 +130,11 @@ function ShopsFinancialsSpecificSellers() {
         {getSellerShopsTnx.isLoading ? (
           <TablePageSkeleton row={3} column={7} />
         ) : (
-          <ShopsFinancialsTable loading={getSellerShopsTnx?.isLoading} data={getSellerShopsTnx?.data?.data?.shops} />
+          <ShopsFinancialsTable
+            loading={getSellerShopsTnx?.isLoading}
+            data={getSellerShopsTnx?.data?.data?.shops}
+            viewUserType={viewUserType}
+          />
         )}
       </Box>
     </Box>

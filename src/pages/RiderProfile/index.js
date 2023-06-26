@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { parsePhoneNumber } from 'react-phone-number-input';
 import { useQuery, useQueryClient } from 'react-query';
 import { useLocation, useParams, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
@@ -23,7 +22,7 @@ const getBreadCrumbItems = (searchUrl, id) => {
     },
     {
       label: 'Rider List',
-      to: '/add-wallet/delivery-transactions2',
+      to: '/add-wallet/delivery-transactions',
     },
     {
       label: 'Rider Profile',
@@ -48,9 +47,9 @@ export default function RiderProfile() {
   }, []);
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  console.log('=====> financial: ', searchParams.get('financials'));
   const [open, setOpen] = useState(false);
   const params = useParams();
+  console.log('=====> financial: ', searchParams.get('financials'), 'params', params?.riderId);
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(location?.state?.rider);
 
@@ -77,8 +76,8 @@ export default function RiderProfile() {
     <Box>
       <PageTop
         title={`${searchParams.get('financials') === 'riders' ? '' : 'Rider Profile'}`}
-        backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
-        backTo={location?.state ? location?.state?.from : undefined}
+        backButtonLabel={location?.state?.backToLabel ? location?.state?.backToLabel : 'Back To Riders List'}
+        backTo={location?.state?.from ? location?.state?.from : '/riders'}
         breadcrumbItems={
           searchParams.get('financials') === 'riders' ? getBreadCrumbItems(searchParams, params?.riderId) : undefined
         }
@@ -151,7 +150,7 @@ export default function RiderProfile() {
           riderFor={rider?.deliveryBoyType === 'shopRider' ? 'shop' : 'global'}
           riderShop={rider?.deliveryBoyType === 'shopRider' ? shop : undefined}
           hideDelete
-          editRider={{ ...rider, number: parsePhoneNumber(rider?.number) ? rider?.number : `+880${rider?.number}` }}
+          editRider={rider}
           onClose={() => setOpen(false)}
           onUpdateSuccess={(data) => {
             setRider(data?.data?.delivery);

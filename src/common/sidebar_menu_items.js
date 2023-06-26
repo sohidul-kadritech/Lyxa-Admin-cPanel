@@ -218,7 +218,7 @@ export const admin_menu_items = [
       },
       {
         label: 'Sellers',
-        to: '/seller/list2',
+        to: '/seller/list',
         icon: SellersIcon,
       },
       {
@@ -263,7 +263,7 @@ export const admin_menu_items = [
       // },
       {
         label: 'Team',
-        to: '/admin/list2',
+        to: '/admin/list',
         icon: TeamIcon,
       },
       {

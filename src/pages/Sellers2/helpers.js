@@ -1,4 +1,4 @@
-import { isValidPhoneNumber } from 'react-phone-number-input';
+import { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
@@ -205,3 +205,23 @@ export const tabsOptions = [
   { value: 'grocery', label: 'Grocery' },
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
+
+export const getEditSellerData = (data) => {
+  if (!data?._id) {
+    return {
+      ...data,
+    };
+  }
+
+  return {
+    ...data,
+    password: '',
+    phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,
+    sellerAddress: data?.addressSeller,
+    sellerStatus: data?.status,
+    profile_photo: previewGenerator(data?.profile_photo),
+    certificate_of_incorporation: previewGenerator(data?.certificate_of_incorporation),
+    national_id: previewGenerator(data?.national_id),
+    sellerContractPaper: previewGenerator(data?.sellerContractPaper),
+  };
+};

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
-import { parsePhoneNumber } from 'react-phone-number-input';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import { useGlobalContext } from '../../context';
@@ -189,7 +188,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
           }}
           editShop={{
             ...shop,
-            phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+880${shop?.phone_number}`,
           }}
           onClose={() => setOpen(false)}
         />
