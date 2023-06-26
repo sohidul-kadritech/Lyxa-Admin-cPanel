@@ -83,7 +83,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getSingleSellersQuery = useQuery(
@@ -103,7 +103,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -166,17 +166,18 @@ function SellerList2() {
         title="Seller List"
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
+        sx={
+          {
+            // position: 'sticky',
+            // top: '-2px',
+            // zIndex: '999',
+            // backgroundColor: '#fbfbfb',
+            // fontWeight: 700,
+          }
+        }
       />
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-
         <StyledFormField
           intputType="select"
           tooltip="Select Status"
@@ -221,11 +222,10 @@ function SellerList2() {
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
-
       {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
         <SellerPageSkeleton />
       ) : (
-        <Box marginTop="42px">
+        <Box marginTop="42px" pb={12}>
           <Box>
             <Typography
               variant="body2"
@@ -272,7 +272,6 @@ function SellerList2() {
           </Box>
         </Box>
       )}
-
       <Drawer open={open} anchor="right">
         <AddSeller
           onClose={() => {
