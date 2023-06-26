@@ -30,7 +30,7 @@ function ListItem({ label, value }) {
 
 function CardTitle({ title, tooltip }) {
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+    <Stack direction="row" alignItems="center" gap={2}>
       <Typography variant="body1" fontWeight={600}>
         {title}
       </Typography>
