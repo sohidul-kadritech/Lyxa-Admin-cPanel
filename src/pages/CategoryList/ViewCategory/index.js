@@ -1,49 +1,35 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import { Box, Stack, Typography } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import RestaurantsSkeleton from '../../Display/RestaurantsSkeleton';
 import CategoryItem from './CategoryItem';
 import ProductItem from './ProductItem';
-
-const searchItem = (subCategories, qString) => {
-  subCategories?.forEach((subCategory) => {
-    let name = (subCategory.subCategory?.name || '').toUpperCase();
-
-    if (name.search(qString.toUpperCase()) === -1) {
-      subCategory.hidden = true;
-
-      subCategory?.sortedProducts?.forEach((product) => {
-        name = (product?.name || '').toUpperCase();
-        if (name.search(qString.toUpperCase()) !== -1) {
-          subCategory.hidden = false;
-          product.hidden = false;
-        } else {
-          product.hidden = true;
-        }
-      });
-    } else {
-      subCategory.hidden = false;
-      subCategory?.sortedProducts?.forEach((product) => {
-        name = (product?.name || '').toUpperCase();
-
-        if (name.search(qString.toUpperCase()) !== -1) {
-          product.hidden = false;
-        } else {
-          product.hidden = true;
-        }
-      });
-    }
-  });
-};
+import { searchProducts, searchSubCategoriesAndProduct } from './helper';
 
 export default function ViewCategory({ onClose, category }) {
   const [searchKey, setSearchKey] = useState({ searchKey: '' });
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [render, setRender] = useState(false);
+
+  const setProductsAndCategory = (data) => {
+    if (category?.type === 'food') {
+      const items = data?.data?.productsGroupByCategory?.length
+        ? data?.data?.productsGroupByCategory[0]?.sortedProducts
+        : [];
+      setProducts(items);
+    } else {
+      const items = data?.data?.productsGroupByCategory?.length
+        ? data?.data?.productsGroupByCategory[0]?.subCategories
+        : [];
+      setCategories(items);
+    }
+  };
 
   const query = useQuery(
     [Api.CATEGORY_PRODUCTS, { categoryId: category?._id }],
@@ -55,22 +41,23 @@ export default function ViewCategory({ onClose, category }) {
       }),
     {
       onSuccess: (data) => {
-        if (category?.type === 'food') {
-          const items = data?.data?.productsGroupByCategory?.length
-            ? query?.data?.data?.productsGroupByCategory[0]?.sortedProducts
-            : [];
-          setProducts(items);
-        } else {
-          const items = data?.data?.productsGroupByCategory?.length
-            ? query?.data?.data?.productsGroupByCategory[0]?.subCategories
-            : [];
-          setCategories(items);
-        }
+        setProductsAndCategory(data);
       },
     }
   );
 
-  useMemo(() => searchItem(categories, searchKey?.searchKey), [searchKey?.searchKey]);
+  useEffect(() => {
+    setProductsAndCategory(query?.data);
+  }, []);
+
+  useMemo(
+    () => searchSubCategoriesAndProduct(categories, searchKey?.searchKey, setRender),
+    [searchKey?.searchKey, categories]
+  );
+
+  useMemo(() => searchProducts(products, searchKey?.searchKey, setRender), [searchKey?.searchKey, products]);
+
+  console.log({ products });
 
   return (
     <SidebarContainer title={category?.category?.name} onClose={onClose}>
@@ -89,21 +76,41 @@ export default function ViewCategory({ onClose, category }) {
             setQueryParams={setSearchKey}
           />
         </Box>
-        {category?.type !== 'food' && (
-          <Stack>
-            {categories?.map((subCategory) =>
-              subCategory?.hidden ? null : <CategoryItem category={subCategory} key={subCategory?.subCategory?._id} />
-            )}
-          </Stack>
+        {query.isLoading && <RestaurantsSkeleton />}
+        {!query.isLoading && !products.length && !categories.length && (
+          <Box paddingTop="150px">
+            <Typography variant="body2" color="text.secondary2" textAlign="center">
+              Category is empty
+            </Typography>
+          </Box>
         )}
-        {category?.type === 'food' && (
-          <Stack pt={3}>
-            {products?.map((product, i, { length: l }) =>
-              product?.hidden ? null : (
-                <ProductItem product={product} key={product._id} isLast={i === l - 1} isFirst={i === 0} isCategory />
-              )
+        {!query.isLoading && (
+          <Box>
+            {category?.type !== 'food' && (
+              <Stack>
+                {categories?.map((subCategory) =>
+                  subCategory?.hidden ? null : (
+                    <CategoryItem category={subCategory} key={subCategory?.subCategory?._id} />
+                  )
+                )}
+              </Stack>
             )}
-          </Stack>
+            {category?.type === 'food' && (
+              <Stack pt={3}>
+                {products?.map((product, i, { length: l }) =>
+                  product?.hidden ? null : (
+                    <ProductItem
+                      product={product}
+                      key={product._id}
+                      isLast={i === l - 1}
+                      isFirst={i === 0}
+                      isCategory
+                    />
+                  )
+                )}
+              </Stack>
+            )}
+          </Box>
         )}
       </Box>
     </SidebarContainer>

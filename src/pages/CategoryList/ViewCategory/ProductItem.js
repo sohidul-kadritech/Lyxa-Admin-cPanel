@@ -1,4 +1,4 @@
-import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
+import { Avatar, Stack, Typography, styled } from '@mui/material';
 
 const StyledContainer = styled(Stack)(() => ({
   paddingTop: '20px',
@@ -28,11 +28,16 @@ export default function ProductItem({ product, isFirst, isLast }) {
       <Avatar src={url} variant="rounded" sx={{ width: '66px', height: '52px' }}>
         {product?.name?.charAt(0)}
       </Avatar>
-      <Box>
+      <Stack gap={1}>
         <Typography variant="body2" fontWeight={600}>
           {product?.name}
         </Typography>
-      </Box>
+        {product?.seoDescription && (
+          <Typography variant="body2" color="text.secondary2" fontWeight={500}>
+            {product?.seoDescription}
+          </Typography>
+        )}
+      </Stack>
     </StyledContainer>
   );
 }

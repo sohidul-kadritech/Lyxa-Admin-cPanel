@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 
-export default function PageSkeleton() {
+export default function RestaurantsSkeleton() {
   return (
     <Box>
       {new Array(5).fill(0).map((element, index) => (
