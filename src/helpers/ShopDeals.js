@@ -19,14 +19,19 @@ export class ShopDeals {
         isEntireMenu: false,
         isActive: false,
       },
-      featured: {},
+      featured: false,
       hasActiveDeal: false,
     };
+
+    console.log(shop?.marketings);
 
     shop?.marketings?.forEach((obj) => {
       if (obj?.type === 'free_delivery') {
         deals.free_delivery = obj?.isActive;
-        deals.hasActiveDeal = obj?.isActive;
+        deals.hasActiveDeal = obj?.isActive || deals.hasActiveDeal;
+      } else if (obj?.type === 'featured') {
+        deals.featured = obj?.isActive;
+        deals.hasActiveDeal = obj?.isActive || obj?.isActive;
       } else {
         deals[obj?.type].isActive = obj?.isActive;
         deals[obj?.type].isEntireMenu = obj?.itemSelectionType === 'multiple';
@@ -87,85 +92,92 @@ export class ShopDeals {
     return `${str}${tmp ? `, ${tmp}` : ' on selected items'}`;
   }
 
-  // get_promotion_str() {
-  //   let str = '';
-
-  //   if (this.deals.reward.isActive) {
-  //     if (this.deals.reward.isEntireMenu) {
-  //       return 'Ongoing Reawrd Promotion';
-  //     }
-  //     str += 'Reward';
-  //   }
-
-  //   if (this.deals.double_menu.isActive) {
-  //     if (this.deals.double_menu.isEntireMenu) {
-  //       return 'Ongoing 2x Promotion';
-  //     }
-  //     str += str ? ', ' : '';
-  //     str += '2x Deals';
-  //   }
-
-  //   if (this.deals.percentage.isActive) {
-  //     let temp = '';
-
-  //     this.deals.percentage?.discountPercentages?.forEach((e, i, { length }) => {
-  //       temp += `${e}%${i === length - 1 ? '' : ', '}`;
-  //     });
-
-  //     if (this.deals.percentage.isEntireMenu) {
-  //       return `Ongoing ${temp} off Promotion`;
-  //     }
-
-  //     str += str ? ', ' : '';
-  //     str += `${temp} off`;
-  //   }
-
-  //   if (this.deals.free_delivery) {
-  //     if (!str) {
-  //       return `Ongoing Free Delivery Promotion`;
-  //     }
-  //     str += ', Free Delivery';
-  //   }
-
-  //   return `Ongoing ${str} Promotion`;
-  // }
-
   get_promotion_str() {
-    const freeDelivery = this.deals.free_delivery;
-    let other = false;
+    let str = '';
 
     if (this.deals.reward.isActive) {
-      if (this.deals.reward.isEntireMenu && !freeDelivery) {
+      if (this.deals.reward.isEntireMenu) {
         return 'Ongoing Reawrd Promotion';
       }
-      other = true;
+      str += 'Reward';
     }
 
     if (this.deals.double_menu.isActive) {
-      if (this.deals.double_menu.isEntireMenu && !freeDelivery) {
-        return 'Ongoing 2x Deals Promotion';
+      if (this.deals.double_menu.isEntireMenu) {
+        return 'Ongoing 2x Promotion';
       }
-      other = true;
+      str += str ? ', ' : '';
+      str += '2x Deals';
     }
 
     if (this.deals.percentage.isActive) {
-      if (this.deals.percentage.isEntireMenu && !freeDelivery) {
-        let temp = '';
+      let temp = '';
 
-        this.deals.percentage?.discountPercentages?.forEach((e, i, { length }) => {
-          temp += `${e}%${i === length - 1 ? '' : ', '}`;
-        });
+      this.deals.percentage?.discountPercentages?.forEach((e, i, { length }) => {
+        temp += `${e}%${i === length - 1 ? '' : ', '}`;
+      });
 
+      if (this.deals.percentage.isEntireMenu) {
         return `Ongoing ${temp} off Promotion`;
       }
 
-      other = true;
+      str += str ? ', ' : '';
+      str += `${temp} off`;
     }
 
-    if (freeDelivery && !other) {
-      return `Ongoing Free Delivery Promotion`;
+    if (this.deals.free_delivery) {
+      if (!str) {
+        return `Ongoing Free Delivery Promotion`;
+      }
+      str += ', Free Delivery';
     }
 
-    return other ? 'Ongoing Promotion' : '';
+    if (this.deals.featured) {
+      if (!str) {
+        return `Ongoing Featured Promotion`;
+      }
+      str += ', Featured';
+    }
+
+    return `Ongoing ${str} Promotion`;
   }
+
+  // get_promotion_str() {
+  //   const freeDelivery = this.deals.free_delivery;
+  //   let other = false;
+
+  //   if (this.deals.reward.isActive) {
+  //     if (this.deals.reward.isEntireMenu && !freeDelivery) {
+  //       return 'Ongoing Reawrd Promotion';
+  //     }
+  //     other = true;
+  //   }
+
+  //   if (this.deals.double_menu.isActive) {
+  //     if (this.deals.double_menu.isEntireMenu && !freeDelivery) {
+  //       return 'Ongoing 2x Deals Promotion';
+  //     }
+  //     other = true;
+  //   }
+
+  //   if (this.deals.percentage.isActive) {
+  //     if (this.deals.percentage.isEntireMenu && !freeDelivery) {
+  //       let temp = '';
+
+  //       this.deals.percentage?.discountPercentages?.forEach((e, i, { length }) => {
+  //         temp += `${e}%${i === length - 1 ? '' : ', '}`;
+  //       });
+
+  //       return `Ongoing ${temp} off Promotion`;
+  //     }
+
+  //     other = true;
+  //   }
+
+  //   if (freeDelivery && !other) {
+  //     return `Ongoing Free Delivery Promotion`;
+  //   }
+
+  //   return other ? 'Ongoing Promotion' : '';
+  // }
 }
