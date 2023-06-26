@@ -231,6 +231,7 @@ function ShopSettings() {
         page: 1,
         pageSize: 500,
         shopType: shop?.shopType,
+        status: 'active',
       },
     })
   );
