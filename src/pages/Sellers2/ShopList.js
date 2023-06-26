@@ -84,7 +84,7 @@ function ShopList({
                   history.push({
                     pathname: `/shop/profile/${params?.row?._id}`,
                     state: {
-                      from: paramsQuery.sellerId ? `/seller/list2/${paramsQuery.sellerId}` : routeMatch?.path,
+                      from: paramsQuery.sellerId ? `/seller/list/${paramsQuery.sellerId}` : routeMatch?.path,
                       backToLabel: 'Back to Seller List',
                     },
                   });

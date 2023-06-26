@@ -69,7 +69,7 @@ export default function RiderDetails({ rider }) {
           startIcon={<LogoutIcon />}
           disabled={update.isLoading}
           onClick={() => {
-            update.mutate({ id: rider._id, isLogin: false });
+            update.mutate({ id: rider?._id, isLogin: false });
           }}
         >
           Force Log out

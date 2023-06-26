@@ -89,7 +89,13 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           ))}
         </Stack>
       );
-    } else if (type === 'globalDropCharge' || type === 'specificSellerDropCharge' || type === 'sellerDropChargeReset') {
+    } else if (type === 'specificSellerDropCharge') {
+      newValue = (
+        <Typography variant="body4">{`${value?.value?.dropPercentage ?? 0}${'%'} ${
+          value?.seller?.company_name ? `(${value?.seller?.company_name})` : ''
+        }`}</Typography>
+      );
+    } else if (type === 'globalDropCharge' || type === 'sellerDropChargeReset') {
       newValue = (
         <Typography variant="body4">{`${value?.dropPercentage ?? 0}${
           '%'

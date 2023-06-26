@@ -23,11 +23,11 @@ const getBreadCrumbItems = (searchUrl) => {
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions2',
+      to: '/add-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
-      to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
+      to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'companyName',
       )}`,

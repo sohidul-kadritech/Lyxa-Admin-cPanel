@@ -18,13 +18,9 @@ const getpagesList = () => [
     label: 'Products',
     to: '/settings/products',
   },
-  // {
-  //   label: 'Categories List',
-  //   to: '/settings/categories/list',
-  // },
   {
     label: 'Categories List',
-    to: '/settings/categories/list2',
+    to: '/settings/categories/list',
   },
 
   {
@@ -50,11 +46,11 @@ const getpagesList = () => [
   // },
   {
     label: 'Default Chat Message',
-    to: '/admin/default-chat-message2',
+    to: '/admin/default-chat-message',
   },
   {
     label: 'Percentages',
-    to: '/percentage-setting2',
+    to: '/percentage-setting',
   },
   {
     label: 'App Settings',
@@ -66,7 +62,7 @@ const getpagesList = () => [
   // },
   {
     label: 'Admin Log',
-    to: '/add-wallet/admin-log-history2',
+    to: '/add-wallet/admin-log-history',
   },
   {
     label: 'Database Collection',

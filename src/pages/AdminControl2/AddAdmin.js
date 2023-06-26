@@ -1,6 +1,7 @@
 import { EmailOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { parsePhoneNumber } from 'react-phone-number-input';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { statusTypeOptions } from '../Faq2/helpers';
@@ -26,15 +27,23 @@ const getAdminType = (type) => {
   if (type === 'accountManager') return 'account manager';
   return '';
 };
-// eslint-disable-next-line prettier/prettier
+
+export const generateEditAdminData = (data) => {
+  if (!data?._id) {
+    return null;
+  }
+  return {
+    ...data,
+    number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,
+    password: '',
+  };
+};
+
 function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = null, isEdit }) {
-  const [newAdminData, setNewAdminData] = useState(currentAdmin || intialData);
+  const [newAdminData, setNewAdminData] = useState(generateEditAdminData(currentAdmin) || intialData);
   const theme = useTheme();
   const changeHandler = (e) => {
-    setNewAdminData((prev) => {
-      console.log('admin data: ', { ...prev, [e.target.name]: e.target.value });
-      return { ...prev, [e.target.name]: e.target.value };
-    });
+    setNewAdminData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const onSubmitAdminController = () => {
@@ -44,14 +53,6 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
     if (isVarified) {
       addAdminQuery.mutate(generateData({ ...newAdminData, adminType }, isEdit));
     }
-
-    // if (isVarified && isEdit) {
-    //   addAdminQuery.mutate({
-    //     ...newAdminData,
-    //     id: newAdminData?._id,
-    //     adminType,
-    //   });
-    // }
   };
 
   return (

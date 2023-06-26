@@ -18,7 +18,7 @@ function RiderFinancialsTable({ data = [], loading }) {
   // eslint-disable-next-line no-unused-vars
   const sellerShopsTrxs = (sellerId, companyName) => {
     history.push({
-      pathname: `/app-wallet/seller/shops-transactions2`,
+      pathname: `/app-wallet/seller/shops-transactions`,
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };

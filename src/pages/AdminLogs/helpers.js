@@ -55,7 +55,7 @@ export const getTypeName = (type) => {
     globalDeliveryCutForButler: 'Global Delivery Cut for Butler',
     specificSellerDropCharge: 'Specific Seller Lyxa Charge',
     // specificSellerDeliveryCut: 'Specific Seller Delivery Cut',
-    // sellerDropChargeReset: 'Seller Lyxa Charge Reset',
+    sellerDropChargeReset: 'Seller Lyxa Charge Reset',
   };
   return getData[type];
 };

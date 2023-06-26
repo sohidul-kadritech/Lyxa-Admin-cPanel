@@ -10,7 +10,7 @@ const pagesList = [
   // },
   {
     label: 'For Sellers',
-    to: '/add-wallet/seller-transactions2',
+    to: '/add-wallet/seller-transactions',
   },
   // {
   //   label: 'For Account (Lyxa Pay)',
@@ -18,15 +18,12 @@ const pagesList = [
   // },
   {
     label: 'For Account (Lyxa Pay)',
-    to: '/lyxa-pay2',
+    to: '/lyxa-pay',
   },
-  // {
-  //   label: 'For Riders',
-  //   to: '/add-wallet/delivery-transactions',
-  // },
+
   {
     label: 'For Riders',
-    to: '/add-wallet/delivery-transactions2',
+    to: '/add-wallet/delivery-transactions',
   },
   {
     label: 'For VAT',

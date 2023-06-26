@@ -1,6 +1,5 @@
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
-import { parsePhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
@@ -17,7 +16,7 @@ import AddSeller from './AddSeller';
 import SellerList from './SellerList';
 import SellerPageSkeleton from './SellerPageSkeleton';
 import SellersProfile from './SellersProfile';
-import { previewGenerator, tabsOptions } from './helpers';
+import { tabsOptions } from './helpers';
 
 function SellerList2() {
   // eslint-disable-next-line no-unused-vars
@@ -84,7 +83,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getSingleSellersQuery = useQuery(
@@ -104,7 +103,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -286,19 +285,7 @@ function SellerList2() {
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
           sellerData={
             isEdit
-              ? {
-                  ...currentSeller,
-                  password: '',
-                  phone_number: parsePhoneNumber(currentSeller?.phone_number)
-                    ? currentSeller?.phone_number
-                    : `+880${currentSeller?.phone_number}`,
-                  sellerAddress: currentSeller?.addressSeller,
-                  sellerStatus: currentSeller?.status,
-                  profile_photo: previewGenerator(currentSeller?.profile_photo),
-                  certificate_of_incorporation: previewGenerator(currentSeller?.certificate_of_incorporation),
-                  national_id: previewGenerator(currentSeller?.national_id),
-                  sellerContractPaper: previewGenerator(currentSeller?.sellerContractPaper),
-                }
+              ? currentSeller
               : {
                   sellerStatus: '',
                   sellerType: '',
