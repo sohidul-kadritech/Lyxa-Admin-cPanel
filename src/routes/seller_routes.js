@@ -1,6 +1,6 @@
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
-import SingleShopTransactions from '../pages/AppWallet/SellerTransactions/SingleShopTansactions';
+import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import NewOrders from '../pages/NewOrder';
 import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import SellerDashboard from '../pages/SellerDashboard';
@@ -34,7 +34,8 @@ export const seller_routes = (prefix = '') => [
   },
   {
     path: `${prefix}/add-wallet/shop-transactions`,
-    component: SingleShopTransactions,
+    component: ShopFinancialsTransaction,
+    componentProps: { viewUserType: 'seller' },
   },
   {
     path: `${prefix}/shop/dashboard/:shopId`,

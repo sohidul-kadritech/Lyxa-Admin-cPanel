@@ -5,7 +5,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import Overview from '../../components/Shared/FinancialsOverview';
 import Invoices from '../../components/Shared/Invoices';
 import { useGlobalContext } from '../../context';
-import ShopsTransactions from '../AppWallet/SellerTransactions/ShopsTransactions';
+import ShopsFinancialsSpecificSellers from '../AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
 
 export default function SellerFinancials() {
   const { currentUser } = useGlobalContext();
@@ -51,7 +51,7 @@ export default function SellerFinancials() {
           paddingTop: 7.5,
         }}
       >
-        <ShopsTransactions />
+        <ShopsFinancialsSpecificSellers viewUserType="seller" customSellerId={currentUser?.seller?._id} />
       </TabPanel>
     </Box>
   );

@@ -30,8 +30,6 @@ export default function SellerShopList() {
   const location = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(location?.search), [location?.search]);
 
-  console.log({ searchParams });
-
   const setCurrentShop = (data) => {
     const currShopSellerId = typeof currentShop?.seller === 'string' ? currentShop?.seller : currentShop?.seller?._id;
 

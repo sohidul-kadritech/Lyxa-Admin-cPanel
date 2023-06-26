@@ -6,26 +6,26 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
-function ShopsFinancialsTable({ data = [], loading }) {
-  // eslint-disable-next-line no-unused-vars
-  const { currentUser, dispatchCurrentUser, dispatchShopTabs, general } = useGlobalContext();
+function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
+  const { dispatchCurrentUser, general } = useGlobalContext();
+
   const routeMatch = useRouteMatch();
   const { search } = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  console.log('routeMatch', routeMatch);
   const theme = useTheme();
   const currency = general?.currency?.symbol;
   const history = useHistory();
+
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
       pathname: `/add-wallet/shop-transactions`,
       search: `?shopId=${shopId}&shopName=${shopName}&sellerId=${searchParams.get(
-        // eslint-disable-next-line prettier/prettier
-        'sellerId',
+        'sellerId'
       )}&companyName=${searchParams.get('companyName')}`,
     });
   };
+
   const allColumns = [
     {
       id: 1,
@@ -38,7 +38,7 @@ function ShopsFinancialsTable({ data = [], loading }) {
             <Typography
               variant="body1"
               style={{
-                color: theme.palette.primary.main,
+                color: viewUserType === 'admin' ? theme.palette.primary.main : undefined,
                 textTransform: 'capitalize',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -46,17 +46,19 @@ function ShopsFinancialsTable({ data = [], loading }) {
                 cursor: 'pointer',
               }}
               onClick={(e) => {
+                if (viewUserType !== 'admin') return;
                 e.stopPropagation();
+
                 history.push({
                   pathname: `/shop/profile/${params?.row?._id}`,
                   state: {
                     from: `${routeMatch?.path}?sellerId=${searchParams.get('sellerId')}&companyName=${searchParams.get(
-                      // eslint-disable-next-line prettier/prettier
-                      'companyName',
+                      'companyName'
                     )}`,
                     backToLabel: 'Back to Seller Transaction',
                   },
                 });
+
                 dispatchCurrentUser({ type: 'shop', payload: { shop: { ...params?.row } } });
               }}
             >
