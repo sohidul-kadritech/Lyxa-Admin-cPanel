@@ -63,29 +63,19 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const scrollToTop = () => {
     if (sellerRef.current) {
-      console.log('scrolltop:', sellerRef.current.scrollHeight);
-      sellerRef.current.scrollTop = 0;
-    }
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const scrollToBottom = () => {
-    if (sellerRef.current) {
-      console.log('scrollbottom:', sellerRef.current.scrollHeight);
-      sellerRef.current.scrollTop = sellerRef.current.scrollHeight;
+      sellerRef.current.scrollIntoView({
+        behavior: 'smooth',
+      });
     }
   };
 
   useEffect(() => {
     if (sellerRef.current) {
-      scrollToBottom();
-    } else {
       scrollToTop();
     }
-  }, [currentSeller]);
+  }, [loading]);
 
   return (
     <Box

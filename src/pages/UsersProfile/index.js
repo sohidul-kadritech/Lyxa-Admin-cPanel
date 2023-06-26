@@ -19,7 +19,7 @@ const getBreadCrumbItems = (searchUrl, id) => {
     },
     {
       label: 'User List',
-      to: '/lyxa-pay2',
+      to: '/lyxa-pay',
     },
     {
       label: 'User Profile',

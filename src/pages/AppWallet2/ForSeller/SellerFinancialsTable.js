@@ -17,7 +17,7 @@ function SellerFinancialsTable({ data = [], loading }) {
 
   const sellerShopsTrxs = (sellerId, companyName) => {
     history.push({
-      pathname: `/app-wallet/seller/shops-transactions2`,
+      pathname: `/app-wallet/seller/shops-transactions`,
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
@@ -43,7 +43,7 @@ function SellerFinancialsTable({ data = [], loading }) {
               onClick={(e) => {
                 e.stopPropagation();
                 history?.push({
-                  pathname: `/seller/list2/${params?.row?._id}`,
+                  pathname: `/seller/list/${params?.row?._id}`,
                   state: { from: routeMatch?.path, backToLabel: 'Back to Seller Transactions' },
                 });
               }}

@@ -19,7 +19,7 @@ function ShopsFinancialsTable({ data = [], loading }) {
   const history = useHistory();
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
-      pathname: `/add-wallet/shop-transactions2`,
+      pathname: `/add-wallet/shop-transactions`,
       search: `?shopId=${shopId}&shopName=${shopName}&sellerId=${searchParams.get(
         // eslint-disable-next-line prettier/prettier
         'sellerId',

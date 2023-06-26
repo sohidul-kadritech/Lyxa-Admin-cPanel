@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { parsePhoneNumber } from 'react-phone-number-input';
 import { getImageUrl } from '../../../helpers/images';
 
 export const riderShiftOptions = [
@@ -186,6 +187,7 @@ export const createRiderData = async (rider) => {
 
 export const convertEditRiderData = (rider, riderFor, riderShop) => ({
   ...rider,
+  number: parsePhoneNumber(rider?.number) ? rider?.number : `+880${rider?.number}`,
   image: [{ preview: rider?.image }],
   contractImage: [{ preview: rider?.contractImage }],
   nationalIdDocument: [{ preview: rider?.nationalIdDocument }],

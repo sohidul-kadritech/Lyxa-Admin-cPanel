@@ -17,18 +17,18 @@ const getBreadCrumbItems = (searchUrl) => {
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions2',
+      to: '/add-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
-      to: `/app-wallet/seller/shops-transactions2?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
+      to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'companyName',
       )}`,
     },
     {
       label: searchUrl.get('shopName'),
-      to: `/add-wallet/shop-transactions2?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
+      to: `/add-wallet/shop-transactions?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
         'shopName',
       )}&sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get('companyName')}`,
