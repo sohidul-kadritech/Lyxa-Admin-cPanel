@@ -35,6 +35,7 @@ const menuItems = [
   { label: 'Go to marketing', value: 'marketing' },
   { label: 'Edit Shop', value: 'edit' },
 ];
+
 export default function ShopList() {
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -56,8 +57,7 @@ export default function ShopList() {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleMenuClick = (menu, shop) => {
@@ -86,36 +86,38 @@ export default function ShopList() {
   return (
     <Box>
       <PageTop title="Shop List" />
-      <Tabs
-        value={currentTab}
-        sx={{
-          '& .MuiTab-root': {
-            padding: '8px 12px',
-            textTransform: 'none',
-          },
-        }}
-        onChange={(event, newValue) => {
-          setCurrentTab(newValue);
-          setQueryParams(() => queryParamsInit(tabValueToTypeMap[newValue]));
-        }}
-      >
-        <Tab label="Restaurant" />
-        <Tab label="Grocery" />
-        <Tab label="Pharmacy" />
-      </Tabs>
-      <Box pt="30px" pb="30px">
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search shops" />
+      <Box pb={12}>
+        <Tabs
+          value={currentTab}
+          sx={{
+            '& .MuiTab-root': {
+              padding: '8px 12px',
+              textTransform: 'none',
+            },
+          }}
+          onChange={(event, newValue) => {
+            setCurrentTab(newValue);
+            setQueryParams(() => queryParamsInit(tabValueToTypeMap[newValue]));
+          }}
+        >
+          <Tab label="Restaurant" />
+          <Tab label="Grocery" />
+          <Tab label="Pharmacy" />
+        </Tabs>
+        <Box pt="30px" pb="30px">
+          <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search shops" />
+        </Box>
+        <ShopListTable
+          shops={shopsQuery?.data?.data?.shops}
+          loading={shopsQuery?.isLoading}
+          queryParams={queryParams}
+          totalPage={totalPage}
+          setQueryParams={setQueryParams}
+          menuItems={menuItems}
+          handleMenuClick={handleMenuClick}
+          refetch={shopsQuery?.refetch}
+        />
       </Box>
-      <ShopListTable
-        shops={shopsQuery?.data?.data?.shops}
-        loading={shopsQuery?.isLoading}
-        queryParams={queryParams}
-        totalPage={totalPage}
-        setQueryParams={setQueryParams}
-        menuItems={menuItems}
-        handleMenuClick={handleMenuClick}
-        refetch={shopsQuery?.refetch}
-      />
       <Drawer
         anchor="right"
         open={open}
