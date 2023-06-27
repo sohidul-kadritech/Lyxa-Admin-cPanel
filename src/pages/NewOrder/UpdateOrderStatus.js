@@ -1,10 +1,11 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Button, ListItemText, MenuItem, Paper, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from '@mui/material';
 
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import CloseButton from '../../components/Common/CloseButton';
+import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import { StyledSelect } from '../../components/Filter/FilterSelect';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
@@ -46,7 +47,7 @@ const validate = (newOrderStatus, currentOrderDelivery, currentOrder) => {
   }
 
   if (newOrderStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
-    successMsg('Please select butler');
+    successMsg('Please select rider');
     return false;
   }
 
@@ -55,7 +56,7 @@ const validate = (newOrderStatus, currentOrderDelivery, currentOrder) => {
     !currentOrderDelivery?._id &&
     !currentOrder?.shop?.haveOwnDeliveryBoy
   ) {
-    successMsg(`Assign delivery boy first`);
+    successMsg(`Assign rider first`);
     return false;
   }
 
@@ -128,7 +129,6 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
         successMsg(data?.message, data?.status ? 'success' : undefined);
 
         if (data.status) {
-          successMsg(data?.message, 'success');
           queryClient.invalidateQueries(refetchApiKey);
 
           // emit socket
@@ -165,147 +165,145 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
   };
 
   return (
-    <Paper
+    <Box
       sx={{
-        minWidth: 'max(35vw, 600px)',
+        padding: '15px 20px 20px',
+        minWidth: 'max(38vw, 600px)',
+        background: '#fff',
+        position: 'relative',
       }}
     >
-      <Box
-        sx={{
-          padding: '15px 20px 20px',
-        }}
-      >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-          <Typography fontSize="18px" variant="h4">
-            Update Status
+      {updateStatusMutation?.isLoading && <LoadingOverlay spinner />}
+      <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
+        <Typography fontSize="18px" variant="h4">
+          Update Status
+        </Typography>
+        <CloseButton onClick={onClose} size="sm" />
+      </Stack>
+      <Stack>
+        <Box flex={1} pb={3}>
+          <Typography
+            pb={2}
+            variant="h5"
+            sx={{
+              fontWeight: '600',
+              fontSize: '15px',
+              lineHeight: '18px',
+            }}
+          >
+            Select Status *
           </Typography>
-          <CloseButton onClick={onClose} size="sm" />
-        </Stack>
-        <Stack>
-          <Box flex={1} pb={3}>
-            <Typography
-              pb={2}
-              variant="h5"
-              sx={{
-                fontWeight: '600',
-                fontSize: '15px',
-                lineHeight: '18px',
-              }}
-            >
-              Select Status *
-            </Typography>
-            <StyledSelect
-              sx={{
-                '& .MuiListItemText-root': {
-                  margin: 0,
+          <StyledSelect
+            sx={{
+              '& .MuiListItemText-root': {
+                margin: 0,
+              },
+            }}
+            fullWidth
+            IconComponent={KeyboardArrowDownIcon}
+            value={newOrderStatus}
+            onChange={(e) => {
+              setNewOrderStatus(e.target.value);
+            }}
+            MenuProps={{
+              sx: {
+                marginTop: '4px',
+                '& .MuiPaper-root': {
+                  background: '#F6F8FA',
+                  boxShadow: 'initial!important',
+                  borderRadius: '7px',
+                  border: '1px solid #EEEEEE',
                 },
-              }}
-              fullWidth
-              IconComponent={KeyboardArrowDownIcon}
-              value={newOrderStatus}
-              onChange={(e) => {
-                setNewOrderStatus(e.target.value);
-              }}
-              MenuProps={{
-                sx: {
-                  marginTop: '4px',
-                  '& .MuiPaper-root': {
-                    background: '#F6F8FA',
-                    boxShadow: 'initial!important',
-                    borderRadius: '7px',
-                    border: '1px solid #EEEEEE',
-                  },
 
-                  '& .MuiMenuItem-root.active-status': {
-                    background: '#ddffdf',
-                  },
+                '& .MuiMenuItem-root.active-status': {
+                  background: 'rgba(94, 151, 169, 0.3)',
                 },
-              }}
-            >
-              {updateOrderStatusOptions(currentOrder).map((item, index) => (
-                <MenuItem
-                  disabled={item?.isDisabled}
-                  console={console.log('active', item?.isCurrentStatus)}
-                  className={item?.isCurrentStatus ? 'active-status' : ''}
-                  key={index}
-                  value={item?.value}
-                  sx={{
-                    '&:hover': {
-                      background: '#ecf0f5',
-                    },
-                    '&.Mui-selected': {
-                      background: '#ecf0f5!important',
-                    },
-                    [theme.breakpoints.up('lg')]: {
-                      fontSize: '12px',
-                    },
-                    [theme.breakpoints.up('xl')]: {
-                      fontSize: '14px',
-                    },
-                  }}
-                >
-                  <ListItemText disableTypography>
-                    {index + 1}. {item?.label}
-                  </ListItemText>
-                </MenuItem>
-              ))}
-            </StyledSelect>
-          </Box>
-          {newOrderStatus === 'accepted_delivery_boy' && (
-            <Box flex={1}>
-              <StyledFormField
-                label="Select Rider *"
-                intputType="autocomplete"
-                inputProps={{
-                  fullWidth: true,
-                  getOptionLabel: (option) => option?.name || 'Choose',
-                  sx: {
-                    '&:has(.MuiInputBase-input:focus)': {
-                      width: '100% !important',
-                    },
-                    flex: 1,
+              },
+            }}
+          >
+            {updateOrderStatusOptions(currentOrder).map((item, index) => (
+              <MenuItem
+                disabled={item?.isDisabled}
+                console={console.log('active', item?.isCurrentStatus)}
+                className={item?.isCurrentStatus ? 'active-status' : ''}
+                key={index}
+                value={item?.value}
+                sx={{
+                  '&:hover': {
+                    background: '#ecf0f5',
                   },
-                  maxHeight: '300px',
-                  options: nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || [],
-                  value: currentOrderDelivery,
-                  isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                  onChange: (e, v) => {
-                    setCurrentOrderDelivery(v);
+                  '&.Mui-selected': {
+                    background: '#ecf0f5!important',
                   },
-                  renderOption: (props, option) => (
-                    <Stack
-                      direction="row"
-                      sx={{
-                        justifyContent: 'space-between !important',
-                      }}
-                      width="100%"
-                      component="li"
-                      {...props}
-                      key={option._id}
-                    >
-                      <span> {option.name}</span>
-                      <span>{(option.shopDistance || 0).toFixed(3)} km</span>
-                    </Stack>
-                  ),
+                  [theme.breakpoints.up('lg')]: {
+                    fontSize: '12px',
+                  },
+                  [theme.breakpoints.up('xl')]: {
+                    fontSize: '14px',
+                  },
                 }}
-              />
-            </Box>
-          )}
-          <Box pt={5} textAlign="right">
-            <Button
-              color="primary"
-              variant="contained"
-              sx={{ width: '200px' }}
-              onClick={() => {
-                updateStatus();
+              >
+                <ListItemText disableTypography>
+                  {index + 1}. {item?.label}
+                </ListItemText>
+              </MenuItem>
+            ))}
+          </StyledSelect>
+        </Box>
+        {newOrderStatus === 'accepted_delivery_boy' && (
+          <Box flex={1}>
+            <StyledFormField
+              label="Select Rider *"
+              intputType="autocomplete"
+              inputProps={{
+                fullWidth: true,
+                getOptionLabel: (option) => option?.name || 'Choose',
+                sx: {
+                  '&:has(.MuiInputBase-input:focus)': {
+                    width: '100% !important',
+                  },
+                  flex: 1,
+                },
+                maxHeight: '300px',
+                options: nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || [],
+                value: currentOrderDelivery,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                onChange: (e, v) => {
+                  setCurrentOrderDelivery(v);
+                },
+                renderOption: (props, option) => (
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: 'space-between !important',
+                    }}
+                    width="100%"
+                    component="li"
+                    {...props}
+                    key={option._id}
+                  >
+                    <span> {option.name}</span>
+                    <span>{(option.shopDistance || 0).toFixed(3)} km</span>
+                  </Stack>
+                ),
               }}
-              disabled={updateStatusMutation?.isLoading}
-            >
-              Update
-            </Button>
+            />
           </Box>
-        </Stack>
-      </Box>
-    </Paper>
+        )}
+        <Box pt={5} textAlign="right">
+          <Button
+            color="primary"
+            variant="contained"
+            sx={{ width: '200px' }}
+            onClick={() => {
+              updateStatus();
+            }}
+            disabled={updateStatusMutation?.isLoading}
+          >
+            Update
+          </Button>
+        </Box>
+      </Stack>
+    </Box>
   );
 }
