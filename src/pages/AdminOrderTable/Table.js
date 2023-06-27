@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
+import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
@@ -34,7 +35,16 @@ const filterColumns = (columns, shopType, orderType) => {
   return cols;
 };
 
-export default function Table({ orders = [], shopType, queryParams, setQueryParams, totalPage, orderType, loading }) {
+export default function Table({
+  orders = [],
+  shopType,
+  queryParams,
+  setQueryParams,
+  totalPage,
+  orderType,
+  loading,
+  refetching,
+}) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const { general } = useGlobalContext();
@@ -266,8 +276,6 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
     return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />;
   }
 
-  console.log({ orderType });
-
   return (
     <>
       <Box
@@ -279,8 +287,10 @@ export default function Table({ orders = [], shopType, queryParams, setQueryPara
           border: '1px solid #EEEEEE',
           borderRadius: '7px',
           background: '#fff',
+          position: 'relative',
         }}
       >
+        {refetching && <LoadingOverlay />}
         <StyledTable
           columns={filteredColumns}
           rows={orders}

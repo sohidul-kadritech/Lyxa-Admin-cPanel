@@ -65,6 +65,7 @@ export default function Flags() {
       </Box>
       <Table
         loading={query?.isLoading}
+        refetching={query?.isFetching}
         queryParams={queryParams}
         totalPage={totalPage}
         setQueryParams={setQueryParams}
