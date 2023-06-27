@@ -18,7 +18,7 @@ const options = {
     position: 1,
   },
   accepted_delivery_boy: {
-    label: 'Accepted by rider',
+    label: 'Assign rider',
     position: 2,
     isChangeDelivery: true,
   },
@@ -71,7 +71,7 @@ const updateOrderStatusOptions = (currentOrder) => {
     list.push({
       label: opt[1]?.label,
       value: opt[0],
-      isDisabled: opt[1]?.position <= currentStatus?.position && opt[0] !== 'accepted_delivery_boy',
+      isDisabled: opt[1]?.position <= currentStatus?.position,
       isCurrentStatus: currentStatus?.position === opt[1]?.position,
     });
   });
@@ -85,11 +85,15 @@ const updateOrderStatusOptions = (currentOrder) => {
 
 export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey = Api.ORDER_LIST }) {
   const theme = useTheme();
-
   const { socket } = useSelector((state) => state.socketReducer);
-  const [newOrderStatus, setNewOrderStatus] = useState('');
+
+  const [newOrderStatus, setNewOrderStatus] = useState(currentOrder?.orderStatus);
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(currentOrder?.deliveryBoy || {});
   const queryClient = useQueryClient();
+
+  const [open, setOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [showDelivery, setShowDelivery] = useState(false);
 
   const getNearByDeliveryBoys = () => {
     const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
@@ -171,6 +175,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
         minWidth: 'max(38vw, 600px)',
         background: '#fff',
         position: 'relative',
+        borderRadius: '8px',
       }}
     >
       {updateStatusMutation?.isLoading && <LoadingOverlay spinner />}
@@ -194,6 +199,13 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
             Select Status *
           </Typography>
           <StyledSelect
+            open={open}
+            onOpen={() => {
+              setOpen(true);
+            }}
+            onClose={() => {
+              setOpen(false);
+            }}
             sx={{
               '& .MuiListItemText-root': {
                 margin: 0,
@@ -217,6 +229,18 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
 
                 '& .MuiMenuItem-root.active-status': {
                   background: 'rgba(94, 151, 169, 0.3)',
+
+                  '&.Mui-disabled': {
+                    background: 'rgba(94, 151, 169, 0.1)',
+                  },
+                },
+
+                '& .MuiMenuItem-root.Mui-disabled': {
+                  opacity: 1,
+
+                  '& .MuiListItemText-root': {
+                    color: 'rgb(54 54 54 / 50%)',
+                  },
                 },
               },
             }}
@@ -224,7 +248,6 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
                 disabled={item?.isDisabled}
-                console={console.log('active', item?.isCurrentStatus)}
                 className={item?.isCurrentStatus ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
@@ -244,13 +267,40 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
                 }}
               >
                 <ListItemText disableTypography>
-                  {index + 1}. {item?.label}
+                  {item?.value !== 'accepted_delivery_boy' && `${index + 1}. ${item?.label}`}
+                  {item?.value === 'accepted_delivery_boy' && (
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                      <span>
+                        {index + 1}. {item?.label}{' '}
+                        {currentOrderDelivery?._id ? `- (${currentOrderDelivery?.name})` : ''}
+                      </span>
+                      {item?.isDisabled && newOrderStatus !== 'accepted_delivery_boy' && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpen(false);
+                            setShowDelivery(true);
+                          }}
+                          style={{
+                            color: '#5E97A9',
+                            textDecoration: 'underline',
+                            zIndex: '999',
+                            pointerEvents: 'all',
+                            opacity: 1,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Change Rider
+                        </span>
+                      )}
+                    </Stack>
+                  )}
                 </ListItemText>
               </MenuItem>
             ))}
           </StyledSelect>
         </Box>
-        {newOrderStatus === 'accepted_delivery_boy' && (
+        {(newOrderStatus === 'accepted_delivery_boy' || showDelivery) && (
           <Box flex={1}>
             <StyledFormField
               label="Select Rider *"

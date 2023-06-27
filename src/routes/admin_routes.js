@@ -124,7 +124,6 @@ export const admin_routes = [
   // users
   { path: '/accounts', component: AccountList },
   { path: '/accounts/:userId', component: UserProfile },
-  // { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
 
