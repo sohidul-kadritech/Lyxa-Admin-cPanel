@@ -1,8 +1,132 @@
 import { Stack, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import moment from 'moment';
 import { getTypeName } from '../helpers';
 
-export const allColumns = (getValue) => [
+export const getValue = (type, value, currency) => {
+  let newValue = null;
+  if (!value || value.length <= 0) {
+    newValue = 0;
+  } else if (type === 'currency') {
+    newValue = `${value?.code} (${value?.symbol})`;
+  } else if (type === 'adminCutForReward') {
+    newValue = value;
+  } else if (type === 'minSpendLimit') {
+    newValue = value;
+  } else if (type === 'expiration_period') {
+    newValue = value;
+  } else if (type === 'rewardCategory') {
+    newValue = (
+      <Stack gap="4px" padding="8px 0px">
+        {value.map((item) => (
+          <Typography variant="body4" key={item}>
+            {item.name}
+          </Typography>
+        ))}
+      </Stack>
+    );
+  } else if (type === 'redeemReward') {
+    newValue = (
+      <Stack gap="4px" padding="16px 0px">
+        <Typography variant="body4">
+          amount: {currency?.symbol}
+          {value.amount}
+        </Typography>
+        <Typography variant="body4">points: {value.points}</Typography>
+      </Stack>
+    );
+  } else if (type === 'getReward') {
+    newValue = (
+      <Stack gap="4px" padding="16px 0px">
+        <Typography variant="body4">
+          amount: {currency?.symbol}
+          {value.amount}
+        </Typography>
+        <Typography variant="body4">points: {value.points}</Typography>
+      </Stack>
+    );
+  } else if (type === 'maxCustomerServiceValue' || type === 'maxTotalEstItemsPriceForButler') {
+    newValue = `${currency?.symbol}${value}`;
+  } else if (type === 'nearByShopKm' || type === 'nearByShopKmForUserHomeScreen' || type === 'maxDistanceForButler') {
+    newValue = `${value}km`;
+  } else if (type === 'rewardBundle' || type === 'unit') {
+    newValue = (
+      <Stack gap="4px" padding="8px 0px">
+        {value.map((item) => (
+          <Typography variant="body4" key={item}>
+            {item}
+          </Typography>
+        ))}
+      </Stack>
+    );
+  } else if (type === 'maxDiscount') {
+    newValue = (
+      <Stack gap="4px" padding="16px 0px">
+        {value.map((item) => (
+          <Typography variant="body4" key={item}>
+            {item}%
+          </Typography>
+        ))}
+      </Stack>
+    );
+  } else if (type === 'searchDeliveryBoyKm') {
+    newValue = (
+      <Stack gap="4px" padding="16px 0px">
+        {value.map((item) => (
+          <Typography variant="body4" key={item}>
+            {item} km
+          </Typography>
+        ))}
+      </Stack>
+    );
+  } else if (type === 'specificSellerDropCharge') {
+    newValue = (
+      <Typography variant="body4">{`${value?.value?.dropPercentage ?? 0}${'%'} ${
+        value?.seller?.company_name ? `(${value?.seller?.company_name})` : ''
+      }`}</Typography>
+    );
+  } else if (type === 'globalDropCharge' || type === 'sellerDropChargeReset') {
+    newValue = (
+      <Typography variant="body4">{`${value?.dropPercentage ?? 0}${
+        '%'
+        // value?.dropPercentageType === 'parcentage' ? '%' : currency?.symbol
+      }`}</Typography>
+    );
+  } else if (
+    type === 'globalDeliveryCut' ||
+    type === 'specificSellerDeliveryCut' ||
+    type === 'globalDeliveryCutForButler'
+  ) {
+    newValue = (
+      <Stack gap="4px" padding="16px 0px">
+        {value.map((item) => (
+          <Typography
+            key={`${item?.from}_${item?.to}`}
+            variant="body4"
+            // eslint-disable-next-line max-len
+          >{`(${item?.from} - ${item?.to} km) - charge: ${currency?.symbol}${item?.charge} rider: ${currency?.symbol}${item?.deliveryPersonCut}`}</Typography>
+        ))}
+      </Stack>
+    );
+  } else if (
+    (typeof value === 'string' || typeof value === 'number') &&
+    value !== undefined &&
+    !isNaN(value) &&
+    value !== null &&
+    value !== 'undefined' &&
+    value !== 'null'
+  ) {
+    console.log('value:', value, ' type: ', typeof value);
+    if (value) {
+      newValue = value;
+    } else newValue = 0;
+  } else {
+    newValue = 0;
+  }
+  return newValue;
+};
+
+export const allColumns = (getValue, currency) => [
   {
     id: 1,
     headerName: `TYPE`,
@@ -44,8 +168,8 @@ export const allColumns = (getValue) => [
           }}
         >
           {row?.type === 'specificSellerDropCharge'
-            ? getValue(row?.type, { ...row, value: row?.oldValue, seller: undefined })
-            : getValue(row?.type, row?.oldValue)}
+            ? getValue(row?.type, { ...row, value: row?.oldValue, seller: undefined }, currency)
+            : getValue(row?.type, row?.oldValue, currency)}
         </Typography>
       </Stack>
     ),
@@ -69,8 +193,8 @@ export const allColumns = (getValue) => [
           }}
         >
           {row?.type === 'specificSellerDropCharge'
-            ? getValue(row?.type, { ...row, value: row?.newValue })
-            : getValue(row?.type, row?.newValue)}
+            ? getValue(row?.type, { ...row, value: row?.newValue }, currency)
+            : getValue(row?.type, row?.newValue, currency)}
         </Typography>
       </Stack>
     ),

@@ -71,6 +71,7 @@ export default function Orders({ type }) {
       </Box>
       <Table
         loading={ordersQuery?.isLoading}
+        refetching={ordersQuery?.isFetching}
         orderType={type}
         shopType={currentTab}
         orders={ordersQuery?.data?.data?.orders}

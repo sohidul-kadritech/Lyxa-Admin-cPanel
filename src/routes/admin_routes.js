@@ -26,7 +26,6 @@ import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
-import UsersList from '../pages/Users/UsersList/UsersList';
 
 import AdminSettings from '../pages/AdminSettings/AdminSettings';
 import AppSettings from '../pages/AppSettings/AppSettings';
@@ -125,7 +124,7 @@ export const admin_routes = [
   // users
   { path: '/accounts', component: AccountList },
   { path: '/accounts/:userId', component: UserProfile },
-  { path: '/users/list', component: UsersList },
+  // { path: '/users/list', component: UsersList },
   { path: '/users/details/:id', component: UserDetails },
   { path: '/users/transactions/:id', component: UserTransaction },
 

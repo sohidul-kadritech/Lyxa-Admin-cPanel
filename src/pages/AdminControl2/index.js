@@ -11,7 +11,6 @@ import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import AddAdmin from './AddAdmin';
 import AdminTeamList from './AdminTeamList';
 
-// eslint-disable-next-line no-unused-vars
 const adminTypeIndexTracker = {
   0: 'admin',
   1: 'customerService',
@@ -21,15 +20,13 @@ const adminTypeIndexTracker = {
 
 function AdminControl() {
   const [currentTab, setCurrentTab] = useState(0);
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKey, setSearchKey] = useState('');
 
-  // eslint-disable-next-line no-unused-vars
   const [isEdit, setIsEdit] = useState(false);
 
   const [isConfirmModal, setIsConfirmModal] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [open, setOpen] = useState(false);
 
