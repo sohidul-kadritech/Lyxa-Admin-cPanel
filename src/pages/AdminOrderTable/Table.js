@@ -16,7 +16,7 @@ import { useGlobalContext } from '../../context';
 import OrderCancel from '../NewOrder/OrderCancel';
 import RefundOrder from '../NewOrder/RefundOrder';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
-import UpdateOrderStatusForm from '../NewOrder/UpdateOrderStatusForm';
+import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
@@ -336,7 +336,7 @@ export default function Table({
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatusForm
+        <UpdateOrderStatus
           onClose={() => setUpdateStatusModal(false)}
           setCurrentOrder={setCurrentOrder}
           currentOrder={currentOrder}
