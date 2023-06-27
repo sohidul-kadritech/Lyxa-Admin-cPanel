@@ -34,6 +34,7 @@ export const statusOptions = [
 
 export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
+
   return {
     ...clone,
     phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+880${shop?.phone_number}`,
@@ -41,6 +42,7 @@ export const getShopEditData = (shop) => {
     password: '',
     shopLogo: [{ preview: shop.shopLogo }],
     shopBanner: [{ preview: shop.shopBanner }],
+    liveStatus: undefined,
   };
 };
 

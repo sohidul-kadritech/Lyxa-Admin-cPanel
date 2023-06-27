@@ -167,6 +167,51 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     }
   };
 
+  const initLocalState = (mData) => {
+    setServerState(mData?.data?.marketing);
+    const newData = deepClone(mData?.data?.marketing);
+    setLocalData(newData);
+
+    if (newData?.products?.length > 0) {
+      setHasChanged(true);
+    }
+  };
+
+  const initialize = (mData) => {
+    if (mData === undefined) return;
+
+    // does not have marketing
+    if (!mData?.isMarketing) {
+      setPageMode(0);
+      setIsPageDisabled(false);
+      return;
+    }
+
+    // does have marketing so init local state
+    initLocalState(mData);
+
+    // marketing is inactive
+    if (mData?.data?.marketing?.status === 'inactive') {
+      setPageMode(0);
+      setIsPageDisabled(false);
+      return;
+    }
+
+    // marketing is active
+    if (mData?.data?.marketing?.status === 'active' && mData?.data?.marketing?.isActive) {
+      setPageMode(1);
+      setIsPageDisabled(true);
+      return;
+    }
+
+    // marketing is scheduled
+    if (mData?.data?.marketing?.status === 'active' && !mData?.data?.marketing?.isActive) {
+      setIsScheduled(true);
+      setIsPageDisabled(true);
+      setPageMode(1);
+    }
+  };
+
   const marketingQuery = useQuery(
     [`marketing-${marketingType}-settings`],
     () =>
@@ -179,44 +224,18 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       }),
     {
       enabled: queryEnabled,
+      onSuccess: (data) => {
+        if (!data?.isNotEligible) {
+          initialize(data);
+          setQueryEnabled(false);
+        } else {
+          // reloads the page
+          // eslint-disable-next-line no-restricted-globals
+          location.reload();
+        }
+      },
     }
   );
-
-  useEffect(() => {
-    if (marketingQuery?.data !== undefined) {
-      // does have marketing
-      if (marketingQuery?.data?.isMarketing) {
-        if (marketingQuery?.data?.data?.marketing?.status === 'active') {
-          if (marketingQuery.data?.data?.marketing?.isActive) {
-            // marketing is active
-            setIsPageDisabled(true);
-            setPageMode(1);
-          } else {
-            // marketing is scheduled
-            setIsScheduled(true);
-            setIsPageDisabled(true);
-            setPageMode(1);
-          }
-        } else {
-          // marketing is inactive
-          setPageMode(0);
-          setIsPageDisabled(false);
-        }
-        setServerState(marketingQuery?.data?.data?.marketing);
-        const newData = deepClone(marketingQuery?.data?.data?.marketing);
-        setLocalData(newData);
-
-        if (newData?.products?.length > 0) {
-          setHasChanged(true);
-        }
-      } else {
-        // does not have marketing
-        setPageMode(0);
-        setIsPageDisabled(false);
-      }
-      setQueryEnabled(false);
-    }
-  }, [marketingQuery?.data]);
 
   const selectionChangeConfirm = (value) => {
     // removing previous selection information

@@ -215,8 +215,9 @@ export default function Marketing({ viewUserType }) {
     }
   );
 
-  const openHandler = (marketingType, marketing) => {
+  const openHandler = (marketingType, marketing = {}) => {
     if (!marketing?.status) {
+      if (viewUserType === 'shop' && userType === 'admin') return;
       setCurrentModal(marketingType);
     } else if (viewUserType === 'shop' && userType === 'shop') {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
@@ -237,8 +238,7 @@ export default function Marketing({ viewUserType }) {
     !rewardSettingsQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 
-  const __readonly = false;
-  // const __readonly = viewUserType === 'shop' && userType === 'admin';
+  const isReadonly = (marketing = {}) => !marketing?.status && viewUserType === 'shop' && userType === 'admin';
 
   console.log({ appliedDeals });
   console.log({ activeDeals });
@@ -258,7 +258,7 @@ export default function Marketing({ viewUserType }) {
             description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
             title="Discounted Items"
             icon={DiscountIcon}
-            readOnly={__readonly}
+            readOnly={isReadonly(discountSettingsQuery.data?.data?.marketing)}
             loading={__loading || discountSettingsQuery?.isFetching}
             disabled={appliedDeals.percentage || !activeDeals.percentage}
             status={getPromotionStatus(discountSettingsQuery, 'percentage', activeDeals)}
@@ -275,7 +275,7 @@ export default function Marketing({ viewUserType }) {
             description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
             title="Buy 1, Get 1 Free"
             icon={BuyIcon}
-            readOnly={__readonly}
+            readOnly={isReadonly(doubleDealSettingsQuery.data?.data?.marketing)}
             loading={__loading || doubleDealSettingsQuery.isFetching}
             disabled={appliedDeals.double_menu || !activeDeals.double_menu}
             status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu', activeDeals)}
@@ -294,7 +294,7 @@ export default function Marketing({ viewUserType }) {
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
               loading={__loading || freeDeliverySettingsQuery?.isFetching}
-              readOnly={__readonly}
+              readOnly={isReadonly(freeDeliverySettingsQuery.data?.data?.marketing)}
               disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
               status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
               // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
@@ -315,7 +315,6 @@ export default function Marketing({ viewUserType }) {
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
                 loading={__loading || rewardSettingsQuery.isFetching}
-                readOnly={__readonly}
                 status={getPromotionStatus(rewardSettingsQuery)}
                 icon={LoyaltyIcon}
                 onOpen={() => {
@@ -325,14 +324,12 @@ export default function Marketing({ viewUserType }) {
                 }}
               />
             </Grid>
-            {/* )} */}
             <Grid md={6} lg={4}>
               <MCard
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
                 title="Featured"
                 loading={__loading || rewardSettingsQuery.isFetching}
                 status={getPromotionStatus(featuredSettingsQuery)}
-                readOnly={__readonly}
                 icon={PromoIcon}
                 onOpen={() => {
                   if (!featuredSettingsQuery.isLoading) {
