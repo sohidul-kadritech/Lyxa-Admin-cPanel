@@ -15,7 +15,7 @@ import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
-import UpdateOrderStatusForm from './UpdateOrderStatusForm';
+import UpdateOrderStatus from './UpdateOrderStatus';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
@@ -328,7 +328,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatusForm
+        <UpdateOrderStatus
           onClose={() => setUpdateStatusModal(false)}
           setCurrentOrder={setCurrentOrder}
           currentOrder={currentOrder}

@@ -144,12 +144,14 @@ function Appsettings2() {
       if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length > 0) {
         const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
         const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
-        return [response1, response3];
+        const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
+        return [response1, response3, response4];
       }
       if (data?.addUnit?.nameList?.length > 0 && data?.deleteUnit?.idList?.length === 0) {
         const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
         const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
-        return [response1, response2];
+        const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
+        return [response1, response2, response4];
       }
       if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length === 0) {
         const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
@@ -158,16 +160,17 @@ function Appsettings2() {
       const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
       const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
       const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
-      return [response1, response2, response3];
+      const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
+      return [response1, response2, response3, response4];
     },
     {
       onSuccess: (data) => {
-        if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
+        if (data.length === 4 && data[0].status && data[1].status && data[2].status && data[2].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
-        } else if (data.length === 2 && data[0].status && data[1].status) {
+        } else if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
@@ -291,7 +294,13 @@ function Appsettings2() {
       units.map((unit) => unit.name),
     );
 
-    // if (hasChanged) updateQuery.mutate(data);
+    console.log(
+      'old units: ',
+      oldUnits.map((unit) => unit.name),
+      ' units ',
+      // eslint-disable-next-line prettier/prettier
+      units.map((unit) => unit.name),
+    );
 
     if (hasChanged) {
       updateQuery2.mutate({
@@ -301,6 +310,10 @@ function Appsettings2() {
         },
         deleteUnit: {
           idList: deletedUnitId,
+        },
+        logs: {
+          newValue: units.map((unit) => unit.name),
+          oldValue: oldUnits.map((unit) => unit.name),
         },
       });
     } else successMsg('Please make some changes first !');

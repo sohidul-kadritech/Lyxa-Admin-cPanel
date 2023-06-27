@@ -2,6 +2,7 @@ import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as FlagIcon } from '../../../assets/icons/order-flag.svg';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
@@ -10,7 +11,7 @@ import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { orderStatusMap, statusColorVariants } from '../../NewOrder/helpers';
 
-export default function Table({ orders = [], queryParams, setQueryParams, totalPage, loading }) {
+export default function Table({ orders = [], queryParams, setQueryParams, totalPage, loading, refetching }) {
   const history = useHistory();
 
   const [detailOpen, setDetailOpen] = useState(false);
@@ -125,8 +126,10 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
           border: '1px solid #EEEEEE',
           borderRadius: '7px',
           background: '#fff',
+          position: 'relative',
         }}
       >
+        {refetching && <LoadingOverlay />}
         <StyledTable
           columns={columns}
           rows={orders}

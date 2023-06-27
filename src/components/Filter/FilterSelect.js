@@ -2,7 +2,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, Tooltip, styled, useTheme } from '@mui/material';
 import pxToRem from '../../helpers/pxToRem';
 
-const StyledSelect = styled(Select)(({ theme }) => ({
+export const StyledSelect = styled(Select)(({ theme }) => ({
   minHeight: 'auto',
   fontSize: `${pxToRem(12)}rem!important`,
   fontWeight: 400,

@@ -12,7 +12,11 @@ export default function FlagsTable({ rows = [] }) {
       flex: 2,
       sortable: false,
       minWidth: 270,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography className="text-dots" variant="body4" pr={10}>
+          {value}
+        </Typography>
+      ),
     },
     {
       id: 2,

@@ -46,14 +46,28 @@ export default function Payout({ paymentDetails }) {
               seCurrentExpanedTab(closed ? 0 : -1);
             }}
           >
-            {paymentDetails?.orderValue?.productAmountCash > 0 && (
-              <PriceItem title="Cash" amount={paymentDetails?.orderValue?.productAmountCash} />
+            {paymentDetails?.orderValue?.productAmountCash + paymentDetails?.orderValue?.doubleMenuItemPriceCash >
+              0 && (
+              <PriceItem
+                title="Cash"
+                console={console.log({ paymentDetails })}
+                amount={
+                  paymentDetails?.orderValue?.productAmountCash + paymentDetails?.orderValue?.doubleMenuItemPriceCash
+                }
+              />
             )}
-            {paymentDetails?.orderValue?.productAmountOnline > 0 && (
-              <PriceItem title="Online" amount={paymentDetails?.orderValue?.productAmountOnline} />
+
+            {paymentDetails?.orderValue?.productAmountOnline + paymentDetails?.orderValue?.doubleMenuItemPriceOnline >
+              0 && (
+              <PriceItem
+                title="Online"
+                amount={
+                  paymentDetails?.orderValue?.productAmountOnline +
+                  paymentDetails?.orderValue?.doubleMenuItemPriceOnline
+                }
+              />
             )}
             {/* shop */}
-
             {paymentDetails?.orderValue?.totalDiscount > 0 && (
               <PriceItem
                 title="Discount"
@@ -73,7 +87,7 @@ export default function Payout({ paymentDetails }) {
               <PriceItem
                 title="Buy 1 Get 1"
                 amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
-                amountStatus="secondary"
+                amountStatus="minus"
                 tooltip={
                   <CommonOrderAmountTooltipText
                     byShop={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}

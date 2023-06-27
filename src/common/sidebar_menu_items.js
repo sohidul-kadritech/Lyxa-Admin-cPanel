@@ -231,11 +231,11 @@ export const admin_menu_items = [
       //   to: '/shops/list',
       //   icon: ShopIcon,
       // },
-      {
-        label: 'Users',
-        to: '/users/list',
-        icon: UsersIcon,
-      },
+      // {
+      //   label: 'Users',
+      //   to: '/users/list',
+      //   icon: UsersIcon,
+      // },
       {
         label: 'Accounts',
         to: '/accounts',

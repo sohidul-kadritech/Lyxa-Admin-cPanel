@@ -33,7 +33,6 @@ const searchFlags = (flags, queryParams) => {
 };
 
 export default function ShopFlags({ flags = [], onViewDetail }) {
-  // console.log(flags);
   const [queryParams, setQueryParams] = useState(getQueryParamsInit({ page: 1 }));
   const [filteredData, setFilteredData] = useState(flags);
 
