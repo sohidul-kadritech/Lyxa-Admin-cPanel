@@ -531,18 +531,18 @@ export const customer_service_menu_items = [
       },
       {
         label: 'User',
-        to: '/users',
+        to: '/accounts',
         icon: UserIcon,
         SellersIcon,
       },
       {
         label: 'Sellers',
-        to: '/deliveryman/list',
+        to: '/seller/list',
         icon: SellersIcon,
       },
       {
         label: 'Lyxa Pay TRX ',
-        to: '/transactions',
+        to: '/lyxa-pay',
         icon: TrxIcon,
       },
     ],
