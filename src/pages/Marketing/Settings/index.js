@@ -230,8 +230,11 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setQueryEnabled(false);
         } else {
           // reloads the page
-          // eslint-disable-next-line no-restricted-globals
-          location.reload();
+          // eslint-disable-next-line no-restricted-globals, no-alert
+          window.alert(
+            'Looks like something has changed in marketing since you came here. We will just reload the page'
+          );
+          window.location.reload();
         }
       },
     }
