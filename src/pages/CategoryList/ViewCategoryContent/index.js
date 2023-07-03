@@ -18,28 +18,30 @@ export default function ViewCategoryContent({ onClose, category }) {
 
   const setProductsAndCategory = (data) => {
     if (category?.type === 'food') {
-      const items = data?.data?.productsGroupByCategory?.length
-        ? data?.data?.productsGroupByCategory[0]?.sortedProducts
-        : [];
+      const items = [];
+      data?.data?.productsGroupByCategory?.forEach((category) => {
+        items.push(...(category?.sortedProducts || []));
+      });
       setProducts(items);
     } else {
-      const items = data?.data?.productsGroupByCategory?.length
-        ? data?.data?.productsGroupByCategory[0]?.subCategories
-        : [];
+      const items = [];
+
+      data?.data?.productsGroupByCategory?.forEach((category) => {
+        items.push(...(category?.subCategories || []));
+      });
       setCategories(items);
     }
   };
 
   const query = useQuery(
-    [Api.CATEGORY_PRODUCTS, { categoryId: category?._id }],
+    [Api.CATEGORY_PRODUCTS_MULTIPLE, { categoryId: category?._id }],
     () =>
-      AXIOS.get(Api.CATEGORY_PRODUCTS, {
-        params: {
-          categoryId: category?._id,
-        },
+      AXIOS.post(Api.CATEGORY_PRODUCTS_MULTIPLE, {
+        categoryIds: category?.ids,
       }),
     {
       onSuccess: (data) => {
+        console.log({ data });
         setProductsAndCategory(data);
       },
     }

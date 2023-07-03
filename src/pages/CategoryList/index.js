@@ -30,10 +30,7 @@ const categoryTypeIndex = {
   2: 'grocery',
 };
 
-const menuOptions = [
-  { label: 'Add Category', value: 'add-category' },
-  // { label: 'Add Sub-Category', value: 'add-sub-category' },
-];
+const menuOptions = [{ label: 'Add Category', value: 'add-category' }];
 
 const queryParamsInit = {
   page: 1,

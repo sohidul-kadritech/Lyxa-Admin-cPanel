@@ -59,28 +59,30 @@ export default function CategoryTable({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <Typography
-            variant="body4"
-            sx={{
-              fontSize: '15px',
-              fontWeight: '500',
-              textTransform: 'capitalize',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              color: 'primary.main',
-              cursor: 'pointer',
-            }}
-            onClick={() => {
-              history.push({
-                pathname: `/shop/profile/${row?.shop?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
-              });
-              dispatchCurrentUser({ type: 'shop', payload: { shop: { ...row?.shop } } });
-            }}
-          >
-            {row?.shop?.shopName}
-          </Typography>
+        <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
+          {row?.shops?.map((shop) => (
+            <Typography
+              variant="body4"
+              sx={{
+                fontSize: '15px',
+                fontWeight: '500',
+                textTransform: 'capitalize',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                color: 'primary.main',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                history.push({
+                  pathname: `/shop/profile/${shop?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
+                });
+                dispatchCurrentUser({ type: 'shop', payload: { shop: { ...row?.shop } } });
+              }}
+            >
+              {shop?.shopName}
+            </Typography>
+          ))}
         </Stack>
       ),
     },
@@ -109,21 +111,27 @@ export default function CategoryTable({
       align: 'right',
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <Stack flexDirection="row" gap="16px">
-          <StyledSwitch
-            checked={row?.status === 'active'}
-            onChange={() => {
-              row.status = row?.status === 'active' ? 'inactive' : 'active';
-              setRender(!render);
-              updateQuery.mutate({
-                id: row?._id,
-                status: row?.status,
-              });
-            }}
-          />
-        </Stack>
-      ),
+      renderCell: ({ row }) => {
+        if (row?.ids?.length > 1) {
+          return '_';
+        }
+
+        return (
+          <Stack flexDirection="row" gap="16px">
+            <StyledSwitch
+              checked={row?.status === 'active'}
+              onChange={() => {
+                row.status = row?.status === 'active' ? 'inactive' : 'active';
+                setRender(!render);
+                updateQuery.mutate({
+                  id: row?._id,
+                  status: row?.status,
+                });
+              }}
+            />
+          </Stack>
+        );
+      },
     },
   ];
 
