@@ -35,9 +35,6 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
     {
       onSuccess: (data) => {
         console.log(data);
-        if (data?.status) {
-          queryClient.invalidateQueries([Api.GET_COUPON]);
-        }
       },
     }
   );
