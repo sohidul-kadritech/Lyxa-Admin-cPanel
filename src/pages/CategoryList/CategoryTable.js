@@ -8,7 +8,7 @@ import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 
-function CategoryTable({
+export default function CategoryTable({
   data = [],
   onViewContent,
   loading,
@@ -22,7 +22,6 @@ function CategoryTable({
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const [render, setRender] = useState(false);
-  console.log('routeMatch', routeMatch);
 
   const { dispatchCurrentUser } = useGlobalContext();
 
@@ -49,22 +48,6 @@ function CategoryTable({
               },
             }}
           />
-        </Stack>
-      ),
-    },
-    {
-      id: 4,
-      headerName: `CREATION DATE`,
-      field: 'date',
-      showFor: ['food', 'pharmacy', 'grocery'],
-      sortable: false,
-      flex: 2,
-      renderCell: ({ row }) => (
-        <Stack gap={1.5}>
-          <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
-          <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
-            {moment(row?.createdAt)?.format('hh:mm A')}
-          </Typography>
         </Stack>
       ),
     },
@@ -97,6 +80,22 @@ function CategoryTable({
             }}
           >
             {row?.shop?.shopName}
+          </Typography>
+        </Stack>
+      ),
+    },
+    {
+      id: 3,
+      headerName: `CREATION DATE`,
+      field: 'date',
+      showFor: ['food', 'pharmacy', 'grocery'],
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Stack gap={1.5}>
+          <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
+          <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
+            {moment(row?.createdAt)?.format('hh:mm A')}
           </Typography>
         </Stack>
       ),
@@ -159,5 +158,3 @@ function CategoryTable({
     </>
   );
 }
-
-export default CategoryTable;

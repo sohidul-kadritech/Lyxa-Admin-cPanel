@@ -8,7 +8,7 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { bulkItemOptions, getAddMenuOptions } from './helpers';
 
 // styled button
-function AddMenuButton({ ...props }) {
+export function AddMenuButton({ ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
       Add

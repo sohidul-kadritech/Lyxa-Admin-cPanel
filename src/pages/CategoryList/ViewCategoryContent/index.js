@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -11,11 +10,11 @@ import CategoryItem from './CategoryItem';
 import ProductItem from './ProductItem';
 import { searchProducts, searchSubCategoriesAndProduct } from './helper';
 
-export default function ViewCategory({ onClose, category }) {
+export default function ViewCategoryContent({ onClose, category }) {
   const [searchKey, setSearchKey] = useState({ searchKey: '' });
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [render, setRender] = useState(false);
+  const [, setRender] = useState(false);
 
   const setProductsAndCategory = (data) => {
     if (category?.type === 'food') {
@@ -57,8 +56,6 @@ export default function ViewCategory({ onClose, category }) {
 
   useMemo(() => searchProducts(products, searchKey?.searchKey, setRender), [searchKey?.searchKey, products]);
 
-  console.log({ products });
-
   return (
     <SidebarContainer title={category?.category?.name} onClose={onClose}>
       <Box pb={5}>
@@ -71,6 +68,7 @@ export default function ViewCategory({ onClose, category }) {
               endDate: true,
               status: true,
               sort: true,
+              menu: true,
             }}
             queryParams={searchKey}
             setQueryParams={setSearchKey}
