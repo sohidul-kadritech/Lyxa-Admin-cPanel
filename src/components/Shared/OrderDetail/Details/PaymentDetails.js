@@ -47,7 +47,7 @@ export default function PaymentDetails({ order = {} }) {
   const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
-  console.log({ summary: order?.summary?.deliveryFee });
+  console.log({ summary: order?.summary });
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
@@ -69,6 +69,14 @@ export default function PaymentDetails({ order = {} }) {
             value={(order?.summary?.discount || 0).toFixed(2)}
           />
         )}
+        {order?.summary?.couponDiscountAmount > 0 && (
+          <StyledItem
+            label="Coupon Discount"
+            isNegative
+            isRejected={false}
+            value={(order?.summary?.couponDiscountAmount || 0).toFixed(2)}
+          />
+        )}
         {order?.summary?.reward?.amount > 0 && (
           <StyledItem
             label="Rewards"
@@ -79,6 +87,8 @@ export default function PaymentDetails({ order = {} }) {
         )}
         {order?.summary?.vat > 0 && <StyledItem label="VAT" value={(order?.summary?.vat || 0).toFixed(2)} />}
         <StyledItem label="Total" value={(totalPayment || 0).toFixed(2)} total />
+
+        {/* group cart */}
         {order?.cart?.cartType === 'group' && (
           <Box>
             {order?.cart?.cartItems?.map((user) => {
@@ -89,6 +99,8 @@ export default function PaymentDetails({ order = {} }) {
             })}
           </Box>
         )}
+
+        {/* refund */}
         {order?.isRefundedAfterDelivered && (
           <StyledItem label="Total Refunded" value={(refund?.amount || 0).toFixed(2)} total noBorder />
         )}

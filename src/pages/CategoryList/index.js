@@ -1,15 +1,17 @@
+/* eslint-disable no-unused-vars */
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useMutation, useQuery } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-// import TablePageSkeleton from '../Notification2/TablePageSkeleton';
-import TableSkeleton from '../../components/Skeleton/TableSkeleton';
+import AddCategory from '../Menu/AddCategory';
+import { AddMenuButton } from '../Menu/Searchbar';
 import CategoryTable from './CategoryTable';
-import ViewCategory from './ViewCategory';
+import ViewCategoryContent from './ViewCategoryContent';
 
 const breadcrumbItems = [
   {
@@ -22,11 +24,13 @@ const breadcrumbItems = [
   },
 ];
 
-const bannerTypeIndex = {
+const categoryTypeIndex = {
   0: 'food',
   1: 'pharmacy',
   2: 'grocery',
 };
+
+const menuOptions = [{ label: 'Add Category', value: 'add-category' }];
 
 const queryParamsInit = {
   page: 1,
@@ -40,7 +44,7 @@ const queryParamsInit = {
 
 export default function CategoryList2() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(null);
 
   const [queryParams, setQueryParams] = useState(queryParamsInit);
   const [totalPage, setTotalPage] = useState(1);
@@ -61,6 +65,13 @@ export default function CategoryList2() {
 
   const updateQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_CATEGORY, data));
 
+  // menu handler
+  const menuHandler = (menu) => {
+    if (menu === 'add-category') {
+      setOpen('add-category');
+    }
+  };
+
   return (
     <Box pb={10}>
       <PageTop backButtonLabel="Back to Settings" breadcrumbItems={breadcrumbItems} backTo="/settings" />
@@ -69,7 +80,7 @@ export default function CategoryList2() {
           value={currentTab}
           onChange={(event, newValue) => {
             setCurrentTab(newValue);
-            setQueryParams((prev) => ({ ...prev, type: bannerTypeIndex[newValue], page: 1 }));
+            setQueryParams((prev) => ({ ...prev, type: categoryTypeIndex[newValue], page: 1 }));
           }}
         >
           <Tab label="Food" />
@@ -82,6 +93,9 @@ export default function CategoryList2() {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           searchPlaceHolder="Search Category"
+          MenuButton={AddMenuButton}
+          menuItems={menuOptions?.filter((opt) => opt.value !== 'add-sub-category' || currentTab !== 0)}
+          menuHandler={menuHandler}
           hideFilters={{
             button: true,
             startDate: true,
@@ -95,7 +109,7 @@ export default function CategoryList2() {
         ) : (
           <CategoryTable
             onViewContent={(category) => {
-              setOpen(true);
+              setOpen('view-category');
               setSelectedCategory(category);
             }}
             updateQuery={updateQuery}
@@ -108,13 +122,26 @@ export default function CategoryList2() {
           />
         )}
       </Box>
-      <Drawer open={open} anchor="right">
-        <ViewCategory
-          onClose={() => {
-            setOpen(false);
-          }}
-          category={selectedCategory}
-        />
+      <Drawer open={Boolean(open)} anchor="right">
+        {open === 'view-category' && (
+          <ViewCategoryContent
+            onClose={() => {
+              setOpen(null);
+              setSelectedCategory({});
+            }}
+            category={selectedCategory}
+          />
+        )}
+        {open === 'add-category' && (
+          <AddCategory
+            newCategoryShopType={categoryTypeIndex[currentTab]}
+            viewUserType="admin"
+            onClose={() => {
+              setOpen(null);
+              setSelectedCategory({});
+            }}
+          />
+        )}
       </Drawer>
     </Box>
   );

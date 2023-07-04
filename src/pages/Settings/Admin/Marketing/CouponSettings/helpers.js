@@ -25,11 +25,11 @@ export const filtersInit = {
 export const sortOptions = [
   {
     value: 'desc',
-    label: 'DESC',
+    label: 'Desc',
   },
   {
     value: 'asc',
-    label: 'ASC',
+    label: 'Asc',
   },
 ];
 
@@ -41,6 +41,10 @@ export const statusOptions = [
   {
     value: 'inactive',
     label: 'Inactive',
+  },
+  {
+    value: '',
+    label: 'All',
   },
 ];
 

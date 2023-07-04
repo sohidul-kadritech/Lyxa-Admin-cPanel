@@ -4,14 +4,16 @@ import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
 import TablePagination from '../../../components/Common/TablePagination';
 // import { useGlobalContext } from '../../../context';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import OrderTable from '../../NewOrder/OrderTable';
 import { getQueryParamsInit } from '../helper';
 
 export default function ShopOrders({ shop, onViewDetail }) {
+  const { currentUser } = useGlobalContext();
+
   const [totalPage, setTotalPage] = useState(0);
-  // const { currentUser } = useGlobalContext();
   const [queryParams, setQueryParams] = useState(
     getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' })
   );
@@ -42,11 +44,11 @@ export default function ShopOrders({ shop, onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Orders"
-        hideFilters={{ button: true, status: true }}
+        hideFilters={{ button: true, status: true, menu: true }}
       />
       <Box paddingTop="30px" />
       <OrderTable
-        adminType="shop"
+        adminType={currentUser?.userType}
         onViewDetail={(order) => {
           onViewDetail(order);
         }}

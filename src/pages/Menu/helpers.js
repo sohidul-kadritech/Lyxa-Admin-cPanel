@@ -40,17 +40,48 @@ export function ProductOverlayTag({ label, color }) {
 }
 
 // menu options
-export const getAddMenuOptions = (shopType) => {
+// export const getAddMenuOptions = (shopType) => {
+//   const options = [
+//     {
+//       label: 'Add item',
+//       value: 'add-item',
+//     },
+//   ];
+
+//   if (shopType === 'food') {
+//     options.push({
+//       label: 'Add category',
+//       value: 'add-category',
+//     });
+//   }
+
+//   // if (shopType !== 'food') {
+//   //   options.push({
+//   //     label: 'Add sub category ',
+//   //     value: 'add-sub-category',
+//   //   });
+//   // }
+
+//   return options;
+// };
+
+// menu options
+export const getAddMenuOptions = (shopType, viewUserType) => {
+  console.log({ viewUserType });
+
   const options = [
     {
       label: 'Add item',
       value: 'add-item',
     },
-    {
+  ];
+
+  if (shopType === 'food' || viewUserType === 'admin') {
+    options.push({
       label: 'Add category',
       value: 'add-category',
-    },
-  ];
+    });
+  }
 
   if (shopType !== 'food') {
     options.push({
@@ -288,7 +319,7 @@ export const validateCategory = (category) => {
   };
 
   if (!category?.type) {
-    status.msg = 'Category type cannot be empty';
+    status.msg = 'Category shop cannot be empty';
     return status;
   }
 
@@ -312,8 +343,6 @@ export const validateProduct = (product, hasAttribute) => {
     status: false,
     msg: null,
   };
-
-  // console.log(product);
 
   if (!product?.type) {
     status.msg = 'Product type cannot be empty';

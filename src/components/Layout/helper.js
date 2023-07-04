@@ -16,7 +16,7 @@ export const getProfilePhotoAndAltName = (currentUser, userType) => {
 
   if (userType === 'seller') {
     profilePhoto = currentUser?.seller?.profile_photo;
-    name = currentUser?.seller?.name;
+    name = currentUser?.seller?.company_name;
   }
 
   name?.split(' ')?.forEach((s, i) => {
@@ -25,5 +25,5 @@ export const getProfilePhotoAndAltName = (currentUser, userType) => {
     }
   });
 
-  return { profilePhoto, altName };
+  return { profilePhoto, altName, name };
 };

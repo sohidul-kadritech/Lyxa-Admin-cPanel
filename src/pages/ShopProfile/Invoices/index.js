@@ -22,7 +22,11 @@ export default function Invoices() {
     <Box>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       <Box paddingTop="30px" paddingBottom="30px">
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} hideFilters={{ button: true }} />
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          hideFilters={{ button: true, menu: true }}
+        />
       </Box>
       <TabPanel noPadding index="unpaid" value={currentTab}>
         <InvoiceTable rows={data} />

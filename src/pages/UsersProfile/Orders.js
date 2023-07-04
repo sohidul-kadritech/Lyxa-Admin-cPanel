@@ -52,6 +52,7 @@ export default function UserOrders({ userId }) {
           hideFilters={{
             button: true,
             status: true,
+            menu: true,
           }}
         />
       </Box>

@@ -8,7 +8,7 @@ import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 
-function CategoryTable({
+export default function CategoryTable({
   data = [],
   onViewContent,
   loading,
@@ -22,7 +22,6 @@ function CategoryTable({
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const [render, setRender] = useState(false);
-  console.log('routeMatch', routeMatch);
 
   const { dispatchCurrentUser } = useGlobalContext();
 
@@ -53,22 +52,6 @@ function CategoryTable({
       ),
     },
     {
-      id: 4,
-      headerName: `CREATION DATE`,
-      field: 'date',
-      showFor: ['food', 'pharmacy', 'grocery'],
-      sortable: false,
-      flex: 2,
-      renderCell: ({ row }) => (
-        <Stack gap={1.5}>
-          <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
-          <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
-            {moment(row?.createdAt)?.format('hh:mm A')}
-          </Typography>
-        </Stack>
-      ),
-    },
-    {
       id: 2,
       headerName: `SHOP NAME`,
       field: 'shopName',
@@ -76,27 +59,45 @@ function CategoryTable({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <Typography
-            variant="body4"
-            sx={{
-              fontSize: '15px',
-              fontWeight: '500',
-              textTransform: 'capitalize',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              color: 'primary.main',
-              cursor: 'pointer',
-            }}
-            onClick={() => {
-              history.push({
-                pathname: `/shop/profile/${row?.shop?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
-              });
-              dispatchCurrentUser({ type: 'shop', payload: { shop: { ...row?.shop } } });
-            }}
-          >
-            {row?.shop?.shopName}
+        <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
+          {row?.shops?.map((shop) => (
+            <Typography
+              variant="body4"
+              sx={{
+                fontSize: '15px',
+                fontWeight: '500',
+                textTransform: 'capitalize',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                color: 'primary.main',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                history.push({
+                  pathname: `/shop/profile/${shop?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
+                });
+                dispatchCurrentUser({ type: 'shop', payload: { shop: { ...row?.shop } } });
+              }}
+            >
+              {shop?.shopName}
+            </Typography>
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      id: 3,
+      headerName: `CREATION DATE`,
+      field: 'date',
+      showFor: ['food', 'pharmacy', 'grocery'],
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Stack gap={1.5}>
+          <Typography variant="body4">{moment(row?.createdAt)?.format('MMM DD, YYYY')}</Typography>
+          <Typography variant="inherit" fontSize={12} lineHeight="15px" fontWeight={500} color="#737373">
+            {moment(row?.createdAt)?.format('hh:mm A')}
           </Typography>
         </Stack>
       ),
@@ -110,21 +111,27 @@ function CategoryTable({
       align: 'right',
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <Stack flexDirection="row" gap="16px">
-          <StyledSwitch
-            checked={row?.status === 'active'}
-            onChange={() => {
-              row.status = row?.status === 'active' ? 'inactive' : 'active';
-              setRender(!render);
-              updateQuery.mutate({
-                id: row?._id,
-                status: row?.status,
-              });
-            }}
-          />
-        </Stack>
-      ),
+      renderCell: ({ row }) => {
+        if (row?.ids?.length > 1) {
+          return '_';
+        }
+
+        return (
+          <Stack flexDirection="row" gap="16px">
+            <StyledSwitch
+              checked={row?.status === 'active'}
+              onChange={() => {
+                row.status = row?.status === 'active' ? 'inactive' : 'active';
+                setRender(!render);
+                updateQuery.mutate({
+                  id: row?._id,
+                  status: row?.status,
+                });
+              }}
+            />
+          </Stack>
+        );
+      },
     },
   ];
 
@@ -159,5 +166,3 @@ function CategoryTable({
     </>
   );
 }
-
-export default CategoryTable;

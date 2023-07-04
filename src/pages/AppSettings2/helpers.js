@@ -78,6 +78,18 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (parseInt(newData?.nearByShopKmForUserHomeScreen, 10) !== parseInt(oldData?.nearByShopKmForUserHomeScreen, 10)) {
     newType.push(typeList[8]);
   }
+  if (newData?.secondaryCurrency?.code?.toString() !== oldData?.secondaryCurrency?.code?.toString()) {
+    newType.push(typeList[9]);
+  }
+  if (
+    parseInt(newData?.exchangeRate, 10) !== parseInt(oldData?.exchangeRate, 10) ||
+    parseFloat(newData?.exchangeRate, 10) !== parseFloat(oldData?.exchangeRate, 10)
+  ) {
+    newType.push(typeList[10]);
+  }
+  if (newData?.acceptedCurrency?.toString() !== oldData?.acceptedCurrency?.toString()) {
+    newType.push(typeList[11]);
+  }
   // if (newData?.secondaryCurrency !== oldData?.secondaryCurrency) {
   //   newType.push(typeList[9]);
   // }

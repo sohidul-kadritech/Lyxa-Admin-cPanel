@@ -21,8 +21,7 @@ import { createShopData } from './helper';
 export default function ShopProfile({ setLoading = () => {}, loading }) {
   const routeMatch = useRouteMatch();
   const location = useLocation();
-  console.log('location:===>', location);
-  console.log('location:===>', location?.state?.backToLabel);
+
   const history = useHistory();
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
   const { seller } = currentUser;
@@ -62,8 +61,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
       onError: (error) => {
         console.log(error);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   useEffect(() => {
@@ -121,7 +119,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     successMsg('Uploading...');

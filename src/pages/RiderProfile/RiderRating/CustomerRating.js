@@ -4,8 +4,8 @@ import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import OrderDetail from '../../../components/Shared/OrderDetail';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
-import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 
 export default function CustomerRating({ rows = [], loading }) {
   const history = useHistory();
@@ -113,7 +113,7 @@ export default function CustomerRating({ rows = [], loading }) {
     },
   ];
 
-  if (loading) return <TablePageSkeleton column={7} row={5} />;
+  if (loading) return <TableSkeleton rows={5} columns={['text', 'text', 'text', 'text', 'text', 'text', 'text']} />;
 
   return (
     <>

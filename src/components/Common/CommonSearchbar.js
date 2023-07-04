@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import FilterDate from '../Filter/FilterDate';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledSearchBar from '../Styled/StyledSearchBar';
+import ThreeDotsMenu from '../ThreeDotsMenu2';
 
 const sortOptions = [
   {
@@ -35,6 +36,9 @@ export default function SearchBar({
   hideFilters,
   onButtonClick,
   buttonLabel,
+  menuHandler,
+  menuItems,
+  MenuButton,
 }) {
   const updateSearch = useMemo(
     () =>
@@ -126,6 +130,10 @@ export default function SearchBar({
             {buttonLabel}
           </Button>
         </Box>
+      )}
+      {/* menu */}
+      {!hideFilters?.menu && (
+        <ThreeDotsMenu handleMenuClick={menuHandler} menuItems={menuItems} ButtonComponent={MenuButton} />
       )}
     </Stack>
   );

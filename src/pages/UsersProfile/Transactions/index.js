@@ -49,6 +49,7 @@ export default function UserTransactions({ user }) {
           setQueryParams={setQueryParams}
           hideFilters={{
             status: true,
+            menu: true,
           }}
           buttonLabel="Add / Remove Credit"
           onButtonClick={() => {
