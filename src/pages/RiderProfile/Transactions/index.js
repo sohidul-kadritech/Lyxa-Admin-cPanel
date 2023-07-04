@@ -71,7 +71,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   useEffect(() => {
@@ -79,15 +79,14 @@ export default function RiderTransactions({ riderId, showFor }) {
       setSummary(summaryQuery?.data?.data?.deliveryBoy[0]?.summary);
   }, []);
 
-  const listQuery = useQuery(
+  const query = useQuery(
     [showForToApiMap[showFor]?.get, queryParams],
     () => AXIOS.get(showForToApiMap[showFor]?.get, { params: queryParams }),
     {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // on receive cash
@@ -102,7 +101,7 @@ export default function RiderTransactions({ riderId, showFor }) {
   const onReceiveCash = () => {
     const items = [];
 
-    listQuery?.data?.data?.cashOrderList?.forEach((trx) => {
+    query?.data?.data?.cashOrderList?.forEach((trx) => {
       if (trx.selected) {
         items.push(trx?._id);
       }
@@ -188,8 +187,9 @@ export default function RiderTransactions({ riderId, showFor }) {
         </Grid>
       )}
       <TransactionsTable
-        loading={receiveCashMutation.isloading}
-        rows={listQuery?.data?.data?.[showFor]}
+        refetching={receiveCashMutation.isLoading}
+        loading={query.isLoading}
+        rows={query?.data?.data?.[showFor]}
         type={showFor}
         queryParams={queryParams}
       />
