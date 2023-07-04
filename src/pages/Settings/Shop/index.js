@@ -3,6 +3,7 @@ import { Button, Divider, Stack, Typography } from '@mui/material';
 import { cloneDeep, isNaN, isNumber } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { useDidRecover } from 'react-router-cache-route';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
@@ -11,12 +12,11 @@ import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import Axios from '../../../network/axios';
+import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 import MinimumOrder from './MinimumOrder';
 import { ShopSettingsSection2 } from './ShopSettingsSection/ShopSettingsSection2';
-import { General as ShopSettingsSection } from './ShopSettingsSection/index';
-// import AXIOS from '../../../network/axios';
-import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 import { ShopSettingsSection3 } from './ShopSettingsSection/ShopSettingsSection3';
+import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 import {
   DeliverySettings,
   DietarySettings,
@@ -62,39 +62,40 @@ const filterTagsAndCuisine = (tagsCuisine) => {
   return { tagsOptions, cuisinesOptions };
 };
 
+const getHasFreeDelivery = (shop) => {
+  let hasDeal = false;
+
+  shop?.marketings?.forEach((obj) => {
+    if (obj?.type === 'free_delivery') {
+      hasDeal = true;
+    }
+  });
+
+  return hasDeal;
+};
+
 function ShopSettings() {
   const { currentUser } = useGlobalContext();
   const { shop, adminType } = currentUser;
-  console.log('special instruction: ', shop?.specialInstructions);
+
+  const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
+
   const [newShop, setNewShop] = useState(deepClone(shop));
-
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
-
   const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive || '');
-
   const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
-
   const [newDeliveryFee, setNewDeliveryFee] = useState(newShop?.deliveryFee || 0);
-
   const [minimumOrder, setMinimumOrder] = useState(newShop?.minOrderAmount || 0);
-
   const [newTags, setNewTags] = useState(newShop?.tagsId || []);
-
   const [newCusines, setNewCusines] = useState(newShop?.cuisineType || []);
 
   // eslint-disable-next-line no-unused-vars
   const [newSpecialInstructions, setNewSpecialInstructions] = useState(newShop?.specialInstructions || false);
-
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
-
   const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount?.toString() || '100');
-
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
-
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
-
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS));
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
@@ -112,6 +113,7 @@ function ShopSettings() {
         shop.tagsId = data?.data?.shop.tagsId || shop.tagsId;
         shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
         set_has_unsaved_change(false);
+        console.log('after update', shop);
       }
     },
   });
@@ -159,8 +161,12 @@ function ShopSettings() {
       return shop?.specialInstructions || false;
     });
     setNewCusines(shop?.cuisineType || []);
-    setNewTags(newShop?.tagsId || []);
+    setNewTags(shop?.tagsId || []);
   };
+
+  useDidRecover(() => {
+    populateStateFromShop();
+  });
 
   useEffect(() => {
     populateStateFromShop();
@@ -240,8 +246,6 @@ function ShopSettings() {
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     [tagsQuery?.data]
   );
-
-  console.log({ shop });
 
   return (
     <>
@@ -331,7 +335,7 @@ function ShopSettings() {
               options={DeliverySettings}
               action={OwnDeliveryBoyHandler}
               isButton
-              readOnly={adminType !== 'admin'}
+              readOnly={adminType !== 'admin' || hasFreeDelivery}
               isMethod
             />
             {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}
@@ -462,15 +466,6 @@ function ShopSettings() {
             </Button>
             <Button
               onClick={() => {
-                // if (!paymentInformationValidation(newPayMentInformation)) {
-                //   set_has_unsaved_change(false);
-                // } else if (newTags?.length === 0) {
-                //   successMsg('Please add atleast one tag!');
-                // } else if (has_unsaved_change && paymentInformationValidation(newPayMentInformation)) {
-                //   updateShopSettings();
-                // } else {
-                //   successMsg('Please make some changes first!');
-                // }
                 if (!paymentInformationValidation(newPayMentInformation)) {
                   set_has_unsaved_change(false);
                   return;

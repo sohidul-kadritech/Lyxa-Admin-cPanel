@@ -129,7 +129,7 @@ export default function CategoryItem({
                 }}
               />
             )}
-            {isOridanryCategory && (
+            {isOridanryCategory && (shop?.shopType === 'food' || currentUser?.userType === 'admin') && (
               <>
                 <StyledIconButton
                   color="primary"

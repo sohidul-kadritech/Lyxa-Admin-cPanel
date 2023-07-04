@@ -24,8 +24,9 @@ import { ReactComponent as UserIcon } from '../assets/icons/menu-icons/user.svg'
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.svg';
 
 /* ======== shop ======== */
-export const shop_menu_items = (prefix = '', shopDeliveryType) => {
-  console.log({ shopDeliveryType, prefix });
+export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
+  console.log('menuitem', shopType);
+
   const menuItems = [
     {
       title: 'Management',
@@ -139,6 +140,10 @@ export const shop_menu_items = (prefix = '', shopDeliveryType) => {
       to: `${prefix}/riders`,
       icon: RidersAdminIcons,
     });
+  }
+
+  if (shopType !== 'food') {
+    menuItems[2].menu[0].label = 'Product List';
   }
 
   return menuItems;

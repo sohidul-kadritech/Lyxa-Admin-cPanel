@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button } from '@mui/material';
-import React, { useState } from 'react';
+import { debounce } from '@mui/material/utils';
+import React, { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg';
 import { ReactComponent as DropIcon } from '../../assets/icons/down.svg';
@@ -8,54 +9,36 @@ import { confirmActionInit } from '../../assets/staticData';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
-import { useGlobalContext } from '../../context';
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { validateCategory } from './helpers';
 
-const fieldContainerSx = {
-  padding: '14px 0',
-};
-
-const getCategoryInit = (shopType) => ({
+const getCategoryInit = () => ({
   name: '',
-  image: shopType === 'food' ? undefined : [],
-  type: shopType,
+  image: [],
+  type: '',
   note: '',
 });
 
-const getEditCategoryData = (editCategory, shopType) => {
-  const category = {
-    name: editCategory?.category.name || '',
-    type: shopType,
-    note: editCategory?.category.note || '',
-  };
+const getEditCategoryData = (editCategory) => ({
+  name: editCategory?.category?.name || '',
+  type: '',
+  note: editCategory?.category?.note || '',
+  image: [{ preview: editCategory?.category?.image }],
+  id: editCategory?._id,
+});
 
-  if (shopType === 'food') {
-    return category;
-  }
-
-  return {
-    ...category,
-    image: [{ preview: editCategory?.category?.image }],
-  };
-};
-
-export default function AddCategory({ onClose, editCategory }) {
-  // const shop = useSelector((store) => store.Login.admin);
-  const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+export default function AddCategory({ onClose, editCategory, shop, viewUserType = 'shop', newCategoryShopType }) {
   const queryClient = useQueryClient();
 
-  const [confirmModal, setConfirmModal] = useState(false);
-  const [confirmAction, setConfirmAction] = useState(confirmActionInit);
+  const [confirmModal] = useState(false);
+  const [confirmAction] = useState(confirmActionInit);
   const [loading, setLoading] = useState(false);
+  const [currentShop, setCurrentShop] = useState(shop || null);
 
-  const [category, setCategory] = useState(
-    editCategory?._id ? getEditCategoryData(editCategory, shop?.shopType) : getCategoryInit(shop?.shopType)
-  );
+  const [category, setCategory] = useState(editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit());
 
   // input handler
   const commonChangeHandler = (e) => {
@@ -101,7 +84,17 @@ export default function AddCategory({ onClose, editCategory }) {
   );
 
   const onSubmit = async () => {
-    const valid = validateCategory(category);
+    const data = {};
+
+    // data
+    data.name = category?.name;
+    data.note = category?.note;
+    data.type = currentShop?.shopType;
+    data.shopId = currentShop?._id;
+    data.id = currentShop?.id;
+    data.image = category?.image;
+
+    const valid = validateCategory(data);
 
     if (!valid?.status) {
       successMsg(valid?.msg);
@@ -110,7 +103,7 @@ export default function AddCategory({ onClose, editCategory }) {
 
     let imgUrl;
 
-    if (shop?.shopType !== 'food') {
+    if (currentShop?.shopType !== 'food') {
       setLoading(true);
       imgUrl = await getImageUrl(category?.image[0]);
 
@@ -122,17 +115,15 @@ export default function AddCategory({ onClose, editCategory }) {
     }
 
     categoryMutation.mutate({
-      ...category,
+      ...data,
       image: imgUrl,
-      id: editCategory?._id,
-      shopId: shop._id,
     });
 
     setLoading(false);
   };
 
   // delete category
-  const deleteCategoryMutation = useMutation((data) => AXIOS.post(Api.DELETE_CATEGORY, { id: editCategory?._id }), {
+  const deleteCategoryMutation = useMutation(() => AXIOS.post(Api.DELETE_CATEGORY, { id: editCategory?._id }), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
 
@@ -144,6 +135,37 @@ export default function AddCategory({ onClose, editCategory }) {
     },
   });
 
+  // shops query
+  const [shopSearchKey, setShopSearchKey] = useState('');
+  const [shopOptions, setShopOptions] = useState([]);
+
+  const shopsQuery = useMutation(
+    () =>
+      AXIOS.get(Api.ALL_SHOP, {
+        params: {
+          type: newCategoryShopType,
+          shopStatus: 'all',
+          page: 1,
+          pageSize: 15,
+          searchKey: shopSearchKey,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        setShopOptions((prev) => data?.data?.shops || prev);
+      },
+    }
+  );
+
+  const getShops = useMemo(
+    () =>
+      debounce((value) => {
+        setShopSearchKey(value);
+        shopsQuery.mutate();
+      }, 100),
+    []
+  );
+
   return (
     <>
       <SidebarContainer title="Add Category" onClose={onClose}>
@@ -152,9 +174,6 @@ export default function AddCategory({ onClose, editCategory }) {
           <StyledFormField
             label="Name"
             intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               type: 'text',
               name: 'name',
@@ -163,13 +182,10 @@ export default function AddCategory({ onClose, editCategory }) {
             }}
           />
           {/* photo */}
-          {shop?.shopType !== 'food' && (
+          {newCategoryShopType !== 'food' && (
             <StyledFormField
               label="Photo"
               intputType="file"
-              containerProps={{
-                sx: fieldContainerSx,
-              }}
               inputProps={{
                 onDrop,
                 maxSize: 1000 * 1000,
@@ -177,6 +193,31 @@ export default function AddCategory({ onClose, editCategory }) {
                 files: category.image,
                 helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
                 helperText2: 'Pixels: Minimum 320 for width and height',
+              }}
+            />
+          )}
+          {/* shop */}
+          {viewUserType === 'admin' && (
+            <StyledFormField
+              label="Shop"
+              intputType="autocomplete"
+              inputProps={{
+                maxHeight: '300px',
+                options: shopOptions,
+                value: currentShop,
+                disablePortal: true,
+                noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'Type shop name',
+                getOptionLabel: (option) => option?.shopName,
+                isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                onChange: (e, v) => {
+                  setCurrentShop(v);
+                },
+                onInputChange: (e) => {
+                  getShops(e?.target?.value);
+                },
+                sx: {
+                  flex: 1,
+                },
               }}
             />
           )}
@@ -196,9 +237,6 @@ export default function AddCategory({ onClose, editCategory }) {
               </span>
             }
             intputType="textarea"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
             inputProps={{
               name: 'note',
               value: category.note,

@@ -80,7 +80,11 @@ export default function AdminToSellerLayout() {
       routes={seller_routes(path)}
       menuItems={seller_menu_items(url)}
       secondaryRoutes={shop_routes(shopPath, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
-      secondaryMenuItems={shop_menu_items(shopUrl, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
+      secondaryMenuItems={shop_menu_items(
+        shopUrl,
+        currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
+        currentUser?.shop?.shopType
+      )}
       childFor="seller"
     />
   );

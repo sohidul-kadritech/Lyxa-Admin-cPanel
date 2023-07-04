@@ -11,6 +11,8 @@ export default function StyledBox({
   sx,
   sxLeft,
   sxRight,
+  inputProps,
+  sxContainer,
 }) {
   return (
     <Stack
@@ -19,6 +21,7 @@ export default function StyledBox({
       justifyContent={placement === 'end' ? 'flex-end' : 'flex-start'}
       sx={{
         height: '100%',
+        ...sxContainer,
       }}
     >
       <Stack
@@ -44,6 +47,9 @@ export default function StyledBox({
           <StyledInput
             value={inputValue}
             type={inputType}
+            inputProps={{
+              ...inputProps,
+            }}
             sx={{
               width: '120px',
               '& input': {

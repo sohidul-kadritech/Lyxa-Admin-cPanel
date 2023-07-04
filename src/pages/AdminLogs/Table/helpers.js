@@ -7,8 +7,8 @@ export const getValue = (type, value, currency) => {
   let newValue = null;
   if (!value || value.length <= 0) {
     newValue = 0;
-  } else if (type === 'currency') {
-    newValue = `${value?.code} (${value?.symbol})`;
+  } else if (type === 'currency' || type === 'secondaryCurrency') {
+    newValue = value?.code ? `${value?.code} (${value?.symbol})` : 0;
   } else if (type === 'adminCutForReward') {
     newValue = value;
   } else if (type === 'minSpendLimit') {

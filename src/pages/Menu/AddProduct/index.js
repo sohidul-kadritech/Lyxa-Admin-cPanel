@@ -112,7 +112,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         pageSize: 100,
         searchKey: '',
         sortBy: 'desc',
-        status: 'active',
+        // status: 'active',
         type: shop?.shopType,
         shopId: shop?._id,
         userType: 'shop',
@@ -125,7 +125,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           pageSize: 100,
           searchKey: '',
           sortBy: 'desc',
-          status: 'active',
+          // status: 'active',
           type: shop?.shopType,
           shopId: shop?._id,
           userType: 'shop',
@@ -134,7 +134,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       staleTime: minInMiliSec(10),
       onSuccess: (data) => {
-        console.log(data);
         setConvertCategories(data);
       },
     }
@@ -318,7 +317,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         </Box>
       )}
       {/* name */}
-      <Box sx={fieldContainerSx} id="add-product-details">
+      <Box id="add-product-details">
         <StyledFormField
           label="Name"
           intputType="text"

@@ -84,7 +84,11 @@ export default function SellerToShopLayout() {
       hideSidebar={hideSidebar}
       sidebarTitle="Lyxa Shop"
       routes={shop_routes(path, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
-      menuItems={shop_menu_items(url, currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop')}
+      menuItems={shop_menu_items(
+        url,
+        currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
+        currentUser?.shop?.shopType
+      )}
       childFor="shop"
     />
   );

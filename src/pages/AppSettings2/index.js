@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -36,6 +36,21 @@ const initialCurrency = {
   name_plural: 'euros',
   _id: '647707ce1afe457826284190',
 };
+
+const getAcceptedCurrencyOptions = (base, secondary) => [
+  {
+    label: 'Both',
+    value: 'both',
+  },
+  {
+    label: `${base?.code} Only`,
+    value: base.symbol,
+  },
+  {
+    label: `${secondary?.code} Only`,
+    value: secondary.symbol,
+  },
+];
 
 export const validateList = (newValue, oldList, type) => {
   if (Number(newValue) < 1 && type === 'number') {
@@ -105,6 +120,9 @@ function Appsettings2() {
 
   const [currency, setCurrency] = useState(initialCurrency);
 
+  const [secondaryCurrency, setSecondaryCurrency] = useState(initialCurrency);
+  const [acceptedCurrency, setAcceptedCurrency] = useState('');
+
   const [isConfirm, setIsconfirm] = useState(false);
 
   const [hasChanged, setHasChanged] = useState(false);
@@ -134,6 +152,8 @@ function Appsettings2() {
     setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
     setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
+    setSecondaryCurrency(getShopSettingsData?.data?.data?.appSetting?.secondaryCurrency || initialCurrency);
+    setAcceptedCurrency(getShopSettingsData?.data?.data?.appSetting?.acceptedCurrency || '');
     setUnits(getAllUnits?.data?.data || []);
     setOldUnits(getAllUnits?.data?.data || []);
   }, [getShopSettingsData?.data?.data, getAllUnits?.data?.data]);
@@ -198,7 +218,9 @@ function Appsettings2() {
     setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
     setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
     setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
-    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || {});
+    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
+    setSecondaryCurrency(getShopSettingsData?.data?.data?.appSetting?.secondaryCurrency || initialCurrency);
+    setAcceptedCurrency(getShopSettingsData?.data?.data?.appSetting?.acceptedCurrency || '');
     setUnits(getAllUnits?.data?.data || []);
   };
 
@@ -283,6 +305,7 @@ function Appsettings2() {
       maxCustomerServiceValue,
       searchDeliveryBoyKm,
       currency,
+      secondaryCurrency,
       vat,
     };
 
@@ -511,6 +534,105 @@ function Appsettings2() {
                     setHasChanged(true);
                     const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
                     setCurrency(selectedCurrency);
+                  },
+                  //   readOnly: Boolean(newProductCategory) || productReadonly,
+                }}
+              />
+            </StyledBox>
+            <StyledBox title="Secondary Currency">
+              <StyledFormField
+                intputType="select"
+                containerProps={{
+                  sx: {
+                    width: '125px',
+                  },
+                }}
+                inputProps={{
+                  name: 'shopStatus',
+                  placeholder: 'currency',
+                  value: secondaryCurrency?.code || '',
+                  items: currenciesList.map((currency) => {
+                    const label = currency?.name_plural;
+                    const value = currency?.code;
+                    return { label, value };
+                  }),
+                  //   items: categories,
+                  onChange: (e) => {
+                    setHasChanged(true);
+                    const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
+                    setSecondaryCurrency(selectedCurrency);
+                  },
+                  //   readOnly: Boolean(newProductCategory) || productReadonly,
+                }}
+              />
+            </StyledBox>
+            <StyledBox title="Rate">
+              <Stack gap="10px" direction="row">
+                <InputBox
+                  title={`Amount of ${currency?.symbol}`}
+                  endAdornment={`${currency?.symbol}`}
+                  inputValue={`${1}`}
+                  inputType="number"
+                  sxLeft={{ width: '200px' }}
+                  sxRight={{ width: '140px' }}
+                  inputProps={{ readOnly: true, sx: { opacity: '0.5' } }}
+                  sxContainer={{ flex: 2 }}
+                  onInputChange={(e) => {
+                    setHasChanged(true);
+                    setMaxTotalEstItemsPriceForButler(e?.target?.value);
+                  }}
+                />
+                {/* <InputBox
+                  sxLeft={{ width: '200px' }}
+                  sxRight={{ width: '140px' }}
+                  sxContainer={{ flex: 2 }}
+                  title="Maximum Distance"
+                  endAdornment="KM"
+                  inputValue={`${maxDistanceForButler}`}
+                  inputType="number"
+                  onInputChange={(e) => {
+                    setHasChanged(true);
+                    setMaxDistanceForButler(e?.target?.value);
+                  }}
+                /> */}
+
+                <Stack justifyItems="start" sx={{ flex: 2 }}>
+                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ maxWidth: '370px' }}>
+                    <Typography variant="body1">Equivalent to </Typography>
+                    <IncrementDecrementButton
+                      isChangeOthers
+                      changeOthers={() => {
+                        setHasChanged(true);
+                      }}
+                      isValidateType={false}
+                      incrementHandler={incrementByFiveHandler}
+                      decrementHandler={decrementByFiveHandler}
+                      setValue={setNearByShopKmForUserHomeScreen}
+                      currentValue={nearByShopKmForUserHomeScreen}
+                    />
+                  </Stack>
+                </Stack>
+              </Stack>
+            </StyledBox>
+
+            <StyledBox title="Accepted Currency">
+              <StyledFormField
+                intputType="select"
+                containerProps={{
+                  sx: {
+                    width: '125px',
+                  },
+                }}
+                inputProps={{
+                  name: 'shopStatus',
+                  placeholder: 'currency',
+                  value: acceptedCurrency || '',
+                  items: getAcceptedCurrencyOptions(currency, secondaryCurrency),
+                  //   items: categories,
+                  onChange: (e) => {
+                    setHasChanged(true);
+                    const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
+                    setSecondaryCurrency(selectedCurrency);
                   },
                   //   readOnly: Boolean(newProductCategory) || productReadonly,
                 }}

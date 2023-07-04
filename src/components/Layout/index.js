@@ -16,13 +16,13 @@ import { shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
-const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, prefix = '') => {
+const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, prefix = '') => {
   let routes = [];
   let menuItems = [];
 
   if (userType === 'shop') {
     routes = shop_routes(prefix, shopDeliveryType);
-    menuItems = shop_menu_items(prefix, shopDeliveryType);
+    menuItems = shop_menu_items(prefix, shopDeliveryType, shopType);
   }
 
   if (userType === 'seller') {
@@ -51,7 +51,8 @@ export default function Layout() {
       getRouteAndSidebarItems(
         currentUser?.userType,
         currentUser?.adminType,
-        currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop'
+        currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
+        currentUser?.shop?.shopType
       ),
     [currentUser?.userType]
   );

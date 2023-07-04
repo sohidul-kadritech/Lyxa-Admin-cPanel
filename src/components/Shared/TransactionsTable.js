@@ -2,9 +2,10 @@ import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import LoadingOverlay from '../Common/LoadingOverlay';
+import TableSkeleton from '../Skeleton/TableSkeleton';
 import StyledCheckbox from '../Styled/StyledCheckbox';
 import StyledTable from '../Styled/StyledTable3';
-//
+
 export const getTrxType = (trxType) => {
   let typeLabel = 'Unknown';
   if (trxType === 'adminSettlebalanceShop') typeLabel = 'Settle shop';
@@ -20,7 +21,7 @@ export const getTrxType = (trxType) => {
   return typeLabel;
 };
 
-export default function TransactionsTable({ rows = [], type, loading, queryParams = {} }) {
+export default function TransactionsTable({ rows = [], type, loading, refetching, queryParams = {} }) {
   const [allSelected, setAllSelected] = useState(false);
   const [render, setRender] = useState(false);
 
@@ -168,6 +169,8 @@ export default function TransactionsTable({ rows = [], type, loading, queryParam
     },
   ];
 
+  if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text']} rows={5} />;
+
   return (
     <Box
       sx={{
@@ -178,9 +181,10 @@ export default function TransactionsTable({ rows = [], type, loading, queryParam
         border: '1px solid #EEEEEE',
         borderRadius: '7px',
         background: '#fff',
+        position: 'relative',
       }}
     >
-      {loading && <LoadingOverlay />}
+      {refetching && <LoadingOverlay />}
       <StyledTable
         columns={columns.filter((col) => col.type.includes(type))}
         rows={rows}

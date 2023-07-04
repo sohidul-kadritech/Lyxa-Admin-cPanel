@@ -15,6 +15,7 @@ function IncrementDecrementButton({
   isValidateType = true,
   isChangeOthers = false,
   changeOthers,
+  sx,
 }) {
   const theme = useTheme();
   return (
@@ -25,6 +26,7 @@ function IncrementDecrementButton({
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'inline-block',
+        ...sx,
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

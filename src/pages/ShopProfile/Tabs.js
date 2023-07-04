@@ -61,7 +61,6 @@ export default function ShopProfileTabs({ shop }) {
       <Drawer open={open} anchor="right">
         <OrderDetail
           order={currentOrder}
-          hideIssues
           onClose={() => {
             setOpen(false);
             setCurrentOrder({});
