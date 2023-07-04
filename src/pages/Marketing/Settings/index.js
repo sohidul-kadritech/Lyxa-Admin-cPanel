@@ -69,8 +69,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           page: 1,
           pageSize: 1000,
           type: 'all',
-          status: 'all',
+          status: 'active',
           shop: shop?._id,
+          inStock: true,
         },
       }),
     {
