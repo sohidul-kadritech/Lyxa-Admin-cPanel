@@ -3,6 +3,13 @@ import { ReactComponent as CouponIcon } from '../../../../assets/icons/coupon.sv
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 
+const couponTypeLabelMap = {
+  global: 'Global',
+  individual_store: 'Store/Category',
+  individual_user: 'Individual User',
+  custom_coupon: 'Custom Coupon',
+};
+
 export default function CouponDetails({ coupon }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -19,12 +26,13 @@ export default function CouponDetails({ coupon }) {
         <span style={{ fontWeight: 600 }}>Code</span> - {coupon?.couponName}
       </Typography>
       <Typography variant="body2" color="textPrimary" lineHeight="22px" display="flex" gap={1.5} alignItems="center">
-        <span style={{ fontWeight: 600 }}>Value</span> - {coupon?.couponValue}
-        {coupon?.couponType === 'fixed' ? currency : '%'}
+        {/* eslint-disable-next-line max-len */}
+        <span style={{ fontWeight: 600 }}>Value</span> - {coupon?.couponDiscountType === 'fixed' ? `${currency}` : ''}{' '}
+        {coupon?.couponValue} {coupon?.couponDiscountType !== 'fixed' ? `%` : ''}
       </Typography>
       <Typography variant="body2" color="textPrimary" lineHeight="22px" display="flex" gap={1.5} alignItems="center">
         <span style={{ fontWeight: 600 }}>Type</span> -{' '}
-        <span style={{ textTransform: 'capitalize' }}>{coupon?.couponType}</span>
+        <span style={{ textTransform: 'capitalize' }}>{couponTypeLabelMap[coupon?.couponType]}</span>
       </Typography>
     </StyledOrderDetailBox>
   );

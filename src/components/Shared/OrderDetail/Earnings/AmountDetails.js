@@ -14,6 +14,7 @@ export default function AmountDetails({ order = {} }) {
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
+        {/* discount / marketing */}
         <StyledItem
           label="Loyalty Points"
           value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
@@ -37,12 +38,6 @@ export default function AmountDetails({ order = {} }) {
               </ul>
             </Box>
           }
-        />
-        <StyledItem
-          label="Rewards (shop)"
-          // value={}
-          hideZero
-          tooltip="Reward point cut that shop pays"
         />
         <StyledItem
           label="Buy 1 Get 1 (admin) "
@@ -79,6 +74,12 @@ export default function AmountDetails({ order = {} }) {
           value={order?.orderDeliveryCharge?.shopCut}
           hideZero
           tooltip="Free Delivery added by shop"
+        />
+        <StyledItem
+          label="Coupon Discount "
+          value={order?.summary?.couponDiscountAmount || 0}
+          tooltip="Discount coupon created by admin"
+          hideZero
         />
         {/* not needed for butler order */}
         {!order?.isButler && (
