@@ -48,7 +48,7 @@ const StyledOverlay = styled(Box)(() => ({
 
 export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title, childFor = '' }) {
   const { currentUser } = useGlobalContext();
-  const { profilePhoto, altName } = getProfilePhotoAndAltName(currentUser, childFor);
+  const { profilePhoto, altName, name } = getProfilePhotoAndAltName(currentUser, childFor);
 
   return (
     <Box>
@@ -74,21 +74,38 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
               background: '#333333',
             }}
           >
-            <Avatar src={profilePhoto} alt="photo" sx={{ width: 44, height: 44, textTransform: 'uppercase' }}>
-              {altName}
-            </Avatar>
-            <Typography
-              variant="h3"
-              sx={{
-                color: '#fff',
-                fontWeight: '500',
-                fontSize: '22px',
-                lineHeight: '27px',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {title}
-            </Typography>
+            <Box>
+              <Avatar src={profilePhoto} alt="photo" sx={{ width: 44, height: 44, textTransform: 'uppercase' }}>
+                {altName}
+              </Avatar>
+            </Box>
+            <Box textAlign="left">
+              <Typography
+                pb={1}
+                variant="h3"
+                sx={{
+                  color: '#fff',
+                  fontWeight: '500',
+                  fontSize: '22px',
+                  lineHeight: '27px',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {title}
+              </Typography>
+              <Typography
+                className="text-dots"
+                variant="h3"
+                sx={{
+                  color: '#fff',
+                  fontWeight: '400',
+                  fontSize: '13px',
+                  lineHeight: 1,
+                }}
+              >
+                {name}
+              </Typography>
+            </Box>
           </Stack>
         )}
         <Stack pb={8.5}>
