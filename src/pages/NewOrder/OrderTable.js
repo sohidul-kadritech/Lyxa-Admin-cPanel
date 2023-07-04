@@ -320,7 +320,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           ),
         }}
       />
-
       {/* Update status */}
       <Modal
         open={updateStatusModal}
