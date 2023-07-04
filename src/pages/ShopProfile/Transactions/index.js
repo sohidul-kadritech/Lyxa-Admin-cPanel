@@ -117,7 +117,7 @@ export default function ShopTransactions({ shop }) {
           valueSx={amountSx}
         />
       </Grid>
-      <TransactionsTable rows={query?.data?.data?.transections} type="transactions" />
+      <TransactionsTable rows={query?.data?.data?.transections} type="transactions" loading={query?.isLoading} />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
