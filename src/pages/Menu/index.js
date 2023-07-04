@@ -124,7 +124,7 @@ export default function MenuPage() {
   return (
     <ProductsContext.Provider value={ContextObj}>
       <PageTop
-        title={`Menu (${shop?.shopName})`}
+        title={shop?.shopType === 'food' ? `Menu (${shop?.shopName})` : `Product List (${shop?.shopName})`}
         tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
         titleSx={{
           lineHeight: '28px',
@@ -156,6 +156,7 @@ export default function MenuPage() {
             setSearchValue={onSearch}
             searchValue={searchValue}
             shopType={shop?.shopType}
+            viewUserType={currentUser?.userType}
           />
           <Box pb={9}>
             {shop.shopType === 'food' && searchValue === '' && (

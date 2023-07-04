@@ -34,9 +34,12 @@ export default function ProductItem({ product, isFirst, isLast }) {
         </Typography>
         {product?.seoDescription && (
           <Typography variant="body2" color="text.secondary2" fontWeight={500}>
-            {product?.shop?.shopName}
+            {product?.seoDescription}
           </Typography>
         )}
+        <Typography variant="body2" color="text.secondary2" fontWeight={500}>
+          {product?.shop?.shopName}
+        </Typography>
       </Stack>
     </StyledContainer>
   );

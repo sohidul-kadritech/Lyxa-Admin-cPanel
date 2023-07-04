@@ -37,7 +37,16 @@ function BulkItemsButton({ ...props }) {
   );
 }
 
-function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse, onMenuClick, shopType, ...props }) {
+function SearchBar({
+  searchValue,
+  setSearchValue,
+  searchPlaceHolder,
+  onCollapse,
+  onMenuClick,
+  shopType,
+  viewUserType,
+  ...props
+}) {
   return (
     <Stack direction="row" alignItems="center" gap="15px" pb={6.5} {...props}>
       <StyledSearchBar
@@ -62,7 +71,7 @@ function SearchBar({ searchValue, setSearchValue, searchPlaceHolder, onCollapse,
       </Button>
       <ThreeDotsMenu
         handleMenuClick={onMenuClick}
-        menuItems={getAddMenuOptions(shopType)}
+        menuItems={getAddMenuOptions(shopType, viewUserType)}
         ButtonComponent={AddMenuButton}
       />
     </Stack>

@@ -66,7 +66,9 @@ export function ProductOverlayTag({ label, color }) {
 // };
 
 // menu options
-export const getAddMenuOptions = (shopType) => {
+export const getAddMenuOptions = (shopType, viewUserType) => {
+  console.log({ viewUserType });
+
   const options = [
     {
       label: 'Add item',
@@ -74,7 +76,7 @@ export const getAddMenuOptions = (shopType) => {
     },
   ];
 
-  if (shopType === 'food') {
+  if (shopType === 'food' || viewUserType === 'admin') {
     options.push({
       label: 'Add category',
       value: 'add-category',

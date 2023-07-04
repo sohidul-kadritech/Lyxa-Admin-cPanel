@@ -206,7 +206,7 @@ export default function AddCategory({ onClose, editCategory, shop, viewUserType 
                 options: shopOptions,
                 value: currentShop,
                 disablePortal: true,
-                noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+                noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'Type shop name',
                 getOptionLabel: (option) => option?.shopName,
                 isOptionEqualToValue: (option, value) => option?._id === value?._id,
                 onChange: (e, v) => {
