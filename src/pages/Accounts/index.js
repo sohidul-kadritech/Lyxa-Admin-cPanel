@@ -36,7 +36,7 @@ export default function AccountList() {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (
@@ -52,7 +52,7 @@ export default function AccountList() {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"
-          hideFilters={{ button: true }}
+          hideFilters={{ button: true, menu: true }}
         />
       </Box>
       <UsersTable

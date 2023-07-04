@@ -66,6 +66,7 @@ export default function Orders({ type }) {
           hideFilters={{
             button: true,
             status: true,
+            menu: true,
           }}
         />
       </Box>

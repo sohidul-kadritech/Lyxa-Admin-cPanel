@@ -59,7 +59,7 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Reviews"
-        hideFilters={{ button: true, status: true }}
+        hideFilters={{ button: true, status: true, menu: true }}
       />
       <ReviewTable reviews={filteredReviews} onViewDetail={onViewDetail} />
     </Box>

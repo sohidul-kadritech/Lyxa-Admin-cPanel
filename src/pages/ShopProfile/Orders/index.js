@@ -44,7 +44,7 @@ export default function ShopOrders({ shop, onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Orders"
-        hideFilters={{ button: true, status: true }}
+        hideFilters={{ button: true, status: true, menu: true }}
       />
       <Box paddingTop="30px" />
       <OrderTable
