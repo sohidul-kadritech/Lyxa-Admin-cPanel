@@ -25,7 +25,7 @@ export default function Invoices() {
         <SearchBar
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          hideFilters={{ button: true, menu: true }}
+          showFilters={{ search: true, date: true, status: true, sort: true }}
         />
       </Box>
       <TabPanel noPadding index="unpaid" value={currentTab}>

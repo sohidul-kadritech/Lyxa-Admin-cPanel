@@ -1,11 +1,10 @@
-// thrid pary
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import PageList from '../../../components/Common/PageList';
 import PageTop from '../../../components/Common/PageTop';
-import SearchBar from './Searchbar';
 
-const getpagesList = () => [
+const getPageList = () => [
   {
     label: 'Marketing',
     to: 'settings/marketing',
@@ -39,11 +38,6 @@ const getpagesList = () => [
     label: 'Notifications',
     to: '/settings/notifications',
   },
-
-  // {
-  //   label: 'Default Chat Message',
-  //   to: '/admin/default-chat-message',
-  // },
   {
     label: 'Default Chat Message',
     to: '/admin/default-chat-message',
@@ -56,10 +50,6 @@ const getpagesList = () => [
     label: 'App Settings',
     to: '/settings/app-settings',
   },
-  // {
-  //   label: 'Admin Log',
-  //   to: '/add-wallet/admin-log-history',
-  // },
   {
     label: 'Admin Log',
     to: '/add-wallet/admin-log-history',
@@ -100,23 +90,29 @@ const filterPages = (searchKey, pages) => {
   return pages.filter((page) =>
     page?.label
       ?.toLowerCase()
-      // eslint-disable-next-line prettier/prettier
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
   );
 };
 
 export default function AdminSettings() {
-  const [list, setList] = useState(getpagesList());
-  const [searchKey, setSearchKey] = useState('');
+  const [list, setList] = useState(getPageList());
+  const [queryParams, setQueryParams] = useState({ searchKey: '' });
 
   useEffect(() => {
-    setList(filterPages(searchKey, getpagesList()));
-  }, [searchKey]);
+    setList(filterPages(queryParams?.searchKey, getPageList()));
+  }, [queryParams?.searchKey]);
 
   return (
     <Box pb={10}>
       <PageTop title="Settings" subtitle="Customize admin settings" />
-      <SearchBar setSearchKey={setSearchKey} />
+      <Box pb={6.5}>
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          showFilters={{ search: true }}
+          searchPlaceHolder="Search Page"
+        />
+      </Box>
       <PageList items={list} />
     </Box>
   );

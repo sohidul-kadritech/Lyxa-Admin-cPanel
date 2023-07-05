@@ -33,7 +33,7 @@ export default function SearchBar({
   searchPlaceHolder,
   queryParams,
   setQueryParams,
-  hideFilters,
+  showFilters,
   onButtonClick,
   buttonLabel,
   menuHandler,
@@ -50,7 +50,7 @@ export default function SearchBar({
 
   return (
     <Stack direction="row" alignItems="center" gap="20px">
-      {!hideFilters?.search && (
+      {showFilters?.search && (
         <StyledSearchBar
           fullWidth
           placeholder={searchPlaceHolder}
@@ -60,7 +60,7 @@ export default function SearchBar({
         />
       )}
       {/* start date */}
-      {!hideFilters?.startDate && (
+      {showFilters?.date && (
         <FilterDate
           tooltip="Start Date"
           maxDate={moment(queryParams.endDate).subtract(1, 'day')}
@@ -76,7 +76,7 @@ export default function SearchBar({
         />
       )}
       {/* end date */}
-      {!hideFilters?.endDate && (
+      {showFilters?.date && (
         <FilterDate
           tooltip="End Date"
           minDate={moment(queryParams.startDate).add(1, 'day')}
@@ -92,7 +92,7 @@ export default function SearchBar({
         />
       )}
       {/* sort */}
-      {!hideFilters?.sort && (
+      {showFilters?.sort && (
         <FilterSelect
           items={sortOptions}
           value={queryParams.sortBy}
@@ -108,7 +108,7 @@ export default function SearchBar({
         />
       )}
       {/* status */}
-      {!hideFilters?.status && (
+      {showFilters?.status && (
         <FilterSelect
           items={statusOptions}
           value={queryParams.status}
@@ -124,7 +124,7 @@ export default function SearchBar({
         />
       )}
       {/* button */}
-      {!hideFilters?.button && (
+      {showFilters?.button && (
         <Box flexShrink={0}>
           <Button variant="contained" size="small" onClick={onButtonClick}>
             {buttonLabel}
@@ -132,7 +132,7 @@ export default function SearchBar({
         </Box>
       )}
       {/* menu */}
-      {!hideFilters?.menu && (
+      {showFilters?.menu && (
         <ThreeDotsMenu handleMenuClick={menuHandler} menuItems={menuItems} ButtonComponent={MenuButton} />
       )}
     </Stack>

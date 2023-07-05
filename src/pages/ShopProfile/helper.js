@@ -133,22 +133,26 @@ export function TagsAndCuisines(tags, cuisines) {
   }${tags?.join(', ')}`;
 }
 
-export function convertTimeToAmPm(time) {
+export function convertTimeToAmPm(time = []) {
+  console.log('time', time);
   const date = new Date();
   const [hours, minutes] = time.split(':');
   date.setHours(hours, minutes, 0, 0);
-  const suffix = hours >= 12 ? 'P.M' : 'A.M';
+  const suffix = hours > 12 ? 'P.M' : 'A.M';
   const displayHours = hours % 12 || 12;
   const displayMinutes = minutes.toString().padStart(2, '0');
   return `${displayHours}:${displayMinutes} ${suffix}`;
 }
 
 export function openingHours(normalHours) {
+  console.log({ normalHours });
+
   const openingHoursSx = {
     fontSize: '14px',
     fontWeight: 500,
     color: '#363636',
   };
+
   const dayStructure = (day) => {
     if (day.toLowerCase() === 'saturday') return 'Sat.';
     if (day.toLowerCase() === 'sunday') return 'Sun.';
@@ -163,19 +167,20 @@ export function openingHours(normalHours) {
 
   return (
     <Stack direction="column" gap="10px">
-      {normalHours?.map((week, i) => (
+      {normalHours?.map((day, i) => (
         <Box key={i}>
           <Stack direction="row">
             <Typography sx={openingHoursSx} width="40px" variant="inherit">
-              {dayStructure(week.day)}
+              {dayStructure(day?.day)}
             </Typography>
-            {week.isActive ? (
-              <>
-                {' '}
-                <Typography sx={openingHoursSx} variant="inherit">
-                  {convertTimeToAmPm(week.open)} - {convertTimeToAmPm(week.close)}
-                </Typography>
-              </>
+            {day.isActive ? (
+              <Box>
+                {day?.openingHours?.map((hours, index) => (
+                  <Typography sx={openingHoursSx} variant="inherit" key={`${index}`}>
+                    {convertTimeToAmPm(hours.open)} - {convertTimeToAmPm(hours.close)}
+                  </Typography>
+                ))}
+              </Box>
             ) : (
               <Typography sx={openingHoursSx} variant="inherit">
                 Closed

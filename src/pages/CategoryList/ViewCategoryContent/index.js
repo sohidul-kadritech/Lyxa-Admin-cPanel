@@ -64,13 +64,8 @@ export default function ViewCategoryContent({ onClose, category }) {
         <Box pt={1} pb={5}>
           <SearchBar
             searchPlaceHolder="Search"
-            hideFilters={{
-              button: true,
-              startDate: true,
-              endDate: true,
-              status: true,
-              sort: true,
-              menu: true,
+            showFilters={{
+              search: true,
             }}
             queryParams={searchKey}
             setQueryParams={setSearchKey}
