@@ -63,10 +63,10 @@ export default function Orders({ type }) {
           searchPlaceHolder="Search orders"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          hideFilters={{
-            button: true,
-            status: true,
-            menu: true,
+          showFilters={{
+            search: true,
+            sort: true,
+            date: true,
           }}
         />
       </Box>
