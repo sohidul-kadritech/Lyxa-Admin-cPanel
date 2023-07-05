@@ -293,7 +293,7 @@ export const updateShopData = (oldShop, newShop) => {
   oldShop.account_swift = newShop?.account_swift || oldShop?.account_swift;
 };
 
-const shopNormalHours = [
+export const shopNormalHours = [
   {
     day: 'Monday',
     openingHours: [
