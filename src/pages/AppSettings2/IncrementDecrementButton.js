@@ -16,6 +16,8 @@ function IncrementDecrementButton({
   isChangeOthers = false,
   changeOthers,
   sx,
+  objectKey,
+  isReadOnly = false,
 }) {
   const theme = useTheme();
   return (
@@ -26,6 +28,7 @@ function IncrementDecrementButton({
         borderRadius: '25px',
         background: theme.palette.background.secondary,
         display: 'inline-block',
+        opacity: isReadOnly ? '0.5' : '1',
         ...sx,
       }}
     >
@@ -33,10 +36,14 @@ function IncrementDecrementButton({
         <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
           <Button
             disableRipple
-            disabled={currentValue <= 0}
+            disabled={currentValue <= 0 || isReadOnly}
             sx={{ fontSize: '32px', fontWeight: 600 }}
             onClick={() => {
-              decrementHandler(setValue);
+              if (objectKey) {
+                decrementHandler(setValue, objectKey);
+              } else {
+                decrementHandler(setValue);
+              }
               if (isValidateType) setTypeValidation(types, setType, type);
             }}
           >
@@ -46,7 +53,7 @@ function IncrementDecrementButton({
             intputType="text"
             containerProps={{
               sx: {
-                width: `${currentValue.toString().length > 0 ? currentValue.toString().length * 10 : '60'}px`,
+                width: `${currentValue?.toString().length > 0 ? currentValue.toString().length * 10 : '60'}px`,
                 padding: '0 0',
                 textAlign: 'center',
                 borderRadius: '0px',
@@ -59,6 +66,7 @@ function IncrementDecrementButton({
               name: 'incrementdecrement',
               placeholder: '0',
               value: currentValue || 0,
+              readOnly: isReadOnly,
               sx: {
                 padding: '0 0',
                 textAlign: 'center',
@@ -66,9 +74,19 @@ function IncrementDecrementButton({
                 // background: 'red',
               },
               onChange: (e) => {
-                if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
-                else setValue(e.target.value);
+                if (objectKey) {
+                  if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0)
+                    setValue((prev) => ({ ...prev, [objectKey]: 0 }));
+                  else setValue((prev) => ({ ...prev, [objectKey]: e.target.value }));
+                }
+
+                if (!objectKey) {
+                  if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
+                  else setValue(e.target.value);
+                }
+
                 if (isValidateType) setTypeValidation(types, setType, type);
+
                 if (isChangeOthers) changeOthers();
               },
               //   readOnly: Boolean(newProductCategory) || productReadonly,
@@ -76,9 +94,14 @@ function IncrementDecrementButton({
           />
           <Button
             disableRipple
+            disabled={isReadOnly}
             sx={{ fontSize: '32px', marginLeft: '0 !important' }}
             onClick={() => {
-              incrementHandler(setValue);
+              if (objectKey) {
+                incrementHandler(setValue, objectKey);
+              } else {
+                incrementHandler(setValue);
+              }
               if (isValidateType) setTypeValidation(types, setType, type);
             }}
           >

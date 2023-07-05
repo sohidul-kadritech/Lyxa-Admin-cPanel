@@ -19,6 +19,7 @@ export const adminLogTypeOptions = [
   { label: 'All', value: 'all' },
   { label: 'App Currency', value: 'currency' },
   { label: 'Secondary Currency', value: 'secondaryCurrency' },
+  { label: 'Equivalent to', value: 'exchangeRate' },
   { label: 'Accepted Currency', value: 'acceptedCurrency' },
   { label: 'VAT', value: 'vat' },
   { label: 'Maximum Discount for Shops', value: 'maxDiscount' },
@@ -38,10 +39,13 @@ export const adminLogTypeOptions = [
   // { label: 'Seller Lyxa Charge Reset', value: 'sellerDropChargeReset' },
 ];
 
-export const getTypeName = (type) => {
+export const getTypeName = (type, secondaryCurrency) => {
   const getData = {
     currency: 'App Currency',
     secondaryCurrency: 'Secondary Currency',
+    exchangeRate: `Equivalent to ${
+      secondaryCurrency?.secondaryCurrency?.symbol ? `(${secondaryCurrency?.secondaryCurrency?.symbol})` : ''
+    }`,
     acceptedCurrency: 'Accepted Currency',
     vat: 'VAT',
     maxDiscount: 'Maximum Discount for Shops',
