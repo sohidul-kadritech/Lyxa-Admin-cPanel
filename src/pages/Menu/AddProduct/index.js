@@ -39,7 +39,7 @@ const tabSx = {
   textTransform: 'none',
 };
 
-export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
+export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory, secondaryCurrency }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const queryClient = useQueryClient();
@@ -51,7 +51,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
-    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
+    // eslint-disable-next-line prettier/prettier
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
   );
 
   console.log(product);
@@ -86,12 +87,14 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       staleTime: minInMiliSec(10),
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
-    [productsQuery?.data?.data?.products]
+    // eslint-disable-next-line prettier/prettier
+    [productsQuery?.data?.data?.products],
   );
 
   // units
@@ -100,7 +103,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   // categories
   const setConvertCategories = (data) => {
     setCategories(
-      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
+      // eslint-disable-next-line prettier/prettier
+      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev,
     );
   };
 
@@ -136,7 +140,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       onSuccess: (data) => {
         setConvertCategories(data);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const subCategoriesQuery = useQuery(
@@ -153,7 +158,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           status: 'active',
           categoryId: product?.category,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   useEffect(() => {
@@ -186,7 +192,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
@@ -215,7 +222,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     setProduct((prev) => ({
@@ -239,7 +247,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const uploadProduct = async () => {
@@ -421,7 +430,10 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         label="Price"
         intputType="text"
         containerProps={{
-          sx: fieldContainerSx,
+          sx: {
+            paddingTop: '14px',
+            paddingBottom: '0px',
+          },
         }}
         inputProps={{
           type: 'number',
@@ -431,6 +443,14 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           readOnly: productReadonly,
         }}
       />
+
+      {secondaryCurrency?.secondaryCurrency?.symbol && (
+        <Typography pt={2} variant="body3" display="block">
+          Equivalent Price: {secondaryCurrency?.secondaryCurrency?.symbol}
+          {product.price * parseInt(secondaryCurrency?.exchangeRate, 10)}
+        </Typography>
+      )}
+
       {/* attributes */}
       {shop?.shopType === 'food' && (
         <Box sx={fieldContainerSx} id="add-product-features">

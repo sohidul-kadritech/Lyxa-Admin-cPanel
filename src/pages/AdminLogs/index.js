@@ -24,6 +24,21 @@ const breadcrumbItems = [
 function AdminLogs() {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit);
   const [totalPage, setTotalPage] = useState(1);
+
+  const [secondaryCurrency, setSecondaryCurrency] = useState({});
+
+  // eslint-disable-next-line no-unused-vars
+  const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setSecondaryCurrency({
+          secondaryCurrency: data?.data?.appSetting?.secondaryCurrency,
+          baseCurrency: data?.data?.appSetting?.currency,
+        });
+      }
+    },
+  });
+
   const getAdminLog = useQuery(
     [API_URL.ADMIN_LOGS_HISTORY, queryParams],
     () =>
@@ -63,6 +78,7 @@ function AdminLogs() {
           <TablePageSkeleton row={5} column={5} />
         ) : (
           <AdminLogsTable
+            secondaryCurrency={secondaryCurrency}
             queryParams={queryParams}
             totalPage={totalPage}
             setQueryParams={setQueryParams}
