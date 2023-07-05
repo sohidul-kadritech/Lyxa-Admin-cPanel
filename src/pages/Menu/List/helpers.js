@@ -98,3 +98,15 @@ export const createCatagory = (data, type) => {
     sortedProducts,
   };
 };
+
+export const getExchangeRate = (currency, product) => {
+  const exchangeRate = currency?.exchangeRate;
+  const price = product?.price;
+  if (currency?.secondaryCurrency?.symbol) {
+    return {
+      price: exchangeRate * price,
+      currency: currency?.secondaryCurrency,
+    };
+  }
+  return {};
+};

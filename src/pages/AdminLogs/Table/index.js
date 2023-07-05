@@ -5,7 +5,7 @@ import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { allColumns, getValue } from './helpers';
 
-function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage }) {
+function AdminLogsTable({ data, loading, queryParams, setQueryParams, secondaryCurrency, totalPage }) {
   const theme = useTheme();
 
   const { general } = useGlobalContext();
@@ -30,7 +30,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, totalPage 
           }}
         >
           <StyledTable
-            columns={allColumns(getValue, currency)}
+            columns={allColumns(getValue, currency, secondaryCurrency)}
             rows={data || []}
             getRowId={(row) => row?._id}
             getRowHeight={() => 'auto'}

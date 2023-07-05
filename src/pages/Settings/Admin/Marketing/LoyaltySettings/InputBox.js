@@ -13,6 +13,8 @@ export default function StyledBox({
   sxRight,
   inputProps,
   sxContainer,
+  children,
+  isRenderedChild = false,
 }) {
   return (
     <Stack
@@ -43,23 +45,31 @@ export default function StyledBox({
         <Box sx={{ ...sxLeft }}>
           <Typography variant="body1">{title}</Typography>
         </Box>
-        <Stack direction="row" alignItems="center" gap={3} sx={{ ...sxRight }}>
-          <StyledInput
-            value={inputValue}
-            type={inputType}
-            inputProps={{
-              ...inputProps,
-            }}
-            sx={{
-              width: '120px',
-              '& input': {
-                textAlign: 'center',
-              },
-            }}
-            onChange={onInputChange}
-          />
-          <Typography variant="body1">{endAdornment}</Typography>
-        </Stack>
+        {!isRenderedChild && (
+          <Stack direction="row" alignItems="center" gap={3} sx={{ ...sxRight }}>
+            <StyledInput
+              value={inputValue}
+              type={inputType}
+              inputProps={{
+                ...inputProps,
+              }}
+              sx={{
+                width: '120px',
+                '& input': {
+                  textAlign: 'center',
+                },
+              }}
+              onChange={onInputChange}
+            />
+            <Typography variant="body1">{endAdornment}</Typography>
+          </Stack>
+        )}
+        {isRenderedChild && (
+          <Stack direction="row" alignItems="center" gap={3} sx={{ ...sxRight }}>
+            {children}
+            <Typography variant="body1">{endAdornment}</Typography>
+          </Stack>
+        )}
       </Stack>
     </Stack>
   );
