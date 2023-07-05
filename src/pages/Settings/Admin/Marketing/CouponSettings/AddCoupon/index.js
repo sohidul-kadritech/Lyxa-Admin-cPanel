@@ -200,6 +200,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               options: userOptions,
               value: coupon?.couponInfluencer || null,
               isOptionEqualToValue: (option, value) => option?._id === value?._id,
+              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'Type influencer name',
               getOptionLabel: (option) => option?.name,
               sx: {
                 flex: 1,
@@ -297,7 +298,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         />
         {/* user limit */}
         <StyledFormField
-          label="Order Limit By User"
+          label="Order Limit Per User"
           intputType="text-toggle"
           inputProps={{
             type: 'number',

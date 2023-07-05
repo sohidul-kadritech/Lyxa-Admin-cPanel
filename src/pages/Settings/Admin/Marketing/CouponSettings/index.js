@@ -26,6 +26,8 @@ export default function CoponSettings() {
     })
   );
 
+  console.log('data', query?.data?.data?.coupons);
+
   return (
     <Box>
       <PageTop backButtonLabel="Back to Marketing" backTo="/settings/marketing" breadcrumbItems={breadcrumbItems} />

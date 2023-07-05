@@ -7,11 +7,13 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import ConfirmModal from '../../../../../components/Common/ConfirmModal';
 import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
 import StyledTable from '../../../../../components/Styled/StyledTable3';
 import StyledBox from '../../../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../../../context';
 import { successMsg } from '../../../../../helpers/successMsg';
 import * as Api from '../../../../../network/Api';
 import AXIOS from '../../../../../network/axios';
@@ -22,6 +24,10 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
   const queryClient = useQueryClient();
   const history = useHistory();
   const theme = useTheme();
+  const routeMatch = useRouteMatch();
+
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [currentCoupon, setCurrentCoupon] = useState({});
@@ -65,7 +71,33 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => <Typography variant="body4">{row?.couponName}</Typography>,
+      renderCell: ({ row }) => (
+        <Stack gap={1}>
+          {row?.couponType === 'custom_coupon' && (
+            <Typography
+              variant="body4"
+              color="primary.main"
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                history.push({
+                  pathname: `/accounts/${row?.couponInfluencer?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to coupons' },
+                });
+              }}
+            >
+              {row?.couponInfluencer?.name}
+            </Typography>
+          )}
+          <Typography variant="body4">
+            Get {row?.couponDiscountType === 'fixed' ? `${currency}` : ''}
+            {row?.couponValue}
+            {row?.couponDiscountType === 'percentage' ? '%' : ''} off
+          </Typography>
+          <Typography variant="body4" color="text.secondary2">
+            {row?.couponName}
+          </Typography>
+        </Stack>
+      ),
     },
     {
       id: 3,
@@ -123,7 +155,7 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
     },
     {
       id: 7,
-      headerName: `USER ORDER LIMIT`,
+      headerName: `ORDER LIMIT PER USER`,
       sortable: false,
       field: 'couponUserLimit',
       flex: 1,
@@ -226,7 +258,10 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
           variant="body4"
           color="primary"
           onClick={() => {
-            history.push(`/users/details/${value[0]?._id}`);
+            history.push({
+              pathname: `/accounts/${value[0]?._id}`,
+              state: { from: routeMatch?.path, backToLabel: 'Back to coupons' },
+            });
           }}
         >
           {value[0]?.name}
