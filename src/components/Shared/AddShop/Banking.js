@@ -49,7 +49,7 @@ export default function ShopBanking({ shop, onChange }) {
         intputType="text"
         inputProps={{
           value: shop?.bank_postal_code,
-          type: 'text',
+          type: 'number',
           name: 'bank_postal_code',
           onChange,
         }}
