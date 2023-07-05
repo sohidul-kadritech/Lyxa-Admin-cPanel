@@ -14,6 +14,11 @@ export const holidayHourInit = {
   closedEnd: moment().startOf('day').add(14, 'h'),
 };
 
+export const getNormalHourInit = () => ({
+  open: moment(),
+  close: moment().add(1, 'hour'),
+});
+
 export const createMomentTimeFormat = (time = '') => moment(time, 'HH:mm');
 export const createStringTimeFormat = (timeObj) => timeObj.format('HH:mm');
 

@@ -29,6 +29,7 @@ export const searchSubCategoriesAndProduct = (subCategories, qString, setRender)
 export const searchProducts = (products, qString, setRender) => {
   products?.forEach((product) => {
     const name = (product?.name || '').toUpperCase();
+
     if (name.search(qString.toUpperCase()) === -1) {
       product.hidden = true;
     } else {
@@ -38,3 +39,13 @@ export const searchProducts = (products, qString, setRender) => {
 
   setRender((prev) => !prev);
 };
+
+// export const localSearch = (category, qString, setRender) => {
+//   if(category?.category?.type === 'food'){
+//     if(category?.category?.)
+
+//     searchProducts(category?.sortedProducts, qString, setRender, category);
+//   }else{
+
+//   }
+// };

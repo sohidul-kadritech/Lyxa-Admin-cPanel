@@ -1,57 +1,53 @@
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography, styled } from '@mui/material';
-import { useState } from 'react';
+import { Box, Stack, Typography } from '@mui/material';
 import ProductItem from './ProductItem';
-
-const StyledAccordion = styled(Accordion)(() => ({
-  borderBottom: '2px solid #eee',
-
-  '&.Mui-expanded': {
-    borderColor: '#eee',
-    margin: 0,
-  },
-
-  '&::before': {
-    display: 'none',
-  },
-
-  '& .MuiAccordionSummary-root': {
-    minHeight: '46px',
-  },
-
-  '& .MuiAccordionSummary-content': {
-    margin: 0,
-    minHeight: '46px',
-    alignItems: 'center',
-  },
-}));
+import SubCategoryItem from './SubCategoryItem';
 
 export default function CategoryItem({ category }) {
-  const [open, setOpen] = useState(true);
+  if (!category?.category?.category?.matched) return null;
 
   return (
-    <StyledAccordion expanded={open} onChange={() => setOpen(!open)}>
-      <AccordionSummary>
-        <Typography
-          variant="body2"
-          fontSize="16px"
-          color="initial"
-          sx={{
-            '& .MuiSvgIcon-root': {
-              width: '20px',
-            },
-          }}
-        >
-          {category?.subCategory?.name} {open ? <ExpandMore /> : <ExpandLess />}
+    <Box>
+      <Box pt={4} pb={1}>
+        <Typography variant="body2" fontSize="16px" fontWeight={600} color="text.secondary2" fontStyle="italic">
+          {category?.category?.shop?.shopName || 'Shop Name'}
         </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Stack>
-          {category?.sortedProducts?.map((product, i, { length: l }) => (
-            <ProductItem product={product} key={product._id} isLast={i === l - 1} isFirst={i === 0} isCategory />
-          ))}
-        </Stack>
-      </AccordionDetails>
-    </StyledAccordion>
+      </Box>
+      <Box>
+        {category?.category?.type !== 'food' && (
+          <Stack>
+            {category?.subCategories?.map((subCategory) => (
+              <SubCategoryItem subCategory={subCategory} key={subCategory?.subCategory?._id} />
+            ))}
+            {!category?.subCategories?.length && (
+              <Typography variant="body2" py={3}>
+                No sub-categories
+              </Typography>
+            )}
+          </Stack>
+        )}
+        {category?.category?.type === 'food' && (
+          <Stack
+            pt={3}
+            sx={{
+              '& > div:first-of-type': {
+                paddingTop: '0px',
+              },
+              '& > div:last-of-type': {
+                borderBottom: 'none',
+              },
+            }}
+          >
+            {category?.sortedProducts?.map((product, i, { length: l }) => (
+              <ProductItem product={product} key={product._id} isLast={i === l - 1} isFirst={i === 0} />
+            ))}
+            {!category?.sortedProducts?.length && (
+              <Typography variant="body2" py={3}>
+                No products
+              </Typography>
+            )}
+          </Stack>
+        )}
+      </Box>
+    </Box>
   );
 }

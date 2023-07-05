@@ -5,7 +5,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import { shopNormalHours } from '../../components/Shared/AddShop/helper';
 import { useGlobalContext } from '../../context';
+import { deepClone } from '../../helpers/deepClone';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -14,7 +16,6 @@ import Holiday from './Holiday';
 import { StyledBox, holidayHourInit, validateSettings } from './helpers';
 
 export default function ShopHourSettings() {
-  // const shop = useSelector((store) => store.Login.admin);
   const { currentUser } = useGlobalContext();
   const { userType, shop } = currentUser;
 
@@ -36,17 +37,23 @@ export default function ShopHourSettings() {
     },
   });
 
-  // console.log('normal hours ==>', normalHours);
+  const convertNormalHoursTimeToMoment = (nHours) => {
+    nHours.forEach((day) => {
+      day?.openingHours?.forEach((hours) => {
+        hours.open = moment(hours?.open, 'HH:mm');
+        hours.close = moment(hours?.close, 'HH:mm');
+      });
+    });
+  };
 
   const populateStateFromShop = () => {
-    console.log('normal hours ==>', shop?.normalHours);
-    setNormalHours(
-      shop?.normalHours?.map((day) => ({
-        ...day,
-        open: moment(day?.open, 'HH:mm'),
-        close: moment(day?.close, 'HH:mm'),
-      }))
-    );
+    // for old shops we removed options hours
+    let nHours;
+    if (shop?.normalHours?.length === 7) nHours = deepClone(shop?.normalHours || []);
+    else nHours = deepClone(shopNormalHours || []);
+
+    convertNormalHoursTimeToMoment(nHours);
+    setNormalHours(nHours);
 
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
@@ -64,14 +71,20 @@ export default function ShopHourSettings() {
   // update value
   const updateSettings = () => {
     const data = {};
-
     data.shopId = shop?._id;
 
-    data.normalHours = normalHours.map((day) => ({
-      ...day,
-      open: day?.open?.format('HH:mm'),
-      close: day?.close?.format('HH:mm'),
-    }));
+    const nHours = deepClone(normalHours);
+
+    console.log({ nHours });
+
+    nHours.forEach((day) => {
+      day?.openingHours?.forEach((hours) => {
+        hours.open = moment(hours?.open)?.format('HH:mm');
+        hours.close = moment(hours?.close)?.format('HH:mm');
+      });
+    });
+
+    data.normalHours = nHours;
 
     data.holidayHours = holidayHours?.map((holiday) => ({
       ...holiday,
@@ -101,7 +114,18 @@ export default function ShopHourSettings() {
         Normal Hours
       </Typography>
       <StyledBox>
-        <Stack gap={3}>
+        <Stack
+          sx={{
+            '& > div:first-of-type': {
+              paddingTop: '0px',
+            },
+
+            '& > div:last-of-type': {
+              paddingBottom: '0px',
+              borderBottom: 'none',
+            },
+          }}
+        >
           {normalHours?.map((day, index) => (
             <Day
               day={day}
@@ -113,7 +137,6 @@ export default function ShopHourSettings() {
           ))}
         </Stack>
       </StyledBox>
-
       {/* holiday hours */}
       <Typography variant="h4" pb={7.5} pt={10}>
         Holiday Hours

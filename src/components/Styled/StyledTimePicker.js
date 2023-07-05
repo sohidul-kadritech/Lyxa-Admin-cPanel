@@ -30,6 +30,10 @@ const StyledInput = styled(TextField)(({ theme }) => ({
         background: 'transparent',
       },
     },
+
+    '&.Mui-disabled': {
+      pointerEvents: 'none',
+    },
   },
 
   fieldSet: {
