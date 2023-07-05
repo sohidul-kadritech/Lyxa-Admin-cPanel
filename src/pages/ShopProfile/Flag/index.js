@@ -46,7 +46,7 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         searchPlaceHolder="Search Flags"
-        hideFilters={{ button: true, status: true, menu: true }}
+        showFilters={{ search: true, sort: true, date: true }}
       />
       <Box sx={{ paddingTop: '30px' }} />
       <FlagTable flags={filteredData} onViewDetail={onViewDetail} />

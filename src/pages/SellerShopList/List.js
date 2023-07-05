@@ -72,7 +72,7 @@ export default function List({ shops = [], loading }) {
       direction="row"
       sx={{
         gap: '15px',
-        overflow: 'auto',
+        flexWrap: 'wrap',
       }}
     >
       {shops.map((shop) => (

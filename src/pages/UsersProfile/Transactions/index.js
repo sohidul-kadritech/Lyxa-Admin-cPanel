@@ -47,9 +47,11 @@ export default function UserTransactions({ user }) {
           searchPlaceHolder="Search trasactions"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          hideFilters={{
-            status: true,
-            menu: true,
+          showFilters={{
+            search: true,
+            sort: true,
+            date: true,
+            button: true,
           }}
           buttonLabel="Add / Remove Credit"
           onButtonClick={() => {

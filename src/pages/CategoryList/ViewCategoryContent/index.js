@@ -1,36 +1,33 @@
-import { Box, Stack, Typography } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
+import { local_product_category_search, local_product_category_subCategory_search } from '../../../helpers/localSearch';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import RestaurantsSkeleton from '../../Display/RestaurantsSkeleton';
 import CategoryItem from './CategoryItem';
-import ProductItem from './ProductItem';
-import { searchProducts, searchSubCategoriesAndProduct } from './helper';
 
 export default function ViewCategoryContent({ onClose, category }) {
   const [searchKey, setSearchKey] = useState({ searchKey: '' });
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [, setRender] = useState(false);
+  const [isCategoryEmpty, setIsCategoryEmpty] = useState(false);
 
-  const setProductsAndCategory = (data) => {
+  const checkIsCategoryEmpty = (data) => {
+    let empty = true;
+
     if (category?.type === 'food') {
-      const items = [];
       data?.data?.productsGroupByCategory?.forEach((category) => {
-        items.push(...(category?.sortedProducts || []));
+        if (category?.sortedProducts?.length) empty = false;
       });
-      setProducts(items);
     } else {
-      const items = [];
-
       data?.data?.productsGroupByCategory?.forEach((category) => {
-        items.push(...(category?.subCategories || []));
+        if (category?.subCategories?.length) empty = false;
       });
-      setCategories(items);
     }
+
+    setIsCategoryEmpty(empty);
   };
 
   const query = useQuery(
@@ -41,22 +38,23 @@ export default function ViewCategoryContent({ onClose, category }) {
       }),
     {
       onSuccess: (data) => {
-        console.log({ data });
-        setProductsAndCategory(data);
+        checkIsCategoryEmpty(data);
       },
     }
   );
 
   useEffect(() => {
-    setProductsAndCategory(query?.data);
+    if (query?.data) checkIsCategoryEmpty(query?.data);
   }, []);
 
-  useMemo(
-    () => searchSubCategoriesAndProduct(categories, searchKey?.searchKey, setRender),
-    [searchKey?.searchKey, categories]
-  );
-
-  useMemo(() => searchProducts(products, searchKey?.searchKey, setRender), [searchKey?.searchKey, products]);
+  useEffect(() => {
+    if (category?.type === 'food') {
+      local_product_category_search(searchKey?.searchKey, query?.data?.data?.productsGroupByCategory || []);
+    } else {
+      local_product_category_subCategory_search(searchKey?.searchKey, query?.data?.data?.productsGroupByCategory || []);
+    }
+    setRender((prev) => !prev);
+  }, [query?.data, searchKey?.searchKey]);
 
   return (
     <SidebarContainer title={category?.category?.name} onClose={onClose}>
@@ -64,52 +62,26 @@ export default function ViewCategoryContent({ onClose, category }) {
         <Box pt={1} pb={5}>
           <SearchBar
             searchPlaceHolder="Search"
-            hideFilters={{
-              button: true,
-              startDate: true,
-              endDate: true,
-              status: true,
-              sort: true,
-              menu: true,
+            showFilters={{
+              search: true,
             }}
             queryParams={searchKey}
             setQueryParams={setSearchKey}
           />
         </Box>
         {query.isLoading && <RestaurantsSkeleton />}
-        {!query.isLoading && !products.length && !categories.length && (
+        {!query.isLoading && isCategoryEmpty && (
           <Box paddingTop="150px">
             <Typography variant="body2" color="text.secondary2" textAlign="center">
               Category is empty
             </Typography>
           </Box>
         )}
-        {!query.isLoading && (
+        {!query.isLoading && !isCategoryEmpty && (
           <Box>
-            {category?.type !== 'food' && (
-              <Stack>
-                {categories?.map((subCategory) =>
-                  subCategory?.hidden ? null : (
-                    <CategoryItem category={subCategory} key={subCategory?.subCategory?._id} />
-                  )
-                )}
-              </Stack>
-            )}
-            {category?.type === 'food' && (
-              <Stack pt={3}>
-                {products?.map((product, i, { length: l }) =>
-                  product?.hidden ? null : (
-                    <ProductItem
-                      product={product}
-                      key={product._id}
-                      isLast={i === l - 1}
-                      isFirst={i === 0}
-                      isCategory
-                    />
-                  )
-                )}
-              </Stack>
-            )}
+            {query?.data?.data?.productsGroupByCategory?.map((category) => (
+              <CategoryItem key={category?.category?._id} category={category} />
+            ))}
           </Box>
         )}
       </Box>

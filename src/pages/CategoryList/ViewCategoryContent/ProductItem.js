@@ -10,13 +10,14 @@ const StyledContainer = styled(Stack)(() => ({
   },
 
   '&.last': {
-    // paddingBottom: '0px',
     borderBottom: 'none',
   },
 }));
 
 export default function ProductItem({ product, isFirst, isLast }) {
   const url = product?.images?.length ? product?.images[0] : '';
+
+  if (!product?.matched) return null;
 
   return (
     <StyledContainer
@@ -37,9 +38,6 @@ export default function ProductItem({ product, isFirst, isLast }) {
             {product?.seoDescription}
           </Typography>
         )}
-        <Typography variant="body2" color="text.secondary2" fontWeight={500}>
-          {product?.shop?.shopName}
-        </Typography>
       </Stack>
     </StyledContainer>
   );

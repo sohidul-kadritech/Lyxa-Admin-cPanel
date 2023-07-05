@@ -96,10 +96,11 @@ export default function CategoryList2() {
           MenuButton={AddMenuButton}
           menuItems={menuOptions?.filter((opt) => opt.value !== 'add-sub-category' || currentTab !== 0)}
           menuHandler={menuHandler}
-          hideFilters={{
-            button: true,
-            startDate: true,
-            endDate: true,
+          showFilters={{
+            search: true,
+            sort: true,
+            menu: true,
+            status: true,
           }}
         />
       </Box>

@@ -134,13 +134,7 @@ function RiderFinancialsTable({ data = [], loading }) {
     {
       id: 6,
       field: 'cash_order',
-      headerName: (
-        <HeaderWithToolTips
-          title={`CASH ORDER (${currency})`}
-          tooltip="Cash in hand
-        settled cash"
-        />
-      ),
+      headerName: <HeaderWithToolTips title={`CASH IN HAND(${currency})`} tooltip="Unsettled Cash in hand" />,
 
       sortable: false,
       flex: 1,
@@ -157,13 +151,7 @@ function RiderFinancialsTable({ data = [], loading }) {
       field: 'settled_cash',
       align: 'right',
       headerAlign: 'right',
-      headerName: (
-        <HeaderWithToolTips
-          title={`SETTLED CASH (${currency})`}
-          tooltip="Cash in hand
-        settled cash"
-        />
-      ),
+      headerName: <HeaderWithToolTips title={`SETTLED CASH (${currency})`} tooltip="Settled Cash in hand" />,
 
       sortable: false,
       flex: 1,
@@ -171,7 +159,7 @@ function RiderFinancialsTable({ data = [], loading }) {
       renderCell: (params) => (
         <Typography variant="body1">
           {currency}
-          {(params?.row?.summary?.settleAmount || 0).toFixed(2)}
+          {(params?.row?.summary?.totalCashReceived || 0).toFixed(2)}
         </Typography>
       ),
     },

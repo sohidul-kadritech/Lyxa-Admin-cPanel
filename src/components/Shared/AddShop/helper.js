@@ -293,47 +293,82 @@ export const updateShopData = (oldShop, newShop) => {
   oldShop.account_swift = newShop?.account_swift || oldShop?.account_swift;
 };
 
-const shopNoramalHours = [
+export const shopNormalHours = [
   {
     day: 'Monday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: false,
   },
   {
     day: 'Tuesday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
   {
     day: 'Wednesday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
   {
     day: 'Thursday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
   {
     day: 'Friday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
   {
     day: 'Saturday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
   {
     day: 'Sunday',
-    open: '12:00',
-    close: '23:00',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
     isActive: true,
   },
 ];
@@ -374,7 +409,7 @@ export const shopInit = (sellerId) => ({
     primary: true,
     note: '',
   },
-  normalHours: shopNoramalHours,
+  normalHours: shopNormalHours,
   bank_name: '',
   account_name: '',
   account_number: '',
