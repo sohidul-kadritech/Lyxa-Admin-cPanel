@@ -1,6 +1,6 @@
 /* eslint-disable no-dupe-keys */
 import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
@@ -13,15 +13,31 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
+import { getExchangeRate } from './helpers';
 
-export default function ProductItem({ product, isInsideBestSellers, isInsideFavorites, asSearchResult, ...props }) {
+export default function ProductItem({
+  product,
+  isInsideBestSellers,
+  isInsideFavorites,
+  secondaryCurrency = {},
+  asSearchResult,
+  ...props
+}) {
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
-
+  console.log('currency: ', secondaryCurrency);
   const theme = useTheme();
   const history = useHistory();
+
+  // eslint-disable-next-line no-unused-vars
+  const [exchangeCurrency, setExchangeCurrency] = useState(getExchangeRate(secondaryCurrency, product));
   const [render, setRender] = useState(false);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
   const { shop } = currentUser;
+
+  useEffect(() => {
+    setExchangeCurrency(() => getExchangeRate(secondaryCurrency, product));
+  }, [product]);
 
   // status update
   const productMutation = useMutation(
@@ -243,12 +259,12 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
           value={product?.price}
           readOnly
           InputProps={{
-            startAdornment: <InputAdornment position="end">$</InputAdornment>,
+            startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
           }}
           sx={{
             '& .MuiInputBase-root': {
               width: `${
-                product?.price.toString().length > 0 ? ((product.price.toString().length || 1) + 4) * 10 : '100'
+                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 6) * 10 : '100'
               }px`,
               padding: '9px 14px 9px 12px',
             },
@@ -266,6 +282,42 @@ export default function ProductItem({ product, isInsideBestSellers, isInsideFavo
             },
           }}
         />
+        {exchangeCurrency?.currency?.symbol && (
+          <>
+            <Typography variant="body1">=</Typography>
+            <StyledInput
+              type="number"
+              min={1}
+              value={exchangeCurrency?.price}
+              readOnly
+              InputProps={{
+                startAdornment: <InputAdornment position="end">{exchangeCurrency?.currency?.symbol}</InputAdornment>,
+              }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  width: `${
+                    exchangeCurrency?.price?.toString().length > 0
+                      ? ((exchangeCurrency.price.toString().length || 1) + 6) * 10
+                      : '100'
+                  }px`,
+                  padding: '9px 14px 9px 12px',
+                },
+
+                '& .MuiInputBase-input': {
+                  padding: 0,
+                  textAlign: 'left',
+                  fontSize: '14px',
+                },
+
+                '& .MuiTypography-root': {
+                  fontSize: '14px',
+                  fontWeight: '500!important',
+                  color: theme.palette.text.main,
+                },
+              }}
+            />
+          </>
+        )}
         <Box
           onClick={(e) => {
             e.stopPropagation();

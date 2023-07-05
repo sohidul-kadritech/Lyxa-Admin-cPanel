@@ -12,7 +12,7 @@ import { ProductsContext } from '../ProductContext';
 import ProductsContainer from './ProductsContainer';
 import { StyledAccordion, StyledAccordionSummary } from './helpers';
 
-export default function SubCategoryItem({ subCategory, gOpen, asSearchResult }) {
+export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, secondaryCurrency }) {
   const theme = useTheme();
 
   const { setEditSubCategory } = useContext(ProductsContext);
@@ -44,7 +44,8 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult }) 
           subCategory.subCategory.status = args.status;
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
@@ -107,7 +108,7 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult }) 
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails>
-        <ProductsContainer products={product()} asSearchResult={asSearchResult} />
+        <ProductsContainer secondaryCurrency={secondaryCurrency} products={product()} asSearchResult={asSearchResult} />
         {/* <Box pl={8.5} pt={6}>
           <Button
             variant="contained"
