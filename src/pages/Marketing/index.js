@@ -240,9 +240,6 @@ export default function Marketing({ viewUserType }) {
 
   const isReadonly = (marketing = {}) => !marketing?.status && viewUserType === 'shop' && userType === 'admin';
 
-  console.log({ appliedDeals });
-  console.log({ activeDeals });
-
   return (
     <Box sx={{ pt: 8.5 }}>
       <Grid
@@ -288,7 +285,7 @@ export default function Marketing({ viewUserType }) {
             }}
           />
         </Grid>
-        {!(shop?.haveOwnDeliveryBoy && viewUserType === 'admin') && (
+        {!(currentShop?.haveOwnDeliveryBoy && viewUserType === 'admin') && (
           <Grid md={6} lg={4}>
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
