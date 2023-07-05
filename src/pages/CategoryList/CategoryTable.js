@@ -6,7 +6,6 @@ import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
-import { useGlobalContext } from '../../context';
 
 export default function CategoryTable({
   data = [],
@@ -22,8 +21,6 @@ export default function CategoryTable({
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const [render, setRender] = useState(false);
-
-  const { dispatchCurrentUser } = useGlobalContext();
 
   const allColumns = [
     {
@@ -60,28 +57,28 @@ export default function CategoryTable({
       flex: 1,
       renderCell: ({ row }) => (
         <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
-          {row?.shops?.map((shop) => (
-            <Typography
-              variant="body4"
-              sx={{
-                fontSize: '15px',
-                fontWeight: '500',
-                textTransform: 'capitalize',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                color: 'primary.main',
-                cursor: 'pointer',
-              }}
-              onClick={() => {
-                history.push({
-                  pathname: `/shop/profile/${shop?._id}`,
-                  state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
-                });
-                dispatchCurrentUser({ type: 'shop', payload: { shop: { ...row?.shop } } });
-              }}
-            >
-              {shop?.shopName}
-            </Typography>
+          {row?.shops?.map((shop, i, { length: l }) => (
+            <Box display="inline-block">
+              <Typography
+                variant="body4"
+                display="inline"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  color: 'primary.main',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  history.push({
+                    pathname: `/shop/profile/${shop?._id}`,
+                    state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
+                  });
+                }}
+              >
+                {shop?.shopName?.trim()}
+              </Typography>
+              {i !== l - 1 && <span>,</span>}
+            </Box>
           ))}
         </Stack>
       ),
