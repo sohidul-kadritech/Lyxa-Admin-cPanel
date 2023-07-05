@@ -39,7 +39,7 @@ export default function SubCategoriesContainer({ subCategories, gOpen, asSearchR
 
   return (
     <Container lockAxis="y" dragHandleSelector=".drag-handler-sub-category" onDrop={onDrop}>
-      {subCategories.map((subCategory, index, { length }) => {
+      {subCategories?.map((subCategory, index, { length }) => {
         if (asSearchResult && !subCategory?.subCategory.matched) {
           return null;
         }
