@@ -36,7 +36,7 @@ const StyledInput = styled(TextField)(({ theme }) => ({
     },
   },
 
-  fieldSet: {
+  '& fieldSet': {
     border: '0',
   },
 }));

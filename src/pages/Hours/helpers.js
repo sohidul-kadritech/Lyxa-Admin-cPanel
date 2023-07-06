@@ -10,13 +10,13 @@ export const StyledBox = styled(Box)(() => ({
 export const holidayHourInit = {
   date: moment().add(1, 'd'),
   isFullDayOff: false,
-  closedStart: moment().startOf('day').add(10, 'h'),
-  closedEnd: moment().startOf('day').add(14, 'h'),
+  closedStart: '12:00',
+  closedEnd: '23:00',
 };
 
 export const getNormalHourInit = () => ({
-  open: moment(),
-  close: moment().add(1, 'hour'),
+  open: '01:00',
+  close: '01:01',
 });
 
 export const createMomentTimeFormat = (time = '') => moment(time, 'HH:mm');
@@ -43,3 +43,163 @@ export const validateSettings = (setttings) => {
     status: true,
   };
 };
+
+export const defaultShopNormalHours = [
+  {
+    day: 'Monday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Tuesday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Wednesday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Thursday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Friday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Saturday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+  {
+    day: 'Sunday',
+    openingHours: [
+      {
+        open: '12:00',
+        close: '23:00',
+      },
+    ],
+    isFullDayOpen: false,
+    isActive: false,
+  },
+];
+
+// export const defaultShopNormalHours = [
+//   {
+//     day: 'Monday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Tuesday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Wednesday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Thursday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Friday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Saturday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+//   {
+//     day: 'Sunday',
+//     openingHours: [
+//       {
+//         open: '11:00',
+//         close: '23:00',
+//       },
+//     ],
+//     isFullDayOpen: false,
+//     isActive: true,
+//   },
+// ];

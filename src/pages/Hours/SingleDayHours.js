@@ -15,13 +15,13 @@ export default function SingleDayHours({ openingHours = [], onAnyChange, onAddHo
             disabled={Boolean(disabled)}
             startValue={hour?.open}
             endValue={hour?.close}
-            onStartChange={(v) => {
-              hour.open = v;
+            onStartChange={(e) => {
+              hour.open = e.target.value;
               setRender((prev) => !prev);
               onAnyChange();
             }}
-            onEndChange={(v) => {
-              hour.close = v;
+            onEndChange={(e) => {
+              hour.close = e.target.value;
               setRender((prev) => !prev);
               onAnyChange();
             }}

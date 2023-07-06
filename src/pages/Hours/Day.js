@@ -17,6 +17,21 @@ export default function Day({ day, onAnyChange }) {
     setRender(!render);
   };
 
+  const onFullDaySelect = () => {
+    day.isFullDayOpen = !day.isFullDayOpen;
+    day.isActive = day.isFullDayOpen ? true : day.isActive;
+
+    if (day.isFullDayOpen) {
+      const h = day?.openingHours?.[0] || {};
+      h.open = '00:00';
+      h.close = '23:59';
+      day?.openingHours?.splice(1);
+    }
+
+    setRender(!render);
+    onAnyChange();
+  };
+
   return (
     <Stack
       direction="row"
@@ -39,7 +54,7 @@ export default function Day({ day, onAnyChange }) {
             checked={!day?.isActive}
             onChange={() => {
               day.isActive = !day.isActive;
-              day.isFullDayOpen = !day.isActive ? false : day.isFullDayOpen;
+              day.isFullDayOpen = day.isActive ? day.isFullDayOpen : false;
               setRender(!render);
               onAnyChange();
             }}
@@ -49,19 +64,11 @@ export default function Day({ day, onAnyChange }) {
           <Typography variant="body4" color="initial">
             24h
           </Typography>
-          <StyledCheckbox
-            checked={day?.isFullDayOpen}
-            onChange={() => {
-              day.isFullDayOpen = !day.isFullDayOpen;
-              day.isActive = day.isFullDayOpen ? true : day.isActive;
-              setRender(!render);
-              onAnyChange();
-            }}
-          />
+          <StyledCheckbox checked={day?.isFullDayOpen} onChange={onFullDaySelect} />
         </Stack>
       </Stack>
       <SingleDayHours
-        disabled={!day?.isActive}
+        disabled={!day?.isActive || day?.isFullDayOpen}
         onAddHour={onAddHour}
         onAnyChange={onAnyChange}
         openingHours={day?.openingHours}

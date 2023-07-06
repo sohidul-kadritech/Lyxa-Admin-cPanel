@@ -55,14 +55,10 @@ export default function ShopHourSettings() {
     if (condition) nHours = deepClone(shop?.normalHours || []);
     else nHours = deepClone(defaultShopNormalHours || []);
 
-    convertNormalHoursTimeToMoment(nHours);
     setNormalHours(nHours);
-
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
         ...holiday,
-        closedStart: moment(holiday?.closedStart, 'HH:mm'),
-        closedEnd: moment(holiday?.closedEnd, 'HH:mm'),
       }))
     );
   };
@@ -75,29 +71,13 @@ export default function ShopHourSettings() {
   const updateSettings = () => {
     const data = {};
     data.shopId = shop?._id;
-
-    const nHours = deepClone(normalHours);
-
-    console.log({ nHours });
-
-    nHours.forEach((day) => {
-      day?.openingHours?.forEach((hours) => {
-        hours.open = moment(hours?.open)?.format('HH:mm');
-        hours.close = moment(hours?.close)?.format('HH:mm');
-      });
-    });
-
-    data.normalHours = nHours;
-
+    data.normalHours = normalHours;
     data.holidayHours = holidayHours?.map((holiday) => ({
       ...holiday,
       date: moment(holiday?.date).format('MM/DD/YYYY'),
-      closedStart: holiday?.closedStart?.format('HH:mm'),
-      closedEnd: holiday?.closedEnd?.format('HH:mm'),
     }));
 
     const validation = validateSettings(data);
-
     if (!validation.status) {
       successMsg(validation.message);
       return;
