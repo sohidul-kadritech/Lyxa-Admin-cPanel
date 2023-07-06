@@ -10,11 +10,13 @@ export default function Day({ day, onAnyChange }) {
   const onAddHour = () => {
     day?.openingHours?.push(getNormalHourInit());
     setRender(!render);
+    onAnyChange();
   };
 
   const onHourRemove = (index) => {
     day?.openingHours?.splice(index, 1);
     setRender(!render);
+    onAnyChange();
   };
 
   const onFullDaySelect = () => {
