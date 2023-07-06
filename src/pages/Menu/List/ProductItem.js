@@ -24,7 +24,7 @@ export default function ProductItem({
   ...props
 }) {
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
-  console.log('currency: ', secondaryCurrency);
+  console.log('currency: ', secondaryCurrency, 'product: ', product);
   const theme = useTheme();
   const history = useHistory();
 
@@ -37,7 +37,7 @@ export default function ProductItem({
 
   useEffect(() => {
     setExchangeCurrency(() => getExchangeRate(secondaryCurrency, product));
-  }, [product]);
+  }, [product, secondaryCurrency]);
 
   // status update
   const productMutation = useMutation(
@@ -264,7 +264,7 @@ export default function ProductItem({
           sx={{
             '& .MuiInputBase-root': {
               width: `${
-                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 6) * 10 : '100'
+                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 7) * 10 : '100'
               }px`,
               padding: '9px 14px 9px 12px',
             },
@@ -284,20 +284,20 @@ export default function ProductItem({
         />
         {exchangeCurrency?.currency?.symbol && (
           <>
-            <Typography variant="body1">=</Typography>
+            <Typography variant="body1">~</Typography>
             <StyledInput
               type="number"
               min={1}
               value={exchangeCurrency?.price}
               readOnly
               InputProps={{
-                startAdornment: <InputAdornment position="end">{exchangeCurrency?.currency?.symbol}</InputAdornment>,
+                startAdornment: <InputAdornment position="end">{exchangeCurrency?.currency?.code}</InputAdornment>,
               }}
               sx={{
                 '& .MuiInputBase-root': {
                   width: `${
                     exchangeCurrency?.price?.toString().length > 0
-                      ? ((exchangeCurrency.price.toString().length || 1) + 6) * 10
+                      ? ((exchangeCurrency.price.toString().length || 1) + 7) * 10
                       : '100'
                   }px`,
                   padding: '9px 14px 9px 12px',

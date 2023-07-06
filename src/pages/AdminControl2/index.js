@@ -9,6 +9,7 @@ import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import AddAdmin from './AddAdmin';
+import AddSellersForAccountManager from './AddSellersForAccountManager';
 import AdminTeamList from './AdminTeamList';
 
 const adminTypeIndexTracker = {
@@ -29,6 +30,8 @@ function AdminControl() {
 
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [open, setOpen] = useState(false);
+
+  const [openSellersModal, setOpenSellersModal] = useState(false);
 
   const [adminType, setAdminType] = useState('admin');
 
@@ -73,6 +76,7 @@ function AdminControl() {
       if (data.status) {
         successMsg(data.message, 'success');
         setOpen(false);
+        setOpenSellersModal(false);
         setIsEdit(false);
         queryClient.invalidateQueries(API_URL.GET_ALL_ADMIN);
       } else {
@@ -125,9 +129,11 @@ function AdminControl() {
       ) : (
         <Box>
           <AdminTeamList
+            adminType={adminType}
             deleteAdminQuery={deleteAdminQuery}
             editAdminQuery={editAdminQuery}
             setOpen={setOpen}
+            setOpenSellersModal={setOpenSellersModal}
             setIsEdit={setIsEdit}
             isConfirmModal={isConfirmModal}
             setIsConfirmModal={setIsConfirmModal}
@@ -146,6 +152,16 @@ function AdminControl() {
           addAdminQuery={isEdit ? editAdminQuery : addAdminQuery}
           adminType={adminType}
           currentAdmin={currentAdmin}
+        />
+      </Drawer>
+
+      <Drawer open={openSellersModal} anchor="right">
+        <AddSellersForAccountManager
+          editAdminQuery={editAdminQuery}
+          currentAdmin={currentAdmin}
+          onClose={() => {
+            setOpenSellersModal(false);
+          }}
         />
       </Drawer>
     </Box>

@@ -5,7 +5,6 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import ConfirmModal from '../../components/Common/ConfirmModal';
-import { shopNormalHours } from '../../components/Shared/AddShop/helper';
 import { useGlobalContext } from '../../context';
 import { deepClone } from '../../helpers/deepClone';
 import { successMsg } from '../../helpers/successMsg';
@@ -13,7 +12,14 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Day from './Day';
 import Holiday from './Holiday';
-import { StyledBox, holidayHourInit, validateSettings } from './helpers';
+import {
+  StyledBox,
+  addIdsToHours,
+  defaultShopNormalHours,
+  holidayHourInit,
+  removeIdsFromHours,
+  validateSettings,
+} from './helpers';
 
 export default function ShopHourSettings() {
   const { currentUser } = useGlobalContext();
@@ -49,17 +55,19 @@ export default function ShopHourSettings() {
   const populateStateFromShop = () => {
     // for old shops we removed options hours
     let nHours;
-    if (shop?.normalHours?.length === 7) nHours = deepClone(shop?.normalHours || []);
-    else nHours = deepClone(shopNormalHours || []);
+    const condition = shop?.normalHours?.length
+      ? shop?.normalHours?.length === 7 && Boolean(shop?.normalHours[0]?.openingHours)
+      : false;
 
-    convertNormalHoursTimeToMoment(nHours);
+    if (condition) nHours = deepClone(shop?.normalHours || []);
+    else nHours = deepClone(defaultShopNormalHours || []);
+
+    addIdsToHours(nHours);
+
     setNormalHours(nHours);
-
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
         ...holiday,
-        closedStart: moment(holiday?.closedStart, 'HH:mm'),
-        closedEnd: moment(holiday?.closedEnd, 'HH:mm'),
       }))
     );
   };
@@ -73,28 +81,16 @@ export default function ShopHourSettings() {
     const data = {};
     data.shopId = shop?._id;
 
-    const nHours = deepClone(normalHours);
+    const nhours = deepClone(normalHours);
+    removeIdsFromHours(nhours);
 
-    console.log({ nHours });
-
-    nHours.forEach((day) => {
-      day?.openingHours?.forEach((hours) => {
-        hours.open = moment(hours?.open)?.format('HH:mm');
-        hours.close = moment(hours?.close)?.format('HH:mm');
-      });
-    });
-
-    data.normalHours = nHours;
-
+    data.normalHours = nhours;
     data.holidayHours = holidayHours?.map((holiday) => ({
       ...holiday,
       date: moment(holiday?.date).format('MM/DD/YYYY'),
-      closedStart: holiday?.closedStart?.format('HH:mm'),
-      closedEnd: holiday?.closedEnd?.format('HH:mm'),
     }));
 
     const validation = validateSettings(data);
-
     if (!validation.status) {
       successMsg(validation.message);
       return;

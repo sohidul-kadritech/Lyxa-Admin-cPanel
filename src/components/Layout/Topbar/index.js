@@ -10,12 +10,16 @@ import AccountMenu from './AccountMenu';
 import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType) => {
+  console.log('userType, adminType: ', userType, adminType);
   if (userType === 'admin' && adminType === 'admin') {
     return 'Admin Console-Develop';
   }
 
   if (userType === 'admin' && adminType === 'customerService') {
     return 'Customer Service Console';
+  }
+  if (userType === 'admin' && adminType === 'accountManager') {
+    return 'Account Manager';
   }
 
   if (userType === 'shop') {
