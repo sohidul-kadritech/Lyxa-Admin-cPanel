@@ -1,6 +1,7 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, styled, TextField, Tooltip } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
+import moment from 'moment';
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
@@ -96,7 +97,7 @@ export default function FilterDate({ value, onChange, size, variant, sx, tooltip
   return (
     <Wrapper tooltip={tooltip}>
       <DesktopDatePicker
-        value={value}
+        value={moment(value)}
         onChange={onChange}
         components={{
           OpenPickerIcon: ExpandMoreIcon,

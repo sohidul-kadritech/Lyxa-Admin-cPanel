@@ -9,6 +9,13 @@ export const breadcrumbItems = [
 
 export const tabValueToCouponTypeMap = { 0: 'global', 1: 'individual_store', 2: 'individual_user', 3: 'custom_coupon' };
 
+export const couponListTabOptions = [
+  { label: 'Global', value: 'global' },
+  { label: 'Store/Category', value: 'individual_store' },
+  { label: 'Individual User', value: 'individual_user' },
+  { label: 'Custom Coupon', value: 'custom_coupon' },
+];
+
 export const filtersInit = {
   searchKey: '',
   couponType: 'global',

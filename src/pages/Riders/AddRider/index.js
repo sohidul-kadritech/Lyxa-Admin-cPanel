@@ -26,9 +26,11 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
 
+  console.log({ editRider });
+
   const [rider, setRider] = useState(
     // eslint-disable-next-line prettier/prettier
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
   );
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
@@ -47,7 +49,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     if (newFiles?.length) {
@@ -78,7 +80,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setLoading(false);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   //  upload data
@@ -117,10 +119,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   });
 
   const filterOptions = createFilterOptions({
-    stringify: ({ shopName, autoGenId, _id }) => {
-      console.log(`===>: ${shopName} ${autoGenId} ${_id}`);
-      return `${shopName} ${autoGenId} ${_id}`;
-    },
+    stringify: ({ shopName, autoGenId, _id }) => `${shopName} ${autoGenId} ${_id}`,
   });
 
   const shopsQuery = useMutation(
@@ -143,7 +142,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         });
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getShops = useMemo(
@@ -154,7 +153,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -250,7 +249,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               label="Vehicle Number"
               intputType="text"
               inputProps={{
-                type: 'number',
+                type: 'text',
                 name: 'vehicleNumber',
                 value: rider.vehicleNumber,
                 onChange: commonChangeHandler,

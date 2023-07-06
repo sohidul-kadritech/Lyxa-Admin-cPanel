@@ -19,15 +19,16 @@ export default function Holiday({ holiday, onDelete, isEndOfList, onAnyChange })
         />
         {!holiday?.isFullDayOff && (
           <TimeRangePicker
+            minutesStep={15}
             startValue={holiday?.closedStart}
             endValue={holiday?.closedEnd}
-            onStartChange={(v) => {
-              holiday.closedStart = v;
+            onStartChange={(e) => {
+              holiday.closedStart = e.target.value;
               setRender(!render);
               onAnyChange();
             }}
-            onEndChange={(v) => {
-              holiday.closedEnd = v;
+            onEndChange={(e) => {
+              holiday.closedEnd = e.target.value;
               setRender(!render);
               onAnyChange();
             }}

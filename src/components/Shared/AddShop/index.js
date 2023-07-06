@@ -68,11 +68,9 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         setLoading(false);
         successMsg(data?.message, data?.status ? 'success' : undefined);
         if (data?.status) {
-          if (editShop?._id) {
-            updateShopData(editShop, data?.data?.shop);
-          } else {
-            queryClient.invalidateQueries([Api.ALL_SHOP]);
-          }
+          if (editShop?._id) updateShopData(editShop, data?.data?.shop);
+          else queryClient.invalidateQueries([Api.ALL_SHOP]);
+
           onClose();
           refetch();
         }

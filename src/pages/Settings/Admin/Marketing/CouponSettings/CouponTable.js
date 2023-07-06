@@ -141,17 +141,21 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
+      renderCell: ({ value, row }) => (
+        <Typography variant="body4">{value ? `${row?.couponTotalUsageOrders}/${value}` : '_'}</Typography>
+      ),
     },
     {
       id: 6,
-      headerName: `AMOUNT LIMIT`,
+      headerName: `AMOUNT LIMIT (${currency})`,
       sortable: false,
       field: 'couponAmountLimit',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value ? `$${value}` : '_'}</Typography>,
+      renderCell: ({ value, row }) => (
+        <Typography variant="body4">{value ? `${row?.couponTotalUsageAmountOfBaseCurrency}/${value}` : '_'}</Typography>
+      ),
     },
     {
       id: 7,
@@ -162,6 +166,16 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
+    },
+    {
+      id: 7,
+      headerName: `NEW ACCOUNTS`,
+      sortable: false,
+      field: 'couponUsedNewAccount',
+      flex: 0.7,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
       id: 8,
