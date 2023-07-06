@@ -38,7 +38,7 @@ const initialCurrency = {
   _id: '647707ce1afe457826284190',
 };
 
-const getAcceptedCurrencyOptions = (base, secondary) => [
+export const getAcceptedCurrencyOptions = (base, secondary) => [
   {
     label: 'Both',
     value: 'both',
@@ -65,7 +65,6 @@ const getSecondaryCurrencyOptions = [
 ];
 
 export const validateList = (newValue, oldList, type) => {
-  console.log('old value: ', newValue, oldList, ' type', type);
   if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;
@@ -111,7 +110,6 @@ const provideErrorMessage = (data) => {
 
 function Appsettings2() {
   const queryClient = useQueryClient();
-
   const [deletedUnitId, setDeletedUnitId] = useState([]);
   const [isConfirm, setIsconfirm] = useState(false);
   const [hasChanged, setHasChanged] = useState(false);
@@ -644,7 +642,12 @@ function Appsettings2() {
                         if (e.target.value === 'enable') {
                           setTimeout(() => {
                             setIsUsedSecondaryCurrency('enable');
-                            setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: {}, exchangeRate: 1 }));
+                            setNewAppSettings((prev) => ({
+                              ...prev,
+                              secondaryCurrency: {},
+                              exchangeRate: 1,
+                              acceptedCurrency: 'both',
+                            }));
                           }, 100);
                           return;
                         }
@@ -658,71 +661,73 @@ function Appsettings2() {
                 </InputBox>
               </Stack>
             </StyledBox>
+            {isUsedSecondaryCurrency !== 'disable' && (
+              <Box>
+                <StyledBox title="Rate">
+                  <Stack direction="row" alignItems="center" flexWrap="wrap">
+                    <InputBox
+                      title={`Amount of (${newAppSettings?.currency?.symbol})`}
+                      endAdornment={`${newAppSettings?.currency?.symbol}`}
+                      inputValue={`${1}`}
+                      inputType="number"
+                      sxLeft={{ width: '200px' }}
+                      sxRight={{ width: '140px' }}
+                      inputProps={{ readOnly: true, sx: { opacity: '0.5' } }}
+                      sxContainer={{ flex: 1.7 }}
+                    />
 
-            <StyledBox title="Rate">
-              <Stack direction="row" alignItems="center" flexWrap="wrap">
-                <InputBox
-                  title={`Amount of (${newAppSettings?.currency?.symbol})`}
-                  endAdornment={`${newAppSettings?.currency?.symbol}`}
-                  inputValue={`${1}`}
-                  inputType="number"
-                  sxLeft={{ width: '200px' }}
-                  sxRight={{ width: '140px' }}
-                  inputProps={{ readOnly: true, sx: { opacity: '0.5' } }}
-                  sxContainer={{ flex: 1.7 }}
-                />
+                    <InputBox
+                      title={`Equivalent to ${
+                        newAppSettings?.secondaryCurrency?.symbol ? `(${newAppSettings?.secondaryCurrency?.code})` : ''
+                      }`}
+                      endAdornment={`${
+                        newAppSettings?.secondaryCurrency?.symbol ? newAppSettings?.secondaryCurrency?.code : ''
+                      }`}
+                      inputType="number"
+                      sxLeft={{ width: '200px' }}
+                      sxRight={{ width: '140px' }}
+                      sxContainer={{ flex: 2 }}
+                      isRenderedChild
+                    >
+                      <IncrementDecrementButton
+                        isChangeOthers
+                        isReadOnly={isUsedSecondaryCurrency === 'disable'}
+                        changeOthers={() => {
+                          setHasChanged(true);
+                        }}
+                        isValidateType={false}
+                        incrementHandler={incrementByFiveHandler}
+                        decrementHandler={decrementByFiveHandler}
+                        objectKey="exchangeRate"
+                        setValue={setNewAppSettings}
+                        currentValue={newAppSettings?.exchangeRate}
+                      />
+                    </InputBox>
+                  </Stack>
+                </StyledBox>
 
-                <InputBox
-                  title={`Equivalent to ${
-                    newAppSettings?.secondaryCurrency?.symbol ? `(${newAppSettings?.secondaryCurrency?.symbol})` : ''
-                  }`}
-                  endAdornment={`${
-                    newAppSettings?.secondaryCurrency?.symbol ? newAppSettings?.secondaryCurrency?.symbol : ''
-                  }`}
-                  inputType="number"
-                  sxLeft={{ width: '200px' }}
-                  sxRight={{ width: '140px' }}
-                  sxContainer={{ flex: 2 }}
-                  isRenderedChild
-                >
-                  <IncrementDecrementButton
-                    isChangeOthers
-                    isReadOnly={isUsedSecondaryCurrency === 'disable'}
-                    changeOthers={() => {
-                      setHasChanged(true);
+                <StyledBox title="Accepted Currency">
+                  <StyledFormField
+                    intputType="select"
+                    containerProps={{
+                      sx: {
+                        width: '125px',
+                      },
                     }}
-                    isValidateType={false}
-                    incrementHandler={incrementByFiveHandler}
-                    decrementHandler={decrementByFiveHandler}
-                    objectKey="exchangeRate"
-                    setValue={setNewAppSettings}
-                    currentValue={newAppSettings?.exchangeRate}
+                    inputProps={{
+                      placeholder: 'Accepted Currency',
+                      value: newAppSettings?.acceptedCurrency || '',
+                      items: getAcceptedCurrencyOptions(newAppSettings?.currency, newAppSettings?.secondaryCurrency),
+                      onChange: (e) => {
+                        setHasChanged(true);
+                        setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
+                      },
+                      //   readOnly: Boolean(newProductCategory) || productReadonly,
+                    }}
                   />
-                </InputBox>
-              </Stack>
-            </StyledBox>
-
-            <StyledBox title="Accepted Currency">
-              <StyledFormField
-                intputType="select"
-                containerProps={{
-                  sx: {
-                    width: '125px',
-                  },
-                }}
-                inputProps={{
-                  placeholder: 'Accepted Currency',
-                  readOnly: isUsedSecondaryCurrency === 'disable',
-                  value: newAppSettings?.acceptedCurrency || '',
-                  items: getAcceptedCurrencyOptions(newAppSettings?.currency, newAppSettings?.secondaryCurrency),
-                  onChange: (e) => {
-                    setHasChanged(true);
-                    setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
-                  },
-                  //   readOnly: Boolean(newProductCategory) || productReadonly,
-                }}
-              />
-            </StyledBox>
+                </StyledBox>
+              </Box>
+            )}
           </>
         )}
       </Box>

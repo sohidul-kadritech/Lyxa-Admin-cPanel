@@ -40,6 +40,7 @@ function AccountFinancials() {
   const [searchKey, setSearchKey] = useState('');
 
   const [sortBy, setSortBy] = useState('desc');
+  const [storeAppSettings, setStoreAppSettings] = useState({});
 
   const getDashboardSummary = useQuery(
     [API_URL.GET_DASHBOARD_SUMMARY, { searchKey, sortBy, startDate: range.start, endDate: range.end }],
@@ -60,6 +61,15 @@ function AccountFinancials() {
         // eslint-disable-next-line prettier/prettier
       }),
   );
+
+  const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setStoreAppSettings({ ...getAppSettingsData?.data?.data?.appSetting });
+      }
+    },
+  });
+
   // GENERATE PDF
   const downloadPdf = () => {
     const unit = 'pt';
@@ -170,7 +180,7 @@ function AccountFinancials() {
         )}
       </Box>
       <Drawer open={open} anchor="right">
-        <AddRemoveCredit onClose={() => setOpen(false)} />
+        <AddRemoveCredit storeAppSettings={storeAppSettings} onClose={() => setOpen(false)} />
       </Drawer>
     </Box>
   );

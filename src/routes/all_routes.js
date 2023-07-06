@@ -75,6 +75,7 @@ import DisplaySettings from '../pages/Display';
 import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
+// eslint-disable-next-line import/no-unresolved, import/extensions
 import Financials from '../pages/Financials';
 import ShopHourSettings from '../pages/Hours';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';

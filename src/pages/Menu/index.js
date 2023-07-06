@@ -152,8 +152,8 @@ export default function MenuPage() {
           backgroundColor: '#fbfbfb',
         }}
       />
-      {(productsQuery?.isLoading || getAppSettingsData.isLoading) && <PageSkeleton />}
-      {!productsQuery?.isLoading && (
+      {(productsQuery?.isLoading || getAppSettingsData?.isLoading) && <PageSkeleton />}
+      {!productsQuery?.isLoading && !getAppSettingsData?.isLoading && (
         <>
           <Searchbar
             searchPlaceHolder="Search items"

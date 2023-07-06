@@ -16,7 +16,8 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
 ];
 
-export default function AddRemoveCredit({ userId, onClose }) {
+export default function AddRemoveCredit({ userId, onClose, storeAppSettings }) {
+  const { exchangeRate, secondaryCurrency } = storeAppSettings;
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(userId));
   const [maxValue, setMaxValue] = useState(null);
@@ -44,7 +45,8 @@ export default function AddRemoveCredit({ userId, onClose }) {
           onClose();
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const addRemoveCredit = () => {
@@ -102,13 +104,18 @@ export default function AddRemoveCredit({ userId, onClose }) {
           intputType="text"
           inputProps={{
             type: 'number',
-            value: data.amount,
+            value: data?.amount,
             onChange: (e) => {
               if (e.target.value > 0) setData({ ...data, amount: e.target.value });
               else setData({ ...data, amount: 1 });
             },
           }}
         />
+        {secondaryCurrency?.symbol && (
+          <Typography mt="-8px" variant="body3" display="block">
+            Equivalent Price: {secondaryCurrency?.code} {data.amount * parseInt(exchangeRate, 10)}
+          </Typography>
+        )}
         <StyledFormField
           label="Admin note"
           intputType="textarea"
