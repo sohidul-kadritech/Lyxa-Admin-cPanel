@@ -50,6 +50,20 @@ export default function MenuPage() {
 
   const [editSubCategory, setEditSubCategory] = useState({});
 
+  const [secondaryCurrency, setSecondaryCurrency] = useState({});
+
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log(data?.data?.appSetting);
+        setSecondaryCurrency({
+          secondaryCurrency: data?.data?.appSetting?.secondaryCurrency,
+          exchangeRate: data?.data?.appSetting?.exchangeRate,
+        });
+      }
+    },
+  });
+
   const productsQuery = useQuery(
     ['category-wise-products', { shopId: shop?._id }],
     () =>
@@ -65,7 +79,8 @@ export default function MenuPage() {
         setFavorites((prev) => createCatagory(data?.data || {}, 'favorites') || prev);
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   useEffect(() => {
@@ -118,7 +133,8 @@ export default function MenuPage() {
         setSidebar('edit-sub-category');
       },
     }),
-    [favorites, updatedProduct]
+    // eslint-disable-next-line prettier/prettier
+    [favorites, updatedProduct],
   );
 
   return (
@@ -136,7 +152,7 @@ export default function MenuPage() {
           backgroundColor: '#fbfbfb',
         }}
       />
-      {productsQuery?.isLoading && <PageSkeleton />}
+      {(productsQuery?.isLoading || getAppSettingsData.isLoading) && <PageSkeleton />}
       {!productsQuery?.isLoading && (
         <>
           <Searchbar
@@ -161,8 +177,8 @@ export default function MenuPage() {
           <Box pb={9}>
             {shop.shopType === 'food' && searchValue === '' && (
               <>
-                <CategoryItem category={bestSellers} gOpen={category_open} />
-                <CategoryItem category={favorites} gOpen={category_open} />
+                <CategoryItem secondaryCurrency={secondaryCurrency} category={bestSellers} gOpen={category_open} />
+                <CategoryItem secondaryCurrency={secondaryCurrency} category={favorites} gOpen={category_open} />
               </>
             )}
 
@@ -175,6 +191,7 @@ export default function MenuPage() {
                 return (
                   <Draggable key={category?.category?._id}>
                     <CategoryItem
+                      secondaryCurrency={secondaryCurrency}
                       asSearchResult={searchValue !== ''}
                       gOpen={category_open}
                       category={category}
@@ -205,6 +222,7 @@ export default function MenuPage() {
             newProductCategory={newProductCategory}
             productReadonly={productReadonly}
             editProduct={editProduct}
+            secondaryCurrency={secondaryCurrency}
             onClose={() => {
               setSidebar(null);
               setNewProductCategory(null);

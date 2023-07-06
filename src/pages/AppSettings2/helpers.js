@@ -1,11 +1,12 @@
 export const separatesUpdatedData = (oldUnits, NewUnits) => {
-  const data = NewUnits.filter((unit) => !oldUnits.includes(unit));
+  console.log('oldUnits', oldUnits, ' newunits ', NewUnits);
+  const data = NewUnits?.filter((unit) => !oldUnits?.includes(unit));
 
   return data;
 };
 
 export const separatesDeletedData = (oldUnits, NewUnits) => {
-  const data = NewUnits.filter((unit) => !oldUnits.includes(unit));
+  const data = NewUnits?.filter((unit) => !oldUnits?.includes(unit));
 
   return data;
 };
@@ -90,15 +91,6 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (newData?.acceptedCurrency?.toString() !== oldData?.acceptedCurrency?.toString()) {
     newType.push(typeList[11]);
   }
-  // if (newData?.secondaryCurrency !== oldData?.secondaryCurrency) {
-  //   newType.push(typeList[9]);
-  // }
-  // if (newData?.exchangeRate !== oldData?.exchangeRate) {
-  //   newType.push(typeList[10]);
-  // }
-  // if (newData?.acceptedCurrency !== oldData?.acceptedCurrency) {
-  //   newType.push(typeList[11]);
-  // }
 
   console.log('types:', newType);
   console.log('newData', newData, ' oldData', oldData);
@@ -112,6 +104,15 @@ export const appSettingsValidateData = (oldData, newData) => {
     : '0';
   const nearByShopKm = parseInt(newData?.nearByShopKm, 10) ? parseInt(newData?.nearByShopKm, 10) : '0';
   const vat = parseInt(newData?.vat, 10) ? parseInt(newData?.vat, 10) : '0';
+  const exchangeRate = parseInt(newData?.exchangeRate, 10) ? parseInt(newData?.exchangeRate, 10) : '1';
 
-  return { ...newData, vat, maxCustomerServiceValue, nearByShopKm, nearByShopKmForUserHomeScreen, type: newType };
+  return {
+    ...newData,
+    vat,
+    maxCustomerServiceValue,
+    nearByShopKm,
+    nearByShopKmForUserHomeScreen,
+    type: newType,
+    exchangeRate,
+  };
 };

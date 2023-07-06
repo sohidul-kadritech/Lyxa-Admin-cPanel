@@ -126,7 +126,7 @@ export const getValue = (type, value, currency) => {
   return newValue;
 };
 
-export const allColumns = (getValue, currency) => [
+export const allColumns = (getValue, currency, secondaryCurrency) => [
   {
     id: 1,
     headerName: `TYPE`,
@@ -144,7 +144,7 @@ export const allColumns = (getValue, currency) => [
             textOverflow: 'ellipsis',
           }}
         >
-          {getTypeName(row?.type)}
+          {getTypeName(row?.type, secondaryCurrency)}
         </Typography>
       </Stack>
     ),

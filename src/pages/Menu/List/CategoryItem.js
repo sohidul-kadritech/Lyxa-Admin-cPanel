@@ -20,6 +20,7 @@ export default function CategoryItem({
   setNewProductCategory,
   setNewSubCategoryId,
   gOpen,
+  secondaryCurrency,
   asSearchResult,
 }) {
   const theme = useTheme();
@@ -32,14 +33,16 @@ export default function CategoryItem({
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
       shopId: shop?._id,
       isActive: status,
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const favouritesMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
       shopId: shop?._id,
       isActive: status,
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const categoriesMutation = useMutation((data) => AXIOS.post(Api.EDIT_CATEGORY, data), {
@@ -162,12 +165,14 @@ export default function CategoryItem({
         {shop?.shopType === 'food' ? (
           <ProductsContainer
             products={product()}
+            secondaryCurrency={secondaryCurrency}
             asSearchResult={asSearchResult}
             isInsideFavorites={category?.category?.isShopFavorites}
             isInsideBestSellers={category?.category?.isShopBestSellers}
           />
         ) : (
           <SubCategoriesContainer
+            secondaryCurrency={secondaryCurrency}
             gOpen={gOpen}
             subCategories={category?.subCategories}
             asSearchResult={asSearchResult}

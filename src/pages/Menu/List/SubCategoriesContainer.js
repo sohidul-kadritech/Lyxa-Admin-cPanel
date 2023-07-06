@@ -15,7 +15,7 @@ const noBorder = {
 };
 
 // eslint-disable-next-line no-unused-vars
-export default function SubCategoriesContainer({ subCategories, gOpen, asSearchResult }) {
+export default function SubCategoriesContainer({ subCategories, gOpen, asSearchResult, secondaryCurrency }) {
   const [render, setRender] = useState(false);
 
   const subCategorySortingMutation = useMutation((data) => AXIOS.post(Api.SUB_CATEGORY_SORTING, data));
@@ -47,6 +47,7 @@ export default function SubCategoriesContainer({ subCategories, gOpen, asSearchR
         return (
           <Draggable key={subCategory?.subCategory?._id}>
             <SubCategoryItem
+              secondaryCurrency={secondaryCurrency}
               gOpen={gOpen}
               subCategory={subCategory}
               sx={index === length - 1 ? noBorder : {}}

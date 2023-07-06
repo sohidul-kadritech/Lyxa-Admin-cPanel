@@ -1,6 +1,7 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { Box, Button, Stack } from '@mui/material';
 import { isNumber } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import currenciesList from '../../common/data/currencyList';
 import ConfirmModal from '../../components/Common/ConfirmModal';
@@ -44,15 +45,27 @@ const getAcceptedCurrencyOptions = (base, secondary) => [
   },
   {
     label: `${base?.code} Only`,
-    value: base.symbol,
+    value: base?.code,
   },
   {
     label: `${secondary?.code} Only`,
-    value: secondary.symbol,
+    value: secondary?.code,
+  },
+];
+
+const getSecondaryCurrencyOptions = [
+  {
+    label: 'Disable',
+    value: 'disable',
+  },
+  {
+    label: 'Enable',
+    value: 'enable',
   },
 ];
 
 export const validateList = (newValue, oldList, type) => {
+  console.log('old value: ', newValue, oldList, ' type', type);
   if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;
@@ -62,12 +75,12 @@ export const validateList = (newValue, oldList, type) => {
     successMsg('Please enter a valid value');
     return false;
   }
-
-  if (oldList.includes(Number(newValue) && type === 'number')) {
+  if (oldList.includes(Number(newValue)) && type === 'number') {
+    console.log('into if');
     successMsg('Bundle item already exists');
     return false;
   }
-
+  console.log('after if');
   if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;
@@ -88,79 +101,59 @@ export const validateList = (newValue, oldList, type) => {
   return true;
 };
 
-// eslint-disable-next-line no-unused-vars
+const provideErrorMessage = (data) => {
+  for (let i = 0; i < data.length; i++) {
+    if (!data[i].status) {
+      successMsg(data[i].message, 'error');
+    }
+  }
+};
 
 function Appsettings2() {
-  //   const theme = useTheme();
-
   const queryClient = useQueryClient();
-  // eslint-disable-next-line no-unused-vars
-  const [lyxaLimit, setLyxaLimit] = useState(25);
 
   const [deletedUnitId, setDeletedUnitId] = useState([]);
-
-  const [maxTotalEstItemsPriceForButler, setMaxTotalEstItemsPriceForButler] = useState(0);
-
-  const [maxDistanceForButler, setMaxDistanceForButler] = useState(0);
-
-  const [maxCustomerServiceValue, setMaxCustomerServiceValue] = useState(0);
-
-  const [vat, setVat] = useState(0);
-
-  const [searchDeliveryBoyKm, setSearchDeliveryBoyKm] = useState([]);
-
-  const [nearByShopKm, setNearByShopKm] = useState(0);
-  const [nearByShopKmForUserHomeScreen, setNearByShopKmForUserHomeScreen] = useState(0);
-
-  const [maxDiscount, setMaxDiscount] = useState([]);
-
-  const [units, setUnits] = useState([]);
-
-  const [oldUnits, setOldUnits] = useState([]);
-
-  const [currency, setCurrency] = useState(initialCurrency);
-
-  const [secondaryCurrency, setSecondaryCurrency] = useState(initialCurrency);
-  const [acceptedCurrency, setAcceptedCurrency] = useState('');
-
   const [isConfirm, setIsconfirm] = useState(false);
-
   const [hasChanged, setHasChanged] = useState(false);
-
-  // eslint-disable-next-line no-unused-vars
-  const [oldAppSettings, setOldAppSettings] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [oldUnits, setOldUnits] = useState([]);
+  const [newAppSettings, setNewAppSettings] = useState({});
+  const [oldAppSettings, setOldAppSettings] = useState({});
+  const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
 
   // Get all shop settings data
-  const getShopSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
+  const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        setOldAppSettings(getShopSettingsData?.data?.data?.appSetting);
+        setOldAppSettings(getAppSettingsData?.data?.data?.appSetting);
+        setNewAppSettings(getAppSettingsData?.data?.data?.appSetting);
+
+        setIsUsedSecondaryCurrency(() => {
+          const currency =
+            Object?.keys(getAppSettingsData?.data?.data?.appSetting.secondaryCurrency || {})?.length > 1
+              ? 'enable'
+              : 'disable';
+          return currency;
+        });
       }
     },
   });
 
   // Get all unit data
-  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT));
-
-  useEffect(() => {
-    setMaxTotalEstItemsPriceForButler(getShopSettingsData?.data?.data?.appSetting?.maxTotalEstItemsPriceForButler || 0);
-    setMaxDistanceForButler(getShopSettingsData?.data?.data?.appSetting?.maxDistanceForButler || 0);
-    setMaxCustomerServiceValue(getShopSettingsData?.data?.data?.appSetting?.maxCustomerServiceValue || 0);
-    setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
-    setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
-    setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || 0);
-    setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
-    setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || []);
-    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
-    setSecondaryCurrency(getShopSettingsData?.data?.data?.appSetting?.secondaryCurrency || initialCurrency);
-    setAcceptedCurrency(getShopSettingsData?.data?.data?.appSetting?.acceptedCurrency || '');
-    setUnits(getAllUnits?.data?.data || []);
-    setOldUnits(getAllUnits?.data?.data || []);
-  }, [getShopSettingsData?.data?.data, getAllUnits?.data?.data]);
+  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('data unit', data?.data);
+        setUnits(data?.data || []);
+        setOldUnits(data?.data || []);
+      }
+    },
+  });
 
   // update data
   const updateQuery2 = useMutation(
     async (data) => {
+      setDeletedUnitId([]);
       if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length > 0) {
         const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
         const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
@@ -189,19 +182,57 @@ function Appsettings2() {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
+          setNewAppSettings(data[0]?.data?.appSetting);
+
+          if (data[1]?.data) {
+            setOldUnits(() => {
+              console.log('old unit: ', data[1]?.data);
+              return [...data[1].data];
+            });
+            setUnits(() => {
+              console.log('old unit: ', data[1]?.data);
+              return [...data[1].data];
+            });
+          }
+          setIsUsedSecondaryCurrency(() =>
+            // eslint-disable-next-line prettier/prettier
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+          );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
+          setNewAppSettings(data[0]?.data?.appSetting);
+          if (data[1]?.data) {
+            if (data[1]?.data) {
+              setOldUnits(() => {
+                console.log('old unit: ', data[1]?.data);
+                return [...data[1].data];
+              });
+              setUnits(() => {
+                console.log('old unit: ', data[1]?.data);
+                return [...data[1].data];
+              });
+            }
+          }
+          setIsUsedSecondaryCurrency(() =>
+            // eslint-disable-next-line prettier/prettier
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+          );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 1 && data[0].status) {
           successMsg('Updated Succesfully', 'success');
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
+          setNewAppSettings(data[0]?.data?.appSetting);
+          setIsUsedSecondaryCurrency(() =>
+            // eslint-disable-next-line prettier/prettier
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+          );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else {
-          successMsg('Something Went Wrong');
+          provideErrorMessage(data);
         }
       },
       // eslint-disable-next-line prettier/prettier
@@ -210,23 +241,13 @@ function Appsettings2() {
 
   // reset data
   const populateData = () => {
-    setMaxTotalEstItemsPriceForButler(getShopSettingsData?.data?.data?.appSetting?.maxTotalEstItemsPriceForButler || 0);
-    setMaxDistanceForButler(getShopSettingsData?.data?.data?.appSetting?.maxDistanceForButler || 0);
-    setMaxCustomerServiceValue(getShopSettingsData?.data?.data?.appSetting?.maxCustomerServiceValue || 0);
-    setVat(getShopSettingsData?.data?.data?.appSetting?.vat || 0);
-    setSearchDeliveryBoyKm(getShopSettingsData?.data?.data?.appSetting?.searchDeliveryBoyKm || []);
-    setNearByShopKmForUserHomeScreen(getShopSettingsData?.data?.data?.appSetting?.nearByShopKmForUserHomeScreen || 0);
-    setNearByShopKm(getShopSettingsData?.data?.data?.appSetting?.nearByShopKm || []);
-    setMaxDiscount(getShopSettingsData?.data?.data?.appSetting?.maxDiscount || 0);
-    setCurrency(getShopSettingsData?.data?.data?.appSetting?.currency || initialCurrency);
-    setSecondaryCurrency(getShopSettingsData?.data?.data?.appSetting?.secondaryCurrency || initialCurrency);
-    setAcceptedCurrency(getShopSettingsData?.data?.data?.appSetting?.acceptedCurrency || '');
+    setNewAppSettings(getAppSettingsData?.data?.data?.appSetting);
     setUnits(getAllUnits?.data?.data || []);
   };
 
-  const addNewBundleItem = (bundle, setBundle, oldbundle, type = 'number') => {
+  const addNewBundleItem = (bundle, setBundle, oldbundle, objectKey, type = 'number') => {
     if (validateList(bundle, oldbundle, type) && type === 'number') {
-      setBundle((prev) => [...prev, Number(bundle)]);
+      setBundle((prev) => ({ ...prev, [objectKey]: [...oldbundle, Number(bundle)] }));
       return true;
     }
 
@@ -241,6 +262,7 @@ function Appsettings2() {
     ) {
       setHasChanged(true);
       setBundle((prev) => {
+        // if units already exist in old unit list.
         const previousData = oldUnits.find((unit) => unit.name === bundle);
         if (previousData) {
           setDeletedUnitId((prev) => prev.filter((id) => id !== previousData._id));
@@ -255,92 +277,95 @@ function Appsettings2() {
 
   // Handle Incremented by one
 
-  const incrementByOneHandler = (setValue) => {
+  const incrementByOneHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
-      if (prev === '') return 1;
-      return prev;
+      if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) + 1 };
+      if (prev[key] === '') return { ...prev, [key]: 1 };
+      return { ...prev };
     });
   };
 
   // Handle decremented by one
-  const decrementByOneHandler = (setValue) => {
+  const decrementByOneHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
-      if (prev === '' || prev <= 0) return 0;
-      return prev;
+      if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) - 1 };
+      if (prev[key] === '' || prev[key] <= 0) return { ...prev, [key]: 0 };
+      return { ...prev };
     });
   };
 
   // Handle Incremented by five
 
-  const incrementByFiveHandler = (setValue) => {
+  const incrementByFiveHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 5;
-      if (prev === '') return 1;
-      return prev;
+      if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) + 5 };
+      if (prev[key] === '') return { ...prev, [key]: 5 };
+      return { ...prev };
     });
   };
 
-  // Handle decremented by one
-  const decrementByFiveHandler = (setValue) => {
+  // Handle decremented by five
+  const decrementByFiveHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 5;
-      if (prev === '' || prev <= 0) return 0;
-      return prev;
+      if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '' && parseInt(prev[key], 10) - 5 > 0)
+        return { ...prev, [key]: parseInt(prev[key], 10) - 5 };
+      if (prev[key] === '' || prev[key] <= 0) return { ...prev, [key]: 5 };
+      return { ...prev };
     });
   };
 
   const updateData = () => {
-    const appsettignsData = {
-      maxTotalEstItemsPriceForButler,
-      nearByShopKm,
-      nearByShopKmForUserHomeScreen,
-      maxDistanceForButler,
-      maxDiscount,
-      maxCustomerServiceValue,
-      searchDeliveryBoyKm,
-      currency,
-      secondaryCurrency,
-      vat,
-    };
+    const generatedData = appSettingsValidateData(oldAppSettings, newAppSettings);
 
-    const generatedData = appSettingsValidateData(oldAppSettings, appsettignsData);
+    if (isUsedSecondaryCurrency === 'enable' && !newAppSettings.secondaryCurrency?.symbol) {
+      successMsg('Select a secondary currency or disable it!', 'error');
+      return;
+    }
 
-    const updateDUnits = separatesUpdatedData(
-      oldUnits.map((unit) => unit.name),
+    if (
+      isUsedSecondaryCurrency === 'enable' &&
+      newAppSettings.secondaryCurrency?.symbol &&
+      newAppSettings.secondaryCurrency?.symbol === newAppSettings.currency?.symbol
+    ) {
+      successMsg('Secondary currency should not same as base currency!', 'error');
+      return;
+    }
+
+    const updatedUnits = separatesUpdatedData(
+      oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name),
+      units?.map((unit) => unit.name),
     );
 
-    console.log(
-      'old units: ',
-      oldUnits.map((unit) => unit.name),
-      ' units ',
-      // eslint-disable-next-line prettier/prettier
-      units.map((unit) => unit.name),
-    );
+    console.log('update  units: ', updatedUnits);
+    console.log('generatedData', generatedData);
 
     if (hasChanged) {
+      setOldUnits((prev) => {
+        if (deletedUnitId?.length > 0) {
+          return [...units];
+        }
+        return [...prev];
+      });
+
       updateQuery2.mutate({
         appSettings: generatedData,
         addUnit: {
-          nameList: updateDUnits,
+          nameList: updatedUnits,
         },
         deleteUnit: {
           idList: deletedUnitId,
         },
         logs: {
-          newValue: units.map((unit) => unit.name),
-          oldValue: oldUnits.map((unit) => unit.name),
+          newValue: units?.map((unit) => unit.name),
+          oldValue: oldUnits?.map((unit) => unit.name),
         },
       });
     } else successMsg('Please make some changes first !');
-    // createDataForAppSettings(data);
   };
 
   return (
@@ -359,7 +384,7 @@ function Appsettings2() {
         }}
       />
       <Box sx={{ backgroundColor: '#ffffff', borderRadius: '7px', padding: '30px' }}>
-        {getShopSettingsData.isLoading || getAllUnits.isLoading ? (
+        {getAppSettingsData.isLoading || getAllUnits.isLoading ? (
           <AppSettingsSkeleton />
         ) : (
           <>
@@ -367,14 +392,15 @@ function Appsettings2() {
               <Stack gap="10px" justifyContent="center">
                 <InputBox
                   title="Max total EST items price"
-                  endAdornment={`${currency?.symbol}`}
-                  inputValue={`${maxTotalEstItemsPriceForButler}`}
+                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  inputValue={`${newAppSettings?.maxTotalEstItemsPriceForButler}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
                   onInputChange={(e) => {
                     setHasChanged(true);
-                    setMaxTotalEstItemsPriceForButler(e?.target?.value);
+                    setNewAppSettings((prev) => ({ ...prev, maxTotalEstItemsPriceForButler: e?.target?.value }));
+                    // setMaxTotalEstItemsPriceForButler(e?.target?.value);
                   }}
                 />
                 <InputBox
@@ -382,16 +408,17 @@ function Appsettings2() {
                   sxRight={{ width: '140px' }}
                   title="Maximum Distance"
                   endAdornment="KM"
-                  inputValue={`${maxDistanceForButler}`}
+                  inputValue={`${newAppSettings?.maxDistanceForButler}`}
                   inputType="number"
                   onInputChange={(e) => {
                     setHasChanged(true);
-                    setMaxDistanceForButler(e?.target?.value);
+                    // setMaxDistanceForButler(e?.target?.value);
+                    setNewAppSettings((prev) => ({ ...prev, maxDistanceForButler: e?.target?.value }));
                   }}
                 />
               </Stack>
             </StyledBox>
-            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${currency?.symbol})`}>
+            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.currency?.symbol})`}>
               <IncrementDecrementButton
                 isChangeOthers
                 changeOthers={() => {
@@ -399,9 +426,10 @@ function Appsettings2() {
                 }}
                 incrementHandler={incrementByOneHandler}
                 decrementHandler={decrementByOneHandler}
-                setValue={setMaxCustomerServiceValue}
+                objectKey="maxCustomerServiceValue"
+                setValue={setNewAppSettings}
                 isValidateType={false}
-                currentValue={maxCustomerServiceValue}
+                currentValue={newAppSettings?.maxCustomerServiceValue}
               />
             </StyledBox>
             <StyledBox title="VAT (Percentage)">
@@ -413,8 +441,9 @@ function Appsettings2() {
                 isValidateType={false}
                 incrementHandler={incrementByOneHandler}
                 decrementHandler={decrementByOneHandler}
-                setValue={setVat}
-                currentValue={vat}
+                objectKey="vat"
+                setValue={setNewAppSettings}
+                currentValue={newAppSettings?.vat}
               />
             </StyledBox>
 
@@ -425,18 +454,27 @@ function Appsettings2() {
                   mt: 2,
                 }}
                 addButtonLabel="Add"
-                items={searchDeliveryBoyKm || []}
+                items={newAppSettings?.searchDeliveryBoyKm || []}
                 onAdd={(value) => {
-                  if (searchDeliveryBoyKm?.length <= 2) {
+                  if (newAppSettings?.searchDeliveryBoyKm?.length <= 2) {
                     setHasChanged(true);
-                    addNewBundleItem(value, setSearchDeliveryBoyKm, searchDeliveryBoyKm);
+                    addNewBundleItem(
+                      value,
+                      setNewAppSettings,
+                      newAppSettings?.searchDeliveryBoyKm,
+                      // eslint-disable-next-line prettier/prettier
+                      'searchDeliveryBoyKm',
+                    );
                   } else {
                     successMsg('Maximum 3 items can add ');
                   }
                 }}
                 onDelete={(item) => {
                   setHasChanged(true);
-                  setSearchDeliveryBoyKm((prev) => prev.filter((value) => value !== item));
+                  setNewAppSettings((prev) => ({
+                    ...prev,
+                    searchDeliveryBoyKm: prev?.searchDeliveryBoyKm.filter((value) => value !== item),
+                  }));
                 }}
               />
             </StyledBox>
@@ -449,8 +487,9 @@ function Appsettings2() {
                 isValidateType={false}
                 incrementHandler={incrementByFiveHandler}
                 decrementHandler={decrementByFiveHandler}
-                setValue={setNearByShopKm}
-                currentValue={nearByShopKm}
+                objectKey="nearByShopKm"
+                setValue={setNewAppSettings}
+                currentValue={newAppSettings?.nearByShopKm}
               />
             </StyledBox>
             <StyledBox title="Near Shop Distance in Home Screen (KM)">
@@ -462,25 +501,35 @@ function Appsettings2() {
                 isValidateType={false}
                 incrementHandler={incrementByFiveHandler}
                 decrementHandler={decrementByFiveHandler}
-                setValue={setNearByShopKmForUserHomeScreen}
-                currentValue={nearByShopKmForUserHomeScreen}
+                objectKey="nearByShopKmForUserHomeScreen"
+                setValue={setNewAppSettings}
+                currentValue={newAppSettings?.nearByShopKmForUserHomeScreen}
               />
             </StyledBox>
-            <StyledBox title={`Maximum Discount for Shops (${currency?.symbol})`}>
+            <StyledBox title={`Maximum Discount for Shops (${newAppSettings?.currency?.symbol})`}>
               <Taglist
                 listContainerSx={{
                   mb: 2.5,
                   mt: 2,
                 }}
                 addButtonLabel="Add"
-                items={maxDiscount || []}
+                items={newAppSettings?.maxDiscount || []}
                 onAdd={(value) => {
                   setHasChanged(true);
-                  addNewBundleItem(value, setMaxDiscount, maxDiscount);
+                  addNewBundleItem(
+                    value,
+                    setNewAppSettings,
+                    newAppSettings?.maxDiscount,
+                    // eslint-disable-next-line prettier/prettier
+                    'maxDiscount',
+                  );
                 }}
                 onDelete={(item) => {
                   setHasChanged(true);
-                  setMaxDiscount((prev) => prev.filter((value) => value !== item));
+                  setNewAppSettings((prev) => ({
+                    ...prev,
+                    maxDiscount: prev?.maxDiscount.filter((value) => value !== item),
+                  }));
                 }}
               />
             </StyledBox>
@@ -496,122 +545,160 @@ function Appsettings2() {
                 items={units.map((u) => u.name) || []}
                 onAdd={(value) => {
                   setHasChanged(true);
-                  addNewBundleItem(value, setUnits, units, 'text');
+                  addNewBundleItem(value, setUnits, units, null, 'text');
                 }}
                 onDelete={(item) => {
                   setHasChanged(true);
                   setUnits((prev) => {
+                    console.log('delete---> previous unit', prev, 'item: ', item);
                     setDeletedUnitId((deletedUnit) => {
                       const deletedId = prev.find((value) => value.name === item && value._id);
                       if (deletedId && !deletedUnit.includes(deletedId?._id)) return [...deletedUnit, deletedId._id];
                       return [...deletedUnit];
                     });
-
                     return prev.filter((value) => value.name !== item);
                   });
                 }}
               />
             </StyledBox>
             <StyledBox title="App Currency">
-              <StyledFormField
-                intputType="select"
-                containerProps={{
-                  sx: {
-                    width: '125px',
-                  },
-                }}
-                inputProps={{
-                  name: 'shopStatus',
-                  placeholder: 'currency',
-                  value: currency?.code || '',
-                  items: currenciesList.map((currency) => {
-                    const label = currency?.name_plural;
-                    const value = currency?.code;
-                    return { label, value };
-                  }),
-                  //   items: categories,
-                  onChange: (e) => {
-                    setHasChanged(true);
-                    const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
-                    setCurrency(selectedCurrency);
-                  },
-                  //   readOnly: Boolean(newProductCategory) || productReadonly,
-                }}
-              />
-            </StyledBox>
-            <StyledBox title="Secondary Currency">
-              <StyledFormField
-                intputType="select"
-                containerProps={{
-                  sx: {
-                    width: '125px',
-                  },
-                }}
-                inputProps={{
-                  name: 'shopStatus',
-                  placeholder: 'currency',
-                  value: secondaryCurrency?.code || '',
-                  items: currenciesList.map((currency) => {
-                    const label = currency?.name_plural;
-                    const value = currency?.code;
-                    return { label, value };
-                  }),
-                  //   items: categories,
-                  onChange: (e) => {
-                    setHasChanged(true);
-                    const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
-                    setSecondaryCurrency(selectedCurrency);
-                  },
-                  //   readOnly: Boolean(newProductCategory) || productReadonly,
-                }}
-              />
-            </StyledBox>
-            <StyledBox title="Rate">
-              <Stack gap="10px" direction="row">
+              <Stack direction="row" alignItems="center" flexWrap="wrap">
                 <InputBox
-                  title={`Amount of ${currency?.symbol}`}
-                  endAdornment={`${currency?.symbol}`}
+                  title="Base Currency"
+                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  inputType="number"
+                  sxLeft={{ width: '200px' }}
+                  sxRight={{ width: '140px' }}
+                  sxContainer={{ flex: 1.7 }}
+                  isRenderedChild
+                >
+                  <StyledFormField
+                    intputType="select"
+                    containerProps={{
+                      sx: {
+                        width: '125px',
+                      },
+                    }}
+                    inputProps={{
+                      placeholder: 'currency',
+                      value: newAppSettings?.currency?.code || '',
+                      items: currenciesList.map((currency) => {
+                        const label = currency?.name_plural;
+                        const value = currency?.code;
+                        return { label, value };
+                      }),
+                      //   items: categories,
+                      onChange: (e) => {
+                        setHasChanged(true);
+                        const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
+                        setNewAppSettings((prev) => ({ ...prev, currency: selectedCurrency }));
+                      },
+                      //   readOnly: Boolean(newProductCategory) || productReadonly,
+                    }}
+                  />
+                </InputBox>
+                {/* Secondary Currency */}
+                <InputBox
+                  title="Secondary Currency"
+                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  inputType="number"
+                  sxLeft={{ width: '200px' }}
+                  sxRight={{ width: '140px' }}
+                  sxContainer={{ flex: 2 }}
+                  isRenderedChild
+                >
+                  <StyledFormField
+                    intputType="select"
+                    containerProps={{
+                      sx: {
+                        width: '125px',
+                      },
+                    }}
+                    inputProps={{
+                      placeholder: 'Secondary currency',
+                      value:
+                        isUsedSecondaryCurrency !== 'disable'
+                          ? newAppSettings?.secondaryCurrency?.code || ''
+                          : 'disable',
+                      items:
+                        isUsedSecondaryCurrency !== 'disable'
+                          ? [
+                              getSecondaryCurrencyOptions[0],
+                              ...currenciesList.map((currency) => {
+                                const label = currency?.name_plural;
+                                const value = currency?.code;
+                                return { label, value };
+                              }),
+                            ]
+                          : [...getSecondaryCurrencyOptions],
+                      //   items: categories,
+                      onChange: (e) => {
+                        setHasChanged(true);
+                        if (e.target.value === 'disable') {
+                          setIsUsedSecondaryCurrency(e.target.value);
+
+                          setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: {}, exchangeRate: 1 }));
+                          return;
+                        }
+
+                        if (e.target.value === 'enable') {
+                          setTimeout(() => {
+                            setIsUsedSecondaryCurrency('enable');
+                            setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: {}, exchangeRate: 1 }));
+                          }, 100);
+                          return;
+                        }
+
+                        const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
+                        setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: selectedCurrency }));
+                      },
+                      //   readOnly: Boolean(newProductCategory) || productReadonly,
+                    }}
+                  />
+                </InputBox>
+              </Stack>
+            </StyledBox>
+
+            <StyledBox title="Rate">
+              <Stack direction="row" alignItems="center" flexWrap="wrap">
+                <InputBox
+                  title={`Amount of (${newAppSettings?.currency?.symbol})`}
+                  endAdornment={`${newAppSettings?.currency?.symbol}`}
                   inputValue={`${1}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
                   inputProps={{ readOnly: true, sx: { opacity: '0.5' } }}
-                  sxContainer={{ flex: 2 }}
-                  onInputChange={(e) => {
-                    setHasChanged(true);
-                    setMaxTotalEstItemsPriceForButler(e?.target?.value);
-                  }}
+                  sxContainer={{ flex: 1.7 }}
                 />
-                {/* <InputBox
+
+                <InputBox
+                  title={`Equivalent to ${
+                    newAppSettings?.secondaryCurrency?.symbol ? `(${newAppSettings?.secondaryCurrency?.symbol})` : ''
+                  }`}
+                  endAdornment={`${
+                    newAppSettings?.secondaryCurrency?.symbol ? newAppSettings?.secondaryCurrency?.symbol : ''
+                  }`}
+                  inputType="number"
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
                   sxContainer={{ flex: 2 }}
-                  title="Maximum Distance"
-                  endAdornment="KM"
-                  inputValue={`${maxDistanceForButler}`}
-                  inputType="number"
-                  onInputChange={(e) => {
-                    setHasChanged(true);
-                    setMaxDistanceForButler(e?.target?.value);
-                  }}
-                /> */}
-
-                <Stack justifyItems="start" sx={{ flex: 2 }}>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ maxWidth: '370px' }}>
-                    <Typography variant="body1">Equivalent to </Typography>
-                    <IncrementDecrementButton
-                      isChangeOthers
-                      changeOthers={() => {
-                        setHasChanged(true);
-                      }}
-                      isValidateType={false}
-                      incrementHandler={incrementByFiveHandler}
-                      decrementHandler={decrementByFiveHandler}
-                      setValue={setNearByShopKmForUserHomeScreen}
-                      currentValue={nearByShopKmForUserHomeScreen}
-                    />
-                  </Stack>
-                </Stack>
+                  isRenderedChild
+                >
+                  <IncrementDecrementButton
+                    isChangeOthers
+                    isReadOnly={isUsedSecondaryCurrency === 'disable'}
+                    changeOthers={() => {
+                      setHasChanged(true);
+                    }}
+                    isValidateType={false}
+                    incrementHandler={incrementByFiveHandler}
+                    decrementHandler={decrementByFiveHandler}
+                    objectKey="exchangeRate"
+                    setValue={setNewAppSettings}
+                    currentValue={newAppSettings?.exchangeRate}
+                  />
+                </InputBox>
               </Stack>
             </StyledBox>
 
@@ -624,15 +711,13 @@ function Appsettings2() {
                   },
                 }}
                 inputProps={{
-                  name: 'shopStatus',
-                  placeholder: 'currency',
-                  value: acceptedCurrency || '',
-                  items: getAcceptedCurrencyOptions(currency, secondaryCurrency),
-                  //   items: categories,
+                  placeholder: 'Accepted Currency',
+                  readOnly: isUsedSecondaryCurrency === 'disable',
+                  value: newAppSettings?.acceptedCurrency || '',
+                  items: getAcceptedCurrencyOptions(newAppSettings?.currency, newAppSettings?.secondaryCurrency),
                   onChange: (e) => {
                     setHasChanged(true);
-                    const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
-                    setSecondaryCurrency(selectedCurrency);
+                    setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
                   },
                   //   readOnly: Boolean(newProductCategory) || productReadonly,
                 }}
