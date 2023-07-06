@@ -61,7 +61,7 @@ export default function SellerShopList() {
         if (data?.status) {
           setQueryEnabled(false);
 
-          setShops(data?.data?.shops);
+          setShops(data?.data?.shops || []);
           setCurrentShop(data);
         }
       },
@@ -95,7 +95,7 @@ export default function SellerShopList() {
           <List shops={shops} loading={loading} />
           {shops?.length ? <ShopProfile setLoading={setLoading} loading={loading} /> : null}
           <Drawer open={open} anchor="right">
-            <AddShop onClose={() => setOpen(false)} />
+            <AddShop onClose={() => setOpen(false)} refetch={query?.refetch} />
           </Drawer>
         </>
       )}

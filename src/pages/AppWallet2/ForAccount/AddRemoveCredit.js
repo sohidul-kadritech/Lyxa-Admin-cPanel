@@ -11,8 +11,9 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import IncrementDecrementButton from '../../AppSettings2/IncrementDecrementButton';
 
-function AddRemoveCredit({ onClose }) {
+function AddRemoveCredit({ onClose, storeAppSettings }) {
   const { general } = useGlobalContext();
+  const { exchangeRate, secondaryCurrency } = storeAppSettings;
   const currency = general?.currency?.symbol;
   const [searchedUserOptions, setSearchedUserOptions] = useState([]);
   const [user, setUser] = useState({});
@@ -56,7 +57,7 @@ function AddRemoveCredit({ onClose }) {
         });
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -115,7 +116,7 @@ function AddRemoveCredit({ onClose }) {
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    []
+    [],
   );
 
   const filterOptions = createFilterOptions({
@@ -177,6 +178,11 @@ function AddRemoveCredit({ onClose }) {
           currentValue={amount}
         />
       </Box>
+      {secondaryCurrency?.symbol && (
+        <Typography pt={2} variant="body3" display="block">
+          Equivalent Price: {secondaryCurrency?.code} {amount * parseInt(exchangeRate, 10)}
+        </Typography>
+      )}
       <Box sx={{ marginTop: '20px' }}>
         <StyledFormField
           label="Admin Note (Visible to you)"

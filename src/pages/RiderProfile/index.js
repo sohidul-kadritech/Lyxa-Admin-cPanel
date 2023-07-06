@@ -48,8 +48,9 @@ export default function RiderProfile() {
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [open, setOpen] = useState(false);
+
   const params = useParams();
-  console.log('=====> financial: ', searchParams.get('financials'), 'params', params?.riderId);
+
   const queryClient = useQueryClient();
   const [rider, setRider] = useState(location?.state?.rider);
 

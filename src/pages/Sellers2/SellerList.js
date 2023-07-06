@@ -3,7 +3,7 @@ import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
-function SellerInfo({ sellerName, image, shopNumber }) {
+export function SellerInfo({ sellerName, image, shopNumber }) {
   return (
     <Box>
       <Stack direction="row" alignItems="center" gap={3}>

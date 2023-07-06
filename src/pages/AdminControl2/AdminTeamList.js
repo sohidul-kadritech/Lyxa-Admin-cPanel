@@ -1,6 +1,7 @@
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { ReactComponent as SellersIcon } from '../../assets/icons/menu-icons/sellers.svg';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import FilterSelect from '../../components/Filter/FilterSelect';
 // eslint-disable-next-line import/no-named-as-default
@@ -23,19 +24,19 @@ function AdminTeamList({
   data = [],
   setCurrentAdmin,
   setOpen,
+  setOpenSellersModal,
   setIsEdit,
   deleteAdminQuery,
   isConfirmModal,
   editAdminQuery,
   setIsConfirmModal,
+  adminType,
 }) {
   const theme = useTheme();
   const [rowId, setRowId] = useState('');
 
   // eslint-disable-next-line no-unused-vars
   const { currentUser, userType } = useGlobalContext();
-
-  console.log('==>', currentUser);
 
   const onStatusChange = (value, item) => {
     item.status = value;
@@ -158,6 +159,17 @@ function AdminTeamList({
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* edit */}
+          {adminType === 'accountManager' && (
+            <StyledIconButton
+              onClick={() => {
+                setOpenSellersModal(true);
+                setCurrentAdmin(params?.row);
+              }}
+              color="primary"
+            >
+              <SellersIcon />
+            </StyledIconButton>
+          )}
           <StyledIconButton
             onClick={() => {
               setOpen(true);

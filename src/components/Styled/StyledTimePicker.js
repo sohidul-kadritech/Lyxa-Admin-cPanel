@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { TextField, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
-const StyledInput = styled(TextField)(({ theme }) => ({
+const StyledInput = styled(TimePicker)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     padding: '12px 15px 12px 22px',
     maxWidth: '190px',
@@ -36,7 +37,7 @@ const StyledInput = styled(TextField)(({ theme }) => ({
     },
   },
 
-  fieldSet: {
+  '& fieldSet': {
     border: '0',
   },
 }));
@@ -57,19 +58,19 @@ const sizes = {
 
 export default function StyledTimePicker({ sx, size, ...props }) {
   return (
-    <TimePicker
+    <StyledInput
       components={{
         OpenPickerIcon: ExpandMoreIcon,
       }}
-      renderInput={(params) => (
-        <StyledInput
-          sx={{
-            ...(sizes[size]?.root || {}),
-            ...(sx || {}),
-          }}
-          {...params}
-        />
-      )}
+      // renderInput={(params) => (
+      //   <StyledInput
+      //     sx={{
+      //       ...(sizes[size]?.root || {}),
+      //       ...(sx || {}),
+      //     }}
+      //     {...params}
+      //   />
+      // )}
       {...props}
     />
   );

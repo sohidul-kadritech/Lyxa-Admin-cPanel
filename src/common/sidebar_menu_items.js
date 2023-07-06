@@ -510,6 +510,25 @@ export const admin_menu_items = [
   // },
 ];
 
+export const account_manager_menu_items = [
+  {
+    title: 'Management',
+    menu: [
+      {
+        label: 'Dashboard',
+        icon: DashBoardIcon,
+        to: '/',
+      },
+
+      {
+        label: 'Sellers',
+        to: '/seller/list',
+        icon: SellersIcon,
+      },
+    ],
+  },
+];
+
 export const customer_service_menu_items = [
   {
     title: 'Management',

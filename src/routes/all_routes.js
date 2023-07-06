@@ -33,7 +33,7 @@ import Marketing from '../pages/Marketing';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
-import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
+import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings/';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
@@ -75,6 +75,7 @@ import DisplaySettings from '../pages/Display';
 import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
+// eslint-disable-next-line import/no-unresolved, import/extensions
 import Financials from '../pages/Financials';
 import ShopHourSettings from '../pages/Hours';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';

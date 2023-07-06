@@ -1,27 +1,37 @@
 import { Add } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Stack } from '@mui/material';
+import moment from 'moment';
 import { useState } from 'react';
 import TimeRangePicker from './TimeRangePicker';
 
-export default function SingleDayHours({ openingHours = [], onAnyChange, onAddHour, onHourRemove, disabled }) {
+export default function SingleDayHours({
+  openingHours = [],
+  onAnyChange,
+  onAddHour,
+  onHourRemove,
+  disabled,
+  sortHours,
+}) {
   const [, setRender] = useState(false);
 
   return (
     <Stack gap={3}>
       {openingHours?.map((hour, i) => (
-        <Stack direction="row" alignItems="center" gap={5}>
+        <Stack direction="row" alignItems="center" gap={5} key={hour?.customId}>
           <TimeRangePicker
+            minutesStep={15}
             disabled={Boolean(disabled)}
             startValue={hour?.open}
             endValue={hour?.close}
-            onStartChange={(v) => {
-              hour.open = v;
+            onStartChange={(e) => {
+              hour.open = moment(e).format('HH:mm');
+              sortHours();
               setRender((prev) => !prev);
               onAnyChange();
             }}
-            onEndChange={(v) => {
-              hour.close = v;
+            onEndChange={(e) => {
+              hour.close = moment(e).format('HH:mm');
               setRender((prev) => !prev);
               onAnyChange();
             }}
