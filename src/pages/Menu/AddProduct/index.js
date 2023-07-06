@@ -446,8 +446,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
       {secondaryCurrency?.secondaryCurrency?.symbol && (
         <Typography pt={2} variant="body3" display="block">
-          Equivalent Price: {secondaryCurrency?.secondaryCurrency?.symbol}
-          {product.price * parseInt(secondaryCurrency?.exchangeRate, 10)}
+          Equivalent Price: {secondaryCurrency?.secondaryCurrency?.code}{' '}
+          {product.price * parseInt(product?.shop?.shopExchangeRate, 10)}
         </Typography>
       )}
 

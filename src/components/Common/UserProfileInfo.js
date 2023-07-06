@@ -3,6 +3,7 @@ import { Avatar, Stack, Typography } from '@mui/material';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
+import { ReactComponent as UserIcon } from '../../assets/icons/user_outline.svg';
 import InfoListItem from './InfoListItem';
 
 export default function UserProfileInfo({ user, avatarProps, containerProps }) {
@@ -22,9 +23,10 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
         </Typography>
         {/* info */}
         <Stack direction="row" alignItems="center" justifyContent="start">
+          {user.adminType && <InfoListItem icon={UserIcon} title={user?.adminType} isFirst />}
           {user.email && <InfoListItem icon={Email} title={user?.email} isFirst />}
           {user.address && <InfoListItem icon={Loacation} title={user?.address} />}
-          {user.phone && <InfoListItem icon={Phone} title={user?.phone} />}
+          {user.phone && <InfoListItem icon={Phone} title={user?.phone} isFirst />}
         </Stack>
         {/* rating */}
         {user?.rating && (

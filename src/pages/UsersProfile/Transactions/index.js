@@ -27,6 +27,8 @@ export default function UserTransactions({ user }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
 
+  const [storeAppSettings, setStoreAppSettings] = useState({});
+
   const query = useQuery(
     [Api.DROP_PAY_LIST, queryParams],
     () =>
@@ -37,8 +39,17 @@ export default function UserTransactions({ user }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
+
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setStoreAppSettings({ ...getAppSettingsData?.data?.data?.appSetting });
+      }
+    },
+  });
 
   return (
     <Box>
@@ -74,6 +85,7 @@ export default function UserTransactions({ user }) {
         }}
       >
         <AddRemoveCredit
+          storeAppSettings={storeAppSettings}
           userId={user?._id}
           onClose={() => {
             setModalOpen(false);

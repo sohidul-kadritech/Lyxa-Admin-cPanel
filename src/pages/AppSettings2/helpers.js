@@ -102,9 +102,9 @@ export const appSettingsValidateData = (oldData, newData) => {
   const nearByShopKmForUserHomeScreen = parseInt(newData?.nearByShopKmForUserHomeScreen, 10)
     ? parseInt(newData?.nearByShopKmForUserHomeScreen, 10)
     : '0';
-  const nearByShopKm = parseInt(newData?.nearByShopKm, 10) ? parseInt(newData?.nearByShopKm, 10) : '0';
-  const vat = parseInt(newData?.vat, 10) ? parseInt(newData?.vat, 10) : '0';
-  const exchangeRate = parseInt(newData?.exchangeRate, 10) ? parseInt(newData?.exchangeRate, 10) : '1';
+  const nearByShopKm = parseInt(newData?.nearByShopKm, 10) > 0 ? parseInt(newData?.nearByShopKm, 10) : '0';
+  const vat = parseInt(newData?.vat, 10) > 0 ? parseInt(newData?.vat, 10) : '0';
+  const exchangeRate = parseInt(newData?.exchangeRate, 10) > 0 ? parseInt(newData?.exchangeRate, 10) : '1';
 
   return {
     ...newData,

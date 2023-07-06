@@ -3,12 +3,14 @@ import { useMemo, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import {
+  account_manager_menu_items,
   admin_menu_items,
   customer_service_menu_items,
   seller_menu_items,
   shop_menu_items,
 } from '../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../context';
+import { account_manager_routes } from '../../routes/account_manager_routes';
 import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customer_service_routes';
 import { seller_routes } from '../../routes/seller_routes';
@@ -34,6 +36,11 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
     routes = admin_routes;
     menuItems = admin_menu_items;
   }
+  console.log('userType', userType, adminType);
+  if (userType === 'admin' && adminType === 'accountManager') {
+    routes = account_manager_routes;
+    menuItems = account_manager_menu_items;
+  }
 
   if (userType === 'admin' && adminType === 'customerService') {
     routes = customer_service_routes;
@@ -52,9 +59,11 @@ export default function Layout() {
         currentUser?.userType,
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
-        currentUser?.shop?.shopType
+        // eslint-disable-next-line prettier/prettier
+        currentUser?.shop?.shopType,
       ),
-    [currentUser?.userType]
+    // eslint-disable-next-line prettier/prettier
+    [currentUser?.userType],
   );
 
   // const location = useLocation();

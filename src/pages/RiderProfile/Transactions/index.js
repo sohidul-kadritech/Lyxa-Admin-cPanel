@@ -42,6 +42,7 @@ const amountSx = {
 
 export default function RiderTransactions({ riderId, showFor }) {
   const queryClient = useQueryClient();
+
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, deliveryBoyId: riderId });
   const [totalPage, setTotalPage] = useState(1);
   const [makePayment, setMakePayment] = useState(false);
@@ -71,7 +72,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   useEffect(() => {
@@ -86,7 +87,8 @@ export default function RiderTransactions({ riderId, showFor }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   // on receive cash

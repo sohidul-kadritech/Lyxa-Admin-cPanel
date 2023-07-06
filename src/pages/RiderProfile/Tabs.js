@@ -10,7 +10,7 @@ import RiderRating from './RiderRating';
 import RiderTimeStamp from './Timestamp';
 import RiderTransactions from './Transactions';
 
-export default function RiderTabs({ rider, isFinancials }) {
+export default function RiderTabs({ rider, isFinancials, storeAppSettings }) {
   const location = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -46,7 +46,7 @@ export default function RiderTabs({ rider, isFinancials }) {
           <RiderTransactions riderId={rider?._id} showFor="transactions" />
         </TabPanel>
         <TabPanel index={2} value={currentTab}>
-          <RiderTransactions riderId={rider?._id} showFor="cashOrderList" />
+          <RiderTransactions storeAppSettings={storeAppSettings} riderId={rider?._id} showFor="cashOrderList" />
         </TabPanel>
         <TabPanel index={3} value={currentTab}>
           <RiderTimeStamp riderId={rider?._id} />

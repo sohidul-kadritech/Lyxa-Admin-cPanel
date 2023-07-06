@@ -54,11 +54,16 @@ export function createShopSettingsData(
   // eslint-disable-next-line prettier/prettier
   adminType,
   newTags,
-  newCusines
+  shopAcceptedCurrency,
+  shopExchangeRate,
+  // eslint-disable-next-line prettier/prettier
+  newCusines,
 ) {
   const tags = [];
   const cuisineType = [];
   const tagsId = [];
+
+  console.log('rate of shop: ', shopExchangeRate, shopAcceptedCurrency);
 
   newTags?.forEach((tag) => {
     tags.push(tag?.name);
@@ -83,6 +88,8 @@ export function createShopSettingsData(
       shopLogo: shop?.shopLogo,
       shopBanner: shop?.shopBanner,
       shopStatus: shop?.shopStatus,
+      // shopAcceptedCurrency,
+      shopExchangeRate,
       shopDescription: 'desrcriptions',
       tags,
       tagsId,
@@ -139,6 +146,7 @@ export function createShopSettingsData(
     deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
     deliveryFee: shop?.deliveryFee,
     specialInstructions: newSpecialInstructions,
+    shopExchangeRate,
     shopAddress: {
       address: shop?.address.address,
       latitude: shop?.address.latitude,
