@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.932488cb.css",
-    "main.js": "/static/js/main.80af4f9e.js",
-    "static/js/949.c6135bca.chunk.js": "/static/js/949.c6135bca.chunk.js",
-    "static/js/332.95362465.chunk.js": "/static/js/332.95362465.chunk.js",
-    "static/js/943.1a876dda.chunk.js": "/static/js/943.1a876dda.chunk.js",
+    "main.css": "/static/css/main.91279dbe.css",
+    "main.js": "/static/js/main.808ae50b.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.aee5e39f.chunk.js": "/static/js/867.aee5e39f.chunk.js",
+    "static/js/949.c6135bca.chunk.js": "/static/js/949.c6135bca.chunk.js",
+    "static/js/332.95362465.chunk.js": "/static/js/332.95362465.chunk.js",
+    "static/js/943.1a876dda.chunk.js": "/static/js/943.1a876dda.chunk.js",
     "static/js/576.da7102db.chunk.js": "/static/js/576.da7102db.chunk.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
@@ -132,13 +132,14 @@
     "static/media/credit-card.svg": "/static/media/credit-card.fc4b02a63904787904615144eb7b0ff4.svg",
     "static/media/menu.svg": "/static/media/menu.d90409e0b2ad07a93592c35b3366db79.svg",
     "static/media/email.svg": "/static/media/email.57560f99b90f2464c7aac961a0e1964c.svg",
+    "static/media/user_outline.svg": "/static/media/user_outline.e9cd25008b66795036c37b117d48152f.svg",
     "static/media/envelope.svg": "/static/media/envelope.6adc2be9990d84d5368fe28e6d21aede.svg",
     "static/media/info.svg": "/static/media/info.21ababdaab8ac4e90720f0c8f1624e06.svg",
     "static/media/time-inactive.svg": "/static/media/time-inactive.2efbfb72846ddf57862cfdb3d2699e6d.svg",
     "static/media/circle-dot.svg": "/static/media/circle-dot.94bcb8468f7e17f07a05836a41c33c2e.svg"
   },
   "entrypoints": [
-    "static/css/main.932488cb.css",
-    "static/js/main.80af4f9e.js"
+    "static/css/main.91279dbe.css",
+    "static/js/main.808ae50b.js"
   ]
 }
