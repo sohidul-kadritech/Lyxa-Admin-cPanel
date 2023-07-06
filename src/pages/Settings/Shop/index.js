@@ -14,6 +14,7 @@ import * as Api from '../../../network/Api';
 import Axios from '../../../network/axios';
 import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 import MinimumOrder from './MinimumOrder';
+import RateContainer from './Rate';
 import { ShopSettingsSection2 } from './ShopSettingsSection/ShopSettingsSection2';
 import { ShopSettingsSection3 } from './ShopSettingsSection/ShopSettingsSection3';
 import { General as ShopSettingsSection } from './ShopSettingsSection/index';
@@ -96,7 +97,25 @@ function ShopSettings() {
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS));
+  // eslint-disable-next-line no-unused-vars
+  const [rateofShop, setRateofShop] = useState({
+    shopExchangeRate: newShop?.shopExchangeRate,
+  });
+
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log(data?.data?.appSetting.secondaryCurrency);
+        setRateofShop((prev) => ({
+          ...prev,
+          secondaryCurrency: data?.data?.appSetting.secondaryCurrency,
+          currency: data?.data?.appSetting.currency,
+          baseExchangeRate: data?.data?.appSetting?.exchangeRate,
+          shopAcceptedCurrency: data?.data?.appSetting?.acceptedCurrency,
+        }));
+      }
+    },
+  });
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
@@ -112,6 +131,8 @@ function ShopSettings() {
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
         shop.tagsId = data?.data?.shop.tagsId || shop.tagsId;
         shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
+        shop.shopExchangeRate = data?.data?.shop.shopExchangeRate;
+        // shop.shopAcceptedCurrency = data?.data?.shop.shopAcceptedCurrency;
         set_has_unsaved_change(false);
         console.log('after update', shop);
       }
@@ -119,6 +140,8 @@ function ShopSettings() {
   });
 
   const updateShopSettings = () => {
+    // eslint-disable-next-line no-unused-vars
+    const { shopAcceptedCurrency, shopExchangeRate } = rateofShop;
     const data = createShopSettingsData(
       shop,
       newMaxDiscount,
@@ -132,8 +155,17 @@ function ShopSettings() {
       OwnDeliveryBoy,
       adminType,
       newTags,
-      newCusines
+      shopAcceptedCurrency,
+      shopExchangeRate,
+      // eslint-disable-next-line prettier/prettier
+      newCusines,
     );
+
+    if (rateofShop?.shopExchangeRate < rateofShop?.baseExchangeRate) {
+      successMsg(`The rate is too low!`);
+      return;
+    }
+
     if (data) {
       updateData.mutate(data);
     } else {
@@ -156,12 +188,10 @@ function ShopSettings() {
     setNewMaxDiscount(shop?.maxDiscount?.toString() || '');
     setNewOrderCapacity(shop?.orderCapacity || 0);
     setNewDeliveryFee(shop?.deliveryFee || 0);
-    setNewSpecialInstructions(() => {
-      console.log('shop?.specialInstructions==========>', shop?.specialInstructions);
-      return shop?.specialInstructions || false;
-    });
+    setNewSpecialInstructions(() => shop?.specialInstructions || false);
     setNewCusines(shop?.cuisineType || []);
     setNewTags(shop?.tagsId || []);
+    setRateofShop((prev) => ({ ...prev, shopAcceptedCurrency: 'both', shopExchangeRate: newShop?.shopExchangeRate }));
   };
 
   useDidRecover(() => {
@@ -239,12 +269,14 @@ function ShopSettings() {
         shopType: shop?.shopType,
         status: 'active',
       },
-    })
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
-    [tagsQuery?.data]
+    // eslint-disable-next-line prettier/prettier
+    [tagsQuery?.data],
   );
 
   return (
@@ -429,7 +461,7 @@ function ShopSettings() {
             <ShopSettingsSection2
               boxSx={{
                 // width: '100%',
-                paddingBottom: '29px',
+                paddingBottom: '0px',
               }}
               fieldContainerSx={{
                 padding: '14px 0',
@@ -444,6 +476,19 @@ function ShopSettings() {
               isInput
             />
           </Box>
+          {rateofShop?.secondaryCurrency?.symbol && (
+            <Box sx={boxSx2}>
+              <RateContainer
+                boxSx={{
+                  paddingBottom: '29px',
+                }}
+                title="Rate"
+                rateofShop={rateofShop}
+                setRateofShop={setRateofShop}
+                setHasChanged={set_has_unsaved_change}
+              />
+            </Box>
+          )}
           <Stack
             direction="row"
             justifyContent="flex-end"
