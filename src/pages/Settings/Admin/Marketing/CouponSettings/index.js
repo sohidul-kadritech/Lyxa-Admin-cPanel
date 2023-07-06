@@ -1,32 +1,13 @@
-// third party
-import { Box, Drawer, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
-
-// project import
 import PageTop from '../../../../../components/Common/PageTop';
-import * as Api from '../../../../../network/Api';
-import AXIOS from '../../../../../network/axios';
-import AddCoupon from './AddCoupon';
-import CouponTable from './CouponTable';
-import PageLoader from './PageLoader';
-import Searchbar from './Seachbar';
-import { breadcrumbItems, filtersInit, tabValueToCouponTypeMap } from './helpers';
+import TabPanel from '../../../../../components/Common/TabPanel';
+import CouponList from './CouponList';
+import CouponOverview from './Overview';
+import { breadcrumbItems } from './helpers';
 
-export default function CoponSettings() {
+export default function CouponSettings() {
   const [currentTab, setCurrentTab] = useState(0);
-  const [drawer, setDrawer] = useState(false);
-
-  const [filters, setFilters] = useState({ ...filtersInit });
-  const [editCoupon, setEditCoupon] = useState({});
-
-  const query = useQuery([Api.GET_COUPON, filters], () =>
-    AXIOS.get(Api.GET_COUPON, {
-      params: filters,
-    })
-  );
-
-  console.log('data', query?.data?.data?.coupons);
 
   return (
     <Box>
@@ -35,7 +16,6 @@ export default function CoponSettings() {
         value={currentTab}
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
-          setFilters((prev) => ({ ...prev, couponType: tabValueToCouponTypeMap[newValue] }));
         }}
         sx={{
           '& .MuiTab-root': {
@@ -44,45 +24,17 @@ export default function CoponSettings() {
           },
         }}
       >
-        <Tab label="Global" />
-        <Tab label="Store/Category" />
-        <Tab label="Individual User" />
-        <Tab label="Custom Coupon" />
+        <Tab label="Overview" />
+        <Tab label="Coupons" />
       </Tabs>
-      <Box pt={10}>
-        <Searchbar
-          searchPlaceHolder={`Search ${
-            query?.data?.data?.coupons?.length ? `${query?.data?.data?.coupons?.length} ` : ''
-          }items `}
-          filters={filters}
-          setFilters={setFilters}
-          onAdd={() => {
-            setDrawer(true);
-          }}
-        />
-        {query.isLoading ? (
-          <PageLoader />
-        ) : (
-          <CouponTable
-            rows={query?.data?.data?.coupons}
-            couponType={tabValueToCouponTypeMap[currentTab]}
-            onEdit={(coupon) => {
-              setEditCoupon(coupon);
-              setDrawer(true);
-            }}
-          />
-        )}
+      <Box>
+        <TabPanel value={currentTab} index={0}>
+          <CouponOverview />
+        </TabPanel>
+        <TabPanel value={currentTab} index={1}>
+          <CouponList />
+        </TabPanel>
       </Box>
-      <Drawer open={Boolean(drawer)} anchor="right">
-        <AddCoupon
-          couponType={tabValueToCouponTypeMap[currentTab]}
-          editCoupon={editCoupon}
-          onClose={() => {
-            setDrawer(false);
-            setEditCoupon({});
-          }}
-        />
-      </Drawer>
     </Box>
   );
 }

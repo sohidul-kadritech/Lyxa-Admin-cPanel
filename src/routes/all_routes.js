@@ -33,7 +33,7 @@ import Marketing from '../pages/Marketing';
 import OrdersList from '../pages/Orders/OrdersList/OrdersList';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import SellerList from '../pages/Seller/SellerList/SellerList';
-import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings';
+import CouponSettings from '../pages/Settings/Admin/Marketing/CouponSettings/';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 import ShopList from '../pages/Shops/ShopList/ShopList';
 import UserDetails from '../pages/Users/UserDetails/UserDetails';
