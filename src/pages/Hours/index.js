@@ -12,7 +12,14 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Day from './Day';
 import Holiday from './Holiday';
-import { StyledBox, defaultShopNormalHours, holidayHourInit, validateSettings } from './helpers';
+import {
+  StyledBox,
+  addIdsToHours,
+  defaultShopNormalHours,
+  holidayHourInit,
+  removeIdsFromHours,
+  validateSettings,
+} from './helpers';
 
 export default function ShopHourSettings() {
   const { currentUser } = useGlobalContext();
@@ -55,6 +62,8 @@ export default function ShopHourSettings() {
     if (condition) nHours = deepClone(shop?.normalHours || []);
     else nHours = deepClone(defaultShopNormalHours || []);
 
+    addIdsToHours(nHours);
+
     setNormalHours(nHours);
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
@@ -71,7 +80,11 @@ export default function ShopHourSettings() {
   const updateSettings = () => {
     const data = {};
     data.shopId = shop?._id;
-    data.normalHours = normalHours;
+
+    const nhours = deepClone(normalHours);
+    removeIdsFromHours(nhours);
+
+    data.normalHours = nhours;
     data.holidayHours = holidayHours?.map((holiday) => ({
       ...holiday,
       date: moment(holiday?.date).format('MM/DD/YYYY'),

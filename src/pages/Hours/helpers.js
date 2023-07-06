@@ -1,6 +1,7 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
 import { Box, styled } from '@mui/material';
+import _ from 'lodash';
 import moment from 'moment';
 
 export const StyledBox = styled(Box)(() => ({
@@ -16,15 +17,32 @@ export const holidayHourInit = {
   closedEnd: '23:00',
 };
 
+export const addIdsToHours = (normalHours) => {
+  normalHours?.forEach((day) => {
+    day?.openingHours?.forEach((openingHour) => {
+      openingHour.customId = _.uniqueId();
+    });
+  });
+};
+
+export const removeIdsFromHours = (normalHours) => {
+  normalHours?.forEach((day) => {
+    day?.openingHours?.forEach((openingHour) => {
+      openingHour.customId = undefined;
+    });
+  });
+};
+
 export const getNormalHourInit = () => ({
-  open: '01:00',
-  close: '01:01',
+  open: '23:00',
+  close: '23:59',
+  customId: _.uniqueId(),
 });
 
 export const createMomentTimeFormat = (time = '') => moment(time, 'HH:mm');
 export const createStringTimeFormat = (timeObj) => timeObj.format('HH:mm');
 
-const parseTimeInMinutes = (t = '') => {
+export const parseTimeInMinutes = (t = '') => {
   const [h, m] = t.split(':');
   return parseInt(h, 10) * 60 + parseInt(m, 10);
 };
@@ -51,7 +69,7 @@ export const validateSettings = (data) => {
       const c1 = parseTimeInMinutes(normalDay1?.close);
 
       if (c1 <= o1) {
-        error.message = 'Normal hours open can not be after or equal to close';
+        error.message = `Normal hours open can not be after or equal to close (${normalDay?.day}).`;
         return error;
       }
 
@@ -62,7 +80,7 @@ export const validateSettings = (data) => {
         const c2 = parseTimeInMinutes(normalDay2?.close);
 
         if (o2 >= o1 && c2 <= c1) {
-          error.message = 'Normal hours can not overlap.';
+          error.message = `Normal hours can not overlap (${normalDay?.day}).`;
           return error;
         }
       }
@@ -85,6 +103,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '1',
   },
   {
     day: 'Tuesday',
@@ -96,6 +115,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '2',
   },
   {
     day: 'Wednesday',
@@ -107,6 +127,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '3',
   },
   {
     day: 'Thursday',
@@ -118,6 +139,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '4',
   },
   {
     day: 'Friday',
@@ -129,6 +151,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '5',
   },
   {
     day: 'Saturday',
@@ -140,6 +163,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '6',
   },
   {
     day: 'Sunday',
@@ -151,6 +175,7 @@ export const defaultShopNormalHours = [
     ],
     isFullDayOpen: false,
     isActive: false,
+    _id: '7',
   },
 ];
 

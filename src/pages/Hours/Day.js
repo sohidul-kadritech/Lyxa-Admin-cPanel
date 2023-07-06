@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import StyledCheckbox from '../../components/Styled/StyledCheckbox';
 import SingleDayHours from './SingleDayHours';
-import { getNormalHourInit } from './helpers';
+import { getNormalHourInit, parseTimeInMinutes } from './helpers';
 
 export default function Day({ day, onAnyChange }) {
   const [render, setRender] = useState(false);
@@ -19,6 +19,10 @@ export default function Day({ day, onAnyChange }) {
     onAnyChange();
   };
 
+  const sortHours = () => {
+    day?.openingHours?.sort((a, b) => parseTimeInMinutes(a.open) - parseTimeInMinutes(b.open));
+  };
+
   const onFullDaySelect = () => {
     day.isFullDayOpen = !day.isFullDayOpen;
     day.isActive = day.isFullDayOpen ? true : day.isActive;
@@ -29,7 +33,7 @@ export default function Day({ day, onAnyChange }) {
       h.close = '23:59';
       day?.openingHours?.splice(1);
     }
-
+    sortHours();
     setRender(!render);
     onAnyChange();
   };
@@ -75,6 +79,7 @@ export default function Day({ day, onAnyChange }) {
         onAnyChange={onAnyChange}
         openingHours={day?.openingHours}
         onHourRemove={onHourRemove}
+        sortHours={sortHours}
       />
     </Stack>
   );

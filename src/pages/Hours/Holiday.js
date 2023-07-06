@@ -19,6 +19,7 @@ export default function Holiday({ holiday, onDelete, isEndOfList, onAnyChange })
         />
         {!holiday?.isFullDayOff && (
           <TimeRangePicker
+            minutesStep={15}
             startValue={holiday?.closedStart}
             endValue={holiday?.closedEnd}
             onStartChange={(e) => {
