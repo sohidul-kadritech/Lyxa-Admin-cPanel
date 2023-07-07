@@ -17,6 +17,8 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
+export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
+export const GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/account-manager`;
 export const GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/revenue`;
 export const GET_SHOP_DASHBOARD_PROFIT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/payout`;
 export const GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/marketing-spent`;
@@ -25,6 +27,8 @@ export const GET_SHOP_DASHBOARD_OPERATIONS = `${ADMIN_ENDPOINT}/dashboard/shop/o
 export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/users`;
 
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
+export const ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
+export const SALES_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
 export const SELLER_DASHBOARD_SHOP_LIST = `${ADMIN_ENDPOINT}/dashboard/seller/shop-list`;
 

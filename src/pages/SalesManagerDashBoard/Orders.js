@@ -13,9 +13,9 @@ function Orders() {
     <Grid container spacing={6.5}>
       <CommonAreaChart
         title="Total Orders"
-        api={API_URL.ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH}
+        api={API_URL.SHOP_DASHBOARD_ORDER_GRAPH}
         params={{
-          accountManagerId: admin?._id,
+          shopId: admin?._id,
         }}
         generateData={(data = {}) =>
           generateGraphData(

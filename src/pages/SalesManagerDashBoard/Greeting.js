@@ -24,7 +24,7 @@ export default function Greeting() {
             email: admin?.email,
             profile: admin?.profile_photo,
             address: admin?.address,
-            adminType: 'Account Manager',
+            adminType: 'Sales Manager',
             //   address: admin?.addressSeller?.address,
           }}
         />
