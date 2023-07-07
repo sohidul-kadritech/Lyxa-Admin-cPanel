@@ -21,6 +21,7 @@ export default function Day({ day, onAnyChange }) {
 
   const sortHours = () => {
     day?.openingHours?.sort((a, b) => parseTimeInMinutes(a.open) - parseTimeInMinutes(b.open));
+    setRender(!render);
   };
 
   const onFullDaySelect = () => {
