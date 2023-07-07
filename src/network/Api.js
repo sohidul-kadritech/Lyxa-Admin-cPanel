@@ -371,6 +371,7 @@ export const UPDATE_COUPON = `${ADMIN_ENDPOINT}/coupon/update`;
 export const DELETE_COUPON = `${ADMIN_ENDPOINT}/coupon/delete`;
 export const GET_AUTO_GEN_COUPON_CODE = `${ADMIN_ENDPOINT}/coupon/auto-generate`;
 export const GET_COUPON = `${ADMIN_ENDPOINT}/coupon`;
+export const GET_COUPON_OVERVIEW = `${ADMIN_ENDPOINT}/coupon/overview`;
 
 // ZONE
 export const GET_ALL_ZONE = `${ADMIN_ENDPOINT}/zone`;

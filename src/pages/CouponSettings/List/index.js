@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 // project import
-import StyledTabs2 from '../../../../../components/Styled/StyledTab2';
-import * as Api from '../../../../../network/Api';
-import AXIOS from '../../../../../network/axios';
-import AddCoupon from './AddCoupon';
+import StyledTabs2 from '../../../components/Styled/StyledTab2';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import AddCoupon from '../AddCoupon';
+import { couponListTabOptions, filtersInit } from '../helpers';
 import CouponTable from './CouponTable';
-import PageLoader from './PageLoader';
 import Searchbar from './Seachbar';
-import { couponListTabOptions, filtersInit } from './helpers';
 
 export default function CouponList() {
   const [currentTab, setCurrentTab] = useState('global');
@@ -27,7 +26,7 @@ export default function CouponList() {
   );
 
   return (
-    <Box pb={9}>
+    <Box pb={10} pt={7.5}>
       <StyledTabs2
         value={currentTab}
         onChange={(value) => {
@@ -47,18 +46,15 @@ export default function CouponList() {
             setDrawer(true);
           }}
         />
-        {query.isLoading ? (
-          <PageLoader />
-        ) : (
-          <CouponTable
-            rows={query?.data?.data?.coupons}
-            couponType={currentTab}
-            onEdit={(coupon) => {
-              setEditCoupon(coupon);
-              setDrawer(true);
-            }}
-          />
-        )}
+        <CouponTable
+          loading={query.isLoading}
+          rows={query?.data?.data?.coupons}
+          couponType={currentTab}
+          onEdit={(coupon) => {
+            setEditCoupon(coupon);
+            setDrawer(true);
+          }}
+        />
       </Box>
       <Drawer open={Boolean(drawer)} anchor="right">
         <AddCoupon

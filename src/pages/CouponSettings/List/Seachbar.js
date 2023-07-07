@@ -2,10 +2,10 @@ import { Add } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
-import FilterDate from '../../../../../components/Filter/FilterDate';
-import FilterSelect from '../../../../../components/Filter/FilterSelect';
-import StyledSearchBar from '../../../../../components/Styled/StyledSearchBar';
-import { sortOptions, statusOptions } from './helpers';
+import FilterDate from '../../../components/Filter/FilterDate';
+import FilterSelect from '../../../components/Filter/FilterSelect';
+import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
+import { sortOptions, statusOptions } from '../helpers';
 
 export default function Searchbar({ filters, setFilters, searchPlaceHolder, onAdd }) {
   return (
