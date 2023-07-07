@@ -11,7 +11,7 @@ import AddCoupon from './AddCoupon';
 import CouponTable from './CouponTable';
 import PageLoader from './PageLoader';
 import Searchbar from './Seachbar';
-import { couponListTabOptions, filtersInit, tabValueToCouponTypeMap } from './helpers';
+import { couponListTabOptions, filtersInit } from './helpers';
 
 export default function CouponList() {
   const [currentTab, setCurrentTab] = useState('global');
@@ -52,7 +52,7 @@ export default function CouponList() {
         ) : (
           <CouponTable
             rows={query?.data?.data?.coupons}
-            couponType={tabValueToCouponTypeMap[currentTab]}
+            couponType={currentTab}
             onEdit={(coupon) => {
               setEditCoupon(coupon);
               setDrawer(true);
@@ -62,7 +62,7 @@ export default function CouponList() {
       </Box>
       <Drawer open={Boolean(drawer)} anchor="right">
         <AddCoupon
-          couponType={tabValueToCouponTypeMap[currentTab]}
+          couponType={currentTab}
           editCoupon={editCoupon}
           onClose={() => {
             setDrawer(false);
