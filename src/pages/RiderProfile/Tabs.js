@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import TabPanel from '../../components/Common/TabPanel';
 import Documents from './Documents';
-import RiderFlags from './Flags';
+// import RiderFlags from './Flags';
+import FlaggedOrders from '../../components/Shared/FlaggedOrders';
 import RiderOrders from './Orders';
 import RiderRating from './RiderRating';
 import RiderTimeStamp from './Timestamp';
@@ -52,7 +53,7 @@ export default function RiderTabs({ rider, isFinancials, storeAppSettings }) {
           <RiderTimeStamp riderId={rider?._id} />
         </TabPanel>
         <TabPanel index={4} value={currentTab}>
-          <RiderFlags flags={rider?.flags} />
+          <FlaggedOrders flags={rider?.flags} />
         </TabPanel>
         <TabPanel index={rider?.deliveryBoyType !== 'shopRider' ? 5 : 1} value={currentTab}>
           <Documents rider={rider} />

@@ -40,7 +40,7 @@ export default function UserTransactions({ user }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
@@ -70,7 +70,11 @@ export default function UserTransactions({ user }) {
           }}
         />
       </Box>
-      <TransactionsTable rows={query?.data?.data?.transactionList} type="user-transactions" />
+      <TransactionsTable
+        rows={query?.data?.data?.transactionList}
+        type="user-transactions"
+        loading={query?.isLoading}
+      />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
