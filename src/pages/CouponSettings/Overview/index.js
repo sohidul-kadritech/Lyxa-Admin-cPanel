@@ -47,7 +47,7 @@ export default function CouponOverview() {
   console.log('coupon data', query?.data);
 
   return (
-    <Box>
+    <Box pt={7.5}>
       <Box pb={7.5}>
         <SearchBar
           queryParams={queryParams}

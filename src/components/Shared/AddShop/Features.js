@@ -217,18 +217,20 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
         />
       )}
       {/* dietary */}
-      <StyledFormField
-        intputType="optionsSelect"
-        label="Dietary"
-        inputProps={{
-          value: shop?.dietaryType,
-          multiple: true,
-          onChange: (value) => {
-            optionSelectHandler(shop?.dietaryType, value);
-          },
-          items: dietryOptions,
-        }}
-      />
+      {sellerType !== 'pharmacy' && (
+        <StyledFormField
+          intputType="optionsSelect"
+          label="Dietary"
+          inputProps={{
+            value: shop?.dietaryType,
+            multiple: true,
+            onChange: (value) => {
+              optionSelectHandler(shop?.dietaryType, value);
+            },
+            items: dietryOptions,
+          }}
+        />
+      )}
       {/* note */}
       <StyledFormField
         label={

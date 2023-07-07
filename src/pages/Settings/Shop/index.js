@@ -158,7 +158,7 @@ function ShopSettings() {
       shopAcceptedCurrency,
       shopExchangeRate,
       // eslint-disable-next-line prettier/prettier
-      newCusines,
+      newCusines
     );
 
     if (rateofShop?.shopExchangeRate < rateofShop?.baseExchangeRate) {
@@ -270,13 +270,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data],
+    [tagsQuery?.data]
   );
 
   return (
@@ -318,18 +318,20 @@ function ShopSettings() {
               isButton
             />
           </Box>
-          <Box sx={boxSx2}>
-            <ShopSettingsSection2
-              boxSx={section2Sx}
-              buttonType={2}
-              title="Dietary"
-              options={DietarySettings}
-              value={newDietary}
-              action={handleDietary}
-              isButton
-              multiple
-            />
-          </Box>
+          {shop?.shopType !== 'pharmacy' && (
+            <Box sx={boxSx2}>
+              <ShopSettingsSection2
+                boxSx={section2Sx}
+                buttonType={2}
+                title="Dietary"
+                options={DietarySettings}
+                value={newDietary}
+                action={handleDietary}
+                isButton
+                multiple
+              />
+            </Box>
+          )}
           <Box sx={boxSx2}>
             <ShopSettingsSection3
               boxSx={section2Sx}
