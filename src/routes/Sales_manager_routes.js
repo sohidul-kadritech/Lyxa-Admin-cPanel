@@ -18,17 +18,16 @@ import MarketingDashboard from '../pages/Marketing/Dashbaord';
 
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
-import AccountManagerDashBoard from '../pages/AccountManagerDashBoard';
+import SalesManagerDashBoard from '../pages/SalesManagerDashBoard';
 import SellerList2 from '../pages/Sellers2';
-import SellerListForAccountManager from '../pages/SellersForAccountManager';
 import ShopProfile from '../pages/ShopProfile';
 
-export const account_manager_routes = [
+export const sales_manager_routes = [
   // dashboard
-  { path: '/', component: AccountManagerDashBoard },
+  { path: '/', component: SalesManagerDashBoard },
 
   // sellers
-  { path: '/seller/list', component: SellerListForAccountManager },
+  { path: '/seller/list', component: SellerList2 },
   { path: '/seller/list/:sellerId', component: SellerList2 },
   { path: '/seller/add', component: SellerAdd },
   { path: '/seller/edit/:id', component: SellerAdd },

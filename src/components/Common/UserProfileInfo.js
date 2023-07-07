@@ -25,7 +25,7 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
         <Stack direction="row" alignItems="center" justifyContent="start">
           {user.adminType && <InfoListItem icon={UserIcon} title={user?.adminType} isFirst />}
           {user.email && <InfoListItem icon={Email} title={user?.email} isFirst />}
-          {user.address && <InfoListItem icon={Loacation} title={user?.address} />}
+          {user.address && <InfoListItem icon={Loacation} title={user?.address} isFirst />}
           {user.phone && <InfoListItem icon={Phone} title={user?.phone} isFirst />}
         </Stack>
         {/* rating */}
