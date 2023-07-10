@@ -9,6 +9,8 @@ export default function AmountDetails({ order = {} }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
+  const isCashAndCancelled =
+    order?.orderStatus === 'cancelled' && !order?.userCancelTnx?.length && !order?.isRefundedAfterDelivered;
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
@@ -84,7 +86,7 @@ export default function AmountDetails({ order = {} }) {
         {/* not needed for butler order */}
         {!order?.isButler && (
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
-            <StyledItem label="Shop Profit" value={(order?.sellerEarnings || 0).toFixed(2)} />
+            <StyledItem label="Shop Profit" value={(isCashAndCancelled ? 0 : order?.sellerEarnings || 0).toFixed(2)} />
             <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
             <StyledItem
               label="Deal compensation amount"
@@ -99,7 +101,11 @@ export default function AmountDetails({ order = {} }) {
           <StyledItem
             label="Rider Profit"
             isCurrency={!order?.shop?.haveOwnDeliveryBoy}
-            value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : (order?.deliveryBoyFee || 0).toFixed(2)}
+            value={
+              order?.shop?.haveOwnDeliveryBoy
+                ? 'Self'
+                : (isCashAndCancelled ? 0 : order?.deliveryBoyFee || 0).toFixed(2)
+            }
           />
           {/* order?.summary?.deliveryFee */}
         </Box>
@@ -107,10 +113,13 @@ export default function AmountDetails({ order = {} }) {
           {!order?.shop?.haveOwnDeliveryBoy && (
             <StyledItem
               label="Lyxa Delivery Profit"
-              value={(order?.dropCharge?.dropChargeFromDelivery || 0).toFixed(2)}
+              value={(isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromDelivery || 0).toFixed(2)}
             />
           )}
-          <StyledItem label="Lyxa Order Profit" value={(order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)} />
+          <StyledItem
+            label="Lyxa Order Profit"
+            value={(isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)}
+          />
           <StyledItem
             label="Deal compensation amount"
             value={order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut}
@@ -120,7 +129,10 @@ export default function AmountDetails({ order = {} }) {
           />
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
-          <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge?.totalDropAmount || 0).toFixed(2)} />
+          <StyledItem
+            label="Total Lyxa Profit"
+            value={(isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0).toFixed(2)}
+          />
           <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} pbsx={0} />
         </Box>
       </Box>

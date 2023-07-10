@@ -3,20 +3,20 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 
-function StyledItem({
-  label,
-  value,
-  total,
-  isNegative = false,
-  isRejected = false,
-  pbsx = 3.5,
-  ptxs = 2.5,
-  isCurrency = true,
-}) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
+function StyledItem({ label, value, total, isNegative, isRejected, pbsx = 3.5, ptxs = 2.5, isCurrency = true }) {
   const theme = useTheme();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+
+  const getAmountColor = (isNegative, total, isRejected) => {
+    let color = '#737373';
+
+    if (total) color = 'textPrimary';
+    if (isNegative) color = theme.palette.danger.main;
+    if (isRejected) color = '#6c757d';
+
+    return color;
+  };
 
   return (
     <Stack
@@ -33,10 +33,12 @@ function StyledItem({
       <Typography
         variant="body2"
         lineHeight="22px"
-        color={!isNegative ? (total ? 'textPrimary' : '#737373') : isRejected ? '#6c757d' : theme.palette.danger.main}
+        color={getAmountColor(isNegative, total, isRejected)}
         fontWeight={total ? 700 : undefined}
+        console={console.log(Math.abs(value || 0)?.toFixed(2), value)}
       >
-        {isCurrency ? currency : ''} {value}
+        {isNegative && value !== 0 ? '-' : ''} {isCurrency ? currency : ''}
+        {isNegative ? Math.abs(value || 0)?.toFixed(2) : isCurrency ? (value || 0)?.toFixed(2) : value}
       </Typography>
     </Stack>
   );
@@ -56,16 +58,16 @@ export default function RefundDetails({ order = {} }) {
             />
           </Box>
           <Box pt={3.5}>
-            <StyledItem label="Admin Cut" value={(order?.userRefundTnx[0]?.adminCut || 0).toFixed(2)} />
-            <StyledItem label="Admin VAT Cut" value={(order?.userRefundTnx[0]?.adminVatCut || 0).toFixed(2)} />
-            <StyledItem label="Rider Cut" value={(order?.userRefundTnx[0]?.deliveryBoyCut || 0).toFixed(2)} />
-            <StyledItem label="Shop Cut" value={(order?.userRefundTnx[0]?.shopCut || 0).toFixed(2)} />
             <StyledItem
-              ptxs={3.5}
-              label="Total Refund"
-              value={(order?.userRefundTnx[0]?.amount || 0).toFixed(2)}
-              total
+              label="Admin Cut"
+              value={order?.userRefundTnx[0]?.adminCut}
+              console={console.log(order?.userRefundTnx[0]?.adminCut)}
+              isNegative
             />
+            <StyledItem label="Admin VAT Cut" value={order?.userRefundTnx[0]?.adminVatCut} isNegative />
+            <StyledItem label="Rider Cut" value={order?.userRefundTnx[0]?.deliveryBoyCut} isNegative />
+            <StyledItem label="Shop Cut" value={order?.userRefundTnx[0]?.shopCut} isNegative />
+            <StyledItem ptxs={3.5} label="Total Refund" value={order?.userRefundTnx[0]?.amount} total isNegative />
           </Box>
         </Box>
       )}
