@@ -66,16 +66,21 @@ export function ProductOverlayTag({ label, color }) {
 // };
 
 // menu options
-export const getAddMenuOptions = (shopType, viewUserType) => {
+
+export const isThereAnySubCategoryOrNot = (subCategory) => {
+  let status = false;
+  subCategory.forEach((element) => {
+    if (element?.subCategories?.length) {
+      status = true;
+    }
+  });
+  return status;
+};
+
+export const getAddMenuOptions = (shopType, viewUserType, subCategoryLength = false) => {
   console.log({ viewUserType });
 
-  const options = [
-    {
-      label: 'Add item',
-      value: 'add-item',
-    },
-  ];
-
+  const options = [];
   if (shopType === 'food' || viewUserType === 'admin') {
     options.push({
       label: 'Add category',
@@ -89,6 +94,11 @@ export const getAddMenuOptions = (shopType, viewUserType) => {
       value: 'add-sub-category',
     });
   }
+  options.push({
+    label: 'Add item',
+    value: 'add-item',
+    disabled: !subCategoryLength,
+  });
 
   return options;
 };

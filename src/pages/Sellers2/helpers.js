@@ -208,10 +208,11 @@ export const tabsOptions = [
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
 
-export const getEditSellerData = (data) => {
-  if (!data?._id) {
+export const getEditSellerData = (data, isEdit) => {
+  if (!isEdit) {
     return {
-      ...data,
+      sellerStatus: '',
+      sellerType: '',
     };
   }
 

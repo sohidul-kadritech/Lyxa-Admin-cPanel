@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -8,8 +9,9 @@ import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
-function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 2, loading = false }) {
+function ShopRankingTable({ data = [], queryParams, setQueryParams, loading = false }) {
   const history = useHistory();
+  console.log('data=>', data);
   const { general } = useGlobalContext();
   const routeMatch = useRouteMatch();
 
@@ -34,13 +36,13 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="logo"
-          imgUrl={row?.profile_photo}
+          imgUrl={row?.shopLogo}
           imgStyle="circular"
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
               history?.push({
-                pathname: `/shop/list/${row?._id}`,
+                pathname: `/shop/profile/${row?._id}`,
                 state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
               });
             },
@@ -57,9 +59,9 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
       // renderHeader: () => (
       //   <CommonHeader title="ORDERS" filter="sortByOrders" queryParams={queryParams} refetch={refetch} />
       // ),
-      field: 'seller',
+      field: 'sellerName',
       flex: 1,
-      renderCell: ({ value }) => <Typography variant="body4">{value?.name}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
       id: 4,
@@ -134,7 +136,7 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
           <TablePagination
             currentPage={queryParams?.page}
             lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
-            totalPage={totalPage}
+            totalPage={queryParams?.totalPage}
           />
         </>
       )}

@@ -544,11 +544,11 @@ export const sales_manager_menu_items = [
         to: '/seller/list',
         icon: SellersIcon,
       },
-      {
-        label: 'Shops',
-        to: '/shop',
-        icon: ShopIcon,
-      },
+      // {
+      //   label: 'Shops',
+      //   to: '/shop',
+      //   icon: ShopIcon,
+      // },
     ],
   },
 ];

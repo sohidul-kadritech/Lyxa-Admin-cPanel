@@ -5,7 +5,6 @@
 // Gallery
 
 // User List
-import AdminShopList from '../pages/AdminShopList';
 import Marketing from '../pages/Marketing';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
 import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
@@ -46,7 +45,7 @@ export const sales_manager_routes = [
     componentProps: { viewUserType: 'admin' },
   },
 
-  { path: '/shop', component: AdminShopList },
+  // { path: '/shop', component: AdminShopList },
   { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 

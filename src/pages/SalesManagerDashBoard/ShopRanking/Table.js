@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
-import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
@@ -131,11 +131,11 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
               }}
             />
           </Box>
-          <TablePagination
+          {/* <TablePagination
             currentPage={queryParams?.page}
             lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
             totalPage={totalPage}
-          />
+          /> */}
         </>
       )}
     </Box>
