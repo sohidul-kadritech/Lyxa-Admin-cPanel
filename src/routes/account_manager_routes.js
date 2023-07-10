@@ -5,14 +5,7 @@
 // Gallery
 
 // User List
-import AdminShopList from '../pages/AdminShopList';
 import Marketing from '../pages/Marketing';
-import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
-import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
-import ShopList from '../pages/Shops/ShopList/ShopList';
-
-import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
-import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 
@@ -20,7 +13,6 @@ import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSeller
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import AccountManagerDashBoard from '../pages/AccountManagerDashBoard';
 import SellerList2 from '../pages/Sellers2';
-import SellerListForAccountManager from '../pages/SellersForAccountManager';
 import ShopProfile from '../pages/ShopProfile';
 
 export const account_manager_routes = [
@@ -28,18 +20,19 @@ export const account_manager_routes = [
   { path: '/', component: AccountManagerDashBoard },
 
   // sellers
-  { path: '/seller/list', component: SellerListForAccountManager },
+  // { path: '/seller/list', component: SellerListForAccountManager },
+  { path: '/seller/list', component: SellerList2 },
   { path: '/seller/list/:sellerId', component: SellerList2 },
-  { path: '/seller/add', component: SellerAdd },
-  { path: '/seller/edit/:id', component: SellerAdd },
-  { path: '/seller/details/:id', component: SellerDetails },
+  // { path: '/seller/add', component: SellerAdd },
+  // { path: '/seller/edit/:id', component: SellerAdd },
+  // { path: '/seller/details/:id', component: SellerDetails },
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
-  { path: '/shops/add', component: ShopAdd },
-  { path: '/shops/edit/:id', component: ShopAdd },
-  { path: '/shops/details/:id', component: ShopDetails },
+  // { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
+  // { path: '/shops/add', component: ShopAdd },
+  // { path: '/shops/edit/:id', component: ShopAdd },
+  // { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/:id/marketing/', component: Marketing, componentProps: { viewUserType: 'admin' } },
   {
     path: '/shops/:shopId/marketing/dashboard/:type/:id',
@@ -47,7 +40,7 @@ export const account_manager_routes = [
     componentProps: { viewUserType: 'admin' },
   },
 
-  { path: '/shop', component: AdminShopList },
+  // { path: '/shop', component: AdminShopList },
   { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
 

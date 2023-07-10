@@ -208,17 +208,19 @@ export default function CategoryItem({
             >
               Add Sub-Category
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              startIcon={<Add />}
-              onClick={() => {
-                setNewProductCategory(category?.category?.category?._id);
-              }}
-            >
-              Add items
-            </Button>
+            {category?.subCategories?.length > 0 && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Add />}
+                onClick={() => {
+                  setNewProductCategory(category?.category?.category?._id);
+                }}
+              >
+                Add items
+              </Button>
+            )}
           </Stack>
         )}
       </AccordionDetails>

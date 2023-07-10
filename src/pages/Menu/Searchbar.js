@@ -5,7 +5,7 @@ import { ReactComponent as CollapseIcon } from '../../assets/icons/collapse.svg'
 import { ReactComponent as FileAddIcon } from '../../assets/icons/file-add-icon.svg';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import { bulkItemOptions, getAddMenuOptions } from './helpers';
+import { bulkItemOptions, getAddMenuOptions, isThereAnySubCategoryOrNot } from './helpers';
 
 // styled button
 export function AddMenuButton({ ...props }) {
@@ -45,8 +45,10 @@ function SearchBar({
   onMenuClick,
   shopType,
   viewUserType,
+  subCategory,
   ...props
 }) {
+  console.log('subcategory call function: ', isThereAnySubCategoryOrNot(subCategory));
   return (
     <Stack direction="row" alignItems="center" gap="15px" pb={6.5} {...props}>
       <StyledSearchBar
@@ -71,7 +73,7 @@ function SearchBar({
       </Button>
       <ThreeDotsMenu
         handleMenuClick={onMenuClick}
-        menuItems={getAddMenuOptions(shopType, viewUserType)}
+        menuItems={getAddMenuOptions(shopType, viewUserType, isThereAnySubCategoryOrNot(subCategory))}
         ButtonComponent={AddMenuButton}
       />
     </Stack>

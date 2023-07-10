@@ -6,13 +6,12 @@ import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { getShopRankedData } from '../helpers';
 import ShopRankingTable from './Table';
 
 function ShopRanking({ padding = true }) {
   const theme = useTheme();
   // const [seller, setSeller] = useState('all');
-  const [queryParams, setQueryParams] = useState({ page: 1, pageSize: 50, sellerId: 'all' });
+  const [queryParams, setQueryParams] = useState({ page: 1, pageSize: 15, sellerId: 'all', totalPage: 1 });
   const { currentUser } = useGlobalContext();
   const admin = currentUser?.admin;
   const adminSellers = admin?.sellers;
@@ -27,11 +26,20 @@ function ShopRanking({ padding = true }) {
     }, 500);
   }, [currentUser?.admin]);
 
-  const getAccountManagerdashBoard = useQuery([API_URL.GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY, queryParams], () =>
-    AXIOS.get(API_URL.GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY, {
-      params: { ...queryParams, sellerId: queryParams?.sellerId !== 'all' ? queryParams?.sellerId : '' },
+  const getAccountManagerdashBoard = useQuery(
+    [API_URL.GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY, queryParams],
+    () =>
+      AXIOS.get(API_URL.GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY, {
+        params: { ...queryParams, sellerId: queryParams?.sellerId !== 'all' ? queryParams?.sellerId : '' },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          setQueryParams((prev) => ({ ...prev, totalPage: data?.data?.paginate?.metadata?.page?.totalPage }));
+        }
+      },
       // eslint-disable-next-line prettier/prettier
-    }),
+    },
   );
   return (
     <Box
@@ -82,7 +90,7 @@ function ShopRanking({ padding = true }) {
           queryParams={queryParams}
           totalPage={getAccountManagerdashBoard?.data?.data?.paginate?.metadata?.page?.totalPage}
           setQueryParams={setQueryParams}
-          data={getShopRankedData(getAccountManagerdashBoard?.data?.data?.ranking || [])}
+          data={getAccountManagerdashBoard?.data?.data?.ranking || []}
         />
       </Box>
     </Box>

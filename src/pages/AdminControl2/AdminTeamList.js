@@ -159,7 +159,7 @@ function AdminTeamList({
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* edit */}
-          {adminType === 'accountManager' && (
+          {(adminType === 'accountManager' || adminType === 'sales') && (
             <StyledIconButton
               onClick={() => {
                 setOpenSellersModal(true);

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import {
+  account_manager_menu_items,
   admin_menu_items,
   customer_service_menu_items,
   sales_manager_menu_items,
@@ -40,7 +41,7 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
   console.log('userType', userType, adminType);
   if (userType === 'admin' && adminType === 'accountManager') {
     routes = account_manager_routes;
-    menuItems = sales_manager_menu_items;
+    menuItems = account_manager_menu_items;
   }
   if (userType === 'admin' && adminType === 'sales') {
     routes = sales_manager_routes;
