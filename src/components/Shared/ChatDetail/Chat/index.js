@@ -1,9 +1,9 @@
 import { Button, Stack } from '@mui/material';
-import OrderIssues from '../../OrderDetail/Details/OrderIssues';
 
 import ChatBox from './ChatBox';
+import ChatIssues from './ChatIssue';
 
-export default function Chat({ order }) {
+export default function Chat({ chat }) {
   return (
     <Stack
       pb={5}
@@ -12,7 +12,7 @@ export default function Chat({ order }) {
         gap: '20px',
       }}
     >
-      <OrderIssues flags={order?.flag} />
+      <ChatIssues chat={chat} />
       <ChatBox />
       <Stack gap={2.5}>
         <Button variant="contained" color="primary">

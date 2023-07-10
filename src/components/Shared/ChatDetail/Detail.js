@@ -7,6 +7,8 @@ import PaymentMethod from '../OrderDetail/Details/PaymentMethod';
 import OrderSummary from '../OrderDetail/Details/Summary';
 
 export default function ChatOrderDetail({ order }) {
+  console.log({ order });
+
   return (
     <Stack gap={5} pb={5}>
       <CallUser
@@ -17,7 +19,7 @@ export default function ChatOrderDetail({ order }) {
         }}
       />
       <OrderTimeline order={order} />
-      <DeliveryDetails deliveryDetails={order?.dropOffLocation} pickUpLocation={order?.pickUpLocation} />
+      <DeliveryDetails order={order} />
       {order?.orderFor === 'global' && order?.deliveryBoy && (
         <CallUser
           user={{
@@ -32,26 +34,6 @@ export default function ChatOrderDetail({ order }) {
       <OrderSummary productsDetails={order?.productsDetails} />
       <PaymentMethod method={order?.paymentMethod} />
       <PaymentDetails order={order} /> {/* note */}
-      {/* <StyledFormField
-        label={
-          <span>
-            Notes
-            <span
-              style={{
-                color: '#7E8299',
-              }}
-            >
-              {' '}
-              (only visible to you)
-            </span>
-          </span>
-        }
-        intputType="textarea"
-        inputProps={{
-          name: 'note',
-          multiline: true,
-        }}
-      /> */}
       <Button
         variant="contained"
         color="primary"

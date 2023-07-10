@@ -1,10 +1,10 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import { useGlobalContext } from '../../context';
+import { getShopStatusColor } from '../ShopProfile/Info';
 
 export default function Greeting() {
-  const theme = useTheme();
   const { currentUser } = useGlobalContext();
   const shop = currentUser?.shop || {};
   console.log(shop);
@@ -21,7 +21,7 @@ export default function Greeting() {
               width: '18px',
               height: '18px',
               borderRadius: '50%',
-              background: shop.liveStatus === 'online' ? theme.palette.success.main : theme.palette.error.main,
+              background: getShopStatusColor(shop),
             }}
           />
           <Typography variant="body1" fontWeight={500}>
