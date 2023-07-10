@@ -40,8 +40,8 @@ export default function CouponList() {
           searchPlaceHolder={`Search ${
             query?.data?.data?.coupons?.length ? `${query?.data?.data?.coupons?.length} ` : ''
           }items `}
-          filters={filters}
-          setFilters={setFilters}
+          queryParams={filters}
+          setQueryParams={setFilters}
           onAdd={() => {
             setDrawer(true);
           }}
