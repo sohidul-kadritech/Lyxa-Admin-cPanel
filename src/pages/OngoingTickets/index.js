@@ -12,19 +12,6 @@ import ChatsList from './ChatsList';
 import SlideInContainer from './SlideInContainer';
 import { order } from './mock';
 
-/*
-page
-1
-
-pageSize
-50
-
-chatType
-
-order || account
-
-*/
-
 const queryParamsInit = {
   page: 1,
   pageSize: 10,
@@ -90,6 +77,7 @@ export default function OngoingTickets() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
+              setQueryParams((prev) => ({ ...prev, chatType: tabValueToChatTypeMap[newValue] }));
             }}
             sx={{
               paddingTop: '40px',
@@ -104,10 +92,10 @@ export default function OngoingTickets() {
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} value={currentTab} noPadding>
-              <ChatsList onViewDetails={onViewDetails} chats={query?.data?.data?.list} />
+              <ChatsList onViewDetails={onViewDetails} chats={query?.data?.data?.list} loading={query?.isLoading} />
             </TabPanel>
             <TabPanel index={1} value={currentTab} noPadding>
-              <ChatsList onViewDetails={onViewDetails} chats={query?.data?.data?.list} />
+              <ChatsList onViewDetails={onViewDetails} chats={query?.data?.data?.list} loading={query?.isLoading} />
             </TabPanel>
           </Box>
         </SlideInContainer>

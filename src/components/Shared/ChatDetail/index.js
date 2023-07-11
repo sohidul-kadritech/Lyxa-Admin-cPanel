@@ -65,7 +65,7 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
             color: 'text.primary',
           }}
         />
-      </Stack>{' '}
+      </Stack>
       <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
         <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
           Order# {chat?.order?.orderId}

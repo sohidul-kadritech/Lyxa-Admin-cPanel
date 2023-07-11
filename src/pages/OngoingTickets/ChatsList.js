@@ -90,7 +90,21 @@ function ChatItem({ chat, onViewDetails }) {
   );
 }
 
-export default function ChatsList({ onViewDetails, chats }) {
+export default function ChatsList({ onViewDetails, chats, loading }) {
+  if (loading)
+    return (
+      <Typography variant="body4" fontWeight={400}>
+        ...Loading
+      </Typography>
+    );
+
+  if (!loading && !chats?.length)
+    return (
+      <Typography variant="body4" fontWeight={400}>
+        No chats
+      </Typography>
+    );
+
   return (
     <Stack gap={5} pb={9}>
       {chats?.map((chat) => (

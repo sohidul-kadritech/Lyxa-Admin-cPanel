@@ -1,44 +1,37 @@
-import { ExpandMore } from '@mui/icons-material';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Box, Button, Stack } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { Box, Stack } from '@mui/material';
 import { useState } from 'react';
+import MessageInput from './MessageInput';
+import MessageList from './MessageList';
 import { PhraseBox } from './PhraseBox';
 
-export default function ChatBox() {
+export default function ChatBox({ messages, onSendMessage, message, setMessage, sendMessageLoading }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Box
+    <Stack
       position="relative"
       sx={{
         height: '100%',
         border: '1px solid',
         borderColor: 'custom.border',
-        padding: '24px 15px',
+        padding: '24px 15px 0',
         minHeight: '800px',
         borderRadius: '8px',
       }}
     >
-      <Stack justifyContent="flex-end" direction="row">
-        <Button
-          disableRipple
-          endIcon={open ? <ExpandMore /> : <ChevronRightIcon />}
-          onClick={() => setOpen(!open)}
-          sx={{
-            background: '#F6F8FA',
-            fontWeight: '500',
-            padding: '6px 15px',
-            color: 'text.primary',
-
-            '&:hover': {
-              background: '#F6F8FA',
-            },
-          }}
-        >
-          Quickphrase
-        </Button>
-      </Stack>
-      <PhraseBox open={open} />
-    </Box>
+      <PhraseBox open={open} setOpen={setOpen} />
+      <Box sx={{ flex: 1 }}>
+        <MessageList messages={messages} />
+      </Box>
+      <MessageInput
+        sendMessageLoading={sendMessageLoading}
+        value={message}
+        setValue={setMessage}
+        onSendMessage={() => {
+          onSendMessage(message);
+        }}
+      />
+    </Stack>
   );
 }
