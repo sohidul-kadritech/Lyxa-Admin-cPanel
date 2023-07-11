@@ -69,6 +69,8 @@ export const getAllChat =
 
 export const acceptChatReq = (id) => async (dispatch, getState) => {
   const { socket } = getState().socketReducer;
+  console.log('socket--', getState().socketReducer);
+
   try {
     dispatch({
       type: actionType.ACCEPT_CHAT_REQUEST_SEND,

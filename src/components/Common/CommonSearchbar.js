@@ -1,9 +1,8 @@
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
-import moment from 'moment';
 import { useMemo } from 'react';
-import FilterDate from '../Filter/FilterDate';
 import FilterSelect from '../Filter/FilterSelect';
+import StyledDateRangePicker from '../Styled/StyledDateRangePicker';
 import StyledSearchBar from '../Styled/StyledSearchBar';
 import ThreeDotsMenu from '../ThreeDotsMenu2';
 
@@ -59,8 +58,22 @@ export default function SearchBar({
           }}
         />
       )}
-      {/* start date */}
       {showFilters?.date && (
+        <StyledDateRangePicker
+          startDate={queryParams.startDate}
+          endDate={queryParams.endDate}
+          onChange={({ startDate, endDate }) => {
+            setQueryParams((prev) => ({
+              ...prev,
+              startDate: startDate?._d,
+              endDate: endDate?._d,
+              page: 1,
+            }));
+          }}
+        />
+      )}
+      {/* start date */}
+      {/* {showFilters?.date && (
         <FilterDate
           tooltip="Start Date"
           maxDate={moment(queryParams.endDate).subtract(1, 'day')}
@@ -74,9 +87,9 @@ export default function SearchBar({
             }));
           }}
         />
-      )}
+      )} */}
       {/* end date */}
-      {showFilters?.date && (
+      {/* {showFilters?.date && (
         <FilterDate
           tooltip="End Date"
           minDate={moment(queryParams.startDate).add(1, 'day')}
@@ -90,7 +103,7 @@ export default function SearchBar({
             }));
           }}
         />
-      )}
+      )} */}
       {/* sort */}
       {showFilters?.sort && (
         <FilterSelect

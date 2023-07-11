@@ -21,6 +21,9 @@ const getConsoleName = (userType, adminType) => {
   if (userType === 'admin' && adminType === 'accountManager') {
     return 'Account Manager';
   }
+  if (userType === 'admin' && adminType === 'sales') {
+    return 'Sales Manager';
+  }
 
   if (userType === 'shop') {
     return 'Shop Manager';

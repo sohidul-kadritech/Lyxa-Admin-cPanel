@@ -10,7 +10,6 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AddMenuButton } from '../Faq2';
 import { statusTypeOptions } from '../Faq2/helpers';
 import AddLyxaCharge from '../Sellers2/AddLyxaCharge';
 import AddSeller from '../Sellers2/AddSeller';
@@ -198,14 +197,6 @@ function SellerListForAccountManager() {
             onChange: (e) => setZoneId(e.target.value),
           }}
         />
-        <AddMenuButton
-          onClick={() => {
-            setOpen(() => {
-              setIsEdit(false);
-              return true;
-            });
-          }}
-        />
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
@@ -228,7 +219,11 @@ function SellerListForAccountManager() {
             <Stack direction="row" flexWrap="wrap-reverse" gap="22px">
               {/* Sellers List --> left */}
               <Box>
-                <SellerList data={admin?.sellers} currentSeller={currentSeller} setCurrentSeller={setCurrentSeller} />
+                <SellerList
+                  data={admin?.sellers || []}
+                  currentSeller={currentSeller}
+                  setCurrentSeller={setCurrentSeller}
+                />
               </Box>
               {/* Seller Profile --> right */}
               <Box flex={1}>

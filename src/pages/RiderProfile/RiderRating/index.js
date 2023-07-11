@@ -7,7 +7,8 @@ import StyledTabs2 from '../../../components/Styled/StyledTab2';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import SearchBar from '../Flags/Searchbar';
+// import SearchBar from '../Flags/Searchbar';
+import SearchBar from '../../../components/Common/CommonSearchbar';
 import CustomerRatingTable from './CustomerRating';
 import ShopRatingTable from './ShopRating';
 
@@ -45,11 +46,22 @@ export default function RiderRating({ rider }) {
   return (
     <Box>
       <Box pb="30px">
-        <StyledTabs2 options={tabsOptions} value={currentTab} onChange={setCurrentTab} se />
+        <StyledTabs2 options={tabsOptions} value={currentTab} onChange={setCurrentTab} />
       </Box>
       <Box>
         <TabPanel index="customer" noPadding value={currentTab}>
-          <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search Ratings" />
+          <Box pb={7.5}>
+            <SearchBar
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+              searchPlaceHolder="Search Ratings"
+              showFilters={{
+                search: true,
+                date: true,
+                sort: true,
+              }}
+            />
+          </Box>
           <CustomerRatingTable
             rows={customerRatingsQuery?.data?.data?.reviews}
             loading={customerRatingsQuery.isLoading}

@@ -32,6 +32,7 @@ export const generateEditAdminData = (data) => {
   if (!data?._id) {
     return null;
   }
+
   return {
     ...data,
     number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,

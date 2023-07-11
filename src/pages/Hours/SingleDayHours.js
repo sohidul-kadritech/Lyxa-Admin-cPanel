@@ -1,7 +1,6 @@
 import { Add } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Stack } from '@mui/material';
-import moment from 'moment';
 import { useState } from 'react';
 import TimeRangePicker from './TimeRangePicker';
 
@@ -25,15 +24,19 @@ export default function SingleDayHours({
             startValue={hour?.open}
             endValue={hour?.close}
             onStartChange={(e) => {
-              hour.open = moment(e).format('HH:mm');
-              sortHours();
+              hour.open = e?.format('HH:mm');
               setRender((prev) => !prev);
               onAnyChange();
             }}
             onEndChange={(e) => {
-              hour.close = moment(e).format('HH:mm');
+              hour.close = e?.format('HH:mm');
               setRender((prev) => !prev);
               onAnyChange();
+            }}
+            onClose={() => {
+              setTimeout(() => {
+                sortHours();
+              }, 600);
             }}
           />
           {i === 0 ? (

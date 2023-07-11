@@ -59,6 +59,7 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent }) {
               handleMenuClick(item?.value);
               handleClose();
             }}
+            disabled={item?.disabled}
           >
             <span>{item?.label}</span>
           </MenuItem>

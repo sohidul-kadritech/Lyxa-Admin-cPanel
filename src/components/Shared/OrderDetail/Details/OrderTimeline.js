@@ -89,8 +89,6 @@ export default function OrderTimeline({ order = {}, ...props }) {
     });
   }
 
-  console.log(order);
-
   return (
     <StyledOrderDetailBox title="Order Timeline">
       <StyledTimeline {...props}>

@@ -170,6 +170,7 @@ export default function MenuPage() {
               backgroundColor: '#fbfbfb',
             }}
             setSearchValue={onSearch}
+            subCategory={productsQuery?.data?.data?.productsGroupByCategory}
             searchValue={searchValue}
             shopType={shop?.shopType}
             viewUserType={currentUser?.userType}

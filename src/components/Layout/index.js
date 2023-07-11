@@ -6,10 +6,12 @@ import {
   account_manager_menu_items,
   admin_menu_items,
   customer_service_menu_items,
+  sales_manager_menu_items,
   seller_menu_items,
   shop_menu_items,
 } from '../../common/sidebar_menu_items';
 import { useGlobalContext } from '../../context';
+import { sales_manager_routes } from '../../routes/Sales_manager_routes';
 import { account_manager_routes } from '../../routes/account_manager_routes';
 import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customer_service_routes';
@@ -40,6 +42,10 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
   if (userType === 'admin' && adminType === 'accountManager') {
     routes = account_manager_routes;
     menuItems = account_manager_menu_items;
+  }
+  if (userType === 'admin' && adminType === 'sales') {
+    routes = sales_manager_routes;
+    menuItems = sales_manager_menu_items;
   }
 
   if (userType === 'admin' && adminType === 'customerService') {

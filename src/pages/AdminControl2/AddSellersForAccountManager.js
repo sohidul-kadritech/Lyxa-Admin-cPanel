@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { EmailOutlined } from '@mui/icons-material';
+import { Box, Button, Stack, Tab, Tabs, debounce } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import AddSellersSkeleton from './AddSellersSkeleton';
 import SellerListForAccountManager from './SellerListForAccountManager';
 import { generateAsignData, getSellersForAccountManager, tabOptionsIndex } from './helpers';
 
@@ -38,15 +40,19 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
   }
 
   const getAllSellersQuery = useQuery(
-    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey, sellerType: tabOptionsIndex[currentTab] }],
+    [
+      API_URL.REMAINING_SELLER_FOR_ACCOUNT_MANAGER,
+      { sellerStatus: status, searchKey, sellerType: tabOptionsIndex[currentTab], accountManagerId: currentAdmin?._id },
+    ],
     () =>
-      AXIOS.get(API_URL.ALL_SELLER, {
+      AXIOS.get(API_URL.REMAINING_SELLER_FOR_ACCOUNT_MANAGER, {
         params: {
           sellerStatus: status,
           searchKey,
           //   page: 1,
           //   pageSize: 20,
           sellerType: tabOptionsIndex[currentTab],
+          accountManagerId: currentAdmin?._id,
         },
         // eslint-disable-next-line prettier/prettier
       }),
@@ -61,9 +67,13 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
   };
 
   return (
-    <SidebarContainer title="Assign Sellers" onClose={onClose}>
+    <SidebarContainer title={`Assign Sellers (for ${currentAdmin?.name})`} onClose={onClose}>
       <Stack marginBottom="12px">
-        <StyledSearchBar sx={{ flex: 1 }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
+        <StyledSearchBar
+          sx={{ flex: 1 }}
+          placeholder="Search"
+          onChange={debounce((e) => setSearchKey(e.target.value), 300)}
+        />
       </Stack>
       <Box>
         <Box sx={{ margin: '0 -8px' }}>
@@ -99,9 +109,7 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
             />
           </Box>
         ) : (
-          <Box pt={4}>
-            <Typography>Loading...</Typography>
-          </Box>
+          <AddSellersSkeleton />
         )}
 
         <Stack sx={{ padding: '30px 0px' }}>
@@ -114,9 +122,10 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
               // setLoading(true);
               asignSeller();
             }}
+            startIcon={<EmailOutlined />}
             fullWidth
           >
-            ADD
+            SAVE
           </Button>
         </Stack>
       </Box>

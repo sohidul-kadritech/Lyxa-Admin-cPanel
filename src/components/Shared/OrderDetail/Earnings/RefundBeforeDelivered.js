@@ -8,17 +8,26 @@ function StyledItem({
   label,
   value,
   total,
-  isNegative = false,
-  isRejected = false,
+  isNegative,
+  isRejected,
   pbsx = 3.5,
   ptxs = 2.5,
   isCurrency = true,
   tooltip,
 }) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const theme = useTheme();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+
+  const getAmountColor = (isNegative, total, isRejected) => {
+    let color = '#737373';
+
+    if (total) color = 'textPrimary';
+    if (isNegative) color = theme.palette.danger.main;
+    if (isRejected) color = '#6c757d';
+
+    return color;
+  };
 
   return (
     <Stack
@@ -40,10 +49,12 @@ function StyledItem({
       <Typography
         variant="body2"
         lineHeight="22px"
-        color={!isNegative ? (total ? 'textPrimary' : '#737373') : isRejected ? '#6c757d' : theme.palette.danger.main}
+        color={getAmountColor(isNegative, total, isRejected)}
         fontWeight={total ? 700 : undefined}
+        console={console.log(Math.abs(value || 0)?.toFixed(2), value)}
       >
-        {isCurrency ? currency : ''} {value}
+        {isNegative && value !== 0 ? '-' : ''} {isCurrency ? currency : ''}
+        {isNegative ? Math.abs(value || 0)?.toFixed(2) : isCurrency ? (value || 0)?.toFixed(2) : value}
       </Typography>
     </Stack>
   );
@@ -66,11 +77,12 @@ export default function RefundBeforeDelivered({ order = {} }) {
               label="Lyxa Cut"
               value={order?.userCancelTnx[0]?.adminCut + order?.userCancelTnx[0]?.adminVatCut}
               tooltip="Lyxa Profit + Lyxa Vat"
+              isNegative
             />
             {/* <StyledItem label="Admin VAT Cut" value={} /> */}
-            <StyledItem label="Rider Cut" value={order?.userCancelTnx[0]?.deliveryBoyCut} />
-            <StyledItem label="Shop Cut" value={order?.userCancelTnx[0]?.shopCut} />
-            <StyledItem label="Total Refund" value={order?.userCancelTnx[0]?.amount} total />
+            <StyledItem label="Rider Cut" value={order?.userCancelTnx[0]?.deliveryBoyCut} isNegative />
+            <StyledItem label="Shop Cut" value={order?.userCancelTnx[0]?.shopCut} isNegative />
+            <StyledItem label="Total Refund" value={order?.userCancelTnx[0]?.amount} total isNegative />
           </Box>
         </Box>
       )}

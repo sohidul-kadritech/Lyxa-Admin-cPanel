@@ -1,8 +1,8 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import PageTop from '../../../../../components/Common/PageTop';
-import TabPanel from '../../../../../components/Common/TabPanel';
-import CouponList from './CouponList';
+import PageTop from '../../components/Common/PageTop';
+import TabPanel from '../../components/Common/TabPanel';
+import CouponList from './List';
 import CouponOverview from './Overview';
 import { breadcrumbItems } from './helpers';
 
@@ -28,10 +28,10 @@ export default function CouponSettings() {
         <Tab label="Coupons" />
       </Tabs>
       <Box>
-        <TabPanel value={currentTab} index={0}>
+        <TabPanel value={currentTab} index={0} noPadding>
           <CouponOverview />
         </TabPanel>
-        <TabPanel value={currentTab} index={1}>
+        <TabPanel value={currentTab} index={1} noPadding>
           <CouponList />
         </TabPanel>
       </Box>

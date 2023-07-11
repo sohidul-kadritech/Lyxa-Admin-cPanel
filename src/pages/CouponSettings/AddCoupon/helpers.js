@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { deepClone } from '../../../../../../helpers/deepClone';
+import { deepClone } from '../../../helpers/deepClone';
 
 export const couponTypeToTitleMap = {
   global: 'Global',

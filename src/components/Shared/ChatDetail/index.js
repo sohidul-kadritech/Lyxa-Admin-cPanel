@@ -1,11 +1,11 @@
 import { Avatar, Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
-// import OrderDetail from '../../../components/Shared/OrderDetail';
 import Chat from './Chat';
 import ChatOrderDetail from './Detail';
-import UserProfile from './UserProfile';
+import UserDetails from './UserDetails';
 
 const showingForToTabValuesMap = {
   ongoing: {
@@ -30,6 +30,8 @@ const showingForToTabValuesMap = {
 export default function ChatDetails({ chat, onClose, showingFor }) {
   const [currentTab, setCurrentTab] = useState(0);
 
+  console.log('chat', chat);
+
   useEffect(() => {
     setCurrentTab(0);
   }, [showingFor]);
@@ -44,15 +46,15 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
         paddingBottom: '20px',
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" pb={10}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack direction="row" alignItems="center" gap={3}>
-          <Avatar alt="user-image" src={chat?.order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
-            {chat?.order?.user?.name?.length && chat?.order?.user?.name[0]}
+          <Avatar alt="user-image" src={chat?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
+            {chat?.user?.name?.charAt(0)}
           </Avatar>
           <Stack gap={0.5}>
             <Typography variant="body4">{chat?.order?.user?.name}</Typography>
             <Typography variant="body4" color="#737373">
-              9 orders
+              {chat?.user?.orderCompleted} orders
             </Typography>
           </Stack>
         </Stack>
@@ -63,6 +65,21 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
             color: 'text.primary',
           }}
         />
+      </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
+        <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
+          Order# {chat?.order?.orderId}
+        </Typography>
+        <Typography
+          variant="h5"
+          fontSize={12}
+          lineHeight="20px"
+          sx={{
+            flexShrink: 0,
+          }}
+        >
+          {moment(chat?.order?.createdAt).format('ddd DD, MMM, YYYY')}
+        </Typography>
       </Stack>
       <Tabs
         value={currentTab}
@@ -87,13 +104,13 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
           value={currentTab}
           sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
         >
-          <Chat order={chat?.order} />
+          <Chat chat={chat} onClose={onClose} />
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor].profile} value={currentTab} noPadding>
-          <UserProfile user={chat?.order?.user} />
+          <UserDetails user={chat?.user} />
         </TabPanel>
       </Box>
     </Stack>

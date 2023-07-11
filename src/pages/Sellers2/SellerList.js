@@ -117,7 +117,7 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
                 <SellerInfo
                   sellerName={seller?.company_name}
                   image={seller?.profile_photo}
-                  shopNumber={seller?.shops.length > 0 ? seller?.shops.length : 0}
+                  shopNumber={seller?.shops?.length > 0 ? seller?.shops?.length : 0}
                 />
               </Box>
             ))}

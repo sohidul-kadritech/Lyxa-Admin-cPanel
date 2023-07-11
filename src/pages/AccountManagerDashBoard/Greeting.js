@@ -23,6 +23,7 @@ export default function Greeting() {
             phone: admin?.phone_number,
             email: admin?.email,
             profile: admin?.profile_photo,
+            address: admin?.address,
             adminType: 'Account Manager',
             //   address: admin?.addressSeller?.address,
           }}

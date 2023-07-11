@@ -68,6 +68,8 @@ function ChatDetails() {
         },
       });
 
+      console.log('data-data', data);
+
       if (data.status) {
         setIsLoading(false);
         const chats = data?.data?.chats;
@@ -285,7 +287,6 @@ function ChatDetails() {
                     </div>
                   </div>
                   <hr />
-
                   <div style={{ marginBottom: 10 }}>
                     <SimpleBar
                       style={{

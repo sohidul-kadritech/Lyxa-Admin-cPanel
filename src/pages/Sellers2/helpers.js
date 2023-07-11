@@ -149,6 +149,7 @@ export const createSellerData = async (sellerData, isEdit = false) => {
       password: sellerData.password ? sellerData.password : undefined,
       profile_photo,
       certificate_of_incorporation,
+      sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
       national_id,
       sellerContractPaper,
     };
@@ -159,6 +160,7 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     profile_photo,
     certificate_of_incorporation,
     national_id,
+    sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
     sellerContractPaper,
   };
 };
@@ -206,10 +208,11 @@ export const tabsOptions = [
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
 
-export const getEditSellerData = (data) => {
-  if (!data?._id) {
+export const getEditSellerData = (data, isEdit) => {
+  if (!isEdit) {
     return {
-      ...data,
+      sellerStatus: '',
+      sellerType: '',
     };
   }
 

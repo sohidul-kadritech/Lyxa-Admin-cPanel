@@ -4,12 +4,12 @@ import { debounce } from '@mui/material/utils';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ReactComponent as DropIcon } from '../../../../../../assets/icons/down.svg';
-import SidebarContainer from '../../../../../../components/Common/SidebarContainerSm';
-import StyledFormField from '../../../../../../components/Form/StyledFormField';
-import { successMsg } from '../../../../../../helpers/successMsg';
-import * as Api from '../../../../../../network/Api';
-import AXIOS from '../../../../../../network/axios';
+import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import SidebarContainer from '../../../components/Common/SidebarContainerSm';
+import StyledFormField from '../../../components/Form/StyledFormField';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import {
   checkedInit,
   couponDiscountTypeOptions,
