@@ -106,6 +106,8 @@ export default function Chat({ chat, onClose }) {
     setMessageData(cache);
   }, [chat]);
 
+  console.log('messages', messages);
+
   return (
     <Stack
       pb={5}
