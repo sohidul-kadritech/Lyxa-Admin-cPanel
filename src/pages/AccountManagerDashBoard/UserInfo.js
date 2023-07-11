@@ -2,11 +2,10 @@ import { Box, Stack, useTheme } from '@mui/material';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import { useGlobalContext } from '../../context';
 
-export default function Greeting() {
+export default function UserInfo() {
   // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   const { currentUser } = useGlobalContext();
-  console.log('====>accountManager: ', currentUser);
   const admin = currentUser?.admin || {};
   console.log(admin);
 

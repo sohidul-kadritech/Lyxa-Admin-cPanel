@@ -1,7 +1,7 @@
 import { AccessTime } from '@mui/icons-material';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
@@ -13,21 +13,34 @@ import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import { TagsAndCuisines, menuOtions } from './helper';
 
+export const statusColor = {
+  green: '#417C45',
+  black: '#363636',
+  orange: '#dd5b63',
+  yellow: '#FFAB09',
+};
+
 // function is used in multiple places
 export const getShopStatusColor = (shop) => {
-  let color = '#417C45';
+  const color = { color: statusColor?.green, status: 'online' };
+  console.log('shopStatus: ', shop?.shopStatus);
+  console.log('shopLiveStatus: ', shop?.liveStatus);
 
-  if (shop?.liveStatus === 'offline') {
-    color = '#363636';
+  if (shop?.shopStatus === 'inactive') {
+    return { color: statusColor?.yellow, status: 'inactive' };
   }
 
   if (shop?.liveStatus === 'busy') {
-    color = '#DD5B63';
+    return { color: statusColor?.orange, status: 'busy' };
   }
 
-  if (shop?.shopStatus === 'inactive') {
-    color = '#FFAB09';
+  if (shop?.liveStatus === 'offline') {
+    return { color: statusColor?.black, status: 'closed' };
   }
+
+  // if (!shop?.isShopOpen) {
+  //   return { color: statusColor?.black, status: 'closed' };
+  // }
 
   return color;
 };
@@ -37,6 +50,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const currency = general?.currency;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
+  const history = useHistory();
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
@@ -69,7 +83,9 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
           }}
         >
           {/* Active Badges */}
-          <Box sx={{ background: getShopStatusColor(shop), width: '11px', height: '11px', borderRadius: '50%' }} />
+          <Box
+            sx={{ background: getShopStatusColor(shop)?.color, width: '11px', height: '11px', borderRadius: '50%' }}
+          />
           <Box>
             <Typography
               variant="h2"
@@ -79,16 +95,29 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
-            <Typography
-              sx={{
-                color: 'primary.main',
-                fontSize: '15px',
-                fontWeight: '600',
-                marginLeft: '8px',
-              }}
-            >
-              @account manager
-            </Typography>
+            <Box>
+              {shop?.accountManager?.name && (
+                <Typography
+                  onClick={() => {
+                    if (shop?.accountManager?._id) {
+                      history.push({
+                        pathname: `/accountManager/${shop?.accountManager._id}`,
+                        state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
+                      });
+                    }
+                  }}
+                  sx={{
+                    color: 'primary.main',
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    marginLeft: '8px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {shop?.accountManager?.name ? `@${shop?.accountManager?.name} (Account Manager)` : ''}
+                </Typography>
+              )}
+            </Box>
             <Box>
               <ThreeDotsMenu
                 menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}

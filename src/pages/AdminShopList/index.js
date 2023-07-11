@@ -38,13 +38,19 @@ const menuItems = [
 
 export default function ShopList() {
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
+
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
 
   const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
+
   const [currentTab, setCurrentTab] = useState(0);
+
   const [totalPage, setTotalPage] = useState(1);
+
   const [open, setOpen] = useState(null);
+
   const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery(
@@ -57,7 +63,8 @@ export default function ShopList() {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const handleMenuClick = (menu, shop) => {

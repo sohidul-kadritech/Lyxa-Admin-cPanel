@@ -9,7 +9,7 @@ export default function DateRange({ range, setRange, startKey = 'start', endKey 
         startDate={range?.[startKey]}
         endDate={range?.[endKey]}
         onChange={({ startDate, endDate }) => {
-          setRange((prev) => ({ ...prev, [startKey]: startDate._d, [endKey]: endDate._d }));
+          setRange((prev) => ({ ...prev, [startKey]: startDate?._d, [endKey]: endDate?._d }));
         }}
       />
       {/* <FilterDate

@@ -6,9 +6,9 @@ import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useGlobalContext } from '../../context';
 import EditAdminProfile from '../SalesManagerDashBoard/EditAdminProfile';
-import Greeting from './Greeting';
 import Orders from './Orders';
 import ShopRanking from './ShopRanking';
+import UserInfo from './UserInfo';
 
 function AccountManagerDashBoard() {
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ function AccountManagerDashBoard() {
       </Typography>
       <Stack direction="row" width="100%">
         <Box flex={1}>
-          <Greeting />
+          <UserInfo />
         </Box>
         <Button
           disableRipple

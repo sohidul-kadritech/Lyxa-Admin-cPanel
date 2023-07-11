@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import ChartBox from '../../components/StyledCharts/ChartBox';
 import StyledBarChart from '../../components/StyledCharts/StyledBarChart';
-import { useGlobalContext } from '../../context';
 import { generateGraphData } from '../../helpers/generateGraphData';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -15,24 +14,24 @@ const dateRangeItit = {
 
 export default function SellersChart({ viewUserType = 'shop' }) {
   const [range, setRange] = useState({ ...dateRangeItit });
-  const { currentUser } = useGlobalContext();
+  // const { currentUser } = useGlobalContext();
 
-  const profitGraphQuery = useQuery(
+  const salesGraphQuery = useQuery(
     [
-      API_URL.GET_SHOP_DASHBOARD_PROFIT_GRAPH,
+      API_URL.SALES_MANAGER_DASHBOARD_SALES_GRAPH,
       {
         startDate: moment(range.start).format('YYYY-MM-DD'),
         endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
+        // id: currentUser[viewUserType]?._id,
         type: viewUserType,
       },
     ],
     () =>
-      AXIOS.get(API_URL.GET_SHOP_DASHBOARD_PROFIT_GRAPH, {
+      AXIOS.get(API_URL.SALES_MANAGER_DASHBOARD_SALES_GRAPH, {
         params: {
           startDate: moment(range.start).format('YYYY-MM-DD'),
           endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
+          // id: currentUser[viewUserType]?._id,
           type: viewUserType,
         },
         // eslint-disable-next-line prettier/prettier
@@ -40,7 +39,7 @@ export default function SellersChart({ viewUserType = 'shop' }) {
   );
 
   const sellersData = generateGraphData(
-    profitGraphQuery?.data?.data?.info || [],
+    salesGraphQuery?.data?.data?.info || [],
     (item) => item.payout,
     // eslint-disable-next-line prettier/prettier
     (item) => moment(item?.date).format('MMMM DD'),
@@ -59,11 +58,12 @@ export default function SellersChart({ viewUserType = 'shop' }) {
 
   return (
     <ChartBox
-      loading={profitGraphQuery.isLoading}
+      loading={salesGraphQuery.isLoading}
       chartHeight={325}
       dateRange={range}
       setDateRange={setRange}
       title="Sellers"
+      sx={{ overflow: 'visible' }}
       sm={12}
       xl={6}
     >
