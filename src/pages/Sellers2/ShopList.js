@@ -9,6 +9,7 @@ import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import EditDocument from '../../components/Common/EditDocument';
 import Rating from '../../components/Common/Rating';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
@@ -30,6 +31,7 @@ function ShopList({
   editSellerQuery,
   isConfirmModal,
   setIsConfirmModal,
+  loading,
   ...props
 }) {
   const theme = useTheme();
@@ -268,29 +270,33 @@ function ShopList({
         borderRadius: '7px',
       }}
     >
-      <StyledTable
-        columns={allColumns.filter((column) => column.showFor.includes(tabName))}
-        rows={
-          data.map((shop, i) => {
-            shop.rowNumber = i + 1;
-            return shop;
-          }) || []
-        }
-        getRowHeight={() => 'auto'}
-        getRowId={(row) => row?._id}
-        sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'defualt',
-          },
-        }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No Shop Found
-            </Stack>
-          ),
-        }}
-      />
+      {loading ? (
+        <TableSkeleton columns={['text', 'avatar', 'text', 'text', 'text', 'text']} rows={5} />
+      ) : (
+        <StyledTable
+          columns={allColumns.filter((column) => column.showFor.includes(tabName))}
+          rows={
+            data.map((shop, i) => {
+              shop.rowNumber = i + 1;
+              return shop;
+            }) || []
+          }
+          getRowHeight={() => 'auto'}
+          getRowId={(row) => row?._id}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              cursor: 'defualt',
+            },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No Shop Found
+              </Stack>
+            ),
+          }}
+        />
+      )}
 
       <ConfirmModal
         message="Are you sure you want to delete this resource?"

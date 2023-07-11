@@ -26,7 +26,7 @@ export default function Detail({ order, hideIssues, userType }) {
       {order?.isButler && <ButlerOrderSummary order={order} />}
       {!order?.isButler && <OrderSummary order={order} />}
       <PaymentMethod method={order?.paymentMethod} />
-      {order?.coupon && <CouponDetails coupon={order?.coupon} />}
+      {order?.couponDetails && <CouponDetails coupon={order?.couponDetails} />}
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
       <PaymentDetails order={order} />

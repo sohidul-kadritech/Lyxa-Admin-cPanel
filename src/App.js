@@ -1,6 +1,8 @@
 /* eslint-disable */
 // REQUIRED CSS FOR COMPONENTS
 import 'flatpickr/dist/themes/material_green.css';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 /* eslint-enable */
 /* eslint-disable */

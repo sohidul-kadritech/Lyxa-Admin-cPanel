@@ -17,6 +17,8 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
+export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
+export const GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/account-manager`;
 export const GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/revenue`;
 export const GET_SHOP_DASHBOARD_PROFIT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/payout`;
 export const GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/marketing-spent`;
@@ -24,6 +26,8 @@ export const GET_SHOP_DASHBOARD_OPERATIONS = `${ADMIN_ENDPOINT}/dashboard/shop/o
 
 export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/users`;
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
+export const ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
+export const SALES_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
 export const SELLER_DASHBOARD_SHOP_LIST = `${ADMIN_ENDPOINT}/dashboard/seller/shop-list`;
 export const ADMIN_DASHBOARD_EARNING_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/earnings`;
@@ -98,6 +102,8 @@ export const SUB_CATEGORY_SORTING = `${ADMIN_ENDPOINT}/sub-category/sort`;
 // SELLER
 export const ADD_SELLER = `${ADMIN_ENDPOINT}/seller/add`;
 export const ALL_SELLER = `${ADMIN_ENDPOINT}/seller`;
+export const ALL_SELLER_ACCOUNT_MANAGER = `${ADMIN_ENDPOINT}/seller/account-manager`;
+export const REMAINING_SELLER_FOR_ACCOUNT_MANAGER = `${ADMIN_ENDPOINT}/seller/account-manager/remaining`;
 export const EDIT_SELLER = `${ADMIN_ENDPOINT}/seller/update`;
 export const DELETE_SELLER = `${ADMIN_ENDPOINT}/seller/delete`;
 export const SINGLE_SELLER = `${ADMIN_ENDPOINT}/seller/get-seller-details`;
@@ -278,6 +284,8 @@ export const ADD_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message`;
 export const EDIT_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/update`;
 export const DELETE_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/delete`;
 export const CLOSE_CONVERSATION = `${ADMIN_ENDPOINT}/user-chat-request/close`;
+export const PAST_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/past-chats`;
+export const ONGOING_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/ongoing-chats`;
 
 // TERMS AND CONDITIONS
 export const ADD_TERMS_AND_CONDITIONS = `${ADMIN_ENDPOINT}/`;
@@ -369,6 +377,7 @@ export const UPDATE_COUPON = `${ADMIN_ENDPOINT}/coupon/update`;
 export const DELETE_COUPON = `${ADMIN_ENDPOINT}/coupon/delete`;
 export const GET_AUTO_GEN_COUPON_CODE = `${ADMIN_ENDPOINT}/coupon/auto-generate`;
 export const GET_COUPON = `${ADMIN_ENDPOINT}/coupon`;
+export const GET_COUPON_OVERVIEW = `${ADMIN_ENDPOINT}/coupon/overview`;
 
 // ZONE
 export const GET_ALL_ZONE = `${ADMIN_ENDPOINT}/zone`;

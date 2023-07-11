@@ -1,8 +1,13 @@
 import { Box, Stack, Typography } from '@mui/material';
-import StyledTable from '../../../../../../components/Styled/StyledTable3';
-import StyledBox from '../../../../../../components/StyledCharts/StyledBox';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
+import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context';
 
-export default function CouponOverviewTable({ rows = [] }) {
+export default function CouponOverviewTable({ rows = [], loading }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+
   const columns = [
     {
       id: 1,
@@ -18,12 +23,14 @@ export default function CouponOverviewTable({ rows = [] }) {
       id: 2,
       headerName: `ONGOING`,
       sortable: false,
-      field: 'status',
+      field: 'ongoing',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{`${row?.totalValidCoupons || 0}/${row?.totalCoupons || 0}`}</Typography>
+      ),
     },
     {
       id: 4,
@@ -33,7 +40,11 @@ export default function CouponOverviewTable({ rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{`${row?.totalCouponsUsageOrders || 0}/${
+          row?.totalCouponsOrders || 0
+        }`}</Typography>
+      ),
     },
     {
       id: 5,
@@ -43,7 +54,7 @@ export default function CouponOverviewTable({ rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => <Typography variant="body4">{`${row?.orderIncreasePercentage || 0}%`}</Typography>,
     },
     {
       id: 6,
@@ -53,7 +64,7 @@ export default function CouponOverviewTable({ rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => <Typography variant="body4">{`${row?.totalCouponsUsagePercentage || 0}%`}</Typography>,
     },
     {
       id: 7,
@@ -63,9 +74,13 @@ export default function CouponOverviewTable({ rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{`${currency}${row?.totalCouponsAmountSpent || 0}`}</Typography>
+      ),
     },
   ];
+
+  if (loading) return <TableSkeleton rows={4} columns={['text', 'text', 'text', 'text', 'text', 'text']} />;
 
   return (
     <StyledBox

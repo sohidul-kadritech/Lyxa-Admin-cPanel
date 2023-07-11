@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
@@ -98,7 +99,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const getChatFaq = useQuery([API_URL?.GET_FAQ, { status, searchKey, range }], () =>
@@ -110,7 +111,7 @@ function Faq() {
         endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {

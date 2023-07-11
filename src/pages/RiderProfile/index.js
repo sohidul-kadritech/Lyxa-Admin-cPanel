@@ -70,7 +70,7 @@ export default function RiderProfile() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (

@@ -1,9 +1,8 @@
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
-import moment from 'moment';
 import { useMemo } from 'react';
-import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
+import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import { useGlobalContext } from '../../../context';
 
@@ -27,7 +26,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -40,7 +39,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
       />
       {/* start date */}
-      <FilterDate
+      {/* <FilterDate
         tooltip="Start Date"
         maxDate={moment(queryParams.tnxFilter.endDate).subtract(1, 'day')}
         value={queryParams.tnxFilter.startDate}
@@ -55,9 +54,9 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
             },
           }));
         }}
-      />
+      /> */}
       {/* end date */}
-      <FilterDate
+      {/* <FilterDate
         tooltip="End Date"
         minDate={moment(queryParams.tnxFilter.startDate).add(1, 'day')}
         value={queryParams.tnxFilter.endDate}
@@ -69,6 +68,21 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
             tnxFilter: {
               ...prev.tnxFilter,
               endDate: e._d,
+            },
+          }));
+        }}
+      /> */}
+      <StyledDateRangePicker
+        startDate={queryParams.startDate}
+        endDate={queryParams.endDate}
+        onChange={({ startDate, endDate }) => {
+          setQueryParams((prev) => ({
+            ...prev,
+            page: 1,
+            tnxFilter: {
+              ...prev.tnxFilter,
+              startDate: startDate._d,
+              endDate: endDate._d,
             },
           }));
         }}

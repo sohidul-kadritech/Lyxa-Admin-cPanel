@@ -1,6 +1,6 @@
-import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, debounce, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
@@ -14,9 +14,12 @@ import { statusTypeOptions } from '../Product1/helpers';
 import ShopList from './ShopList';
 import ViewSellerInfo from './ViewSellerInfo';
 // import ViewShopInfo from './ViewShopInfo';
+import TablePagination from '../../components/Common/TablePagination';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import useAccessAsUser from '../../helpers/useAccessAsUser';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
@@ -111,67 +114,27 @@ function SellersProfile({
 }) {
   console.log('shop profile: ', currentSeller);
   const theme = useTheme();
+
+  const [queryParams, setQueryParams] = useState({
+    searchKey: '',
+    sortBy: 'asc',
+    shopStatus: 'all',
+    page: 1,
+    pageSize: 10,
+  });
   const [currentTab, setCurrentTab] = useState(0);
   const [tabName, setTabName] = useState('Shop List');
-  const [sort, setSort] = useState('');
-  const [status, setStatus] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+
   const [selectedShop, setSelectedShop] = useState({});
   const [open, setOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const queryClient = useQueryClient();
   // eslint-disable-next-line no-unused-vars
   const [selectedMenu, setSelectedMenu] = useState('');
+
   const accessAsUser = useAccessAsUser();
+
   const history = useHistory();
-
-  useEffect(() => {
-    setSearchResult(currentSeller?.shops);
-  }, [currentSeller]);
-
-  const searchResultHandler = (e) => {
-    if (e.target.value) {
-      console.log(e.target.value);
-      const matchData = currentSeller?.shops.filter((obj) =>
-        // eslint-disable-next-line prettier/prettier
-        obj.shopName.toString().toLowerCase().includes(e.target.value.toLowerCase()),
-      );
-      console.log('matchData', matchData);
-      setSearchResult(() => [...matchData]);
-    } else {
-      setSearchResult(() => [...currentSeller.shops]);
-    }
-  };
-  const sortHandler = (e) => {
-    // console.log(e.target.value, 'sort');
-    setSort(e.target.value);
-    // const oldOrderData = currentSeller?.shops
-    // // const oldOrderData = currentSeller?.shops;
-    // console.log('=====>', oldOrderData);
-    // if (e.target.value === 'asc') {
-    //   // eslint-disable-next-line no-unsafe-optional-chaining
-    //   oldOrderData.sort((a, b) => a?.shopName - b?.shopName);
-
-    //   console.log('asc sorted data', oldOrderData);
-    // } else if (e.target.value === 'dsc') {
-    //   // eslint-disable-next-line no-unsafe-optional-chaining
-    //   oldOrderData.sort((a, b) => b?.shopName - a?.shopName);
-
-    //   console.log('dsc sorted data', oldOrderData);
-    // }
-  };
-
-  const statusShopHandler = (e) => {
-    setStatus(e.target.value);
-    if (e.target.value !== 'all') {
-      const filteredData = currentSeller?.shops.filter((item) => item.shopStatus === e.target.value);
-      console.log(filteredData);
-      setSearchResult([...filteredData]);
-      return;
-    }
-
-    setSearchResult(currentSeller?.shops);
-  };
 
   const threeDotHandler = (menu) => {
     setSelectedMenu(menu);
@@ -208,6 +171,24 @@ function SellersProfile({
     setOpen(false);
   };
 
+  const getSingleShop = useQuery(
+    [API_URL.SELLER_DASHBOARD_SHOP_LIST, { ...queryParams, sellerId: currentSeller?._id }],
+    () =>
+      AXIOS.get(API_URL.SELLER_DASHBOARD_SHOP_LIST, {
+        params: { ...queryParams, sellerId: currentSeller?._id },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          const totalPage = data?.data?.paginate?.metadata?.page?.totalPage;
+          setQueryParams((prev) => ({ ...prev, totalPage }));
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+  console.log('getSingleShop', getSingleShop?.data?.data?.shopList);
+
   return (
     <Box
       sx={{
@@ -233,19 +214,29 @@ function SellersProfile({
             </Tabs>
           </Box>
           <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
-            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={searchResultHandler} />
+            <StyledSearchBar
+              sx={{ flex: '1' }}
+              placeholder="Search"
+              onChange={debounce(
+                (e) => {
+                  setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
+                },
+                // eslint-disable-next-line prettier/prettier
+                300,
+              )}
+            />
             <StyledFormField
               intputType="select"
               containerProps={{
                 sx: { padding: '0px 0px' },
               }}
               inputProps={{
-                name: 'sort',
+                name: 'sortBy',
                 placeholder: 'Sort',
-                value: sort,
+                value: queryParams.sortBy,
                 items: sortOptions,
                 size: 'sm2',
-                onChange: sortHandler,
+                onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
               }}
             />
             <StyledFormField
@@ -254,12 +245,12 @@ function SellersProfile({
                 sx: { padding: '0px 0px' },
               }}
               inputProps={{
-                name: 'status',
+                name: 'shopStatus',
                 placeholder: 'Status',
-                value: status,
+                value: queryParams.shopStatus,
                 items: statusTypeOptions,
                 size: 'sm2',
-                onChange: statusShopHandler,
+                onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
               }}
             />
           </Stack>
@@ -274,9 +265,21 @@ function SellersProfile({
             setSelectedMenu={setSelectedMenu}
             setOpen={setOpen}
             tabName={tabName}
+            loading={getSingleShop?.isLoading}
             replaceDocument={replaceDocument}
             removeDocument={removeDocument}
-            data={tabName === 'Shop List' ? searchResult || [] : generateDataForSellerDocuments(currentSeller) || []}
+            data={
+              tabName === 'Shop List'
+                ? getSingleShop?.data?.data?.shopList || []
+                : generateDataForSellerDocuments(currentSeller) || []
+            }
+          />
+          <TablePagination
+            totalPage={queryParams?.totalPage}
+            currentPage={queryParams?.page}
+            lisener={(value) => {
+              setQueryParams((prev) => ({ ...prev, page: value }));
+            }}
           />
         </Stack>
       ) : (
@@ -294,7 +297,10 @@ function SellersProfile({
         {selectedMenu === 'view' && <ViewSellerInfo selectedSeller={currentSeller} onClose={closeModal} />}
         {(selectedMenu === 'edit_shop' || selectedMenu === 'add_shop') && (
           <AddShop
-            refetch={refatch}
+            refetch={() => {
+              refatch();
+              queryClient.invalidateQueries(API_URL.SELLER_DASHBOARD_SHOP_LIST);
+            }}
             editShop={selectedShop}
             seller={currentSeller}
             onClose={() => {

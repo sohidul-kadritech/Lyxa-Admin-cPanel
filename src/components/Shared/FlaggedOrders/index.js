@@ -1,10 +1,11 @@
 /* eslint-disable consistent-return */
-import { Box } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import TablePagination from '../../../components/Common/TablePagination';
 import localDatePagination from '../../../helpers/localDataPaginations';
-import SearchBar from './Searchbar';
+import SearchBar from '../../Common/CommonSearchbar';
+import TablePagination from '../../Common/TablePagination';
+import OrderDetail from '../OrderDetail';
 import FlagsTable from './Table';
 
 export const queryParamsInit = {
@@ -49,9 +50,11 @@ const filterFlags = (filters, flags) => {
   return temp;
 };
 
-export default function RiderFlags({ flags = [] }) {
+export default function FlaggedOrders({ flags = [] }) {
   const [flagList, setFlagList] = useState(flags);
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState({});
 
   useEffect(() => {
     setFlagList(filterFlags(queryParams, flags));
@@ -59,8 +62,25 @@ export default function RiderFlags({ flags = [] }) {
 
   return (
     <Box>
-      <SearchBar searchPlaceHolder="Search Flags" queryParams={queryParams} setQueryParams={setQueryParams} />
-      <FlagsTable rows={localDatePagination(flagList, queryParams?.page, 10)} />
+      <Box pb={7.5}>
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          searchPlaceHolder="Search Ratings"
+          showFilters={{
+            search: true,
+            date: true,
+            sort: true,
+          }}
+        />
+      </Box>
+      <FlagsTable
+        rows={localDatePagination(flagList, queryParams?.page, 10)}
+        onViewDetails={(order) => {
+          setCurrentOrder(order);
+          setSidebarOpen(true);
+        }}
+      />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {
@@ -68,6 +88,15 @@ export default function RiderFlags({ flags = [] }) {
         }}
         totalPage={Math.ceil(flagList.length / 10)}
       />
+      <Drawer open={sidebarOpen} anchor="right">
+        <OrderDetail
+          order={currentOrder}
+          onClose={() => {
+            setCurrentOrder({});
+            setSidebarOpen(false);
+          }}
+        />
+      </Drawer>
     </Box>
   );
 }

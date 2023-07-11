@@ -2,7 +2,16 @@ import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import StyledTimePicker from '../../components/Styled/StyledTimePicker';
 
-export default function TimeRangePicker({ startValue, onStartChange, endValue, onEndChange, disabled, minutesStep }) {
+export default function TimeRangePicker({
+  startValue,
+  onStartChange,
+  endValue,
+  onEndChange,
+  disabled,
+  minutesStep,
+  shouldDisableTime,
+  onClose,
+}) {
   return (
     <Stack direction="row" alignItems="center" gap={7.5}>
       <StyledTimePicker
@@ -11,6 +20,10 @@ export default function TimeRangePicker({ startValue, onStartChange, endValue, o
         onChange={onStartChange}
         disabled={disabled}
         minutesStep={minutesStep}
+        skipDisabled
+        shouldDisableTime={shouldDisableTime}
+        closeOnSelect={false}
+        onClose={onClose}
       />
       <Typography variant="body1" fontWeight={500}>
         to
@@ -21,6 +34,10 @@ export default function TimeRangePicker({ startValue, onStartChange, endValue, o
         onChange={onEndChange}
         disabled={disabled}
         minutesStep={minutesStep}
+        skipDisabled
+        shouldDisableTime={shouldDisableTime}
+        closeOnSelect={false}
+        onClose={onClose}
       />
 
       {/* <StyledNativeTimePicker value={startValue} onChange={onStartChange} disabled={disabled} />

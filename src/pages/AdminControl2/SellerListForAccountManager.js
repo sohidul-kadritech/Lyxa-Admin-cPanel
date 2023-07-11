@@ -1,11 +1,16 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import { SellerInfo } from '../Sellers2/SellerList';
 import { getActiveSellers, isItActiveOrNot } from './helpers';
 
 function SellerListForAccountManager({ data, sellers, setSellers }) {
   const theme = useTheme();
+
   // eslint-disable-next-line no-unused-vars
+  const [isConfirm, setIsConfirm] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [tempSellerId, setTempSellerId] = useState('');
 
   const styleForSellerList = {
     padding: '12px 20px 10px 20px',
@@ -34,7 +39,6 @@ function SellerListForAccountManager({ data, sellers, setSellers }) {
         backgroundColor: theme.palette.primary.contrastText,
         padding: '13px 0px 21px',
         borderRadius: '7px',
-        // border: `1px solid ${theme.palette.custom.border}`,
         maxHeight: '550px',
         overflow: 'scroll',
       }}
@@ -47,11 +51,12 @@ function SellerListForAccountManager({ data, sellers, setSellers }) {
                 id={`seller_${seller._id}`}
                 className="sellerItems"
                 key={i}
-                // ref={currentSeller?._id === seller?._id ? sellerRef : undefined}
                 sx={!isItActiveOrNot(seller?._id, sellers) ? styleForSellerList : styleForSellerListActive}
-                // sx={styleForSellerList}
                 onClick={() => {
-                  setSellers(getActiveSellers(seller._id, sellers));
+                  console.log('seller._id', seller._id);
+                  setTempSellerId(seller._id);
+                  setIsConfirm(true);
+                  // setSellers(getActiveSellers(seller._id, sellers));
                 }}
               >
                 <SellerInfo
@@ -70,6 +75,24 @@ function SellerListForAccountManager({ data, sellers, setSellers }) {
           </Box>
         )}
       </Stack>
+
+      <ConfirmModal
+        // message="Are you sure you want to assign this Seller?"
+        message={`Are you sure you want to  ${
+          !isItActiveOrNot(tempSellerId, sellers) ? 'assign' : 'remove'
+        } this seller?`}
+        isOpen={isConfirm}
+        // loading={deleteAdminQuery?.isLoading}
+        onCancel={() => {
+          setIsConfirm(false);
+          //   setCurrentDocumet({});
+        }}
+        onConfirm={() => {
+          setSellers(getActiveSellers(tempSellerId, sellers));
+          setIsConfirm(false);
+          //   removeDocument(currentDocumet);
+        }}
+      />
     </Box>
   );
 }

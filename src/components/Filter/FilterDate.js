@@ -1,9 +1,9 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, styled, TextField, Tooltip } from '@mui/material';
+import { Box, styled, Tooltip } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 
-const StyledInput = styled(TextField)(({ theme }) => ({
+const StyledInput = styled(DesktopDatePicker)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     padding: '12px 15px 12px 22px',
     maxWidth: '190px',
@@ -96,23 +96,31 @@ function Wrapper({ tooltip, children }) {
 export default function FilterDate({ value, onChange, size, variant, sx, tooltip, fullWidth, ...props }) {
   return (
     <Wrapper tooltip={tooltip}>
-      <DesktopDatePicker
+      <StyledInput
         value={moment(value)}
         onChange={onChange}
+        sx={{
+          ...(variants[variant]?.root || {}),
+          ...(sizes[size]?.root || {}),
+          ...(sx || {}),
+        }}
         components={{
           OpenPickerIcon: ExpandMoreIcon,
         }}
-        renderInput={(params) => (
-          <StyledInput
-            fullWidth={fullWidth}
-            sx={{
-              ...(variants[variant]?.root || {}),
-              ...(sizes[size]?.root || {}),
-              ...(sx || {}),
-            }}
-            {...params}
-          />
-        )}
+        // slotProps={{
+        //   textField: <StyledInput />,
+        // }}
+        // renderInput={(params) => (
+        //   <StyledInput
+        //     fullWidth={fullWidth}
+        //     sx={{
+        //       ...(variants[variant]?.root || {}),
+        //       ...(sizes[size]?.root || {}),
+        //       ...(sx || {}),
+        //     }}
+        //     {...params}
+        //   />
+        // )}
         {...props}
       />
     </Wrapper>
