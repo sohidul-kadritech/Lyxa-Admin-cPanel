@@ -1,22 +1,21 @@
-import React from 'react';
-
-import { Api } from '@mui/icons-material';
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
+import React from 'react';
 import CommonAreaChart from '../../components/StyledCharts/CommonAreaChart';
 import { useGlobalContext } from '../../context';
 import { generateGraphData } from '../../helpers/generateGraphData';
+import * as API_URL from '../../network/Api';
 
 function Orders() {
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+  const { admin } = currentUser;
   return (
     <Grid container spacing={6.5}>
       <CommonAreaChart
         title="Total Orders"
-        api={Api.SHOP_DASHBOARD_ORDER_GRAPH}
+        api={API_URL.ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH}
         params={{
-          shopId: shop?._id,
+          accountManagerId: admin?._id,
         }}
         generateData={(data = {}) =>
           generateGraphData(

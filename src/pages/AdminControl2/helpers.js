@@ -69,6 +69,7 @@ export const tabOptionsIndex = {
 };
 
 export const getActiveSellers = (value, oldList) => {
+  console.log('value===>', value, oldList);
   if (oldList.includes(value)) {
     return oldList.filter((oldvalue) => oldvalue !== value);
   }

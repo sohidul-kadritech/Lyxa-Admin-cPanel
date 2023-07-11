@@ -52,8 +52,10 @@ export default function UserProfile() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
+
+  console.log({ user });
 
   return (
     <Box>

@@ -11,10 +11,10 @@ import moment from 'moment';
 import CloseButton from '../../../components/Common/CloseButton';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import FilterDate from '../../../components/Filter/FilterDate';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
+import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
@@ -645,8 +645,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 disabled={isPageDisabled}
               >
                 <Stack direction="row" alignItems="center" gap={5} pt={1}>
-                  <Stack gap={2.5}>
-                    <Typography variant="body2">Start Date</Typography>
+                  {/* <Stack gap={2.5}>
+                    <Typography variant="body2">Start Date </Typography>
                     <FilterDate
                       maxDate={moment(duration.end).subtract(1, 'day')}
                       value={duration.start}
@@ -664,6 +664,20 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       onChange={(e) => {
                         setDuration((prev) => ({ ...prev, end: e._d }));
                         setHasGlobalChange(true);
+                      }}
+                    />
+                  </Stack> */}
+                  <Stack gap={2.5}>
+                    <Typography variant="body2">Start Date - End Date</Typography>
+                    <StyledDateRangePicker
+                      startDate={duration.start}
+                      endDate={duration.end}
+                      onChange={({ startDate, endDate }) => {
+                        setDuration((prev) => ({
+                          ...prev,
+                          start: startDate?._d,
+                          end: endDate?._d,
+                        }));
                       }}
                     />
                   </Stack>

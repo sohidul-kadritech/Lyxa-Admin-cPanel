@@ -10,13 +10,14 @@ import DateRange from '../../components/StyledCharts/DateRange';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
+import ReferFriendDashBoard from './ReferFriendDashBoard';
+import ReferFriendDashboardSkeleton from './ReferFriendDashboardSkeleton';
 
 function ReferFriendList() {
   const [range, setRange] = useState({ ...dateRangeInit });
 
-  // eslint-disable-next-line no-unused-vars
   const [sort, setSort] = useState('asc');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKey, setSearchKey] = useState('');
 
   const theme = useTheme();
@@ -171,6 +172,14 @@ function ReferFriendList() {
           }}
         />
       </Stack>
+
+      {!getReferrelList.isLoading ? (
+        <Box>
+          <ReferFriendDashBoard range={range} summery={getReferrelList?.data?.data?.summery} />
+        </Box>
+      ) : (
+        <ReferFriendDashboardSkeleton />
+      )}
 
       <Box
         marginTop="30px"

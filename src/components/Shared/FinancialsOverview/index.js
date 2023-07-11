@@ -59,12 +59,14 @@ export default function Overview({ viewUserType }) {
           endDate: moment(paymentDetailsRange.end).format('YYYY-MM-DD'),
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
-    [query?.data, marketingSpentType]
+    // eslint-disable-next-line prettier/prettier
+    [query?.data, marketingSpentType],
   );
 
   console.log('shopDashBoard:', query.data?.data?.summary);

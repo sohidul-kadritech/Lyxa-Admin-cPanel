@@ -48,7 +48,7 @@ export default function Holiday({ holiday, onDelete, isEndOfList, onAnyChange })
           pb: 1,
         }}
       >
-        <FormControlLabel value="day" control={<Radio />} label="All day" />
+        <FormControlLabel value="day" control={<Radio />} label="Full Day Closed" />
         <FormControlLabel value="hours" control={<Radio />} label="Edit Hours" />
       </RadioGroup>
       <Button disableRipple variant="text" color="error" onClick={onDelete}>

@@ -21,9 +21,10 @@ const addressInit = {
   note: '',
 };
 
-function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, setLoading }) {
+// eslint-disable-next-line no-unused-vars
+function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSellerQuery, loading, setLoading }) {
   console.log('sellerData: ', sellerData);
-  const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData));
+  const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData, isEdit));
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
@@ -49,6 +50,7 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
         // eslint-disable-next-line prettier/prettier
       }),
     );
+
     setNewSellerData((prev) => ({
       ...prev,
       [photoType]: newFiles?.length > 0 ? newFiles : prev[photoType],
@@ -59,18 +61,15 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
     const { address_components, formatted_address } = address;
     const newAddress = { ...addressInit };
     let latlng;
-
     try {
       latlng = await getLatLng(address);
     } catch (error) {
       console.log(error);
     }
-
     newAddress.address = formatted_address;
     newAddress.latitude = latlng?.lat;
     newAddress.longitude = latlng?.lng;
     newAddress.placeId = placeId;
-
     address_components?.forEach((address_component) => {
       if (address_component?.types?.includes('country')) {
         newAddress.country = address_component?.long_name;
@@ -151,6 +150,7 @@ function AddSeller({ onClose, isEdit, sellerData = {}, addSellerQuery, loading, 
           //   readOnly: isReadOnly,
         }}
       />
+
       <StyledFormField
         label="Password *"
         intputType="text"

@@ -8,19 +8,20 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
-import ConfirmModal from '../../../../../components/Common/ConfirmModal';
-import StyledIconButton from '../../../../../components/Styled/StyledIconButton';
-import StyledSwitch from '../../../../../components/Styled/StyledSwitch';
-import StyledTable from '../../../../../components/Styled/StyledTable3';
-import StyledBox from '../../../../../components/StyledCharts/StyledBox';
-import { useGlobalContext } from '../../../../../context';
-import { successMsg } from '../../../../../helpers/successMsg';
-import * as Api from '../../../../../network/Api';
-import AXIOS from '../../../../../network/axios';
-import { couponShopTypeOptions } from './AddCoupon/helpers';
-import { getFormatedDuration } from './helpers';
+import ConfirmModal from '../../../components/Common/ConfirmModal';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
+import StyledIconButton from '../../../components/Styled/StyledIconButton';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import { couponShopTypeOptions } from '../AddCoupon/helpers';
+import { getFormatedDuration } from '../helpers';
 
-export default function CouponTable({ rows = [], onEdit, couponType }) {
+export default function CouponTable({ rows = [], onEdit, couponType, loading }) {
   const queryClient = useQueryClient();
   const history = useHistory();
   const theme = useTheme();
@@ -283,6 +284,8 @@ export default function CouponTable({ rows = [], onEdit, couponType }) {
       ),
     });
   }
+
+  if (loading) return <TableSkeleton rows={6} columns={['text', 'text', 'text', 'text', 'text', 'text']} />;
 
   return (
     <>

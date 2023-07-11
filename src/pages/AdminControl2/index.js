@@ -8,6 +8,7 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
+import AddSeller from '../Sellers2/AddSeller';
 import AddAdmin from './AddAdmin';
 import AddSellersForAccountManager from './AddSellersForAccountManager';
 import AdminTeamList from './AdminTeamList';
@@ -29,6 +30,8 @@ function AdminControl() {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
 
   const [currentAdmin, setCurrentAdmin] = useState(null);
+
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [openSellersModal, setOpenSellersModal] = useState(false);
@@ -43,6 +46,20 @@ function AdminControl() {
       // eslint-disable-next-line prettier/prettier
     }),
   );
+
+  const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setOpen(false);
+        successMsg(data.message, 'success');
+        // queryClient.invalidateQueries(API_URL.ALL_SELLER);
+        setLoading(false);
+      } else {
+        successMsg(data.message);
+        setLoading(false);
+      }
+    },
+  });
 
   const addAdminQuery = useMutation((data) => AXIOS.post(API_URL.ADD_ADMIN, data), {
     onSuccess: (data) => {
@@ -156,13 +173,25 @@ function AdminControl() {
       </Drawer>
 
       <Drawer open={openSellersModal} anchor="right">
-        <AddSellersForAccountManager
-          editAdminQuery={editAdminQuery}
-          currentAdmin={currentAdmin}
-          onClose={() => {
-            setOpenSellersModal(false);
-          }}
-        />
+        {adminType === 'accountManager' && (
+          <AddSellersForAccountManager
+            editAdminQuery={editAdminQuery}
+            currentAdmin={currentAdmin}
+            onClose={() => {
+              setOpenSellersModal(false);
+            }}
+          />
+        )}
+        {adminType === 'sales' && (
+          <AddSeller
+            addSellerQuery={addSellerQuery}
+            loading={loading}
+            setLoading={setLoading}
+            onClose={() => {
+              setOpenSellersModal(false);
+            }}
+          />
+        )}
       </Drawer>
     </Box>
   );

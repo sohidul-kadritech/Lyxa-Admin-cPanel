@@ -7,7 +7,7 @@ import CreditCards from './CreditCards';
 import LastOrders from './LastOrders';
 import Transactions from './Transactions';
 
-export default function UserProfile({ user }) {
+export default function UserDetails({ user }) {
   return (
     <Stack gap={5} pb={5}>
       <AccountInfomation user={user} />

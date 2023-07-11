@@ -1,13 +1,11 @@
 import moment from 'moment';
-import { dateRangeInit } from '../../../../../helpers/dateRangeInit';
+import { dateRangeInit } from '../../helpers/dateRangeInit';
 
 export const breadcrumbItems = [
   { label: 'Settings', to: '/settings' },
   { label: 'Marketing', to: '/settings/marketing' },
   { label: 'Coupons', to: '#' },
 ];
-
-export const tabValueToCouponTypeMap = { 0: 'global', 1: 'individual_store', 2: 'individual_user', 3: 'custom_coupon' };
 
 export const couponListTabOptions = [
   { label: 'Global', value: 'global' },
@@ -101,4 +99,24 @@ export const getFormatedDuration = (start, end) => {
   }
 
   return durationArr.join(' ');
+};
+
+export const createCouponOverviewRows = (data = {}) => {
+  const map = {
+    customCouponsInfo: 'Custom Coupon',
+    globalCouponsInfo: 'Global',
+    individualStoreCouponsInfo: 'Store/Category',
+    individualUserCouponsInfo: 'Individual User',
+  };
+
+  const rows = [];
+
+  Object.entries(data).forEach((pair, index) => {
+    if (map[pair[0]]) {
+      rows.push({ ...(pair[1] || {}), couponType: map[pair[0]], _id: index });
+    }
+  });
+
+  console.log(rows);
+  return rows;
 };

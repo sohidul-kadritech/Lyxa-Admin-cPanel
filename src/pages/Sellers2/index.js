@@ -6,6 +6,7 @@ import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -19,11 +20,19 @@ import SellersProfile from './SellersProfile';
 import { tabsOptions } from './helpers';
 
 function SellerList2() {
-  // eslint-disable-next-line no-unused-vars
   const routeMatch = useRouteMatch();
+
   const location = useLocation();
 
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
+  console.log('admin', admin, 'currentUser', currentUser);
+
   const [status, setStatus] = useState('all');
+
+  // eslint-disable-next-line no-unused-vars
 
   const [searchKey, setSearchKey] = useState('');
 
@@ -59,7 +68,17 @@ function SellerList2() {
   console.log('currentSeller:', currentSeller);
 
   const getAllSellersQuery = useQuery(
-    [API_URL.ALL_SELLER, { sellerStatus: status, searchKey, zoneId, sellerType: currentTab }],
+    [
+      API_URL.ALL_SELLER,
+      {
+        sellerStatus: status,
+        searchKey,
+        zoneId,
+        sellerType: currentTab,
+        createdBy: admin?.adminType === 'sales' ? admin?._id : '',
+        accountManagerId: admin?.adminType === 'accountManager' ? admin?._id : '',
+      },
+    ],
     () =>
       AXIOS.get(API_URL.ALL_SELLER, {
         params: {
@@ -67,6 +86,8 @@ function SellerList2() {
           searchKey,
           sellerType: currentTab,
           zoneId: zoneId === 'all' ? null : zoneId,
+          createdBy: admin?.adminType === 'sales' ? admin?._id : '',
+          accountManagerId: admin?.adminType === 'accountManager' ? admin?._id : '',
         },
       }),
     {
@@ -83,7 +104,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getSingleSellersQuery = useQuery(
@@ -103,7 +124,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -211,14 +232,16 @@ function SellerList2() {
             onChange: (e) => setZoneId(e.target.value),
           }}
         />
-        <AddMenuButton
-          onClick={() => {
-            setOpen(() => {
-              setIsEdit(false);
-              return true;
-            });
-          }}
-        />
+        {admin?.adminType !== 'accountManager' && (
+          <AddMenuButton
+            onClick={() => {
+              setOpen(() => {
+                setIsEdit(false);
+                return true;
+              });
+            }}
+          />
+        )}
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
@@ -282,14 +305,7 @@ function SellerList2() {
           isEdit={isEdit}
           setLoading={setLoading}
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
-          sellerData={
-            isEdit
-              ? currentSeller
-              : {
-                  sellerStatus: '',
-                  sellerType: '',
-                }
-          }
+          sellerData={currentSeller}
         />
       </Drawer>
 

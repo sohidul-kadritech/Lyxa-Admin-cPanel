@@ -1,9 +1,9 @@
 // project import
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import StyledTable from '../../../components/Styled/StyledTable3';
+import StyledTable from '../../Styled/StyledTable3';
 
-export default function FlagsTable({ rows = [] }) {
+export default function FlagsTable({ rows = [], onViewDetails = () => {} }) {
   const columns = [
     {
       id: 1,
@@ -25,7 +25,15 @@ export default function FlagsTable({ rows = [] }) {
       flex: 1,
       minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value?.orderId}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography
+          onClick={() => onViewDetails(value)}
+          sx={{ color: 'primary.main', cursor: 'pointer' }}
+          variant="body4"
+        >
+          {value?.orderId}
+        </Typography>
+      ),
     },
     {
       id: 3,

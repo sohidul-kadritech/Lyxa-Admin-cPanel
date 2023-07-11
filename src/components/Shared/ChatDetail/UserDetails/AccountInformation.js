@@ -8,7 +8,7 @@ function ListItem({ label, value, props }) {
         {label}
       </Typography>
       <Typography variant="inherit" fontWeight={500} fontSize="14px" lineHeight="16.94px">
-        {value}
+        {value || '_'}
       </Typography>
     </Stack>
   );
