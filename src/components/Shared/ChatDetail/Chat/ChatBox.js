@@ -14,9 +14,10 @@ export default function ChatBox({ messages, onSendMessage, message, setMessage, 
         height: '100%',
         border: '1px solid',
         borderColor: 'custom.border',
-        padding: '24px 15px 0',
-        minHeight: '800px',
+        padding: '0 15px',
         borderRadius: '8px',
+        maxHeight: 'calc(100vh - 200px)',
+        overflowY: 'auto',
       }}
     >
       {showInput && <PhraseBox open={open} setOpen={setOpen} />}

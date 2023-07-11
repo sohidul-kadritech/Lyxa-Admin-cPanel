@@ -26,6 +26,7 @@ const StyledMessageContainer = styled(Box)(() => ({
   '& .system-message-time': {
     textAlign: 'center',
     paddingBottom: '8px',
+    paddingTop: '20px',
     fontSize: '13px',
     color: '#737373',
     fontWeight: '500',
