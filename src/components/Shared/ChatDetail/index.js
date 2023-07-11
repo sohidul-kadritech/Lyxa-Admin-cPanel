@@ -104,7 +104,7 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
           value={currentTab}
           sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
         >
-          <Chat chat={chat} />
+          <Chat chat={chat} onClose={onClose} />
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />

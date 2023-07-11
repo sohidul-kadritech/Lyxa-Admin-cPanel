@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { Box, Stack } from '@mui/material';
 import { useState } from 'react';
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 import { PhraseBox } from './PhraseBox';
 
-export default function ChatBox({ messages, onSendMessage, message, setMessage, sendMessageLoading }) {
+export default function ChatBox({ messages, onSendMessage, message, setMessage, sendMessageLoading, showInput }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,18 +19,20 @@ export default function ChatBox({ messages, onSendMessage, message, setMessage, 
         borderRadius: '8px',
       }}
     >
-      <PhraseBox open={open} setOpen={setOpen} />
+      {showInput && <PhraseBox open={open} setOpen={setOpen} />}
       <Box sx={{ flex: 1 }}>
         <MessageList messages={messages} />
       </Box>
-      <MessageInput
-        sendMessageLoading={sendMessageLoading}
-        value={message}
-        setValue={setMessage}
-        onSendMessage={() => {
-          onSendMessage(message);
-        }}
-      />
+      {showInput && (
+        <MessageInput
+          sendMessageLoading={sendMessageLoading}
+          value={message}
+          setValue={setMessage}
+          onSendMessage={() => {
+            onSendMessage(message);
+          }}
+        />
+      )}
     </Stack>
   );
 }

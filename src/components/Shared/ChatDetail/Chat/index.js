@@ -2,7 +2,7 @@
 import { Button, Stack } from '@mui/material';
 
 import { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { successMsg } from '../../../../helpers/successMsg';
 import * as Api from '../../../../network/Api';
@@ -18,19 +18,23 @@ const getRequestId = (chats = []) => {
     : recentMsg?.adminChatRequest?._id;
 };
 
-export default function Chat({ chat }) {
+const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
+
+export default function Chat({ chat, onClose }) {
+  const queryClient = useQueryClient();
+
   const { socket } = useSelector((store) => store.socketReducer);
   const [requestId, setRequestId] = useState(getRequestId(chat?.chats));
+  const [orderId, setOrderId] = useState(getOrderId(chat));
 
   const [, setRender] = useState(false);
-  const [messages, setMessages] = useState(chat?.chats || []);
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
 
   // accept chat
   const acceptMutation = useMutation((data) => AXIOS.post(Api.ACCEPT_CHAT, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
-      console.log('data--', data);
       if (data?.status) {
         socket.emit('admin_accepted_chat_request', { requestId });
         chat.status = 'accepted';
@@ -44,9 +48,21 @@ export default function Chat({ chat }) {
     },
   });
 
-  const onAcceptChat = () => {
-    acceptMutation.mutate({ id: requestId });
+  // chat query
+  const setMessageData = (data) => {
+    if (data?.status) setMessages(data?.data?.chats || []);
   };
+
+  const chatQuery = useQuery(
+    [Api.SINGLE_CHAT, { orderId }],
+    () =>
+      AXIOS.get(Api.SINGLE_CHAT, {
+        params: { orderId },
+      }),
+    {
+      onSuccess: (data) => setMessageData(data),
+    }
+  );
 
   // message
   const messageMutation = useMutation((data) => AXIOS.post(Api.SEND_MESSAGE, data), {
@@ -67,8 +83,27 @@ export default function Chat({ chat }) {
     });
   };
 
+  // close chat
+  const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        socket.emit('chat-close', { requestId });
+        chat.status = 'closed';
+        onClose();
+      }
+    },
+
+    onError: (error) => {
+      successMsg(error?.message || 'Could not close chat request', 'error');
+      console.log(error);
+    },
+  });
+
   useEffect(() => {
+    setOrderId(getOrderId(chat));
     setRequestId(getRequestId(chat?.chats));
+    const cache = queryClient.getQueryData([Api.SINGLE_CHAT, { orderId: getOrderId(chat) }]);
+    setMessageData(cache);
   }, [chat]);
 
   return (
@@ -81,24 +116,37 @@ export default function Chat({ chat }) {
     >
       <ChatIssues chat={chat} />
       <ChatBox
+        showInput={chat.status === 'accepted'}
         sendMessageLoading={messageMutation.isLoading}
         messages={messages}
         message={message}
         setMessage={setMessage}
         onSendMessage={onSendMessage}
       />
-      <Stack gap={2.5}>
-        {chat?.status === 'pending' && (
-          <Button variant="contained" color="primary" onClick={onAcceptChat} disabled={acceptMutation.isLoading}>
-            Accept Enquiry
-          </Button>
-        )}
-        {chat?.status === 'accepted' && (
-          <Button variant="contained" color="primary">
-            Resolve Ticket
-          </Button>
-        )}
-      </Stack>
+      {chat?.status === 'pending' && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            acceptMutation.mutate({ id: requestId });
+          }}
+          disabled={acceptMutation.isLoading}
+        >
+          Accept Enquiry
+        </Button>
+      )}
+      {chat?.status === 'accepted' && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            closeChatMutation.mutate({ requestId });
+          }}
+          disabled={closeChatMutation.isLoading}
+        >
+          Resolve Ticket
+        </Button>
+      )}
     </Stack>
   );
 }
