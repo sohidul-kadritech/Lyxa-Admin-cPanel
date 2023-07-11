@@ -89,6 +89,13 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
               {selectedSeller?.company_name}
             </Typography>
           </ShopInfo>
+          {selectedSeller?.accountManager?.name && (
+            <ShopInfo title="Account Manager" sx={{ textTransform: 'capitalize' }} theme={theme}>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {selectedSeller?.accountManager?.name}
+              </Typography>
+            </ShopInfo>
+          )}
           <ShopInfo title="E-mail" theme={theme}>
             <Typography variant="body4">{selectedSeller?.email}</Typography>
           </ShopInfo>

@@ -54,6 +54,7 @@ function AdminControl() {
         successMsg(data.message, 'success');
         // queryClient.invalidateQueries(API_URL.ALL_SELLER);
         setLoading(false);
+        setOpenSellersModal(false);
       } else {
         successMsg(data.message);
         setLoading(false);
@@ -184,6 +185,8 @@ function AdminControl() {
         )}
         {adminType === 'sales' && (
           <AddSeller
+            name={currentAdmin?.name}
+            team={currentAdmin}
             addSellerQuery={addSellerQuery}
             loading={loading}
             setLoading={setLoading}

@@ -9,7 +9,7 @@ const getDeliveryFee = (selectedShop) => {
     selectedShop?.marketings?.length > 0
       ? selectedShop?.marketings?.find(
           // eslint-disable-next-line prettier/prettier
-          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive
+          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive,
         )
       : null;
   if (selectedShop.haveOwnDeliveryBoy && !isFreeDelivery) {
@@ -115,6 +115,13 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.name}
             </Typography>
           </ShopInfo>
+          {selectedShop?.accountManager?.name && (
+            <ShopInfo title="Account Manager" sx={{ textTransform: 'capitalize' }} theme={theme}>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {selectedShop?.accountManager?.name}
+              </Typography>
+            </ShopInfo>
+          )}
           <ShopInfo title="Shop Type" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.shopType}
