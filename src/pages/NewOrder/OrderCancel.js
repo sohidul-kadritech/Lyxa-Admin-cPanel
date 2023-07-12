@@ -54,7 +54,7 @@ const getOrderPayment = (currentOrder) => {
   };
 };
 
-function OrderCancel({ setOpenCancelModal, currentOrder }) {
+function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
   const [orderCancel, setOrderCancel] = useState(
     // eslint-disable-next-line prettier/prettier
     orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit)
@@ -82,10 +82,11 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
     onSuccess: (data) => {
       console.log('data response: ', data);
       if (data.status) {
+        if (onSuccess) onSuccess(data);
         successMsg(data.message, 'success');
         console.log('data status true');
         setOpenCancelModal(false);
-        queryClient.invalidateQueries(Api.ORDER_LIST);
+        queryClient.invalidateQueries(refetchApiKey);
       } else {
         successMsg(data.message, 'error');
       }
@@ -96,10 +97,11 @@ function OrderCancel({ setOpenCancelModal, currentOrder }) {
     onSuccess: (data) => {
       console.log('data response: ', data);
       if (data.success) {
+        if (onSuccess) onSuccess(data);
         successMsg(data.message, 'success');
         console.log('data status true');
         setOpenCancelModal(false);
-        queryClient.invalidateQueries(Api.ORDER_LIST);
+        queryClient.invalidateQueries(refetchApiKey);
       } else {
         successMsg(data.message, 'error');
       }

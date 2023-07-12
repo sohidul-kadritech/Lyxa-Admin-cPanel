@@ -8,7 +8,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { butlerFlagTypeOptions, orderFlagTypeOptions } from './helpers';
 
-export function UpdateFlag({ currentOrder, onClose }) {
+export function UpdateFlag({ currentOrder, onClose, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
   const [flagType, setFlagType] = useState([]);
 
   const [flagComment, setFlagComment] = useState('');
@@ -60,7 +60,9 @@ export function UpdateFlag({ currentOrder, onClose }) {
     {
       onSuccess: (data) => {
         if (data?.status) {
-          queryClient.invalidateQueries(Api.ORDER_LIST);
+          if (onSuccess) onSuccess(data);
+
+          queryClient.invalidateQueries(refetchApiKey);
           successMsg(data?.message, 'success');
           resetFlagModal();
         } else {
@@ -72,7 +74,7 @@ export function UpdateFlag({ currentOrder, onClose }) {
         console.log('api error: ', error);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addOrderFlag = () => {

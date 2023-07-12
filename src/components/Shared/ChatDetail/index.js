@@ -52,7 +52,7 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
             {chat?.user?.name?.charAt(0)}
           </Avatar>
           <Stack gap={0.5}>
-            <Typography variant="body4">{chat?.order?.user?.name}</Typography>
+            <Typography variant="body4">{chat?.user?.name}</Typography>
             <Typography variant="body4" color="#737373">
               {chat?.user?.orderCompleted} orders
             </Typography>
