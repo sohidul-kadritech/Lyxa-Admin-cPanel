@@ -4,7 +4,15 @@ import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 import { PhraseBox } from './PhraseBox';
 
-export default function ChatBox({ messages, onSendMessage, message, setMessage, sendMessageLoading, showInput }) {
+export default function ChatBox({
+  messages,
+  onSendMessage,
+  message,
+  setMessage,
+  sendMessageLoading,
+  showInput,
+  loading,
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -14,14 +22,24 @@ export default function ChatBox({ messages, onSendMessage, message, setMessage, 
         height: '100%',
         border: '1px solid',
         borderColor: 'custom.border',
-        padding: '24px 15px 0',
-        minHeight: '800px',
+        padding: '0 15px',
         borderRadius: '8px',
+        maxHeight: 'calc(100vh - 200px)',
+        overflowY: 'auto',
       }}
     >
-      {showInput && <PhraseBox open={open} setOpen={setOpen} />}
+      {showInput && (
+        <PhraseBox
+          open={open}
+          setOpen={setOpen}
+          onAdd={(selected) => {
+            setMessage(selected?.message);
+            setOpen(false);
+          }}
+        />
+      )}
       <Box sx={{ flex: 1 }}>
-        <MessageList messages={messages} />
+        <MessageList messages={messages} loading={loading} />
       </Box>
       {showInput && (
         <MessageInput

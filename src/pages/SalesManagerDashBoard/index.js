@@ -5,19 +5,14 @@ import { Box, Button, Drawer, Grid, Stack, Typography } from '@mui/material';
 // import Greeting from './Greeting';
 
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../context';
-import * as API_URL from '../../network/Api';
-import AXIOS from '../../network/axios';
 import { dateRangeInit } from '../Faq2/helpers';
 import EditAdminProfile from './EditAdminProfile';
-import Greeting from './Greeting';
 import Orders from './Orders';
+import SalesRanking from './SalesRanking';
 import SellersChart from './SellersChart';
-import SellersRanking from './SellersRanking';
-import { staticSellersData } from './SellersRanking/helpers';
 import ShopRanking from './ShopRanking';
-import { staticShopRanking } from './ShopRanking/helpers';
+import UserInfo from './UserInfo';
 
 function SalesManagerDashBoard() {
   const [open, setOpen] = useState(false);
@@ -26,14 +21,7 @@ function SalesManagerDashBoard() {
 
   const [range, setRange] = useState({ ...dateRangeInit });
 
-  const getSalesdashBoard = useQuery(
-    [API_URL.GET_SALES_DASHBOARD_SUMMARY, [{ startData: range.start, endDate: range.end }]],
-    () =>
-      // eslint-disable-next-line prettier/prettier
-      AXIOS.get(API_URL.GET_SALES_DASHBOARD_SUMMARY, { params: { startData: range.start, endDate: range.end } }),
-  );
-
-  console.log('dashboard data for sales: ', getSalesdashBoard?.data);
+  // console.log('dashboard data for sales: ', getSalesdashBoard?.data?.data);
   return (
     <Box pt={9} pb={12}>
       <Typography variant="h4" pb={14}>
@@ -41,7 +29,7 @@ function SalesManagerDashBoard() {
       </Typography>
       <Stack direction="row" width="100%">
         <Box flex={1}>
-          <Greeting />
+          <UserInfo />
         </Box>
         <Button
           disableRipple
@@ -75,10 +63,10 @@ function SalesManagerDashBoard() {
         </Grid>
       </Grid>
       <Box pt={7.5}>
-        <SellersRanking data={staticSellersData} />
+        <SalesRanking />
       </Box>
       <Box pt={7.5}>
-        <ShopRanking data={staticShopRanking} />
+        <ShopRanking />
       </Box>
 
       <Drawer anchor="right" open={open}>

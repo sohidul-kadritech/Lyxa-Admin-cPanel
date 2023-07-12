@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Button, Stack } from '@mui/material';
 
 import { useEffect, useState } from 'react';
@@ -20,7 +19,7 @@ const getRequestId = (chats = []) => {
 
 const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
 
-export default function Chat({ chat, onClose }) {
+export default function Chat({ chat, onClose, onAcceptChat }) {
   const queryClient = useQueryClient();
 
   const { socket } = useSelector((store) => store.socketReducer);
@@ -39,6 +38,7 @@ export default function Chat({ chat, onClose }) {
         socket.emit('admin_accepted_chat_request', { requestId });
         chat.status = 'accepted';
         setRender((prev) => !prev);
+        onAcceptChat(data);
       }
     },
 
@@ -53,7 +53,7 @@ export default function Chat({ chat, onClose }) {
     if (data?.status) setMessages(data?.data?.chats || []);
   };
 
-  const chatQuery = useQuery(
+  const query = useQuery(
     [Api.SINGLE_CHAT, { orderId }],
     () =>
       AXIOS.get(Api.SINGLE_CHAT, {
@@ -68,8 +68,9 @@ export default function Chat({ chat, onClose }) {
   const messageMutation = useMutation((data) => AXIOS.post(Api.SEND_MESSAGE, data), {
     onSuccess: (data) => {
       if (data?.status) {
-        setMessage('');
+        socket.emit('admin_message_sent', { room: requestId });
         setMessages((prev) => [...prev, data?.data?.request]);
+        setMessage('');
       }
     },
   });
@@ -84,12 +85,17 @@ export default function Chat({ chat, onClose }) {
   };
 
   // close chat
+  const afterCloseChat = (closedBy) => {
+    if (closedBy === 'admin') socket.emit('chat-close', { requestId });
+    chat.status = 'closed';
+    queryClient.invalidateQueries([Api.ONGOING_CHATS]);
+    onClose();
+  };
+
   const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, data), {
     onSuccess: (data) => {
       if (data?.status) {
-        socket.emit('chat-close', { requestId });
-        chat.status = 'closed';
-        onClose();
+        afterCloseChat('admin');
       }
     },
 
@@ -105,6 +111,21 @@ export default function Chat({ chat, onClose }) {
     const cache = queryClient.getQueryData([Api.SINGLE_CHAT, { orderId: getOrderId(chat) }]);
     setMessageData(cache);
   }, [chat]);
+
+  useEffect(() => {
+    if (requestId && socket) {
+      socket.on(`user_message_sent`, (data) => {
+        setMessage((prev) => [...prev, data]);
+      });
+
+      socket.on(`chat-close`, () => afterCloseChat());
+    }
+
+    return () => {
+      socket?.removeListener(`user_message_sent-${requestId}`);
+      socket?.removeListener(`chat-close-${requestId}`);
+    };
+  }, []);
 
   return (
     <Stack
@@ -122,6 +143,7 @@ export default function Chat({ chat, onClose }) {
         message={message}
         setMessage={setMessage}
         onSendMessage={onSendMessage}
+        loading={query?.isLoading}
       />
       {chat?.status === 'pending' && (
         <Button

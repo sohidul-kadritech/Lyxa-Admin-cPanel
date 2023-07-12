@@ -103,7 +103,7 @@ export const validateSellersData = (data, adminType, isEdit = false) => {
   return true;
 };
 
-export const createSellerData = async (sellerData, isEdit = false) => {
+export const createSellerData = async (sellerData, team, isEdit = false) => {
   // const shopLogo = await getImageUrl(shopData.shopLogo[0]);
   // const shopBanner = await getImageUrl(shopData.shopBanner[0]);
 
@@ -139,9 +139,6 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     };
   }
 
-  console.log('seller data : ', sellerData);
-  console.log('contract paper : ', sellerContractPaper);
-
   if (isEdit) {
     return {
       ...sellerData,
@@ -155,7 +152,7 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     };
   }
 
-  return {
+  const newData = {
     ...sellerData,
     profile_photo,
     certificate_of_incorporation,
@@ -163,6 +160,8 @@ export const createSellerData = async (sellerData, isEdit = false) => {
     sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
     sellerContractPaper,
   };
+
+  return team?.adminType === 'sales' && team?._id ? { ...newData, createdBy: team?._id } : { ...newData };
 };
 
 export const sellerTypeOption = [

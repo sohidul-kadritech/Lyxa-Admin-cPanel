@@ -48,12 +48,17 @@ function SellerList2() {
   const [loading, setLoading] = useState(false);
 
   const [currentSeller, setCurrentSeller] = useState({});
+
   const [zoneId, setZoneId] = useState('all');
+
   const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
+
   const [currentTab, setCurrentTab] = useState('all');
+
   const theme = useTheme();
 
   const queryClient = useQueryClient();
+
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE), {
     onSuccess: (data) => {
@@ -96,9 +101,12 @@ function SellerList2() {
           if (!routeMatch?.params?.sellerId) {
             const updatedCurrentSeller = data?.data?.sellers.find((seller) => currentSeller?._id === seller?._id);
             if (updatedCurrentSeller) {
-              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0]);
+              setCurrentSeller(
+                // eslint-disable-next-line prettier/prettier
+                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
+              );
             } else {
-              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0]);
+              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
             }
           }
         }

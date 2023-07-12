@@ -3,12 +3,13 @@ import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
+import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
-function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 2, loading = false }) {
+function ShopRankingTable({ data = [], queryParams, setQueryParams, loading = false }) {
   const history = useHistory();
   const { general } = useGlobalContext();
   const routeMatch = useRouteMatch();
@@ -26,7 +27,7 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
     },
 
     {
-      id: 3,
+      id: 2,
       headerName: 'Name',
       field: 'shopName',
       flex: 1.5,
@@ -34,14 +35,14 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="logo"
-          imgUrl={row?.profile_photo}
+          imgUrl={row?.shopLogo}
           imgStyle="circular"
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
               history?.push({
-                pathname: `/shop/list/${row?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Shop List' },
+                pathname: `/shop/profile/${row?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Sales Dashboard' },
               });
             },
           }}
@@ -51,24 +52,18 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
       ),
     },
     {
-      id: 4,
+      id: 3,
       sortable: false,
       headerName: 'SELLER',
-      // renderHeader: () => (
-      //   <CommonHeader title="ORDERS" filter="sortByOrders" queryParams={queryParams} refetch={refetch} />
-      // ),
-      field: 'seller',
+      field: 'sellerName',
       flex: 1,
-      renderCell: ({ value }) => <Typography variant="body4">{value?.name}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
       id: 4,
       sortable: false,
-      headerName: 'ITEM SOLD',
-      // renderHeader: () => (
-      //   <CommonHeader title="AVG.TIME" filter="sortByAvgTime" queryParams={queryParams} refetch={refetch} />
-      // ),
-      field: 'itemSold',
+      headerName: '# Orders',
+      field: 'totalOrder',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
@@ -88,8 +83,8 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
       headerName: `PROFIT`,
       field: 'totalProfit',
       flex: 1,
-      align: 'center',
-      headerAlign: 'center',
+      align: 'right',
+      headerAlign: 'right',
       renderCell: ({ value }) => (
         <Typography variant="body4">
           {currency?.symbol}
@@ -101,7 +96,7 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
 
   return (
     <Box>
-      {loading && <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />}
+      {loading && <TableSkeleton columns={['text', 'avatar', 'text', 'text', 'text', 'text']} rows={3} />}
       {!loading && (
         <>
           <Box
@@ -131,11 +126,11 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, totalPage = 
               }}
             />
           </Box>
-          {/* <TablePagination
-            currentPage={queryParams?.page}
-            lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
-            totalPage={totalPage}
-          /> */}
+          <TablePagination
+            currentPage={queryParams?.shopPage}
+            lisener={(shopPage) => setQueryParams((prev) => ({ ...prev, shopPage }))}
+            totalPage={queryParams?.totalPageShop}
+          />
         </>
       )}
     </Box>

@@ -3,6 +3,7 @@ import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg'
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import { useGlobalContext } from '../../context';
 import { getShopStatusColor } from '../ShopProfile/Info';
+import { getGreeting } from './helper';
 
 export default function Greeting() {
   const { currentUser } = useGlobalContext();
@@ -13,7 +14,7 @@ export default function Greeting() {
     <Box>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography variant="h3" fontSize={22} lineHeight="26px">
-          Good evening, {shop?.shopName}
+          {getGreeting()}, {shop?.shopName}
         </Typography>
         <Stack direction="row" alignItems="center" gap={2.5}>
           <Box
@@ -21,11 +22,11 @@ export default function Greeting() {
               width: '18px',
               height: '18px',
               borderRadius: '50%',
-              background: getShopStatusColor(shop),
+              background: getShopStatusColor(shop)?.color,
             }}
           />
           <Typography variant="body1" fontWeight={500}>
-            Store is {shop.liveStatus}
+            Store is {getShopStatusColor(shop)?.status}
           </Typography>
         </Stack>
       </Stack>

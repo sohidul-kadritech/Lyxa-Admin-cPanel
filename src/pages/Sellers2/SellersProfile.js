@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
@@ -20,9 +21,12 @@ import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import useAccessAsUser from '../../helpers/useAccessAsUser';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import AccountManagerInfo from '../ShopProfile/AccountManagerInfo';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
   return (
     <Box>
       <Stack direction="row" gap="25px" flexWrap="wrap">
@@ -44,9 +48,23 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                 >
                   {data?.company_name}
                 </Typography>
-                <Typography variant="body4" sx={{ fontWeight: '600 !important', color: theme?.palette?.primary.main }}>
-                  @account manager
-                </Typography>
+                {data?.accountManager?.name && (
+                  // <Typography
+                  //   variant="body4"
+                  //   onClick={() => {
+                  //     if (data?.accountManager?._id) {
+                  //       history.push({
+                  //         pathname: `/accountManager/${data?.accountManager._id}`,
+                  //         state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
+                  //       });
+                  //     }
+                  //   }}
+                  //   sx={{ fontWeight: '600 !important', cursor: 'pointer', color: theme?.palette?.primary.main }}
+                  // >
+                  //   {data?.accountManager?.name ? `@${data?.accountManager?.name} (Account Manager)` : ''}
+                  // </Typography>
+                  <AccountManagerInfo accountManager={data?.accountManager} />
+                )}
               </Stack>
               <Box>
                 <ThreeDotsMenu

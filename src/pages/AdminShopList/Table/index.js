@@ -103,7 +103,7 @@ export default function ShopListTable({
             sx={{
               width: '11px',
               height: '11px',
-              backgroundColor: getShopStatusColor(row),
+              backgroundColor: getShopStatusColor(row)?.color,
               borderRadius: '50%',
             }}
           />

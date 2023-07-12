@@ -7,7 +7,7 @@ export default function ChartBox({ dateRange, setDateRange, title, chartHeight, 
 
   return (
     <Grid {...props}>
-      <StyledBox padding loading={loading}>
+      <StyledBox sx={props?.sx} padding loading={loading}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
           <Typography variant="body1" fontWeight={600}>
             {title}
