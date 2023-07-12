@@ -27,7 +27,7 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, loading = fa
     },
 
     {
-      id: 3,
+      id: 2,
       headerName: 'Name',
       field: 'shopName',
       flex: 1.5,
@@ -52,10 +52,9 @@ function ShopRankingTable({ data = [], queryParams, setQueryParams, loading = fa
       ),
     },
     {
-      id: 4,
+      id: 3,
       sortable: false,
       headerName: 'SELLER',
-
       field: 'sellerName',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,

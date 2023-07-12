@@ -15,7 +15,9 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
 ];
 
-export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount }) {
+export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount, storeAppSettings }) {
+  const { exchangeRate, secondaryCurrency } = storeAppSettings;
+  console.log('exchangeRate', secondaryCurrency);
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(shopId));
 
@@ -88,6 +90,11 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
             },
           }}
         />
+        {secondaryCurrency?.symbol && (
+          <Typography mt="-8px" variant="body3" display="block">
+            Equivalent Price: {secondaryCurrency?.code} {data.amount * parseInt(exchangeRate, 10)}
+          </Typography>
+        )}
         <StyledFormField
           label="Description"
           intputType="textarea"

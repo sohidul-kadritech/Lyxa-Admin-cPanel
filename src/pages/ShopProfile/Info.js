@@ -25,6 +25,7 @@ export const getShopStatusColor = (shop) => {
   const color = { color: statusColor?.green, status: 'online' };
   console.log('shopStatus: ', shop?.shopStatus);
   console.log('shopLiveStatus: ', shop?.liveStatus);
+  console.log('isShopOpen: ', shop?.isShopOpen);
 
   if (shop?.shopStatus === 'inactive') {
     return { color: statusColor?.yellow, status: 'inactive' };
