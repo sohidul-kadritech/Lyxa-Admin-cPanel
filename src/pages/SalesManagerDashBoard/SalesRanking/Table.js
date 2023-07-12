@@ -65,8 +65,8 @@ function SalesRankingTable({ data = [], queryParams, setQueryParams, totalPage =
       headerName: '# SHOPS',
       field: 'totalShops',
       flex: 1,
-      align: 'center',
-      headerAlign: 'center',
+      align: 'right',
+      headerAlign: 'right',
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
   ];

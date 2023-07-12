@@ -38,12 +38,21 @@ export default function ShopTransactions({ shop }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [makePayment, setMakePayment] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
+  const [storeAppSettings, setStoreAppSettings] = useState({});
 
   const queryClient = useQueryClient();
 
   const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
     onSuccess: (data) => {
       setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+    },
+  });
+
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        setStoreAppSettings({ ...getAppSettingsData?.data?.data?.appSetting });
+      }
     },
   });
 
@@ -134,6 +143,7 @@ export default function ShopTransactions({ shop }) {
       >
         <AddRemoveCredit
           shopId={shop?._id}
+          storeAppSettings={storeAppSettings}
           dropAmount={summary?.totalDropGet}
           shopAmount={summary?.toalShopProfile}
           onClose={() => {
