@@ -15,8 +15,6 @@ export default function ChatBox({
 }) {
   const [open, setOpen] = useState(false);
 
-  console.log('message is loading', loading);
-
   return (
     <Stack
       position="relative"
@@ -30,7 +28,16 @@ export default function ChatBox({
         overflowY: 'auto',
       }}
     >
-      {showInput && <PhraseBox open={open} setOpen={setOpen} />}
+      {showInput && (
+        <PhraseBox
+          open={open}
+          setOpen={setOpen}
+          onAdd={(selected) => {
+            setMessage(selected?.message);
+            setOpen(false);
+          }}
+        />
+      )}
       <Box sx={{ flex: 1 }}>
         <MessageList messages={messages} loading={loading} />
       </Box>
