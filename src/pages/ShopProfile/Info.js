@@ -11,6 +11,7 @@ import Rating from '../../components/Common/Rating';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
+import AccountManagerInfo from './AccountManagerInfo';
 import { TagsAndCuisines, menuOtions } from './helper';
 
 export const statusColor = {
@@ -25,6 +26,7 @@ export const getShopStatusColor = (shop) => {
   const color = { color: statusColor?.green, status: 'online' };
   console.log('shopStatus: ', shop?.shopStatus);
   console.log('shopLiveStatus: ', shop?.liveStatus);
+  console.log('isShopOpen: ', shop?.isShopOpen);
 
   if (shop?.shopStatus === 'inactive') {
     return { color: statusColor?.yellow, status: 'inactive' };
@@ -38,9 +40,9 @@ export const getShopStatusColor = (shop) => {
     return { color: statusColor?.black, status: 'closed' };
   }
 
-  // if (!shop?.isShopOpen) {
-  //   return { color: statusColor?.black, status: 'closed' };
-  // }
+  if (!shop?.isShopOpen) {
+    return { color: statusColor?.black, status: 'closed' };
+  }
 
   return color;
 };
@@ -50,6 +52,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const currency = general?.currency;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
+  // eslint-disable-next-line no-unused-vars
   const history = useHistory();
 
   return (
@@ -95,29 +98,9 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
-            <Box>
-              {shop?.accountManager?.name && (
-                <Typography
-                  onClick={() => {
-                    if (shop?.accountManager?._id) {
-                      history.push({
-                        pathname: `/accountManager/${shop?.accountManager._id}`,
-                        state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
-                      });
-                    }
-                  }}
-                  sx={{
-                    color: 'primary.main',
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    marginLeft: '8px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {shop?.accountManager?.name ? `@${shop?.accountManager?.name} (Account Manager)` : ''}
-                </Typography>
-              )}
-            </Box>
+            <Stack alignItems="center" alignContent="center" justifyContent="center" direction="row">
+              {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
+            </Stack>
             <Box>
               <ThreeDotsMenu
                 menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}

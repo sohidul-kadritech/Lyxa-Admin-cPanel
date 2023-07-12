@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
@@ -20,6 +21,7 @@ import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import useAccessAsUser from '../../helpers/useAccessAsUser';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import AccountManagerInfo from '../ShopProfile/AccountManagerInfo';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
@@ -47,20 +49,21 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                   {data?.company_name}
                 </Typography>
                 {data?.accountManager?.name && (
-                  <Typography
-                    variant="body4"
-                    onClick={() => {
-                      if (data?.accountManager?._id) {
-                        history.push({
-                          pathname: `/accountManager/${data?.accountManager._id}`,
-                          state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
-                        });
-                      }
-                    }}
-                    sx={{ fontWeight: '600 !important', cursor: 'pointer', color: theme?.palette?.primary.main }}
-                  >
-                    {data?.accountManager?.name ? `@${data?.accountManager?.name} (Account Manager)` : ''}
-                  </Typography>
+                  // <Typography
+                  //   variant="body4"
+                  //   onClick={() => {
+                  //     if (data?.accountManager?._id) {
+                  //       history.push({
+                  //         pathname: `/accountManager/${data?.accountManager._id}`,
+                  //         state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
+                  //       });
+                  //     }
+                  //   }}
+                  //   sx={{ fontWeight: '600 !important', cursor: 'pointer', color: theme?.palette?.primary.main }}
+                  // >
+                  //   {data?.accountManager?.name ? `@${data?.accountManager?.name} (Account Manager)` : ''}
+                  // </Typography>
+                  <AccountManagerInfo accountManager={data?.accountManager} />
                 )}
               </Stack>
               <Box>

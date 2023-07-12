@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
-import { mockAddress, mockCoupons, mockTransactions } from '../../../../pages/OngoingTickets/mock';
-import AccountInfomation from './AccountInformation';
+import { mockTransactions } from '../../../../pages/OngoingTickets/mock';
+import AccountInformation from './AccountInformation';
 import Address from './Address';
 import Coupons from './Coupon';
 import CreditCards from './CreditCards';
@@ -8,12 +8,14 @@ import LastOrders from './LastOrders';
 import Transactions from './Transactions';
 
 export default function UserDetails({ user }) {
+  console.log('chat-user', user);
+
   return (
     <Stack gap={5} pb={5}>
-      <AccountInfomation user={user} />
-      <CreditCards user={user} />
-      <Address addressList={mockAddress} />
-      <Coupons coupons={mockCoupons} />
+      <AccountInformation user={user} />
+      <CreditCards cards={user?.cards} />
+      <Address addressList={user?.address} />
+      <Coupons coupons={user?.coupons} />
       <Transactions transactions={mockTransactions} />
       <LastOrders />
       <Stack direction="row" gap={5} pt={2.5}>

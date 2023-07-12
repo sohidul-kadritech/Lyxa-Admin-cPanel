@@ -14,6 +14,7 @@ const StyledMessageContainer = styled(Box)(() => ({
     padding: '8px 16px',
     borderRadius: '8px',
     border: '1px solid #e0e0e0',
+    maxWidth: 'calc(100% - 50px)',
   },
 
   '& .message-text': {
@@ -21,6 +22,8 @@ const StyledMessageContainer = styled(Box)(() => ({
     color: '#737373',
     fontWeight: '500',
     paddingBottom: '4px',
+    maxWidth: '100%',
+    wordWrap: 'break-word',
   },
 
   '& .system-message-time': {

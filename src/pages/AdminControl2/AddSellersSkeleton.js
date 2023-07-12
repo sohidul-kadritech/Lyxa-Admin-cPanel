@@ -5,8 +5,10 @@ function Row() {
   return (
     <Stack direction="row" alignItems="center" gap={3}>
       <Skeleton width="36px" height="36px" sx={{ borderRadius: '50%' }} />
-      <Skeleton width="90%" height="20px" />
-      <Skeleton width="10%" height="20px" />
+      <Stack direction="row" flex={1} alignItems="center" gap={3}>
+        <Skeleton flex={1} width="100%" height="20px" />
+        <Skeleton width="20px" height="20px" />
+      </Stack>
     </Stack>
   );
 }

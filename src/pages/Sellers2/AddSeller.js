@@ -125,10 +125,28 @@ function AddSeller({
   };
 
   return (
+    // <SidebarContainer
+    // eslint-disable-next-line max-len
+    //   title={`${isEdit ? `Edit Seller${name ? ` (for ${name})` : ''}` : `Add Seller${name ? ` (for ${name})` : ''}`}`}
+    //   onClose={onClose}
+    // >
+
     <SidebarContainer
-      title={`${
-        isEdit ? `Edit Seller${name ? ` (for ${name})` : ''}` : `Add New Seller${name ? ` (for ${name})` : ''}`
-      }`}
+      title={
+        <Stack>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: '19px',
+              lineHeight: '23px',
+            }}
+          >
+            {isEdit ? `Edit Seller` : `Add Seller`}
+          </Typography>
+          {name && <Typography variant="body3"> For {name} (Sales Manager)</Typography>}
+        </Stack>
+      }
       onClose={onClose}
     >
       <StyledFormField
