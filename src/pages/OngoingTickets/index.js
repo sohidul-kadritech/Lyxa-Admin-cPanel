@@ -8,7 +8,7 @@ import ChatDetails from '../../components/Shared/ChatDetail';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import ChatsList from './ChatsList';
+import ChatsList from './ChatList';
 import SlideInContainer from './SlideInContainer';
 import { order } from './mock';
 
