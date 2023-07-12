@@ -4,8 +4,18 @@ import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 import { PhraseBox } from './PhraseBox';
 
-export default function ChatBox({ messages, onSendMessage, message, setMessage, sendMessageLoading, showInput }) {
+export default function ChatBox({
+  messages,
+  onSendMessage,
+  message,
+  setMessage,
+  sendMessageLoading,
+  showInput,
+  loading,
+}) {
   const [open, setOpen] = useState(false);
+
+  console.log('message is loading', loading);
 
   return (
     <Stack
@@ -22,7 +32,7 @@ export default function ChatBox({ messages, onSendMessage, message, setMessage, 
     >
       {showInput && <PhraseBox open={open} setOpen={setOpen} />}
       <Box sx={{ flex: 1 }}>
-        <MessageList messages={messages} />
+        <MessageList messages={messages} loading={loading} />
       </Box>
       {showInput && (
         <MessageInput

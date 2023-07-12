@@ -52,7 +52,7 @@ export default function Chat({ chat, onClose }) {
     if (data?.status) setMessages(data?.data?.chats || []);
   };
 
-  useQuery(
+  const query = useQuery(
     [Api.SINGLE_CHAT, { orderId }],
     () =>
       AXIOS.get(Api.SINGLE_CHAT, {
@@ -142,6 +142,7 @@ export default function Chat({ chat, onClose }) {
         message={message}
         setMessage={setMessage}
         onSendMessage={onSendMessage}
+        loading={query?.isLoading}
       />
       {chat?.status === 'pending' && (
         <Button

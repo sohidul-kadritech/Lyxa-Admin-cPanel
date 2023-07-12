@@ -1,6 +1,6 @@
 import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
 import moment from 'moment';
-import user2 from '../../../../assets/images/user2.png';
+import user2 from '../../../../../assets/images/user2.png';
 
 const StyledMessageContainer = styled(Box)(() => ({
   '& .message-container': {
@@ -66,7 +66,7 @@ const StyledMessageContainer = styled(Box)(() => ({
   },
 }));
 
-function MessageItem({ message }) {
+export default function MessageItem({ message }) {
   let imgUrl = user2;
   let imgFallbackCharacter = 'Cs';
 
@@ -98,15 +98,5 @@ function MessageItem({ message }) {
         </Box>
       </Stack>
     </StyledMessageContainer>
-  );
-}
-
-export default function MessageList({ messages }) {
-  return (
-    <Stack gap={2}>
-      {messages?.map((message, index) => (
-        <MessageItem key={index} message={message} />
-      ))}
-    </Stack>
   );
 }

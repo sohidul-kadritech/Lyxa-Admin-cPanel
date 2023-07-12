@@ -1,8 +1,8 @@
 /* eslint-disable import/no-named-as-default */
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Stack } from '@mui/material';
-import StyledFormField from '../../../Form/StyledFormField';
-import StyledIconButton from '../../../Styled/StyledIconButton';
+import StyledFormField from '../../../../Form/StyledFormField';
+import StyledIconButton from '../../../../Styled/StyledIconButton';
 
 export default function MessageInput({ onSendMessage, value, setValue, sendMessageLoading }) {
   return (

@@ -1,7 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Stack } from '@mui/material';
-import { mockPhrases } from '../../../../pages/OngoingTickets/mock';
-import StyledChip from '../../../Styled/StyledChips';
+import { mockPhrases } from '../../../../../pages/OngoingTickets/mock';
+import StyledChip from '../../../../Styled/StyledChips';
 
 export function PhraseBox({ open, setOpen }) {
   return (
@@ -37,8 +37,6 @@ export function PhraseBox({ open, setOpen }) {
         </Stack>
         <Box
           className={open ? 'open' : ''}
-          // pl={3}
-          // pr={3}
           sx={{
             position: 'absolute',
             width: '100%',

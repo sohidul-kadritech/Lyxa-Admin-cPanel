@@ -31,7 +31,7 @@ const staticSx = {
 export default function SlideInContainer({ type, open, children, ...props }) {
   return (
     <Box sx={type === 'dynamic' ? dynamicSx : staticSx} className={open ? 'sidebar-open' : ''} {...props}>
-      {children}
+      {type === 'dynamic' && !open ? null : children}
     </Box>
   );
 }
