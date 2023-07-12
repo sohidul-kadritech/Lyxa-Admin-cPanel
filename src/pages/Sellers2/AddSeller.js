@@ -22,8 +22,17 @@ const addressInit = {
 };
 
 // eslint-disable-next-line no-unused-vars
-function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSellerQuery, loading, setLoading }) {
-  console.log('sellerData: ', sellerData);
+function AddSeller({
+  onClose,
+  isEdit = false,
+  team = {},
+  sellerData = {},
+  addSellerQuery,
+  loading,
+  setLoading,
+  name = '',
+}) {
+  console.log('team: ', team);
   const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData, isEdit));
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
@@ -102,16 +111,13 @@ function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSel
 
   const onSubmitSeller = async () => {
     const isValid = validateSellersData(newSellerData, adminType, isEdit);
-    console.log(isValid);
     if (isValid) {
-      const generatedData = await createSellerData(newSellerData, isEdit);
+      const generatedData = await createSellerData(newSellerData, team, isEdit);
 
       if (generatedData?.status !== false) {
-        console.log('generatedData: ', generatedData);
         addSellerQuery.mutate(generatedData);
       }
     } else {
-      console.log('not valid');
       setTimeout(() => {
         setLoading(false);
       }, 200);
@@ -119,7 +125,12 @@ function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSel
   };
 
   return (
-    <SidebarContainer title={`${isEdit ? 'Edit Seller' : 'Add New Seller'}`} onClose={onClose}>
+    <SidebarContainer
+      title={`${
+        isEdit ? `Edit Seller${name ? ` (for ${name})` : ''}` : `Add New Seller${name ? ` (for ${name})` : ''}`
+      }`}
+      onClose={onClose}
+    >
       <StyledFormField
         label="Seller Name *"
         intputType="text"

@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useGlobalContext } from '../../context';
+import { useGlobalContext } from '../../../context';
 
 function getChatCreatedAtTime(date) {
   const today = moment().startOf('day');
@@ -19,7 +19,7 @@ function getChatCreatedAtTime(date) {
   return `Today ${moment(date).format('hh:mm:a')}`;
 }
 
-function ChatItem({ chat, onViewDetails }) {
+export default function ChatItem({ chat, onViewDetails }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -86,30 +86,6 @@ function ChatItem({ chat, onViewDetails }) {
           {getChatCreatedAtTime(chat?.createdAt)}
         </Typography>
       </Stack>
-    </Stack>
-  );
-}
-
-export default function ChatsList({ onViewDetails, chats, loading }) {
-  if (loading)
-    return (
-      <Typography variant="body4" fontWeight={400}>
-        ...Loading
-      </Typography>
-    );
-
-  if (!loading && !chats?.length)
-    return (
-      <Typography variant="body4" fontWeight={400}>
-        No chats
-      </Typography>
-    );
-
-  return (
-    <Stack gap={5} pb={9}>
-      {chats?.map((chat) => (
-        <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} />
-      ))}
     </Stack>
   );
 }

@@ -12,9 +12,6 @@ import SellerListForAccountManager from './SellerListForAccountManager';
 import { generateAsignData, getSellersForAccountManager, tabOptionsIndex } from './helpers';
 
 function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) {
-  console.log('currentAdmin', currentAdmin);
-  console.log('currentAdmin?.sellers', currentAdmin?.sellers);
-
   const [status, setStatus] = useState('all');
   const [searchKey, setSearchKey] = useState('');
   const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
@@ -60,7 +57,6 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
 
   const asignSeller = () => {
     const data = { currentAdmin, sellers };
-    generateAsignData(data);
     if (generateAsignData(data)) {
       editAdminQuery.mutate(generateAsignData(data));
     }

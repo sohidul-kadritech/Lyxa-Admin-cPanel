@@ -29,7 +29,8 @@ export default function ShopList() {
       onSuccess: (data) => {
         console.log(data);
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const column = [
@@ -54,7 +55,7 @@ export default function ShopList() {
             sx={{
               width: '11px',
               height: '11px',
-              backgroundColor: getShopStatusColor(row),
+              backgroundColor: getShopStatusColor(row)?.color,
               borderRadius: '50%',
             }}
           />

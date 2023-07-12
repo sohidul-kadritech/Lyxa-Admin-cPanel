@@ -28,7 +28,8 @@ export const ADMIN_DASHBOARD_USERS_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/us
 
 export const ADMIN_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/graph/orders`;
 export const ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
-export const SALES_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/account-manager/graph/orders`;
+export const SALES_MANAGER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/sales/graph/orders`;
+export const SALES_MANAGER_DASHBOARD_SALES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/sales/graph/sellers`;
 export const SELLER_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/dashboard/seller/graph/orders`;
 export const SELLER_DASHBOARD_SHOP_LIST = `${ADMIN_ENDPOINT}/dashboard/seller/shop-list`;
 

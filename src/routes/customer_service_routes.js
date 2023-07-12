@@ -67,5 +67,5 @@ export const customer_service_routes = [
   },
   { path: `/customer-support/details/:id`, component: ChatDetails },
   // this route should be at the end of all other routes
-  { path: `/`, exact: true, component: () => <Redirect to="/orders/list" /> },
+  { path: `/`, exact: true, component: () => <Redirect to="/ongoing-tickets" /> },
 ];

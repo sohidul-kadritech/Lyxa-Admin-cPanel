@@ -11,7 +11,7 @@ const dateRangeItit = {
   start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
 };
 
-export default function CommonAreaChart({ title, generateData, api, params }) {
+export default function CommonAreaChart({ title, generateData, api, params, sx }) {
   const [range, setRange] = useState({ ...dateRangeItit });
   console.log(params);
 
@@ -35,7 +35,8 @@ export default function CommonAreaChart({ title, generateData, api, params }) {
           type: 'normal',
           ...params,
         },
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
   );
 
   const data = generateData(query?.data);
@@ -61,6 +62,7 @@ export default function CommonAreaChart({ title, generateData, api, params }) {
       dateRange={range}
       setDateRange={setRange}
       title={title}
+      sx={sx}
       sm={12}
     >
       <StyledAreaChart data={chartData} />

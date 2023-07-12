@@ -8,7 +8,7 @@ const dynamicSx = {
   top: 0,
   background: '#fff',
   right: '0',
-  width: 'calc(calc(100vw / 10) * 3)',
+  width: '500px',
   zIndex: '99',
   transform: 'translateX(100%)',
   transition: '200ms ease-in-out',
@@ -22,7 +22,8 @@ const dynamicSx = {
 
 const staticSx = {
   '&.sidebar-open': {
-    paddingRight: 'calc(calc(100vw / 10) * 3)',
+    // paddingRight: 'calc(calc(100vw / 10) * 3)',
+    paddingRight: '500px',
     transition: '200ms ease-in-out',
   },
 };
@@ -30,7 +31,7 @@ const staticSx = {
 export default function SlideInContainer({ type, open, children, ...props }) {
   return (
     <Box sx={type === 'dynamic' ? dynamicSx : staticSx} className={open ? 'sidebar-open' : ''} {...props}>
-      {children}
+      {type === 'dynamic' && !open ? null : children}
     </Box>
   );
 }
