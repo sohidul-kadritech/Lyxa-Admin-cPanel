@@ -3,19 +3,24 @@ import Typography from '@mui/material/Typography';
 import { ReactComponent as CreditCard } from '../../../../assets/icons/credit-cart-colored.svg';
 import { StyledProfileBox } from './helpers';
 
-export default function CreditCards({ user }) {
+// "2950"
+export default function CreditCards({ cards = [] }) {
   return (
     <StyledProfileBox title="Credit Cards">
-      <Stack direction="row" gap={3} alignItems="center">
-        <CreditCard />
-        <Stack>
-          <Typography variant="inherit" fontWeight={500} fontSize="14px" lineHeight="16.94px">
-            {user?.name}
-          </Typography>
-          <Typography variant="inherit" fontWeight={400} fontSize="14px" lineHeight="16.94px">
-            ***7896
-          </Typography>
-        </Stack>
+      <Stack gap={2}>
+        {cards?.map((card) => (
+          <Stack direction="row" gap={3} alignItems="center" key={card?._id}>
+            <CreditCard />
+            <Stack>
+              <Typography variant="inherit" fontWeight={500} fontSize="14px" lineHeight="16.94px">
+                {card?.nameOfCard}
+              </Typography>
+              <Typography variant="inherit" fontWeight={400} fontSize="14px" lineHeight="16.94px">
+                {new Array(12).fill('*').concat(card?.card_number?.slice(-4)).join('')}
+              </Typography>
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     </StyledProfileBox>
   );

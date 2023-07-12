@@ -7,8 +7,8 @@ export default function ChatsList({ onViewDetails, chats, loading }) {
 
   if (!loading && !chats?.length)
     return (
-      <Typography variant="body4" fontWeight={400}>
-        No chats
+      <Typography variant="inherit" fontSize="17px" color="text.secondary2">
+        No chats found
       </Typography>
     );
 

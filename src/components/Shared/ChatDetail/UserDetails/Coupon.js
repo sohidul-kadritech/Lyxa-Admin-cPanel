@@ -1,7 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material';
+import moment from 'moment';
+import { useGlobalContext } from '../../../../context';
 import { StyledProfileBox } from './helpers';
 
 function CouponItem({ coupon, isFirst, isLast }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+
   return (
     <Stack
       className={`${isFirst ? 'first' : ''} ${isLast ? 'last' : ''}`}
@@ -22,10 +27,12 @@ function CouponItem({ coupon, isFirst, isLast }) {
     >
       <Stack direction="row" alignItems="center" justifyContent="space-between" pb={4}>
         <Typography variant="inherit" fontSize="13px" lineHeight="15px" fontWeight={600}>
-          {coupon?.title}
+          Get {coupon?.couponDiscountType === 'fixed' ? currency : ''}
+          {coupon?.couponValue}
+          {coupon?.couponDiscountType === 'percentage' ? '%' : ''} off your order {coupon?.couponCondition}
         </Typography>
         <Typography variant="inherit" fontSize="12px" lineHeight="15px" fontWeight={400}>
-          {coupon?.date}
+          {moment(coupon?.createdAt).format('ddd DD, MMM, YYYY')}
         </Typography>
       </Stack>
       <Box
@@ -39,13 +46,13 @@ function CouponItem({ coupon, isFirst, isLast }) {
           background: '#F5F5F5',
         }}
       >
-        {coupon?.code}
+        {coupon?.couponName}
       </Box>
     </Stack>
   );
 }
 
-export default function Coupons({ coupons }) {
+export default function Coupons({ coupons = [] }) {
   return (
     <StyledProfileBox title="Coupons">
       {coupons?.map((coupon, index, { length }) => (
