@@ -6,7 +6,7 @@ function AddressItem({ address, isFirst, isLast }) {
     <Stack
       className={`${isFirst ? 'first' : ''} ${isLast ? 'last' : ''}`}
       sx={{
-        paddingTop: '20px',
+        paddingTop: '11px',
         paddingBottom: '11px',
         borderBottom: '1px solid',
         borderBottomColor: 'custom.border',
@@ -21,9 +21,11 @@ function AddressItem({ address, isFirst, isLast }) {
         },
       }}
     >
-      <Typography variant="inherit" fontSize={13} lineHeight="20px" fontWeight={500}>
-        {address?.type}
-      </Typography>
+      {address?.primary && (
+        <Typography variant="inherit" fontSize={13} lineHeight="20px" fontWeight={500}>
+          Home
+        </Typography>
+      )}
       <Typography variant="inherit" fontSize={11} lineHeight="22px" fontWeight={400}>
         {address?.address}
       </Typography>
@@ -31,7 +33,7 @@ function AddressItem({ address, isFirst, isLast }) {
   );
 }
 
-export default function Address({ addressList }) {
+export default function Address({ addressList = [] }) {
   return (
     <StyledProfileBox title="Addresses">
       <Stack>

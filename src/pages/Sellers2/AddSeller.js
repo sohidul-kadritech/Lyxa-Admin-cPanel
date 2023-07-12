@@ -22,8 +22,17 @@ const addressInit = {
 };
 
 // eslint-disable-next-line no-unused-vars
-function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSellerQuery, loading, setLoading }) {
-  console.log('sellerData: ', sellerData);
+function AddSeller({
+  onClose,
+  isEdit = false,
+  team = {},
+  sellerData = {},
+  addSellerQuery,
+  loading,
+  setLoading,
+  name = '',
+}) {
+  console.log('team: ', team);
   const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData, isEdit));
 
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
@@ -102,16 +111,13 @@ function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSel
 
   const onSubmitSeller = async () => {
     const isValid = validateSellersData(newSellerData, adminType, isEdit);
-    console.log(isValid);
     if (isValid) {
-      const generatedData = await createSellerData(newSellerData, isEdit);
+      const generatedData = await createSellerData(newSellerData, team, isEdit);
 
       if (generatedData?.status !== false) {
-        console.log('generatedData: ', generatedData);
         addSellerQuery.mutate(generatedData);
       }
     } else {
-      console.log('not valid');
       setTimeout(() => {
         setLoading(false);
       }, 200);
@@ -119,7 +125,30 @@ function AddSeller({ onClose, isEdit = false, team = {}, sellerData = {}, addSel
   };
 
   return (
-    <SidebarContainer title={`${isEdit ? 'Edit Seller' : 'Add New Seller'}`} onClose={onClose}>
+    // <SidebarContainer
+    // eslint-disable-next-line max-len
+    //   title={`${isEdit ? `Edit Seller${name ? ` (for ${name})` : ''}` : `Add Seller${name ? ` (for ${name})` : ''}`}`}
+    //   onClose={onClose}
+    // >
+
+    <SidebarContainer
+      title={
+        <Stack>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: '19px',
+              lineHeight: '23px',
+            }}
+          >
+            {isEdit ? `Edit Seller` : `Add Seller`}
+          </Typography>
+          {name && <Typography variant="body3"> For {name} (Sales Manager)</Typography>}
+        </Stack>
+      }
+      onClose={onClose}
+    >
       <StyledFormField
         label="Seller Name *"
         intputType="text"

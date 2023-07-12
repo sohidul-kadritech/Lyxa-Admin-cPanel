@@ -38,7 +38,6 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
     routes = admin_routes;
     menuItems = admin_menu_items;
   }
-  console.log('userType', userType, adminType);
   if (userType === 'admin' && adminType === 'accountManager') {
     routes = account_manager_routes;
     menuItems = account_manager_menu_items;
@@ -66,10 +65,10 @@ export default function Layout() {
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
         // eslint-disable-next-line prettier/prettier
-        currentUser?.shop?.shopType,
+        currentUser?.shop?.shopType
       ),
     // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType],
+    [currentUser?.userType]
   );
 
   // const location = useLocation();

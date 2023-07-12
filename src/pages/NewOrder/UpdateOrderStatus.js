@@ -83,7 +83,7 @@ const updateOrderStatusOptions = (currentOrder) => {
   return list;
 };
 
-export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey = Api.ORDER_LIST }) {
+export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
   const theme = useTheme();
   const { socket } = useSelector((state) => state.socketReducer);
 
@@ -134,6 +134,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, refetchApiKey
 
         if (data.status) {
           queryClient.invalidateQueries(refetchApiKey);
+          if (onSuccess) onSuccess(data);
 
           // emit socket
           if (config.service === 'regular') {
