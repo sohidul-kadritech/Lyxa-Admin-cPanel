@@ -27,7 +27,7 @@ const showingForToTabValuesMap = {
   },
 };
 
-export default function ChatDetails({ chat, onClose, showingFor }) {
+export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = () => {} }) {
   const [currentTab, setCurrentTab] = useState(0);
 
   console.log('chat', chat);
@@ -104,7 +104,7 @@ export default function ChatDetails({ chat, onClose, showingFor }) {
           value={currentTab}
           sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
         >
-          <Chat chat={chat} onClose={onClose} />
+          <Chat chat={chat} onClose={onClose} onAcceptChat={onAcceptChat} />
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />

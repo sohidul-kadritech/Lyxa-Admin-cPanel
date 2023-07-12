@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -10,7 +9,6 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import ChatsList from './ChatList';
 import SlideInContainer from './SlideInContainer';
-import { order } from './mock';
 
 const queryParamsInit = {
   page: 1,
@@ -23,10 +21,10 @@ const tabValueToChatTypeMap = { 0: 'order', 1: 'account' };
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
-  const chat = { order };
 
   const [currentTab, setCurrentTab] = useState(0);
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const [, setRender] = useState(false);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
@@ -101,7 +99,12 @@ export default function OngoingTickets() {
         </SlideInContainer>
       </Box>
       <SlideInContainer type="dynamic" open={sidebarOpen}>
-        <ChatDetails showingFor="ongoing" chat={selectedChat} onClose={() => setSidebarOpen(false)} />
+        <ChatDetails
+          showingFor="ongoing"
+          chat={selectedChat}
+          onClose={() => setSidebarOpen(false)}
+          onAcceptChat={() => setRender((prev) => !prev)}
+        />
       </SlideInContainer>
     </Box>
   );

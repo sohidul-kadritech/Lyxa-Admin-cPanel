@@ -19,7 +19,7 @@ const getRequestId = (chats = []) => {
 
 const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
 
-export default function Chat({ chat, onClose }) {
+export default function Chat({ chat, onClose, onAcceptChat }) {
   const queryClient = useQueryClient();
 
   const { socket } = useSelector((store) => store.socketReducer);
@@ -38,6 +38,7 @@ export default function Chat({ chat, onClose }) {
         socket.emit('admin_accepted_chat_request', { requestId });
         chat.status = 'accepted';
         setRender((prev) => !prev);
+        onAcceptChat(data);
       }
     },
 
