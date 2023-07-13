@@ -187,7 +187,7 @@ export default function OngoingTickets() {
         </Box>
         <SlideInContainer type="dynamic" open={sidebarOpen}>
           <ChatDetails
-            showingFor="ongoing"
+            showingFor={selectedChat?.chatType}
             chat={selectedChat}
             onClose={() => setSidebarOpen(false)}
             onAcceptChat={() => setRender((prev) => !prev)}

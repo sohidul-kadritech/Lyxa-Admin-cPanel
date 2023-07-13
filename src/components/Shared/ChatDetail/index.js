@@ -8,22 +8,17 @@ import ChatOrderDetail from './OrderDetail';
 import UserDetails from './UserDetails';
 
 const showingForToTabValuesMap = {
-  ongoing: {
+  order: {
     chat: 0,
     order: 1,
     profile: 2,
-    lables: ['Chat', 'Order Details', 'Profile'],
+    labels: ['Chat', 'Order Details', 'Profile'],
   },
-  pastOrder: {
-    order: 0,
-    chat: 1,
-    profile: 2,
-    lables: ['Order Details', 'Chat', 'Profile'],
-  },
-  pastAccount: {
-    chat: 1,
-    order: 0,
-    lables: ['Chat', 'Order Details'],
+  account: {
+    chat: 0,
+    order: 2,
+    profile: 1,
+    labels: ['Chat', 'Profile'],
   },
 };
 
@@ -92,7 +87,7 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
           },
         }}
       >
-        {showingForToTabValuesMap[showingFor]?.lables?.map((label, index) => (
+        {showingForToTabValuesMap[showingFor]?.labels?.map((label, index) => (
           <Tab label={label} key={index} />
         ))}
       </Tabs>

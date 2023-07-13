@@ -14,7 +14,6 @@ const queryParamsInit = (chatType) => ({
   chatType,
 });
 
-const tabValueToShowingForMap = { 0: 'pastOrder', 1: 'pastAccount' };
 const tabValueToChatTypeMap = { 0: 'order', 1: 'account' };
 
 export default function PastTickets() {
@@ -28,8 +27,6 @@ export default function PastTickets() {
       params: queryParams,
     })
   );
-
-  console.log('data-data', query.data);
 
   return (
     <Box
@@ -54,7 +51,7 @@ export default function PastTickets() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
-              setQueryParams((prev) => ({ ...prev, chatType: tabValueToChatTypeMap[newValue] }));
+              setQueryParams((prev) => ({ ...prev, chatType: tabValueToChatTypeMap[newValue], page: 1 }));
             }}
             sx={{
               '& .MuiTab-root': {
@@ -68,6 +65,7 @@ export default function PastTickets() {
           </Tabs>
           <Box pt={9}>
             <TicketTable
+              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage || 1}
               loading={query.isLoading}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
@@ -83,11 +81,7 @@ export default function PastTickets() {
         </Box>
       </SlideInContainer>
       <SlideInContainer type="dynamic" open={sidebarOpen}>
-        <ChatDetails
-          showingFor={tabValueToShowingForMap[currentTab]}
-          chat={selectedChat}
-          onClose={() => setSidebarOpen(false)}
-        />
+        <ChatDetails showingFor={selectedChat?.chatType} chat={selectedChat} onClose={() => setSidebarOpen(false)} />
       </SlideInContainer>
     </Box>
   );

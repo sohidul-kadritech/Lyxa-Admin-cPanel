@@ -8,7 +8,15 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { statusColorVariants } from './helper';
 
-export default function TicketTable({ rows = [], onSelect, ticketType, queryParams, setQueryParams, loading }) {
+export default function TicketTable({
+  rows = [],
+  onSelect,
+  ticketType,
+  queryParams,
+  setQueryParams,
+  loading,
+  totalPage,
+}) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
@@ -186,7 +194,7 @@ export default function TicketTable({ rows = [], onSelect, ticketType, queryPara
         lisener={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
-        totalPage={5}
+        totalPage={totalPage}
       />
     </Box>
   );
