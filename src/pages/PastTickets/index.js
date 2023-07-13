@@ -21,7 +21,6 @@ export default function PastTickets() {
   const [queryParams, setQueryParams] = useState(queryParamsInit('order'));
   const [currentTab, setCurrentTab] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [selectedChat, setSelectedChat] = useState({});
 
   const query = useQuery([Api.PAST_CHATS, queryParams], () =>
@@ -68,27 +67,18 @@ export default function PastTickets() {
             <Tab label="Account" />
           </Tabs>
           <Box pt={9}>
-            {/* <TabPanel index={0} value={currentTab} noPadding> */}
             <TicketTable
+              loading={query.isLoading}
               queryParams={queryParams}
               setQueryParams={setQueryParams}
               ticketType="order"
               rows={query?.data?.data?.list}
-              onSelect={(params) => {
+              onSelect={(row) => {
+                console.log({ row });
                 setSidebarOpen(true);
-                setSelectedChat(params?.row);
+                setSelectedChat(row);
               }}
             />
-            {/* </TabPanel> */}
-            {/* <TabPanel index={1} value={currentTab} noPadding>
-              <TicketTable
-                rows={pastTickets(10)}
-                ticketType="account"
-                onSelect={() => {
-                  setSidebarOpen(true);
-                }}
-              />
-            </TabPanel> */}
           </Box>
         </Box>
       </SlideInContainer>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
 import Chat from './Chat';
-import ChatOrderDetail from './Detail';
+import ChatOrderDetail from './OrderDetail';
 import UserDetails from './UserDetails';
 
 const showingForToTabValuesMap = {
