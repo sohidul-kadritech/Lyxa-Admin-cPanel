@@ -17,7 +17,7 @@ export default function UserDetails({ user }) {
       <Address addressList={user?.address} />
       <Coupons coupons={user?.coupons} />
       <Transactions transactions={mockTransactions} />
-      <LastOrders />
+      <LastOrders user={user?._id} />
       <Stack direction="row" gap={5} pt={2.5}>
         <Button variant="outlined" fullWidth>
           Remove Credit

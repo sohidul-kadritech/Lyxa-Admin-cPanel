@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 import { orderStatusMap } from '../../../../pages/NewOrder/helpers';
-import { StyledProfileBox } from './helpers';
+import { LastOrdersSkeleton, StyledProfileBox } from './helpers';
 
 const queryParamsInit = (userId) => ({
   page: 1,
@@ -43,21 +43,22 @@ function OrderItem({ order }) {
 export default function LastOrder({ userId }) {
   const [queryParams] = useState(queryParamsInit(userId));
 
-  const ordersQuery = useQuery([Api.ORDER_LIST, queryParams], () =>
+  const query = useQuery([Api.ORDER_LIST, queryParams], () =>
     AXIOS.get(Api.ORDER_LIST, {
       params: queryParams,
     })
   );
 
-  console.log('data-orders', ordersQuery?.data);
-
   return (
     <StyledProfileBox title="Last 5 Orders">
-      <Stack gap={2} pt={3.5}>
-        {ordersQuery?.data?.data?.orders?.map((order) => (
-          <OrderItem order={order} key={order?._id} />
-        ))}
-      </Stack>
+      {query.isLoading && <LastOrdersSkeleton />}
+      {!query?.isLoading && (
+        <Stack gap={2} pt={3.5}>
+          {query?.data?.data?.orders?.map((order) => (
+            <OrderItem order={order} key={order?._id} />
+          ))}
+        </Stack>
+      )}
     </StyledProfileBox>
   );
 }
