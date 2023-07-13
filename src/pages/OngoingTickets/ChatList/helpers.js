@@ -2,6 +2,8 @@ export const getThreeDotsMenuOptions = (chat) => {
   const options = [];
   const hideUpdateAndCancel = ['cancelled', 'delivered', 'refused'];
 
+  options.push({ label: 'Resolve d', value: 'resolv' });
+
   if (chat?.status === 'accepted') {
     options.push({ label: 'Resolve ticket', value: 'resolve_ticket' });
   }

@@ -9,7 +9,7 @@ import AXIOS from '../../../../network/axios';
 import ChatBox from './ChatBox';
 import ChatIssues from './ChatIssue';
 
-const getRequestId = (chats = []) => {
+export const getChatRequestId = (chats = []) => {
   const recentMsg = chats?.at(-1) || chats?.[chats.length - 1];
 
   return typeof recentMsg?.adminChatRequest === 'string'
@@ -23,7 +23,7 @@ export default function Chat({ chat, onClose, onAcceptChat }) {
   const queryClient = useQueryClient();
 
   const { socket } = useSelector((store) => store.socketReducer);
-  const [requestId, setRequestId] = useState(getRequestId(chat?.chats));
+  const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats));
   const [orderId, setOrderId] = useState(getOrderId(chat));
 
   const [, setRender] = useState(false);
@@ -107,7 +107,7 @@ export default function Chat({ chat, onClose, onAcceptChat }) {
 
   useEffect(() => {
     setOrderId(getOrderId(chat));
-    setRequestId(getRequestId(chat?.chats));
+    setRequestId(getChatRequestId(chat?.chats));
     const cache = queryClient.getQueryData([Api.SINGLE_CHAT, { orderId: getOrderId(chat) }]);
     setMessageData(cache);
   }, [chat]);

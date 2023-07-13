@@ -1,8 +1,9 @@
 import { Stack, Typography } from '@mui/material';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import ChatItem from './ChatItem';
 import ChatListSkeleton from './Skeleton';
 
-export default function ChatsList({ onViewDetails, chats, loading, handleMenuClick }) {
+export default function ChatsList({ onViewDetails, chats, loading, handleMenuClick, refetching }) {
   if (loading) return <ChatListSkeleton />;
 
   if (!loading && !chats?.length)
@@ -13,7 +14,8 @@ export default function ChatsList({ onViewDetails, chats, loading, handleMenuCli
     );
 
   return (
-    <Stack gap={5} pb={9}>
+    <Stack gap={5} pb={9} position="relative">
+      {refetching && <LoadingOverlay />}
       {chats?.map((chat) => (
         <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} handleMenuClick={handleMenuClick} />
       ))}

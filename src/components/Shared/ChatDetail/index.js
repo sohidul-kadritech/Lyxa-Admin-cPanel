@@ -30,8 +30,6 @@ const showingForToTabValuesMap = {
 export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = () => {} }) {
   const [currentTab, setCurrentTab] = useState(0);
 
-  console.log('chat', chat);
-
   useEffect(() => {
     setCurrentTab(0);
   }, [showingFor]);

@@ -1,10 +1,13 @@
 import { Box, Modal, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import ChatDetails from '../../components/Shared/ChatDetail';
+import { getChatRequestId } from '../../components/Shared/ChatDetail/Chat';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import OrderCancel from '../NewOrder/OrderCancel';
@@ -22,6 +25,9 @@ const queryParamsInit = {
 const tabValueToChatTypeMap = { 0: 'order', 1: 'account' };
 
 export default function OngoingTickets() {
+  const { socket } = useSelector((store) => store.socketReducer);
+  const queryClient = useQueryClient();
+
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
 
@@ -30,11 +36,15 @@ export default function OngoingTickets() {
   const [, setRender] = useState(false);
 
   const [currentOrder, setCurrentOrder] = useState({});
+
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   const [flagModal, setFlagModal] = useState(false);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [selectedChat, setSelectedChat] = useState({});
+  const [currentChat, setCurrentChat] = useState({});
+
   const [openCancelModal, setOpenCancelModal] = useState(false);
 
   const query = useQuery(
@@ -46,12 +56,41 @@ export default function OngoingTickets() {
     {}
   );
 
+  // close chat
+  const afterCloseChat = (requestId) => {
+    socket.emit('chat-close', { requestId });
+    currentChat.status = 'closed';
+    queryClient.invalidateQueries([Api.ONGOING_CHATS]);
+
+    console.log({ currentChat });
+    console.log({ selectedChat });
+
+    if (currentChat?._id === selectedChat?._id) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, data), {
+    onSuccess: (data, reqData) => {
+      if (data?.status) {
+        afterCloseChat(reqData?.requestId);
+      }
+    },
+
+    onError: (error) => {
+      successMsg(error?.message || 'Could not close chat request', 'error');
+      console.log(error);
+    },
+  });
+
   const onViewDetails = (chat) => {
     setSelectedChat(chat);
     setSidebarOpen(true);
   };
 
   const threeDotHandler = (menu, chat) => {
+    console.log({ chat });
+
     if (typeof chat?.order === 'object') chat.order.user = chat?.user;
 
     if (menu === 'flag') {
@@ -67,6 +106,11 @@ export default function OngoingTickets() {
     if (menu === 'update_status') {
       setUpdateStatusModal(true);
       setCurrentOrder(chat?.order);
+    }
+
+    if (menu === 'resolve_ticket') {
+      setCurrentChat(chat);
+      closeChatMutation.mutate({ requestId: getChatRequestId(chat?.chats) });
     }
   };
 
@@ -123,6 +167,7 @@ export default function OngoingTickets() {
             <Box pt={9}>
               <TabPanel index={0} value={currentTab} noPadding>
                 <ChatsList
+                  refetching={closeChatMutation?.isLoading || query?.isFetching}
                   onViewDetails={onViewDetails}
                   chats={query?.data?.data?.list}
                   loading={query?.isLoading}
