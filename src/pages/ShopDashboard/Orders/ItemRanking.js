@@ -10,9 +10,8 @@ import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-export default function ItemRanking() {
+export default function ItemRanking({ ...props }) {
   const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING], () => AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING));
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -74,7 +73,7 @@ export default function ItemRanking() {
   ];
 
   return (
-    <Grid xs={12}>
+    <Grid xs={12} {...props}>
       <StyledBox padding>
         <Typography variant="body1" fontWeight={600} pb={5}>
           Item Ranking

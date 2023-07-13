@@ -126,27 +126,29 @@ export default function CustomerBreakdown({ title, customerType, range, details 
       </Typography> */}
       <Grid container mt={15}>
         <Grid xs={12} lg={6}>
-          <Box sx={{ width: 260, height: 260, position: 'relative' }}>
-            <StyledDoughnutChart data={data} />
-            {/* middle */}
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                textAlign: 'center',
-                minWidth: '150px',
-              }}
-            >
-              <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={2}>
-                {(details[amount] / details?.totalCustomers) * 100 || 0}%
-              </Typography>
-              <Typography variant="body1" fontWeight={600} color={theme.palette.text.secondary2}>
-                of customer base
-              </Typography>
+          <Stack direction="row" height="100%" alignItems="center" justifyContent="center">
+            <Box sx={{ width: 260, height: 260, position: 'relative' }}>
+              <StyledDoughnutChart data={data} />
+              {/* middle */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  textAlign: 'center',
+                  minWidth: '150px',
+                }}
+              >
+                <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={2}>
+                  {(details[amount] / details?.totalCustomers) * 100 || 0}%
+                </Typography>
+                <Typography variant="body1" fontWeight={600} color={theme.palette.text.secondary2}>
+                  of customer base
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          </Stack>
         </Grid>
         <Grid xs={12} lg={6}>
           <Stack direction="row" height="100%" alignItems="center" gap={16.5}>

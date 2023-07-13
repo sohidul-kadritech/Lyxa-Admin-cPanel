@@ -1,7 +1,7 @@
 import { AccessTime } from '@mui/icons-material';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as RewardIcon } from '../../assets/icons/reward-icon.svg';
@@ -24,9 +24,6 @@ export const statusColor = {
 // function is used in multiple places
 export const getShopStatusColor = (shop) => {
   const color = { color: statusColor?.green, status: 'online' };
-  console.log('shopStatus: ', shop?.shopStatus);
-  console.log('shopLiveStatus: ', shop?.liveStatus);
-  console.log('isShopOpen: ', shop?.isShopOpen);
 
   if (shop?.shopStatus === 'inactive') {
     return { color: statusColor?.yellow, status: 'inactive' };
@@ -36,11 +33,7 @@ export const getShopStatusColor = (shop) => {
     return { color: statusColor?.orange, status: 'busy' };
   }
 
-  if (shop?.liveStatus === 'offline') {
-    return { color: statusColor?.black, status: 'closed' };
-  }
-
-  if (!shop?.isShopOpen) {
+  if (shop?.liveStatus === 'offline' || !shop?.isShopOpen) {
     return { color: statusColor?.black, status: 'closed' };
   }
 
@@ -52,8 +45,6 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const currency = general?.currency;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
-  // eslint-disable-next-line no-unused-vars
-  const history = useHistory();
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
