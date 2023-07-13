@@ -16,8 +16,8 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
 ];
 
-export default function AddRemoveCredit({ userId, onClose, storeAppSettings }) {
-  const { exchangeRate, secondaryCurrency } = storeAppSettings;
+export default function AddRemoveCredit({ userId, onClose }) {
+  // const { exchangeRate, secondaryCurrency } = storeAppSettings;
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(userId));
   const [maxValue, setMaxValue] = useState(null);
@@ -46,7 +46,7 @@ export default function AddRemoveCredit({ userId, onClose, storeAppSettings }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addRemoveCredit = () => {
@@ -67,6 +67,10 @@ export default function AddRemoveCredit({ userId, onClose, storeAppSettings }) {
 
     creditMutation.mutate(data);
   };
+
+  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS));
+
+  const appSetting = getAppSettingsData?.data?.data?.appSetting;
 
   useEffect(() => {
     setMaxValue(settingsQuery?.data?.data?.appSetting?.maxCustomerServiceValue || null);
@@ -111,9 +115,10 @@ export default function AddRemoveCredit({ userId, onClose, storeAppSettings }) {
             },
           }}
         />
-        {secondaryCurrency?.symbol && (
+        {appSetting?.secondaryCurrency?.symbol && (
           <Typography mt="-8px" variant="body3" display="block">
-            Equivalent Price: {secondaryCurrency?.code} {data.amount * parseInt(exchangeRate, 10)}
+            Equivalent Price: {appSetting?.secondaryCurrency?.code}{' '}
+            {data.amount * parseInt(appSetting?.exchangeRate, 10)}
           </Typography>
         )}
         <StyledFormField
