@@ -43,7 +43,7 @@ export default function OngoingTickets() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [selectedChat, setSelectedChat] = useState({});
-  const [currentChat, setCurrentChat] = useState({});
+  const [temporarySelectedChat] = useState({});
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
 
@@ -57,23 +57,20 @@ export default function OngoingTickets() {
   );
 
   // close chat
-  const afterCloseChat = (requestId) => {
+  const afterCloseChat = ({ requestId, chat }) => {
     socket.emit('chat-close', { requestId });
-    currentChat.status = 'closed';
+    temporarySelectedChat.status = 'closed';
     queryClient.invalidateQueries([Api.ONGOING_CHATS]);
 
-    console.log({ currentChat });
-    console.log({ selectedChat });
-
-    if (currentChat?._id === selectedChat?._id) {
+    if (chat?._id === selectedChat?._id) {
       setSidebarOpen(false);
     }
   };
 
-  const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, data), {
-    onSuccess: (data, reqData) => {
+  const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, { requestId: data?.requestId }), {
+    onSuccess: (data, reqBody) => {
       if (data?.status) {
-        afterCloseChat(reqData?.requestId);
+        afterCloseChat(reqBody);
       }
     },
 
@@ -89,8 +86,6 @@ export default function OngoingTickets() {
   };
 
   const threeDotHandler = (menu, chat) => {
-    console.log({ chat });
-
     if (typeof chat?.order === 'object') chat.order.user = chat?.user;
 
     if (menu === 'flag') {
@@ -109,13 +104,20 @@ export default function OngoingTickets() {
     }
 
     if (menu === 'resolve_ticket') {
-      setCurrentChat(chat);
-      closeChatMutation.mutate({ requestId: getChatRequestId(chat?.chats) });
+      // send due to closure causing afterChat close to get old
+      closeChatMutation.mutate({ requestId: getChatRequestId(chat?.chats), chat });
     }
   };
 
   const updateOrder = (data) => {
-    console.log('data---data', data);
+    if (data?.status) {
+      const order = data?.data?.order;
+
+      if (selectedChat?.order?._id === order?._id) {
+        selectedChat.order = order;
+        setRender((prev) => !prev);
+      }
+    }
   };
 
   return (
@@ -185,6 +187,7 @@ export default function OngoingTickets() {
             </Box>
           </SlideInContainer>
         </Box>
+        {/* sidebar */}
         <SlideInContainer type="dynamic" open={sidebarOpen}>
           <ChatDetails
             showingFor={selectedChat?.chatType}
@@ -194,6 +197,7 @@ export default function OngoingTickets() {
           />
         </SlideInContainer>
       </Box>
+      {/* update status modal  */}
       <Modal
         open={updateStatusModal}
         onClose={() => {
@@ -203,7 +207,6 @@ export default function OngoingTickets() {
         <UpdateOrderStatus
           refetchApiKey={Api.ONGOING_CHATS}
           onSuccess={(data) => {
-            setSidebarOpen(false);
             updateOrder(data);
           }}
           onClose={() => setUpdateStatusModal(false)}
@@ -211,6 +214,7 @@ export default function OngoingTickets() {
           currentOrder={currentOrder}
         />
       </Modal>
+      {/*  flag modal   */}
       <Modal
         open={flagModal}
         onClose={() => {
@@ -219,7 +223,6 @@ export default function OngoingTickets() {
       >
         <UpdateFlag
           onSuccess={(data) => {
-            setSidebarOpen(false);
             updateOrder(data);
           }}
           currentOrder={currentOrder}
@@ -227,6 +230,7 @@ export default function OngoingTickets() {
           refetchApiKey={Api.ONGOING_CHATS}
         />
       </Modal>
+      {/* cancel order modal */}
       <Modal
         open={openCancelModal}
         onClose={() => {
@@ -236,7 +240,6 @@ export default function OngoingTickets() {
       >
         <OrderCancel
           onSuccess={(data) => {
-            setSidebarOpen(false);
             updateOrder(data);
           }}
           setOpenCancelModal={setOpenCancelModal}
