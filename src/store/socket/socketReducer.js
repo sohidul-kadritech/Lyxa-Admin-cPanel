@@ -23,7 +23,6 @@ const socketReducer = (state = initialState, action) => {
         socket: payload,
         loading: false,
       };
-
     case actionType.SOCKET_CONNECT_FAIL:
       return {
         ...state,
