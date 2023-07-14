@@ -51,7 +51,6 @@ export default function UserProfile() {
           setUser(data?.data?.user);
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 

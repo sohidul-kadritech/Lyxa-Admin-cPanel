@@ -40,7 +40,7 @@ export default function UserTabs({ user }) {
           <UserOrders userId={user?._id} />
         </TabPanel>
         <TabPanel value={currentTab} index={1}>
-          <UserChatList />
+          <UserChatList userId={user?._id} />
         </TabPanel>
         <TabPanel value={currentTab} index={2}>
           <UserRatings user={user} />

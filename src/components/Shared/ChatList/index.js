@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Modal, Stack, Typography } from '@mui/material';
+import { Box, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -10,16 +9,16 @@ import OrderCancel from '../../../pages/NewOrder/OrderCancel';
 import { UpdateFlag } from '../../../pages/NewOrder/UpdateFlag';
 import UpdateOrderStatus from '../../../pages/NewOrder/UpdateOrderStatus';
 import LoadingOverlay from '../../Common/LoadingOverlay';
+import TablePagination from '../../Common/TablePagination';
 import { getChatRequestId } from '../ChatDetail/Chat';
 import ChatItem from './ChatItem';
 import ChatListSkeleton from './Skeleton';
 
 const modalsStateInit = { flag: false, updateStatus: false, cancelOrder: false };
 
-export default function ChatList({ onViewDetails, chats, loading, refetching, onAction }) {
+export default function ChatList({ onViewDetails, chats, loading, refetching, onAction, page, setPage, totalPage }) {
   const queryClient = useQueryClient();
   const { socket } = useSelector((store) => store.socketReducer);
-  const [, setRender] = useState(false);
   const [temporarySelectedChat, setTemporarySelectedChat] = useState({});
   const [modals, setModals] = useState({ ...modalsStateInit });
 
@@ -61,12 +60,23 @@ export default function ChatList({ onViewDetails, chats, loading, refetching, on
 
   return (
     <>
-      <Stack gap={5} pb={9} position="relative">
-        {(refetching || closeChatMutation.isLoading) && <LoadingOverlay />}
-        {chats?.map((chat) => (
-          <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} handleMenuClick={handleMenuClick} />
-        ))}
-      </Stack>
+      <Box pb={9}>
+        <Stack gap={5} position="relative">
+          {(refetching || closeChatMutation.isLoading) && <LoadingOverlay />}
+          {chats?.map((chat) => (
+            <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} handleMenuClick={handleMenuClick} />
+          ))}
+        </Stack>
+        <Stack alignItems="center" pt={5}>
+          <TablePagination
+            currentPage={page}
+            lisener={(page) => {
+              setPage(page);
+            }}
+            totalPage={totalPage}
+          />
+        </Stack>
+      </Box>
       <Modal open={modals.updateStatus} onClose={() => setModals((prev) => ({ ...prev, updateStatus: false }))}>
         <UpdateOrderStatus
           refetchApiKey={Api.ONGOING_CHATS}

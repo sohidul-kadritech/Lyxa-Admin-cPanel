@@ -55,6 +55,8 @@ export default function OngoingTickets() {
       updateSelectedChatOrder(newData);
   };
 
+  console.log(query?.data);
+
   return (
     <Box
       sx={{
@@ -102,6 +104,9 @@ export default function OngoingTickets() {
           </Tabs>
           <Box pt={9}>
             <ChatList
+              page={queryParams?.page}
+              setPage={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
               refetching={query?.isFetching}
               onViewDetails={onViewDetails}
               chats={query?.data?.data?.list}

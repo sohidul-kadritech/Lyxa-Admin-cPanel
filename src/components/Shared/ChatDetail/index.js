@@ -93,16 +93,16 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
       </Tabs>
       <Box pt={7.5} flex={1}>
         <TabPanel
-          index={showingForToTabValuesMap[showingFor].chat}
+          index={showingForToTabValuesMap[showingFor]?.chat}
           value={currentTab}
           sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
         >
           <Chat chat={chat} onClose={onClose} onAcceptChat={onAcceptChat} />
         </TabPanel>
-        <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
+        <TabPanel index={showingForToTabValuesMap[showingFor]?.order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />
         </TabPanel>
-        <TabPanel index={showingForToTabValuesMap[showingFor].profile} value={currentTab} noPadding>
+        <TabPanel index={showingForToTabValuesMap[showingFor]?.profile} value={currentTab} noPadding>
           <UserDetails user={chat?.user} />
         </TabPanel>
       </Box>
