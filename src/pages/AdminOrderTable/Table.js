@@ -221,7 +221,7 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">
-          {currency} {getOrderProfit(row, 'admin')}
+          {currency} {(getOrderProfit(row, 'admin') || 0).toFixed(2)}
         </Typography>
       ),
     },
