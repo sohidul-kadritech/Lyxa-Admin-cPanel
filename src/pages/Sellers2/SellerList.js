@@ -24,6 +24,7 @@ export function SellerInfo({ sellerName, image, shopNumber }) {
     </Box>
   );
 }
+
 function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true }) {
   const theme = useTheme();
   const params = useParams();
@@ -38,7 +39,6 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
     padding: '12px 20px 10px 20px',
     borderLeft: `4px solid transparent`,
     cursor: 'pointer',
-    // transition: 'all 0.2s ease-in',
     '&:hover': {
       borderLeft: `4px solid ${theme.palette.danger.main}`,
       backgroundColor: 'rgba(177, 177, 177, 0.2)',
@@ -54,13 +54,10 @@ function SellerList({ data = [], currentSeller, setCurrentSeller, loading = true
 
   const handlePageLoad = () => {
     if (sellerRef.current) {
-      // console.log('current element paisi', sellerRef.current);
       sellerRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
-    } else {
-      // console.log('current element painai', sellerRef.current);
     }
   };
 

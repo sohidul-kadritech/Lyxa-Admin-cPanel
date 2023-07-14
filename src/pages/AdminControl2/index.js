@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -8,10 +9,10 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
-import AddSeller from '../Sellers2/AddSeller';
 import AddAdmin from './AddAdmin';
 import AddSellersForAccountManager from './AddSellersForAccountManager';
 import AdminTeamList from './AdminTeamList';
+import SalesManagerSellers from './SalesManagerSellers';
 
 const adminTypeIndexTracker = {
   0: 'admin',
@@ -44,7 +45,7 @@ function AdminControl() {
     AXIOS.get(API_URL.GET_ALL_ADMIN, {
       params: { searchKey, adminType },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -184,16 +185,17 @@ function AdminControl() {
           />
         )}
         {adminType === 'sales' && (
-          <AddSeller
-            name={currentAdmin?.name}
-            team={currentAdmin}
-            addSellerQuery={addSellerQuery}
-            loading={loading}
-            setLoading={setLoading}
-            onClose={() => {
-              setOpenSellersModal(false);
-            }}
-          />
+          <SalesManagerSellers currentAdmin={currentAdmin} onClose={() => setOpenSellersModal(false)} />
+          // <AddSeller
+          //   name={currentAdmin?.name}
+          //   team={currentAdmin}
+          //   addSellerQuery={addSellerQuery}
+          //   loading={loading}
+          //   setLoading={setLoading}
+          //   onClose={() => {
+          //     setOpenSellersModal(false);
+          //   }}
+          // />
         )}
       </Drawer>
     </Box>
