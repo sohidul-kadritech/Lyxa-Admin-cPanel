@@ -5,6 +5,7 @@ import * as actionType from '../actionType';
 
 export const socketConnect = () => async (dispatch, getState) => {
   const { socket: oldSocket } = getState().socketReducer;
+
   let accessToken;
 
   if (document.cookie.length) {

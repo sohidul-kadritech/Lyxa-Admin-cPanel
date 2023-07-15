@@ -19,12 +19,11 @@ export default function ChatBox({
     <Stack
       position="relative"
       sx={{
-        height: '100%',
         border: '1px solid',
         borderColor: 'custom.border',
         padding: '0 15px',
         borderRadius: '8px',
-        maxHeight: 'calc(100vh - 200px)',
+        height: 'calc(100vh - 200px)',
         overflowY: 'auto',
       }}
     >

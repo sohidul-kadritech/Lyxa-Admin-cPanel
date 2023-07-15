@@ -2,21 +2,31 @@
 import { Box, Tab, Tabs } from '@mui/material';
 
 // project import
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import Flags from './Flags';
 import Orders from './Orders';
 
+// also keeping reverse for searchParams
 const orderFilterToTabValueMap = {
   0: 'ongoing',
   1: 'delivered',
   2: 'cancelled',
+  3: 'flags',
   4: 'low-rating',
+  ongoing: 0,
+  delivered: 1,
+  cancelled: 2,
+  flags: 3,
+  'low-rating': 4,
 };
 
 export default function AdminOrders() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
+  const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[searchParams?.get('type')] || 0);
 
   return (
     <Box pb={9}>

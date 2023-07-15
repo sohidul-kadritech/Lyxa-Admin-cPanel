@@ -1,24 +1,35 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
 
-const getQueryParamsInit = (type) => ({
-  page: 1,
-  pageSize: 20,
-  sortBy: 'DESC',
-  type,
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
-  searchKey: '',
-  orderType: 'all',
-  model: '',
-});
+const getQueryParamsInit = (type, searchParams) => {
+  const params = {
+    page: 1,
+    pageSize: 20,
+    sortBy: 'DESC',
+    type,
+    startDate: moment().startOf('month').format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
+    searchKey: '',
+    orderType: 'all',
+    model: '',
+  };
+
+  Object.keys(params).forEach((key) => {
+    if (searchParams?.get(key)) {
+      params[key] = searchParams.get(key);
+    }
+  });
+
+  return params;
+};
 
 const tabsOptions = [
   { value: 'all', label: 'All Categories' },
@@ -29,8 +40,11 @@ const tabsOptions = [
 ];
 
 export default function Orders({ type }) {
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
+
   const [totalPage, setTotalPage] = useState(1);
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit(type));
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, searchParams));
   const [currentTab, setCurrentTab] = useState('all');
 
   const ordersQuery = useQuery(

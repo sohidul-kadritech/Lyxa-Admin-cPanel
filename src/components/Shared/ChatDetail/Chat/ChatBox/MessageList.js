@@ -8,7 +8,7 @@ export default function MessageList({ messages, loading }) {
   if (loading) return <MessageListSkeleton />;
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} pt={5}>
       {messages?.map((message, index) => (
         <MessageItem key={index} message={message} />
       ))}

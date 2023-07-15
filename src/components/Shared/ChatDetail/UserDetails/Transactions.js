@@ -1,8 +1,27 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { ReactComponent as CreditCardIcon } from '../../../../assets/icons/credit-card.svg';
-import { StyledProfileBox } from './helpers';
+import moment from 'moment';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import * as Api from '../../../../network/Api';
+import AXIOS from '../../../../network/axios';
+import { LastTransactionsSkeleton, StyledProfileBox } from './helpers';
+
+const queryParamsInit = (userId) => ({
+  page: 1,
+  pageSize: 5,
+  sortBy: 'DESC',
+  type: 'all',
+  userId,
+});
 
 function TransactionItem({ transaction, isFirst, isLast }) {
+  const sign =
+    transaction?.type === 'userBalanceAddAdmin' || transaction?.type === 'userCancelOrderGetWallet'
+      ? '+'
+      : transaction?.type === 'userBalanceWithdrawAdmin'
+      ? '-'
+      : '';
+
   return (
     <Stack
       className={`${isFirst ? 'first' : ''} ${isLast ? 'last' : ''}`}
@@ -21,46 +40,39 @@ function TransactionItem({ transaction, isFirst, isLast }) {
         },
       }}
     >
-      <Typography variant="inherit" fontWeight={500} fontSize={12} lineHeight="20px" color="text.secondary2" pb={2}>
-        {transaction?.date}
+      <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px">
+        <span style={{ fontWeight: 600 }}>Amount:</span> {sign}
+        {transaction?.amount}
       </Typography>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Box
-          component="span"
-          sx={{
-            display: 'inline-flex',
-            width: '34px',
-            height: '34px',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#EEEEEE',
-            borderRadius: '50%',
-          }}
-        >
-          <CreditCardIcon />
-        </Box>
-        <Box>
-          <Typography variant="inherit" fontWeight={500} fontSize="13px" lineHeight="20px">
-            {transaction?.title}
-          </Typography>
-          <Typography variant="inherit" fontWeight={400} fontSize="11px" lineHeight="20px">
-            12:10 PM
-          </Typography>
-        </Box>
-      </Stack>
-      <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px" pt={2}>
-        <span style={{ fontWeight: 600 }}>Transaction ID:</span> 166461217
+      <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px">
+        <span style={{ fontWeight: 600 }}>Date:</span> {moment(transaction?.createdAt).format('ddd DD, MMM, YYYY')}
+      </Typography>
+      <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px">
+        <span style={{ fontWeight: 600 }}>Transaction ID:</span> {transaction?.autoGenId}
       </Typography>
     </Stack>
   );
 }
 
-export default function Transactions({ transactions = [] }) {
+export default function Transactions({ userId }) {
+  const [queryParams] = useState(queryParamsInit(userId));
+
+  const query = useQuery([Api.DROP_PAY_LIST, queryParams], () =>
+    AXIOS.get(Api.DROP_PAY_LIST, {
+      params: queryParams,
+    })
+  );
+
   return (
     <StyledProfileBox title="Last 5 Lyxa Pay Transactions">
-      {transactions?.map((trx, index, { length }) => (
-        <TransactionItem key={index} transaction={trx} isFirst={index === 0} isLast={index === length - 1} />
-      ))}
+      {query?.isLoading && <LastTransactionsSkeleton />}
+      {!query?.isLoading && (
+        <Box>
+          {query?.data?.data?.transactionList?.map((trx, i, { length: l }) => (
+            <TransactionItem key={i} transaction={trx} isFirst={i === 0} isLast={i === l - 1} />
+          ))}
+        </Box>
+      )}
     </StyledProfileBox>
   );
 }

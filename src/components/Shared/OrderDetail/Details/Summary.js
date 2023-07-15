@@ -9,8 +9,6 @@ export default function OrderSummary({ productsDetails = [] }) {
   const currency = general?.currency?.symbol;
   const totalProductQuantity = productsDetails.reduce((prev, curr) => curr?.productQuantity + prev, 0);
 
-  console.log(productsDetails);
-
   return (
     <StyledOrderDetailBox
       title={

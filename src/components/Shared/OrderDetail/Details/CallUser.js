@@ -18,8 +18,6 @@ const StyledButton = styled('a')(({ theme }) => ({
 }));
 
 export default function CallUser({ user, userType, disableContainerStyle }) {
-  console.log(user);
-
   // container
   const Container = disableContainerStyle ? Box : StyledOrderDetailBox;
 
