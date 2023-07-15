@@ -23,36 +23,28 @@ export default function Orders() {
           generateGraphData(
             data?.data?.info || [],
             (item) => item.order,
-            // eslint-disable-next-line prettier/prettier
-            (item) => moment(item?.date).format('MMMM DD'),
+            (item) => moment(item?.date).format('MMMM DD')
           )
         }
       />
-      {/* <Grid container> */}
-      <Grid item xs={12} sm={12} md={12} lg={6}>
-        <ItemRanking />
-      </Grid>
-
-      <Grid item xs={12} sm={12} md={12} lg={6}>
-        <CommonAreaChart
-          title="Orders with issues"
-          api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
-          params={{
-            id: shop?._id,
-            type: 'shop',
-          }}
-          generateData={(data = {}) =>
-            generateGraphData(
-              data?.data?.info || [],
-              (item) => item.ordersIssue,
-              // eslint-disable-next-line prettier/prettier
-              (item) => moment(item?.date).format('MMMM DD'),
-            )
-          }
-        />
-      </Grid>
-      {/* </Grid> */}
       <OrderByHours />
+      <ItemRanking xs={12} sm={12} md={12} lg={6} />
+      <CommonAreaChart
+        title="Orders with issues"
+        api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
+        params={{
+          id: shop?._id,
+          type: 'shop',
+        }}
+        generateData={(data = {}) =>
+          generateGraphData(
+            data?.data?.info || [],
+            (item) => item.ordersIssue,
+            (item) => moment(item?.date).format('MMMM DD')
+          )
+        }
+        gridProps={{ xs: 12, lg: 6 }}
+      />
     </Grid>
   );
 }

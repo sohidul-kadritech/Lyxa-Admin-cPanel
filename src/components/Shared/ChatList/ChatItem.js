@@ -1,8 +1,8 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
+import ThreeDotsMenu from '../../ThreeDotsMenu2';
 import { getThreeDotsMenuOptions } from './helpers';
 
 function getChatCreatedAtTime(date) {

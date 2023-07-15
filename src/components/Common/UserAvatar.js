@@ -15,8 +15,8 @@ export default function UserAvatar({
       <Avatar alt={imgAlt} src={imgUrl} variant={imgStyle} sx={{ width: 36, height: 36 }}>
         {imgFallbackCharacter || name?.charAt(0)}
       </Avatar>
-      <Stack gap={1.5}>
-        <Typography variant="body4" {...titleProps}>
+      <Stack gap={1.5} flex={1}>
+        <Typography variant="body4" component="p" {...titleProps}>
           {name}
         </Typography>
         {subTitle && (

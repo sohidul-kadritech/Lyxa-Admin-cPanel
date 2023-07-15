@@ -47,8 +47,6 @@ export default function PaymentDetails({ order = {} }) {
   const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
-  console.log({ summary: order?.summary });
-
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>

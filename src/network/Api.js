@@ -288,6 +288,7 @@ export const DELETE_DEFAULT_CHAT = `${ADMIN_ENDPOINT}/message/delete`;
 export const CLOSE_CONVERSATION = `${ADMIN_ENDPOINT}/user-chat-request/close`;
 export const PAST_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/past-chats`;
 export const ONGOING_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/ongoing-chats`;
+export const SINGLE_USER_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/user/all-chats`;
 
 // TERMS AND CONDITIONS
 export const ADD_TERMS_AND_CONDITIONS = `${ADMIN_ENDPOINT}/`;
