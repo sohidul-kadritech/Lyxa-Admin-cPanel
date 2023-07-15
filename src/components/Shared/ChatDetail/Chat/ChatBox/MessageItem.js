@@ -45,6 +45,7 @@ const StyledMessageContainer = styled(Box)(() => ({
     '& .message-body': {
       background: 'rgba(91, 189, 78, 0.1)',
       borderColor: '#5BBD4E',
+      maxWidth: '100%',
     },
 
     '& .message-avatar': {

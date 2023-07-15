@@ -4,33 +4,26 @@ import { useEffect, useState } from 'react';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
 import Chat from './Chat';
-import ChatOrderDetail from './Detail';
+import ChatOrderDetail from './OrderDetail';
 import UserDetails from './UserDetails';
 
 const showingForToTabValuesMap = {
-  ongoing: {
+  order: {
     chat: 0,
     order: 1,
     profile: 2,
-    lables: ['Chat', 'Order Details', 'Profile'],
+    labels: ['Chat', 'Order Details', 'Profile'],
   },
-  pastOrder: {
-    order: 0,
-    chat: 1,
-    profile: 2,
-    lables: ['Order Details', 'Chat', 'Profile'],
-  },
-  pastAccount: {
-    chat: 1,
-    order: 0,
-    lables: ['Chat', 'Order Details'],
+  account: {
+    chat: 0,
+    order: 2,
+    profile: 1,
+    labels: ['Chat', 'Profile'],
   },
 };
 
 export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = () => {} }) {
   const [currentTab, setCurrentTab] = useState(0);
-
-  console.log('chat', chat);
 
   useEffect(() => {
     setCurrentTab(0);
@@ -94,22 +87,22 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
           },
         }}
       >
-        {showingForToTabValuesMap[showingFor]?.lables?.map((label, index) => (
+        {showingForToTabValuesMap[showingFor]?.labels?.map((label, index) => (
           <Tab label={label} key={index} />
         ))}
       </Tabs>
       <Box pt={7.5} flex={1}>
         <TabPanel
-          index={showingForToTabValuesMap[showingFor].chat}
+          index={showingForToTabValuesMap[showingFor]?.chat}
           value={currentTab}
           sx={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}
         >
           <Chat chat={chat} onClose={onClose} onAcceptChat={onAcceptChat} />
         </TabPanel>
-        <TabPanel index={showingForToTabValuesMap[showingFor].order} value={currentTab} noPadding>
+        <TabPanel index={showingForToTabValuesMap[showingFor]?.order} value={currentTab} noPadding>
           <ChatOrderDetail order={chat?.order} />
         </TabPanel>
-        <TabPanel index={showingForToTabValuesMap[showingFor].profile} value={currentTab} noPadding>
+        <TabPanel index={showingForToTabValuesMap[showingFor]?.profile} value={currentTab} noPadding>
           <UserDetails user={chat?.user} />
         </TabPanel>
       </Box>

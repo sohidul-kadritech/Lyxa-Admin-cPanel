@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import CallUser from '../OrderDetail/Details/CallUser';
 import DeliveryDetails from '../OrderDetail/Details/DeliveryDetails';
 import OrderTimeline from '../OrderDetail/Details/OrderTimeline';
@@ -7,8 +7,6 @@ import PaymentMethod from '../OrderDetail/Details/PaymentMethod';
 import OrderSummary from '../OrderDetail/Details/Summary';
 
 export default function ChatOrderDetail({ order }) {
-  console.log({ order });
-
   return (
     <Stack gap={5} pb={5}>
       <CallUser
@@ -33,17 +31,7 @@ export default function ChatOrderDetail({ order }) {
       )}
       <OrderSummary productsDetails={order?.productsDetails} />
       <PaymentMethod method={order?.paymentMethod} />
-      <PaymentDetails order={order} /> {/* note */}
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{
-          marginTop: '14px',
-        }}
-      >
-        Resolve Ticket
-      </Button>
+      <PaymentDetails order={order} />
     </Stack>
   );
 }
