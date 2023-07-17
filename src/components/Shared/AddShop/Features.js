@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { dietryOptions } from '../../../pages/Menu/helpers';
+import { getDietaryOptions } from '../../../pages/Menu/helpers';
 import IncrementDecrementInput from '../../Form/IncrementDecrementInput';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledSwitch from '../../Styled/StyledSwitch';
@@ -227,7 +227,7 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
             onChange: (value) => {
               optionSelectHandler(shop?.dietaryType, value);
             },
-            items: dietryOptions,
+            items: getDietaryOptions(sellerType),
           }}
         />
       )}
