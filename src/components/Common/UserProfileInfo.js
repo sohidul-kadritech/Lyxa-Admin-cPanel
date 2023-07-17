@@ -1,5 +1,5 @@
 import { Email } from '@mui/icons-material';
-import { Avatar, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Tooltip, Typography } from '@mui/material';
 import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
@@ -18,9 +18,16 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
       </Avatar>
       <Stack>
         {/* name */}
-        <Typography variant="h3" color="initial" fontSize={30} lineHeight="36.31px" pb={2.5}>
-          {user?.name}
-        </Typography>
+        <Stack direction="row" alignItems="center" gap={2} pb={2.5}>
+          {user?.statusColor && (
+            <Tooltip title={<span style={{ textTransform: 'capitalize' }}>{user?.statusTooltip}</span>}>
+              <Box sx={{ width: '18px', height: '18px', borderRadius: '50%', background: user?.statusColor }} />
+            </Tooltip>
+          )}
+          <Typography variant="h3" color="initial" fontSize={30} lineHeight="36.31px">
+            {user?.name}
+          </Typography>
+        </Stack>
         {/* info */}
         <Stack direction="row" alignItems="center" justifyContent="start">
           {user.adminType && <InfoListItem icon={UserIcon} title={user?.adminType} isFirst />}

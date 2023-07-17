@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, debounce, useTheme } from '@mui/material';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Tooltip, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -19,6 +19,7 @@ import AXIOS from '../../network/axios';
 import { sortOptions } from '../Faq2/helpers';
 import { statusTypeOptions } from '../Product1/helpers';
 import AccountManagerInfo from '../ShopProfile/AccountManagerInfo';
+import { statusColor } from '../ShopProfile/Info';
 import ShopList from './ShopList';
 import ViewSellerInfo from './ViewSellerInfo';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
@@ -44,6 +45,16 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
           <Stack gap="13px">
             <Stack direction="row" flexWrap="wrap">
               <Stack flex={1} direction="row" alignItems="center" flexWrap="wrap" gap="16px">
+                <Tooltip title={data?.status === 'active' ? 'Active' : 'Inactive'}>
+                  <Box
+                    sx={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      background: data?.status === 'active' ? statusColor.green : statusColor.yellow,
+                    }}
+                  />
+                </Tooltip>
                 <Typography
                   variant="h2"
                   sx={{ textTransform: 'capitalize', fontWeight: '500 !important', fontSize: '30px !important' }}

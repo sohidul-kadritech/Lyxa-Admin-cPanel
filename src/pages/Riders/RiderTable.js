@@ -7,7 +7,7 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
-import { getRiderStatus, statusColorVariants } from './helper';
+import { getRiderStatus, riderStatusColorVariants } from './helper';
 
 export default function RidersTable({ rows = [], onEdit, onLocationView, onProfileView }) {
   const columns = [
@@ -26,7 +26,7 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
               width: '10px',
               height: '10px',
               borderRadius: '50%',
-              background: statusColorVariants[getRiderStatus(row)]?.color,
+              background: riderStatusColorVariants[getRiderStatus(row)]?.color,
             }}
           />
           <UserAvatar
@@ -95,7 +95,7 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
               padding: '12px 23px',
               borderRadius: '40px',
               textTransform: 'capitalize',
-              ...(statusColorVariants[status] || {}),
+              ...(riderStatusColorVariants[status] || {}),
             }}
             variant="contained"
           />
