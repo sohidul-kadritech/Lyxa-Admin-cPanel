@@ -44,8 +44,9 @@ function AddSeller({
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
   const { currentUser, general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
+
   const { adminType } = currentUser;
+  const currency = general?.currency?.symbol;
 
   const changeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -322,6 +323,7 @@ function AddSeller({
           label="Lyxa Charge Type*"
           inputProps={{
             value: newSellerData?.sellerChargeType,
+            readOnly: isEdit && adminType !== 'admin',
             onChange: (value) => {
               newSellerData.sellerChargeType = value;
               setRender(!render);
@@ -330,7 +332,6 @@ function AddSeller({
           }}
         />
         <Typography variant="body3" color="text.secondary2">
-          {/* eslint-disable-next-line max-len */}
           Global Charge is currently {globalChargeType !== 'percentage' ? `${currency}` : ''}
           {globalCharge || 0}
           {globalChargeType === 'percentage' ? `%` : ''}
@@ -350,9 +351,11 @@ function AddSeller({
             type: 'number',
             name: 'globalDropPercentage',
             onChange: changeHandler,
+            readOnly: isEdit && adminType !== 'admin',
           }}
         />
       )}
+
       <StyledFormField
         label="Seller Type *"
         intputType="select"
