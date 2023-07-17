@@ -17,7 +17,6 @@ import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import AccountList from '../pages/Accounts';
-import AccountFinancials from '../pages/AppWallet2/ForAccount';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import OngoingTickets from '../pages/OngoingTickets';
@@ -44,7 +43,7 @@ export const customer_service_routes = [
   { path: '/seller/list/:sellerId', component: SellerList2 },
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
-  { path: '/lyxa-pay', component: AccountFinancials },
+  // { path: '/lyxa-pay', component: AccountFinancials },
 
   { path: '/shop/profile/:shopId', component: ShopProfile },
   { path: '/shop/dashboard/:shopId', component: SellerToShopLayout, exact: false },
