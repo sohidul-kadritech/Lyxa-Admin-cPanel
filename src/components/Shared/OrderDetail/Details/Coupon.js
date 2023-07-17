@@ -8,6 +8,7 @@ const couponTypeLabelMap = {
   individual_store: 'Store/Category',
   individual_user: 'Individual User',
   custom_coupon: 'Custom Coupon',
+  referral_code: 'Refer a Friend',
 };
 
 export default function CouponDetails({ coupon }) {
@@ -31,8 +32,7 @@ export default function CouponDetails({ coupon }) {
         {coupon?.couponValue} {coupon?.couponDiscountType !== 'fixed' ? `%` : ''}
       </Typography>
       <Typography variant="body2" color="textPrimary" lineHeight="22px" display="flex" gap={1.5} alignItems="center">
-        <span style={{ fontWeight: 600 }}>Type</span> -{' '}
-        <span style={{ textTransform: 'capitalize' }}>{couponTypeLabelMap[coupon?.couponType]}</span>
+        <span style={{ fontWeight: 600 }}>Type</span> - <span style={{}}>{couponTypeLabelMap[coupon?.couponType]}</span>
       </Typography>
     </StyledOrderDetailBox>
   );

@@ -19,7 +19,9 @@ export default function AmountDetails({ order = {} }) {
         {/* discount / marketing */}
         <StyledItem
           label="Loyalty Points"
-          value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
+          value={
+            isCashAndCancelled ? 0 : order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut
+          }
           hideZero
           tooltip={
             <Box>
@@ -43,43 +45,43 @@ export default function AmountDetails({ order = {} }) {
         />
         <StyledItem
           label="Buy 1 Get 1 (admin) "
-          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
+          value={isCashAndCancelled ? 0 : order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
           hideZero
         />
         <StyledItem
           label="Buy 1 Get 1  (shop)"
-          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
+          value={isCashAndCancelled ? 0 : order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
           hideZero
           tooltip="Buy 1 Get 1 deal added by shop"
         />
         <StyledItem
           label="Discount (admin)"
-          value={order?.discountCut?.discountAdminCut}
+          value={isCashAndCancelled ? 0 : order?.discountCut?.discountAdminCut}
           hideZero
           tooltip="Discount deal added by admin"
         />
         <StyledItem
           label="Discount (shop)"
-          value={order?.discountCut?.discountShopCut}
+          value={isCashAndCancelled ? 0 : order?.discountCut?.discountShopCut}
           hideZero
           tooltip="Discount deal added by shop"
         />
         <StyledItem
           label="Free Delivery (admin)"
-          value={order?.orderDeliveryCharge?.dropCut}
+          value={isCashAndCancelled ? 0 : order?.orderDeliveryCharge?.dropCut}
           hideZero
           tooltip="Free Delivery added by admin"
         />
         <StyledItem
           label="Free Delivery (shop)"
-          value={order?.orderDeliveryCharge?.shopCut}
+          value={isCashAndCancelled ? 0 : order?.orderDeliveryCharge?.shopCut}
           hideZero
           tooltip="Free Delivery added by shop"
         />
         <StyledItem
           label="Coupon Discount "
-          value={order?.summary?.couponDiscountAmount || 0}
+          value={isCashAndCancelled ? 0 : order?.summary?.couponDiscountAmount || 0}
           tooltip="Discount coupon created by admin"
           hideZero
         />
@@ -87,10 +89,13 @@ export default function AmountDetails({ order = {} }) {
         {!order?.isButler && (
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
             <StyledItem label="Shop Profit" value={(isCashAndCancelled ? 0 : order?.sellerEarnings || 0).toFixed(2)} />
-            <StyledItem label="Shop VAT" value={(order?.vatAmount?.vatForShop || 0).toFixed(2)} />
+            <StyledItem
+              label="Shop VAT"
+              value={(isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop || 0).toFixed(2)}
+            />
             <StyledItem
               label="Deal compensation amount"
-              value={order?.doubleMenuCut?.doubleMenuAdminCut}
+              value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuAdminCut}
               tooltip="This amount in already included in shop profit"
               hideZero
               isRejected
@@ -122,7 +127,9 @@ export default function AmountDetails({ order = {} }) {
           />
           <StyledItem
             label="Deal compensation amount"
-            value={order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut}
+            value={
+              isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut
+            }
             tooltip="This amount already in included lyxa profit"
             hideZero
             isRejected
@@ -133,7 +140,12 @@ export default function AmountDetails({ order = {} }) {
             label="Total Lyxa Profit"
             value={(isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0).toFixed(2)}
           />
-          <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} pbsx={0} />
+          <StyledItem
+            label="Lyxa VAT"
+            value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)}
+            pbsx={!isCashAndCancelled ? 0 : undefined}
+          />
+          {isCashAndCancelled && <StyledItem label="Total Refunded" value={(0).toFixed(2)} total noBorder />}
         </Box>
       </Box>
     </StyledOrderDetailBox>
