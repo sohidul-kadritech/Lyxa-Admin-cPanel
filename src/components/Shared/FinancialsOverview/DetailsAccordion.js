@@ -98,10 +98,11 @@ export default function DetailsAccordion({
           <Typography
             variant="body1"
             fontWeight={600}
-            // color={titleAmountStatus === 'minus' ? 'error' : undefined}
             color={titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined}
           >
-            {titleAmountStatus === 'minus' ? '-' : ''} {currency} {(titleAmount || 0).toFixed(2)}
+            {typeof titleAmount !== 'string' &&
+              `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
+            {typeof titleAmount === 'string' && titleAmount}
           </Typography>
         </Stack>
       </StyledAccordionSummary>
