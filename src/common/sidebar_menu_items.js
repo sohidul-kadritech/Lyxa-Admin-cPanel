@@ -544,11 +544,6 @@ export const sales_manager_menu_items = [
         to: '/seller/list',
         icon: SellersIcon,
       },
-      // {
-      //   label: 'Shops',
-      //   to: '/shop',
-      //   icon: ShopIcon,
-      // },
     ],
   },
 ];
@@ -578,7 +573,7 @@ export const customer_service_menu_items = [
         icon: RidersAdminIcons,
       },
       {
-        label: 'User',
+        label: 'Accounts',
         to: '/accounts',
         icon: UserIcon,
         SellersIcon,
@@ -592,42 +587,6 @@ export const customer_service_menu_items = [
         label: 'Lyxa Pay TRX ',
         to: '/lyxa-pay',
         icon: TrxIcon,
-      },
-    ],
-  },
-  {
-    title: 'Sellers & Shop',
-    menu: [
-      {
-        label: 'Delivery Boy List',
-        to: '/deliveryman/list',
-      },
-      {
-        label: 'Sellers List',
-        to: '/seller/list',
-      },
-
-      {
-        label: 'Shops List',
-        to: '/shops/list',
-      },
-    ],
-  },
-  {
-    title: 'No Icons',
-    menu: [
-      {
-        label: 'Orders',
-        to: '/orders/list',
-      },
-      {
-        label: 'Drop Pay',
-        to: '/drop-pay',
-      },
-      {
-        label: 'Chat',
-        to: '/customer-support',
-        badgeId: 'sidebar-item-chat-badges',
       },
     ],
   },

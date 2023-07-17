@@ -11,7 +11,6 @@ export default function SellerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
   const { currentUser } = useGlobalContext();
   const { seller } = currentUser;
-  console.log(seller);
 
   return (
     <Box>
@@ -25,6 +24,8 @@ export default function SellerDashboard() {
           email: seller?.email,
           profile: seller?.profile_photo,
           address: seller?.addressSeller?.address,
+          // eslint-disable-next-line max-len
+          addressLink: `https://maps.google.com/?q=${seller?.addressSeller?.latitude},${seller?.addressSeller?.longitude}`,
         }}
       />
       <Tabs

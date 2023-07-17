@@ -24,9 +24,11 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
         {/* info */}
         <Stack direction="row" alignItems="center" justifyContent="start">
           {user.adminType && <InfoListItem icon={UserIcon} title={user?.adminType} isFirst />}
-          {user.email && <InfoListItem icon={Email} title={user?.email} isFirst />}
-          {user.address && <InfoListItem icon={Loacation} title={user?.address} isFirst />}
-          {user.phone && <InfoListItem icon={Phone} title={user?.phone} isFirst />}
+          {user.email && <InfoListItem icon={Email} title={user?.email} isFirst link={`mailto:${user?.email}`} />}
+          {user.address && (
+            <InfoListItem icon={Loacation} title={user?.address} isFirst link={user.addressLink} linkOpenBlank />
+          )}
+          {user.phone && <InfoListItem icon={Phone} title={user?.phone} isFirst link={`tel:${user?.phone}`} />}
         </Stack>
         {/* rating */}
         {user?.rating && (
