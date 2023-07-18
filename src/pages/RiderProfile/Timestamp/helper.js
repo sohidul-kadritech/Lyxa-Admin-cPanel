@@ -8,9 +8,9 @@ export const calcActiveTime = (min) => {
   const hour = Math.floor((min / 60) % 24);
   const mins = Math.floor(min % 60);
 
-  if (day >= 1) str.push(`${day} day${day > 1 ? 's' : ''}`);
-  if (hour >= 1) str.push(`${hour} hour${hour > 1 ? 's' : ''}`);
-  if (mins >= 1 || (hour < 1 && day < 1)) str.push(`${mins} min${mins > 1 ? 's' : ''}`);
+  if (day >= 1) str.push(`${day} d`);
+  if (hour >= 1) str.push(`${hour} h`);
+  if (mins >= 1 || (hour < 1 && day < 1)) str.push(`${mins} m`);
   return str.join(' ');
 };
 
