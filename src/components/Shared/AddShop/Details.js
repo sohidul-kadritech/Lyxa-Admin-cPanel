@@ -115,7 +115,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
       {/* password */}
       <StyledFormField
         label="Password *"
-        intputType="text"
+        intputType="password"
         inputProps={{
           value: shop?.password,
           type: 'password *',

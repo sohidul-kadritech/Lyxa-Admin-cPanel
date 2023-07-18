@@ -1,5 +1,4 @@
 import { Box, Checkbox, Stack, Tooltip, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import ImagePreview from '../Common/ImagePreview';
@@ -12,6 +11,7 @@ import StyledCheckboxList from '../Styled/StyledCheckBoxList';
 import StyledChip from '../Styled/StyledChips';
 import StyledFileDropzone from '../Styled/StyledFileDropzone';
 import StyledInput from '../Styled/StyledInput';
+import StyledPasswordInput from '../Styled/StyledPasswordInput';
 import StyledSwitch from '../Styled/StyledSwitch';
 
 function Wrapper({ tooltip, children }) {
@@ -28,8 +28,6 @@ function Wrapper({ tooltip, children }) {
 
 export default function StyledFormField({ containerProps, label, labelProps, intputType, inputProps, tooltip }) {
   const theme = useTheme();
-  // eslint-disable-next-line no-unused-vars
-  const [countryCode, setCountryCode] = useState('BD');
   return (
     <Wrapper tooltip={tooltip}>
       <Stack
@@ -138,19 +136,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
         )}
 
         {/* select */}
-        {intputType === 'select' && (
-          // <Stack
-          //   position="relative"
-          //   direction="row"
-          //   alignItems="center"
-          //   justifyContent="flex-start"
-          //   gap="16px"
-          //   flexWrap="wrap"
-          //   minHeight="48px"
-          // >
-          // </Stack>
-          <FilterSelect {...(inputProps || {})} />
-        )}
+        {intputType === 'select' && <FilterSelect {...(inputProps || {})} />}
 
         {/* autocomplete */}
         {intputType === 'autocomplete' && (
@@ -207,7 +193,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
                       inputProps.onChange(
                         undefined,
                         // eslint-disable-next-line prettier/prettier
-                        inputProps.value.filter((dItem, dIndex) => index !== dIndex),
+                        inputProps.value.filter((dItem, dIndex) => index !== dIndex)
                       );
                     }}
                   />
@@ -225,6 +211,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
         {/* date */}
         {intputType === 'date' && <FilterDate {...inputProps} />}
 
+        {/* phone input */}
         {intputType === 'phoneNumber' && (
           <PhoneInput
             style={{
@@ -243,15 +230,29 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             value={inputProps.value}
             international
             countryCallingCodeEditable={false}
-            onCountryChange={(e) => {
-              setCountryCode(e);
-            }}
             onChange={(value) => {
               try {
                 inputProps.onChange(value);
               } catch (error) {
                 console.log(error);
               }
+            }}
+          />
+        )}
+
+        {/* password */}
+        {intputType === 'password' && (
+          <StyledPasswordInput
+            {...(inputProps || {})}
+            sx={{
+              '& input': {
+                paddingLeft: '18px',
+                paddingRight: '18px',
+                fontWeight: '500',
+                fontSize: '15px',
+                color: theme.palette.text.primary,
+                ...(inputProps?.sx || {}),
+              },
             }}
           />
         )}

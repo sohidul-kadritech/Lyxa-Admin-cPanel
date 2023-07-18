@@ -141,6 +141,8 @@ function AddSeller({
   const globalCharge = globalDropChargeQuery?.data?.data?.charge?.dropPercentage;
   const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
 
+  console.log({ newSellerData });
+
   return (
     <SidebarContainer
       title={
@@ -192,14 +194,13 @@ function AddSeller({
 
       <StyledFormField
         label="Password *"
-        intputType="text"
+        intputType="password"
         containerProps={{
           sx: { padding: '14px 0' },
         }}
         inputProps={{
           value: newSellerData?.password,
-          placeholder: 'password',
-          type: 'password',
+          placeholder: 'Password',
           name: 'password',
           onChange: changeHandler,
         }}
