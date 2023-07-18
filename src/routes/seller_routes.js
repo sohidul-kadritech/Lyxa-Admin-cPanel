@@ -2,7 +2,7 @@ import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLa
 import ShopsTransactions from '../pages/AppWallet/SellerTransactions/ShopsTransactions';
 import ShopFinancialsTransaction from '../pages/AppWallet2/ForSeller/ShopFinancialsTransaction';
 import NewOrders from '../pages/NewOrder';
-import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
+// import OrderDetails from '../pages/Orders/OrderDetails/OrderDetails';
 import SellerDashboard from '../pages/SellerDashboard';
 import SellerFinancials from '../pages/SellerFinancials';
 import SellerShopList from '../pages/SellerShopList';
@@ -11,7 +11,7 @@ import Users from '../pages/Users2';
 export const seller_routes = (prefix = '') => [
   { path: `${prefix}/`, component: SellerDashboard },
   { path: `${prefix}/orders/list`, component: NewOrders, componentProps: { showFor: 'shop' } },
-  { path: `${prefix}/orders/details/:id`, component: OrderDetails },
+  // { path: `${prefix}/orders/details/:id`, component: OrderDetails },
   { path: `${prefix}/shops/list`, component: SellerShopList },
   { path: `${prefix}/users`, component: Users, componentProps: { userType: 'seller' } },
   { path: `${prefix}/financials`, component: SellerFinancials },
