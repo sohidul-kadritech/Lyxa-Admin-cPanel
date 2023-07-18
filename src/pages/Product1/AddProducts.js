@@ -35,7 +35,7 @@ function AddProducts({ isEdit, onClose }) {
         setSearchedShopOptions((prev) => data?.data?.shops || prev);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getShops = useMemo(
@@ -45,7 +45,7 @@ function AddProducts({ isEdit, onClose }) {
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   const changeHandler = (event) => {
@@ -64,7 +64,7 @@ function AddProducts({ isEdit, onClose }) {
               () =>
                 // setType(shopType[newValue]);
                 // eslint-disable-next-line prettier/prettier
-                newValue,
+                newValue
             );
             // setIsSideBarOpen(false);
           }}
@@ -379,4 +379,4 @@ function AddProducts({ isEdit, onClose }) {
   );
 }
 
-export default AddProducts;
+// export default AddProducts;

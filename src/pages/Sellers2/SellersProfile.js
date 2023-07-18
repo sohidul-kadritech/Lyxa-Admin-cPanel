@@ -1,32 +1,35 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, Box, Drawer, Stack, Tab, Tabs, Typography, debounce, useTheme } from '@mui/material';
+import { Avatar, Box, Drawer, Stack, Tab, Tabs, Tooltip, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { ReactComponent as CircleIcon } from '../../assets/icons/circle-dot.svg';
 import { ReactComponent as MailIcon } from '../../assets/icons/envelope.svg';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import { ReactComponent as PhoneIcon } from '../../assets/icons/phone.svg';
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
-import { sortOptions } from '../Faq2/helpers';
-import { statusTypeOptions } from '../Product1/helpers';
-import ShopList from './ShopList';
-import ViewSellerInfo from './ViewSellerInfo';
-// import ViewShopInfo from './ViewShopInfo';
+import InfoListItem from '../../components/Common/InfoListItem';
 import TablePagination from '../../components/Common/TablePagination';
+import StyledFormField from '../../components/Form/StyledFormField';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import useAccessAsUser from '../../helpers/useAccessAsUser';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { sortOptions } from '../Faq2/helpers';
+import { statusTypeOptions } from '../Product1/helpers';
 import AccountManagerInfo from '../ShopProfile/AccountManagerInfo';
+import { statusColor } from '../ShopProfile/Info';
+import ShopList from './ShopList';
+import ViewSellerInfo from './ViewSellerInfo';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
 function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
+
+  console.log({ data });
+
   return (
     <Box>
       <Stack direction="row" gap="25px" flexWrap="wrap">
@@ -42,29 +45,23 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
           <Stack gap="13px">
             <Stack direction="row" flexWrap="wrap">
               <Stack flex={1} direction="row" alignItems="center" flexWrap="wrap" gap="16px">
+                <Tooltip title={data?.status === 'active' ? 'Active' : 'Inactive'}>
+                  <Box
+                    sx={{
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '50%',
+                      background: data?.status === 'active' ? statusColor.green : statusColor.yellow,
+                    }}
+                  />
+                </Tooltip>
                 <Typography
                   variant="h2"
                   sx={{ textTransform: 'capitalize', fontWeight: '500 !important', fontSize: '30px !important' }}
                 >
                   {data?.company_name}
                 </Typography>
-                {data?.accountManager?.name && (
-                  // <Typography
-                  //   variant="body4"
-                  //   onClick={() => {
-                  //     if (data?.accountManager?._id) {
-                  //       history.push({
-                  //         pathname: `/accountManager/${data?.accountManager._id}`,
-                  //         state: { from: routeMatch?.path, backToLabel: 'Back to seller list' },
-                  //       });
-                  //     }
-                  //   }}
-                  //   sx={{ fontWeight: '600 !important', cursor: 'pointer', color: theme?.palette?.primary.main }}
-                  // >
-                  //   {data?.accountManager?.name ? `@${data?.accountManager?.name} (Account Manager)` : ''}
-                  // </Typography>
-                  <AccountManagerInfo accountManager={data?.accountManager} />
-                )}
+                {data?.accountManager?.name && <AccountManagerInfo accountManager={data?.accountManager} />}
               </Stack>
               <Box>
                 <ThreeDotsMenu
@@ -75,39 +72,22 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                 />
               </Box>
             </Stack>
-            <Stack direction="row" flexWrap="wrap" gap="16px">
-              <Stack direction="row" alignItems="center" gap="5.4px">
-                <LocationIcon />{' '}
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: '500!important',
-                    overflow: 'hidden',
-                    maxWidth: '350px',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {data?.addressSeller?.address}
-                </Typography>
-              </Stack>
-
-              <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
-                <Stack direction="row" alignItems="center" gap="16px">
-                  <CircleIcon />
-                  <Stack direction="row" alignItems="center" gap="5.4px">
-                    <PhoneIcon /> {data?.phone_number}
-                  </Stack>
-                </Stack>
-              </Typography>
-              <Typography variant="h4" sx={{ fontWeight: '500!important' }}>
-                <Stack direction="row" alignItems="center" gap="16px">
-                  <CircleIcon />
-                  <Stack direction="row" alignItems="center" gap="5.4px">
-                    <MailIcon /> {data?.email}
-                  </Stack>
-                </Stack>
-              </Typography>
+            <Stack direction="row" flexWrap="wrap">
+              <InfoListItem
+                titleSx={{
+                  overflow: 'hidden',
+                  maxWidth: '350px',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                title={data?.addressSeller?.address}
+                linkOpenBlank
+                icon={LocationIcon}
+                isFirst
+                link={`https://maps.google.com/?q=${data?.addressSeller?.latitude},${data?.addressSeller?.longitude}`}
+              />
+              <InfoListItem title={data?.phone_number} icon={PhoneIcon} link={`tel:${data?.phone_number}`} />
+              <InfoListItem title={data?.email} icon={MailIcon} link={`mailto:${data?.email}`} />
             </Stack>
           </Stack>
         </Box>
@@ -175,7 +155,7 @@ function SellersProfile({
     if (menu === 'go_to_financials') {
       history.push(
         // eslint-disable-next-line prettier/prettier
-        `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`,
+        `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`
       );
     }
     if (menu === 'add_shop') {
@@ -203,7 +183,7 @@ function SellersProfile({
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   console.log('getSingleShop', getSingleShop?.data?.data?.shopList);
 
@@ -240,7 +220,7 @@ function SellersProfile({
                   setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
                 },
                 // eslint-disable-next-line prettier/prettier
-                300,
+                300
               )}
             />
             <StyledFormField

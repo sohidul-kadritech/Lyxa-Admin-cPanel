@@ -5,19 +5,20 @@ import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import Customers from '../../components/Shared/Customers';
 import Operations from '../../components/Shared/Operations';
 import { useGlobalContext } from '../../context';
+import { statusColor } from '../ShopProfile/Info';
 import Orders from './Order';
 
 export default function SellerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
   const { currentUser } = useGlobalContext();
   const { seller } = currentUser;
-  console.log(seller);
 
   return (
     <Box>
       <Typography variant="h4" pt={9} pb={9}>
         Dashboard
       </Typography>
+
       <UserProfileInfo
         user={{
           name: seller?.company_name,
@@ -25,6 +26,10 @@ export default function SellerDashboard() {
           email: seller?.email,
           profile: seller?.profile_photo,
           address: seller?.addressSeller?.address,
+          // eslint-disable-next-line max-len
+          addressLink: `https://maps.google.com/?q=${seller?.addressSeller?.latitude},${seller?.addressSeller?.longitude}`,
+          statusColor: seller?.status === 'active' ? statusColor.green : statusColor.yellow,
+          statusTooltip: seller?.status,
         }}
       />
       <Tabs

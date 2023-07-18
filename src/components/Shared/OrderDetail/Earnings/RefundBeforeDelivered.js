@@ -61,6 +61,11 @@ function StyledItem({
 }
 
 export default function RefundBeforeDelivered({ order = {} }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const exchangeRate = general?.appSetting?.exchangeRate;
+
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       {order?.userCancelTnx?.length > 0 && (
@@ -82,7 +87,15 @@ export default function RefundBeforeDelivered({ order = {} }) {
             {/* <StyledItem label="Admin VAT Cut" value={} /> */}
             <StyledItem label="Rider Cut" value={order?.userCancelTnx[0]?.deliveryBoyCut} isNegative />
             <StyledItem label="Shop Cut" value={order?.userCancelTnx[0]?.shopCut} isNegative />
-            <StyledItem label="Total Refund" value={order?.userCancelTnx[0]?.amount} total isNegative />
+            <StyledItem
+              label="Total Refund"
+              value={`${secondaryCurrency} ${(order?.userCancelTnx[0]?.amount * exchangeRate)?.toFixed(
+                2
+              )} ~ ${currency} ${order?.userCancelTnx[0]?.amount?.toFixed(2)}`}
+              total
+              isNegative
+              isCurrency={false}
+            />
           </Box>
         </Box>
       )}

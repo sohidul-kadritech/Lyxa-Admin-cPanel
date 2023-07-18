@@ -1,5 +1,5 @@
 import { AccessTime } from '@mui/icons-material';
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Tooltip, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { ReactComponent as CartIcon } from '../../assets/icons/cart.svg';
@@ -77,9 +77,11 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
           }}
         >
           {/* Active Badges */}
-          <Box
-            sx={{ background: getShopStatusColor(shop)?.color, width: '11px', height: '11px', borderRadius: '50%' }}
-          />
+          <Tooltip title={<span style={{ textTransform: 'capitalize' }}>{getShopStatusColor(shop)?.status}</span>}>
+            <Box
+              sx={{ background: getShopStatusColor(shop)?.color, width: '11px', height: '11px', borderRadius: '50%' }}
+            />
+          </Tooltip>
           <Box>
             <Typography
               variant="h2"

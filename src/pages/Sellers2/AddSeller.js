@@ -1,12 +1,21 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { useQuery } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledInput from '../../components/Styled/StyledInput';
 import { useGlobalContext } from '../../context';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import { statusTypeOptions } from '../Faq2/helpers';
-import { createSellerData, getEditSellerData, sellerTypeOption, validateSellersData } from './helpers';
+import {
+  createSellerData,
+  getEditSellerData,
+  sellerDropChargeTypes,
+  sellerTypeOption,
+  validateSellersData,
+} from './helpers';
 
 const addressInit = {
   address: '',
@@ -21,7 +30,6 @@ const addressInit = {
   note: '',
 };
 
-// eslint-disable-next-line no-unused-vars
 function AddSeller({
   onClose,
   isEdit = false,
@@ -32,13 +40,13 @@ function AddSeller({
   setLoading,
   name = '',
 }) {
-  console.log('team: ', team);
   const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData, isEdit));
-
   const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
   const [render, setRender] = useState(false);
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
   const { adminType } = currentUser;
+  const currency = general?.currency?.symbol;
 
   const changeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -56,8 +64,7 @@ function AddSeller({
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     setNewSellerData((prev) => ({
@@ -111,26 +118,32 @@ function AddSeller({
 
   const onSubmitSeller = async () => {
     const isValid = validateSellersData(newSellerData, adminType, isEdit);
-    if (isValid) {
-      const generatedData = await createSellerData(newSellerData, team, isEdit);
+    if (!isValid) return;
+    setLoading(true);
 
-      if (generatedData?.status !== false) {
-        addSellerQuery.mutate(generatedData);
-      }
-    } else {
-      setTimeout(() => {
+    try {
+      const generatedData = await createSellerData(newSellerData, team, isEdit);
+      if (!generatedData?.status) {
         setLoading(false);
-      }, 200);
+        return;
+      }
+
+      addSellerQuery.mutate(generatedData);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
     }
   };
 
-  return (
-    // <SidebarContainer
-    // eslint-disable-next-line max-len
-    //   title={`${isEdit ? `Edit Seller${name ? ` (for ${name})` : ''}` : `Add Seller${name ? ` (for ${name})` : ''}`}`}
-    //   onClose={onClose}
-    // >
+  // drop charge
+  const globalDropChargeQuery = useQuery([Api.GET_DELIVERY_FEE], () => AXIOS.get(Api.GET_DELIVERY_FEE));
 
+  const globalCharge = globalDropChargeQuery?.data?.data?.charge?.dropPercentage;
+  const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
+
+  console.log({ newSellerData });
+
+  return (
     <SidebarContainer
       title={
         <Stack>
@@ -161,9 +174,9 @@ function AddSeller({
           type: 'text',
           name: 'name',
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
+
       <StyledFormField
         label="Email *"
         intputType="text"
@@ -176,23 +189,20 @@ function AddSeller({
           type: 'text',
           name: 'email',
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
 
       <StyledFormField
         label="Password *"
-        intputType="text"
+        intputType="password"
         containerProps={{
           sx: { padding: '14px 0' },
         }}
         inputProps={{
           value: newSellerData?.password,
-          placeholder: 'password',
-          type: 'password',
+          placeholder: 'Password',
           name: 'password',
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
 
@@ -221,7 +231,6 @@ function AddSeller({
           type: 'text',
           name: 'company_name',
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
 
@@ -306,9 +315,47 @@ function AddSeller({
           type: 'text',
           name: 'pin',
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
+
+      <Box pb={3}>
+        <StyledFormField
+          intputType="optionsSelect"
+          label="Lyxa Charge Type*"
+          inputProps={{
+            value: newSellerData?.sellerChargeType,
+            readOnly: isEdit && adminType !== 'admin',
+            onChange: (value) => {
+              newSellerData.sellerChargeType = value;
+              setRender(!render);
+            },
+            items: sellerDropChargeTypes,
+          }}
+        />
+        <Typography variant="body3" color="text.secondary2">
+          Global Charge is currently {globalChargeType !== 'percentage' ? `${currency}` : ''}
+          {globalCharge || 0}
+          {globalChargeType === 'percentage' ? `%` : ''}
+        </Typography>
+      </Box>
+
+      {newSellerData?.sellerChargeType === 'specific' && (
+        <StyledFormField
+          label={`Lyxa Charge (${globalChargeType}) *`}
+          intputType="text"
+          containerProps={{
+            sx: { padding: '14px 0', '& .MuiTypography-h5': { textTransform: 'capitalize' } },
+          }}
+          inputProps={{
+            value: newSellerData?.globalDropPercentage,
+            placeholder: 'Charge',
+            type: 'number',
+            name: 'globalDropPercentage',
+            onChange: changeHandler,
+            readOnly: isEdit && adminType !== 'admin',
+          }}
+        />
+      )}
 
       <StyledFormField
         label="Seller Type *"
@@ -322,9 +369,9 @@ function AddSeller({
           value: newSellerData?.sellerType || '',
           items: sellerTypeOption,
           onChange: changeHandler,
-          //   readOnly: isReadOnly,
         }}
       />
+
       {adminType === 'admin' && (
         <StyledFormField
           label="Status *"
@@ -338,7 +385,6 @@ function AddSeller({
             value: newSellerData?.sellerStatus || '',
             items: statusTypeOptions,
             onChange: changeHandler,
-            //   readOnly: isReadOnly,
           }}
         />
       )}
@@ -357,7 +403,6 @@ function AddSeller({
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
           files: newSellerData?.profile_photo,
-          //   files: editedData.shopLogo,
           helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
@@ -414,11 +459,11 @@ function AddSeller({
           maxSize: 1000 * 1000,
           text: 'Drag and drop or chose photo',
           files: newSellerData?.sellerContractPaper,
-          //   files: editedData.shopLogo,
           helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
       />
+
       <Stack sx={{ padding: '30px 0px' }}>
         <Button
           disableElevation
@@ -426,7 +471,6 @@ function AddSeller({
           disabled={loading}
           onClick={() => {
             onSubmitSeller();
-            setLoading(true);
           }}
           fullWidth
         >

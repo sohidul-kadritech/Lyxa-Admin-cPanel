@@ -66,7 +66,7 @@ function AdBanner() {
       AXIOS.get(API_URL.BANNER_LIST, {
         params: { sortBy, status, type, startDate: range?.start, endDate: range?.end },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const addBannerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_BANNER, data), {

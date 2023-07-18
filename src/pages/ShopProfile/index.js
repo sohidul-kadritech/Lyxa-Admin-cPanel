@@ -118,7 +118,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -146,7 +145,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   return (
     <Box>
       <PageTop
-        title="Profie"
+        title="Profile"
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
       />

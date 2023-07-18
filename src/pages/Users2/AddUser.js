@@ -87,9 +87,8 @@ function AddUser({ onClose, userType, refetch }) {
           {/* password */}
           <StyledFormField
             label="Password"
-            intputType="text"
+            intputType="password"
             inputProps={{
-              type: 'password',
               value: user.password,
               name: 'password',
               onChange,
@@ -98,10 +97,9 @@ function AddUser({ onClose, userType, refetch }) {
           {/* repeated password */}
           <StyledFormField
             label="Repeat Password"
-            intputType="text"
+            intputType="password"
             inputProps={{
               value: user.repeated_password,
-              type: 'password',
               name: 'repeated_password',
               onChange,
             }}
