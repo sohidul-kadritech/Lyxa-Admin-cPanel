@@ -15,9 +15,8 @@ export default function ShopBanking({ shop, onChange }) {
           onChange,
         }}
       />
-      {/* Account Holder’s Full Name/Name of Enterprise  */}
       <StyledFormField
-        label="Account Holder’s Full Name/Name of Enterprise "
+        label="Account Name *"
         intputType="text"
         containerProps={{
           sx: {

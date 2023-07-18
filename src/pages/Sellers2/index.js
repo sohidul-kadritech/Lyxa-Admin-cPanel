@@ -70,8 +70,6 @@ function SellerList2() {
     },
   });
 
-  console.log('currentSeller:', currentSeller);
-
   const getAllSellersQuery = useQuery(
     [
       API_URL.ALL_SELLER,
@@ -103,7 +101,7 @@ function SellerList2() {
             if (updatedCurrentSeller) {
               setCurrentSeller(
                 // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
+                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {}
               );
             } else {
               setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
@@ -112,7 +110,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getSingleSellersQuery = useQuery(
@@ -124,6 +122,7 @@ function SellerList2() {
         },
       }),
     {
+      enabled: Boolean(routeMatch?.params?.sellerId),
       onSuccess: (data) => {
         if (data.status) {
           if (routeMatch?.params?.sellerId) {
@@ -131,8 +130,7 @@ function SellerList2() {
           }
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -156,7 +154,6 @@ function SellerList2() {
         successMsg(data.message, 'success');
         queryClient.invalidateQueries(API_URL.ALL_SELLER);
         setOpenLyxaChargeSidebar(false);
-        // setLoading(false);
       } else {
         successMsg(data.message);
         setLoading(false);
@@ -190,20 +187,10 @@ function SellerList2() {
 
   return (
     <Box>
-      {/* Sellers Page Top Section */}
       <PageTop
         title="Seller List"
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
-        sx={
-          {
-            // position: 'sticky',
-            // top: '-2px',
-            // zIndex: '999',
-            // backgroundColor: '#fbfbfb',
-            // fontWeight: 700,
-          }
-        }
       />
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />

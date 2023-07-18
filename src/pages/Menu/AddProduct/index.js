@@ -22,7 +22,8 @@ import {
   attributeOptions,
   converEditProduct,
   createProductData,
-  dietryOptions,
+  getDietaryOptions,
+  // dietryOptions,
   getProductInit,
   productAttrInit,
   validateProduct,
@@ -52,7 +53,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
     // eslint-disable-next-line prettier/prettier
-    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
   );
 
   console.log(product);
@@ -88,13 +89,13 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       staleTime: minInMiliSec(10),
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
     // eslint-disable-next-line prettier/prettier
-    [productsQuery?.data?.data?.products],
+    [productsQuery?.data?.data?.products]
   );
 
   // units
@@ -104,7 +105,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const setConvertCategories = (data) => {
     setCategories(
       // eslint-disable-next-line prettier/prettier
-      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev,
+      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
     );
   };
 
@@ -141,7 +142,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         setConvertCategories(data);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const subCategoriesQuery = useQuery(
@@ -159,7 +160,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           categoryId: product?.category,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   useEffect(() => {
@@ -193,7 +194,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     {
       enabled: Boolean(editProduct?._id),
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
@@ -223,7 +224,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
 
     setProduct((prev) => ({
@@ -248,7 +249,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const uploadProduct = async () => {
@@ -564,7 +565,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
               readOnly: productReadonly,
               value: product?.dietary,
               multiple: true,
-              items: dietryOptions,
+              items: getDietaryOptions(shop?.shopType),
               onChange: (value) => {
                 if (product?.dietary?.includes(value)) {
                   product.dietary = product?.dietary?.filter((item) => item !== value) || [];
@@ -714,55 +715,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           Save Item
         </Button>
       </Box>
-      {/* )} */}
     </SidebarContainer>
   );
 }
-
-/*
-
-{hasAttribute === 'yes' && (
-        <Box>
-          <StyledFormField
-            label="Attribute Title"
-            intputType="text"
-            containerProps={{
-              sx: fieldContainerSx,
-            }}
-            inputProps={{
-              type: 'text',
-              readOnly: productReadonly,
-              name: 'attributeTitle',
-              value: product?.attributes[0] ? product?.attributes[0]?.name : '',
-              onChange: (e) => {
-                if (product?.attributes[0]?.name !== undefined) {
-                  product.attributes[0].name = e.target.value;
-                } else {
-                  product.attributes.push(productAttrInit);
-                }
-                setRender(!render);
-              },
-            }}
-          />
-          <StyledFormField
-            intputType="checkbox"
-            containerProps={{
-              sx: {
-                paddingBottom: '20px',
-              },
-            }}
-            inputProps={{
-              items: attributeTypeAvailableOptions,
-              value: getAttrOptionsValues(product),
-              onChange: attrOptionsHandler,
-              readOnly: productReadonly,
-            }}
-          />
-          <AttributeList
-            items={product?.attributes?.length ? product?.attributes[0]?.items : []}
-            readOnly={productReadonly}
-          />
-        </Box>
-      )}
-
-*/

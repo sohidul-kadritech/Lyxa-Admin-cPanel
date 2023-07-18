@@ -12,6 +12,7 @@ import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import Axios from '../../../network/axios';
+import { getDietaryOptions } from '../../Menu/helpers';
 import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton';
 import MinimumOrder from './MinimumOrder';
 import RateContainer from './Rate';
@@ -20,7 +21,7 @@ import { ShopSettingsSection3 } from './ShopSettingsSection/ShopSettingsSection3
 import { General as ShopSettingsSection } from './ShopSettingsSection/index';
 import {
   DeliverySettings,
-  DietarySettings,
+  // DietarySettings,
   PaymentInformationList,
   PriceRange,
   createShopSettingsData,
@@ -324,7 +325,7 @@ function ShopSettings() {
                 boxSx={section2Sx}
                 buttonType={2}
                 title="Dietary"
-                options={DietarySettings}
+                options={getDietaryOptions(shop?.shopType)}
                 value={newDietary}
                 action={handleDietary}
                 isButton

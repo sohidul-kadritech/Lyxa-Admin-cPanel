@@ -1,8 +1,17 @@
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Tooltip, Typography } from '@mui/material';
 import CameraIconButton from './CameraIconButton';
 import Rating from './Rating';
 
-export default function UserProfileInfo2({ onDrop, name, image, reviews, autoGenId, rating }) {
+export default function UserProfileInfo2({
+  onDrop,
+  name,
+  image,
+  reviews,
+  autoGenId,
+  rating,
+  statusColor,
+  statusTooltip,
+}) {
   return (
     <Stack direction="row" gap="20px">
       <Box sx={{ position: 'relative' }}>
@@ -24,9 +33,16 @@ export default function UserProfileInfo2({ onDrop, name, image, reviews, autoGen
         />
       </Box>
       <Stack justifyContent="center">
-        <Typography variant="h2" sx={{ fontSize: '30px', fontWeight: 500 }}>
-          {name}
-        </Typography>
+        <Stack direction="row" alignItems="center" gap="6px">
+          {statusColor && (
+            <Tooltip title={<span style={{ textTransform: 'capitalize' }}>{statusTooltip}</span>}>
+              <Box sx={{ width: '11px', height: '11px', borderRadius: '50%', background: statusColor }} />
+            </Tooltip>
+          )}
+          <Typography variant="h2" sx={{ fontSize: '30px', fontWeight: 500 }}>
+            {name}
+          </Typography>
+        </Stack>
         <Typography
           pt={1}
           variant="inherit"

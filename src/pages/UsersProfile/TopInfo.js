@@ -5,6 +5,7 @@ import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { statusColor } from '../ShopProfile/Info';
 
 export default function TopInfo({ user }) {
   const queryClient = useQueryClient();
@@ -57,6 +58,8 @@ export default function TopInfo({ user }) {
     <UserProfileInfo2
       autoGenId={user?.autoGenId}
       image={user?.profile_photo}
+      statusColor={user?.status === 'active' ? statusColor?.green : statusColor?.yellow}
+      statusTooltip={user?.status}
       name={user?.name}
       reviews={user?.reviews}
       phone={user?.phone_number}

@@ -39,34 +39,6 @@ export function ProductOverlayTag({ label, color }) {
   );
 }
 
-// menu options
-// export const getAddMenuOptions = (shopType) => {
-//   const options = [
-//     {
-//       label: 'Add item',
-//       value: 'add-item',
-//     },
-//   ];
-
-//   if (shopType === 'food') {
-//     options.push({
-//       label: 'Add category',
-//       value: 'add-category',
-//     });
-//   }
-
-//   // if (shopType !== 'food') {
-//   //   options.push({
-//   //     label: 'Add sub category ',
-//   //     value: 'add-sub-category',
-//   //   });
-//   // }
-
-//   return options;
-// };
-
-// menu options
-
 export const isThereAnySubCategoryOrNot = (subCategory) => {
   let status = false;
   subCategory.forEach((element) => {
@@ -165,7 +137,7 @@ export const attributeTypeAvailableOptions = [
   },
 ];
 
-export const dietryOptions = [
+export const foodDietaryOptions = [
   {
     label: 'Vegetarian',
     value: 'vegetarian',
@@ -183,6 +155,26 @@ export const dietryOptions = [
     value: 'low-cal',
   },
 ];
+
+export const groceryDietaryOptions = [
+  {
+    label: 'Organic',
+    value: 'organic',
+  },
+  {
+    label: 'Gluten-free',
+    value: 'gluten-free',
+  },
+  {
+    label: 'Lactose-free',
+    value: 'lactose-free',
+  },
+];
+
+export const getDietaryOptions = (shopType) => {
+  if (shopType === 'food') return foodDietaryOptions;
+  return groceryDietaryOptions;
+};
 
 export const attrItemInit = () => ({
   name: '',

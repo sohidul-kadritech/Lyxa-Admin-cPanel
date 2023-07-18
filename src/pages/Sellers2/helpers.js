@@ -34,6 +34,11 @@ export const sellerShopTabType = {
   1: 'Documents',
 };
 
+export const sellerDropChargeTypes = [
+  { label: 'Global', value: 'global' },
+  { label: 'Custom', value: 'specific' },
+];
+
 export const validateSellersData = (data, adminType, isEdit = false) => {
   console.log('generated Data', data);
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
@@ -104,9 +109,6 @@ export const validateSellersData = (data, adminType, isEdit = false) => {
 };
 
 export const createSellerData = async (sellerData, team, isEdit = false) => {
-  // const shopLogo = await getImageUrl(shopData.shopLogo[0]);
-  // const shopBanner = await getImageUrl(shopData.shopBanner[0]);
-
   const profile_photo = await getImageUrl(sellerData?.profile_photo[0]);
   const certificate_of_incorporation = await getImageUrl(sellerData?.certificate_of_incorporation[0]);
   const national_id = await getImageUrl(sellerData?.national_id[0]);
@@ -212,6 +214,8 @@ export const getEditSellerData = (data, isEdit) => {
     return {
       sellerStatus: '',
       sellerType: '',
+      sellerChargeType: 'global',
+      globalDropPercentage: 1,
     };
   }
 

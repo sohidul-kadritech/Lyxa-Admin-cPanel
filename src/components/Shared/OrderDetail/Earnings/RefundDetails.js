@@ -45,6 +45,11 @@ function StyledItem({ label, value, total, isNegative, isRejected, pbsx = 3.5, p
 }
 
 export default function RefundDetails({ order = {} }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const exchangeRate = general?.appSetting?.exchangeRate;
+
   return (
     <StyledOrderDetailBox title="Refund After Delivered">
       {order?.isRefundedAfterDelivered && order?.userRefundTnx?.length > 0 && (
@@ -58,16 +63,20 @@ export default function RefundDetails({ order = {} }) {
             />
           </Box>
           <Box pt={3.5}>
-            <StyledItem
-              label="Admin Cut"
-              value={order?.userRefundTnx[0]?.adminCut}
-              console={console.log(order?.userRefundTnx[0]?.adminCut)}
-              isNegative
-            />
+            <StyledItem label="Admin Cut" value={order?.userRefundTnx[0]?.adminCut} isNegative />
             <StyledItem label="Admin VAT Cut" value={order?.userRefundTnx[0]?.adminVatCut} isNegative />
             <StyledItem label="Rider Cut" value={order?.userRefundTnx[0]?.deliveryBoyCut} isNegative />
             <StyledItem label="Shop Cut" value={order?.userRefundTnx[0]?.shopCut} isNegative />
-            <StyledItem ptxs={3.5} label="Total Refund" value={order?.userRefundTnx[0]?.amount} total isNegative />
+            <StyledItem
+              ptxs={3.5}
+              label="Total Refund"
+              value={`${secondaryCurrency} ${order?.userRefundTnx[0]?.amount * exchangeRate} ~ ${currency} ${
+                order?.userRefundTnx[0]?.amount
+              }`}
+              total
+              isNegative
+              isCurrency={false}
+            />
           </Box>
         </Box>
       )}

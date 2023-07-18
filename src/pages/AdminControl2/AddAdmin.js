@@ -93,8 +93,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
           />
           <StyledFormField
             label={`${isEdit ? 'New ' : ''}Password *`}
-            // label="Password *"
-            intputType="text"
+            intputType="password"
             containerProps={{
               sx: { padding: '14px 0' },
             }}
@@ -109,8 +108,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
           />
           <StyledFormField
             label={`Repeated ${isEdit ? 'New ' : ''} Password *`}
-            // label="Repeated Password *"
-            intputType="text"
+            intputType="password"
             containerProps={{
               sx: { padding: '14px 0' },
             }}

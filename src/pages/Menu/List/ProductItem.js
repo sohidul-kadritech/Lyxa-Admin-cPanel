@@ -55,7 +55,7 @@ export default function ProductItem({
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // stock update
@@ -80,7 +80,7 @@ export default function ProductItem({
         console.log(data);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleFavouriteChange = (product) => {
@@ -180,15 +180,11 @@ export default function ProductItem({
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      // bgcolor="#fbfbfb"
       pl={5}
       pr={5}
       onClick={() => {
         setEditProduct(product, true);
       }}
-      // sx={{
-
-      // }}
       {...props}
     >
       {/* left */}
@@ -253,38 +249,8 @@ export default function ProductItem({
       </Stack>
       {/* right */}
       <Stack direction="row" alignItems="center" gap={4}>
-        <StyledInput
-          type="number"
-          min={1}
-          value={product?.price}
-          readOnly
-          InputProps={{
-            startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
-          }}
-          sx={{
-            '& .MuiInputBase-root': {
-              width: `${
-                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 7) * 10 : '100'
-              }px`,
-              padding: '9px 14px 9px 12px',
-            },
-
-            '& .MuiInputBase-input': {
-              padding: 0,
-              textAlign: 'left',
-              fontSize: '14px',
-            },
-
-            '& .MuiTypography-root': {
-              fontSize: '14px',
-              fontWeight: '500!important',
-              color: theme.palette.text.main,
-            },
-          }}
-        />
         {exchangeCurrency?.currency?.symbol && (
           <>
-            <Typography variant="body1">~</Typography>
             <StyledInput
               type="number"
               min={1}
@@ -316,8 +282,38 @@ export default function ProductItem({
                 },
               }}
             />
+            <Typography variant="body1">~</Typography>
           </>
         )}
+        <StyledInput
+          type="number"
+          min={1}
+          value={product?.price}
+          readOnly
+          InputProps={{
+            startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
+          }}
+          sx={{
+            '& .MuiInputBase-root': {
+              width: `${
+                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 7) * 10 : '100'
+              }px`,
+              padding: '9px 14px 9px 12px',
+            },
+
+            '& .MuiInputBase-input': {
+              padding: 0,
+              textAlign: 'left',
+              fontSize: '14px',
+            },
+
+            '& .MuiTypography-root': {
+              fontSize: '14px',
+              fontWeight: '500!important',
+              color: theme.palette.text.main,
+            },
+          }}
+        />
         <Box
           onClick={(e) => {
             e.stopPropagation();

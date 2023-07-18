@@ -5,11 +5,11 @@ import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { getRiderStatus, riderStatusColorVariants } from '../Riders/helper';
 
 export default function TopInfo({ rider }) {
   const queryClient = useQueryClient();
-  // eslint-disable-next-line no-unused-vars
-  const [render, setRender] = useState(false);
+  const [, setRender] = useState(false);
 
   const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
     onSuccess: (data) => {
@@ -54,6 +54,8 @@ export default function TopInfo({ rider }) {
   return (
     <UserProfileInfo2
       autoGenId={rider?.autoGenId}
+      statusColor={riderStatusColorVariants[getRiderStatus(rider)]?.color}
+      statusTooltip={getRiderStatus(rider)}
       image={rider?.image}
       name={rider?.name}
       reviews={rider?.reviews}

@@ -1,9 +1,4 @@
-export const statusColorVariants = {
-  active: {
-    color: '#417C45',
-    background: '#DCFCE7',
-  },
-
+export const riderStatusColorVariants = {
   deactive: {
     color: '#FFAB09',
     background: 'rgba(255, 176, 23, 0.2)',
@@ -85,5 +80,5 @@ export const getRiderStatus = (rider) => {
   if (rider?.availability) return 'available';
   if (!rider?.availability) return 'busy';
   if (rider?.liveStatus === 'online') return 'online';
-  return 'active';
+  return '';
 };

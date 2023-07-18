@@ -2,8 +2,8 @@ import { Stack } from '@mui/material';
 import CallUser from '../OrderDetail/Details/CallUser';
 import DeliveryDetails from '../OrderDetail/Details/DeliveryDetails';
 import OrderTimeline from '../OrderDetail/Details/OrderTimeline';
-import PaymentDetails from '../OrderDetail/Details/PaymentDetails';
 import PaymentMethod from '../OrderDetail/Details/PaymentMethod';
+import PaymentDetails from '../OrderDetail/Details/PaymentSummary';
 import OrderSummary from '../OrderDetail/Details/Summary';
 
 export default function ChatOrderDetail({ order }) {

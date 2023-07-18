@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
-// export const API_URL = 'https://api.drop-deliveryapp.com/';
-export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
-export const MAP_URL = 'http://maps.google.com/maps';
+export const SOCKET_CONNECTION = 'http://apiv2.drop-deliveryapp.com';
+
+export const MAP_URL = 'https://maps.google.com/maps';
 export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 const ADMIN_ENDPOINT = 'admin';

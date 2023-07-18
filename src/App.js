@@ -38,8 +38,10 @@ export default function App() {
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     enabled: false,
     onSuccess: (data) => {
-      if (data?.status && data?.data?.appSetting?.currency) {
-        dispatchGeneral({ type: 'currency', payload: { currency: data?.data?.appSetting?.currency } });
+      console.log('appSetting', data?.data?.appSetting);
+
+      if (data?.status && data?.data?.appSetting) {
+        dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
       }
     },
   });

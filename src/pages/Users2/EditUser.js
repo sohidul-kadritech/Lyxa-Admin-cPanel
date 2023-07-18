@@ -99,9 +99,8 @@ function EditUser({ onClose, editUser, userType, refetch }) {
           {/* new password */}
           <StyledFormField
             label="New password"
-            intputType="text"
+            intputType="password"
             inputProps={{
-              type: 'password',
               name: 'password',
               onChange: userEditOnChangeHandler,
             }}
@@ -109,9 +108,8 @@ function EditUser({ onClose, editUser, userType, refetch }) {
           {/* confirm password */}
           <StyledFormField
             label="Confirm new password"
-            intputType="text"
+            intputType="password"
             inputProps={{
-              type: 'password',
               name: 'repeated_password',
               onChange: userEditOnChangeHandler,
             }}
