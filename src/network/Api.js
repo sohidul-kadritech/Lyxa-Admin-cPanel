@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
-export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
-export const SOCKET_CONNECTION = 'http://apiv2.drop-deliveryapp.com';
+// export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
+// export const SOCKET_CONNECTION = 'http://apiv2.drop-deliveryapp.com';
+
+export const API_URL = 'https://lyxa-backend-develop-ohmsggm7uq-ew.a.run.app/';
+export const SOCKET_CONNECTION = 'https://lyxa-backend-develop-ohmsggm7uq-ew.a.run.app';
 
 export const MAP_URL = 'https://maps.google.com/maps';
 export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
