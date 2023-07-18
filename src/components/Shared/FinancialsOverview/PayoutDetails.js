@@ -13,6 +13,8 @@ export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const exchangeRate = general?.appSetting?.exchangeRate;
 
   console.log('currentExpandTab', currentExpanedTab);
 
@@ -50,7 +52,6 @@ export default function Payout({ paymentDetails }) {
               0 && (
               <PriceItem
                 title="Cash"
-                console={console.log({ paymentDetails })}
                 amount={
                   paymentDetails?.orderValue?.productAmountCash + paymentDetails?.orderValue?.doubleMenuItemPriceCash
                 }
@@ -82,7 +83,6 @@ export default function Payout({ paymentDetails }) {
                 }
               />
             )}
-
             {paymentDetails?.orderValue?.totalDoubleMenuItemPrice > 0 && (
               <PriceItem
                 title="Buy 1 Get 1"
@@ -97,7 +97,6 @@ export default function Payout({ paymentDetails }) {
                 }
               />
             )}
-
             {paymentDetails?.orderValue?.totalRewardAmount > 0 && (
               <PriceItem
                 title="Loyalty points"
@@ -113,7 +112,6 @@ export default function Payout({ paymentDetails }) {
               />
             )}
           </DetailsAccordion>
-
           {/* lyxa fees */}
           <DetailsAccordion
             title="Lyxa fees"
@@ -122,7 +120,6 @@ export default function Payout({ paymentDetails }) {
               paymentDetails?.totalDropGet + paymentDetails?.orderValue?.pointsCashback > 0 ? 'minus' : ''
             }
           />
-
           {/* total vat */}
           <DetailsAccordion
             title="Total VAT"
@@ -131,7 +128,6 @@ export default function Payout({ paymentDetails }) {
             VAT inclusive"
             titleAmount={Math.abs(paymentDetails?.orderValue?.totalVat)}
           />
-
           {/* Other payments */}
           {(paymentDetails?.freeDeliveryShopCut > 0 ||
             paymentDetails?.totalFeaturedAmount > 0 ||
@@ -224,18 +220,17 @@ export default function Payout({ paymentDetails }) {
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 3 : -1);
               }}
-              // sx={{
-              //   borderBottom: '0',
-              // }}
             />
           )}
 
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={Math.abs(paymentDetails?.totalProfit)}
+            titleAmount={`${secondaryCurrency} ${(Math.abs(paymentDetails?.totalProfit) * exchangeRate || 0)?.toFixed(
+              2
+            )} ~ ${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}  `}
             tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%. 
+            Shop-powered deliveries: 10%.
             VAT inclusive"
             titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
             isOpen={currentExpanedTab === 3}
@@ -249,7 +244,7 @@ export default function Payout({ paymentDetails }) {
             {Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle) > 0 && (
               <PriceItem
                 title="Paid"
-                amount={Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}
+                amount={`${Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}`}
                 amountStatus={paymentDetails?.totalProfit - paymentDetails?.totalUnsettle < 0 ? 'minus' : ''}
               />
             )}

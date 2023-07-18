@@ -69,7 +69,6 @@ export default function RiderProfile() {
           setRider(data?.data?.delivery);
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -145,7 +144,6 @@ export default function RiderProfile() {
           </Box>
         </Box>
       )}
-
       <Drawer open={open} onClose={() => setOpen(false)} anchor="right">
         <AddRider
           riderFor={rider?.deliveryBoyType === 'shopRider' ? 'shop' : 'global'}

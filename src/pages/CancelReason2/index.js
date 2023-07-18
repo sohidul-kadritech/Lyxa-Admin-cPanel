@@ -89,7 +89,7 @@ function CancelReason() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const cancelReasonAdd = useMutation((data) => AXIOS.post(API_URL.ADD_ORDER_CANCEL_REASON, data), {

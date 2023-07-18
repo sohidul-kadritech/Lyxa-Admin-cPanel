@@ -55,8 +55,6 @@ export default function OngoingTickets() {
       updateSelectedChatOrder(newData);
   };
 
-  console.log(query?.data);
-
   return (
     <Box
       sx={{

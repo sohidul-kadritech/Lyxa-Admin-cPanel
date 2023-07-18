@@ -1,10 +1,15 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import React from 'react';
+import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 import { StyledItem } from './helpers';
 
 export default function ButlerAmountDetails({ order = {} }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const exchangeRate = general?.appSetting?.exchangeRate;
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
   return (
@@ -24,7 +29,13 @@ export default function ButlerAmountDetails({ order = {} }) {
           )}
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
-          <StyledItem label="Total Lyxa Profit" value={(order?.dropCharge || 0).toFixed(2)} />
+          <StyledItem
+            label="Total Lyxa Profit"
+            value={`${secondaryCurrency} ${((order?.dropCharge || 0) * exchangeRate).toFixed(2)} ~ ${currency} ${(
+              order?.dropCharge || 0
+            ).toFixed(2)}`}
+            isCurrency={false}
+          />
           <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} pbsx={0} />
         </Box>
       </Box>

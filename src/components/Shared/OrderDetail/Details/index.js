@@ -9,8 +9,8 @@ import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderSummary from './OrderSummary';
 import OrderTimeline from './OrderTimeline';
-import PaymentDetails from './PaymentDetails';
 import PaymentMethod from './PaymentMethod';
+import PaymentDetails from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
 
 export default function Detail({ order, hideIssues, userType }) {

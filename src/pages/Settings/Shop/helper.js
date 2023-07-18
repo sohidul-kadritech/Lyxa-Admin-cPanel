@@ -27,12 +27,12 @@ export const maxDiscountOptions = (options) => {
   return [{ label: 'No options', value: '' }];
 };
 
-export const DietarySettings = [
-  { label: 'Vegetarian', value: 'vegetarian' },
-  { label: 'Vegan', value: 'vegan' },
-  { label: 'Gluten-free', value: 'gluten-free' },
-  { label: 'Low-cal', value: 'low-cal' },
-];
+// export const DietarySettings = [
+//   { label: 'Vegetarian', value: 'vegetarian' },
+//   { label: 'Vegan', value: 'vegan' },
+//   { label: 'Gluten-free', value: 'gluten-free' },
+//   { label: 'Low-cal', value: 'low-cal' },
+// ];
 
 export function convertTime(timeString) {
   const hours = timeString.slice(0, 2);
@@ -57,7 +57,7 @@ export function createShopSettingsData(
   shopAcceptedCurrency,
   shopExchangeRate,
   // eslint-disable-next-line prettier/prettier
-  newCusines,
+  newCusines
 ) {
   const tags = [];
   const cuisineType = [];

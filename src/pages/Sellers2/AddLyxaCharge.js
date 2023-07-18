@@ -1,17 +1,23 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
+import * as Api from '../../network/Api';
+import AXIOS from '../../network/axios';
 import { discountTypeOptions } from '../PercentageSettings/helpers';
 
-const intial = {
+const init = {
   dropPercentageType: 'percentage',
   dropPercentage: '',
 };
 // eslint-disable-next-line no-unused-vars
 function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
-  const [currentLyxaCharge, setCurrentLyxaCharge] = useState({ ...intial });
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+  const [currentLyxaCharge, setCurrentLyxaCharge] = useState({ ...init });
 
   const changeHandler = (e) => {
     setCurrentLyxaCharge((prev) => {
@@ -36,6 +42,11 @@ function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
       sellerId: currentSeller?._id,
     });
   };
+
+  const globalDropChargeQuery = useQuery([Api.GET_DELIVERY_FEE], () => AXIOS.get(Api.GET_DELIVERY_FEE));
+
+  const globalCharge = globalDropChargeQuery?.data?.data?.charge?.dropPercentage;
+  const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
 
   return (
     <SidebarContainer title="Add Lyxa Charge" onClose={onClose}>
@@ -67,9 +78,13 @@ function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
             type: 'number',
             name: 'dropPercentage',
             onChange: changeHandler,
-            //   readOnly: isReadOnly,
           }}
         />
+        <Typography variant="body3" color="text.secondary2">
+          Global Charge is currently {globalChargeType !== 'percentage' ? `${currency}` : ''}
+          {globalCharge || 0}
+          {globalChargeType === 'percentage' ? `%` : ''}
+        </Typography>
       </Stack>
       <Stack sx={{ padding: '30px 0px' }}>
         <Button

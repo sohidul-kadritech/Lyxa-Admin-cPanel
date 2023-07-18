@@ -31,4 +31,5 @@ const StyledInput = React.forwardRef(({ ...props }, ref) => (
     ref={ref}
   />
 ));
+
 export default StyledInput;

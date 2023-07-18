@@ -2,8 +2,6 @@
 import { Stack, Typography, styled, useTheme } from '@mui/material';
 import moment from 'moment';
 
-// constants
-
 export const itemSelectOptions = [
   { label: 'Selected Items', value: 'single' },
   { label: 'Entire Menu', value: 'multiple' },
@@ -19,12 +17,6 @@ export const confirmActionInit = {
   onConfirm: () => {},
   onCancel: () => {},
 };
-
-// helper functions
-// export const createGroupedList = (products, category) => {
-//   const productsList = Object.values(_.groupBy(products || [], (product) => product?.category?.name)).flat();
-//   return productsList.filter((item) => !item?.marketing && (!category || item?.category?.name === category));
-// };
 
 export const createProductData = (products, { marketingType, rewardAmount, maxDiscount }) => {
   let prb = null;
@@ -213,4 +205,11 @@ export const getDurationLeft = (date) => {
   }
 
   return durationStr;
+};
+
+export const getDateRange = (mData) => {
+  if (mData?.status === 'inactive')
+    return Math.floor(moment(mData?.marketingPausedAt).diff(mData?.duration?.end, 'days'));
+
+  return Math.floor(moment(mData?.duration?.end).diff(moment().startOf('day'), 'days'));
 };

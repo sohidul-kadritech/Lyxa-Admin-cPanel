@@ -1,4 +1,4 @@
-import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
@@ -10,12 +10,10 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { dateRangeInit, sortOptions } from '../Faq2/helpers';
-import AddProducts from './AddProducts';
 import ProductList from './ProductList';
 import ProductPageSkeleton from './ProductPageSkeleton';
 import { shopType, statusTypeOptions } from './helpers';
 
-// eslint-disable-next-line no-unused-vars
 const breadcrumbItems = [
   {
     label: 'Settings',
@@ -59,7 +57,7 @@ function Product() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -166,10 +164,6 @@ function Product() {
           updateStatusQuery={updateStatusQuery}
         />
       )}
-
-      <Drawer open={open} anchor="right">
-        <AddProducts onClose={() => setOpen(false)} />
-      </Drawer>
     </Box>
   );
 }

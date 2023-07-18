@@ -14,7 +14,6 @@ import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
-import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
@@ -23,14 +22,16 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import BannerPreview from './BannerPreview';
+import DateSliderPicker from './DateSliderPicker';
 import MarketingProductsTable from './ProductsTable';
 import {
   CommonTitle,
   ItemsTitle,
   confirmActionInit,
   createProductData,
-  durationInit,
+  // durationInit,
   getCurrentFeaturedWeekOption,
+  getDateRange,
   getDurationLeft,
   itemSelectOptions,
 } from './helpers';
@@ -148,7 +149,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [hasGlobalChange, setHasGlobalChange] = useState(false);
   const [queryEnabled, setQueryEnabled] = useState(true);
 
-  const [duration, setDuration] = useState(durationInit);
+  // const [duration, setDuration] = useState(durationInit);
+  // eslint-disable-next-line no-unused-vars
+  const [dateRange, setDateRange] = useState(1);
   const [spendLimit, setSpendLimit] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
@@ -156,7 +159,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   const setLocalData = (data) => {
     setProducts(data?.products);
-    setDuration(data?.duration);
+    // setDuration(data?.duration);
+    console.log('date-range', getDateRange(data));
+    setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
     setItemSelectType(data?.itemSelectionType);
     setFeaturedDuration(data?.featuredAmount);
@@ -299,13 +304,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   };
 
   // update loyalty settings
-  const loyaltySettingsMutaion = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
+  const marketingMutation = useMutation((data) => AXIOS.post(Api.EDIT_MARKETING_SETTINGS, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Settings successfully updated', 'success');
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
         queryClient.invalidateQueries([Api.ALL_PRODUCT]);
-        // queryClient.invalidateQueries()
         onClose();
       }
     },
@@ -325,15 +329,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       return;
     }
 
-    if (new Date(duration.end).getTime() < new Date().getTime() && marketingType !== 'featured') {
-      successMsg('Invalid end date', 'warn');
-      return;
-    }
+    // if (new Date(duration.end).getTime() < new Date().getTime() && marketingType !== 'featured') {
+    //   successMsg('Invalid end date', 'warn');
+    //   return;
+    // }
 
-    if (new Date(duration.end).getTime() < new Date(duration.start).getTime() && marketingType !== 'featured') {
-      successMsg('Invalid start date', 'warn');
-      return;
-    }
+    // if (new Date(duration.end).getTime() < new Date(duration.start).getTime() && marketingType !== 'featured') {
+    //   successMsg('Invalid start date', 'warn');
+    //   return;
+    // }
 
     if (spendLimitChecked && !Number(spendLimit)) {
       successMsg('Invalid spend limit', 'warn');
@@ -350,7 +354,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         ?.find((item) => item?.value === Number(featuredAmount))
         ?.label?.slice(0, 1);
 
-      loyaltySettingsMutaion.mutate({
+      marketingMutation.mutate({
         shop: shop?._id,
         type: marketingType,
         creatorType,
@@ -359,14 +363,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         featuredAmount,
       });
     } else {
-      loyaltySettingsMutaion.mutate({
+      marketingMutation.mutate({
         shop: shop?._id,
         type: marketingType,
         creatorType,
         products: productsData,
         duration: {
-          start: moment(duration?.start).format('YYYY-MM-DD'),
-          end: moment(duration?.end).format('YYYY-MM-DD'),
+          start: moment().format('YYYY-MM-DD'),
+          end: moment().add(dateRange, 'days').format('YYYY-MM-DD'),
         },
         spendLimit: spendLimitChecked ? spendLimit : 0,
         status: status || 'active',
@@ -635,38 +639,22 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     subTitle={
                       currentExpanedTab === 1
                         ? 'Please choose the date range during which your items will be running.'
-                        : `${moment(duration.start).format('MMMM, D, YYYY')} - ${moment(duration.end).format(
-                            'MMMM, D, YYYY'
-                          )}`
+                        : `${moment().format('MMMM, D, YYYY')} - ${moment().format('MMMM, D, YYYY')}`
                     }
                   />
                 }
-                // sx={isPageDisabled ? disabledSx : {}}
                 disabled={isPageDisabled}
               >
-                <Stack direction="row" alignItems="center" gap={5} pt={1}>
-                  {/* <Stack gap={2.5}>
-                    <Typography variant="body2">Start Date </Typography>
-                    <FilterDate
-                      maxDate={moment(duration.end).subtract(1, 'day')}
-                      value={duration.start}
-                      onChange={(e) => {
-                        setDuration((prev) => ({ ...prev, start: e._d }));
-                        setHasGlobalChange(true);
-                      }}
-                    />
-                  </Stack>
-                  <Stack gap={2.5}>
-                    <Typography variant="body2">End Date</Typography>
-                    <FilterDate
-                      minDate={moment(duration.start).add(1, 'day')}
-                      value={duration.end}
-                      onChange={(e) => {
-                        setDuration((prev) => ({ ...prev, end: e._d }));
-                        setHasGlobalChange(true);
-                      }}
-                    />
-                  </Stack> */}
+                <Box px={5}>
+                  <DateSliderPicker
+                    value={dateRange}
+                    onChange={(event) => {
+                      setDateRange(event.target.value);
+                    }}
+                  />
+                </Box>
+                {/* <Stack direction="row" alignItems="center" gap={5} pt={1}>
+                  
                   <Stack gap={2.5}>
                     <Typography variant="body2">Start Date - End Date</Typography>
                     <StyledDateRangePicker
@@ -681,7 +669,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       }}
                     />
                   </Stack>
-                </Stack>
+                </Stack> */}
               </StyledAccordion>
               {/* spend limit */}
               <StyledAccordion
@@ -902,7 +890,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={!termAndCondition || loyaltySettingsMutaion.isLoading}
+                    disabled={!termAndCondition || marketingMutation.isLoading}
                     rounded
                     onClick={() => {
                       updateLoyaltySettings();
@@ -957,7 +945,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       <Button
                         variant="contained"
                         color="danger"
-                        disabled={loyaltySettingsDeleteMutation.isLoading || loyaltySettingsMutaion.isLoading}
+                        disabled={loyaltySettingsDeleteMutation.isLoading || marketingMutation.isLoading}
                         rounded
                         onClick={() => {
                           setConfirmModal(true);
@@ -983,7 +971,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 <Button
                   variant="outlined"
                   color="primary"
-                  disabled={loyaltySettingsMutaion.isLoading}
+                  disabled={marketingMutation.isLoading}
                   onClick={() => {
                     if (hasGlobalChange) {
                       setConfirmModal(true);
@@ -1003,7 +991,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   Discard Changes
                 </Button>
                 <Button
-                  disabled={loyaltySettingsMutaion.isLoading}
+                  disabled={marketingMutation.isLoading}
                   variant="contained"
                   color="primary"
                   rounded

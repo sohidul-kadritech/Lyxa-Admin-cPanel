@@ -1,17 +1,10 @@
-// Authentication
-
-// Dashboard
-
-// Gallery
-
 // User List
 import Marketing from '../pages/Marketing';
 import SellerAdd from '../pages/Seller/SellerAdd/SellerAdd';
-import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
-import ShopList from '../pages/Shops/ShopList/ShopList';
+// import ShopAdd from '../pages/Shops/ShopAdd/ShopAdd';
 
 import SellerDetails from '../pages/Seller/SellerDetails/SellerDetails';
-import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
+// import ShopDetails from '../pages/Shops/ShopDetails/ShopDetails';
 
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 
@@ -34,10 +27,8 @@ export const sales_manager_routes = [
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
 
   // shops
-  { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
-  { path: '/shops/add', component: ShopAdd },
-  { path: '/shops/edit/:id', component: ShopAdd },
-  { path: '/shops/details/:id', component: ShopDetails },
+  // { path: '/shops/list', component: ShopList, componentProps: { viewUserType: 'admin' } },
+  // { path: '/shops/details/:id', component: ShopDetails },
   { path: '/shops/:id/marketing/', component: Marketing, componentProps: { viewUserType: 'admin' } },
   {
     path: '/shops/:shopId/marketing/dashboard/:type/:id',
