@@ -61,13 +61,6 @@ export const generateData = (data, isEdit) => {
   };
 };
 
-export const tabOptionsIndex = {
-  0: 'all',
-  1: 'food',
-  2: 'grocery',
-  3: 'pharmacy',
-};
-
 export const getActiveSellers = (value, oldList) => {
   console.log('value===>', value, oldList);
   if (oldList.includes(value)) {
@@ -84,28 +77,7 @@ export const isItActiveOrNot = (value, oldList) => {
   return false;
 };
 
-export const generateAsignData = (data) => {
-  console.log('data===>', data);
-  console.log('length', data.sellers.length);
-
-  if (data.sellers.length === 0) {
-    successMsg('Please add atleaset one seller!.');
-    return false;
-  }
-  if (!data?.currentAdmin?._id) {
-    successMsg('No Account Manager Found!.');
-    return false;
-  }
-
-  return {
-    id: data?.currentAdmin?._id,
-    sellers: data?.sellers,
-  };
-};
-
-export const getSellersForAccountManager = (data) => {
-  if (data?.length > 0) {
-    return data.map((value) => value._id);
-  }
+export const getManagerSellerIds = (data) => {
+  if (data?.length) return data.map((value) => value._id);
   return [];
 };

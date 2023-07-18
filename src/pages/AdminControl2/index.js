@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -12,7 +11,6 @@ import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import AddAdmin from './AddAdmin';
 import AddSellersForAccountManager from './AddSellersForAccountManager';
 import AdminTeamList from './AdminTeamList';
-import SalesManagerSellers from './SalesManagerSellers';
 
 const adminTypeIndexTracker = {
   0: 'admin',
@@ -22,46 +20,23 @@ const adminTypeIndexTracker = {
 };
 
 function AdminControl() {
-  const [currentTab, setCurrentTab] = useState(0);
-
-  const [searchKey, setSearchKey] = useState('');
+  const queryClient = useQueryClient();
 
   const [isEdit, setIsEdit] = useState(false);
-
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
-
-  const [currentAdmin, setCurrentAdmin] = useState(null);
-
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [openSellersModal, setOpenSellersModal] = useState(false);
 
+  const [currentTab, setCurrentTab] = useState(0);
+  const [searchKey, setSearchKey] = useState('');
+  const [currentAdmin, setCurrentAdmin] = useState(null);
   const [adminType, setAdminType] = useState('admin');
-
-  const queryClient = useQueryClient();
 
   const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN, { searchKey, adminType }], () =>
     AXIOS.get(API_URL.GET_ALL_ADMIN, {
       params: { searchKey, adminType },
-      // eslint-disable-next-line prettier/prettier
     })
   );
-
-  const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
-    onSuccess: (data) => {
-      if (data.status) {
-        setOpen(false);
-        successMsg(data.message, 'success');
-        // queryClient.invalidateQueries(API_URL.ALL_SELLER);
-        setLoading(false);
-        setOpenSellersModal(false);
-      } else {
-        successMsg(data.message);
-        setLoading(false);
-      }
-    },
-  });
 
   const addAdminQuery = useMutation((data) => AXIOS.post(API_URL.ADD_ADMIN, data), {
     onSuccess: (data) => {
@@ -130,10 +105,8 @@ function AdminControl() {
           <Tab label="Account Manager" />
         </Tabs>
       </Box>
-
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }} width="444px">
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-
         <AddMenuButton
           onClick={() => {
             setCurrentAdmin(null);
@@ -142,7 +115,6 @@ function AdminControl() {
           }}
         />
       </Stack>
-
       {getAllAdminQuery?.isLoading ? (
         <TablePageSkeleton row={5} column={5} />
       ) : (
@@ -161,7 +133,6 @@ function AdminControl() {
           />
         </Box>
       )}
-
       <Drawer open={open} anchor="right">
         <AddAdmin
           onClose={() => {
@@ -173,9 +144,8 @@ function AdminControl() {
           currentAdmin={currentAdmin}
         />
       </Drawer>
-
       <Drawer open={openSellersModal} anchor="right">
-        {adminType === 'accountManager' && (
+        {(adminType === 'accountManager' || adminType === 'sales') && (
           <AddSellersForAccountManager
             editAdminQuery={editAdminQuery}
             currentAdmin={currentAdmin}
@@ -183,19 +153,6 @@ function AdminControl() {
               setOpenSellersModal(false);
             }}
           />
-        )}
-        {adminType === 'sales' && (
-          <SalesManagerSellers currentAdmin={currentAdmin} onClose={() => setOpenSellersModal(false)} />
-          // <AddSeller
-          //   name={currentAdmin?.name}
-          //   team={currentAdmin}
-          //   addSellerQuery={addSellerQuery}
-          //   loading={loading}
-          //   setLoading={setLoading}
-          //   onClose={() => {
-          //     setOpenSellersModal(false);
-          //   }}
-          // />
         )}
       </Drawer>
     </Box>
