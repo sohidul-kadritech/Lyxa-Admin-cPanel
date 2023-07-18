@@ -8,6 +8,9 @@ import { StyledItem } from './helpers';
 export default function AmountDetails({ order = {} }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const exchangeRate = general?.appSetting?.exchangeRate;
+
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
   const isCashAndCancelled =
     order?.orderStatus === 'cancelled' && !order?.userCancelTnx?.length && !order?.isRefundedAfterDelivered;
@@ -138,14 +141,26 @@ export default function AmountDetails({ order = {} }) {
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
           <StyledItem
             label="Total Lyxa Profit"
-            value={(isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0).toFixed(2)}
+            isCurrency={false}
+            value={`${secondaryCurrency} ${(
+              (isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0) * exchangeRate
+            ).toFixed(2)} ~ ${currency} ${(isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0).toFixed(
+              2
+            )}`}
           />
           <StyledItem
             label="Lyxa VAT"
             value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)}
             pbsx={!isCashAndCancelled ? 0 : undefined}
           />
-          {isCashAndCancelled && <StyledItem label="Total Refunded" value={(0).toFixed(2)} total noBorder />}
+          {isCashAndCancelled && (
+            <StyledItem
+              label="Total Refunded"
+              value={`${secondaryCurrency} ${(0).toFixed(2)} ~ ${currency} ${(0).toFixed(2)}`}
+              total
+              noBorder
+            />
+          )}
         </Box>
       </Box>
     </StyledOrderDetailBox>

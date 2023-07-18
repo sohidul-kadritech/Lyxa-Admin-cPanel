@@ -18,8 +18,6 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
 
-  console.log({ order });
-
   return (
     <Box
       sx={{
@@ -114,10 +112,6 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
         <TabPanel index={2} value={currentTab} noPadding>
           <Earnings order={order} userType={userType} />
         </TabPanel>
-        {/* flag details */}
-        {/* <TabPanel index={userType === 'admin' ? 3 : 2} value={currentTab} noPadding>
-          <FlagDetails order={order} />
-        </TabPanel> */}
       </Box>
     </Box>
   );
