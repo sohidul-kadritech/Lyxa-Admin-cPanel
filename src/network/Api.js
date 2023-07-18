@@ -107,6 +107,8 @@ export const ADD_SELLER = `${ADMIN_ENDPOINT}/seller/add`;
 export const ALL_SELLER = `${ADMIN_ENDPOINT}/seller`;
 export const ALL_SELLER_ACCOUNT_MANAGER = `${ADMIN_ENDPOINT}/seller/account-manager`;
 export const REMAINING_SELLER_FOR_ACCOUNT_MANAGER = `${ADMIN_ENDPOINT}/seller/account-manager/remaining`;
+export const REMAINING_SELLER_FOR_SALES_MANAGER = `${ADMIN_ENDPOINT}/seller/sales-manager/remaining`;
+
 export const EDIT_SELLER = `${ADMIN_ENDPOINT}/seller/update`;
 export const DELETE_SELLER = `${ADMIN_ENDPOINT}/seller/delete`;
 export const SINGLE_SELLER = `${ADMIN_ENDPOINT}/seller/get-seller-details`;

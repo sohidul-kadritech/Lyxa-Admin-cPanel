@@ -12,10 +12,14 @@ function Row() {
     </Stack>
   );
 }
-function AddSellersSkeleton() {
+
+export default function AddSellersSkeleton() {
   return (
     <Box sx={{ padding: '12px 20px 10px 20px' }}>
-      <Stack gap={2} sx={{ width: '100%', borderRadius: '7px', marginTop: '20px' }}>
+      <Stack gap={5} sx={{ width: '100%', borderRadius: '7px', marginTop: '20px' }}>
+        <Row />
+        <Row />
+        <Row />
         <Row />
         <Row />
         <Row />
@@ -25,5 +29,3 @@ function AddSellersSkeleton() {
     </Box>
   );
 }
-
-export default AddSellersSkeleton;

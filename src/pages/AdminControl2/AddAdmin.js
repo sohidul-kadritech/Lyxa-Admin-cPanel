@@ -13,13 +13,6 @@ const intialData = {
   email: '',
 };
 
-// const adminTypeIndexTracker = {
-//   0: 'admin',
-//   1: 'customerService',
-//   2: 'sales',
-//   3: 'accountManager',
-// };
-
 const getAdminType = (type) => {
   if (type === 'admin') return 'Admin';
   if (type === 'customerService') return 'customer service';

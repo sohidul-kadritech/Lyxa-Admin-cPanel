@@ -5,61 +5,72 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddSellersSkeleton from './AddSellersSkeleton';
 import SellerListForAccountManager from './SellerListForAccountManager';
-import { generateAsignData, getSellersForAccountManager, tabOptionsIndex } from './helpers';
+import { getManagerSellerIds } from './helpers';
 
-function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) {
-  const [status, setStatus] = useState('all');
-  const [searchKey, setSearchKey] = useState('');
-  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
+const getQueryParams = (adminType, adminId) => ({
+  sellerStatus: 'all',
+  searchKey: '',
+  sellerType: 'all',
+  accountManagerId: adminType === 'accountManager' ? adminId : undefined,
+  salesManagerId: adminType === 'sales' ? adminId : undefined,
+});
+
+const tabOptionsIndex = {
+  0: 'all',
+  1: 'food',
+  2: 'grocery',
+  3: 'pharmacy',
+};
+
+const adminTypeToApiMap = {
+  accountManager: API_URL.REMAINING_SELLER_FOR_ACCOUNT_MANAGER,
+  sales: API_URL.REMAINING_SELLER_FOR_SALES_MANAGER,
+};
+
+export default function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) {
+  const [queryParams, setQueryParams] = useState(getQueryParams(currentAdmin?.adminType, currentAdmin?._id));
   const [currentTab, setCurrentTab] = useState(0);
-  const [sellers, setSellers] = useState(getSellersForAccountManager(currentAdmin?.sellers));
+  const [sellers, setSellers] = useState(getManagerSellerIds(currentAdmin?.sellers));
 
   function sortDataBasedOnId(a, b) {
-    // Check if both items are selected
-    if (sellers.includes(a._id) && sellers.includes(b._id)) {
-      // If both items are selected, maintain their original order
-      return 0;
-    }
-    if (sellers.includes(a._id)) {
-      // If only the first item is selected, move it to the top
-      return -1;
-    }
-    if (sellers.includes(b._id)) {
-      // If only the second item is selected, move it to the top
-      return 1;
-    }
+    // If both items are selected, maintain their original order
+    if (sellers.includes(a._id) && sellers.includes(b._id)) return 0;
+
+    // If only the first item is selected, move it to the top
+    if (sellers.includes(a._id)) return -1;
+
+    // If only the second item is selected, move it to the top
+    if (sellers.includes(b._id)) return 1;
+
     // If neither item is selected, sort based on _id
     return a._id.localeCompare(b._id);
   }
 
-  const getAllSellersQuery = useQuery(
-    [
-      API_URL.REMAINING_SELLER_FOR_ACCOUNT_MANAGER,
-      { sellerStatus: status, searchKey, sellerType: tabOptionsIndex[currentTab], accountManagerId: currentAdmin?._id },
-    ],
-    () =>
-      AXIOS.get(API_URL.REMAINING_SELLER_FOR_ACCOUNT_MANAGER, {
-        params: {
-          sellerStatus: status,
-          searchKey,
-          //   page: 1,
-          //   pageSize: 20,
-          sellerType: tabOptionsIndex[currentTab],
-          accountManagerId: currentAdmin?._id,
-        },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const query = useQuery([adminTypeToApiMap[currentAdmin?.adminType], queryParams], () =>
+    AXIOS.get(adminTypeToApiMap[currentAdmin?.adminType], {
+      params: queryParams,
+    })
   );
 
-  const asignSeller = () => {
-    const data = { currentAdmin, sellers };
-    if (generateAsignData(data)) {
-      editAdminQuery.mutate(generateAsignData(data));
+  const updateSellers = () => {
+    const data = { id: currentAdmin?._id, sellers };
+
+    if (!data?.id) {
+      successMsg(`Could not find ${currentAdmin?.adminType === 'accountManager' ? 'Account' : 'Sales'} manager!`);
+      return;
     }
+
+    if (!sellers?.length) {
+      successMsg(`Sellers cannot be empty!`);
+      return;
+    }
+
+    editAdminQuery.mutate(data);
   };
 
   return (
@@ -68,7 +79,7 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
         <StyledSearchBar
           sx={{ flex: 1 }}
           placeholder="Search"
-          onChange={debounce((e) => setSearchKey(e.target.value), 300)}
+          onChange={debounce((e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value })), 300)}
         />
       </Stack>
       <Box>
@@ -79,6 +90,7 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
             scrollButtons="auto"
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
+              setQueryParams((prev) => ({ ...prev, sellerType: tabOptionsIndex[newValue] }));
             }}
             sx={{
               '& .MuiTab-root': {
@@ -90,43 +102,37 @@ function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) 
               },
             }}
           >
-            <Tab label="All Categories" />
+            <Tab label="All" />
             <Tab label="Restaurant" />
             <Tab label="Grocery" />
             <Tab label="Pharmacy" />
           </Tabs>
         </Box>
-        {!getAllSellersQuery?.isLoading ? (
+        {query?.isLoading && <AddSellersSkeleton />}
+        {!query?.isLoading && (
           <Box pt={4}>
             <SellerListForAccountManager
               sellers={sellers}
               setSellers={setSellers}
-              data={getAllSellersQuery?.data?.data?.sellers.sort(sortDataBasedOnId) || []}
+              data={query?.data?.data?.sellers.sort(sortDataBasedOnId)}
             />
           </Box>
-        ) : (
-          <AddSellersSkeleton />
         )}
-
         <Stack sx={{ padding: '30px 0px' }}>
           <Button
             disableElevation
             variant="contained"
             disabled={editAdminQuery?.isLoading}
             onClick={() => {
-              // onSubmitSeller();
-              // setLoading(true);
-              asignSeller();
+              updateSellers();
             }}
             startIcon={<EmailOutlined />}
             fullWidth
           >
-            SAVE
+            Save
           </Button>
         </Stack>
       </Box>
     </SidebarContainer>
   );
 }
-
-export default AddSellersForAccountManager;
