@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Tooltip, Typography } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../../components/Common/Rating';
 import TablePagination from '../../../components/Common/TablePagination';
@@ -9,62 +9,6 @@ import StyledBox from '../../../components/StyledCharts/StyledBox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
 import { getShopStatusColor } from '../../ShopProfile/Info';
-
-// const IconButton = styled('span')(() => ({
-//   width: '30px',
-//   height: '30px',
-//   display: 'inline-flex',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   color: 'rgba(54, 54, 54, 0.5)',
-//   borderRadius: '50%',
-
-//   '& .MuiSvgIcon-root': {
-//     width: '16px',
-//     height: '16px',
-//   },
-
-//   '&:hover': {
-//     background: 'rgba(0, 0, 0, 0.05)',
-//   },
-// }));
-
-/*
-  sortByOrders: '',
-  sortByAvgTime: '',
-  sortByRating: '',
-  sortByProfit: '',
-*/
-
-// function CommonHeader({ title, filter, queryParams, refetch }) {
-//   const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
-//   const [render, setRender] = useState(false);
-
-//   const onClick = () => {
-//     let val = '';
-//     if (queryParams[filter] === 'asc') val = 'desc';
-//     if (queryParams[filter] === 'desc') val = '';
-//     if (queryParams[filter] === '') val = 'asc';
-
-//     props.forEach((p) => {
-//       queryParams[p] = '';
-//     });
-
-//     queryParams[filter] = val;
-
-//     setRender(!render);
-//     refetch();
-//   };
-
-//   return (
-//     <Stack direction="row" alignItems="center" gap="2px" sx={{ cursor: 'pointer' }} onClick={onClick}>
-//       <span>{title}</span>
-//       {queryParams[filter] !== '' && (
-//         <IconButton>{queryParams[filter] === 'desc' ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}</IconButton>
-//       )}
-//     </Stack>
-//   );
-// }
 
 export default function ShopListTable({
   shops,
@@ -99,14 +43,16 @@ export default function ShopListTable({
       sortable: false,
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" gap={5}>
-          <Box
-            sx={{
-              width: '11px',
-              height: '11px',
-              backgroundColor: getShopStatusColor(row)?.color,
-              borderRadius: '50%',
-            }}
-          />
+          <Tooltip title={<span style={{ textTransform: 'capitalize' }}>{getShopStatusColor(row)?.status}</span>}>
+            <Box
+              sx={{
+                width: '11px',
+                height: '11px',
+                backgroundColor: getShopStatusColor(row)?.color,
+                borderRadius: '50%',
+              }}
+            />
+          </Tooltip>
           <UserAvatar
             imgAlt="logo"
             imgUrl={row?.shopLogo}
@@ -156,9 +102,6 @@ export default function ShopListTable({
       id: 4,
       sortable: false,
       headerName: 'ORDERS',
-      // renderHeader: () => (
-      //   <CommonHeader title="ORDERS" filter="sortByOrders" queryParams={queryParams} refetch={refetch} />
-      // ),
       field: 'totalOrder',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
@@ -167,9 +110,6 @@ export default function ShopListTable({
       id: 4,
       sortable: false,
       headerName: 'AVG.TIME',
-      // renderHeader: () => (
-      //   <CommonHeader title="AVG.TIME" filter="sortByAvgTime" queryParams={queryParams} refetch={refetch} />
-      // ),
       field: 'avgOrderDeliveryTime',
       flex: 1,
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,

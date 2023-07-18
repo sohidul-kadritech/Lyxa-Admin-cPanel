@@ -1,5 +1,5 @@
 import { Edit, Visibility } from '@mui/icons-material';
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack, Tooltip, Typography } from '@mui/material';
 import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import Rating from '../../components/Common/Rating';
 import UserAvatar from '../../components/Common/UserAvatar';
@@ -21,14 +21,17 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
       headerAlign: 'left',
       renderCell: ({ row }) => (
         <Stack direction="row" gap={2.5} alignItems="center">
-          <Box
-            sx={{
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              background: riderStatusColorVariants[getRiderStatus(row)]?.color,
-            }}
-          />
+          <Tooltip title={<span style={{ textTransform: 'capitalize' }}>{getRiderStatus(row)}</span>}>
+            <Box
+              sx={{
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                background: riderStatusColorVariants[getRiderStatus(row)]?.color,
+              }}
+            />
+          </Tooltip>
+
           <UserAvatar
             imgUrl={row?.image}
             name={row?.name}
