@@ -14,7 +14,7 @@ import './ZoneMap.css';
 import { calculatePolygonArea, colorList, convertedLonLatToLatLon, getLocationFromLatLng } from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
-const defaultCenter = { lat: 0, lon: 0 };
+const defaultCenter = { lat: 23.1, lon: 80.0 };
 
 function ZoneMap({
   selectedLocation = {},
@@ -25,14 +25,15 @@ function ZoneMap({
   setCreatedZoneArea,
   currentZoneName = null,
   isEditable = true,
+  isLoading = false,
 }) {
   const [currentLocationName, setCurrentLocationName] = useState(currentZoneName || '');
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
-    currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter
+    currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
   );
   // eslint-disable-next-line no-unused-vars
-  const [selectedMarker, setSelectedMarker] = useState({ lat: 0, lon: 0 });
+  const [selectedMarker, setSelectedMarker] = useState({ lat: 23.1, lon: 80.0 });
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
@@ -51,6 +52,8 @@ function ZoneMap({
 
   // getAllStore
   const getAllStore = useQuery([API_URL.ALL_SHOP], () => AXIOS.get(API_URL.ALL_SHOP));
+
+  // const queryClient = useQueryClient();
 
   const createdPolygon = (e) => {
     const polygon = e.layer;
@@ -92,11 +95,10 @@ function ZoneMap({
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
       // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error)
+      (error) => console.log(error),
     );
     location.then((res) => {
-      console.log('current location: ', res?.data);
-      setCurrentLocationName(res?.data?.results[0]?.formatted_address);
+      setCurrentLocationName(res?.data?.results[0]?.formatted_address || 'Please relocate it');
     });
 
     const map = mapRef.current;
@@ -109,11 +111,10 @@ function ZoneMap({
   const handleFlyTo = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
     const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
       // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error)
+      (error) => console.log(error),
     );
     location.then((res) => {
-      console.log('current location: ', res?.data);
-      setCurrentLocationName(res?.data?.results[0]?.formatted_address);
+      setCurrentLocationName(res?.data?.results[0]?.formatted_address || 'Please relocate it');
     });
     const map = mapRef.current;
     if (map) {
@@ -136,11 +137,15 @@ function ZoneMap({
       handleFlyTo(currentLocation?.coordinates?.lat || 0, currentLocation?.coordinates?.lon || 0);
       return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 0, lon: 0 };
     });
-  }, [selectedLocation]);
+  }, [selectedLocation, currentLocation]);
+
+  useEffect(() => {
+    getAllStore.refetch();
+  }, [isLoading]);
 
   return (
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
-      {getAllStore.isLoading ? (
+      {getAllStore?.isLoading ? (
         <Stack
           sx={{
             position: 'absolute',

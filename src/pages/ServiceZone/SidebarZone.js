@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import TabPanel from '../../components/Common/TabPanel';
 import ZoneMap2 from './ZoneMap2';
-import { createZoneInfoData } from './helper';
+import { createZoneInfoData, getMarkerLabel } from './helper';
 
 function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName }) {
   console.log('infoData', infoData, polygon);
@@ -46,7 +46,7 @@ function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName })
                     fontSize: '16px',
                   }}
                 >
-                  {data?.name}
+                  {getMarkerLabel(data)}
                 </Typography>
               </Box>
             ))}

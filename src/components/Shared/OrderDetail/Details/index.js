@@ -17,6 +17,8 @@ export default function Detail({ order, hideIssues, userType }) {
   // eslint-disable-next-line no-unused-vars
   const [render, setRender] = useState(false);
 
+  console.log('order', order);
+
   return (
     <Stack gap={5}>
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}

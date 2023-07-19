@@ -33,8 +33,9 @@ export default function TicketTable({
       renderCell: ({ row }) => (
         <UserAvatar
           name={row?.user?.name}
+          imgUrl={row?.user?.profile_photo}
           imgStyle="circular"
-          subTitle={row?.order?.orderId}
+          subTitle={row?.orderId}
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
@@ -44,7 +45,7 @@ export default function TicketTable({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              onSelect(row);
+              onSelect({ order: row, chatType: 'order', user: row?.user });
             },
           }}
         />
@@ -62,13 +63,14 @@ export default function TicketTable({
       minWidth: 180,
       renderCell: ({ row }) => (
         <UserAvatar
-          name={row?.order?.shop?.shopName}
+          name={row?.shop?.shopName}
+          imgUrl={row?.shop?.shopLogo}
           imgStyle="circular"
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
               history.push({
-                pathname: `/shop/profile/${row?.order?.shop?._id}`,
+                pathname: `/shop/profile/${row?.shop?._id}`,
                 state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
               });
             },
@@ -86,15 +88,15 @@ export default function TicketTable({
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        if (row?.order?.deliveryBoy)
+        if (row?.deliveryBoy)
           return (
             <UserAvatar
-              name={row?.order?.deliveryBoy?.name}
+              name={row?.deliveryBoy?.name}
               imgStyle="circular"
               titleProps={{
                 sx: { color: 'primary.main', cursor: 'pointer' },
                 onClick: () => {
-                  history.push(`/riders/${row?.order?.deliveryBoy?._id}`);
+                  history.push(`/riders/${row?.deliveryBoy?._id}`);
                 },
               }}
             />

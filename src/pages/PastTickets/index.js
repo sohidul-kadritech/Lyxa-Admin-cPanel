@@ -1,29 +1,33 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import TabPanel from '../../components/Common/TabPanel';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SlideInContainer from '../OngoingTickets/SlideInContainer';
 import TicketTable from './TicketTable';
 
-const queryParamsInit = (chatType) => ({
+const queryParamsInit = () => ({
   page: 1,
   pageSize: 15,
   sortBy: 'desc',
-  chatType,
 });
 
-const tabValueToChatTypeMap = { 0: 'order', 1: 'account' };
-
 export default function PastTickets() {
-  const [queryParams, setQueryParams] = useState(queryParamsInit('order'));
+  const [queryParams, setQueryParams] = useState(queryParamsInit());
   const [currentTab, setCurrentTab] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
 
-  const query = useQuery([Api.PAST_CHATS, queryParams], () =>
-    AXIOS.get(Api.PAST_CHATS, {
+  const ordersQuery = useQuery([Api.ORDER_TYPE_PAST_CHATS, queryParams], () =>
+    AXIOS.get(Api.ORDER_TYPE_PAST_CHATS, {
+      params: queryParams,
+    })
+  );
+
+  const accountsQuery = useQuery([Api.ACCOUNT_TYPE_PAST_CHATS, queryParams], () =>
+    AXIOS.get(Api.ACCOUNT_TYPE_PAST_CHATS, {
       params: queryParams,
     })
   );
@@ -51,7 +55,7 @@ export default function PastTickets() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
-              setQueryParams((prev) => ({ ...prev, chatType: tabValueToChatTypeMap[newValue], page: 1 }));
+              setQueryParams((prev) => ({ ...prev, page: 1 }));
             }}
             sx={{
               '& .MuiTab-root': {
@@ -64,19 +68,35 @@ export default function PastTickets() {
             <Tab label="Account" />
           </Tabs>
           <Box pt={9}>
-            <TicketTable
-              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage || 1}
-              loading={query.isLoading}
-              queryParams={queryParams}
-              setQueryParams={setQueryParams}
-              ticketType="order"
-              rows={query?.data?.data?.list}
-              onSelect={(row) => {
-                console.log({ row });
-                setSidebarOpen(true);
-                setSelectedChat(row);
-              }}
-            />
+            <TabPanel index={0} value={currentTab} noPadding>
+              <TicketTable
+                totalPage={ordersQuery?.data?.data?.paginate?.metadata?.page?.totalPage || 1}
+                loading={ordersQuery.isLoading}
+                queryParams={queryParams}
+                setQueryParams={setQueryParams}
+                ticketType="order"
+                rows={ordersQuery?.data?.data?.list}
+                onSelect={(row) => {
+                  console.log({ row });
+                  setSidebarOpen(true);
+                  setSelectedChat(row);
+                }}
+              />
+            </TabPanel>
+            <TabPanel index={1} value={currentTab} noPadding>
+              <TicketTable
+                totalPage={accountsQuery?.data?.data?.paginate?.metadata?.page?.totalPage || 1}
+                loading={accountsQuery.isLoading}
+                queryParams={queryParams}
+                setQueryParams={setQueryParams}
+                ticketType="account"
+                rows={accountsQuery?.data?.data?.list}
+                onSelect={(row) => {
+                  setSidebarOpen(true);
+                  setSelectedChat(row);
+                }}
+              />
+            </TabPanel>
           </Box>
         </Box>
       </SlideInContainer>
