@@ -48,15 +48,6 @@ export function ConvertArea({ squareMeters }) {
       <Typography variant="body4">
         {squareKilometers.toFixed(2)}km<sup>2</sup>
       </Typography>
-      {/* <Typography sx={{ fontSize: '12px' }} variant="span">
-        {squareKilometers.toFixed(2)}km<sup>2</sup>
-      </Typography> */}
-      {/* <Typography sx={{ fontSize: '12px' }} variant="span">
-        {squareMiles}miles<sup>2</sup>
-      </Typography>
-      <Typography sx={{ fontSize: '12px' }} variant="span">
-        {acres}acres
-      </Typography> */}
     </Stack>
   );
   // squareMeters,
@@ -196,7 +187,7 @@ export const createZoneInfoData = (data) => {
 
 // gel location form lat lon
 export const getLocationFromLatLng = async (lat, lng) => {
-  console.log('lat lng; ', lat, lng);
+  // console.log('lat lng===> ', lat, lng);
   const location = await axios.get(API_URL.GET_LOCATION_FROM_LATLNG, {
     params: {
       latlng: `${lat},${lng}`,
@@ -204,4 +195,10 @@ export const getLocationFromLatLng = async (lat, lng) => {
     },
   });
   return location;
+};
+
+export const getMarkerLabel = (data) => {
+  if (data?.shopName) return data?.shopName;
+
+  return data.name;
 };

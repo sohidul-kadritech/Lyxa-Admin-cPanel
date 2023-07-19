@@ -7,6 +7,7 @@ const useGeoLocation = () => {
   });
 
   const onSuccess = (location) => {
+    console.log('on success', location);
     setLocation({
       loaded: true,
       isCurrent: true,
@@ -18,6 +19,7 @@ const useGeoLocation = () => {
   };
 
   const onError = (error) => {
+    console.log('on error');
     setLocation({
       loaded: true,
       isCurrent: false,
@@ -31,8 +33,7 @@ const useGeoLocation = () => {
       },
     });
   };
-
-  useEffect(() => {
+  const getCurrentLocation = () => {
     if (!('geolocation' in navigator)) {
       onError({
         code: 0,
@@ -41,9 +42,12 @@ const useGeoLocation = () => {
     }
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  };
+  useEffect(() => {
+    getCurrentLocation();
   }, []);
 
-  return location;
+  return { location, getCurrentLocation };
 };
 
 export default useGeoLocation;
