@@ -23,30 +23,37 @@ export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
   </span>
 ));
 
-export function StyledItem({
+export function SummaryItem({
+  pt,
+  pb,
+  hide,
+  tooltip,
   label,
   value,
-  total,
-  isNegative = false,
-  isRejected = false,
-  pbsx = 3.5,
-  ptxs,
-  isCurrency = true,
-  hideZero,
-  tooltip,
+  isTotal,
+  isRejected,
+  isNegative,
+  showIfZero,
+  hideCurrency,
+  exchangeRate = 1,
+  skipExchangeRate,
+  decimalPrecision = 2,
 }) {
   const theme = useTheme();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
-  if (hideZero && !value) return null;
+  if (hide) return null;
+  if (!showIfZero && !value) return null;
+  // eslint-disable-next-line no-param-reassign
+  if (skipExchangeRate) exchangeRate = 1;
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between" pb={total ? 0 : pbsx} pt={ptxs}>
+    <Stack direction="row" alignItems="center" justifyContent="space-between" pb={pb ?? 3.5} pt={pt}>
       <Typography
         variant="body2"
         lineHeight="22px"
-        className={`${isRejected ? 'rejected' : ''} ${total ? 'total' : ''}`}
+        className={`${isRejected ? 'rejected' : ''} ${isTotal ? 'total' : ''}`}
         sx={{
           color: '#363636',
 
@@ -69,7 +76,7 @@ export function StyledItem({
       <Typography
         variant="body2"
         lineHeight="22px"
-        className={`${isNegative ? 'negative' : ''} ${isRejected ? 'rejected' : ''} ${total ? 'total' : ''}`}
+        className={`${isNegative ? 'negative' : ''} ${isRejected ? 'rejected' : ''} ${isTotal ? 'total' : ''}`}
         sx={{
           color: '#737373',
 
@@ -87,7 +94,11 @@ export function StyledItem({
           },
         }}
       >
-        {isCurrency ? currency : ''} {value}
+        {typeof value === 'string' && value}
+        {typeof value !== 'string' &&
+          `${isNegative ? '- ' : ''}${hideCurrency ? '' : `${currency} `}${(
+            Math.abs(value) / exchangeRate || 0
+          ).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );

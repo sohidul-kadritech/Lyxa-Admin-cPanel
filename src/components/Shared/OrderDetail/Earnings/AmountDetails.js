@@ -1,15 +1,13 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import React from 'react';
-import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
-import { StyledItem } from './helpers';
+import { SummaryItem } from './helpers';
 
 export default function AmountDetails({ order = {} }) {
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
-  const exchangeRate = general?.appSetting?.exchangeRate;
+  const currency = order?.baseCurrency?.symbol;
+  const secondaryCurrency = order?.secondaryCurrency?.code;
+  const shopExchangeRate = order?.shopExchangeRate;
 
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
   const isCashAndCancelled =
@@ -18,14 +16,11 @@ export default function AmountDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
-        <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
+        <SummaryItem label="Total Order Amount" value={totalPayment} exchangeRate={shopExchangeRate} showIfZero />
         {/* discount / marketing */}
-        <StyledItem
+        <SummaryItem
           label="Loyalty Points"
-          value={
-            isCashAndCancelled ? 0 : order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut
-          }
-          hideZero
+          value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
           tooltip={
             <Box>
               <span>Total Loyalty Points cut from lyxa and shop</span>
@@ -37,130 +32,154 @@ export default function AmountDetails({ order = {} }) {
                 }}
               >
                 <li>
-                  Applied by lyxa {currency} {order?.rewardRedeemCut?.rewardAdminCut || 0}
+                  Applied by lyxa {currency} {order?.rewardRedeemCut?.rewardAdminCut / shopExchangeRate || 0}
                 </li>
                 <li>
-                  Applied by shop {currency} {order?.rewardRedeemCut?.rewardShopCut || 0}
+                  Applied by shop {currency} {order?.rewardRedeemCut?.rewardShopCut / shopExchangeRate || 0}
                 </li>
               </ul>
             </Box>
           }
+          hide={isCashAndCancelled}
         />
-        <StyledItem
-          label="Buy 1 Get 1 (admin) "
-          value={isCashAndCancelled ? 0 : order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
+        <SummaryItem
+          label="Buy 1 Get 1 (admin)"
+          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
-          hideZero
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
-          label="Buy 1 Get 1  (shop)"
-          value={isCashAndCancelled ? 0 : order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
-          hideZero
+        <SummaryItem
+          label="Buy 1 Get 1 (shop)"
+          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
           tooltip="Buy 1 Get 1 deal added by shop"
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
+        <SummaryItem
           label="Discount (admin)"
-          value={isCashAndCancelled ? 0 : order?.discountCut?.discountAdminCut}
-          hideZero
+          value={order?.discountCut?.discountAdminCut}
           tooltip="Discount deal added by admin"
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
+        <SummaryItem
           label="Discount (shop)"
-          value={isCashAndCancelled ? 0 : order?.discountCut?.discountShopCut}
-          hideZero
+          value={order?.discountCut?.discountShopCut}
           tooltip="Discount deal added by shop"
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
+        <SummaryItem
           label="Free Delivery (admin)"
-          value={isCashAndCancelled ? 0 : order?.orderDeliveryCharge?.dropCut}
-          hideZero
+          value={order?.orderDeliveryCharge?.dropCut}
           tooltip="Free Delivery added by admin"
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
+        <SummaryItem
           label="Free Delivery (shop)"
-          value={isCashAndCancelled ? 0 : order?.orderDeliveryCharge?.shopCut}
-          hideZero
+          value={order?.orderDeliveryCharge?.shopCut}
           tooltip="Free Delivery added by shop"
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
-        <StyledItem
+        <SummaryItem
           label="Coupon Discount "
-          value={isCashAndCancelled ? 0 : order?.summary?.couponDiscountAmount || 0}
+          value={order?.summary?.couponDiscountAmount}
           tooltip="Discount coupon created by admin"
-          hideZero
+          exchangeRate={shopExchangeRate}
+          hide={isCashAndCancelled}
         />
         {/* not needed for butler order */}
         {!order?.isButler && (
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
-            <StyledItem label="Shop Profit" value={(isCashAndCancelled ? 0 : order?.sellerEarnings || 0).toFixed(2)} />
-            <StyledItem
-              label="Shop VAT"
-              value={(isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop || 0).toFixed(2)}
+            <SummaryItem
+              label="Shop Profit"
+              value={isCashAndCancelled ? 0 : order?.sellerEarnings}
+              showIfZero
+              exchangeRate={shopExchangeRate}
             />
-            <StyledItem
+            <SummaryItem
+              label="Shop VAT"
+              value={isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop}
+              showIfZero
+              exchangeRate={shopExchangeRate}
+            />
+            <SummaryItem
               label="Deal compensation amount"
               value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuAdminCut}
               tooltip="This amount in already included in shop profit"
-              hideZero
               isRejected
+              exchangeRate={shopExchangeRate}
             />
           </Box>
         )}
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
-          <StyledItem
+          <SummaryItem
             label="Rider Profit"
-            isCurrency={!order?.shop?.haveOwnDeliveryBoy}
             value={
               order?.shop?.haveOwnDeliveryBoy
                 ? 'Self'
-                : (isCashAndCancelled ? 0 : order?.deliveryBoyFee || 0).toFixed(2)
+                : isCashAndCancelled
+                ? 0
+                : order?.deliveryBoyFee / shopExchangeRate || 0
             }
+            showIfZero
+            exchangeRate={shopExchangeRate}
           />
-          {/* order?.summary?.deliveryFee */}
         </Box>
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           {!order?.shop?.haveOwnDeliveryBoy && (
-            <StyledItem
+            <SummaryItem
               label="Lyxa Delivery Profit"
-              value={(isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromDelivery || 0).toFixed(2)}
+              value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromDelivery}
+              showIfZero
+              exchangeRate={shopExchangeRate}
             />
           )}
-          <StyledItem
+          <SummaryItem
             label="Lyxa Order Profit"
-            value={(isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromOrder || 0).toFixed(2)}
+            value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromOrder}
+            showIfZero
+            exchangeRate={shopExchangeRate}
           />
-          <StyledItem
+          <SummaryItem
             label="Deal compensation amount"
             value={
               isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut
             }
             tooltip="This amount already in included lyxa profit"
-            hideZero
             isRejected
+            hide={isCashAndCancelled}
+            exchangeRate={shopExchangeRate}
           />
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
-          <StyledItem
+          <SummaryItem
             label="Total Lyxa Profit"
             isCurrency={false}
-            value={`${secondaryCurrency} ${(
-              (isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0) * exchangeRate
-            ).toFixed(2)} ~ ${currency} ${(isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0).toFixed(
-              2
-            )}`}
+            value={`${secondaryCurrency} ${
+              isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount || 0
+            } ~ ${currency} ${(isCashAndCancelled
+              ? 0
+              : order?.dropCharge?.totalDropAmount / shopExchangeRate || 0
+            ).toFixed(2)}`}
           />
-          <StyledItem
+          <SummaryItem
             label="Lyxa VAT"
-            value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)}
-            pbsx={!isCashAndCancelled ? 0 : undefined}
+            value={order?.vatAmount?.vatForAdmin}
+            pb={isCashAndCancelled ? undefined : 0}
+            showIfZero
+            exchangeRate={shopExchangeRate}
           />
-          {isCashAndCancelled && (
-            <StyledItem
-              label="Total Refunded"
-              value={`${secondaryCurrency} ${(0).toFixed(2)} ~ ${currency} ${(0).toFixed(2)}`}
-              total
-              noBorder
-            />
-          )}
+          <SummaryItem
+            label="Total Refunded"
+            value={`${secondaryCurrency} ${0} ~ ${currency} ${(0).toFixed(2)}`}
+            isTotal
+            pb={0}
+            hide={!isCashAndCancelled}
+          />
         </Box>
       </Box>
     </StyledOrderDetailBox>

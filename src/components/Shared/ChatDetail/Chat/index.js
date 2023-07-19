@@ -21,6 +21,7 @@ const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : ch
 
 export default function Chat({ chat, onClose, onAcceptChat }) {
   const queryClient = useQueryClient();
+  console.log('orderId', getOrderId(chat));
 
   const { socket } = useSelector((store) => store.socketReducer);
   const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats));

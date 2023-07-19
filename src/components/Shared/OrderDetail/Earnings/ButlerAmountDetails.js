@@ -1,9 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box } from '@mui/material';
 import React from 'react';
 import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
-import { StyledItem } from './helpers';
 
 export default function ButlerAmountDetails({ order = {} }) {
   const { general } = useGlobalContext();
@@ -14,7 +13,7 @@ export default function ButlerAmountDetails({ order = {} }) {
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
-      <Box pt={2}>
+      {/* <Box pt={2}>
         <StyledItem label="Total Order Amount" value={(totalPayment || 0).toFixed(2)} />
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <StyledItem
@@ -38,7 +37,7 @@ export default function ButlerAmountDetails({ order = {} }) {
           />
           <StyledItem label="Lyxa VAT" value={(order?.vatAmount?.vatForAdmin || 0).toFixed(2)} pbsx={0} />
         </Box>
-      </Box>
+      </Box> */}
     </StyledOrderDetailBox>
   );
 }
