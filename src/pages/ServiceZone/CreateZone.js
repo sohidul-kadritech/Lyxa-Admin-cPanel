@@ -1,5 +1,5 @@
-import { LocationOnOutlined } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Stack, Typography, useTheme } from '@mui/material';
+import { Cached, LocationOnOutlined, MyLocation } from '@mui/icons-material';
+import { Box, Button, CircularProgress, IconButton, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line no-unused-vars
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import React, { useState } from 'react';
@@ -8,6 +8,7 @@ import ModalContainer from './ModalContainer';
 import ZoneMap from './ZoneMap';
 
 import { ConvertArea, convertedLatLonToLonLat, validateEditedData } from './helper';
+import useGeoLocation from './useGeoLocation';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
@@ -15,9 +16,11 @@ const fieldContainerSx = {
   flex: '1',
 };
 
-function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }) {
+function CreateZone({ onClose, addNewZone, allZones, ...props }) {
   const theme = useTheme();
   const [searchLoading, setSearchLoading] = useState(false);
+
+  const { location: currentLocation, getCurrentLocation } = useGeoLocation();
 
   const [createdZoneGeometry, setCreatedZoneGeometry] = useState([
     [0, 0],
@@ -26,7 +29,7 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
   ]);
 
   // eslint-disable-next-line no-unused-vars
-  // const [createdZoneStatus, setCreatedZoneStatus] = useState('active');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [createdZoneName, setCreatedZoneName] = useState('');
 
@@ -211,7 +214,10 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
             setCreatedZoneArea={setCreatedZoneArea}
-          ></ZoneMap>
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+
           {addNewZone?.isLoading && (
             <Stack
               sx={{ position: 'absolute', top: '0', left: '0', zIndex: '9999', backdropFilter: 'blur(10px)' }}
@@ -236,11 +242,36 @@ function CreateZone({ onClose, addNewZone, allZones, currentLocation, ...props }
               </Typography>
               <ConvertArea squareMeters={polygonArea} />
             </Box>
-            <Box>
+            <Stack direction="row" alignItems="center" gap={{ xs: 2, sm: 3, lg: 4 }}>
+              <IconButton
+                disabled={addNewZone?.isLoading}
+                onClick={() => {
+                  setTimeout(() => {
+                    setIsLoading(true);
+                  }, 500);
+                  setTimeout(() => {
+                    setIsLoading(false);
+                  }, 500);
+                }}
+                variant="outlined"
+                color="primary"
+              >
+                <Cached />
+              </IconButton>
+              <IconButton
+                disabled={addNewZone?.isLoading}
+                onClick={() => {
+                  getCurrentLocation();
+                }}
+                variant="outlined"
+                color="primary"
+              >
+                <MyLocation />
+              </IconButton>
               <Button disabled={addNewZone?.isLoading} onClick={createNewZone} variant="contained" color="primary">
                 Save Zone
               </Button>
-            </Box>
+            </Stack>
           </Stack>
         </Box>
       </Box>
