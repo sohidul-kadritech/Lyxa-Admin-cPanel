@@ -23,7 +23,6 @@ import EditZone from './EditZone';
 import MapOverview from './MapOverview';
 import ServiceZonePageSkeleton from './ServiceZonePageSkeleton';
 import SidebarZone from './SidebarZone';
-import useGeoLocation from './useGeoLocation';
 
 const dateFormation = (date) => moment(date).format('MMMM D, YYYY');
 
@@ -84,7 +83,6 @@ function AddMenuButton({ ...props }) {
 function ServiceZone() {
   const theme = useTheme();
 
-  const currentLocation = useGeoLocation();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [zoneId, setZoneId] = useState('');
   const [open, setOpen] = useState(false);
@@ -474,7 +472,6 @@ function ServiceZone() {
               {actionType === 'add' ? (
                 <CreateZone
                   allZones={getAllZones?.data?.data?.zones || []}
-                  currentLocation={currentLocation}
                   addNewZone={addNewZone}
                   onClose={() => {
                     console.log('add');

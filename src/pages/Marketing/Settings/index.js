@@ -37,7 +37,6 @@ import {
 } from './helpers';
 
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -149,18 +148,16 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [hasGlobalChange, setHasGlobalChange] = useState(false);
   const [queryEnabled, setQueryEnabled] = useState(true);
 
-  // const [duration, setDuration] = useState(durationInit);
-  // eslint-disable-next-line no-unused-vars
   const [dateRange, setDateRange] = useState(1);
   const [spendLimit, setSpendLimit] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
+  console.log('moment', Math.ceil(moment().diff(moment().startOf('day'), 'days', true)));
+
   const setLocalData = (data) => {
     setProducts(data?.products);
-    // setDuration(data?.duration);
-    console.log('date-range', getDateRange(data));
     setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
     setItemSelectType(data?.itemSelectionType);
@@ -370,7 +367,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         products: productsData,
         duration: {
           start: moment().format('YYYY-MM-DD'),
-          end: moment().add(dateRange, 'days').format('YYYY-MM-DD'),
+          end: moment()
+            .add(dateRange - 1, 'days')
+            .format('YYYY-MM-DD'),
         },
         spendLimit: spendLimitChecked ? spendLimit : 0,
         status: status || 'active',
@@ -649,27 +648,11 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   <DateSliderPicker
                     value={dateRange}
                     onChange={(event) => {
+                      if (event.target.value === 0) return;
                       setDateRange(event.target.value);
                     }}
                   />
                 </Box>
-                {/* <Stack direction="row" alignItems="center" gap={5} pt={1}>
-                  
-                  <Stack gap={2.5}>
-                    <Typography variant="body2">Start Date - End Date</Typography>
-                    <StyledDateRangePicker
-                      startDate={duration.start}
-                      endDate={duration.end}
-                      onChange={({ startDate, endDate }) => {
-                        setDuration((prev) => ({
-                          ...prev,
-                          start: startDate?._d,
-                          end: endDate?._d,
-                        }));
-                      }}
-                    />
-                  </Stack>
-                </Stack> */}
               </StyledAccordion>
               {/* spend limit */}
               <StyledAccordion
@@ -760,7 +743,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               </StyledAccordion>
             </Box>
           ) : (
-            /* duration */
             <Box>
               <StyledAccordion
                 isOpen={marketingQuery?.data?.isMarketing || currentExpanedTab === 0}
