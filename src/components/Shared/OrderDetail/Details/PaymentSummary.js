@@ -52,6 +52,7 @@ export default function PaymentDetails({ order = {} }) {
           isCurrency={order?.summary?.deliveryFee > 0}
           value={order?.summary?.deliveryFee > 0 ? (order?.summary?.deliveryFee).toFixed(2) : 'FREE'}
         />
+
         {order?.summary?.riderTip > 0 && (
           <StyledItem label="Rider Tips" value={(order?.summary?.riderTip || 0).toFixed(2)} />
         )}
@@ -126,6 +127,7 @@ export default function PaymentDetails({ order = {} }) {
             ).toFixed(2)}`}
             total
             noBorder
+            isCurrency={false}
           />
         )}
       </Box>
