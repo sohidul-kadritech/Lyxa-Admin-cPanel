@@ -1,97 +1,63 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { useGlobalContext } from '../../../../context';
+import { Box } from '@mui/material';
+import { SummaryItem } from '../Earnings/helpers';
 import { StyledOrderDetailBox } from '../helpers';
-
-function StyledItem({ label, value, total, noBorder, isNegative = false, isRejected = false, isCurrency = true }) {
-  const theme = useTheme();
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
-
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      pb={total ? 0 : 3.5}
-      pt={total ? 2.5 : 0}
-      borderTop={total && !noBorder ? '1px solid #EEEEEE' : undefined}
-    >
-      <Typography variant="body2" color="textPrimary" lineHeight="22px" fontWeight={total ? 700 : undefined}>
-        {label}
-      </Typography>
-      <Typography
-        variant="body2"
-        lineHeight="22px"
-        color={!isNegative ? (total ? 'textPrimary' : '#737373') : isRejected ? '#6c757d' : theme.palette.danger.main}
-        fontWeight={total ? 700 : undefined}
-      >
-        {isCurrency ? currency : ''} {value}
-      </Typography>
-    </Stack>
-  );
-}
 
 export default function PaymentDetails({ order = {} }) {
   const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
   const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
-  const exchangeRate = general?.appSetting?.exchangeRate;
+  const currency = order?.baseCurrency?.symbol;
+  const secondaryCurrency = order?.secondaryCurrency?.code;
+  const shopExchangeRate = order?.shopExchangeRate;
+  const adminExchangeRate = order?.adminExchangeRate;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
-        <StyledItem label="Subtotal" value={(order?.summary?.productAmount || 0).toFixed(2)} />
-
-        <StyledItem
-          label="Delivery fee"
-          isCurrency={order?.summary?.deliveryFee > 0}
-          value={order?.summary?.deliveryFee > 0 ? (order?.summary?.deliveryFee).toFixed(2) : 'FREE'}
+        <SummaryItem
+          label="Subtotal"
+          value={order?.summary?.productAmount}
+          exchangeRate={shopExchangeRate}
+          showIfZero
+          pt={0}
         />
-        {order?.summary?.riderTip > 0 && (
-          <StyledItem label="Rider Tips" value={(order?.summary?.riderTip || 0).toFixed(2)} />
-        )}
 
-        {order?.summary?.discount > 0 && (
-          <StyledItem
-            label="Discount"
-            isNegative
-            isRejected={false}
-            value={(order?.summary?.discount || 0).toFixed(2)}
-          />
-        )}
+        <SummaryItem
+          label="Delivery fee"
+          value={order?.summary?.deliveryFee > 0 ? order?.summary?.deliveryFee : 'FREE'}
+          exchangeRate={order?.shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate}
+        />
 
-        {order?.summary?.couponDiscountAmount > 0 && (
-          <StyledItem
-            label="Coupon Discount"
-            isNegative
-            isRejected={false}
-            value={(order?.summary?.couponDiscountAmount || 0).toFixed(2)}
-          />
-        )}
+        <SummaryItem label="Rider Tips" value={order?.summary?.riderTip} exchangeRate={shopExchangeRate} />
 
-        {order?.summary?.reward?.amount > 0 && (
-          <StyledItem
-            label="Rewards"
-            isNegative
-            isRejected={false}
-            value={`${(order?.summary?.reward?.amount || 0).toFixed(2)} = ${order?.summary?.reward?.points} Pts`}
-          />
-        )}
+        <SummaryItem label="Discount" value={order?.summary?.discount} isNegative exchangeRate={shopExchangeRate} />
 
-        {order?.summary?.vat > 0 && <StyledItem label="VAT" value={(order?.summary?.vat || 0).toFixed(2)} />}
+        <SummaryItem
+          label="Coupon Discount"
+          value={order?.summary?.couponDiscountAmount}
+          isNegative
+          exchangeRate={adminExchangeRate}
+        />
 
-        <StyledItem
+        <SummaryItem
+          label="Rewards"
+          value={`${currency} ${(order?.summary?.reward?.amount / shopExchangeRate || 0).toFixed(2)} = ${
+            order?.summary?.reward?.points
+          } Pts`}
+          hide={!order?.summary?.reward?.amount}
+        />
+
+        <SummaryItem label="VAT" value={order?.summary?.vat} exchangeRate={shopExchangeRate} showIfZero />
+
+        <SummaryItem
           label="Total"
-          value={`${secondaryCurrency} ${(totalPayment * exchangeRate || 0).toFixed(2)} ~ ${currency} ${(
-            totalPayment || 0
+          value={`${secondaryCurrency} ${totalPayment || 0} ~ ${currency} ${(
+            totalPayment / shopExchangeRate || 0
           ).toFixed(2)}`}
-          total
-          isCurrency={false}
+          showIfZero
+          isTotal
         />
 
         {/* group cart */}
@@ -99,35 +65,30 @@ export default function PaymentDetails({ order = {} }) {
           <Box>
             {order?.cart?.cartItems?.map((user) => {
               const total = user?.isPaid ? user?.summary?.cash + user?.summary?.wallet + user?.summary?.card || 0 : 0;
-              return (
-                <StyledItem key={user?.user?._id} label={user?.user?.name} value={(total || 0).toFixed(2)} total />
-              );
+              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total} isTotal />;
             })}
           </Box>
         )}
 
-        {order?.isRefundedAfterDelivered && (
-          <StyledItem
-            label="Total Refunded"
-            value={`${secondaryCurrency} ${(refund?.amount * exchangeRate || 0).toFixed(2)} ~ ${currency} ${(
-              refund?.amount || 0
-            ).toFixed(2)}`}
-            total
-            noBorder
-            isCurrency={false}
-          />
-        )}
+        <SummaryItem
+          label="Total Refunded"
+          value={`${secondaryCurrency} ${refund?.amount || 0} ~ ${currency} ${(
+            refund?.amount / shopExchangeRate || 0
+          ).toFixed(2)}`}
+          isTotal
+          hide={!order?.isRefundedAfterDelivered}
+          pb={0}
+        />
 
-        {order?.orderStatus === 'cancelled' && (
-          <StyledItem
-            label="Total Refunded"
-            value={`${secondaryCurrency} ${(cancel?.amount * exchangeRate || 0).toFixed(2)} ~ ${currency} ${(
-              cancel?.amount || 0
-            ).toFixed(2)}`}
-            total
-            noBorder
-          />
-        )}
+        <SummaryItem
+          label="Total Refunded"
+          value={`${secondaryCurrency} ${cancel?.amount || 0} ~ ${currency} ${(
+            cancel?.amount / shopExchangeRate || 0
+          ).toFixed(2)}`}
+          hide={order?.orderStatus !== 'cancelled'}
+          isTotal
+          pb={0}
+        />
       </Box>
     </StyledOrderDetailBox>
   );
