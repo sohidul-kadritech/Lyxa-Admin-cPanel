@@ -1,14 +1,14 @@
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import Rating from '../../../components/Common/Rating';
-import TablePagination from '../../../components/Common/TablePagination';
-import UserAvatar from '../../../components/Common/UserAvatar';
-import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
-import StyledTable from '../../../components/Styled/StyledTable3';
-import StyledBox from '../../../components/StyledCharts/StyledBox';
-import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
-import { useGlobalContext } from '../../../context';
-import { getShopStatusColor } from '../../ShopProfile/Info';
+import Rating from '../../components/Common/Rating';
+import TablePagination from '../../components/Common/TablePagination';
+import UserAvatar from '../../components/Common/UserAvatar';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
+import StyledTable from '../../components/Styled/StyledTable3';
+import StyledBox from '../../components/StyledCharts/StyledBox';
+import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
+import { useGlobalContext } from '../../context';
+import { getShopStatusColor } from '../ShopProfile/Info';
 
 export default function ShopListTable({
   shops,
@@ -21,9 +21,7 @@ export default function ShopListTable({
 }) {
   const history = useHistory();
   const { dispatchCurrentUser, general } = useGlobalContext();
-
   const { currency } = general;
-  console.log(currency);
   const routeMatch = useRouteMatch();
   const column = [
     {

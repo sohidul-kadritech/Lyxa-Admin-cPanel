@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { OrderContext } from './OrderContext';
@@ -123,16 +124,31 @@ export function SummaryItem({
 
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative ? '- ' : ''}${hideCurrency ? '' : `${baseCurrency} `}${(Math.abs(value) / excRate || 0).toFixed(
+          `${isNegative ? '- ' : ''}${hideCurrency ? '' : `${baseCurrency} `}${Math.abs(value / excRate || 0).toFixed(
             decimalPrecision
           )}`}
 
         {typeof value !== 'string' &&
           !showBaseOnly &&
-          `${isNegative ? '- ' : ''}${secondaryCurrency} ${Math.abs(value)} ~ 
+          `${isNegative ? '- ' : ''}${secondaryCurrency} ${Math.abs(value) || 0} ~ 
           ${isNegative ? '- ' : ''}
-          ${baseCurrency} ${(Math.abs(value) / excRate || 0).toFixed(decimalPrecision)}`}
+          ${baseCurrency} ${Math.abs(value / excRate || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );
 }
+
+export const getTotalOrderAmountInBase = (order) => {
+  const deliveryFee = order?.summary?.deliveryFee;
+  const totalExceptDeliveryFee = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card - deliveryFee;
+  let totalBase = 0;
+  totalBase += totalExceptDeliveryFee / order?.shopExchangeRate;
+
+  if (order?.shop?.haveOwnDeliveryBoy) {
+    totalBase += deliveryFee / order?.shopExchangeRate;
+  } else {
+    totalBase += deliveryFee / order?.adminExchangeRate;
+  }
+
+  return totalBase;
+};

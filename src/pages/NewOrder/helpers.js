@@ -4,6 +4,7 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { getTotalOrderAmountInBase } from '../../components/Shared/OrderDetail/helpers';
 
 export function TitleWithToolTip({ title, tooltip }) {
   return (
@@ -153,11 +154,8 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  // eslint-disable-next-line max-len
-  // const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
-  if (adminType === 'shop') return order?.sellerEarnings;
-  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
-  return totalPayment;
+  if (adminType === 'shop') return order?.sellerEarnings / order?.shopExchangeRate;
+  return getTotalOrderAmountInBase(order);
 };
 
 export const getThreedotMenuOptions = (order, userType) => {

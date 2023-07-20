@@ -9,6 +9,7 @@ import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import { getTotalOrderAmountInBase } from '../../components/Shared/OrderDetail/helpers';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -17,7 +18,7 @@ import OrderCancel from '../NewOrder/OrderCancel';
 import RefundOrder from '../NewOrder/RefundOrder';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
 import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
-import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
+import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
@@ -221,7 +222,7 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">
-          {currency} {(getOrderProfit(row, 'admin') || 0).toFixed(2)}
+          {currency} {getTotalOrderAmountInBase(row).toFixed(2)}
         </Typography>
       ),
     },

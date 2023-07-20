@@ -10,7 +10,7 @@ import OrderReward from './OrderReward';
 import OrderSummary from './OrderSummary';
 import OrderTimeline from './OrderTimeline';
 import PaymentMethod from './PaymentMethod';
-import PaymentDetails from './PaymentSummary';
+import PaymentSummary from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
 
 export default function Detail({ order, hideIssues, userType }) {
@@ -31,7 +31,7 @@ export default function Detail({ order, hideIssues, userType }) {
       {order?.couponDetails && <CouponDetails coupon={order?.couponDetails} />}
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
-      <PaymentDetails order={order} />
+      <PaymentSummary order={order} />
       <ResolveOrderFlag order={order} setRender={setRender} />
     </Stack>
   );

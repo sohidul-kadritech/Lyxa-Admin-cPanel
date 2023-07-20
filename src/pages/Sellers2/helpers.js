@@ -215,7 +215,6 @@ export const getEditSellerData = (data, isEdit) => {
       sellerStatus: '',
       sellerType: '',
       sellerChargeType: 'global',
-      globalDropPercentage: 1,
     };
   }
 

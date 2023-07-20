@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import React from 'react';
-import { StyledOrderDetailBox, SummaryItem } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem, getTotalOrderAmountInBase } from '../helpers';
 
 export default function ProfitDetails({ order = {} }) {
   const currency = order?.baseCurrency?.symbol;
@@ -15,7 +15,12 @@ export default function ProfitDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
-        <SummaryItem label="Total Order Amount" value={totalPayment} showIfZero />
+        <SummaryItem
+          label="Total Order Amount"
+          skipExchangeRate
+          value={`${secondaryCurrency} ${totalPayment} ~ ${currency} ${getTotalOrderAmountInBase(order).toFixed(2)}`}
+          showIfZero
+        />
         <SummaryItem
           label="Loyalty Points"
           value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
@@ -141,6 +146,7 @@ export default function ProfitDetails({ order = {} }) {
               ? 0
               : order?.dropCharge?.totalDropAmount / shopExchangeRate || 0
             ).toFixed(2)}`}
+            isTotal
           />
           <SummaryItem
             label="Lyxa VAT"

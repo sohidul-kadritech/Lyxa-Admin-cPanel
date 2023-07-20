@@ -339,7 +339,7 @@ function AddSeller({
         </Typography>
       </Box>
 
-      {newSellerData?.sellerChargeType === 'specific' && (
+      {newSellerData?.dropPercentageType === 'specific' && (
         <StyledFormField
           label={`Lyxa Charge (${globalChargeType}) *`}
           intputType="text"
@@ -347,10 +347,10 @@ function AddSeller({
             sx: { padding: '14px 0', '& .MuiTypography-h5': { textTransform: 'capitalize' } },
           }}
           inputProps={{
-            value: newSellerData?.globalDropPercentage,
+            value: newSellerData?.dropPercentage,
             placeholder: 'Charge',
             type: 'number',
-            name: 'globalDropPercentage',
+            name: 'dropPercentage',
             onChange: changeHandler,
             readOnly: isEdit && adminType !== 'admin',
           }}

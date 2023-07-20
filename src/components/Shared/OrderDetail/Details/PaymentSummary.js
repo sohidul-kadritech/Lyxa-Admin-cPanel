@@ -1,8 +1,8 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
-import { StyledOrderDetailBox, SummaryItem } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem, getTotalOrderAmountInBase } from '../helpers';
 
-export default function PaymentDetails({ order = {} }) {
+export default function PaymentSummary({ order = {} }) {
   const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
   const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
   const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
@@ -44,9 +44,9 @@ export default function PaymentDetails({ order = {} }) {
 
         <SummaryItem
           label="Total"
-          value={`${secondaryCurrency} ${totalPayment || 0} ~ ${currency} ${(
-            totalPayment / shopExchangeRate || 0
-          ).toFixed(2)}`}
+          value={`${secondaryCurrency} ${totalPayment || 0} ~ ${currency} ${getTotalOrderAmountInBase(order).toFixed(
+            2
+          )}`}
           showIfZero
           isTotal
         />
