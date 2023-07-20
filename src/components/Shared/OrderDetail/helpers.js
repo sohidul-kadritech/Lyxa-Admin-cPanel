@@ -64,7 +64,7 @@ export function SummaryItem({
 }) {
   const theme = useTheme();
   const context = useContext(OrderContext);
-  const { baseCurrency, secondaryCurrency, shopExchangeRate } = context;
+  const { baseCurrency, secondaryCurrency, shopExchangeRate } = context || {};
   let excRate = shopExchangeRate;
 
   if (hide) return null;

@@ -281,6 +281,7 @@ export const CHAT_LIST = `${ADMIN_ENDPOINT}/user-chat-request`;
 export const ACCEPT_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/accept`;
 export const SEND_MESSAGE = `${ADMIN_ENDPOINT}/user-chat-request/send-message`;
 export const SINGLE_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/chats-by-order`;
+export const SINGLE_CHAT_ACCOUNT = `${ADMIN_ENDPOINT}/user-chat-request/chats-by-account`;
 export const LAST_FIVE_ORDER = `${ADMIN_ENDPOINT}/order/get-five-order`;
 export const CHAT_REQUESTS_FOR_SINGLE_ORDER = `${ADMIN_ENDPOINT}/user-chat-request/chats-in-order`;
 export const REJECT_CHAT = `${ADMIN_ENDPOINT}/user-chat-request/reject`;
