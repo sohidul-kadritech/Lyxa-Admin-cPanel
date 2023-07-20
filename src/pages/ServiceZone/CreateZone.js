@@ -228,7 +228,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
               height="100%"
             >
               <CircularProgress color="primary" sx={{ width: '100px !important', height: '100px !important' }} />
-              <Typography>Please Wait...</Typography>
+              <Typography sx={{ color: theme.palette.primary.contrastText }}>Please Wait...</Typography>
             </Stack>
           )}
         </Box>
@@ -246,12 +246,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
               <IconButton
                 disabled={addNewZone?.isLoading}
                 onClick={() => {
-                  setTimeout(() => {
-                    setIsLoading(true);
-                  }, 500);
-                  setTimeout(() => {
-                    setIsLoading(false);
-                  }, 500);
+                  setIsLoading(!isLoading);
                 }}
                 variant="outlined"
                 color="primary"

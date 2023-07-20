@@ -166,6 +166,7 @@ export const getThreedotMenuOptions = (order, userType) => {
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
     options.push({ label: 'Update Status', value: 'update_status' });
+    options.push({ label: 'Track Order', value: 'track_order' });
   }
 
   if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
@@ -328,7 +329,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
           orderCancel?.vatAmount?.vatForAdmin,
           riderAndAdmin,
           // eslint-disable-next-line prettier/prettier
-          appVat
+          appVat,
         ),
       },
     };
@@ -344,7 +345,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
         orderCancel?.vatAmount?.vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
         // eslint-disable-next-line prettier/prettier
-        appVat
+        appVat,
       ),
     },
   };

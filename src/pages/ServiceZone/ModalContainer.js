@@ -7,22 +7,24 @@ function ModalContainer({ onClose, sx, children, title }) {
   const theme = useTheme();
   return (
     <Box sx={sx}>
-      <Stack flexDirection="row" alignItems="center" alignContent="center">
-        <Typography
-          flex={1}
-          sx={{ fontSize: '20px', fontWeight: 600, lineHeight: '24px', color: theme.palette.text.primary }}
-        >
-          {title || 'No Title'}
-        </Typography>
-        <CloseButton
-          disableRipple
-          onClick={onClose}
-          sx={{
-            color: theme.palette.text.primary,
-          }}
-        />
+      <Stack sx={{ height: '100%' }}>
+        <Stack flexDirection="row" alignItems="center" alignContent="center">
+          <Typography
+            flex={1}
+            sx={{ fontSize: '20px', fontWeight: 600, lineHeight: '24px', color: theme.palette.text.primary }}
+          >
+            {title || 'No Title'}
+          </Typography>
+          <CloseButton
+            disableRipple
+            onClick={onClose}
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+          />
+        </Stack>
+        <Box sx={{ flex: 1, marginTop: '20px', overflow: 'auto' }}>{children}</Box>
       </Stack>
-      {children}
     </Box>
   );
 }
