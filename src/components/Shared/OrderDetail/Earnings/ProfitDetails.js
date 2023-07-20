@@ -1,10 +1,9 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import React from 'react';
-import { StyledOrderDetailBox } from '../helpers';
-import { SummaryItem } from './helpers';
+import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
-export default function AmountDetails({ order = {} }) {
+export default function ProfitDetails({ order = {} }) {
   const currency = order?.baseCurrency?.symbol;
   const secondaryCurrency = order?.secondaryCurrency?.code;
   const shopExchangeRate = order?.shopExchangeRate;
@@ -16,8 +15,7 @@ export default function AmountDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
-        <SummaryItem label="Total Order Amount" value={totalPayment} exchangeRate={shopExchangeRate} showIfZero />
-        {/* discount / marketing */}
+        <SummaryItem label="Total Order Amount" value={totalPayment} showIfZero />
         <SummaryItem
           label="Loyalty Points"
           value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
@@ -46,72 +44,54 @@ export default function AmountDetails({ order = {} }) {
           label="Buy 1 Get 1 (admin)"
           value={order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Buy 1 Get 1 (shop)"
           value={order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
           tooltip="Buy 1 Get 1 deal added by shop"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Discount (admin)"
           value={order?.discountCut?.discountAdminCut}
           tooltip="Discount deal added by admin"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Discount (shop)"
           value={order?.discountCut?.discountShopCut}
           tooltip="Discount deal added by shop"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Free Delivery (admin)"
           value={order?.orderDeliveryCharge?.dropCut}
           tooltip="Free Delivery added by admin"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Free Delivery (shop)"
           value={order?.orderDeliveryCharge?.shopCut}
           tooltip="Free Delivery added by shop"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         <SummaryItem
           label="Coupon Discount "
           value={order?.summary?.couponDiscountAmount}
           tooltip="Discount coupon created by admin"
-          exchangeRate={shopExchangeRate}
           hide={isCashAndCancelled}
         />
         {/* not needed for butler order */}
         {!order?.isButler && (
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
-            <SummaryItem
-              label="Shop Profit"
-              value={isCashAndCancelled ? 0 : order?.sellerEarnings}
-              showIfZero
-              exchangeRate={shopExchangeRate}
-            />
-            <SummaryItem
-              label="Shop VAT"
-              value={isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop}
-              showIfZero
-              exchangeRate={shopExchangeRate}
-            />
+            <SummaryItem label="Shop Profit" value={isCashAndCancelled ? 0 : order?.sellerEarnings} showIfZero />
+            <SummaryItem label="Shop VAT" value={isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop} showIfZero />
             <SummaryItem
               label="Deal compensation amount"
               value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuAdminCut}
               tooltip="This amount in already included in shop profit"
               isRejected
-              exchangeRate={shopExchangeRate}
             />
           </Box>
         )}
@@ -126,7 +106,6 @@ export default function AmountDetails({ order = {} }) {
                 : order?.deliveryBoyFee / shopExchangeRate || 0
             }
             showIfZero
-            exchangeRate={shopExchangeRate}
           />
         </Box>
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
@@ -135,14 +114,12 @@ export default function AmountDetails({ order = {} }) {
               label="Lyxa Delivery Profit"
               value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromDelivery}
               showIfZero
-              exchangeRate={shopExchangeRate}
             />
           )}
           <SummaryItem
             label="Lyxa Order Profit"
             value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromOrder}
             showIfZero
-            exchangeRate={shopExchangeRate}
           />
           <SummaryItem
             label="Deal compensation amount"
@@ -152,7 +129,6 @@ export default function AmountDetails({ order = {} }) {
             tooltip="This amount already in included lyxa profit"
             isRejected
             hide={isCashAndCancelled}
-            exchangeRate={shopExchangeRate}
           />
         </Box>
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
@@ -171,7 +147,6 @@ export default function AmountDetails({ order = {} }) {
             value={order?.vatAmount?.vatForAdmin}
             pb={isCashAndCancelled ? undefined : 0}
             showIfZero
-            exchangeRate={shopExchangeRate}
           />
           <SummaryItem
             label="Total Refunded"

@@ -1,7 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
-import { SummaryItem } from '../Earnings/helpers';
-import { StyledOrderDetailBox } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentDetails({ order = {} }) {
   const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
@@ -16,23 +15,15 @@ export default function PaymentDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
-        <SummaryItem
-          label="Subtotal"
-          value={order?.summary?.productAmount}
-          exchangeRate={shopExchangeRate}
-          showIfZero
-          pt={0}
-        />
+        <SummaryItem label="Subtotal" value={order?.summary?.productAmount} showIfZero pt={0} />
 
         <SummaryItem
           label="Delivery fee"
           value={order?.summary?.deliveryFee > 0 ? order?.summary?.deliveryFee : 'FREE'}
           exchangeRate={order?.shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate}
         />
-
-        <SummaryItem label="Rider Tips" value={order?.summary?.riderTip} exchangeRate={shopExchangeRate} />
-
-        <SummaryItem label="Discount" value={order?.summary?.discount} isNegative exchangeRate={shopExchangeRate} />
+        <SummaryItem label="Rider Tips" value={order?.summary?.riderTip} />
+        <SummaryItem label="Discount" value={order?.summary?.discount} isNegative />
 
         <SummaryItem
           label="Coupon Discount"
@@ -49,7 +40,7 @@ export default function PaymentDetails({ order = {} }) {
           hide={!order?.summary?.reward?.amount}
         />
 
-        <SummaryItem label="VAT" value={order?.summary?.vat} exchangeRate={shopExchangeRate} showIfZero />
+        <SummaryItem label="VAT" value={order?.summary?.vat} showIfZero />
 
         <SummaryItem
           label="Total"
