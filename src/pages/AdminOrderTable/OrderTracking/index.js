@@ -23,7 +23,7 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       }}
     >
       <Grid container rowSpacing={{ xs: 4, lg: 1 }} columnSpacing={{ xs: 2.5, sm: 5 }}>
-        <Grid item xs={12} md={12} lg={8}>
+        <Grid item xs={12} md={12} lg={9}>
           <Box sx={{ width: '100%', height: { lg: '100%', xs: '350px', sm: '450px' } }}>
             <OrderTrackingMap
               pickup={currentOrder.pickUpLocation}
@@ -33,7 +33,7 @@ function OrderTrackingModal({ onClose, currentOrder }) {
             />
           </Box>
         </Grid>
-        <Grid item xs={12} md={12} lg={4}>
+        <Grid item xs={12} md={12} lg={3}>
           <Box sx={{ width: '100%', height: '100%' }}>
             <Detail order={currentOrder} />
           </Box>
