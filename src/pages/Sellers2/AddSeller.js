@@ -1,14 +1,16 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 import { useQuery } from 'react-query';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledInput from '../../components/Styled/StyledInput';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { statusTypeOptions } from '../Faq2/helpers';
+import PageSkeleton from '../Menu/AddProduct/PageSkeleton';
 import {
   createSellerData,
   getEditSellerData,
@@ -40,13 +42,22 @@ function AddSeller({
   setLoading,
   name = '',
 }) {
-  const [newSellerData, setNewSellerData] = useState(getEditSellerData(sellerData, isEdit));
-  const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
-  const [render, setRender] = useState(false);
   const { currentUser, general } = useGlobalContext();
-
   const { adminType } = currentUser;
   const currency = general?.currency?.symbol;
+
+  const [newSellerData, setNewSellerData] = useState({});
+  const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
+  const [render, setRender] = useState(false);
+
+  // drop charge
+  const globalDropChargeQuery = useQuery([Api.GET_DELIVERY_FEE], () => AXIOS.get(Api.GET_DELIVERY_FEE));
+  const globalCharge = globalDropChargeQuery?.data?.data?.charge?.dropPercentage;
+  const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
+
+  useEffect(() => {
+    if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, isEdit));
+  }, [globalDropChargeQuery?.data]);
 
   const changeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -60,7 +71,6 @@ function AddSeller({
   };
 
   const onDrop = (acceptedFiles, photoType) => {
-    console.log(acceptedFiles);
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
@@ -123,7 +133,10 @@ function AddSeller({
 
     try {
       const generatedData = await createSellerData(newSellerData, team, isEdit);
-      if (!generatedData?.status) {
+      console.log({ generatedData });
+
+      if (generatedData?.error) {
+        successMsg(generatedData?.msg);
         setLoading(false);
         return;
       }
@@ -135,13 +148,13 @@ function AddSeller({
     }
   };
 
-  // drop charge
-  const globalDropChargeQuery = useQuery([Api.GET_DELIVERY_FEE], () => AXIOS.get(Api.GET_DELIVERY_FEE));
-
-  const globalCharge = globalDropChargeQuery?.data?.data?.charge?.dropPercentage;
-  const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
-
-  console.log({ newSellerData });
+  if (globalDropChargeQuery?.isLoading) {
+    return (
+      <SidebarContainer title="Add Seller" onClose={onClose}>
+        <PageSkeleton />
+      </SidebarContainer>
+    );
+  }
 
   return (
     <SidebarContainer
@@ -325,6 +338,7 @@ function AddSeller({
           inputProps={{
             value: newSellerData?.sellerChargeType,
             readOnly: isEdit && adminType !== 'admin',
+            disabled: isEdit && adminType !== 'admin',
             onChange: (value) => {
               newSellerData.sellerChargeType = value;
               setRender(!render);
@@ -332,14 +346,15 @@ function AddSeller({
             items: sellerDropChargeTypes,
           }}
         />
+
         <Typography variant="body3" color="text.secondary2">
-          Global Charge is currently {globalChargeType !== 'percentage' ? `${currency}` : ''}
+          Global Charge is currently {globalChargeType !== 'percentage' ? currency : ''}
           {globalCharge || 0}
           {globalChargeType === 'percentage' ? `%` : ''}
         </Typography>
       </Box>
 
-      {newSellerData?.dropPercentageType === 'specific' && (
+      {newSellerData?.sellerChargeType === 'specific' && (
         <StyledFormField
           label={`Lyxa Charge (${globalChargeType}) *`}
           intputType="text"
@@ -353,6 +368,7 @@ function AddSeller({
             name: 'dropPercentage',
             onChange: changeHandler,
             readOnly: isEdit && adminType !== 'admin',
+            disabled: isEdit && adminType !== 'admin',
           }}
         />
       )}
@@ -426,6 +442,7 @@ function AddSeller({
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
       />
+
       <StyledFormField
         label="National ID *"
         intputType="file"
