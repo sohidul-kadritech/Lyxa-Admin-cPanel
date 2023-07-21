@@ -156,6 +156,8 @@ function AddSeller({
     );
   }
 
+  console.log(newSellerData);
+
   return (
     <SidebarContainer
       title={

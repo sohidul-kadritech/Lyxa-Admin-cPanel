@@ -37,7 +37,7 @@ export const getShopEditData = (shop) => {
 
   return {
     ...clone,
-    phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+880${shop?.phone_number}`,
+    phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+961${shop?.phone_number}`,
     shopAddress: clone?.address,
     password: '',
     shopLogo: [{ preview: shop.shopLogo }],

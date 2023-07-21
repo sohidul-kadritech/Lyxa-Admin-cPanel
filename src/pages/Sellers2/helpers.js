@@ -224,7 +224,7 @@ export const getEditSellerData = (data, globalChargeType, isEdit) => {
   return {
     ...data,
     password: '',
-    phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,
+    phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+961${data?.phone_number}`,
     sellerAddress: data?.addressSeller,
     sellerStatus: data?.status,
     profile_photo: previewGenerator(data?.profile_photo),
