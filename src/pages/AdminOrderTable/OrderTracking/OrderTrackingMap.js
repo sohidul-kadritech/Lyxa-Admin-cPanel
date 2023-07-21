@@ -4,13 +4,15 @@
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import ButlerLocation from '../../../assets/icons/butler-location.png';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
 import GroceryLocation from '../../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import RiderLocation from '../../../assets/icons/riderPin.png';
-import { dummyLocationRider } from './helpers';
+import './gmap.css';
+import { dummyLocationRider, getTitleForMarker } from './helpers';
 
 const orderTypeToIconMap = {
   grocery: GroceryLocation,
@@ -39,9 +41,24 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
   const sidebar = useRef();
   const floatingPanel = useRef();
 
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
+
+  const redirectWithId = (id, type) => {
+    console.log('click me');
+    const path = type === 'shop' ? '/shop/profile/' : type === 'user' ? '/accounts/' : '/riders/';
+    history.push({
+      pathname: `${path}${id}`,
+      state: {
+        from: routeMatch?.path,
+
+        backToLabel: 'Back to Order List',
+      },
+    });
+  };
+
   useEffect(() => {
     let isMounted = true;
-
     const directionsRenderer_ = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     const directionsService_ = new google.maps.DirectionsService();
     setdirectionsRenderer(directionsRenderer_);
@@ -49,7 +66,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
     const map = new google.maps.Map(mapRef.current, {
       center: { lat: pickup?.latitude, lng: pickup?.longitude },
-      zoom: 12,
+      zoom: 15,
       disableDefaultUI: true,
     });
 
@@ -57,47 +74,27 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     const userIcon = {
       url: CustomerLocation,
       scaledSize: new google.maps.Size(30, 60),
-      anchor: new google.maps.Point(14, 43),
-      labelOrigin: new google.maps.Point(15, -9),
     };
 
     const shopIcon = {
       url: orderTypeToIconMap[orderType],
       scaledSize: new google.maps.Size(30, 60),
-      anchor: new google.maps.Point(14, 43),
-      labelOrigin: new google.maps.Point(15, -9),
     };
 
     const RiderIcon = {
       url: orderTypeToIconMap.rider,
       scaledSize: new google.maps.Size(60, 60),
-      anchor: new google.maps.Point(14, 43),
-      labelOrigin: new google.maps.Point(30, -9),
     };
 
-    new google.maps.Marker({
+    const shopLocation = new google.maps.Marker({
       position: { lat: pickup?.latitude, lng: pickup?.longitude },
       icon: shopIcon,
-      title: order?.shop?.shopName,
-      label: {
-        text: order?.shop?.shopName,
-        color: '#525252',
-        fontSize: '20px',
-        fontWeight: 'bold',
-      },
       map,
     });
 
-    new google.maps.Marker({
+    const userLocation = new google.maps.Marker({
       position: { lat: dropoff?.latitude, lng: dropoff?.longitude },
       icon: userIcon,
-      title: order?.user?.name,
-      label: {
-        text: order?.user?.name,
-        color: '#525252',
-        fontSize: '20px',
-        fontWeight: 'bold',
-      },
       map,
     });
 
@@ -107,15 +104,52 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
         lng: 90.41418541219299,
       },
       icon: RiderIcon,
-      title: order?.deliveryBoy?.name || 'Rider Title',
-      label: {
-        text: order?.deliveryBoy?.name || 'Rider label',
-        color: '#525252',
-        fontSize: '20px',
-        fontWeight: 'bold',
-      },
       map,
     });
+
+    // Rider Title
+
+    let infowindowForRider = new google.maps.InfoWindow({
+      content: getTitleForMarker(order?.deliveryBoy?.name || 'Rider Title'),
+    });
+
+    infowindowForRider.open(map, riderLocation);
+
+    // shop title
+
+    let infowindowForShop = new google.maps.InfoWindow({
+      content: getTitleForMarker(order?.shop?.shopName || 'Rider Title'),
+    });
+
+    infowindowForShop.open(map, shopLocation);
+
+    // user title
+
+    let infowindowForUser = new google.maps.InfoWindow({
+      content: getTitleForMarker(order?.user?.name || 'User Title Not Found'),
+    });
+
+    infowindowForUser.open(map, userLocation);
+
+    riderLocation.addListener('click', () => {
+      redirectWithId(order?.deliveryBoy?._id, 'rider');
+    });
+
+    shopLocation.addListener('click', () => {
+      redirectWithId(order?.shop?._id, 'shop');
+    });
+
+    userLocation.addListener('click', () => {
+      redirectWithId(order?.user?._id, 'user');
+    });
+
+    // fit all the markers
+    let bounds = new google.maps.LatLngBounds();
+    bounds.extend(riderLocation.getPosition());
+    bounds.extend(userLocation.getPosition());
+    bounds.extend(shopLocation.getPosition());
+    map.fitBounds(bounds);
+
     function moveMarker() {
       let lat = riderLocation.getPosition().lat();
       let lng = riderLocation.getPosition().lng();
@@ -177,6 +211,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
     const control = floatingPanel.current;
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+
     // calculateAndDisplayRoute(directionsService_, directionsRenderer_);
 
     return () => {

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
@@ -68,6 +69,8 @@ export function SummaryItem({
   const { baseCurrency, secondaryCurrency, shopExchangeRate } = context || {};
   let excRate = shopExchangeRate;
 
+  console.log('context', context);
+
   if (hide) return null;
   if (!showIfZero && !value) return null;
 
@@ -125,7 +128,7 @@ export function SummaryItem({
         {typeof value !== 'string' &&
           showBaseOnly &&
           `${isNegative ? '- ' : ''}${hideCurrency ? '' : `${baseCurrency} `}${Math.abs(value / excRate || 0).toFixed(
-            decimalPrecision
+            decimalPrecision,
           )}`}
 
         {typeof value !== 'string' &&

@@ -76,6 +76,7 @@ export default function Table({
     if (menu === 'track_order') {
       setCurrentOrder(order);
       setOpenOrderTrackingModal(!openOrderTrackingModal);
+      console.log('click track order');
     }
 
     if (menu === 'refund_order') {

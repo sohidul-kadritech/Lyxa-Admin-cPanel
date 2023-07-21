@@ -23,7 +23,7 @@ export default function Detail({ order, hideIssues, userType }) {
     <Stack gap={5}>
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
       <OrderTimeline order={order} />
-      {order.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
+      {order?.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
       <DeliveryDetails order={order} />
       {order?.isButler && <ButlerOrderSummary order={order} />}
       {!order?.isButler && <OrderSummary order={order} />}

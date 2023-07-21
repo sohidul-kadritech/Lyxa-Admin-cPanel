@@ -1,6 +1,7 @@
 import { Box, Grid, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import Detail from '../../../components/Shared/OrderDetail/Details';
+import OrderContextProvider from '../../../components/Shared/OrderDetail/OrderContext';
 import ModalContainer from '../../ServiceZone/ModalContainer';
 import OrderTrackingMap from './OrderTrackingMap';
 
@@ -8,9 +9,20 @@ function OrderTrackingModal({ onClose, currentOrder }) {
   const theme = useTheme();
   console.log('currentOrder', currentOrder);
 
+  const value = useMemo(
+    () => ({
+      baseCurrency: currentOrder?.baseCurrency?.symbol,
+      secondaryCurrency: currentOrder?.secondaryCurrency?.code,
+      shopExchangeRate: currentOrder?.shopExchangeRate,
+      adminExchangeRate: currentOrder?.adminExchangeRate,
+    }),
+    // eslint-disable-next-line prettier/prettier
+    [],
+  );
+
   return (
     <ModalContainer
-      title={`Track Order #${currentOrder?.autoGenId}`}
+      title={`Track Order #${currentOrder?.orderId}`}
       onClose={onClose}
       sx={{
         width: '96vw',
@@ -34,8 +46,10 @@ function OrderTrackingModal({ onClose, currentOrder }) {
           </Box>
         </Grid>
         <Grid item xs={12} md={12} lg={3}>
-          <Box sx={{ width: '100%', height: '100%' }}>
-            <Detail order={currentOrder} />
+          <Box sx={{ width: '100%', height: { lg: '90vh', xs: '100%' }, overflow: { lg: 'auto', xs: 'hidden' } }}>
+            <OrderContextProvider value={value}>
+              <Detail order={currentOrder} />
+            </OrderContextProvider>
           </Box>
         </Grid>
       </Grid>

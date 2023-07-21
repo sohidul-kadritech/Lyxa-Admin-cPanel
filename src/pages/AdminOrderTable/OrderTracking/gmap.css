@@ -1,0 +1,12 @@
+.gm-style-iw + div {
+  display: none;
+  padding: '0';
+}
+
+.gm-ui-hover-effect {
+  display: none !important;
+  padding: '0';
+}
+.gm-style-iw-d {
+  overflow: hidden !important;
+}
