@@ -1,11 +1,11 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
-import { StyledOrderDetailBox, SummaryItem, getTotalOrderAmountInBase } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem, getTotalOrderInSecondary } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
   const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
   const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
-  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
+  const total = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 
   const currency = order?.baseCurrency?.symbol;
   const secondaryCurrency = order?.secondaryCurrency?.code;
@@ -34,7 +34,7 @@ export default function PaymentSummary({ order = {} }) {
 
         <SummaryItem
           label="Rewards"
-          value={`${currency} ${(order?.summary?.reward?.amount / shopExchangeRate || 0).toFixed(2)} = ${
+          value={`${currency} ${(order?.summary?.reward?.amount || 0).toFixed(2)} = ${
             order?.summary?.reward?.points
           } Pts`}
           hide={!order?.summary?.reward?.amount}
@@ -44,9 +44,7 @@ export default function PaymentSummary({ order = {} }) {
 
         <SummaryItem
           label="Total"
-          value={`${secondaryCurrency} ${totalPayment || 0} ~ ${currency} ${getTotalOrderAmountInBase(order).toFixed(
-            2
-          )}`}
+          value={`${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`}
           showIfZero
           isTotal
         />
@@ -63,9 +61,8 @@ export default function PaymentSummary({ order = {} }) {
 
         <SummaryItem
           label="Total Refunded"
-          value={`${secondaryCurrency} ${refund?.amount || 0} ~ ${currency} ${(
-            refund?.amount / shopExchangeRate || 0
-          ).toFixed(2)}`}
+          value={refund?.amount}
+          exchangeRate={adminExchangeRate}
           isTotal
           hide={!order?.isRefundedAfterDelivered}
           pb={0}
@@ -73,9 +70,8 @@ export default function PaymentSummary({ order = {} }) {
 
         <SummaryItem
           label="Total Refunded"
-          value={`${secondaryCurrency} ${cancel?.amount || 0} ~ ${currency} ${(
-            cancel?.amount / shopExchangeRate || 0
-          ).toFixed(2)}`}
+          value={cancel?.amount}
+          exchangeRate={adminExchangeRate}
           hide={order?.orderStatus !== 'cancelled'}
           isTotal
           pb={0}

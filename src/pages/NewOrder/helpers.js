@@ -4,7 +4,6 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
-import { getTotalOrderAmountInBase } from '../../components/Shared/OrderDetail/helpers';
 
 export function TitleWithToolTip({ title, tooltip }) {
   return (
@@ -154,8 +153,8 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  if (adminType === 'shop') return order?.sellerEarnings / order?.shopExchangeRate;
-  return getTotalOrderAmountInBase(order);
+  if (adminType === 'shop') return order?.sellerEarnings;
+  return order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 };
 
 export const getThreedotMenuOptions = (order, userType) => {
@@ -327,7 +326,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
           orderCancel?.vatAmount?.vatForAdmin,
           riderAndAdmin,
           // eslint-disable-next-line prettier/prettier
-          appVat,
+          appVat
         ),
       },
     };
@@ -343,7 +342,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
         orderCancel?.vatAmount?.vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
         // eslint-disable-next-line prettier/prettier
-        appVat,
+        appVat
       ),
     },
   };

@@ -60,17 +60,19 @@ export function SummaryItem({
   hideCurrency,
   exchangeRate,
   skipExchangeRate,
+  useAdminRate,
   decimalPrecision = 2,
   showBaseOnly,
 }) {
   const theme = useTheme();
   const context = useContext(OrderContext);
-  const { baseCurrency, secondaryCurrency, shopExchangeRate } = context || {};
+  const { baseCurrency, secondaryCurrency, shopExchangeRate, adminExchangeRate } = context || {};
   let excRate = shopExchangeRate;
 
   if (hide) return null;
   if (!showIfZero && !value) return null;
 
+  if (useAdminRate) excRate = adminExchangeRate;
   if (exchangeRate) excRate = exchangeRate;
   if (skipExchangeRate) excRate = 1;
 
@@ -124,30 +126,31 @@ export function SummaryItem({
 
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative ? '- ' : ''}${hideCurrency ? '' : `${baseCurrency} `}${Math.abs(value / excRate || 0).toFixed(
+          `${isNegative ? '-' : ''}${hideCurrency ? '' : `${baseCurrency} `}${Math.abs(value).toFixed(
             decimalPrecision
           )}`}
 
         {typeof value !== 'string' &&
           !showBaseOnly &&
-          `${isNegative ? '- ' : ''}${secondaryCurrency} ${Math.abs(value) || 0} ~ 
-          ${isNegative ? '- ' : ''}
-          ${baseCurrency} ${Math.abs(value / excRate || 0).toFixed(decimalPrecision)}`}
+          `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.abs(value) * excRate || 0} ~ 
+          ${isNegative ? '-' : ''}
+          ${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );
 }
 
-export const getTotalOrderAmountInBase = (order) => {
+export const getTotalOrderInSecondary = (order) => {
   const deliveryFee = order?.summary?.deliveryFee;
   const totalExceptDeliveryFee = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card - deliveryFee;
+
   let totalBase = 0;
-  totalBase += totalExceptDeliveryFee / order?.shopExchangeRate;
+  totalBase += totalExceptDeliveryFee * order?.shopExchangeRate;
 
   if (order?.shop?.haveOwnDeliveryBoy) {
-    totalBase += deliveryFee / order?.shopExchangeRate;
+    totalBase += deliveryFee * order?.shopExchangeRate;
   } else {
-    totalBase += deliveryFee / order?.adminExchangeRate;
+    totalBase += deliveryFee * order?.adminExchangeRate;
   }
 
   return totalBase;

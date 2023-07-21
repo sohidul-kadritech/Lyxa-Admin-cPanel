@@ -9,7 +9,6 @@ import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import OrderDetail from '../../components/Shared/OrderDetail';
-import { getTotalOrderAmountInBase } from '../../components/Shared/OrderDetail/helpers';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -228,11 +227,16 @@ export default function Table({
       field: 'profit',
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <Typography variant="body4">
-          {currency} {getTotalOrderAmountInBase(row).toFixed(2)}
-        </Typography>
-      ),
+      renderCell: ({ row }) => {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const total = row?.summary?.cash + row?.summary?.wallet + row?.summary?.card;
+
+        return (
+          <Typography variant="body4">
+            {currency} {(total || 0).toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       showFor: ['delivered', 'low-rating'],
