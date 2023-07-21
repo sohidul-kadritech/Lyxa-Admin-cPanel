@@ -1,16 +1,59 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Stack, Typography, debounce, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import AppPagination from '../../components/Common/AppPagination2';
 import StyledTable from '../../components/Styled/StyledTable3';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import { createDataForTable, getZoneStatusColor } from './helper';
 
-function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
+import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
+
+function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
   const [loading, setIsloading] = useState(true);
   const [tempAllZones, setTempAllZones] = useState([]);
+  const [pageNo, setPageNo] = useState(1);
+
+  const [searchedValue, setSearchedValue] = useState('');
+
+  // eslint-disable-next-line no-unused-vars
+  const [totalPage, setTotalPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedPageSize, setSelectedPageSize] = useState(5);
   const theme = useTheme();
 
-  // console.log('data is ready for table: ', Promise.resolve(createDataForTable(getAllZone)));
   // eslint-disable-next-line no-unused-vars
+  const getAllZones = useQuery(
+    [API_URL.GET_ALL_ZONE, { searchedValue }],
+    () =>
+      AXIOS.get(API_URL.GET_ALL_ZONE, {
+        params: {
+          zoneStatus: 'active',
+          page: pageNo,
+          searchKey: searchedValue,
+          pageSize: selectedPageSize,
+        },
+        // eslint-disable-next-line prettier/prettier
+      }),
+    {
+      onSuccess: (data) => {
+        setIsloading(true);
+        if (data.status) {
+          setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+
+          // eslint-disable-next-line no-unused-vars
+          const filteredData = createDataForTable(data?.data?.zones).then((data) => {
+            setTempAllZones(data);
+            setIsloading(false);
+          });
+        } else {
+          setIsloading(false);
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
 
   const columns = [
     {
@@ -118,16 +161,16 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
     },
   ];
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
-    const data = createDataForTable(getAllZone).then((data) => {
-      setTempAllZones(data);
-      setIsloading(false);
-    });
-  }, [getAllZone]);
-
   return (
     <Box>
+      <Stack direction="row" marginBottom={5}>
+        <StyledSearchBar
+          sx={{ flex: 1 }}
+          placeholder="Search"
+          onChange={debounce((e) => setSearchedValue(e.target.value), 300)}
+        />
+      </Stack>
+
       <Box
         sx={{
           pr: 5,
@@ -169,6 +212,15 @@ function MapOverview({ setIsSideBarOpen, getAllZone, setCurrentRowData }) {
             }}
           />
         )}
+      </Box>
+      <Box marginTop={5}>
+        <AppPagination
+          currentPage={pageNo}
+          lisener={(newPage) => {
+            setPageNo(newPage);
+          }}
+          totalPage={totalPage}
+        />
       </Box>
     </Box>
   );

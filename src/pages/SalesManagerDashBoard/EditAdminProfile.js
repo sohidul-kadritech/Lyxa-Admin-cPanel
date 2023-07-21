@@ -40,7 +40,7 @@ export const generateEditAdminData = (data) => {
   }
   return {
     ...data,
-    number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,
+    number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+961${data?.phone_number}`,
     profile_photo: previewGenerator(data?.profile_photo),
     password: '',
   };
@@ -86,7 +86,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
     );
     setNewAdminData((prev) => ({
       ...prev,

@@ -27,6 +27,7 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
 
   const isNewChat = chat?.status === 'pending';
   const totalOrderAmount = chat?.order?.summary?.cash + chat?.order?.summary?.wallet + chat?.order?.summary?.card || 0;
+  const shopExchangeRate = chat?.order?.shopExchangeRate;
 
   return (
     <Stack direction="row" alignItems="center" gap={5}>
@@ -60,7 +61,7 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
             {chat?.user?.name}
           </Typography>
           <Typography variant="body4" fontWeight={400}>
-            {chat?.order?.orderId}
+            {chat?.shortId}
           </Typography>
         </Stack>
         <Stack direction="row" alignItems="center" gap={5}>
@@ -82,10 +83,12 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
               New
             </Box>
           )}
-          <Typography variant="body4" fontWeight={600}>
-            {currency}
-            {totalOrderAmount}
-          </Typography>
+          {chat?.chatType === 'order' && (
+            <Typography variant="body4" fontWeight={600}>
+              {currency}
+              {(totalOrderAmount / shopExchangeRate || 0).toFixed(2)}
+            </Typography>
+          )}
           <Typography variant="body4" fontWeight={400}>
             {getChatCreatedAtTime(chat?.createdAt)}
           </Typography>

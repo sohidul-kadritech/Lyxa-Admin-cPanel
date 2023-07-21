@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 export const statusColorVariants = {
   active: {
     color: '#417C45',
@@ -13,34 +14,12 @@ export const statusColorVariants = {
     color: '#FFAB09',
     background: 'rgba(255, 176, 23, 0.2)',
   },
+};
 
-  //   preparing: {
-  //     color: '#00A3FF',
-  //     background: '#F1FAFF',
-  //   },
-
-  //   ready_to_pickup: {
-  //     color: '#00A3FF',
-  //     background: '#F1FAFF',
-  //   },
-
-  //   order_on_the_way: {
-  //     color: '#00A3FF',
-  //     background: '#F1FAFF',
-  //   },
-
-  //   delivered: {
-  //     color: '#00A3FF',
-  //     background: '#F1FAFF',
-  //   },
-
-  //   cancelled: {
-  //     color: '#DD5B63',
-  //     background: '#FEE2E2',
-  //   },
-
-  //   refused: {
-  //     color: '#454545',
-  //     background: '#F0F0F0',
-  //   },
+export const createChatFromOrder = (order) => {
+  const recentRequest =
+    order?.admin_chat_request?.at(-1) || order?.admin_chat_request?.[order?.admin_chat_request?.length - 1];
+  recentRequest.order = order;
+  recentRequest.user = order?.user;
+  return recentRequest;
 };

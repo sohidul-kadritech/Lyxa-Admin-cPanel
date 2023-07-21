@@ -40,7 +40,6 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 

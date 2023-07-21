@@ -55,10 +55,11 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       onSuccess: (data) => {
         if (data?.status) {
           successMsg(data?.message, data?.status ? 'success' : undefined);
-          setConfirmModal(false);
+          currentCoupon.hidden = true;
           setCurrentCoupon({});
+          setConfirmModal(false);
+          queryClient.invalidateQueries([Api.GET_COUPON]);
         }
-        queryClient.invalidateQueries([Api.GET_COUPON]);
       },
     }
   );
@@ -313,7 +314,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
             autoHeight
             columns={columns}
             getRowId={(row) => row?._id}
-            rows={rows}
+            rows={rows?.filter((row) => !row?.hidden)}
             rowHeight={71}
             components={{
               NoRowsOverlay: () => (
