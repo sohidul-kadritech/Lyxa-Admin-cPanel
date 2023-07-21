@@ -19,7 +19,7 @@ export const statusColorVariants = {
 export const createChatFromOrder = (order) => {
   const recentRequest =
     order?.admin_chat_request?.at(-1) || order?.admin_chat_request?.[order?.admin_chat_request?.length - 1];
-
-  const chat = { order, chatType: 'order', user: order?.user, reasonMessage: recentRequest?.reasonMessage };
-  return chat;
+  recentRequest.order = order;
+  recentRequest.user = order?.user;
+  return recentRequest;
 };
