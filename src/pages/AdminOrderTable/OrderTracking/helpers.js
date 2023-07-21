@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const dummyLocationRider = [
   {
     lat: 23.774390073503145,
@@ -13,10 +14,7 @@ export const dummyLocationRider = [
     lat: 23.774390073503145,
     lng: 90.41431147600194,
   },
-  {
-    lat: 23.774353831368657,
-    lng: 90.41479577122536,
-  },
+
   {
     lat: 23.774372233228494,
     lng: 90.41452009867814,
@@ -41,3 +39,13 @@ export const dummyLocationRider = [
     lng: 90.4160650508899,
   },
 ];
+
+// alert('${title}')
+
+// eslint-disable-next-line no-unused-vars
+export const getTitleForMarker = (title) =>
+  // console.log(route);
+  `<div style="padding:6px 10px 0px;position:relative;right:8px; width:auto;">
+    <p style="text-align:center;font-size:16px;font-weight:bold;color:#5E97A9;cursor:pointer;"
+    ><b>${title}</b></p>
+  </div>`;

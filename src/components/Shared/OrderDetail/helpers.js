@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
@@ -68,6 +69,8 @@ export function SummaryItem({
   const context = useContext(OrderContext);
   const { baseCurrency, secondaryCurrency, shopExchangeRate, adminExchangeRate } = context || {};
   let excRate = shopExchangeRate;
+
+  console.log('context', context);
 
   if (hide) return null;
   if (!showIfZero && !value) return null;

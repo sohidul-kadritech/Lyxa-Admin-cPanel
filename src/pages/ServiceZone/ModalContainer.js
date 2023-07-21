@@ -23,7 +23,7 @@ function ModalContainer({ onClose, sx, children, title }) {
             }}
           />
         </Stack>
-        <Box sx={{ flex: 1, marginTop: '20px', overflow: 'auto' }}>{children}</Box>
+        <Box sx={{ flex: 1, marginTop: '20px', overflow: { lg: 'hidden', xs: 'auto' } }}>{children}</Box>
       </Stack>
     </Box>
   );
