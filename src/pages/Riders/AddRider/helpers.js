@@ -187,7 +187,7 @@ export const createRiderData = async (rider) => {
 
 export const convertEditRiderData = (rider, riderFor, riderShop) => ({
   ...rider,
-  number: parsePhoneNumber(rider?.number) ? rider?.number : `+880${rider?.number}`,
+  number: parsePhoneNumber(rider?.number) ? rider?.number : `+961${rider?.number}`,
   image: [{ preview: rider?.image }],
   contractImage: [{ preview: rider?.contractImage }],
   nationalIdDocument: [{ preview: rider?.nationalIdDocument }],

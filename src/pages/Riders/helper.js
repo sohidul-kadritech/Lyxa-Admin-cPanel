@@ -1,3 +1,5 @@
+import { successMsg } from '../../helpers/successMsg';
+
 export const riderStatusColorVariants = {
   deactive: {
     color: '#FFAB09',
@@ -81,4 +83,12 @@ export const getRiderStatus = (rider) => {
   if (!rider?.availability) return 'busy';
   if (rider?.liveStatus === 'online') return 'online';
   return '';
+};
+
+export const getRiderLocation = (lat, lng) => {
+  if (lat && lng) {
+    return;
+  }
+
+  successMsg('Rider not found!', 'warn');
 };

@@ -1,6 +1,7 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as MapIcon } from '../../../../assets/icons/map-colored.svg';
 import { StyledOrderDetailBox } from '../helpers';
 import CallUser from './CallUser';
@@ -8,6 +9,9 @@ import OrderTrackingMap from './OrderTracking';
 
 export default function DeliveryDetails({ order = {} }) {
   const [mapOpen, setOpen] = useState(false);
+
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
 
   return (
     <StyledOrderDetailBox
@@ -40,6 +44,15 @@ export default function DeliveryDetails({ order = {} }) {
         <Box pt={3} pb={4}>
           <CallUser
             disableContainerStyle
+            onClickName={() =>
+              history.push({
+                pathname: `/accounts/${order?.user?._id}`,
+                state: {
+                  from: routeMatch?.path,
+                  backToLabel: 'Back to previous',
+                },
+              })
+            }
             user={{
               name: order?.deliveryBoy?.name,
               image: order?.deliveryBoy?.image,

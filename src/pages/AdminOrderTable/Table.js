@@ -17,7 +17,8 @@ import OrderCancel from '../NewOrder/OrderCancel';
 import RefundOrder from '../NewOrder/RefundOrder';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
 import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
-import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
+import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
+import OrderTrackingModal from './OrderTracking';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
@@ -58,6 +59,8 @@ export default function Table({
   const [openRefundModal, setOpenRefundModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
+  const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
+
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
       setFlagModal(true);
@@ -67,6 +70,12 @@ export default function Table({
     if (menu === 'cancel_order') {
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
+    }
+
+    if (menu === 'track_order') {
+      setCurrentOrder(order);
+      setOpenOrderTrackingModal(!openOrderTrackingModal);
+      console.log('click track order');
     }
 
     if (menu === 'refund_order') {
@@ -219,11 +228,16 @@ export default function Table({
       field: 'profit',
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <Typography variant="body4">
-          {currency} {(getOrderProfit(row, 'admin') || 0).toFixed(2)}
-        </Typography>
-      ),
+      renderCell: ({ row }) => {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const total = row?.summary?.cash + row?.summary?.wallet + row?.summary?.card;
+
+        return (
+          <Typography variant="body4">
+            {currency} {(total || 0).toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       showFor: ['delivered', 'low-rating'],
@@ -375,6 +389,10 @@ export default function Table({
             setOpenRefundModal(false);
           }}
         />
+      </Modal>
+
+      <Modal open={openOrderTrackingModal} centered>
+        <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
       </Modal>
     </>
   );

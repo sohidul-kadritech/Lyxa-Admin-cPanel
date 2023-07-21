@@ -116,27 +116,27 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
 
   if (!profile_photo) {
     return {
-      status: false,
+      error: true,
       msg: 'Error uploading profile photo image!',
     };
   }
 
   if (!certificate_of_incorporation) {
     return {
-      status: false,
+      error: true,
       msg: 'Error uploading certification of incorporation image',
     };
   }
 
   if (!national_id) {
     return {
-      status: false,
+      error: true,
       msg: 'Error uploading national id image',
     };
   }
   if (!sellerContractPaper) {
     return {
-      status: false,
+      error: true,
       msg: 'Error uploading contract paper image',
     };
   }
@@ -151,6 +151,7 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
       sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
       national_id,
       sellerContractPaper,
+      sellerChargeType: undefined,
     };
   }
 
@@ -161,6 +162,7 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
     national_id,
     sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
     sellerContractPaper,
+    sellerChargeType: undefined,
   };
 
   return team?.adminType === 'sales' && team?._id ? { ...newData, createdBy: team?._id } : { ...newData };
@@ -209,25 +211,26 @@ export const tabsOptions = [
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
 
-export const getEditSellerData = (data, isEdit) => {
+export const getEditSellerData = (data, globalChargeType, isEdit) => {
   if (!isEdit) {
     return {
       sellerStatus: '',
       sellerType: '',
       sellerChargeType: 'global',
-      globalDropPercentage: 1,
+      dropPercentageType: globalChargeType,
     };
   }
 
   return {
     ...data,
     password: '',
-    phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+880${data?.phone_number}`,
+    phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+961${data?.phone_number}`,
     sellerAddress: data?.addressSeller,
     sellerStatus: data?.status,
     profile_photo: previewGenerator(data?.profile_photo),
     certificate_of_incorporation: previewGenerator(data?.certificate_of_incorporation),
     national_id: previewGenerator(data?.national_id),
     sellerContractPaper: previewGenerator(data?.sellerContractPaper),
+    dropPercentageType: globalChargeType,
   };
 };

@@ -38,8 +38,8 @@ function RequestedArea() {
   //   },
   //   zoom: 12,
   // };
-  const { coordinates } = useGeoLocation();
-
+  const { location } = useGeoLocation();
+  const { coordinates } = location;
   const [currentArea, setCurrentArea] = useState([
     {
       location: {
@@ -143,56 +143,23 @@ function RequestedArea() {
             borderRadius: '10px',
           }}
         >
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              padding: '40px 0px',
-              overflow: 'hidden',
+          <GoogleMapReact
+            bootstrapURLKeys={{
+              key: GOOGLE_API_KEY,
+              language: 'en',
+              libraries: ['places'],
             }}
+            yesIWantToUseGoogleMapApiInternals
+            defaultCenter={{
+              lat: currentArea[0]?.location?.coordinates[1],
+              lng: currentArea[0]?.location?.coordinates[0],
+            }}
+            defaultZoom={zoemLevel}
           >
-            <Box
-              sx={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '7px',
-                overflow: 'hidden',
-              }}
-            >
-              <GoogleMapReact
-                bootstrapURLKeys={{
-                  key: GOOGLE_API_KEY,
-                  language: 'en',
-                  libraries: ['places'],
-                }}
-                yesIWantToUseGoogleMapApiInternals
-                defaultCenter={{
-                  lat: currentArea[0]?.location?.coordinates[1],
-                  lng: currentArea[0]?.location?.coordinates[0],
-                }}
-                defaultZoom={zoemLevel}
-              >
-                {currentArea?.map((area, i) => (
-                  <PointerWrapper key={i} lat={area?.location?.coordinates[1]} lng={area?.location?.coordinates[0]} />
-                ))}
-              </GoogleMapReact>
-            </Box>
-            {/* <div style={{ height: '600px', width: '100%' }}>
-              <GoogleMapReact
-                bootstrapURLKeys={{
-                  key: GOOGLE_API_KEY,
-                  language: 'en',
-                  region: 'US',
-                  libraries: ['places'],
-                }}
-                yesIWantToUseGoogleMapApiInternals
-                defaultCenter={defaultProps.center}
-                defaultZoom={defaultProps.zoom}
-              >
-                <PointerWrapper lat={0} lng={0} />
-              </GoogleMapReact>
-            </div> */}
-          </Box>
+            {currentArea?.map((area, i) => (
+              <PointerWrapper key={i} lat={area?.location?.coordinates[1]} lng={area?.location?.coordinates[0]} />
+            ))}
+          </GoogleMapReact>
         </ModalContainer>
       </Modal>
     </Box>

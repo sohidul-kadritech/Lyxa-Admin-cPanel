@@ -194,7 +194,7 @@ function Appsettings2() {
           }
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
@@ -216,7 +216,7 @@ function Appsettings2() {
           }
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 1 && data[0].status) {
@@ -226,7 +226,7 @@ function Appsettings2() {
           setNewAppSettings(data[0]?.data?.appSetting);
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else {
@@ -234,7 +234,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // reset data
@@ -254,7 +254,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type,
+        type
       ) &&
       type === 'text'
     ) {
@@ -274,7 +274,6 @@ function Appsettings2() {
   };
 
   // Handle Incremented by one
-
   const incrementByOneHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
@@ -295,7 +294,6 @@ function Appsettings2() {
   };
 
   // Handle Incremented by five
-
   const incrementByFiveHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
@@ -317,10 +315,16 @@ function Appsettings2() {
   };
 
   const updateData = () => {
+    console.log({ newAppSettings });
     const generatedData = appSettingsValidateData(oldAppSettings, newAppSettings);
 
     if (isUsedSecondaryCurrency === 'enable' && !newAppSettings.secondaryCurrency?.symbol) {
       successMsg('Select a secondary currency or disable it!', 'error');
+      return;
+    }
+
+    if (newAppSettings?.exchangeRate <= 1) {
+      successMsg('Exchange rate should be greater than 1!', 'error');
       return;
     }
 
@@ -336,10 +340,10 @@ function Appsettings2() {
     const updatedUnits = separatesUpdatedData(
       oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name),
+      units?.map((unit) => unit.name)
     );
 
-    console.log('update  units: ', updatedUnits);
+    console.log('', updatedUnits);
     console.log('generatedData', generatedData);
 
     if (hasChanged) {
@@ -369,7 +373,6 @@ function Appsettings2() {
   return (
     <Box sx={{ backgroundColor: '#fbfbfb' }}>
       <PageTop
-        // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -461,7 +464,7 @@ function Appsettings2() {
                       setNewAppSettings,
                       newAppSettings?.searchDeliveryBoyKm,
                       // eslint-disable-next-line prettier/prettier
-                      'searchDeliveryBoyKm',
+                      'searchDeliveryBoyKm'
                     );
                   } else {
                     successMsg('Maximum 3 items can add ');
@@ -519,7 +522,7 @@ function Appsettings2() {
                     setNewAppSettings,
                     newAppSettings?.maxDiscount,
                     // eslint-disable-next-line prettier/prettier
-                    'maxDiscount',
+                    'maxDiscount'
                   );
                 }}
                 onDelete={(item) => {
