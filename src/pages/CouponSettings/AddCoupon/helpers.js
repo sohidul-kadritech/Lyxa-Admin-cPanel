@@ -62,7 +62,6 @@ export const validateCoupon = (coupon, couponType) => {
     return error;
   }
 
-  // if (!coupon?.couponValue && coupon?.couponDiscountType !== 'free_delivery') {
   if (!coupon?.couponValue) {
     error.message = 'Coupon value cannot be empty!';
     return error;
@@ -80,11 +79,6 @@ export const validateCoupon = (coupon, couponType) => {
       error.message = 'Coupon user cannot be empty!';
       return error;
     }
-
-    // if (!coupon?.couponShops?.length && !coupon?.couponShopTypes?.length) {
-    //   error.message = 'Must have cuopon shop category or custom shop!';
-    //   return error;
-    // }
   }
 
   if (couponType === 'custom_coupon') {
@@ -102,17 +96,19 @@ export const validateCoupon = (coupon, couponType) => {
   return { status: true };
 };
 
-export const createCouponUploaData = (coupon) => {
+export const createCouponUploaData = (coupon, checked) => {
   const data = {};
 
   data.couponShops = coupon?.couponShops?.map((shop) => shop?._id);
   data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);
   data.couponInfluencer = coupon.couponInfluencer?._id;
 
-  // // indiviual store type
-  // if (coupon?.couponType === 'individual_store' && coupon?.couponShopTypes?.length) {
-  //   data.couponShops = [];
-  // }
+  // limits
+  Object.entries(checked).forEach(([key, value]) => {
+    if (!value || !Number(coupon[key])) {
+      data[key] = 0;
+    }
+  });
 
   return {
     ...coupon,

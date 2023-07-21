@@ -84,7 +84,9 @@ function ServiceZone() {
   const theme = useTheme();
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const [zoneId, setZoneId] = useState('');
+
   const [open, setOpen] = useState(false);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -92,6 +94,7 @@ function ServiceZone() {
   const [actionType, setActionType] = useState('add');
 
   const [rowData, setRowData] = useState({});
+
   const [currentTab, setCurrentTab] = useState(0);
 
   const [slectedZoneStatus, setSelectedZoneStatus] = useState('all');
@@ -100,6 +103,7 @@ function ServiceZone() {
 
   const [pageNo, setPageNo] = useState(1);
 
+  const [totalPage, setTotalPage] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const [selectedPageSize, setSelectedPageSize] = useState(5);
 
@@ -126,8 +130,15 @@ function ServiceZone() {
           pageSize: selectedPageSize,
           sortBy: selectedsortBy,
         },
-        // eslint-disable-next-line prettier/prettier
       }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
@@ -189,9 +200,6 @@ function ServiceZone() {
       setRowData(data);
       setOpen(true);
     }
-
-    // setRender((prev) => !prev);
-    // tagsMutation.mutate(item);
   };
 
   const columns = [
@@ -296,25 +304,6 @@ function ServiceZone() {
 
       renderCell: (value) => (
         <Stack flexDirection="row" gap="16px">
-          {/* <StyledSwitch
-            checked={value?.row?.zoneAvailability === 'online'}
-            disabled={value?.row?.zoneStatus !== 'active'}
-            onChange={() => {
-              console.log('value; ', value?.row?.zoneAvailability);
-              setActionType('updateZoneStatus');
-              if (value?.row.zoneAvailability !== 'busy') {
-                setRowData(value?.row);
-                setOpen(true);
-              } else {
-                updateAZoneQuery.mutate({
-                  zoneId: value?.row?._id,
-                  zoneAvailability: 'online',
-                  zoneBusyTitle: '',
-                  zoneBusyDescription: '',
-                });
-              }
-            }}
-          /> */}
           <Button
             sx={{
               minWidth: '32px',
@@ -466,7 +455,7 @@ function ServiceZone() {
               lisener={(newPage) => {
                 setPageNo(newPage);
               }}
-              totalPage={2}
+              totalPage={totalPage}
             />
             <Modal open={open} centered>
               {actionType === 'add' ? (

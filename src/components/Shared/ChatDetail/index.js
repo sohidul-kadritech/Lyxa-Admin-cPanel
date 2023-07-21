@@ -100,7 +100,7 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
           <Chat chat={chat} onClose={onClose} onAcceptChat={onAcceptChat} />
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor]?.order} value={currentTab} noPadding>
-          <ChatOrderDetail order={chat?.order} />
+          {chat?.chatType === 'order' && <ChatOrderDetail order={chat?.order} />}
         </TabPanel>
         <TabPanel index={showingForToTabValuesMap[showingFor]?.profile} value={currentTab} noPadding>
           <UserDetails user={chat?.user} />

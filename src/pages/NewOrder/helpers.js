@@ -153,11 +153,8 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  // eslint-disable-next-line max-len
-  // const totalAmount = order?.summary?.productAmount + (order?.orderFor !== 'global' ? order?.summary?.deliveryFee : 0);
   if (adminType === 'shop') return order?.sellerEarnings;
-  const totalPayment = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
-  return totalPayment;
+  return order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
 };
 
 export const getThreedotMenuOptions = (order, userType) => {
@@ -166,6 +163,7 @@ export const getThreedotMenuOptions = (order, userType) => {
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
     options.push({ label: 'Update Status', value: 'update_status' });
+    options.push({ label: 'Track Order', value: 'track_order' });
   }
 
   if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {

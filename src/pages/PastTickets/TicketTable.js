@@ -32,10 +32,11 @@ export default function TicketTable({
       headerAlign: 'left',
       renderCell: ({ row }) => (
         <UserAvatar
+          console={console.log({ row })}
           name={row?.user?.name}
           imgUrl={row?.user?.profile_photo}
           imgStyle="circular"
-          subTitle={row?.orderId}
+          subTitle={row?.orderId || row?.shortId}
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
@@ -45,7 +46,7 @@ export default function TicketTable({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              onSelect({ order: row, chatType: 'order', user: row?.user });
+              onSelect(row);
             },
           }}
         />
@@ -132,11 +133,14 @@ export default function TicketTable({
       id: 5,
       headerName: `LOCATION`,
       sortable: false,
-      field: 'zone',
+      field: 'location',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => {
+        const primaryAddress = row?.user?.address?.find((item) => item?.primary);
+        return <Typography variant="body4">{primaryAddress?.address}</Typography>;
+      },
     },
     {
       showFor: ['order', 'account'],

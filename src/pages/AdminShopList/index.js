@@ -2,7 +2,6 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
-// import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
@@ -38,19 +37,12 @@ const menuItems = [
 
 export default function ShopList() {
   const history = useHistory();
-
   const routeMatch = useRouteMatch();
-
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
-
   const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
-
   const [currentTab, setCurrentTab] = useState(0);
-
   const [totalPage, setTotalPage] = useState(1);
-
   const [open, setOpen] = useState(null);
-
   const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery(
@@ -64,7 +56,7 @@ export default function ShopList() {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleMenuClick = (menu, shop) => {

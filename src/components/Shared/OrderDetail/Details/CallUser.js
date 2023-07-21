@@ -17,7 +17,7 @@ const StyledButton = styled('a')(({ theme }) => ({
   },
 }));
 
-export default function CallUser({ user, userType, disableContainerStyle }) {
+export default function CallUser({ user, userType, onClickName, disableContainerStyle }) {
   // container
   const Container = disableContainerStyle ? Box : StyledOrderDetailBox;
 
@@ -29,7 +29,13 @@ export default function CallUser({ user, userType, disableContainerStyle }) {
             {user?.name?.charAt(0)}
           </Avatar>
           <Stack>
-            <Typography variant="body4" fontWeight={600}>
+            <Typography
+              color="primary"
+              onClick={onClickName}
+              sx={{ cursor: 'pointer' }}
+              variant="body4"
+              fontWeight={600}
+            >
               {user?.name}
             </Typography>
             <Typography variant="body4" fontWeight={400}>

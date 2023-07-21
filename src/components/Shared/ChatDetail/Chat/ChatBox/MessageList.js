@@ -4,6 +4,7 @@ import MessageListSkeleton from './Skeleton';
 
 export default function MessageList({ messages, loading }) {
   console.log('loading inside loader', loading);
+  console.log('messages', messages);
 
   if (loading) return <MessageListSkeleton />;
 

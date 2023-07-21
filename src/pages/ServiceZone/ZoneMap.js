@@ -32,6 +32,7 @@ function ZoneMap({
     // eslint-disable-next-line prettier/prettier
     currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
   );
+
   // eslint-disable-next-line no-unused-vars
   const [selectedMarker, setSelectedMarker] = useState({ lat: 23.1, lon: 80.0 });
 
@@ -51,10 +52,7 @@ function ZoneMap({
   const mapRef = useRef(null);
 
   // getAllStore
-  const getAllStore = useQuery([API_URL.ALL_SHOP], () => AXIOS.get(API_URL.ALL_SHOP));
-
-  // const queryClient = useQueryClient();
-
+  const getAllStore = useQuery([API_URL.ALL_SHOP, { isLoading }], () => AXIOS.get(API_URL.ALL_SHOP));
   const createdPolygon = (e) => {
     const polygon = e.layer;
     setPolygonArea(calculatePolygonArea(polygon));
@@ -138,10 +136,6 @@ function ZoneMap({
       return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 0, lon: 0 };
     });
   }, [selectedLocation, currentLocation]);
-
-  useEffect(() => {
-    getAllStore.refetch();
-  }, [isLoading]);
 
   return (
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>

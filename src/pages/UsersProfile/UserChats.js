@@ -7,6 +7,7 @@ import ChatList from '../../components/Shared/ChatList';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { createChatFromOrder } from '../PastTickets/helper';
 
 const queryParamsInit = (chatType, userId) => ({
   page: 1,
@@ -49,7 +50,7 @@ export default function UserChatList({ userId }) {
       <Box>
         <TabPanel value={currentTab} index={0} noPadding>
           <ChatList
-            chats={ordersQuery?.data?.data?.list}
+            chats={ordersQuery?.data?.data?.list?.map((chat) => createChatFromOrder(chat))}
             loading={ordersQuery?.isLoading}
             refetching={ordersQuery?.isRefetching}
             page={queryParams?.page}

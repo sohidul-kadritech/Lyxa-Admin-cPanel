@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 // project import
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -10,7 +11,6 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 
-import {} from 'react-router-dom/cjs/react-router-dom.min';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
@@ -257,7 +257,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
             gap: 1,
           }}
         >
-          {currency} {row?.deliveryBoyFee}
+          {currency} {(row?.deliveryBoyFee / row?.adminExchangeRate || 0)?.toFixed(2)}
         </Typography>
       ),
     },

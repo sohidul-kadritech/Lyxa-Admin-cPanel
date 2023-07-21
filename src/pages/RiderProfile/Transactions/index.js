@@ -71,8 +71,7 @@ export default function RiderTransactions({ riderId, showFor }) {
           setSummary(data?.data?.deliveryBoy[0]?.summary);
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   useEffect(() => {
@@ -88,7 +87,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // on receive cash
