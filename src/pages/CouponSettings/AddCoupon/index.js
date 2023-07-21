@@ -27,8 +27,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const [render, setRender] = useState(false);
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
-  // eslint-disable-next-line no-unused-vars
-  const [checked, setChecked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
+  const [checked] = useState(editCoupon?._id ? getEditCouponChecked(editCoupon) : { ...checkedInit });
   const [shopSearchKey, setShopSearchKey] = useState('');
   const [userSearchKey, setUserSearchKey] = useState('');
   const [shopOptions, setShopOptions] = useState([]);
@@ -38,10 +37,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const commonChangeHandler = (e) => {
     setCoupon((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  // const commonCheckHandler = (event, property) => {
-  //   setChecked((prev) => ({ ...prev, [property]: event.target.checked }));
-  // };
 
   // shops query
   const shopsQuery = useMutation(
@@ -105,6 +100,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       const _api = editCoupon?._id ? Api.UPDATE_COUPON : Api.ADD_COUPON;
       return AXIOS.post(_api, {
         ...data,
+        // for new coupons, "id" becomes undefined and doesn't make any effects
         id: editCoupon?._id,
       });
     },
@@ -127,7 +123,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       return;
     }
 
-    const couponData = createCouponUploaData(coupon, couponType);
+    const couponData = createCouponUploaData(coupon, checked);
     couponMutation.mutate(couponData);
   };
 
@@ -214,7 +210,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             }}
           />
         )}
-
         {/* type */}
         <StyledFormField
           label="Type"
@@ -227,7 +222,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           }}
         />
         {/* value */}
-        {/* {coupon.couponDiscountType !== 'free_delivery' && ( */}
         <StyledFormField
           label="Value"
           intputType="text"
@@ -238,7 +232,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             onChange: commonChangeHandler,
           }}
         />
-        {/* )} */}
         {/* start date */}
         <StyledFormField
           label="Duration start"
@@ -288,10 +281,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             name: 'couponAmountLimit',
             value: coupon.couponAmountLimit,
             onChange: commonChangeHandler,
-            disabled: coupon.couponAmountLimit < 1,
-            checked: coupon.couponAmountLimit >= 1,
+            disabled: !checked.couponAmountLimit,
+            checked: checked.couponAmountLimit,
             onToggle: () => {
-              coupon.couponAmountLimit = coupon.couponAmountLimit > 0 ? 0 : 1;
+              checked.couponAmountLimit = !checked.couponAmountLimit;
               setRender(!render);
             },
           }}
@@ -305,10 +298,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             name: 'couponUserLimit',
             value: coupon.couponUserLimit,
             onChange: commonChangeHandler,
-            disabled: coupon.couponUserLimit < 1,
-            checked: coupon.couponUserLimit >= 1,
+            disabled: !checked.couponUserLimit,
+            checked: checked.couponUserLimit,
             onToggle: () => {
-              coupon.couponUserLimit = coupon.couponUserLimit > 0 ? 0 : 1;
+              checked.couponUserLimit = !checked.couponUserLimit;
               setRender(!render);
             },
           }}
@@ -323,10 +316,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               name: 'couponOrderLimit',
               value: coupon.couponOrderLimit,
               onChange: commonChangeHandler,
-              disabled: coupon.couponOrderLimit < 1,
-              checked: coupon.couponOrderLimit >= 1,
+              disabled: !checked.couponOrderLimit,
+              checked: checked.couponOrderLimit,
               onToggle: () => {
-                coupon.couponOrderLimit = coupon.couponOrderLimit > 0 ? 0 : 1;
+                checked.couponOrderLimit = !checked.couponOrderLimit;
                 setRender(!render);
               },
             }}
@@ -341,10 +334,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             name: 'couponMinimumOrderValue',
             value: coupon.couponMinimumOrderValue,
             onChange: commonChangeHandler,
-            disabled: coupon.couponMinimumOrderValue < 1,
-            checked: coupon.couponMinimumOrderValue >= 1,
+            disabled: !checked.couponMinimumOrderValue,
+            checked: checked.couponMinimumOrderValue,
             onToggle: () => {
-              coupon.couponMinimumOrderValue = coupon.couponMinimumOrderValue > 0 ? 0 : 1;
+              checked.couponMinimumOrderValue = !checked.couponMinimumOrderValue;
               setRender(!render);
             },
           }}
@@ -374,30 +367,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           />
         )}
 
-        {/* store */}
-        {/* {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
-          <StyledFormField
-            label="Store name"
-            intputType="autocomplete"
-            inputProps={{
-              maxHeight: '110px',
-              options: shopOptions,
-              value: (coupon?.couponShops && coupon?.couponShops[0]) || null,
-              isOptionEqualToValue: (option, value) => option?._id === value?._id,
-              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
-              getOptionLabel: (option) => option?.shopName,
-              sx: {
-                flex: 1,
-              },
-              onChange: (e, v) => {
-                setCoupon((prev) => ({ ...prev, couponShops: [v] }));
-              },
-              onInputChange: (e) => {
-                getShops(e?.target?.value);
-              },
-            }}
-          />
-        )} */}
         {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
           <StyledFormField
             label="Stores"
