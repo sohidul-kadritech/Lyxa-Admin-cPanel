@@ -7,6 +7,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SlideInContainer from '../OngoingTickets/SlideInContainer';
 import TicketTable from './TicketTable';
+import { createChatFromOrder } from './helper';
 
 const queryParamsInit = () => ({
   page: 1,
@@ -77,9 +78,8 @@ export default function PastTickets() {
                 ticketType="order"
                 rows={ordersQuery?.data?.data?.list}
                 onSelect={(row) => {
-                  console.log({ row });
+                  setSelectedChat(createChatFromOrder(row));
                   setSidebarOpen(true);
-                  setSelectedChat(row);
                 }}
               />
             </TabPanel>
