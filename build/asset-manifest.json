@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.a5a06b26.css",
-    "main.js": "/static/js/main.89fdba6c.js",
+    "main.css": "/static/css/main.fb0a0da0.css",
+    "main.js": "/static/js/main.1106bf60.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -49,6 +49,7 @@
     "static/media/fa-regular-400.woff": "/static/media/fa-regular-400.8b892b7904a39e37c53d.woff",
     "static/media/user1.jpg": "/static/media/user1.43ebe3233b34365dc7a5.jpg",
     "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.c52405129ae48097815d.woff2",
+    "static/media/riderPin.png": "/static/media/riderPin.bf518ad82e06f814723b.png",
     "static/media/spritesheet.svg": "/static/media/spritesheet.a4e0eb7ad904a4858361.svg",
     "static/media/delivery2.svg": "/static/media/delivery2.58f57fbf84805c6098a5529f2293fde0.svg",
     "static/media/lyxa-text-lg.svg": "/static/media/lyxa-text-lg.ee7cb26ed19937132aae5b38caaf6fbc.svg",
@@ -138,7 +139,7 @@
     "static/media/time-inactive.svg": "/static/media/time-inactive.2efbfb72846ddf57862cfdb3d2699e6d.svg"
   },
   "entrypoints": [
-    "static/css/main.a5a06b26.css",
-    "static/js/main.89fdba6c.js"
+    "static/css/main.fb0a0da0.css",
+    "static/js/main.1106bf60.js"
   ]
 }
