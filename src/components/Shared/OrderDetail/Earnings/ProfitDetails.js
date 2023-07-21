@@ -7,6 +7,7 @@ export default function ProfitDetails({ order = {} }) {
   const currency = order?.baseCurrency?.symbol;
   const secondaryCurrency = order?.secondaryCurrency?.code;
   const adminExchangeRate = order?.adminExchangeRate;
+  const shopExchangeRate = order?.shopExchangeRate;
 
   const total = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
   const isCashAndCancelled =
@@ -18,7 +19,11 @@ export default function ProfitDetails({ order = {} }) {
         <SummaryItem
           label="Total Order Amount"
           skipExchangeRate
-          value={`${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`}
+          value={
+            shopExchangeRate > 1
+              ? `${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`
+              : total
+          }
           showIfZero
         />
         <SummaryItem

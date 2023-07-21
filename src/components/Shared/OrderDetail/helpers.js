@@ -58,7 +58,6 @@ export function SummaryItem({
   isRejected,
   isNegative,
   showIfZero,
-  hideCurrency,
   exchangeRate,
   skipExchangeRate,
   useAdminRate,
@@ -69,6 +68,9 @@ export function SummaryItem({
   const context = useContext(OrderContext);
   const { baseCurrency, secondaryCurrency, shopExchangeRate, adminExchangeRate } = context || {};
   let excRate = shopExchangeRate;
+  const hideSecondary = shopExchangeRate === 1;
+
+  console.log({ shopExchangeRate });
 
   console.log('context', context);
 
@@ -129,15 +131,13 @@ export function SummaryItem({
 
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative ? '-' : ''}${hideCurrency ? '' : `${baseCurrency} `}${Math.abs(value).toFixed(
-            decimalPrecision
-          )}`}
+          `${isNegative ? '-' : ''}${baseCurrency}${Math.abs(value).toFixed(decimalPrecision)}`}
 
         {typeof value !== 'string' &&
           !showBaseOnly &&
-          `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.abs(value) * excRate || 0} ~ 
-          ${isNegative ? '-' : ''}
-          ${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          `
+          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.abs(value) * excRate || 0} ~ `}
+          ${isNegative ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );

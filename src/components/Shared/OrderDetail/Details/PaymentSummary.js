@@ -44,7 +44,11 @@ export default function PaymentSummary({ order = {} }) {
 
         <SummaryItem
           label="Total"
-          value={`${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`}
+          value={
+            shopExchangeRate > 1
+              ? `${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`
+              : total
+          }
           showIfZero
           isTotal
         />
