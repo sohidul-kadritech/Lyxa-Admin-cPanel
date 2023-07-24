@@ -16,8 +16,7 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       shopExchangeRate: currentOrder?.shopExchangeRate,
       adminExchangeRate: currentOrder?.adminExchangeRate,
     }),
-    // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -25,18 +24,24 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       title={`Track Order #${currentOrder?.orderId}`}
       onClose={onClose}
       sx={{
-        width: '96vw',
-        height: '96vh',
-        margin: '2vh 2vw',
+        width: 'calc(100vw - 30px)',
+        height: 'calc(100vh - 30px)',
+        margin: '30px',
         padding: '36px',
         overflow: 'hidden',
         backgroundColor: theme.palette.primary.contrastText,
         borderRadius: '10px',
       }}
     >
-      <Grid container rowSpacing={{ xs: 4, lg: 1 }} columnSpacing={{ xs: 2.5, sm: 5 }}>
+      <Grid container rowSpacing={{ xs: 4, lg: 1 }} columnSpacing={{ xs: 2.5, sm: 5 }} height="100%">
         <Grid item xs={12} md={12} lg={9}>
-          <Box sx={{ width: '100%', height: { lg: '100%', xs: '350px', sm: '450px' } }}>
+          <Box
+            sx={{
+              width: '100%',
+              height: { lg: '100%', xs: '350px', sm: '450px' },
+              overflow: { lg: 'auto', xs: 'hidden' },
+            }}
+          >
             <OrderTrackingMap
               pickup={currentOrder.pickUpLocation}
               dropoff={currentOrder.dropOffLocation}
@@ -45,8 +50,18 @@ function OrderTrackingModal({ onClose, currentOrder }) {
             />
           </Box>
         </Grid>
-        <Grid item xs={12} md={12} lg={3}>
-          <Box sx={{ width: '100%', height: { lg: '90vh', xs: '100%' }, overflow: { lg: 'auto', xs: 'hidden' } }}>
+        <Grid
+          item
+          xs={12}
+          md={12}
+          lg={3}
+          sx={{
+            width: '100%',
+            overflow: { lg: 'auto', xs: 'hidden' },
+            height: { lg: '100%', md: 'auto' },
+          }}
+        >
+          <Box>
             <OrderContextProvider value={value}>
               <Detail order={currentOrder} />
             </OrderContextProvider>
