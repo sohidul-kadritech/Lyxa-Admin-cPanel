@@ -1,6 +1,6 @@
 // thrid party
 import { Cached, CalendarToday, ChevronRight, NotificationsPaused, PlayCircleFilledWhite } from '@mui/icons-material';
-import { Box, Button, Paper, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Button, Paper, Skeleton, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 
 function StatusTag({ status }) {
@@ -61,6 +61,7 @@ export default function MCard({
   status,
   loading,
   readOnly,
+  isAdminViewAsShop,
 }) {
   const theme = useTheme();
   const matches = useMediaQuery('(max-width: 1400px)');
@@ -98,7 +99,7 @@ export default function MCard({
         overflow: 'hidden',
       }}
     >
-      {disabled && (
+      {disabled && !isAdminViewAsShop && (
         <LoadingOverlay
           sx={{
             zIndex: '99',
@@ -110,7 +111,6 @@ export default function MCard({
           borderRadius: '12px',
           border: '1px solid #EEEEEE',
           padding: '16px',
-          // cursor: 'pointer',
         }}
         onClick={readOnly ? undefined : onOpen}
       >
@@ -125,7 +125,7 @@ export default function MCard({
             }}
           >
             <StatusTag status={status} />
-            {disabled && ongoingBy && status !== 'deactivated' && (
+            {status !== 'deactivated' && (
               <Button
                 variant="contained"
                 color="secondary"
@@ -145,6 +145,7 @@ export default function MCard({
                 }}
               >
                 {ongoingBy}
+                {/* The marktinman */}
               </Button>
             )}
           </Stack>
@@ -163,15 +164,30 @@ export default function MCard({
             display: 'inline-flex',
           }}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              fontSize: '19px',
-            }}
-          >
-            {title}
-          </Typography>
+          {readOnly ? (
+            // eslint-disable-next-line max-len
+            <Tooltip title="You cannot add / edit promotion while viewing as shop. Only applied promotions can be viewed as read-only.">
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '19px',
+                }}
+              >
+                {title}
+              </Typography>
+            </Tooltip>
+          ) : (
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                fontSize: '19px',
+              }}
+            >
+              {title}
+            </Typography>
+          )}
           <Box>
             <ChevronRight />
           </Box>

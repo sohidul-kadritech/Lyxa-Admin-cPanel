@@ -136,7 +136,11 @@ export function SummaryItem({
         {typeof value !== 'string' &&
           !showBaseOnly &&
           `
-          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.abs(value) * excRate || 0} ~ `}
+          ${
+            hideSecondary
+              ? ''
+              : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(Math.abs(value) * excRate) || 0} ~ `
+          }
           ${isNegative ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
