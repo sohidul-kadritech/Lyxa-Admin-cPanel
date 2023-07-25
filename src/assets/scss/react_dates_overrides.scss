@@ -1,3 +1,7 @@
+.DateRangePicker_picker {
+  z-index: 999;
+}
+
 .DateRangePicker {
   &:hover {
     & .DateRangePickerInput {

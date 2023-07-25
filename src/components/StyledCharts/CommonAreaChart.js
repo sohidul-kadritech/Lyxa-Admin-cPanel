@@ -62,7 +62,10 @@ export default function CommonAreaChart({ title, generateData, api, params, sx, 
       dateRange={range}
       setDateRange={setRange}
       title={title}
-      sx={sx}
+      sx={{
+        overflow: 'visible',
+        ...sx,
+      }}
       sm={12}
       {...gridProps}
     >
