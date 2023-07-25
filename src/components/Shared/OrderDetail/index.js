@@ -4,10 +4,12 @@ import { useMemo, useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
+import ChatRequests from './ChatReqests';
 import Details from './Details';
 import Earnings from './Earnings';
 import OrderContextProvider from './OrderContext';
 import Review from './Reviews';
+import RiderChat from './RiderChat';
 
 export default function OrderDetail({ order, onClose, hideIssues }) {
   const { currentUser } = useGlobalContext();
@@ -118,6 +120,14 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           {/* earning details */}
           <TabPanel index={2} value={currentTab} noPadding>
             <Earnings order={order} userType={userType} />
+          </TabPanel>
+          {/*  chat */}
+          <TabPanel index={3} value={currentTab} noPadding>
+            <ChatRequests order={order} />
+          </TabPanel>
+          {/* rider chat */}
+          <TabPanel index={4} value={currentTab} noPadding>
+            <RiderChat chats={order?.chats} />
           </TabPanel>
         </Box>
       </Box>

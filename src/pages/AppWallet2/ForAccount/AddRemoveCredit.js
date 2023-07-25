@@ -57,7 +57,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
         });
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -116,7 +116,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
         shopsQuery.mutate();
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   const filterOptions = createFilterOptions({

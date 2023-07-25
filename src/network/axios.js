@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import getCookiesAsObject from '../helpers/cookies/getCookiesAsObject';
 import { API_URL } from './Api';
 
@@ -11,20 +12,22 @@ const AXIOS = axios.create({
 AXIOS.interceptors.request.use(
   async (config) => {
     /**
-     * Add your request interceptor logic here: setting headers, authorization etc.
+     * headers
      */
-    let accessToken = null;
+    config.headers['Content-Type'] = 'application/json';
 
     if (document.cookie.length > 0) {
-      const { access_token } = getCookiesAsObject();
-      accessToken = access_token || null;
-    }
-
-    config.headers['Content-Type'] = 'application/json';
-    if (!config?.noAuth) {
+      const accessToken = getCookiesAsObject()?.access_token || null;
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
+    }
+    /**
+     * params
+     */
+    if (config?.params) {
+      if (config?.params?.endDate) config.params.endDate = moment(config.params.endDate).format('YYYY-MM-DD');
+      if (config?.params?.startDate) config.params.startDate = moment(config.params.startDate).format('YYYY-MM-DD');
     }
 
     return config;

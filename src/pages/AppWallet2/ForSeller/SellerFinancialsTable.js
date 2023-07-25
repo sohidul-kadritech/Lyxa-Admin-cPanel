@@ -1,14 +1,13 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-// eslint-disable-next-line import/no-named-as-default
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
+import TablePagination from '../../../components/Common/TablePagination';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { HeaderWithToolTips } from './helpers';
 
-function SellerFinancialsTable({ data = [], loading }) {
+function SellerFinancialsTable({ data = [], loading, currentPage, setPage, totalPage }) {
   const { general } = useGlobalContext();
-  // eslint-disable-next-line import/no-named-as-default
   const routeMatch = useRouteMatch();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
@@ -173,39 +172,46 @@ function SellerFinancialsTable({ data = [], loading }) {
     },
   ];
   return (
-    <Box
-      sx={{
-        padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
-      }}
-    >
-      <StyledTable
-        columns={allColumns}
-        rows={data}
-        onRowClick={({ row }) => {
-          sellerShopsTrxs(row?._id, row?.company_name);
-        }}
-        getRowId={(row) => row?._id}
+    <>
+      <Box
         sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'pointer',
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          },
+          padding: '7.5px 16px  2px',
+          border: `1px solid ${theme.palette.custom.border}`,
+          borderRadius: '7px',
         }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Transaction Found'}
-            </Stack>
-          ),
+      >
+        <StyledTable
+          columns={allColumns}
+          rows={data}
+          onRowClick={({ row }) => {
+            sellerShopsTrxs(row?._id, row?.company_name);
+          }}
+          getRowId={(row) => row?._id}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
+            },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                {loading ? 'Loading...' : 'No Transaction Found'}
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+      <TablePagination
+        currentPage={currentPage}
+        lisener={(page) => {
+          setPage(page);
         }}
+        totalPage={totalPage}
       />
-    </Box>
+    </>
   );
 }
 

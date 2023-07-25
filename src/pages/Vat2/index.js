@@ -1,4 +1,5 @@
 import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
@@ -13,7 +14,7 @@ import { AddMenuButton } from '../Faq2';
 import { sortOptions } from '../Faq2/helpers';
 import ModalContainer from '../ServiceZone/ModalContainer';
 import VatSummerySkeleton from './VatSummerySkeleton';
-import { calculatePaidVat, dateRangeInit, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
+import { calculatePaidVat, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
 const breadcrumbItems = [
@@ -26,60 +27,43 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  searchKey: '',
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  sort: '',
+  adminId: '',
+  amountRange: '',
+  amountRangeType: '',
+  type: ['VatAmountSettleByAdmin'],
+  // adminBy: '',
+};
+
 function Vat2() {
   const queryClient = useQueryClient();
-  const [range, setRange] = useState({ ...dateRangeInit });
-  const [range2, setRange2] = useState({ ...dateRangeInit });
-  const { currentUser, general } = useGlobalContext();
-  console.log(currentUser);
-  const [sort, setSort] = useState('asc');
-  // eslint-disable-next-line no-unused-vars
-  const [amountRange, setAmountRange] = useState('');
 
-  const [amountRangeType, setAmountRangeType] = useState('');
-  const [searchKey, setSearchKey] = useState('');
-  // eslint-disable-next-line no-unused-vars
+  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const { general } = useGlobalContext();
   const [settleAmount, setSettleAmount] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [adminId, setAdminId] = useState();
   const [open, setOpen] = useState(false);
-  // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
   const getCurrentCurrency = general?.currency;
   const theme = useTheme();
-  // get all admins here
   const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN], () => AXIOS.get(API_URL.GET_ALL_ADMIN));
 
-  const getAllTransaction = useQuery(
-    [
-      API_URL.GET_ALL_ADMIN_VAT,
-      {
-        searchKey,
-        startDate: range.start,
-        endDate: range.end,
-        sort,
-        adminId,
-        amountRange,
-        amountRangeType,
+  const getAllTransaction = useQuery([API_URL.GET_ALL_ADMIN_VAT, queryParams], () =>
+    AXIOS.post(API_URL.GET_ALL_ADMIN_VAT, {
+      tnxFilter: {
+        ...queryParams,
+        startDate: moment(queryParams?.startDate).format('YYYY-MM-DD'),
+        endDate: moment(queryParams?.endDate).format('YYYY-MM-DD'),
       },
-    ],
-    () =>
-      AXIOS.post(API_URL.GET_ALL_ADMIN_VAT, {
-        tnxFilter: {
-          adminBy: adminId,
-          type: ['VatAmountSettleByAdmin'],
-          searchKey,
-          amountBy: sort,
-          amountRange: amountRange || 0,
-          amountRangeType,
-          startDate: range.start,
-          endDate: range.end,
-        },
-        // eslint-disable-next-line prettier/prettier
-      }),
+    })
   );
 
   // pay vat
-  // eslint-disable-next-line no-unused-vars
   const payVatQuery = useMutation((data) => AXIOS.post(API_URL.SETTLE_ADMIN_VAT, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -93,13 +77,9 @@ function Vat2() {
     },
   });
 
-  console.log(getAllTransaction?.data?.data?.summary);
-  console.log(getAllTransaction?.data?.data?.transactions);
-  console.log(getAllAdminQuery?.data?.data);
-
   // eslint-disable-next-line no-unused-vars
   const payVat = () => {
-    if (new Date(range.start).getTime() > new Date(range.end).getTime()) {
+    if (queryParams?.startDate?.isAfter(queryParams?.endDate)) {
       successMsg('Start date cannot be greater than end date', 'error');
       return;
     }
@@ -114,12 +94,13 @@ function Vat2() {
 
     const reqBody = {
       amount: settleAmount,
-      startDate: range.start,
-      endDate: range.end,
+      startDate: queryParams?.startDate?.format('YYYY-MM-DD'),
+      endDate: queryParams?.endDate?.format('YYYY-MM-DD'),
     };
 
     payVatQuery.mutate(reqBody);
   };
+
   return (
     <Box>
       <PageTop
@@ -147,9 +128,9 @@ function Vat2() {
           <StyledSearchBar
             sx={{ flex: '1' }}
             placeholder="Search by ID"
-            onChange={(e) => setSearchKey(e.target.value)}
+            onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
           />
-          <DateRange range={range} setRange={setRange} />
+          <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
           <StyledFormField
             intputType="select"
             containerProps={{
@@ -158,14 +139,12 @@ function Vat2() {
             inputProps={{
               name: 'sort',
               placeholder: 'Sort',
-              value: sort,
+              value: queryParams?.sort,
               items: sortOptions,
               size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSort(e.target.value),
+              onChange: (e) => setQueryParams((prev) => ({ ...prev, sort: e.target.value })),
             }}
           />
-
           <StyledFormField
             intputType="select"
             containerProps={{
@@ -174,14 +153,14 @@ function Vat2() {
             inputProps={{
               name: 'amountType',
               placeholder: 'Amount Filter Type',
-              value: amountRangeType,
+              value: queryParams?.amountRangeType,
               items: vatTrxsAmountFilterOptions,
               size: 'sm2',
               //   items: categories,
-              onChange: (e) => setAmountRangeType(e.target.value),
+              onChange: (e) => setQueryParams((prev) => ({ ...prev, amountRangeType: e.target.value })),
             }}
           />
-          {Boolean(amountRangeType) && (
+          {Boolean(queryParams?.amountRangeType) && (
             <StyledFormField
               intputType="text"
               containerProps={{
@@ -205,10 +184,10 @@ function Vat2() {
                 name: 'amount_range',
                 type: 'number',
                 placeholder: 'Amount Range',
-                value: amountRange,
+                value: queryParams?.amountRange,
                 size: 'sm2',
                 //   items: categories,
-                onChange: (e) => setAmountRange(e.target.value),
+                onChange: (e) => setQueryParams((prev) => ({ ...prev, amountRange: e.target.value })),
               }}
             />
           )}
@@ -220,11 +199,11 @@ function Vat2() {
             inputProps={{
               name: 'admin',
               placeholder: 'Admin By',
-              value: adminId,
+              value: queryParams?.adminId,
               items: getAllAdminOptions(getAllAdminQuery?.data?.data?.Admins || []),
               size: 'sm2',
               //   items: categories,
-              onChange: (e) => setAdminId(e.target.value),
+              onChange: (e) => setQueryParams((prev) => ({ ...prev, adminId: e.target.value })),
             }}
           />
           <AddMenuButton title="Make Payment" isIcon={false} onClick={() => setOpen(true)} />
@@ -266,7 +245,7 @@ function Vat2() {
                 {calculatePaidVat(
                   getAllTransaction?.data?.data?.summary?.totalVat,
                   // eslint-disable-next-line prettier/prettier
-                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
+                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat
                 ) || 0}
               </Typography>
             </Box>
@@ -292,6 +271,8 @@ function Vat2() {
         data={getAllTransaction?.data?.data?.transactions}
         loading={getAllTransaction?.isLoading}
         getCurrentCurrency={getCurrentCurrency}
+        currentPage={getAllTransaction?.data?.data?.paginate?.metadata?.page?.totalPage}
+        setCurrentPage={() => {}}
       />
 
       <Modal open={open} centered>
@@ -313,7 +294,7 @@ function Vat2() {
               <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px' }} variant="h4">
                 Date
               </Typography>
-              <DateRange size="md" range={range2} setRange={setRange2} />
+              {/* <DateRange size="md" range={range2} setRange={setRange2} /> */}
             </Stack>
           </Box>
           <Box marginTop="10px">

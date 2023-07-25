@@ -1,10 +1,11 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
+import TablePagination from '../../components/Common/TablePagination';
 import StyledTable from '../../components/Styled/StyledTable3';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 
-function VatList({ data, getCurrentCurrency, loading }) {
+function VatList({ data, getCurrentCurrency, loading, currentPage, setCurrentPage, totalPage }) {
   const theme = useTheme();
   const allColumns = [
     {
@@ -82,47 +83,49 @@ function VatList({ data, getCurrentCurrency, loading }) {
       ),
     },
   ];
+
   return (
-    <Box
-      sx={{
-        backgroundColor: theme?.palette?.primary?.contrastText,
-        border: `1px solid ${theme?.palette?.custom?.border}`,
-        borderRadius: '7px',
-        padding: '10px 20px',
-        marginTop: '30px',
-      }}
-    >
-      {loading ? (
-        <TablePageSkeleton row={3} column={4} />
-      ) : (
-        <StyledTable
-          columns={allColumns}
-          rows={data || []}
-          getRowHeight={() => 'auto'}
-          getRowId={(row) => row?._id}
-          //   onRowClick={({ row }) => {
-          //     setCurrentRating(row);
-          //     setIsEdit(true);
-          //     setIsRightBarOpen(true);
-          //   }}
-          sx={{
-            '& .MuiDataGrid-cell': {
-              cursor: 'defualt',
-            },
-            //   '& .MuiDataGrid-row:hover': {
-            //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-            //   },
-          }}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Transaction Found
-              </Stack>
-            ),
-          }}
-        />
-      )}
-    </Box>
+    <>
+      <Box
+        sx={{
+          backgroundColor: theme?.palette?.primary?.contrastText,
+          border: `1px solid ${theme?.palette?.custom?.border}`,
+          borderRadius: '7px',
+          padding: '10px 20px',
+          marginTop: '30px',
+        }}
+      >
+        {loading ? (
+          <TablePageSkeleton row={3} column={4} />
+        ) : (
+          <StyledTable
+            columns={allColumns}
+            rows={data || []}
+            getRowHeight={() => 'auto'}
+            getRowId={(row) => row?._id}
+            sx={{
+              '& .MuiDataGrid-cell': {
+                cursor: 'defualt',
+              },
+            }}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No Entry Found
+                </Stack>
+              ),
+            }}
+          />
+        )}
+      </Box>
+      <TablePagination
+        currentPage={currentPage}
+        lisener={(page) => {
+          setCurrentPage(page);
+        }}
+        totalPage={totalPage}
+      />
+    </>
   );
 }
 

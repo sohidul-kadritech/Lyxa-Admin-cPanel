@@ -43,7 +43,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const theme = useTheme();
   const queryClient = useQueryClient();
 
-  const [isPageDisabled, setIsPageDisabled] = useState(false);
+  const [isPageDisabled, setIsPageDisabled] = useState(true);
   const [termAndCondition, setTermAndCondition] = useState(false);
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -195,14 +195,18 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     // marketing is inactive
     if (mData?.data?.marketing?.status === 'inactive') {
-      setPageMode(0);
-      setIsPageDisabled(false);
+      // and is featured
+      if (mData?.data?.marketing?.type === 'featured') setPageMode(2);
+      else setPageMode(1);
+
+      setIsPageDisabled(true);
       return;
     }
 
     // marketing is active
     if (mData?.data?.marketing?.status === 'active' && mData?.data?.marketing?.isActive) {
-      setPageMode(1);
+      // setPageMode(1);
+      setPageMode(2);
       setIsPageDisabled(true);
       return;
     }
@@ -211,7 +215,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     if (mData?.data?.marketing?.status === 'active' && !mData?.data?.marketing?.isActive) {
       setIsScheduled(true);
       setIsPageDisabled(true);
-      setPageMode(1);
+      setPageMode(2);
+      // setPageMode(1);
     }
   };
 
@@ -297,7 +302,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setHasGlobalChange(false);
 
     setIsPageDisabled(true);
-    setPageMode(1);
+    // setPageMode(1);
+    setPageMode(2);
   };
 
   // update loyalty settings
@@ -637,8 +643,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     title="Duration"
                     subTitle={
                       currentExpanedTab === 1
-                        ? 'Please choose the date range during which your items will be running.'
-                        : `${moment().format('MMMM, D, YYYY')} - ${moment().format('MMMM, D, YYYY')}`
+                        ? 'Please choose the time preiod which your items will be running.'
+                        : // : `${moment().format('MMMM, D, YYYY')} - ${moment().format('MMMM, D, YYYY')}`
+                          `${dateRange} days left`
                     }
                   />
                 }
@@ -884,6 +891,26 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               </>
             )}
             {pageMode === 1 && (
+              <Stack direction="row" alignItems="center" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#55c086',
+                    '&:hover': {
+                      backgroundColor: '#47a070',
+                    },
+                  }}
+                  disabled={marketingMutation.isLoading}
+                  rounded
+                  onClick={() => {
+                    updateLoyaltySettings();
+                  }}
+                >
+                  Resume Promotion
+                </Button>
+              </Stack>
+            )}
+            {pageMode === 2 && (
               <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Button
@@ -918,7 +945,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       disabled={loyaltySettingsDeleteMutation.isLoading}
                       onClick={() => {
                         setIsPageDisabled(false);
-                        setPageMode(2);
+                        // setPageMode(2);
+                        setPageMode(3);
                       }}
                     >
                       Edit Promotion
@@ -948,7 +976,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 )}
               </Stack>
             )}
-            {pageMode === 2 && (
+            {pageMode === 3 && (
               <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                 <Button
                   variant="outlined"
