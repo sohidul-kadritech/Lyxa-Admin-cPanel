@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import MessageList from '../../ChatDetail/Chat/ChatBox/MessageList';
+import MessageList from '../ChatDetail/Chat/ChatBox/MessageList';
 
 export default function RiderChat({ chats }) {
   const messages = useMemo(() => chats?.map((message) => ({ ...message, type: message?.sender })), [chats]);

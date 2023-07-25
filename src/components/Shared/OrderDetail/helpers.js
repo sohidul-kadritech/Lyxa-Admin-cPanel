@@ -70,10 +70,6 @@ export function SummaryItem({
   let excRate = shopExchangeRate;
   const hideSecondary = shopExchangeRate === 1;
 
-  console.log({ shopExchangeRate });
-
-  console.log('context', context);
-
   if (hide) return null;
   if (!showIfZero && !value) return null;
 
