@@ -3,6 +3,7 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
+import TablePagination from '../../../components/Common/TablePagination';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 
@@ -16,22 +17,12 @@ const getStyleForAmount = (value) => {
   return null;
 };
 
-function AccountTable({ data = [], loading }) {
+function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPage }) {
   const { general } = useGlobalContext();
-  // eslint-disable-next-line import/no-named-as-default
-  const routeMatch = useRouteMatch();
-  const theme = useTheme();
   const currency = general?.currency?.symbol;
-
+  const theme = useTheme();
+  const routeMatch = useRouteMatch();
   const history = useHistory();
-
-  // eslint-disable-next-line no-unused-vars
-  const sellerShopsTrxs = (sellerId, companyName) => {
-    history.push({
-      pathname: `/app-wallet/seller/shops-transactions`,
-      search: `?sellerId=${sellerId}&companyName=${companyName}`,
-    });
-  };
 
   const allColumns = [
     {
@@ -140,43 +131,50 @@ function AccountTable({ data = [], loading }) {
     },
   ];
   return (
-    <Box
-      sx={{
-        padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
-      }}
-    >
-      <StyledTable
-        columns={allColumns}
-        rows={data}
-        onRowClick={({ row }) => {
-          history?.push({
-            pathname: `/accounts/${row?.user?._id}`,
-            search: 'financials=user',
-            state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
-          });
-        }}
-        getRowId={(row) => row?._id}
+    <>
+      <Box
         sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'pointer',
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          },
+          padding: '7.5px 16px  2px',
+          border: `1px solid ${theme.palette.custom.border}`,
+          borderRadius: '7px',
         }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              {loading ? 'Loading...' : 'No Transaction Found'}
-            </Stack>
-          ),
+      >
+        <StyledTable
+          columns={allColumns}
+          rows={data}
+          onRowClick={({ row }) => {
+            history?.push({
+              pathname: `/accounts/${row?.user?._id}`,
+              search: 'financials=user',
+              state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
+            });
+          }}
+          getRowId={(row) => row?._id}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
+            },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                {loading ? 'Loading...' : 'No Transaction Found'}
+              </Stack>
+            ),
+          }}
+        />
+      </Box>
+      <TablePagination
+        currentPage={currentPage}
+        lisener={(page) => {
+          setCurrentPage(page);
         }}
+        totalPage={totalPage}
       />
-    </Box>
+    </>
   );
 }
 

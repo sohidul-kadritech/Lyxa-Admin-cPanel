@@ -12,6 +12,7 @@ export default function ChatBox({
   sendMessageLoading,
   showInput,
   loading,
+  height,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -23,7 +24,7 @@ export default function ChatBox({
         borderColor: 'custom.border',
         padding: '0 15px',
         borderRadius: '8px',
-        height: 'calc(100vh - 200px)',
+        height: height || 'calc(100vh - 200px)',
         overflowY: 'auto',
       }}
     >

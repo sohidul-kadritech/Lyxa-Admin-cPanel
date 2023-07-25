@@ -323,11 +323,6 @@ function Appsettings2() {
       return;
     }
 
-    if (newAppSettings?.exchangeRate <= 1) {
-      successMsg('Exchange rate should be greater than 1!', 'error');
-      return;
-    }
-
     if (
       isUsedSecondaryCurrency === 'enable' &&
       newAppSettings.secondaryCurrency?.symbol &&
@@ -725,7 +720,6 @@ function Appsettings2() {
                         setHasChanged(true);
                         setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
                       },
-                      //   readOnly: Boolean(newProductCategory) || productReadonly,
                     }}
                   />
                 </StyledBox>

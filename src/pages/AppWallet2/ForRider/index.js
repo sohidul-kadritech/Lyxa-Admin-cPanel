@@ -1,5 +1,6 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import jsPDF from 'jspdf';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
@@ -11,7 +12,6 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import { dateRangeInitFinancial } from '../ForSeller/helpers';
 import RiderInvoice from './Invoices';
 import RiderFinancialsTable from './Table';
 
@@ -25,21 +25,25 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  searchKey: '',
+};
+
 function RidersTransaction() {
+  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [currentTab, setCurrentTab] = useState(0);
-  const [range, setRange] = useState({ ...dateRangeInitFinancial });
 
-  // eslint-disable-next-line no-unused-vars
-  const [searchKey, setSearchKey] = useState('');
-
-  const getDeliveryTnx = useQuery(
-    [API_URL.DELIVERY_TRX, { searchKey, startDate: range.start, endDate: range.end }],
-    () =>
-      AXIOS.get(API_URL.DELIVERY_TRX, {
-        params: { pageSize: 50, searchKey, startDate: range.start, endDate: range.end },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const query = useQuery([API_URL.DELIVERY_TRX, queryParams], () =>
+    AXIOS.get(API_URL.DELIVERY_TRX, {
+      params: queryParams,
+    })
   );
+
   // GENERATE PDF
   const downloadPdf = () => {
     const unit = 'pt';
@@ -66,7 +70,7 @@ function RidersTransaction() {
     ];
     const marginLeft = 40;
 
-    const data = getDeliveryTnx?.data?.data?.deliveryBoy.map((trx) => [
+    const data = query?.data?.data?.deliveryBoy.map((trx) => [
       trx?.name,
       trx?.summary?.orderValue?.count ?? 0,
       trx?.summary?.totalDeliveyFee,
@@ -96,15 +100,11 @@ function RidersTransaction() {
         breadcrumbItems={breadcrumbItems}
         backTo="/financials"
         sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
           backgroundColor: '#fbfbfb',
           fontWeight: 700,
         }}
       />
-
-      <Box sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '35px' }}>
         <Tabs
           value={currentTab}
           onChange={(event, newValue) => {
@@ -115,12 +115,15 @@ function RidersTransaction() {
           <Tab label="Invoices"></Tab>
         </Tabs>
       </Box>
-
       {currentTab !== 1 && (
         <Box>
           <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-            <DateRange range={range} setRange={setRange} />
+            <StyledSearchBar
+              sx={{ flex: '1' }}
+              placeholder="Search"
+              onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
+            />
+            <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
             <AddMenuButton
               title="Download"
               icon={<DownloadIcon />}
@@ -131,13 +134,20 @@ function RidersTransaction() {
           </Stack>
         </Box>
       )}
-
-      <Box sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '35px' }}>
         <TabPanel index={0} value={currentTab} noPadding>
-          {getDeliveryTnx?.isLoading ? (
+          {query?.isLoading ? (
             <TablePageSkeleton row={8} column={7} />
           ) : (
-            <RiderFinancialsTable loading={getDeliveryTnx?.isLoading} data={getDeliveryTnx?.data?.data?.deliveryBoy} />
+            <RiderFinancialsTable
+              loading={query?.isLoading}
+              data={query?.data?.data?.deliveryBoy}
+              currentPage={queryParams?.page}
+              setCurrentPage={(page) => {
+                setQueryParams((prev) => ({ ...prev, page }));
+              }}
+              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
+            />
           )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>

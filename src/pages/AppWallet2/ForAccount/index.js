@@ -14,7 +14,6 @@ import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { sortOptions } from '../../Faq2/helpers';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import { dateRangeInitFinancial } from '../ForSeller/helpers';
 import AddRemoveCredit from './AddRemoveCredit';
 import AccountTable from './Table';
 
@@ -28,38 +27,34 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  searchKey: '',
+  sortBy: 'desc',
+};
+
 function AccountFinancials() {
-  const [range, setRange] = useState({ ...dateRangeInitFinancial });
   const { general } = useGlobalContext();
-  // eslint-disable-next-line import/no-named-as-default
-
   const currency = general?.currency?.symbol;
-  // eslint-disable-next-line no-unused-vars
-  const [open, setOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [searchKey, setSearchKey] = useState('');
 
-  const [sortBy, setSortBy] = useState('desc');
+  const [open, setOpen] = useState(false);
+  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [storeAppSettings, setStoreAppSettings] = useState({});
 
-  const getDashboardSummary = useQuery(
-    [API_URL.GET_DASHBOARD_SUMMARY, { searchKey, sortBy, startDate: range.start, endDate: range.end }],
-    () =>
-      AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
-        params: { startDate: range.start, endDate: range.end },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const getDashboardSummary = useQuery([API_URL.GET_DASHBOARD_SUMMARY, queryParams], () =>
+    AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
+      params: { startDate: queryParams.startDate, endDate: queryParams.endDate },
+    })
   );
 
-  console.log(getDashboardSummary?.data?.data?.summary);
-
-  const getDropPayList = useQuery(
-    [API_URL.DROP_PAY_LIST, { searchKey, sortBy, startDate: range.start, endDate: range.end }],
-    () =>
-      AXIOS.get(API_URL.DROP_PAY_LIST, {
-        params: { pageSize: 50, searchKey, sortBy, startDate: range.start, endDate: range.end },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const getDropPayList = useQuery([API_URL.DROP_PAY_LIST, queryParams], () =>
+    AXIOS.get(API_URL.DROP_PAY_LIST, {
+      params: queryParams,
+    })
   );
 
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
@@ -96,7 +91,6 @@ function AccountFinancials() {
       // trx?.summary.settleAmount,
     ]);
 
-    console.log('===>data', data);
     const content = {
       startY: 50,
       head: headers,
@@ -107,6 +101,7 @@ function AccountFinancials() {
     doc.autoTable(content);
     doc.save(`userTransaction.pdf`);
   };
+
   return (
     <Box>
       <PageTop
@@ -129,8 +124,12 @@ function AccountFinancials() {
       </Stack>
       <Box>
         <Stack direction="row" justifyContent="start" gap="17px" flexWrap="wrap" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
+          <StyledSearchBar
+            sx={{ flex: '1' }}
+            placeholder="Search"
+            onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
+          />
+          <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
           <StyledFormField
             intputType="select"
             containerProps={{
@@ -139,11 +138,10 @@ function AccountFinancials() {
             inputProps={{
               name: 'sortBy',
               placeholder: 'sortBy',
-              value: sortBy,
+              value: queryParams?.sortBy,
               items: sortOptions,
               size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSortBy(e.target.value),
+              onChange: (e) => setQueryParams((prev) => ({ ...prev, sortBy: e.target.value })),
             }}
           />
           <Box flexShrink={0}>
@@ -158,7 +156,6 @@ function AccountFinancials() {
               Add/Remove Credit
             </Button>
           </Box>
-
           <AddMenuButton
             sx={{
               flexShrink: 0,
@@ -171,12 +168,19 @@ function AccountFinancials() {
           />
         </Stack>
       </Box>
-
-      <Box sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '35px' }}>
         {getDropPayList?.isLoading ? (
           <TablePageSkeleton row={8} column={5} />
         ) : (
-          <AccountTable loading={getDropPayList?.isLoading} data={getDropPayList?.data?.data?.transactionList} />
+          <AccountTable
+            loading={getDropPayList?.isLoading}
+            data={getDropPayList?.data?.data?.transactionList}
+            currentPage={queryParams?.page}
+            setCurrentPage={(page) => {
+              setQueryParams((prev) => ({ ...prev, page }));
+            }}
+            totalPage={getDropPayList?.data?.data?.paginate?.metadata?.page?.totalPage}
+          />
         )}
       </Box>
       <Drawer open={open} anchor="right">

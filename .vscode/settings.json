@@ -26,7 +26,7 @@
   "prettier.tabWidth": 2,
   "prettier.printWidth": 120,
   "prettier.singleQuote": true,
-  "cSpell.words": ["Lyxa"],
+  "cSpell.words": ["Lyxa", "preiod"],
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
   }

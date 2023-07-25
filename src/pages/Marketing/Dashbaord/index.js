@@ -288,6 +288,7 @@ export default function MarketingDashboard({ viewUserType }) {
           setIsModalOpen(true);
         }}
         onAddDisabled={viewUserType === 'shop' && userType === 'admin'}
+        console={console.log({ viewUserType })}
       />
       {__loading && isInitialLoad ? (
         <PageSkeleton />

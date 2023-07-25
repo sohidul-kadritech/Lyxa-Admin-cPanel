@@ -124,11 +124,9 @@ export const getCouponEditdData = (editCoupon) => {
 
 export const getEditCouponChecked = (editCoupon) => {
   const checked = { ...checkedInit };
-
-  if (!editCoupon?.couponAmountLimit) checked.couponAmountLimit = false;
-  if (!editCoupon?.couponUserLimit) checked.couponUserLimit = false;
-  if (!editCoupon?.couponOrderLimit) checked.couponOrderLimit = false;
-  if (!editCoupon?.couponMinimumOrderValue) checked.couponMinimumOrderValue = false;
-
+  if (editCoupon?.couponAmountLimit > 0) checked.couponAmountLimit = true;
+  if (editCoupon?.couponUserLimit > 0) checked.couponUserLimit = true;
+  if (editCoupon?.couponOrderLimit > 0) checked.couponOrderLimit = true;
+  if (editCoupon?.couponMinimumOrderValue > 0) checked.couponMinimumOrderValue = true;
   return checked;
 };
