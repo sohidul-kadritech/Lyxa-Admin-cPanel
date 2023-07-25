@@ -2,6 +2,7 @@ import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Rating from '../../components/Common/Rating';
@@ -106,6 +107,12 @@ export default function Table({
           name={
             <span>
               {row?.user?.name}
+              {row?.chats?.length || row?.admin_chat_request?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
               {row?.flag?.length ? (
                 <>
                   &nbsp;&nbsp;
