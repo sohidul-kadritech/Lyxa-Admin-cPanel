@@ -3,14 +3,18 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
+import { useGlobalContext } from '../../../context';
 import AttributeItem from './AttributeListItem';
 
 const attributeInit = {
   name: '',
-  extraPrice: '',
+  extraPrice: '0',
 };
 
 function AttributeList({ items, readOnly }) {
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+
   const [showAddNew, setShowAddNew] = useState(true);
   const [render, setRender] = useState(false);
   const [newAttributeItem, setNewAttributeItem] = useState(attributeInit);
@@ -43,7 +47,7 @@ function AttributeList({ items, readOnly }) {
             lineHeight: '18px',
           }}
         >
-          Price
+          Price ({currency})
         </Typography>
         <Box>
           <CloseButton

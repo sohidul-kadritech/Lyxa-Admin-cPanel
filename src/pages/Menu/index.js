@@ -80,7 +80,7 @@ export default function MenuPage() {
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   useEffect(() => {
@@ -133,8 +133,7 @@ export default function MenuPage() {
         setSidebar('edit-sub-category');
       },
     }),
-    // eslint-disable-next-line prettier/prettier
-    [favorites, updatedProduct],
+    [favorites, updatedProduct]
   );
 
   return (

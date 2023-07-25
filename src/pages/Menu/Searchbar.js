@@ -48,7 +48,6 @@ function SearchBar({
   subCategory,
   ...props
 }) {
-  console.log('subcategory call function: ', isThereAnySubCategoryOrNot(subCategory));
   return (
     <Stack direction="row" alignItems="center" gap="15px" pb={6.5} {...props}>
       <StyledSearchBar

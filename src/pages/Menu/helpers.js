@@ -50,8 +50,6 @@ export const isThereAnySubCategoryOrNot = (subCategory) => {
 };
 
 export const getAddMenuOptions = (shopType, viewUserType, subCategoryLength = false) => {
-  console.log({ viewUserType });
-
   const options = [];
   if (shopType === 'food' || viewUserType === 'admin') {
     options.push({
@@ -69,7 +67,7 @@ export const getAddMenuOptions = (shopType, viewUserType, subCategoryLength = fa
   options.push({
     label: 'Add item',
     value: 'add-item',
-    disabled: !subCategoryLength,
+    disabled: !subCategoryLength && shopType !== 'food',
   });
 
   return options;
@@ -178,7 +176,7 @@ export const getDietaryOptions = (shopType) => {
 
 export const attrItemInit = () => ({
   name: '',
-  extraPrice: '',
+  extraPrice: '0',
 });
 
 // state inits
@@ -236,7 +234,7 @@ export const createProductData = async (product, shop, isEditProduct, hasAttribu
 
       attributes?.forEach((attr) => {
         // filter attr items
-        const items = attr?.items?.filter((item) => item.name && item.extraPrice);
+        const items = attr?.items?.filter((item) => item.name && item.extraPrice !== undefined);
 
         if (items?.length) {
           attrs.push({
@@ -408,7 +406,7 @@ export const validateProduct = (product, hasAttribute) => {
       // if (attr?.items?.length && (!attr?.name?.trim() || attr?.name?.trim() === 'Untitled Attribute')) error = true;
       if (attr?.items?.length) {
         attr?.items?.forEach((itm) => {
-          if (!itm?.extraPrice || itm?.extraPrice < 1 || !itm?.name?.trim()) {
+          if (itm?.extraPrice === undefined || itm?.extraPrice === '' || itm?.extraPrice < 0 || !itm?.name?.trim()) {
             error = true;
           }
         });

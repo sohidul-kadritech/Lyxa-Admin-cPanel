@@ -23,7 +23,6 @@ import {
   converEditProduct,
   createProductData,
   getDietaryOptions,
-  // dietryOptions,
   getProductInit,
   productAttrInit,
   validateProduct,
@@ -40,10 +39,14 @@ const tabSx = {
   textTransform: 'none',
 };
 
-export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory, secondaryCurrency }) {
-  const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const queryClient = useQueryClient();
+
+  const { currentUser, general } = useGlobalContext();
+  const { shop } = currentUser;
+
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency;
+  const exchangeRate = general?.appSetting?.exchangeRate;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
@@ -52,11 +55,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
-    // eslint-disable-next-line prettier/prettier
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
   );
-
-  console.log(product);
 
   // addons
   const productsQuery = useQuery(
@@ -445,10 +445,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         }}
       />
 
-      {secondaryCurrency?.secondaryCurrency?.symbol && (
+      {secondaryCurrency?.symbol && exchangeRate !== 1 && (
         <Typography pt={2} variant="body3" display="block">
-          Equivalent Price: {secondaryCurrency?.secondaryCurrency?.code}{' '}
-          {product.price * parseInt(product?.shop?.shopExchangeRate, 10)}
+          Equivalent Price: {secondaryCurrency?.code} {Number(product.price) * Number(shop?.shopExchangeRate)}
         </Typography>
       )}
 
