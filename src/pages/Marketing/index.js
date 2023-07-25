@@ -36,6 +36,7 @@ const marketingTypesInit = {
 
 const getApliedDeals = (marketings, currentUserType) => {
   const options = { ...marketingTypesInit };
+
   marketings?.forEach((item) => {
     if (item?.creatorType !== currentUserType) {
       options[item?.type] = true;
@@ -46,7 +47,6 @@ const getApliedDeals = (marketings, currentUserType) => {
 };
 
 const getActiveDeals = (dealSetting, shopType) => {
-  console.log(dealSetting);
   const deals = { ...activeDealsInit };
 
   dealSetting?.forEach((item) => {
@@ -60,6 +60,8 @@ const getActiveDeals = (dealSetting, shopType) => {
   return deals;
 };
 
+const appliedByOtherSideMap = { shop: 'Admin', admin: 'Shop' };
+
 export default function Marketing({ viewUserType }) {
   const history = useHistory();
   const { currentUser } = useGlobalContext();
@@ -71,8 +73,6 @@ export default function Marketing({ viewUserType }) {
   const [currentShop, setCurrentShop] = useState(viewUserType === 'shop' ? shop : {});
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
   const routeMatch = useRouteMatch();
-  console.log({ routeMatch });
-  console.log({ params });
 
   const shopQuery = useQuery(
     [
@@ -135,7 +135,7 @@ export default function Marketing({ viewUserType }) {
     creatorType: viewUserType,
   });
 
-  const rewardSettingsQuery = useQuery(
+  const rewardQuery = useQuery(
     [
       'marketing-reward-settings',
       {
@@ -167,7 +167,7 @@ export default function Marketing({ viewUserType }) {
     }
   );
 
-  const discountSettingsQuery = useQuery(
+  const discountQuery = useQuery(
     [
       'marketing-percentage-settings',
       {
@@ -183,7 +183,7 @@ export default function Marketing({ viewUserType }) {
     }
   );
 
-  const doubleDealSettingsQuery = useQuery(
+  const doubleDealQuery = useQuery(
     [
       'marketing-double_menu-settings',
       {
@@ -199,7 +199,7 @@ export default function Marketing({ viewUserType }) {
     }
   );
 
-  const freeDeliverySettingsQuery = useQuery(
+  const freeDeliveryQuery = useQuery(
     [
       'marketing-free_delivery-settings',
       {
@@ -215,10 +215,16 @@ export default function Marketing({ viewUserType }) {
     }
   );
 
-  const openHandler = (marketingType, marketing = {}) => {
-    if (!marketing?.status) {
-      if (viewUserType === 'shop' && userType === 'admin') return;
-      setCurrentModal(marketingType);
+  const openHandler = (marketingType, mData = {}) => {
+    const marketing = mData?.data?.marketing;
+
+    if (!mData?.isMarketing) {
+      if (viewUserType === 'shop' && userType === 'admin' && mData?.isNotEligible) {
+        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}`);
+      } else {
+        setCurrentModal(marketingType);
+      }
+      console.log('ending here');
     } else if (viewUserType === 'shop' && userType === 'shop') {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
     } else if (viewUserType === 'shop' && userType === 'seller') {
@@ -232,13 +238,24 @@ export default function Marketing({ viewUserType }) {
 
   const __loading =
     !dealSettingsQuery.isFetchedAfterMount ||
-    !discountSettingsQuery.isFetchedAfterMount ||
-    !doubleDealSettingsQuery.isFetchedAfterMount ||
-    !freeDeliverySettingsQuery.isFetchedAfterMount ||
-    !rewardSettingsQuery.isFetchedAfterMount ||
+    !discountQuery.isFetchedAfterMount ||
+    !doubleDealQuery.isFetchedAfterMount ||
+    !freeDeliveryQuery.isFetchedAfterMount ||
+    !rewardQuery.isFetchedAfterMount ||
     shopQuery.isLoading;
 
-  const isReadonly = (marketing = {}) => !marketing?.status && viewUserType === 'shop' && userType === 'admin';
+  const isReadonly = (mData = {}) => {
+    console.log({ mData });
+    if (viewUserType === 'shop' && userType === 'admin') {
+      return mData?.isMarketing === false;
+    }
+    return false;
+  };
+
+  const getOngoingBy = (mData = {}) =>
+    mData?.data?.marketing?.status ? viewUserType : appliedByOtherSideMap[viewUserType];
+
+  const isAdminViewAsShop = viewUserType === 'shop' && userType === 'admin';
 
   return (
     <Box sx={{ pt: 8.5 }}>
@@ -255,14 +272,15 @@ export default function Marketing({ viewUserType }) {
             description="Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes"
             title="Discounted Items"
             icon={DiscountIcon}
-            readOnly={isReadonly(discountSettingsQuery.data?.data?.marketing)}
-            loading={__loading || discountSettingsQuery?.isFetching}
+            isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
+            readOnly={isReadonly(discountQuery.data)}
+            loading={__loading || discountQuery?.isFetching}
             disabled={appliedDeals.percentage || !activeDeals.percentage}
-            status={getPromotionStatus(discountSettingsQuery, 'percentage', activeDeals)}
-            ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
+            status={getPromotionStatus(discountQuery, 'percentage', activeDeals)}
+            ongoingBy={getOngoingBy(discountQuery.data)}
             onOpen={() => {
-              if (!appliedDeals.percentage && activeDeals.percentage && !__loading) {
-                openHandler('percentage', discountSettingsQuery.data?.data?.marketing);
+              if (activeDeals.percentage && !__loading) {
+                if (!appliedDeals.percentage || isAdminViewAsShop) openHandler('percentage', discountQuery.data);
               }
             }}
           />
@@ -272,15 +290,15 @@ export default function Marketing({ viewUserType }) {
             description="Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost."
             title="Buy 1, Get 1 Free"
             icon={BuyIcon}
-            readOnly={isReadonly(doubleDealSettingsQuery.data?.data?.marketing)}
-            loading={__loading || doubleDealSettingsQuery.isFetching}
+            isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
+            readOnly={isReadonly(doubleDealQuery.data)}
+            loading={__loading || doubleDealQuery.isFetching}
             disabled={appliedDeals.double_menu || !activeDeals.double_menu}
-            status={getPromotionStatus(doubleDealSettingsQuery, 'double_menu', activeDeals)}
-            // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
-            ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
+            status={getPromotionStatus(doubleDealQuery, 'double_menu', activeDeals)}
+            ongoingBy={getOngoingBy(doubleDealQuery.data)}
             onOpen={() => {
-              if (!__loading && !appliedDeals.double_menu && activeDeals.double_menu) {
-                openHandler('double_menu', doubleDealSettingsQuery.data?.data?.marketing);
+              if (!__loading && activeDeals.double_menu) {
+                if (!appliedDeals.double_menu || isAdminViewAsShop) openHandler('double_menu', doubleDealQuery.data);
               }
             }}
           />
@@ -290,16 +308,17 @@ export default function Marketing({ viewUserType }) {
             <MCard
               description="Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales."
               title="$0 Delivery Fee"
-              loading={__loading || freeDeliverySettingsQuery?.isFetching}
-              readOnly={isReadonly(freeDeliverySettingsQuery.data?.data?.marketing)}
+              isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
+              loading={__loading || freeDeliveryQuery?.isFetching}
+              readOnly={isReadonly(freeDeliveryQuery.data)}
               disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
-              status={getPromotionStatus(freeDeliverySettingsQuery, 'free_delivery', activeDeals)}
-              // ongoingBy={shop?.shopType ? 'admin' : 'shop'}
-              ongoingBy={viewUserType === 'shop' ? 'admin' : 'shop'}
+              status={getPromotionStatus(freeDeliveryQuery, 'free_delivery', activeDeals)}
+              ongoingBy={getOngoingBy(freeDeliveryQuery.data)}
               icon={DeliveryIcon}
               onOpen={() => {
-                if (!__loading && !appliedDeals.free_delivery && activeDeals.free_delivery) {
-                  openHandler('free_delivery', freeDeliverySettingsQuery.data?.data?.marketing);
+                if (!__loading && activeDeals.free_delivery) {
+                  if (!appliedDeals.free_delivery || isAdminViewAsShop)
+                    openHandler('free_delivery', freeDeliveryQuery.data);
                 }
               }}
             />
@@ -311,12 +330,14 @@ export default function Marketing({ viewUserType }) {
               <MCard
                 description="Enable this feature and allow customers to use their points to pay for a portion or all of their purchase on an item."
                 title="Loyalty Points"
-                loading={__loading || rewardSettingsQuery.isFetching}
-                status={getPromotionStatus(rewardSettingsQuery)}
+                loading={__loading || rewardQuery.isFetching}
+                status={getPromotionStatus(rewardQuery)}
+                ongoingBy={getOngoingBy(rewardQuery.data)}
+                readOnly={isReadonly(rewardQuery.data)}
                 icon={LoyaltyIcon}
                 onOpen={() => {
-                  if (!rewardSettingsQuery.isLoading) {
-                    openHandler('reward', rewardSettingsQuery.data?.data?.marketing);
+                  if (!rewardQuery.isLoading) {
+                    openHandler('reward', rewardQuery.data);
                   }
                 }}
               />
@@ -325,12 +346,14 @@ export default function Marketing({ viewUserType }) {
               <MCard
                 description="Feature your restaurant profile on the homepage in the 'Featured' section to increase visibility and attract more customers."
                 title="Featured"
-                loading={__loading || rewardSettingsQuery.isFetching}
+                loading={__loading || featuredSettingsQuery.isFetching}
                 status={getPromotionStatus(featuredSettingsQuery)}
+                ongoingBy={getOngoingBy(featuredSettingsQuery?.data)}
+                readOnly={isReadonly(featuredSettingsQuery.data)}
                 icon={PromoIcon}
                 onOpen={() => {
                   if (!featuredSettingsQuery.isLoading) {
-                    openHandler('featured', featuredSettingsQuery.data?.data?.marketing);
+                    openHandler('featured', featuredSettingsQuery.data);
                   }
                 }}
               />

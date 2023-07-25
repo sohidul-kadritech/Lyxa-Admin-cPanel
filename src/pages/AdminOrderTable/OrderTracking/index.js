@@ -1,4 +1,4 @@
-import { Box, Grid, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import React, { useMemo } from 'react';
 import Detail from '../../../components/Shared/OrderDetail/Details';
 import OrderContextProvider from '../../../components/Shared/OrderDetail/OrderContext';
@@ -16,8 +16,7 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       shopExchangeRate: currentOrder?.shopExchangeRate,
       adminExchangeRate: currentOrder?.adminExchangeRate,
     }),
-    // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   return (
@@ -25,34 +24,44 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       title={`Track Order #${currentOrder?.orderId}`}
       onClose={onClose}
       sx={{
-        width: '96vw',
-        height: '96vh',
-        margin: '2vh 2vw',
-        padding: '36px',
+        width: 'calc(100vw - 40px)',
+        height: 'calc(100vh - 40px)',
+        padding: '24px',
         overflow: 'hidden',
         backgroundColor: theme.palette.primary.contrastText,
         borderRadius: '10px',
       }}
     >
-      <Grid container rowSpacing={{ xs: 4, lg: 1 }} columnSpacing={{ xs: 2.5, sm: 5 }}>
-        <Grid item xs={12} md={12} lg={9}>
-          <Box sx={{ width: '100%', height: { lg: '100%', xs: '350px', sm: '450px' } }}>
-            <OrderTrackingMap
-              pickup={currentOrder.pickUpLocation}
-              dropoff={currentOrder.dropOffLocation}
-              order={currentOrder}
-              orderType={currentOrder?.isButler ? 'butler' : currentOrder.orderType}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={12} lg={3}>
-          <Box sx={{ width: '100%', height: { lg: '90vh', xs: '100%' }, overflow: { lg: 'auto', xs: 'hidden' } }}>
-            <OrderContextProvider value={value}>
-              <Detail order={currentOrder} />
-            </OrderContextProvider>
-          </Box>
-        </Grid>
-      </Grid>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { md: '1fr', lg: '1fr 400px' },
+          height: { lg: '100%', md: 'auto' },
+          gap: '20px',
+        }}
+      >
+        <Box
+          sx={{
+            minHeight: '500px',
+          }}
+        >
+          <OrderTrackingMap
+            pickup={currentOrder.pickUpLocation}
+            dropoff={currentOrder.dropOffLocation}
+            order={currentOrder}
+            orderType={currentOrder?.isButler ? 'butler' : currentOrder.orderType}
+          />
+        </Box>
+        <Box
+          sx={{
+            overflow: 'auto',
+          }}
+        >
+          <OrderContextProvider value={value}>
+            <Detail order={currentOrder} />
+          </OrderContextProvider>
+        </Box>
+      </Box>
     </ModalContainer>
   );
 }

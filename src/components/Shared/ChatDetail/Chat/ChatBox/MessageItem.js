@@ -1,4 +1,4 @@
-import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
+import { Avatar, Box, Stack, Tooltip, Typography, styled } from '@mui/material';
 import moment from 'moment';
 import user2 from '../../../../../assets/images/user2.png';
 
@@ -63,7 +63,7 @@ const StyledMessageContainer = styled(Box)(() => ({
     },
   },
 
-  '&.admin': {
+  '&.admin, &.deliveryBoy': {
     '& .message-container': {
       flexDirection: 'row-reverse',
     },
@@ -71,12 +71,24 @@ const StyledMessageContainer = styled(Box)(() => ({
 }));
 
 export default function MessageItem({ message }) {
-  let imgUrl = user2;
-  let imgFallbackCharacter = 'Cs';
+  const fallbackImage = user2;
+  const fallbackName = 'Cs';
+  let image;
+  let name;
 
   if (message?.type === 'user') {
-    imgUrl = message?.user?.profile_photo;
-    imgFallbackCharacter = message?.user?.name?.charAt(0);
+    image = message?.user?.profile_photo;
+    name = message?.user?.name;
+  }
+
+  if (message?.type === 'admin') {
+    image = message?.admin?.profile_photo;
+    name = message?.admin?.name;
+  }
+
+  if (message?.type === 'deliveryBoy') {
+    image = message?.deliveryBoy?.image;
+    name = message?.deliveryBoy?.name;
   }
 
   return (
@@ -87,9 +99,16 @@ export default function MessageItem({ message }) {
         </Typography>
       )}
       <Stack className="message-container">
-        <Avatar className="message-avatar" alt="profile-img" src={imgUrl} sx={{ width: 36, height: 36 }}>
-          {imgFallbackCharacter}
-        </Avatar>
+        <Tooltip title={name}>
+          <Avatar
+            className="message-avatar"
+            alt="profile-img"
+            src={image || fallbackImage}
+            sx={{ width: 36, height: 36 }}
+          >
+            {name?.charAt(0) || fallbackName?.charAt(0)}
+          </Avatar>
+        </Tooltip>
         <Box className="message-body">
           <Typography variant="inherit" className="message-text">
             {message?.message}

@@ -1,8 +1,4 @@
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
-
-// project import
-// import Greeting from './Greeting';
-
 import { useState } from 'react';
 import { useGlobalContext } from '../../context';
 import EditAdminProfile from '../SalesManagerDashBoard/EditAdminProfile';

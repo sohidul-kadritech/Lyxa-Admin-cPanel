@@ -20,6 +20,7 @@ function ModalContainer({ onClose, sx, children, title }) {
             onClick={onClose}
             sx={{
               color: theme.palette.text.primary,
+              padding: '0px',
             }}
           />
         </Stack>

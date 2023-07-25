@@ -70,10 +70,6 @@ export function SummaryItem({
   let excRate = shopExchangeRate;
   const hideSecondary = shopExchangeRate === 1;
 
-  console.log({ shopExchangeRate });
-
-  console.log('context', context);
-
   if (hide) return null;
   if (!showIfZero && !value) return null;
 
@@ -136,7 +132,11 @@ export function SummaryItem({
         {typeof value !== 'string' &&
           !showBaseOnly &&
           `
-          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.abs(value) * excRate || 0} ~ `}
+          ${
+            hideSecondary
+              ? ''
+              : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(Math.abs(value) * excRate) || 0} ~ `
+          }
           ${isNegative ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>

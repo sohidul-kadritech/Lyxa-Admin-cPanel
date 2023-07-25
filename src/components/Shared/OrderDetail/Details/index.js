@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
 import { useState } from 'react';
+import Attachments from './Attachments';
 import ButlerOrderSummary from './ButlerOrderSummary';
 import CancelReason from './CancelReason';
 import CouponDetails from './Coupon';
@@ -14,8 +15,7 @@ import PaymentSummary from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
 
 export default function Detail({ order, hideIssues, userType }) {
-  // eslint-disable-next-line no-unused-vars
-  const [render, setRender] = useState(false);
+  const [, setRender] = useState(false);
 
   console.log('order', order);
 
@@ -25,6 +25,7 @@ export default function Detail({ order, hideIssues, userType }) {
       <OrderTimeline order={order} />
       {order?.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
       <DeliveryDetails order={order} />
+      {order?.leaveAtDoorImage && <Attachments order={order} />}
       {order?.isButler && <ButlerOrderSummary order={order} />}
       {!order?.isButler && <OrderSummary order={order} />}
       <PaymentMethod method={order?.paymentMethod} />

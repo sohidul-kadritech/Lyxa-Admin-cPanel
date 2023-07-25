@@ -33,6 +33,8 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const [shopOptions, setShopOptions] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
 
+  console.log('checked', getEditCouponChecked(editCoupon));
+
   // handlers
   const commonChangeHandler = (e) => {
     setCoupon((prev) => ({ ...prev, [e.target.name]: e.target.value }));

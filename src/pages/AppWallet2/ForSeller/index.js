@@ -1,5 +1,6 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import jsPDF from 'jspdf';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
@@ -13,7 +14,6 @@ import { AddMenuButton } from '../../Faq2';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import SellerInvoice from './Invoices';
 import SellerFinancialsTable from './SellerFinancialsTable';
-import { convertDate, dateRangeInitFinancial } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -25,20 +25,23 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const queryParamsInit = {
+  page: 1,
+  pageSize: 15,
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  searchKey: '',
+};
+
 function FinancialsForSeller() {
+  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [currentTab, setCurrentTab] = useState(0);
-  const [range, setRange] = useState({ ...dateRangeInitFinancial });
 
-  const [searchKey, setSearchKey] = useState('');
-
-  //   const [open, setOpen] = useState(false);
-  const getSellerTnx = useQuery(
-    [API_URL.SELLERS_TRX, { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) }],
-    () =>
-      AXIOS.get(API_URL.SELLERS_TRX, {
-        params: { searchKey, startDate: convertDate(range.start), endDate: convertDate(range.end) },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const query = useQuery([API_URL.SELLERS_TRX, queryParams], () =>
+    AXIOS.get(API_URL.SELLERS_TRX, {
+      params: queryParams,
+    })
   );
 
   // GENERATE PDF
@@ -55,7 +58,7 @@ function FinancialsForSeller() {
     ];
     const marginLeft = 40;
 
-    const data = getSellerTnx?.data?.data?.sellers.map((trx) => [
+    const data = query?.data?.data?.sellers.map((trx) => [
       trx?.company_name,
       trx?.summary.totalOrder,
       trx?.summary.orderValue?.productAmount.toFixed(2),
@@ -65,7 +68,7 @@ function FinancialsForSeller() {
       trx?.summary.totalSellerEarning,
     ]);
 
-    console.log('downloadPdf before ==>', getSellerTnx?.data?.data?.sellers);
+    console.log('downloadPdf before ==>', query?.data?.data?.sellers);
     console.log('downloadPdf after ==>', data);
     const content = {
       startY: 50,
@@ -80,19 +83,7 @@ function FinancialsForSeller() {
 
   return (
     <Box>
-      <PageTop
-        backButtonLabel="Back to Financials"
-        breadcrumbItems={breadcrumbItems}
-        backTo="/financials"
-        sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-          fontWeight: 700,
-        }}
-      />
-
+      <PageTop backButtonLabel="Back to Financials" breadcrumbItems={breadcrumbItems} backTo="/financials" />
       <Box sx={{ marginBottom: '30px' }}>
         <Tabs
           value={currentTab}
@@ -104,12 +95,15 @@ function FinancialsForSeller() {
           <Tab label="Invoices"></Tab>
         </Tabs>
       </Box>
-
       {currentTab !== 1 && (
         <Box>
           <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-            <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-            <DateRange range={range} setRange={setRange} />
+            <StyledSearchBar
+              sx={{ flex: '1' }}
+              placeholder="Search"
+              onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
+            />
+            <DateRange startKey="startDate" endKey="endDate" range={queryParams} setRange={setQueryParams} />
             <AddMenuButton
               title="Download"
               icon={<DownloadIcon />}
@@ -120,13 +114,18 @@ function FinancialsForSeller() {
           </Stack>
         </Box>
       )}
-
-      <Box sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '35px' }}>
         <TabPanel index={0} value={currentTab} noPadding>
-          {getSellerTnx?.isLoading ? (
+          {query?.isLoading ? (
             <TablePageSkeleton row={8} column={7} />
           ) : (
-            <SellerFinancialsTable loading={getSellerTnx?.isLoading} data={getSellerTnx?.data?.data?.sellers} />
+            <SellerFinancialsTable
+              loading={query?.isLoading}
+              data={query?.data?.data?.sellers}
+              currentPage={queryParams?.page}
+              setPage={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
+            />
           )}
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
