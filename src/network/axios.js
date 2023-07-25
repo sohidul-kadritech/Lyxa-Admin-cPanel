@@ -30,8 +30,6 @@ AXIOS.interceptors.request.use(
       if (config?.params?.startDate) config.params.startDate = moment(config.params.startDate).format('YYYY-MM-DD');
     }
 
-    console.log('config', config);
-
     return config;
   },
   (error) => {

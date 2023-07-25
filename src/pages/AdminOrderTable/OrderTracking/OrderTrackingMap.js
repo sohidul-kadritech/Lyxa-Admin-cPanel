@@ -83,7 +83,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
     const RiderIcon = {
       url: orderTypeToIconMap.rider,
-      scaledSize: new google.maps.Size(60, 60),
+      scaledSize: new google.maps.Size(60, 70),
     };
 
     const shopLocation = new google.maps.Marker({

@@ -8,6 +8,7 @@ import Details from './Details';
 import Earnings from './Earnings';
 import OrderContextProvider from './OrderContext';
 import Review from './Reviews';
+import RiderChat from './RiderChat';
 
 export default function OrderDetail({ order, onClose, hideIssues }) {
   const { currentUser } = useGlobalContext();
@@ -118,6 +119,10 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           {/* earning details */}
           <TabPanel index={2} value={currentTab} noPadding>
             <Earnings order={order} userType={userType} />
+          </TabPanel>
+          {/* rider chat */}
+          <TabPanel index={4} value={currentTab} noPadding>
+            <RiderChat chats={order?.chats} />
           </TabPanel>
         </Box>
       </Box>
