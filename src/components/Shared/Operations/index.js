@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { useGlobalContext } from '../../../context';
-import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import DateRange from '../../StyledCharts/DateRange';
@@ -41,38 +40,31 @@ function CardTitle({ title, tooltip }) {
   );
 }
 
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
+
 // project import
 export default function Operations({ viewUserType = 'shop' }) {
   const { currentUser } = useGlobalContext();
 
   const theme = useTheme();
-  const [range, setRange] = useState({ ...dateRangeInit });
+  // const [range, setRange] = useState({ ...dateRangeInit });
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
-  const query = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_OPERATIONS,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-      })
+  const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
+      params: queryParams,
+    })
   );
 
   return (
     <Box>
       <Stack direction="row" alignItems="center" justifyContent="flex-end" marginTop="-70px" pb={10.5}>
-        <DateRange range={range} setRange={setRange} />
+        <DateRange range={queryParams} startKey="startDate" endKey="endDate" setRange={setQueryParams} />
       </Stack>
       <Grid container spacing={5}>
         <InfoCard

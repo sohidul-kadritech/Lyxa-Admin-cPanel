@@ -2,9 +2,17 @@ import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import DateRange from './DateRange';
 import StyledBox from './StyledBox';
 
-export default function ChartBox({ dateRange, setDateRange, title, chartHeight, children, loading, ...props }) {
-  // console.log({ dateRange });
-
+export default function ChartBox({
+  dateRange,
+  setDateRange,
+  title,
+  chartHeight,
+  children,
+  loading,
+  startDateKey,
+  endDateKey,
+  ...props
+}) {
   return (
     <Grid {...props}>
       <StyledBox sx={props?.sx} padding loading={loading}>
@@ -12,7 +20,7 @@ export default function ChartBox({ dateRange, setDateRange, title, chartHeight, 
           <Typography variant="body1" fontWeight={600}>
             {title}
           </Typography>
-          <DateRange range={dateRange} setRange={setDateRange} />
+          <DateRange endKey={endDateKey} startKey={startDateKey} range={dateRange} setRange={setDateRange} />
         </Stack>
         <Box
           sx={{

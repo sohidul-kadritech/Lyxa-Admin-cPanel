@@ -372,9 +372,6 @@ function Appsettings2() {
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
         sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
           fontWeight: 700,
           backgroundColor: '#fbfbfb',
         }}

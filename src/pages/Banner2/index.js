@@ -62,10 +62,8 @@ function AdBanner() {
   const getBannerListQuery = useQuery(
     [API_URL.BANNER_LIST, { sortBy, status, type, startDate: range?.start, endDate: range?.end }],
     () =>
-      // eslint-disable-next-line prettier/prettier
       AXIOS.get(API_URL.BANNER_LIST, {
         params: { sortBy, status, type, startDate: range?.start, endDate: range?.end },
-        // eslint-disable-next-line prettier/prettier
       })
   );
 

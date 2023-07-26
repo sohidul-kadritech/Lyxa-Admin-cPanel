@@ -40,7 +40,7 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 20px;
-  border-bottom: 0.5px;
+  border-bottom: 1px solid transparent;
   background: #f6f8fa;
   padding: 0;
   text-align: center;
@@ -50,7 +50,7 @@
   }
 
   &.DateInput_input__focused {
-    border-bottom: 0.5px solid #5e97a9;
+    border-bottom: 1px solid #5e97a9;
   }
 }
 
