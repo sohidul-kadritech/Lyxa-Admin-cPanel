@@ -40,7 +40,7 @@ export default function OrderSummary({ order }) {
                     pathname: `/shop/profile/${order?.shop?._id}`,
                     state: {
                       from: routeMatch?.path,
-                      backToLabel: 'Back to previous',
+                      backToLabel: 'Back to Orders',
                     },
                   })
               : undefined
