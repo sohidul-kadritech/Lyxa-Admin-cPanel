@@ -1,12 +1,15 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useGlobalContext } from '../../../../../context';
 import { StyledOrderDetailBox } from '../../helpers';
 import CallUser from '../CallUser';
 import GroupOrder from './GroupOrder';
 import RegularOrder from './RegularOrder';
 
 export default function OrderSummary({ order }) {
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
   const totalProductQuantity = order?.productsDetails?.reduce((prev, curr) => curr?.productQuantity + prev, 0);
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -30,14 +33,17 @@ export default function OrderSummary({ order }) {
       <Box pt={3} pb={3}>
         <CallUser
           disableContainerStyle
-          onClickName={() =>
-            history.push({
-              pathname: `/shop/profile/${order?.shop?._id}`,
-              state: {
-                from: routeMatch?.path,
-                backToLabel: 'Back to previous',
-              },
-            })
+          onClickName={
+            userType === 'admin'
+              ? () =>
+                  history.push({
+                    pathname: `/shop/profile/${order?.shop?._id}`,
+                    state: {
+                      from: routeMatch?.path,
+                      backToLabel: 'Back to previous',
+                    },
+                  })
+              : undefined
           }
           user={{
             name: order?.shop?.shopName,

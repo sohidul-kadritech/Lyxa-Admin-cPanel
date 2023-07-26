@@ -125,7 +125,6 @@ export default function Table({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              console.log('triggered');
               setCurrentOrder(row);
               setDetailOpen(true);
             },
@@ -135,7 +134,7 @@ export default function Table({
             onClick: () => {
               history.push({
                 pathname: `/accounts/${row?.user?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
               });
             },
           }}
@@ -176,7 +175,7 @@ export default function Table({
               onClick: () => {
                 history.push({
                   pathname: `/shop/profile/${row?.shop?._id}`,
-                  state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
                 });
               },
             }}
