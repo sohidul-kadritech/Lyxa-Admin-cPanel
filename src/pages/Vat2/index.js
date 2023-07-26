@@ -39,7 +39,6 @@ const queryParamsInit = {
   amountRange: '',
   amountRangeType: '',
   type: ['VatAmountSettleByAdmin'],
-  // adminBy: '',
 };
 
 function Vat2() {

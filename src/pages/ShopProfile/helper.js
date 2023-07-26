@@ -4,8 +4,8 @@ import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
 
 export const getQueryParamsInit = (params) => ({
-  endDate: moment().format('YYYY-MM-DD'),
-  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+  endDate: moment(),
+  startDate: moment().subtract(7, 'days'),
   searchKey: '',
   sortBy: 'DESC',
   ...params,

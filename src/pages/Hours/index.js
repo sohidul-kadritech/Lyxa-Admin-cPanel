@@ -85,10 +85,13 @@ export default function ShopHourSettings() {
     removeIdsFromHours(nhours);
 
     data.normalHours = nhours;
-    data.holidayHours = holidayHours?.map((holiday) => ({
-      ...holiday,
-      date: moment(holiday?.date).format('MM/DD/YYYY'),
-    }));
+    data.holidayHours = holidayHours?.map((holiday) => {
+      console.log({ holiday });
+      return {
+        ...holiday,
+        date: moment(holiday?.date).format('MM/DD/YYYY'),
+      };
+    });
 
     const validation = validateSettings(data);
     if (!validation.status) {
@@ -144,6 +147,7 @@ export default function ShopHourSettings() {
         <Stack>
           {holidayHours?.map((holiday, index, { length }) => (
             <Holiday
+              console={console.log({ holiday })}
               holiday={holiday}
               key={index}
               isEndOfList={index === length - 1}

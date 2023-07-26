@@ -9,8 +9,8 @@ export const queryParamsInit = {
   page: 1,
   pageSize: 5,
   sortBy: '',
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().startOf('month'),
+  endDate: moment(),
   searchKey: '',
   status: '',
 };

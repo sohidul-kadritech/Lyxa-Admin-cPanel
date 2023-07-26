@@ -7,8 +7,8 @@ import ChartBox from './ChartBox';
 import StyledAreaChart from './StyledAreaChart';
 
 const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  end: moment(),
+  start: moment().subtract(7, 'd'),
 };
 
 export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps }) {

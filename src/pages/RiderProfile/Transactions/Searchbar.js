@@ -76,8 +76,8 @@ export default function SearchBar({
         onChange={({ startDate, endDate }) => {
           setQueryParams((prev) => ({
             ...prev,
-            startDate: startDate?._d,
-            endDate: endDate?._d,
+            startDate,
+            endDate,
             page: 1,
           }));
         }}

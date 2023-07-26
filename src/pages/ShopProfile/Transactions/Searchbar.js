@@ -81,8 +81,8 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
             page: 1,
             tnxFilter: {
               ...prev.tnxFilter,
-              startDate: startDate._d,
-              endDate: endDate._d,
+              startDate,
+              endDate,
             },
           }));
         }}
