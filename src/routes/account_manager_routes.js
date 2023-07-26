@@ -1,10 +1,8 @@
-import Marketing from '../pages/Marketing';
-
-import MarketingDashboard from '../pages/Marketing/Dashbaord';
-
 import AdminToSellerLayout from '../components/Layout/ChildLayouts/AdminToSellerLayout';
 import SellerToShopLayout from '../components/Layout/ChildLayouts/SellerToShopLayout';
 import AccountManagerDashBoard from '../pages/AccountManagerDashBoard';
+import Marketing from '../pages/Marketing';
+import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import SellerList2 from '../pages/Sellers2';
 import ShopProfile from '../pages/ShopProfile';
 
