@@ -16,8 +16,6 @@ export default function Payout({ paymentDetails }) {
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
   const exchangeRate = general?.appSetting?.exchangeRate;
 
-  console.log('currentExpandTab', currentExpanedTab);
-
   return (
     <Grid xs={12}>
       <StyledBox
