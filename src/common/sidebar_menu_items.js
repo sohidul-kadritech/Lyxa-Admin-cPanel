@@ -24,8 +24,6 @@ import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.sv
 
 /* ======== shop ======== */
 export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
-  console.log('menuitem', shopType);
-
   const menuItems = [
     {
       title: 'Management',

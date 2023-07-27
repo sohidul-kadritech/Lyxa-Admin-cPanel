@@ -6,7 +6,7 @@ import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg'
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
 import { ReactComponent as Dietary } from '../../assets/icons/dietary.svg';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
-import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
+import { ReactComponent as Location } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as TagIcon } from '../../assets/icons/tag2.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
@@ -26,7 +26,7 @@ export default function ShopDetails({ shop }) {
         }}
       />
       <ProfileSidebarInfo label="Shop Type" value={shop?.shopType} icon={CalenderIcon} />
-      <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Loacation} />
+      <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Location} />
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />
       <ProfileSidebarInfo label="Phone number" value={shop?.phone_number} icon={Phone} />
       <ProfileSidebarInfo

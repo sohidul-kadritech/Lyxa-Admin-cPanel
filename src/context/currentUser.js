@@ -8,8 +8,6 @@ export const currentUserInit = {
 };
 
 export const currentUserReducer = (state, { type, payload }) => {
-  console.log('=========>', type, payload);
-
   switch (type) {
     case 'shop':
       return {

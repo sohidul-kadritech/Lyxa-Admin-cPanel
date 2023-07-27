@@ -44,12 +44,7 @@ const StyledTab = styled(Button)(({ theme }) => ({
 export default function Tabs() {
   const history = useHistory();
   const location = useLocation();
-  const { shopTabs, dispatchShopTabs, dispatchCurrentUser, currentUser } = useGlobalContext();
-  // eslint-disable-next-line no-unused-vars
-  const { userType, seller } = currentUser;
-
-  console.log('=================>', 'all-tab', shopTabs?.allTabs);
-  console.log('=================>', 'seller', seller);
+  const { shopTabs, dispatchShopTabs, dispatchCurrentUser } = useGlobalContext();
 
   // on switch tab
   const changeTab = (tab) => {

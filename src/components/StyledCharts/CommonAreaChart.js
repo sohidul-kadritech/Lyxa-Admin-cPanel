@@ -13,7 +13,6 @@ const dateRangeItit = {
 
 export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps }) {
   const [range, setRange] = useState({ ...dateRangeItit });
-  console.log(params);
 
   const query = useQuery(
     [
