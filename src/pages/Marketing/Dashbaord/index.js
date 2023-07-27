@@ -345,32 +345,6 @@ export default function MarketingDashboard({ viewUserType }) {
             md={4}
             lg={4}
           />
-          {/* {params?.type === 'reward' && (
-            <>
-              <Grid sm={12} md={12} lg={5}>
-                <StyledBox>
-                  <ProductsInfoList
-                    items={ProductsInfoListData}
-                    onVeiwMore={() => {
-                      console.log('Clicked');
-                    }}
-                  />
-                </StyledBox>
-              </Grid>
-              <ChartBox
-                chartHeight={325}
-                dateRange={loyalityRange}
-                setDateRange={setLoyalityRange}
-                loading={loyalityGraphQuery.isLoading}
-                title="Loyalty points usage"
-                sm={12}
-                md={12}
-                lg={7}
-              >
-                <StyledBarChart data={pGraphData} />
-              </ChartBox>
-            </>
-          )} */}
           <ChartBox
             chartHeight={245}
             dateRange={orderRange}
@@ -407,7 +381,6 @@ export default function MarketingDashboard({ viewUserType }) {
           </ChartBox>
         </Grid>
       )}
-
       <MSettingsModal open={Boolean(isModalOpen)}>
         <MarketingSettings
           shop={currentShop}

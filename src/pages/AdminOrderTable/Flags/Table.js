@@ -1,6 +1,7 @@
 import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { ReactComponent as MessageIcon } from '../../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../../assets/icons/order-flag.svg';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import TableDateTime from '../../../components/Common/TableDateTime';
@@ -34,6 +35,12 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
           name={
             <span>
               {value?.name}
+              {row?.chats?.length || row?.admin_chat_request?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
               &nbsp;&nbsp;
               <FlagIcon color="#DD5B63" />
             </span>

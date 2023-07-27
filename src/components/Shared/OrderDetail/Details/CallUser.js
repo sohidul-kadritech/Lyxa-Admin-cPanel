@@ -30,16 +30,15 @@ export default function CallUser({ user, userType, onClickName, disableContainer
           </Avatar>
           <Stack>
             <Typography
-              color="primary"
+              color={onClickName ? 'primary' : undefined}
               onClick={onClickName}
-              sx={{ cursor: 'pointer' }}
+              sx={onClickName ? { cursor: 'pointer' } : undefined}
               variant="body4"
               fontWeight={600}
             >
               {user?.name}
             </Typography>
             <Typography variant="body4" fontWeight={400}>
-              {/* {isDelivered ? 'Delivered' : 'Delivering'}   */}
               {user?.secondary}
             </Typography>
           </Stack>

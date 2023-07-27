@@ -30,8 +30,8 @@ export function CardTitle({ title, tooltip }) {
 export const queryParamsInit = {
   page: 1,
   pageSize: 10,
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().startOf('month'),
+  endDate: moment(),
   searchKey: '',
   sortBy: 'desc',
   status: '',

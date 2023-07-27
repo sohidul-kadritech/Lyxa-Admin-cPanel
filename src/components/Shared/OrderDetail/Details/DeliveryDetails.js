@@ -3,12 +3,15 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Typography }
 import { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as MapIcon } from '../../../../assets/icons/map-colored.svg';
+import { useGlobalContext } from '../../../../context';
 import { StyledOrderDetailBox } from '../helpers';
 import CallUser from './CallUser';
 import OrderTrackingMap from './OrderTracking';
 
 export default function DeliveryDetails({ order = {} }) {
   const [mapOpen, setOpen] = useState(false);
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -44,14 +47,17 @@ export default function DeliveryDetails({ order = {} }) {
         <Box pt={3} pb={4}>
           <CallUser
             disableContainerStyle
-            onClickName={() =>
-              history.push({
-                pathname: `/accounts/${order?.user?._id}`,
-                state: {
-                  from: routeMatch?.path,
-                  backToLabel: 'Back to previous',
-                },
-              })
+            onClickName={
+              userType === 'admin'
+                ? () =>
+                    history.push({
+                      pathname: `/riders/${order?.deliveryBoy?._id}`,
+                      state: {
+                        from: routeMatch?.path,
+                        backToLabel: 'Back to Orders',
+                      },
+                    })
+                : null
             }
             user={{
               name: order?.deliveryBoy?.name,

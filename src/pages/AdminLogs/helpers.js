@@ -1,8 +1,8 @@
 import moment from 'moment';
 
 const dateRangeInit = {
-  startDate: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().subtract(7, 'd'),
+  endDate: moment(),
 };
 export const getQueryParamsInit = {
   page: 1,

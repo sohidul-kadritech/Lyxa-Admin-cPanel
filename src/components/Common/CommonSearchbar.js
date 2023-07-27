@@ -1,5 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
+import moment from 'moment';
 import { useMemo } from 'react';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledDateRangePicker from '../Styled/StyledDateRangePicker';
@@ -63,10 +64,11 @@ export default function SearchBar({
           startDate={queryParams.startDate}
           endDate={queryParams.endDate}
           onChange={({ startDate, endDate }) => {
+            console.log({ startDate, moment: moment(startDate) });
             setQueryParams((prev) => ({
               ...prev,
-              startDate: startDate?._d,
-              endDate: endDate?._d,
+              startDate,
+              endDate,
               page: 1,
             }));
           }}

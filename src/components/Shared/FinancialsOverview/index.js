@@ -47,26 +47,24 @@ export default function Overview({ viewUserType }) {
     [
       viewUserTypeToApiMap[viewUserType]?.api,
       {
-        startDate: moment(paymentDetailsRange.start).format('YYYY-MM-DD'),
-        endDate: moment(paymentDetailsRange.end).format('YYYY-MM-DD'),
+        startDate: paymentDetailsRange.start,
+        endDate: paymentDetailsRange.end,
         ...viewUserTypeToApiMap[viewUserType]?.params,
       },
     ],
     () =>
       AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
         params: {
-          startDate: moment(paymentDetailsRange.start).format('YYYY-MM-DD'),
-          endDate: moment(paymentDetailsRange.end).format('YYYY-MM-DD'),
+          startDate: paymentDetailsRange.start,
+          endDate: paymentDetailsRange.end,
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-        // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
-    // eslint-disable-next-line prettier/prettier
-    [query?.data, marketingSpentType],
+    [query?.data, marketingSpentType]
   );
 
   console.log('shopDashBoard:', query.data?.data?.summary);
@@ -88,8 +86,8 @@ export default function Overview({ viewUserType }) {
             }}
             onClick={() => {
               setPaymentDetailsRange({
-                end: moment().format('YYYY-MM-DD'),
-                start: moment().subtract(1, 'd').format('YYYY-MM-DD'),
+                end: moment(),
+                start: moment().subtract(1, 'd'),
               });
             }}
           >

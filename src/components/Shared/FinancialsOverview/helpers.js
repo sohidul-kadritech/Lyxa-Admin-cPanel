@@ -7,8 +7,8 @@ export const marketingSpentTypeOptions = [
 ];
 
 export const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  end: moment(),
+  start: moment().subtract(7, 'd'),
 };
 
 export function calculateDateDifference(date1, date2, unit) {

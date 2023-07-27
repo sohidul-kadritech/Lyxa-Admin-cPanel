@@ -11,6 +11,8 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 
+import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
+import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
@@ -19,7 +21,8 @@ import UpdateOrderStatus from './UpdateOrderStatus';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
-  const { general } = useGlobalContext();
+  const { general, currentUser } = useGlobalContext();
+  const { userType } = currentUser;
 
   const currency = general?.currency?.symbol;
   const history = useHistory();
@@ -64,7 +67,23 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           imgAlt="user-image"
           imgUrl={row?.user?.profile_photo}
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
-          name={row?.user?.name}
+          name={
+            <span>
+              {row?.user?.name}
+              {(row?.chats?.length || row?.admin_chat_request?.length) && userType === 'admin' ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.flag?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <FlagIcon color="#DD5B63" />
+                </>
+              ) : null}
+            </span>
+          }
           subTitle={row?.orderId}
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
@@ -79,7 +98,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
                   onClick: () => {
                     history.push({
                       pathname: `/accounts/${row?.user?._id}`,
-                      state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
                     });
                   },
                 }
@@ -109,7 +128,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
                   onClick: () => {
                     history.push({
                       pathname: `/shop/profile/${row?.shop?._id}`,
-                      state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
                     });
                   },
                 }

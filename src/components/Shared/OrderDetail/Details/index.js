@@ -17,8 +17,6 @@ import ResolveOrderFlag from './ResolveFlag';
 export default function Detail({ order, hideIssues, userType }) {
   const [, setRender] = useState(false);
 
-  console.log('order', order);
-
   return (
     <Stack gap={5}>
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
