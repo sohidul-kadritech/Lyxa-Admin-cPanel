@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.fb0a0da0.css",
-    "main.js": "/static/js/main.04948380.js",
+    "main.css": "/static/css/main.da981dad.css",
+    "main.js": "/static/js/main.54e6fceb.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -128,6 +128,7 @@
     "static/media/delete-icon.svg": "/static/media/delete-icon.920e34927a7844d29da7aceaca21f3ff.svg",
     "static/media/login-user.svg": "/static/media/login-user.8e8ed31e7905a587199bc20911336b42.svg",
     "static/media/heart.svg": "/static/media/heart.2b7858e3b2580587c6591d0e3d9131d7.svg",
+    "static/media/message-icon.svg": "/static/media/message-icon.828b5ad93f7b260b9b079da591adc883.svg",
     "static/media/handle.svg": "/static/media/handle.a7f2f22d538d9e1e0d1a6a3482291eaa.svg",
     "static/media/financials.svg": "/static/media/financials.0196e350b3d0777d59513fef040e1939.svg",
     "static/media/credit-card.svg": "/static/media/credit-card.fc4b02a63904787904615144eb7b0ff4.svg",
@@ -139,7 +140,7 @@
     "static/media/time-inactive.svg": "/static/media/time-inactive.2efbfb72846ddf57862cfdb3d2699e6d.svg"
   },
   "entrypoints": [
-    "static/css/main.fb0a0da0.css",
-    "static/js/main.04948380.js"
+    "static/css/main.da981dad.css",
+    "static/js/main.54e6fceb.js"
   ]
 }
