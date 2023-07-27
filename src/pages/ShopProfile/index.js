@@ -162,7 +162,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
             paddingRight: { md: '50px', sm: '0px' },
             borderRight: { md: '1px solid #EEEEEE', sm: 'none' },
             height: '100%',
-            overflow: 'auto',
           }}
         >
           <ShopBanner loading={shopMutation.isLoading || loading} shop={shop} onDrop={onDrop} />

@@ -11,7 +11,7 @@ import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as TagIcon } from '../../assets/icons/tag2.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
-import { AverageOrderValue, TagsAndCuisines, openingHours } from './helper';
+import { AverageOrderValue, OpeningHours, TagsAndCuisines } from './helper';
 
 export default function ShopDetails({ shop }) {
   return (
@@ -55,7 +55,12 @@ export default function ShopDetails({ shop }) {
       />
       <ProfileSidebarInfo label="Status" value={shop?.shopStatus} icon={Warning} />
       <Box sx={{ paddingBottom: '40px' }}>
-        <ProfileSidebarInfo label="Opening Hours" value={openingHours(shop?.normalHours)} icon={AccessTimeFilled} />
+        <ProfileSidebarInfo
+          label="Opening Hours"
+          icon={AccessTimeFilled}
+          valueComponent={<OpeningHours normalHours={shop?.normalHours} />}
+          // value={<OpeningHours normalHours={shop?.normalHours} />}
+        />
       </Box>
     </Stack>
   );

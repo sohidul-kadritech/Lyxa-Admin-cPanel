@@ -1,7 +1,6 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 
 function Column({ orderType }) {
-  console.log(orderType);
   return (
     <Stack gap={10} direction="row" alignItems="center">
       <Stack alignItems="center" direction="row" gap={3} flex={1}>
