@@ -3,6 +3,7 @@ export default function Button() {
     defaultProps: {
       disableElevation: true,
     },
+
     styleOverrides: {
       root: ({ ownerState, theme }) => ({
         fontSize: '16px',
@@ -30,10 +31,6 @@ export default function Button() {
           }),
         },
 
-        ...(ownerState.rounded && {
-          borderRadius: 6,
-        }),
-
         ...(ownerState.size === 'small' && {
           fontSize: '14px',
           lineHeight: '24px',
@@ -45,9 +42,11 @@ export default function Button() {
           },
         }),
       }),
+
       text: {
         padding: '0',
         background: 'transparent',
+
         '&:hover': {
           background: 'transparent',
         },
