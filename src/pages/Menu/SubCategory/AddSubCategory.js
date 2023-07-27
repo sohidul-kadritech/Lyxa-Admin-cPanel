@@ -39,8 +39,8 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
         searchKey: '',
         sortBy: 'desc',
         type: shop?.shopType,
-        shopId: shop?._id,
-        userType: 'shop',
+        userType: 'admin',
+        status: 'active',
       },
     ],
     () =>
@@ -51,8 +51,8 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
           searchKey: '',
           sortBy: 'desc',
           type: shop?.shopType,
-          shopId: shop?._id,
-          userType: 'shop',
+          userType: 'admin',
+          status: 'active',
         },
       }),
     {

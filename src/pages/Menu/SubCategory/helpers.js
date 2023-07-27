@@ -7,7 +7,7 @@ export const getSubCategoryInit = () => ({
 
 export const getAddSubCategoriesInit = (categoryId) => ({
   categoryId: categoryId || '',
-  categories: [getSubCategoryInit(), getSubCategoryInit()],
+  categories: [getSubCategoryInit()],
 });
 
 export const validateAddSubCategories = (addSubCategories) => {

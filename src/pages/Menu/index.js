@@ -181,7 +181,6 @@ export default function MenuPage() {
                 <CategoryItem secondaryCurrency={secondaryCurrency} category={favorites} gOpen={category_open} />
               </>
             )}
-
             <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
               {categories.map((category) => {
                 if (searchValue !== '' && !category?.category?.category?.matched) {

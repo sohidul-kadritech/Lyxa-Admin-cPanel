@@ -25,8 +25,8 @@ const breadcrumbItems = [
 
 const categoryTypeIndex = {
   0: 'food',
-  1: 'pharmacy',
-  2: 'grocery',
+  1: 'grocery',
+  2: 'pharmacy',
 };
 
 const menuOptions = [{ label: 'Add Category', value: 'add-category' }];
@@ -75,8 +75,8 @@ export default function CategoryList2() {
           }}
         >
           <Tab label="Food" />
-          <Tab label="Pharmacy" />
           <Tab label="Grocery" />
+          <Tab label="Pharmacy" />
         </Tabs>
       </Box>
       <Box pb={7.5}>
