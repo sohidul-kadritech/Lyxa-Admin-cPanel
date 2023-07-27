@@ -10,34 +10,21 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import StyledBarChart from '../../StyledCharts/StyledBarChart';
 
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
 
 export default function ProfitChart({ viewUserType = 'shop' }) {
-  const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
-  const profitGraphQuery = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-      })
+  const profitGraphQuery = useQuery([Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_PROFIT_GRAPH, {
+      params: queryParams,
+    })
   );
 
   const profitData = generateGraphData(
@@ -61,8 +48,10 @@ export default function ProfitChart({ viewUserType = 'shop' }) {
     <ChartBox
       loading={profitGraphQuery.isLoading}
       chartHeight={325}
-      dateRange={range}
-      setDateRange={setRange}
+      dateRange={queryParams}
+      setDateRange={setQueryParams}
+      startDateKey="startDate"
+      endDateKey="endDate"
       title="Profit details"
       sm={12}
       xl={6}

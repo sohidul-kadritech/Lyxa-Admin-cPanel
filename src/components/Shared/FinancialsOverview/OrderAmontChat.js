@@ -10,37 +10,22 @@ import AXIOS from '../../../network/axios';
 import ChartBox from '../../StyledCharts/ChartBox';
 import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
 
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
 
 export default function OrderAmountChart({ viewUserType }) {
-  const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
-
-  console.log({ viewUserType });
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
   // order amount graph
-  const orderAmountGraphQuery = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-      })
+  const orderAmountGraphQuery = useQuery([Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
+      params: queryParams,
+    })
   );
 
   const orderAmountData = generateGraphData(
@@ -67,8 +52,10 @@ export default function OrderAmountChart({ viewUserType }) {
     <ChartBox
       loading={orderAmountGraphQuery?.isLoading}
       chartHeight={300}
-      dateRange={range}
-      setDateRange={setRange}
+      dateRange={queryParams}
+      setDateRange={setQueryParams}
+      startDateKey="startDate"
+      endDateKey="endDate"
       title="Total Order Amount"
       sm={12}
     >

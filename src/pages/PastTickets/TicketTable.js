@@ -72,7 +72,7 @@ export default function TicketTable({
             onClick: () => {
               history.push({
                 pathname: `/shop/profile/${row?.shop?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
               });
             },
           }}

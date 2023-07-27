@@ -21,8 +21,8 @@ export const queryParamsInit = {
   type: 'all',
   // startDate: moment().startOf('month').format('YYYY-MM-DD'),
   // endDate: moment().format('YYYY-MM-DD'),
-  startDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().subtract(1, 'days'),
+  endDate: moment(),
   searchKey: '',
 };
 

@@ -15,8 +15,8 @@ const queryParamsInit = (userId) => ({
   pageSize: 10,
   sortBy: 'DESC',
   type: 'all',
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().startOf('month'),
+  endDate: moment(),
   searchKey: '',
   userId,
 });

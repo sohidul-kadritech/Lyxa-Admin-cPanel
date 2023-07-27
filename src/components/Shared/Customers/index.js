@@ -3,7 +3,6 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../context';
-import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -34,33 +33,27 @@ const tabValueToPropsMap = {
   },
 };
 
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
+
 export default function Customers({ viewUserType }) {
   const [currentTab, setCurrentTab] = useState('total');
-  const [range, setRange] = useState({ ...dateRangeInit });
   const { currentUser } = useGlobalContext();
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
   const handleTabChange = (index) => {
     setCurrentTab(index);
   };
 
   const query = useQuery(
-    [
-      Api.SHOP_DASHBOARD_CUSTOMER_INFO,
-      {
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        type: viewUserType,
-        id: currentUser[viewUserType]?._id,
-      },
-    ],
+    [Api.SHOP_DASHBOARD_CUSTOMER_INFO, queryParams],
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
-        params: {
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          type: viewUserType,
-          id: currentUser[viewUserType]?._id,
-        },
+        params: queryParams,
       }),
     {
       onSuccess: (data) => {
@@ -72,7 +65,7 @@ export default function Customers({ viewUserType }) {
   return (
     <Box>
       <Stack direction="row" alignItems="center" justifyContent="flex-end" marginTop="-70px" pb={10.5}>
-        <DateRange range={range} setRange={setRange} />
+        <DateRange range={queryParams} startKey="startDate" endKey="endDate" setRange={setQueryParams} />
       </Stack>
       <Grid container spacing={7.5}>
         <Grid xs={12} lg={3}>
@@ -120,7 +113,7 @@ export default function Customers({ viewUserType }) {
             title={tabValueToPropsMap[currentTab].title}
             details={query?.data?.data}
             customerType={currentTab}
-            range={range}
+            range={queryParams}
           />
         </Grid>
         <CommonAreaChart

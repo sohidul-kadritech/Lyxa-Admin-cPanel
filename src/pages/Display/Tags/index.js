@@ -26,46 +26,30 @@ const typeToTabIndexMap = {
   2: 'pharmacy',
 };
 
-const filtersInit = {
+const queryParamsInit = {
   searchKey: '',
   status: '',
+  page: 1,
+  pageSize: 20,
+  sortBy: 'asc',
+  shopType: 'food',
 };
 
 export default function TagsAndCusines() {
   const queryClient = useQueryClient();
 
   const [currentTab, setCurrentTab] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [render, setRender] = useState(false);
+  const [, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [currentTag, setCurrentTag] = useState({});
 
   // query
-  const [filters, setFilters] = useState(filtersInit);
-  const tagsQuery = useQuery(
-    [
-      `tags-cusines-${typeToTabIndexMap[currentTab]}`,
-      {
-        searchKey: filters.searchKey,
-        shopType: typeToTabIndexMap[currentTab],
-        // startDate: filters.date.start,
-        // endDate: filters.date.end,
-        status: filters.status,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
-        params: {
-          page: 1,
-          pageSize: 500,
-          searchKey: filters.searchKey,
-          sortBy: 'asc',
-          shopType: typeToTabIndexMap[currentTab],
-          status: filters.status,
-          // startDate: filters.date.start,
-          // endDate: filters.date.end,
-        },
-      })
+  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+
+  const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES, queryParams], () =>
+    AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
+      params: queryParams,
+    })
   );
 
   const items = tagsQuery.data?.data?.tags || [];
@@ -95,13 +79,13 @@ export default function TagsAndCusines() {
     });
   };
 
-  // deltete
+  // delete
   const [confirmModal, setConfrimModal] = useState(false);
 
   const tagDeleteMutation = useMutation((data) => AXIOS.post(Api.DELETE_TAGS_AND_CUSINES, data), {
     onSuccess: (data) => {
       if (data.status) {
-        queryClient.invalidateQueries([`tags-cusines-${typeToTabIndexMap[currentTab]}`]);
+        queryClient.invalidateQueries([Api.GET_ALL_TAGS_AND_CUSINES]);
         successMsg(data.message, 'success');
         setConfrimModal(false);
         setCurrentTag({});
@@ -128,6 +112,7 @@ export default function TagsAndCusines() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
+              setQueryParams((prev) => ({ ...prev, shopType: typeToTabIndexMap[newValue], page: 1 }));
             }}
           >
             <Tab label="Food" />
@@ -137,8 +122,8 @@ export default function TagsAndCusines() {
           {/* panels */}
           <Box pt={7}>
             <CommonFilters
-              filtersValue={filters}
-              setFiltersValue={setFilters}
+              filtersValue={queryParams}
+              setFiltersValue={setQueryParams}
               searchPlaceHolder={`Search${items.length ? ` ${items.length}` : ''} items`}
             />
             {tagsQuery.isLoading ? (
@@ -150,6 +135,11 @@ export default function TagsAndCusines() {
                   shopType={typeToTabIndexMap[currentTab]}
                   onDrop={dropSort}
                   loading={tagsQuery.isLoading}
+                  page={queryParams.page}
+                  setPage={(page) => {
+                    setQueryParams({ ...queryParams, page });
+                  }}
+                  totalPage={tagsQuery?.data?.data?.paginate?.metadata?.page?.totalPage}
                   onStatusChange={(value, item) => {
                     item.status = value;
                     setRender((prev) => !prev);

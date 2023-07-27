@@ -19,6 +19,6 @@ export const vatTrxsAmountFilterOptions = [
 ];
 
 export const dateRangeInit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(30, 'd').format('YYYY-MM-DD'),
+  end: moment(),
+  start: moment().subtract(30, 'd'),
 };

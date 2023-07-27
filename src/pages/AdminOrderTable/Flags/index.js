@@ -21,8 +21,8 @@ const queryParamsInit = {
   page: 1,
   pageSize: 25,
   sortBy: '',
-  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().subtract(7, 'days'),
+  endDate: moment(),
   searchKey: '',
 };
 

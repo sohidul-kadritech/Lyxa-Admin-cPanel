@@ -23,12 +23,12 @@ export default function Holiday({ holiday, onDelete, isEndOfList, onAnyChange })
             startValue={holiday?.closedStart}
             endValue={holiday?.closedEnd}
             onStartChange={(e) => {
-              holiday.closedStart = e.target.value;
+              holiday.closedStart = e?.format('HH:mm');
               setRender(!render);
               onAnyChange();
             }}
             onEndChange={(e) => {
-              holiday.closedEnd = e.target.value;
+              holiday.closedEnd = e?.format('HH:mm');
               setRender(!render);
               onAnyChange();
             }}

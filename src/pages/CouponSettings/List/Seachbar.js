@@ -53,8 +53,8 @@ export default function Searchbar({ queryParams, setQueryParams, searchPlaceHold
         onChange={({ startDate, endDate }) => {
           setQueryParams((prev) => ({
             ...prev,
-            startDate: startDate?._d,
-            endDate: endDate?._d,
+            startDate,
+            endDate,
           }));
         }}
       />

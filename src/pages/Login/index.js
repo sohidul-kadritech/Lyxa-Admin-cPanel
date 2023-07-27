@@ -94,6 +94,8 @@ export default function Login({ loginFor }) {
       return;
     }
 
+    setLoginError(null);
+
     loginMutation.mutate({
       ...credentials,
       type: accountType,

@@ -59,36 +59,22 @@ const generateData = (data, marketingSpentType = '') => {
   return { discount, points, doubleDeal, freeDelivery, featureAmount, date };
 };
 
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
 
 export default function MarketingSpentChart({ viewUserType = 'shop' }) {
-  const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
   const [marketingSpentType, setMarketingSpentType] = useState('all');
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
-  const marketingSpentQuery = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-        // eslint-disable-next-line prettier/prettier
-      })
+  const marketingSpentQuery = useQuery([Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
+      params: queryParams,
+    })
   );
 
   const chartdata = useMemo(
@@ -143,8 +129,10 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   return (
     <ChartBox
       chartHeight={325}
-      dateRange={range}
-      setDateRange={setRange}
+      dateRange={queryParams}
+      setDateRange={setQueryParams}
+      startDateKey="startDate"
+      endDateKey="endDate"
       title={
         <Stack alignItems="center" gap={6} direction="row" justifyContent="space-between" pr={4}>
           <span>Marketing Spent</span>

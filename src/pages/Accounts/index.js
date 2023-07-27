@@ -14,8 +14,8 @@ const queryParamsInit = {
   pageSize: 20,
   sortBy: 'DESC',
   type: 'ongoing',
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().startOf('month'),
+  endDate: moment(),
   searchKey: '',
   status: '',
 };

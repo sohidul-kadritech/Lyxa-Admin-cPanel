@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
-import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from '../Menu/AddCategory';
@@ -47,20 +46,12 @@ export default function CategoryList2() {
   const [open, setOpen] = useState(null);
 
   const [queryParams, setQueryParams] = useState(queryParamsInit);
-  const [totalPage, setTotalPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState({});
 
-  const query = useQuery(
-    [API_URL.GET_ALL_CATEGORY, queryParams],
-    () =>
-      AXIOS.get(API_URL.GET_ALL_CATEGORY, {
-        params: queryParams,
-      }),
-    {
-      onSuccess: (data) => {
-        setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-      },
-    }
+  const query = useQuery([API_URL.GET_ALL_CATEGORY, queryParams], () =>
+    AXIOS.get(API_URL.GET_ALL_CATEGORY, {
+      params: queryParams,
+    })
   );
 
   const updateQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_CATEGORY, data));
@@ -94,35 +85,33 @@ export default function CategoryList2() {
           setQueryParams={setQueryParams}
           searchPlaceHolder="Search Category"
           MenuButton={AddMenuButton}
-          menuItems={menuOptions?.filter((opt) => opt.value !== 'add-sub-category' || currentTab !== 0)}
+          menuItems={menuOptions}
           menuHandler={menuHandler}
           showFilters={{
             search: true,
             sort: true,
-            menu: true,
+            menu: currentTab !== 0,
             status: true,
           }}
         />
       </Box>
-      <Box>
-        {query.isLoading ? (
-          <TableSkeleton rows={7} columns={['avatar', 'text', 'text', 'text']} />
-        ) : (
-          <CategoryTable
-            onViewContent={(category) => {
-              setOpen('view-category');
-              setSelectedCategory(category);
-            }}
-            updateQuery={updateQuery}
-            data={query?.data?.data?.categories}
-            loading={query?.isLoading}
-            type={queryParams.type}
-            queryParams={queryParams}
-            setQueryParams={setQueryParams}
-            totalPage={totalPage}
-          />
-        )}
-      </Box>
+      <CategoryTable
+        updateQuery={updateQuery}
+        data={query?.data?.data?.categories}
+        loading={query?.isLoading}
+        type={queryParams.type}
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
+        onEdit={(category) => {
+          setSelectedCategory(category);
+          setOpen('add-category');
+        }}
+        onViewContent={(category) => {
+          setOpen('view-category');
+          setSelectedCategory(category);
+        }}
+      />
       <Drawer open={Boolean(open)} anchor="right">
         {open === 'view-category' && (
           <ViewCategoryContent
@@ -133,10 +122,11 @@ export default function CategoryList2() {
             category={selectedCategory}
           />
         )}
+
         {open === 'add-category' && (
           <AddCategory
-            newCategoryShopType={categoryTypeIndex[currentTab]}
-            viewUserType="admin"
+            editCategory={selectedCategory}
+            shopType={categoryTypeIndex[currentTab]}
             onClose={() => {
               setOpen(null);
               setSelectedCategory({});

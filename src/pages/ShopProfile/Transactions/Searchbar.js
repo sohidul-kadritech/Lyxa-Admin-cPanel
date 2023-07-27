@@ -73,16 +73,16 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
       /> */}
       <StyledDateRangePicker
-        startDate={queryParams.startDate}
-        endDate={queryParams.endDate}
+        startDate={queryParams.tnxFilter.startDate}
+        endDate={queryParams.tnxFilter.endDate}
         onChange={({ startDate, endDate }) => {
           setQueryParams((prev) => ({
             ...prev,
             page: 1,
             tnxFilter: {
               ...prev.tnxFilter,
-              startDate: startDate._d,
-              endDate: endDate._d,
+              startDate,
+              endDate,
             },
           }));
         }}

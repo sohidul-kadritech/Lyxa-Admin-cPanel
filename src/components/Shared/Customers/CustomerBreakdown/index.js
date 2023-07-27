@@ -111,7 +111,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
         {title}
       </Typography>
       <Typography variant="body4" pb={4} color={theme.palette.text.secondary2}>
-        Customers who ordered: Last {calculateDateDifference(range.start, range.end, 'day')} days
+        Customers who ordered: Last {calculateDateDifference(range.startDate, range.endDate, 'day')} days
       </Typography>
       {/* <Typography
         variant="body1"
