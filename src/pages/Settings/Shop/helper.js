@@ -18,10 +18,8 @@ export const DeliverySettings = [
 ];
 
 export const maxDiscountOptions = (options) => {
-  console.log('options:', options);
   if (options?.length > 0) {
     const generatedOptions = options.map((value) => ({ label: value.toString(), value: value.toString() }));
-    console.log('options:', generatedOptions);
     return generatedOptions;
   }
   return [{ label: 'No options', value: '' }];
@@ -62,8 +60,6 @@ export function createShopSettingsData(
   const tags = [];
   const cuisineType = [];
   const tagsId = [];
-
-  console.log('rate of shop: ', shopExchangeRate, shopAcceptedCurrency);
 
   newTags?.forEach((tag) => {
     tags.push(tag?.name);

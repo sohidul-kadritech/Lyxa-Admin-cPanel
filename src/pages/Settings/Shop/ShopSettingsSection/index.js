@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material';
 import { ShopAction } from '../ShopAction';
 
 export function General({ title, isButton, actionTitle, isChecked, action, buttonType }) {
-  console.log(buttonType);
   const boxSx = {
     padding: '32px 56px 21px 30px',
     width: '100%',
