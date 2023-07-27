@@ -151,7 +151,7 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
       sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
       national_id,
       sellerContractPaper,
-      sellerChargeType: undefined,
+      // sellerChargeType: undefined,
     };
   }
 
@@ -162,7 +162,7 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
     national_id,
     sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
     sellerContractPaper,
-    sellerChargeType: undefined,
+    // sellerChargeType: undefined,
   };
 
   return team?.adminType === 'sales' && team?._id ? { ...newData, createdBy: team?._id } : { ...newData };
