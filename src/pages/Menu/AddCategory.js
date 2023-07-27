@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import React, { useMemo, useState } from 'react';
