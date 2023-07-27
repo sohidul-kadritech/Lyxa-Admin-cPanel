@@ -13,8 +13,8 @@ export const breadCrumbItems = [
 ];
 
 export const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  end: moment(),
+  start: moment().subtract(7, 'd'),
 };
 
 export const marketingDurationTime = (start, end) => {
