@@ -39,6 +39,16 @@ const tabSx = {
   textTransform: 'none',
 };
 
+const getCategoryQueryParams = (shopType, shopId) => ({
+  page: 1,
+  pageSize: 100,
+  searchKey: '',
+  sortBy: 'desc',
+  type: shopType,
+  shopId: shopType === 'food' ? shopId : undefined,
+  userType: shopType === 'food' ? 'shop' : 'admin',
+});
+
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const queryClient = useQueryClient();
 
@@ -88,13 +98,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       staleTime: minInMiliSec(10),
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
-    // eslint-disable-next-line prettier/prettier
     [productsQuery?.data?.data?.products]
   );
 
@@ -104,44 +112,21 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   // categories
   const setConvertCategories = (data) => {
     setCategories(
-      // eslint-disable-next-line prettier/prettier
       (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
     );
   };
 
   const categoriesQuery = useQuery(
-    [
-      Api.GET_ALL_CATEGORY,
-      {
-        page: 1,
-        pageSize: 100,
-        searchKey: '',
-        sortBy: 'desc',
-        // status: 'active',
-        type: shop?.shopType,
-        shopId: shop?._id,
-        userType: 'shop',
-      },
-    ],
+    [Api.GET_ALL_CATEGORY, getCategoryQueryParams(shop?.shopType, shop?._id)],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          searchKey: '',
-          sortBy: 'desc',
-          // status: 'active',
-          type: shop?.shopType,
-          shopId: shop?._id,
-          userType: 'shop',
-        },
+        params: getCategoryQueryParams(shop?.shopType, shop?._id),
       }),
     {
       staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         setConvertCategories(data);
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -223,7 +208,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -248,7 +232,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 

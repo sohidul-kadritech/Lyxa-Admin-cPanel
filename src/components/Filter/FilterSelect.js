@@ -162,6 +162,7 @@ export default function FilterSelect({
               boxShadow: 'initial!important',
               borderRadius: '7px',
               border: '1px solid #EEEEEE',
+              maxHeight: '300px',
             },
             ...(sizes[size]?.menuSx || {}),
           },
