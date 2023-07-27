@@ -86,7 +86,6 @@ export default function Product({ product, isFirst, isLast }) {
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
-                    just
                     key={index}
                     gap={5}
                     flex={1}

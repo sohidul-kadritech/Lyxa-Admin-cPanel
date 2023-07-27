@@ -356,11 +356,13 @@ export default function Table({
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatus
-          onClose={() => setUpdateStatusModal(false)}
-          setCurrentOrder={setCurrentOrder}
-          currentOrder={currentOrder}
-        />
+        <Box>
+          <UpdateOrderStatus
+            onClose={() => setUpdateStatusModal(false)}
+            setCurrentOrder={setCurrentOrder}
+            currentOrder={currentOrder}
+          />
+        </Box>
       </Modal>
       {/* flag add */}
       <Modal
@@ -369,7 +371,9 @@ export default function Table({
           setFlagModal(false);
         }}
       >
-        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
       </Modal>
       {/*  cancel order */}
       <Modal
@@ -379,7 +383,9 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        <Box>
+          <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        </Box>
       </Modal>
       {/* rerfund order */}
       <Modal
@@ -389,16 +395,19 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <RefundOrder
-          currentOrder={currentOrder}
-          onClose={() => {
-            setOpenRefundModal(false);
-          }}
-        />
+        <Box>
+          <RefundOrder
+            currentOrder={currentOrder}
+            onClose={() => {
+              setOpenRefundModal(false);
+            }}
+          />
+        </Box>
       </Modal>
-
       <Modal open={openOrderTrackingModal} centered>
-        <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        <Box>
+          <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        </Box>
       </Modal>
     </>
   );
