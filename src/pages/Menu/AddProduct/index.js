@@ -183,12 +183,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
   );
 
-  const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
-    ?.map((p, i) => `${i === 0 ? '' : ', '}${p?.name}`)
-    .join('')}. Products used as addon cannot have attributes.`;
-
-  console.log(productIsAddonMessage);
-
   // loading
   const __loading =
     categoriesQuery.isLoading ||

@@ -24,7 +24,6 @@ export default function ProductItem({
   ...props
 }) {
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
-  console.log('currency: ', secondaryCurrency, 'product: ', product);
   const theme = useTheme();
   const history = useHistory();
 

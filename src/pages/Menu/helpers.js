@@ -284,7 +284,6 @@ export const getAttrOptionsValues = (attributeItem) => {
   const values = [];
   if (attributeItem?.required) values.push('required');
   if (attributeItem?.select === 'multiple') values.push('multiple');
-  console.log(values);
   return values;
 };
 

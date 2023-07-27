@@ -32,8 +32,6 @@ const StyledAccordion = styled(Accordion)(() => ({
 export default function AttributeItem({ attributItem, readonly, onDelete }) {
   const [render, setRender] = useState(false);
 
-  console.log({ readonly });
-
   const attrOptionsHandler = (option) => {
     if (option.value === 'required') {
       if (attributItem?.required !== undefined) {

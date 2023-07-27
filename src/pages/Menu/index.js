@@ -55,7 +55,6 @@ export default function MenuPage() {
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        console.log(data?.data?.appSetting);
         setSecondaryCurrency({
           secondaryCurrency: data?.data?.appSetting?.secondaryCurrency,
           exchangeRate: data?.data?.appSetting?.exchangeRate,
