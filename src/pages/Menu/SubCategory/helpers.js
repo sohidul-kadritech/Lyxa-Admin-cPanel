@@ -45,7 +45,8 @@ export const validateAddSubCategories = (addSubCategories) => {
   };
 };
 
-export const createCategoriesData = (addSubCategories) => ({
+export const createCategoriesData = (addSubCategories, shopId) => ({
+  shopId,
   subCategories: addSubCategories?.categories?.map((category, index) => ({
     name: category?.name,
     status: 'active',

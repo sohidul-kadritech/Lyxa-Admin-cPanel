@@ -108,7 +108,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
       return;
     }
 
-    addSubCategoryMutation.mutate(createCategoriesData(subCategory));
+    addSubCategoryMutation.mutate(createCategoriesData(subCategory, shop?._id));
   };
 
   return (
