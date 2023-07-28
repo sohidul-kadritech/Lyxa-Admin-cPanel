@@ -326,7 +326,7 @@ function Appsettings2() {
     if (
       isUsedSecondaryCurrency === 'enable' &&
       newAppSettings.secondaryCurrency?.symbol &&
-      newAppSettings.secondaryCurrency?.symbol === newAppSettings.currency?.symbol
+      newAppSettings.secondaryCurrency?.symbol === newAppSettings.baseCurrency?.symbol
     ) {
       successMsg('Secondary currency should not same as base currency!', 'error');
       return;
@@ -385,7 +385,7 @@ function Appsettings2() {
               <Stack gap="10px" justifyContent="center">
                 <InputBox
                   title="Max total EST items price"
-                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
                   inputValue={`${newAppSettings?.maxTotalEstItemsPriceForButler}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
@@ -411,7 +411,7 @@ function Appsettings2() {
                 />
               </Stack>
             </StyledBox>
-            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.currency?.symbol})`}>
+            <StyledBox title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.baseCurrency?.symbol})`}>
               <IncrementDecrementButton
                 isChangeOthers
                 changeOthers={() => {
@@ -499,7 +499,7 @@ function Appsettings2() {
                 currentValue={newAppSettings?.nearByShopKmForUserHomeScreen}
               />
             </StyledBox>
-            <StyledBox title={`Maximum Discount for Shops (${newAppSettings?.currency?.symbol})`}>
+            <StyledBox title={`Maximum Discount for Shops (${newAppSettings?.baseCurrency?.symbol})`}>
               <Taglist
                 listContainerSx={{
                   mb: 2.5,
@@ -558,7 +558,7 @@ function Appsettings2() {
               <Stack direction="row" alignItems="center" flexWrap="wrap">
                 <InputBox
                   title="Base Currency"
-                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
@@ -574,7 +574,7 @@ function Appsettings2() {
                     }}
                     inputProps={{
                       placeholder: 'currency',
-                      value: newAppSettings?.currency?.code || '',
+                      value: newAppSettings?.baseCurrency?.code || '',
                       items: currenciesList.map((currency) => {
                         const label = currency?.name_plural;
                         const value = currency?.code;
@@ -584,7 +584,7 @@ function Appsettings2() {
                       onChange: (e) => {
                         setHasChanged(true);
                         const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
-                        setNewAppSettings((prev) => ({ ...prev, currency: selectedCurrency }));
+                        setNewAppSettings((prev) => ({ ...prev, baseCurrency: selectedCurrency }));
                       },
                       //   readOnly: Boolean(newProductCategory) || productReadonly,
                     }}
@@ -593,7 +593,7 @@ function Appsettings2() {
                 {/* Secondary Currency */}
                 <InputBox
                   title="Secondary Currency"
-                  endAdornment={`${newAppSettings?.currency?.symbol}`}
+                  endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
                   inputType="number"
                   sxLeft={{ width: '200px' }}
                   sxRight={{ width: '140px' }}
@@ -630,7 +630,7 @@ function Appsettings2() {
                         if (e.target.value === 'disable') {
                           setIsUsedSecondaryCurrency(e.target.value);
 
-                          setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: {}, exchangeRate: 1 }));
+                          setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: {}, adminExchangeRate: 0 }));
                           return;
                         }
 
@@ -640,7 +640,7 @@ function Appsettings2() {
                             setNewAppSettings((prev) => ({
                               ...prev,
                               secondaryCurrency: {},
-                              exchangeRate: 1,
+                              adminExchangeRate: 1,
                               acceptedCurrency: 'both',
                             }));
                           }, 100);
@@ -650,7 +650,6 @@ function Appsettings2() {
                         const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
                         setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: selectedCurrency }));
                       },
-                      //   readOnly: Boolean(newProductCategory) || productReadonly,
                     }}
                   />
                 </InputBox>
@@ -661,8 +660,8 @@ function Appsettings2() {
                 <StyledBox title="Rate">
                   <Stack direction="row" alignItems="center" flexWrap="wrap">
                     <InputBox
-                      title={`Amount of (${newAppSettings?.currency?.symbol})`}
-                      endAdornment={`${newAppSettings?.currency?.symbol}`}
+                      title={`Amount of (${newAppSettings?.baseCurrency?.symbol})`}
+                      endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
                       inputValue={`${1}`}
                       inputType="number"
                       sxLeft={{ width: '200px' }}
@@ -693,9 +692,9 @@ function Appsettings2() {
                         isValidateType={false}
                         incrementHandler={incrementByFiveHandler}
                         decrementHandler={decrementByFiveHandler}
-                        objectKey="exchangeRate"
+                        objectKey="adminExchangeRate"
                         setValue={setNewAppSettings}
-                        currentValue={newAppSettings?.exchangeRate}
+                        currentValue={newAppSettings?.adminExchangeRate}
                       />
                     </InputBox>
                   </Stack>
@@ -712,7 +711,10 @@ function Appsettings2() {
                     inputProps={{
                       placeholder: 'Accepted Currency',
                       value: newAppSettings?.acceptedCurrency || '',
-                      items: getAcceptedCurrencyOptions(newAppSettings?.currency, newAppSettings?.secondaryCurrency),
+                      items: getAcceptedCurrencyOptions(
+                        newAppSettings?.baseCurrency,
+                        newAppSettings?.secondaryCurrency
+                      ),
                       onChange: (e) => {
                         setHasChanged(true);
                         setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
