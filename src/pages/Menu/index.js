@@ -231,8 +231,8 @@ export default function MenuPage() {
         )}
         {sidebar === 'add-category' && (
           <AddCategory
-            shop={currentUser?.shop}
-            newCategoryShopType={currentUser?.shop?.shopType}
+            shopType={shop?.shopType}
+            shopId={shop?._id}
             viewUserType="shop"
             editCategory={editCategory}
             onClose={() => {
