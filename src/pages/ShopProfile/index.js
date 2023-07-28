@@ -140,7 +140,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     shopMutation.mutate({ ...shopData });
   };
 
-  if (shopQuery?.isLoading || !shop?._id) return <ShopProfileSkeleton />;
+  // if (shopQuery?.isLoading || !shop?._id) return <ShopProfileSkeleton />;
 
   return (
     <Box>
@@ -149,34 +149,37 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
       />
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { lg: '1fr 300px', md: '1fr 1fr' },
-          paddingTop: '15px',
-        }}
-      >
-        {/* left */}
+      {(shopQuery?.isLoading || !shop?._id) && <ShopProfileSkeleton />}
+      {!shopQuery?.isLoading && shop?._id && (
         <Box
           sx={{
-            paddingRight: { md: '50px', sm: '0px' },
-            borderRight: { md: '1px solid #EEEEEE', sm: 'none' },
-            height: '100%',
+            display: 'grid',
+            gridTemplateColumns: { lg: '1fr 300px', md: '1fr 1fr' },
+            paddingTop: '15px',
           }}
         >
-          <ShopBanner loading={shopMutation.isLoading || loading} shop={shop} onDrop={onDrop} />
-          <ShopInfo menuHandler={menuHandler} onDrop={onDrop} shop={shop} />
-          <ShopProfileTabs shop={shop} />
+          {/* left */}
+          <Box
+            sx={{
+              paddingRight: { md: '50px', sm: '0px' },
+              borderRight: { md: '1px solid #EEEEEE', sm: 'none' },
+              height: '100%',
+            }}
+          >
+            <ShopBanner loading={shopMutation.isLoading || loading} shop={shop} onDrop={onDrop} />
+            <ShopInfo menuHandler={menuHandler} onDrop={onDrop} shop={shop} />
+            <ShopProfileTabs shop={shop} />
+          </Box>
+          {/* right */}
+          <Box
+            sx={{
+              paddingLeft: { sm: '0px', md: '50px' },
+            }}
+          >
+            <ShopDetails shop={shop} />
+          </Box>
         </Box>
-        {/* right */}
-        <Box
-          sx={{
-            paddingLeft: { sm: '0px', md: '50px' },
-          }}
-        >
-          <ShopDetails shop={shop} />
-        </Box>
-      </Box>
+      )}
       <Drawer open={open} anchor="right">
         <AddShop
           refetch={() => {
