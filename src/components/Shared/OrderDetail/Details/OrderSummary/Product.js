@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
 
 const productDeal = (product) => {
-  if (product?.discount > 0) return 'percentage';
+  if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.isDoubleDeal) return 'double_menu';
   if (product?.finalReward) return 'reward';
 
@@ -52,7 +52,7 @@ export default function Product({ product, isFirst, isLast }) {
               textDecoration: deal !== null && deal !== 'double_menu' ? 'line-through' : undefined,
             }}
           >
-            {currency} {(product?.finalPrice || 0)?.toFixed(2)}
+            {currency} {(product?.baseCurrency_finalPrice || 0)?.toFixed(2)}
           </Typography>
         </Stack>
         {deal && (
@@ -66,9 +66,12 @@ export default function Product({ product, isFirst, isLast }) {
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
-              {deal === 'percentage' && `${currency} ${(product?.finalPrice - product?.totalDiscount || 0).toFixed(2)}`}
-              {/* {deal === 'double_menu' && `${currency} ${(product?.finalPrice / 2).toFixed(2)}`} */}
-              {deal === 'reward' && `${product?.finalReward?.points} pts + ${currency} ${product?.finalReward?.amount}`}
+              {deal === 'percentage' &&
+                `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
+                  2
+                )}`}
+              {deal === 'reward' &&
+                `${product?.finalReward?.points} pts + ${currency} ${product?.finalReward?.baseCurrency_amount}`}
             </Typography>
           </Stack>
         )}

@@ -103,7 +103,7 @@ export default function ShopRatingTable({ rows = [], loading }) {
       field: 'summary',
       flex: 1,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value?.totalAmount}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value?.baseCurrency_totalAmount}</Typography>,
     },
     {
       id: 6,

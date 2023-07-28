@@ -31,21 +31,21 @@ const cancelOrderInit = {
 
 const getOrderPayment = (currentOrder) => {
   console.log('order payment: ', {
-    shop: currentOrder?.sellerEarnings,
-    deliveryBoy: currentOrder?.deliveryBoyFee,
-    admin: currentOrder?.dropCharge?.totalDropAmount,
+    shop: currentOrder?.baseCurrency_shopEarnings,
+    deliveryBoy: currentOrder?.baseCurrency_riderFee,
+    admin: currentOrder?.adminCharge?.baseCurrency_totalAdminCharge,
   });
   if (currentOrder?.isButler) {
     return {
-      deliveryBoy: currentOrder?.deliveryBoyFee,
-      admin: currentOrder?.dropCharge,
+      deliveryBoy: currentOrder?.baseCurrency_riderFee,
+      admin: currentOrder?.adminCharge?.baseCurrency_adminChargeFromDelivery,
     };
   }
 
   return {
-    shop: currentOrder?.sellerEarnings,
-    deliveryBoy: currentOrder?.deliveryBoyFee,
-    admin: currentOrder?.dropCharge?.totalDropAmount,
+    shop: currentOrder?.baseCurrency_shopEarnings,
+    deliveryBoy: currentOrder?.baseCurrency_riderFee,
+    admin: currentOrder?.adminCharge?.baseCurrency_totalAdminCharge,
   };
 };
 
@@ -105,8 +105,8 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
     const forShop =
       admin < 0
         ? // eslint-disable-next-line no-unsafe-optional-chaining
-          shop + orderCancel.vatAmount.vatForShop + deliveryBoy
-        : shop + orderCancel.vatAmount.vatForShop;
+          shop + orderCancel.vatAmount.baseCurrency_vatForShop + deliveryBoy
+        : shop + orderCancel.vatAmount.baseCurrency_vatForShop;
 
     const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, currentOrder?.orderStatus);
 
@@ -252,10 +252,13 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                           orderPayment?.admin < 0
                             ? calculateTotalRefund([
                                 orderPayment?.shop,
-                                orderCancel?.vatAmount?.vatForShop,
+                                orderCancel?.vatAmount?.baseCurrency_vatForShop,
                                 orderPayment?.admin,
                               ]).toFixed(2)
-                            : calculateTotalRefund([orderPayment?.shop, orderCancel?.vatAmount?.vatForShop]).toFixed(2)
+                            : calculateTotalRefund([
+                                orderPayment?.shop,
+                                orderCancel?.vatAmount?.baseCurrency_vatForShop,
+                              ]).toFixed(2)
                         }`}
                         tooltip="Shop Earning+Shop VAT"
                       />
@@ -291,9 +294,9 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                     : orderCancel.refundType === 'full'
                     ? calculateTotalRefund(
                         [
-                          Number(orderCancel?.summary?.cash),
-                          Number(orderCancel?.summary?.wallet),
-                          Number(orderCancel?.summary?.card),
+                          Number(orderCancel?.summary?.baseCurrency_cash),
+                          Number(orderCancel?.summary?.baseCurrency_wallet),
+                          Number(orderCancel?.summary?.baseCurrency_card),
                         ],
                         // eslint-disable-next-line prettier/prettier
                         'full'
@@ -303,7 +306,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                           Number(orderCancel?.partialPayment?.admin),
                           Number(orderCancel?.partialPayment?.shop),
                           getRefundedVatForAdmin(
-                            orderCancel?.vatAmount?.vatForAdmin,
+                            orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
                             // eslint-disable-next-line no-unsafe-optional-chaining
                             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                             // eslint-disable-next-line prettier/prettier
@@ -318,7 +321,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                 />
               </h5>
               {getRefundedVatForAdmin(
-                orderCancel?.vatAmount?.vatForAdmin,
+                orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
                 // eslint-disable-next-line no-unsafe-optional-chaining
                 orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
@@ -328,7 +331,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                   <Typography variant="body1" fontWeight={600}>
                     Admin VAT Refunded:{' '}
                     {getRefundedVatForAdmin(
-                      orderCancel?.vatAmount?.vatForAdmin,
+                      orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
                       // eslint-disable-next-line no-unsafe-optional-chaining
                       orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                       // eslint-disable-next-line prettier/prettier

@@ -235,8 +235,9 @@ export default function Table({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const total = row?.summary?.cash + row?.summary?.wallet + row?.summary?.card;
+        const total =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
         return (
           <Typography variant="body4">

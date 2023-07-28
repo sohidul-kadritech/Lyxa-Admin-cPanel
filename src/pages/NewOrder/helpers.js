@@ -153,8 +153,10 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  if (adminType === 'shop') return order?.sellerEarnings;
-  return order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
+  if (adminType === 'shop') return order?.baseCurrency_shopEarnings;
+  return (
+    order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0
+  );
 };
 
 export const getThreedotMenuOptions = (order, userType) => {
@@ -211,7 +213,9 @@ export const calculateTotalRefund = (array, refundType = '') => {
 export const returnNewValue = (value) => value;
 
 export const getShopRefundedAmount = (adminEarning, shopEarning, vatAmount) =>
-  adminEarning < 0 ? shopEarning + vatAmount.vatForShop + adminEarning : shopEarning + vatAmount.vatForShop;
+  adminEarning < 0
+    ? shopEarning + vatAmount.baseCurrency_vatForShop + adminEarning
+    : shopEarning + vatAmount.baseCurrency_vatForShop;
 
 export const getAdminRefundedAmount = (adminEarning, deliveryBoy, type = '') => {
   if (type !== 'delivered') {
@@ -313,8 +317,8 @@ export const orderCancelDataFormation = (menu, order, orderCancel) => {
 
 export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appVat) => {
   const riderAndAdmin = orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy;
-  const shopVatAdmin = orderPayment?.shop + orderCancel?.vatAmount?.vatForShop + orderPayment?.admin;
-  const shopVat = orderPayment?.shop + orderCancel?.vatAmount?.vatForShop;
+  const shopVatAdmin = orderPayment?.shop + orderCancel?.vatAmount?.baseCurrency_vatForShop + orderPayment?.admin;
+  const shopVat = orderPayment?.shop + orderCancel?.vatAmount?.baseCurrency_vatForShop;
   if (orderCancel?.refundType !== 'full') {
     return {
       orderId: orderCancel?.orderId,
@@ -323,7 +327,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
         shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
         admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
         adminVat: getRefundedVatForAdmin(
-          orderCancel?.vatAmount?.vatForAdmin,
+          orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
           riderAndAdmin,
           // eslint-disable-next-line prettier/prettier
           appVat
@@ -339,7 +343,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       shop: orderPayment?.admin < 0 ? shopVatAdmin : shopVat,
       admin: orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
       adminVat: getRefundedVatForAdmin(
-        orderCancel?.vatAmount?.vatForAdmin,
+        orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
         // eslint-disable-next-line prettier/prettier
         appVat

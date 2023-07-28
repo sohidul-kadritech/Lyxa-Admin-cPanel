@@ -9,7 +9,8 @@ export default function ProfitDetails({ order = {} }) {
   const adminExchangeRate = order?.adminExchangeRate;
   const shopExchangeRate = order?.shopExchangeRate;
 
-  const total = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
+  const total =
+    order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
   const isCashAndCancelled =
     order?.orderStatus === 'cancelled' && !order?.userCancelTnx?.length && !order?.isRefundedAfterDelivered;
 
@@ -28,7 +29,9 @@ export default function ProfitDetails({ order = {} }) {
         />
         <SummaryItem
           label="Loyalty Points"
-          value={order?.rewardRedeemCut?.rewardAdminCut + order?.rewardRedeemCut?.rewardShopCut}
+          value={
+            order?.rewardRedeemCut?.baseCurrency_rewardAdminCut + order?.rewardRedeemCut?.baseCurrency_rewardShopCut
+          }
           tooltip={
             <Box>
               <span>Total Loyalty Points cut from lyxa and shop</span>
@@ -40,10 +43,10 @@ export default function ProfitDetails({ order = {} }) {
                 }}
               >
                 <li>
-                  Applied by lyxa {currency} {order?.rewardRedeemCut?.rewardAdminCut || 0}
+                  Applied by lyxa {currency} {order?.rewardRedeemCut?.baseCurrency_rewardAdminCut || 0}
                 </li>
                 <li>
-                  Applied by shop {currency} {order?.rewardRedeemCut?.rewardShopCut || 0}
+                  Applied by shop {currency} {order?.rewardRedeemCut?.baseCurrency_rewardShopCut || 0}
                 </li>
               </ul>
             </Box>
@@ -53,28 +56,28 @@ export default function ProfitDetails({ order = {} }) {
         />
         <SummaryItem
           label="Buy 1 Get 1 (admin)"
-          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceAdmin}
+          value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
           hide={isCashAndCancelled}
           useAdminRate
         />
         <SummaryItem
           label="Buy 1 Get 1 (shop)"
-          value={order?.doubleMenuItemPrice?.doubleMenuItemPriceShop}
+          value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceShop}
           tooltip="Buy 1 Get 1 deal added by shop"
           hide={isCashAndCancelled}
           useAdminRate
         />
         <SummaryItem
           label="Discount (admin)"
-          value={order?.discountCut?.discountAdminCut}
+          value={order?.discountCut?.baseCurrency_discountAdminCut}
           tooltip="Discount deal added by admin"
           hide={isCashAndCancelled}
           useAdminRate
         />
         <SummaryItem
           label="Discount (shop)"
-          value={order?.discountCut?.discountShopCut}
+          value={order?.discountCut?.baseCurrency_discountShopCut}
           tooltip="Discount deal added by shop"
           hide={isCashAndCancelled}
           useAdminRate
@@ -95,7 +98,7 @@ export default function ProfitDetails({ order = {} }) {
         />
         <SummaryItem
           label="Coupon Discount "
-          value={order?.summary?.couponDiscountAmount}
+          value={order?.summary?.baseCurrency_couponDiscountAmount}
           tooltip="Discount coupon created by admin"
           hide={isCashAndCancelled}
           useAdminRate
@@ -103,11 +106,19 @@ export default function ProfitDetails({ order = {} }) {
         {/* not needed for butler order */}
         {!order?.isButler && (
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
-            <SummaryItem label="Shop Profit" value={isCashAndCancelled ? 0 : order?.sellerEarnings} showIfZero />
-            <SummaryItem label="Shop VAT" value={isCashAndCancelled ? 0 : order?.vatAmount?.vatForShop} showIfZero />
+            <SummaryItem
+              label="Shop Profit"
+              value={isCashAndCancelled ? 0 : order?.baseCurrency_shopEarnings}
+              showIfZero
+            />
+            <SummaryItem
+              label="Shop VAT"
+              value={isCashAndCancelled ? 0 : order?.vatAmount?.baseCurrency_vatForShop}
+              showIfZero
+            />
             <SummaryItem
               label="Deal compensation amount"
-              value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuAdminCut}
+              value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
               tooltip="This amount in already included in shop profit"
               isRejected
             />
@@ -116,7 +127,9 @@ export default function ProfitDetails({ order = {} }) {
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <SummaryItem
             label="Rider Profit"
-            value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : isCashAndCancelled ? 0 : order?.deliveryBoyFee || 0}
+            value={
+              order?.shop?.haveOwnDeliveryBoy ? 'Self' : isCashAndCancelled ? 0 : order?.baseCurrency_riderFee || 0
+            }
             showIfZero
             exchangeRate={adminExchangeRate}
             useAdminRate
@@ -126,21 +139,23 @@ export default function ProfitDetails({ order = {} }) {
           {!order?.shop?.haveOwnDeliveryBoy && (
             <SummaryItem
               label="Lyxa Delivery Profit"
-              value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromDelivery}
+              value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
               useAdminRate
               showIfZero
             />
           )}
           <SummaryItem
             label="Lyxa Order Profit"
-            value={isCashAndCancelled ? 0 : order?.dropCharge?.dropChargeFromOrder}
+            value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromOrder}
             useAdminRate
             showIfZero
           />
           <SummaryItem
             label="Deal compensation amount"
             value={
-              isCashAndCancelled ? 0 : order?.doubleMenuCut?.doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut
+              isCashAndCancelled
+                ? 0
+                : order?.doubleMenuCut?.baseCurrency_doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut
             }
             tooltip="This amount already in included lyxa profit"
             isRejected
@@ -152,7 +167,7 @@ export default function ProfitDetails({ order = {} }) {
           <SummaryItem
             label="Total Lyxa Profit"
             isCurrency={false}
-            value={isCashAndCancelled ? 0 : order?.dropCharge?.totalDropAmount}
+            value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_totalAdminCharge}
             exchangeRate={adminExchangeRate}
             useAdminRate
             showIfZero
@@ -160,7 +175,7 @@ export default function ProfitDetails({ order = {} }) {
           />
           <SummaryItem
             label="Lyxa VAT"
-            value={order?.vatAmount?.vatForAdmin}
+            value={order?.vatAmount?.baseCurrency_vatForAdmin}
             useAdminRate
             pb={isCashAndCancelled ? undefined : 0}
             showIfZero

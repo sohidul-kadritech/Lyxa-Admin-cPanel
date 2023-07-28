@@ -144,8 +144,12 @@ export function SummaryItem({
 }
 
 export const getTotalOrderInSecondary = (order) => {
-  const deliveryFee = order?.summary?.deliveryFee;
-  const totalExceptDeliveryFee = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card - deliveryFee;
+  const deliveryFee = order?.summary?.baseCurrency_riderFee;
+  const totalExceptDeliveryFee =
+    order?.summary?.baseCurrency_cash +
+    order?.summary?.baseCurrency_wallet +
+    order?.summary?.baseCurrency_card -
+    deliveryFee;
 
   let totalBase = 0;
   totalBase += totalExceptDeliveryFee * order?.shopExchangeRate;
