@@ -46,7 +46,7 @@ const getCategoryQueryParams = (shopType, shopId) => ({
   type: shopType,
   status: 'active',
   shopId,
-  userType: shopType === 'food' ? 'shop' : 'admin',
+  userType: 'shop',
 });
 
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {

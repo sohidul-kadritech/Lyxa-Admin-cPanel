@@ -39,7 +39,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
         searchKey: '',
         sortBy: 'desc',
         type: shop?.shopType,
-        userType: 'admin',
+        userType: 'shop',
         status: 'active',
         shopId: shop?._id,
       },
