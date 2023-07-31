@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
-export default function FlagTable({ flags, onViewDetails }) {
+export default function FlagTable({ flags, onViewDetail }) {
   const columns = [
     {
       id: 1,
@@ -14,9 +14,9 @@ export default function FlagTable({ flags, onViewDetails }) {
       renderCell: ({ row }) => (
         <Typography
           variant="body4"
-          sx={{ cursor: 'pointer', color: `primary.main !important` }}
+          sx={{ cursor: 'pointer', color: `primary.main` }}
           onClick={() => {
-            onViewDetails(row);
+            onViewDetail(row?.orderId || {});
           }}
         >
           {row?.orderId?.orderId}

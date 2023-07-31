@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ReactComponent as StarIcon } from '../../../assets/icons/star.svg';
 import UserAvatar from '../../../components/Common/UserAvatar';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
@@ -19,18 +20,10 @@ export default function ShopList() {
   const { currentUser } = useGlobalContext();
   const { seller } = currentUser;
 
-  const query = useQuery(
-    [Api.SELLER_DASHBOARD_SHOP_LIST, { sellerId: seller?._id }],
-    () =>
-      AXIOS.get(Api.SELLER_DASHBOARD_SHOP_LIST, {
-        params: { sellerId: seller?._id },
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
+  const query = useQuery([Api.SELLER_DASHBOARD_SHOP_LIST, { sellerId: seller?._id }], () =>
+    AXIOS.get(Api.SELLER_DASHBOARD_SHOP_LIST, {
+      params: { sellerId: seller?._id },
+    })
   );
 
   const column = [
@@ -45,7 +38,7 @@ export default function ShopList() {
     },
     {
       id: 2,
-      headerName: <span style={{ display: 'inline-block', paddingLeft: '30px' }}>SHOP</span>,
+      headerName: 'SHOP',
       field: 'item',
       flex: 1.5,
       sortable: false,
@@ -128,24 +121,27 @@ export default function ShopList() {
         <Typography variant="body1" fontWeight={600} pb={5}>
           Shop List
         </Typography>
-        <StyledTable
-          columns={column}
-          rows={
-            query?.data?.data?.shopList?.map((s, i) => {
-              s.rowNumber = i + 1;
-              return s;
-            }) || []
-          }
-          getRowId={(row) => row?._id}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Shops found
-              </Stack>
-            ),
-          }}
-        />
+        {query?.isLoading && <TableSkeleton columns={['avatar', 'text', 'text', 'text', 'text']} rows={6} />}
+        {!query?.isLoading && (
+          <StyledTable
+            columns={column}
+            rows={
+              query?.data?.data?.shopList?.map((s, i) => {
+                s.rowNumber = i + 1;
+                return s;
+              }) || []
+            }
+            getRowId={(row) => row?._id}
+            rowHeight={71}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No Shops found
+                </Stack>
+              ),
+            }}
+          />
+        )}
       </StyledBox>
     </Grid>
   );

@@ -10,22 +10,9 @@ import { useGlobalContext } from '../../../context';
 import ProductTable from './ProductTable';
 import { GroupHeader, createGroupedDataRow } from './helpers';
 
-/*
-isLoading = isLoading;
-isFetching = isFetching;
-transformedProducts = productOptions
-products = values;
-setProducts = setValues
-setProductsChanged = setProductsChanged
-shopPercentageDeals = percentageDealsOptions
-rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle = rewardDealOptions
-rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory = rewardCategoryOptions
-*/
-
 export default function MarketingProductsTable({
   marketingType,
   isLoading,
-  isFetching,
   itemSelectType,
   productOptions,
   values,
@@ -101,7 +88,6 @@ export default function MarketingProductsTable({
             }}
             getOptionLabel={(option) => option?.name || 'Select Product'}
             getOptionDisabled={(option) => !!values?.find((item) => item?._id === option?._id)}
-            isLoading={isLoading || isFetching}
             groupBy={(option) => option?.category?.name}
             renderGroup={(params) => (
               <li key={params.key}>

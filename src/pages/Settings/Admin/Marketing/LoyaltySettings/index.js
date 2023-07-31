@@ -285,8 +285,8 @@ export default function LoyaltySettings() {
                   <InputBox
                     placement="end"
                     title="Shop"
-                    endAdornment="$"
-                    inputValue={`${Number(100 - adminCutForReward)}%`}
+                    endAdornment="%"
+                    inputValue={`${Number(100 - adminCutForReward)}`}
                     inputType="text"
                     onInputChange={() => {}}
                   />

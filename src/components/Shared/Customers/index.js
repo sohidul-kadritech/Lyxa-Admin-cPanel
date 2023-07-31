@@ -49,17 +49,10 @@ export default function Customers({ viewUserType }) {
     setCurrentTab(index);
   };
 
-  const query = useQuery(
-    [Api.SHOP_DASHBOARD_CUSTOMER_INFO, queryParams],
-    () =>
-      AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
-        params: queryParams,
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
+  const query = useQuery([Api.SHOP_DASHBOARD_CUSTOMER_INFO, queryParams], () =>
+    AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
+      params: queryParams,
+    })
   );
 
   return (

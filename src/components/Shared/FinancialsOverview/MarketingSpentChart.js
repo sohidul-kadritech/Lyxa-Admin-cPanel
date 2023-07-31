@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -133,9 +133,11 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
       setDateRange={setQueryParams}
       startDateKey="startDate"
       endDateKey="endDate"
-      title={
+      customTitle={
         <Stack alignItems="center" gap={6} direction="row" justifyContent="space-between" pr={4}>
-          <span>Marketing Spent</span>
+          <Typography variant="body1" fontWeight={600}>
+            Marketing Spent
+          </Typography>
           <StyledTabs2
             size="small"
             options={marketingSpentTypeOptions}

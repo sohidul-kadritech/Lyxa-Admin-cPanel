@@ -158,7 +158,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
             </Stack>
             <Stack gap={15}>
               <AmountItem amount={details[orders] || 0} title="Orders" />
-              <AmountItem amount={details[average] || 0} title="Avg. orders" />
+              <AmountItem amount={details[average] || 0} title="Avg. orders value" />
             </Stack>
           </Stack>
         </Grid>

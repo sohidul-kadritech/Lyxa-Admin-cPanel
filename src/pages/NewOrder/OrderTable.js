@@ -276,7 +276,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
             gap: 1,
           }}
         >
-          {currency} {(row?.deliveryBoyFee / row?.adminExchangeRate || 0)?.toFixed(2)}
+          {currency} {(row?.baseCurrency_riderFee / row?.adminExchangeRate || 0)?.toFixed(2)}
         </Typography>
       ),
     },
@@ -339,6 +339,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           ),
         }}
       />
+
       {/* Update status */}
       <Modal
         open={updateStatusModal}
@@ -346,21 +347,27 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatus
-          onClose={() => setUpdateStatusModal(false)}
-          setCurrentOrder={setCurrentOrder}
-          currentOrder={currentOrder}
-        />
+        <Box>
+          <UpdateOrderStatus
+            onClose={() => setUpdateStatusModal(false)}
+            setCurrentOrder={setCurrentOrder}
+            currentOrder={currentOrder}
+          />
+        </Box>
       </Modal>
-      {/* FLAG ADD */}
+
+      {/* flag add */}
       <Modal
         open={flagModal}
         onClose={() => {
           setFlagModal(false);
         }}
       >
-        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
       </Modal>
+
       {/* Cancel order */}
       <Modal
         open={openCancelModal}
@@ -369,8 +376,11 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        <Box>
+          <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        </Box>
       </Modal>
+
       {/* Refund After Delivered */}
       <Modal
         open={openRefundModal}
@@ -379,12 +389,14 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <RefundOrder
-          currentOrder={currentOrder}
-          onClose={() => {
-            setOpenRefundModal(false);
-          }}
-        />
+        <Box>
+          <RefundOrder
+            currentOrder={currentOrder}
+            onClose={() => {
+              setOpenRefundModal(false);
+            }}
+          />
+        </Box>
       </Modal>
     </Box>
   );

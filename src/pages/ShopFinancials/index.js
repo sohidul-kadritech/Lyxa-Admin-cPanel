@@ -4,13 +4,10 @@ import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import Overview from '../../components/Shared/FinancialsOverview';
 import Invoices from '../../components/Shared/Invoices';
-import { useGlobalContext } from '../../context';
 import Banking from './Banking';
 
 export default function ShopFinancials() {
   const [currentTab, setCurrentTab] = useState(0);
-  const store = useGlobalContext();
-  console.log(store);
 
   return (
     <Box pb={10}>

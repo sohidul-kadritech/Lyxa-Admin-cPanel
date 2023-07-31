@@ -56,6 +56,7 @@ function AddSeller({
   const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
 
   useEffect(() => {
+    console.log('converted data', getEditSellerData(sellerData, globalChargeType, isEdit));
     if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, isEdit));
   }, [globalDropChargeQuery?.data]);
 

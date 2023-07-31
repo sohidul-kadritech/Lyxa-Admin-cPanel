@@ -235,8 +235,9 @@ export default function Table({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const total = row?.summary?.cash + row?.summary?.wallet + row?.summary?.card;
+        const total =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
         return (
           <Typography variant="body4">
@@ -356,11 +357,13 @@ export default function Table({
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatus
-          onClose={() => setUpdateStatusModal(false)}
-          setCurrentOrder={setCurrentOrder}
-          currentOrder={currentOrder}
-        />
+        <Box>
+          <UpdateOrderStatus
+            onClose={() => setUpdateStatusModal(false)}
+            setCurrentOrder={setCurrentOrder}
+            currentOrder={currentOrder}
+          />
+        </Box>
       </Modal>
       {/* flag add */}
       <Modal
@@ -369,7 +372,9 @@ export default function Table({
           setFlagModal(false);
         }}
       >
-        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
       </Modal>
       {/*  cancel order */}
       <Modal
@@ -379,7 +384,9 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        <Box>
+          <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        </Box>
       </Modal>
       {/* rerfund order */}
       <Modal
@@ -389,16 +396,19 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <RefundOrder
-          currentOrder={currentOrder}
-          onClose={() => {
-            setOpenRefundModal(false);
-          }}
-        />
+        <Box>
+          <RefundOrder
+            currentOrder={currentOrder}
+            onClose={() => {
+              setOpenRefundModal(false);
+            }}
+          />
+        </Box>
       </Modal>
-
       <Modal open={openOrderTrackingModal} centered>
-        <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        <Box>
+          <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        </Box>
       </Modal>
     </>
   );

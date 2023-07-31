@@ -93,8 +93,6 @@ export default function MarketingDashboard({ viewUserType }) {
     marketingQuery?.data?.data?.marketing?.duration?.end
   );
 
-  console.log({ params });
-
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
     AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
       params: {
@@ -288,7 +286,6 @@ export default function MarketingDashboard({ viewUserType }) {
           setIsModalOpen(true);
         }}
         onAddDisabled={viewUserType === 'shop' && userType === 'admin'}
-        console={console.log({ viewUserType })}
       />
       {__loading && isInitialLoad ? (
         <PageSkeleton />

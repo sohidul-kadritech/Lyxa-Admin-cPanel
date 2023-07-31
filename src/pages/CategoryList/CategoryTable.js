@@ -31,7 +31,6 @@ export default function CategoryTable({
     {
       id: 1,
       headerName: `Category Name`,
-      // showFor: ['food', 'pharmacy', 'grocery'],
       field: 'image',
       sortable: false,
       flex: 2,
@@ -57,42 +56,44 @@ export default function CategoryTable({
       id: 2,
       headerName: `SHOP NAME`,
       field: 'shopName',
-      // showFor: ['food', 'pharmacy', 'grocery'],
       sortable: false,
       flex: 1,
-      renderCell: ({ row }) => (
-        <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
-          {row?.shops?.map((shop, i, { length: l }) => (
-            <Box display="inline-block">
-              <Typography
-                variant="body4"
-                display="inline"
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  color: 'primary.main',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  history.push({
-                    pathname: `/shop/profile/${shop?._id}`,
-                    state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
-                  });
-                }}
-              >
-                {shop?.shopName?.trim()}
-              </Typography>
-              {i !== l - 1 && <span>,</span>}
-            </Box>
-          ))}
-        </Stack>
-      ),
+      renderCell: ({ row }) => {
+        if (!row?.shops?.length) return '_';
+
+        return (
+          <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
+            {row?.shops?.map((shop, i, { length: l }) => (
+              <Box display="inline-block">
+                <Typography
+                  variant="body4"
+                  display="inline"
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    color: 'primary.main',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    history.push({
+                      pathname: `/shop/profile/${shop?._id}`,
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
+                    });
+                  }}
+                >
+                  {shop?.shopName?.trim()}
+                </Typography>
+                {i !== l - 1 && <span>,</span>}
+              </Box>
+            ))}
+          </Stack>
+        );
+      },
     },
     {
       id: 3,
       headerName: `CREATION DATE`,
       field: 'date',
-      // showFor: ['food', 'pharmacy', 'grocery'],
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => (
@@ -108,7 +109,6 @@ export default function CategoryTable({
       id: 4,
       headerName: ``,
       field: 'action',
-      // showFor: ['food', 'pharmacy', 'grocery'],
       headerAlign: 'right',
       align: 'right',
       sortable: false,

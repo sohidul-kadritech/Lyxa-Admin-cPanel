@@ -19,7 +19,7 @@ export const order = {
   summary: {
     reward: {
       points: 0,
-      amount: 0,
+      baseCurrency_amount: 0,
     },
     productAmount: 50,
     deliveryFee: 10,
@@ -30,14 +30,14 @@ export const order = {
     card: 0,
     cash: 67.8,
     doubleMenuItemPrice: 50,
-    riderTip: 0,
+    baseCurrency_riderTip: 0,
   },
   vatAmount: {
     vatForShop: 3.25,
-    vatForAdmin: 4.55,
+    baseCurrency_vatForAdmin: 4.55,
   },
   rewardRedeemCut: {
-    rewardAdminCut: 0,
+    baseCurrency_rewardAdminCut: 0,
     rewardShopCut: 0,
   },
   _id: '646df9568194533cc1e35d38',
@@ -791,7 +791,7 @@ export const order = {
   },
   dropCommision: 5,
   deliveryBoyFee: 5,
-  sellerEarnings: 50,
+  baseCurrency_shopEarnings: 50,
   type: 'now',
   scheduleDate: null,
   deletedAt: null,
@@ -988,7 +988,7 @@ export const order = {
           card: 0,
           cash: 67.8,
           doubleMenuItemPrice: 50,
-          riderTip: 0,
+          baseCurrency_riderTip: 0,
         },
         user: {
           _id: '646328375e0223b94fd1a171',

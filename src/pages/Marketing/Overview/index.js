@@ -245,7 +245,6 @@ export default function MarketingOverview({ viewUserType }) {
     shopQuery.isLoading;
 
   const isReadonly = (mData = {}) => {
-    console.log({ mData });
     if (viewUserType === 'shop' && userType === 'admin') {
       return mData?.isMarketing === false;
     }

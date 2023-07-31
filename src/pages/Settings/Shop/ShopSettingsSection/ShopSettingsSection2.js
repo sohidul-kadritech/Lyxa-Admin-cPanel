@@ -17,8 +17,6 @@ export function ShopSettingsSection2({
   ...props
 }) {
   const theme = useTheme();
-  console.log(buttonType);
-
   const TypoSx = {
     fontSize: '16px',
     fontWeight: 600,
