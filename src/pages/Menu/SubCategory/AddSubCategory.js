@@ -41,6 +41,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
         type: shop?.shopType,
         userType: 'admin',
         status: 'active',
+        shopId: shop?._id,
       },
     ],
     () =>
@@ -53,6 +54,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
           type: shop?.shopType,
           userType: 'admin',
           status: 'active',
+          shopId: shop?._id,
         },
       }),
     {

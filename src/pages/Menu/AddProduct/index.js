@@ -45,7 +45,7 @@ const getCategoryQueryParams = (shopType, shopId) => ({
   sortBy: 'desc',
   type: shopType,
   status: 'active',
-  shopId: shopType === 'food' ? shopId : undefined,
+  shopId,
   userType: shopType === 'food' ? 'shop' : 'admin',
 });
 
