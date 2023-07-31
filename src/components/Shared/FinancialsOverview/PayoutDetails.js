@@ -238,7 +238,7 @@ export default function Payout({ paymentDetails }) {
             {Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle) > 0 && (
               <PriceItem
                 title="Paid"
-                amount={`${Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}`}
+                amount={Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}
                 amountStatus={paymentDetails?.totalProfit - paymentDetails?.totalUnsettle < 0 ? 'minus' : ''}
               />
             )}
