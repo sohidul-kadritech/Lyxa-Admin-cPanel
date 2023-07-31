@@ -14,18 +14,14 @@ export default function OrderByHoursChart({ hourlyOrders }) {
         pb={4}
         gap="50px"
         sx={{
-          '& > *:not(:first-child)': {
+          '& > *': {
             flex: 1,
-          },
-
-          '& > *:first-child': {
-            width: '20px',
           },
         }}
       >
-        <span></span>
-        {Object.entries(weekdays).map((item) => (
-          <Box textAlign="center">
+        <span style={{ width: '20px', flex: 'initial' }}></span>
+        {Object.entries(weekdays).map((item, index) => (
+          <Box textAlign="center" key={index}>
             <Typography key={item[0]} variant="body4" fontSize="13px" lineHeight="24px" textTransform="capitalize">
               {item[1]}
             </Typography>
@@ -40,12 +36,8 @@ export default function OrderByHoursChart({ hourlyOrders }) {
             alignItems="center"
             gap="50px"
             sx={{
-              '& > *:not(:first-child)': {
+              '& > *': {
                 flex: 1,
-              },
-
-              '& > *:first-child': {
-                width: '20px',
               },
             }}
           >
@@ -54,6 +46,8 @@ export default function OrderByHoursChart({ hourlyOrders }) {
                 fontSize: '13px',
                 lineHeight: 1,
                 fontWeight: '600',
+                width: '20px',
+                flex: 'initial',
               }}
             >
               {index + 1}

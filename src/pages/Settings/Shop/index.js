@@ -106,7 +106,6 @@ function ShopSettings() {
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        console.log(data?.data?.appSetting.secondaryCurrency);
         setRateofShop((prev) => ({
           ...prev,
           secondaryCurrency: data?.data?.appSetting.secondaryCurrency,
@@ -135,7 +134,6 @@ function ShopSettings() {
         shop.shopExchangeRate = data?.data?.shop.shopExchangeRate;
         // shop.shopAcceptedCurrency = data?.data?.shop.shopAcceptedCurrency;
         set_has_unsaved_change(false);
-        console.log('after update', shop);
       }
     },
   });
@@ -371,6 +369,7 @@ function ShopSettings() {
               action={OwnDeliveryBoyHandler}
               isButton
               readOnly={adminType !== 'admin' || hasFreeDelivery}
+              disabled={adminType !== 'admin' || hasFreeDelivery}
               isMethod
             />
             {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}

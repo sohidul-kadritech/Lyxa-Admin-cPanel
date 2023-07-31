@@ -52,7 +52,7 @@ export default function ItemRanking({ ...props }) {
     },
     {
       id: 4,
-      headerName: <IncreaseDecrease status="neutral" amount="% ( Last 30 days )" />,
+      renderHeader: () => <IncreaseDecrease status="neutral" amount="% ( Last 30 days )" />,
       field: 'soldAvgInPercentage',
       flex: 1,
       sortable: false,

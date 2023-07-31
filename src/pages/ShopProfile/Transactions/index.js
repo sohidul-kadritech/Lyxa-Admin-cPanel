@@ -80,7 +80,6 @@ export default function ShopTransactions({ shop }) {
         <InfoCard
           title="Lyxa Profit"
           value={(summary?.totalDropGet || 0)?.toFixed(2)}
-          s
           sm={6}
           md={4}
           lg={3}
@@ -109,14 +108,7 @@ export default function ShopTransactions({ shop }) {
             )}
           </Stack>
         </InfoCard>
-        <InfoCard
-          title="Orders No"
-          value={(summary?.totalExpectedOrder || 0).toFixed(2)}
-          sm={6}
-          md={4}
-          lg={3}
-          valueSx={amountSx}
-        />
+        <InfoCard title="Orders No" value={summary?.totalExpectedOrder || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
         <InfoCard
           title="Order Amount"
           value={(summary?.totalProductAmount || 0).toFixed(2)}
@@ -141,15 +133,17 @@ export default function ShopTransactions({ shop }) {
           setModalOpen(false);
         }}
       >
-        <AddRemoveCredit
-          shopId={shop?._id}
-          storeAppSettings={storeAppSettings}
-          dropAmount={summary?.totalDropGet}
-          shopAmount={summary?.toalShopProfile}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        />
+        <Box>
+          <AddRemoveCredit
+            shopId={shop?._id}
+            storeAppSettings={storeAppSettings}
+            dropAmount={summary?.totalDropGet}
+            shopAmount={summary?.toalShopProfile}
+            onClose={() => {
+              setModalOpen(false);
+            }}
+          />
+        </Box>
       </Modal>
 
       <Modal

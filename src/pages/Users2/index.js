@@ -14,7 +14,6 @@ import AXIOS from '../../network/axios';
 import AddUser from './AddUser';
 import EditUser from './EditUser';
 import Table from './Table';
-import UserTablePageSkeleton from './UserTableSkeleton';
 
 const createCurrentUesrItem = (allCredentials = [], currentUser, userType) => {
   console.log(allCredentials);
@@ -124,20 +123,21 @@ export default function Users({ userType }) {
           Add user
         </Button>
       </Stack>
-      {isLoading && <UserTablePageSkeleton />}
-      {!isLoading && (
-        <Table
-          rows={allUsers.filter((user) => user.hidden !== true)}
-          onEdit={(row) => {
-            setUser(row);
-            setOpen('edit');
-          }}
-          onDelete={(row) => {
-            setUser(row);
-            setIsConfirm(true);
-          }}
-        />
-      )}
+      {/* {isLoading && <UserTablePageSkeleton />} */}
+      {/* {!isLoading && ( */}
+      <Table
+        rows={allUsers.filter((user) => user.hidden !== true)}
+        loading={isLoading}
+        onEdit={(row) => {
+          setUser(row);
+          setOpen('edit');
+        }}
+        onDelete={(row) => {
+          setUser(row);
+          setIsConfirm(true);
+        }}
+      />
+      {/* )} */}
       <Drawer open={Boolean(open)} anchor="right">
         {open === 'add' && <AddUser onClose={() => setOpen(null)} userType={userType} refetch={refetch} />}
         {open === 'edit' && (

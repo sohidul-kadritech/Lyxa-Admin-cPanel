@@ -32,6 +32,7 @@ export default function PriceItem({ title, amount, amountStatus, fontSize, title
         color={amountStatus === 'minus' ? 'error' : amountStatus === 'secondary' ? '#b9b9b9' : undefined}
       >
         {amountStatus === 'minus' ? '-' : ''} {currency} {(amount || 0).toFixed(2)}
+        {/* {amountStatus === 'minus' ? '-' : ''} {currency} {console.log(amount)} */}
       </Typography>
     </Stack>
   );

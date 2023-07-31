@@ -38,7 +38,6 @@ export const frequencyMap = {
 };
 
 export const createCharData = (data = []) => {
-  console.log(data);
   const hourInit = () => ({ monday: '0', tuesday: '0', wednesday: '0', thursday: '0', friday: '0', sunday: '0' });
   const rows = new Array(24).fill(0).map(() => hourInit());
 

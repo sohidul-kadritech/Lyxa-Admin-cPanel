@@ -26,7 +26,10 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
   const currency = general?.currency?.symbol;
 
   const isNewChat = chat?.status === 'pending';
-  const totalOrderAmount = chat?.order?.summary?.cash + chat?.order?.summary?.wallet + chat?.order?.summary?.card || 0;
+  const totalOrderAmount =
+    chat?.order?.summary?.baseCurrency_cash +
+      chat?.order?.summary?.baseCurrency_wallet +
+      chat?.order?.summary?.baseCurrency_card || 0;
   const shopExchangeRate = chat?.order?.shopExchangeRate;
 
   return (

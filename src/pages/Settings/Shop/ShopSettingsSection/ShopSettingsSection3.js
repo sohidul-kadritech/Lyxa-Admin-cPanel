@@ -8,8 +8,6 @@ const TypoSx = {
 };
 
 export function ShopSettingsSection3({ boxSx, title, options = [], value, setValue, loading = false, setHasChanged }) {
-  console.log({ value });
-
   return (
     <Box sx={boxSx}>
       <Typography sx={TypoSx}>{title}</Typography>

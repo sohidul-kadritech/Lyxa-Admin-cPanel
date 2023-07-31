@@ -10,7 +10,6 @@ import AccountMenu from './AccountMenu';
 import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType) => {
-  console.log('userType, adminType: ', userType, adminType);
   if (userType === 'admin' && adminType === 'admin') {
     return 'Admin Console-Develop';
   }

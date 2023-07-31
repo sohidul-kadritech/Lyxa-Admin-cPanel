@@ -55,7 +55,6 @@ export default function MenuPage() {
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        console.log(data?.data?.appSetting);
         setSecondaryCurrency({
           secondaryCurrency: data?.data?.appSetting?.secondaryCurrency,
           exchangeRate: data?.data?.appSetting?.exchangeRate,
@@ -181,7 +180,6 @@ export default function MenuPage() {
                 <CategoryItem secondaryCurrency={secondaryCurrency} category={favorites} gOpen={category_open} />
               </>
             )}
-
             <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
               {categories.map((category) => {
                 if (searchValue !== '' && !category?.category?.category?.matched) {
@@ -233,8 +231,8 @@ export default function MenuPage() {
         )}
         {sidebar === 'add-category' && (
           <AddCategory
-            shop={currentUser?.shop}
-            newCategoryShopType={currentUser?.shop?.shopType}
+            shopType={shop?.shopType}
+            shopId={shop?._id}
             viewUserType="shop"
             editCategory={editCategory}
             onClose={() => {

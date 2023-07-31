@@ -39,8 +39,9 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
         searchKey: '',
         sortBy: 'desc',
         type: shop?.shopType,
-        shopId: shop?._id,
         userType: 'shop',
+        status: 'active',
+        shopId: shop?._id,
       },
     ],
     () =>
@@ -51,8 +52,9 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
           searchKey: '',
           sortBy: 'desc',
           type: shop?.shopType,
-          shopId: shop?._id,
           userType: 'shop',
+          status: 'active',
+          shopId: shop?._id,
         },
       }),
     {
@@ -108,7 +110,7 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
       return;
     }
 
-    addSubCategoryMutation.mutate(createCategoriesData(subCategory));
+    addSubCategoryMutation.mutate(createCategoriesData(subCategory, shop?._id));
   };
 
   return (

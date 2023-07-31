@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import SearchBar from '../../../components/Common/CommonSearchbar';
 import TablePagination from '../../../components/Common/TablePagination';
+import localDatePagination from '../../../helpers/localDataPaginations';
 import { getQueryParamsInit } from '../helper';
 import FlagTable from './Table';
 
@@ -19,6 +20,10 @@ const searchFlags = (flags, queryParams) => {
     }
 
     if (flag?.comment?.toLowerCase()?.includes(queryParams?.searchKey?.toLowerCase())) {
+      items.push(flag);
+    }
+
+    if (flag?.orderId?.orderId?.toLowerCase() === queryParams?.searchKey?.toLowerCase()) {
       items.push(flag);
     }
   });
@@ -40,6 +45,8 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
     setFilteredData(searchFlags(flags, queryParams));
   }, [queryParams, flags]);
 
+  console.log({ onViewDetail });
+
   return (
     <Box>
       <SearchBar
@@ -49,7 +56,7 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
         showFilters={{ search: true, sort: true, date: true }}
       />
       <Box sx={{ paddingTop: '30px' }} />
-      <FlagTable flags={filteredData} onViewDetail={onViewDetail} />
+      <FlagTable flags={localDatePagination(filteredData, queryParams?.page, 5)} onViewDetail={onViewDetail} />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {

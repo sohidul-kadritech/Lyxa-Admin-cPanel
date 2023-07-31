@@ -27,9 +27,11 @@ const getEditCategoryData = (editCategory) => ({
   note: editCategory?.category?.note,
   image: [{ preview: editCategory?.category?.image }],
   id: editCategory?._id,
+  // has only for multiple category type else will be undefined
+  ids: editCategory?.ids,
 });
 
-export default function AddCategory({ onClose, editCategory, shopId, shopType }) {
+export default function AddCategory({ onClose, editCategory, shopId, shopType, multiple }) {
   const queryClient = useQueryClient();
 
   const [confirmModal] = useState(false);
@@ -62,7 +64,9 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType })
   // categoryMutation
   const categoryMutation = useMutation(
     (data) => {
-      const API = editCategory?._id ? Api.EDIT_CATEGORY : Api.ADD_CATEGORY;
+      const EDIT_API = multiple ? Api.CATEGORY_UPDATE_MULTIPLE : Api.EDIT_CATEGORY;
+      const API = editCategory?._id ? EDIT_API : Api.ADD_CATEGORY;
+
       return AXIOS.request({
         url: API,
         method: 'POST',

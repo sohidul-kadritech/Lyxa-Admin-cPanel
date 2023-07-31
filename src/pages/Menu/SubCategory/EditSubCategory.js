@@ -9,7 +9,6 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
-import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -24,24 +23,18 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
 
   const queryClient = useQueryClient();
 
-  const categoriesQuery = useQuery(
-    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
-    () =>
-      AXIOS.get(Api.GET_ALL_CATEGORY, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          searchKey: '',
-          sortBy: 'desc',
-          status: 'active',
-          type: shop?.shopType,
-          userType: 'shop',
-        },
-      }),
-    {
-      staleTime: minInMiliSec(10),
-      onSuccess: (data) => {},
-    }
+  const categoriesQuery = useQuery([Api.GET_ALL_CATEGORY, { shopId: shop?._id }], () =>
+    AXIOS.get(Api.GET_ALL_CATEGORY, {
+      params: {
+        page: 1,
+        pageSize: 100,
+        searchKey: '',
+        sortBy: 'desc',
+        status: 'active',
+        type: shop?.shopType,
+        userType: 'shop',
+      },
+    })
   );
 
   const [confirmModal, setConfirmModal] = useState(false);

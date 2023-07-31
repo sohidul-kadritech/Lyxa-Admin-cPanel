@@ -13,10 +13,6 @@ export default function Payout({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
-  const exchangeRate = general?.appSetting?.exchangeRate;
-
-  console.log('currentExpandTab', currentExpanedTab);
 
   return (
     <Grid xs={12}>
@@ -226,9 +222,7 @@ export default function Payout({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={`${secondaryCurrency} ${(Math.abs(paymentDetails?.totalProfit) * exchangeRate || 0)?.toFixed(
-              2
-            )} ~ ${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}  `}
+            titleAmount={`${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%.
             VAT inclusive"
@@ -244,7 +238,7 @@ export default function Payout({ paymentDetails }) {
             {Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle) > 0 && (
               <PriceItem
                 title="Paid"
-                amount={`${Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}`}
+                amount={Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}
                 amountStatus={paymentDetails?.totalProfit - paymentDetails?.totalUnsettle < 0 ? 'minus' : ''}
               />
             )}

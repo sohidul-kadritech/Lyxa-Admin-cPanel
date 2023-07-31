@@ -102,7 +102,7 @@ export const createCatagory = (data, type) => {
 export const getExchangeRate = (currency, product) => {
   const exchangeRate = product?.shop?.shopExchangeRate;
   const price = product?.price;
-  console.log('=====>secondary: ', currency?.secondaryCurrency?.symbol);
+
   if (currency?.secondaryCurrency?.symbol) {
     return {
       price: exchangeRate * price,

@@ -138,7 +138,7 @@ function ServiceZone() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
@@ -280,7 +280,6 @@ function ServiceZone() {
           }}
           size="lg1"
           value={params?.row?.zoneAvailability === 'busy' ? params?.row?.zoneAvailability : params?.row?.zoneStatus}
-          // readOnly={params?.row?.zoneAvailability === 'busy'}
           onChange={(e) => {
             onStatusChange(e.target.value, params.row);
           }}
@@ -499,7 +498,7 @@ function ServiceZone() {
                   updateAZoneQuery={updateAZoneQuery}
                   rowData={rowData || { zoneName: 'no name' }}
                   onClose={() => {
-                    console.log('update status');
+                    // console.log('update status');
                     setOpen(false);
                   }}
                 />

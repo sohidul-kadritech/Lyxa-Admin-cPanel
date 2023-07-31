@@ -6,6 +6,7 @@ export default function ChartBox({
   dateRange,
   setDateRange,
   title,
+  customTitle,
   chartHeight,
   children,
   loading,
@@ -24,9 +25,12 @@ export default function ChartBox({
         loading={loading}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-          <Typography variant="body1" fontWeight={600}>
-            {title}
-          </Typography>
+          {title && (
+            <Typography variant="body1" fontWeight={600}>
+              {title}
+            </Typography>
+          )}
+          {customTitle && customTitle}
           <DateRange endKey={endDateKey} startKey={startDateKey} range={dateRange} setRange={setDateRange} />
         </Stack>
         <Box

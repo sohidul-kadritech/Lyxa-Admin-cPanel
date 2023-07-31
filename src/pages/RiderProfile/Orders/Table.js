@@ -92,7 +92,7 @@ export default function OrderTable({ orders = [], onRowClick, onOrderDetail }) {
             gap: 1,
           }}
         >
-          {currency} {row?.deliveryBoyFee}
+          {currency} {row?.baseCurrency_riderFee}
         </Typography>
       ),
     },
@@ -116,11 +116,6 @@ export default function OrderTable({ orders = [], onRowClick, onOrderDetail }) {
         getRowId={(row) => row?._id}
         rowHeight={71}
         onRowClick={onRowClick}
-        // sx={{
-        //   '& .MuiDataGrid-row': {
-        //     cursor: 'pointer',
-        //   },
-        // }}
         components={{
           NoRowsOverlay: () => (
             <Stack height="100%" alignItems="center" justifyContent="center">

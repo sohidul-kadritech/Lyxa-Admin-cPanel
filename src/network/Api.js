@@ -95,6 +95,7 @@ export const DELETE_CATEGORY = `${ADMIN_ENDPOINT}/category/delete`;
 export const SORT_CATEGORIES = `${ADMIN_ENDPOINT}/category/sort`;
 export const CATEGORY_PRODUCTS = `${ADMIN_ENDPOINT}/category/products`;
 export const CATEGORY_PRODUCTS_MULTIPLE = `${ADMIN_ENDPOINT}/category/products/multiple`;
+export const CATEGORY_UPDATE_MULTIPLE = `${ADMIN_ENDPOINT}/category/update/multiple`;
 
 // SUB CATEGORY
 export const ADD_SUB_CATEGORY = `${ADMIN_ENDPOINT}/sub-category/add`;

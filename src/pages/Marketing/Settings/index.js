@@ -880,7 +880,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     variant="contained"
                     color="primary"
                     disabled={!termAndCondition || marketingMutation.isLoading}
-                    rounded
+                    sx={{
+                      borderRadius: 6,
+                    }}
+                    // rounded
                     onClick={() => {
                       updateLoyaltySettings();
                     }}
@@ -895,13 +898,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 <Button
                   variant="contained"
                   sx={{
+                    borderRadius: '6px',
                     backgroundColor: '#55c086',
                     '&:hover': {
                       backgroundColor: '#47a070',
                     },
                   }}
                   disabled={marketingMutation.isLoading}
-                  rounded
+                  // rounded
                   onClick={() => {
                     updateLoyaltySettings();
                   }}
@@ -939,13 +943,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 {marketingType !== 'featured' && (
                   <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                     <Button
+                      disabled={loyaltySettingsDeleteMutation.isLoading}
                       variant="outlined"
                       color="primary"
-                      rounded
-                      disabled={loyaltySettingsDeleteMutation.isLoading}
+                      // rounded
+                      sx={{
+                        borderRadius: '6px',
+                      }}
                       onClick={() => {
                         setIsPageDisabled(false);
-                        // setPageMode(2);
                         setPageMode(3);
                       }}
                     >
@@ -956,7 +962,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         variant="contained"
                         color="danger"
                         disabled={loyaltySettingsDeleteMutation.isLoading || marketingMutation.isLoading}
-                        rounded
+                        // rounded
+                        sx={{
+                          borderRadius: '6px',
+                        }}
                         onClick={() => {
                           setConfirmModal(true);
                           setConfirmAction({
@@ -1004,7 +1013,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   disabled={marketingMutation.isLoading}
                   variant="contained"
                   color="primary"
-                  rounded
+                  // rounded
+                  sx={{
+                    borderRadius: '6px',
+                  }}
                   onClick={() => {
                     updateLoyaltySettings();
                   }}
