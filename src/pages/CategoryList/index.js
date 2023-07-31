@@ -125,6 +125,7 @@ export default function CategoryList2() {
 
         {open === 'add-category' && (
           <AddCategory
+            multiple
             editCategory={selectedCategory}
             shopType={categoryTypeIndex[currentTab]}
             onClose={() => {
