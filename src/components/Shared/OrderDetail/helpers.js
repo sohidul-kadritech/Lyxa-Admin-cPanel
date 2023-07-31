@@ -68,7 +68,7 @@ export function SummaryItem({
   const context = useContext(OrderContext);
   const { baseCurrency, secondaryCurrency, shopExchangeRate, adminExchangeRate } = context || {};
   let excRate = shopExchangeRate;
-  const hideSecondary = shopExchangeRate === 1;
+  const hideSecondary = shopExchangeRate === 0;
 
   if (hide) return null;
   if (!showIfZero && !value) return null;
