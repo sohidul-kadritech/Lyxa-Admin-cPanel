@@ -134,6 +134,13 @@ export default function ProfitDetails({ order = {} }) {
             exchangeRate={adminExchangeRate}
             useAdminRate
           />
+          <SummaryItem
+            label="Rider Tip"
+            value={order?.summary?.baseCurrency_riderTip}
+            showIfZero
+            exchangeRate={adminExchangeRate}
+            useAdminRate
+          />
         </Box>
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           {!order?.shop?.haveOwnDeliveryBoy && (
