@@ -13,7 +13,6 @@ import StyledChip from '../../../components/Styled/StyledChips';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
-import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -96,10 +95,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           shop: shop?._id,
           status: 'active',
         },
-      }),
-    {
-      staleTime: minInMiliSec(10),
-    }
+      })
   );
 
   const adddons = useMemo(
@@ -124,7 +120,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         params: getCategoryQueryParams(shop?.shopType, shop?._id),
       }),
     {
-      staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         setConvertCategories(data);
       },
@@ -145,7 +140,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           status: 'active',
           categoryId: product?.category,
         },
-        // eslint-disable-next-line prettier/prettier
       })
   );
 
@@ -179,7 +173,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-      // eslint-disable-next-line prettier/prettier
     }
   );
 

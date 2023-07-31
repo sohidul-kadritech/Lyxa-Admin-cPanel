@@ -27,9 +27,12 @@ const getEditCategoryData = (editCategory) => ({
   note: editCategory?.category?.note,
   image: [{ preview: editCategory?.category?.image }],
   id: editCategory?._id,
+  // has only for multiple category type else will be undefined
+  ids: editCategory?.ids,
 });
 
 export default function AddCategory({ onClose, editCategory, shopId, shopType }) {
+  console.log({ editCategory });
   const queryClient = useQueryClient();
 
   const [confirmModal] = useState(false);
