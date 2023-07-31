@@ -224,7 +224,7 @@ export default function StyledFormField({ containerProps, label, labelProps, int
               border: '0',
               ...inputProps.phoneStyle,
             }}
-            defaultCountry="LBN"
+            defaultCountry="LB"
             placeholder="Enter phone number"
             value={inputProps.value}
             international
