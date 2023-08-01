@@ -127,7 +127,7 @@ export function SummaryItem({
 
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative ? '-' : ''}${baseCurrency}${Math.abs(value).toFixed(decimalPrecision)}`}
+          `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value).toFixed(decimalPrecision)}`}
 
         {typeof value !== 'string' &&
           !showBaseOnly &&
@@ -137,7 +137,7 @@ export function SummaryItem({
               ? ''
               : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(Math.abs(value) * excRate) || 0} ~ `
           }
-          ${isNegative ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );
