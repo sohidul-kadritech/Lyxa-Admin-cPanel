@@ -276,7 +276,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
             gap: 1,
           }}
         >
-          {currency} {(row?.baseCurrency_riderFee / row?.adminExchangeRate || 0)?.toFixed(2)}
+          {currency} {row?.baseCurrency_riderFee?.toFixed(2)}
         </Typography>
       ),
     },

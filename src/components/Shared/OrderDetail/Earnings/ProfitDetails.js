@@ -137,7 +137,6 @@ export default function ProfitDetails({ order = {} }) {
           <SummaryItem
             label="Rider Tip"
             value={order?.summary?.baseCurrency_riderTip}
-            showIfZero
             exchangeRate={adminExchangeRate}
             useAdminRate
           />
@@ -182,7 +181,7 @@ export default function ProfitDetails({ order = {} }) {
           />
           <SummaryItem
             label="Lyxa VAT"
-            value={order?.vatAmount?.baseCurrency_vatForAdmin}
+            value={isCashAndCancelled ? 0 : order?.vatAmount?.baseCurrency_vatForAdmin}
             useAdminRate
             pb={isCashAndCancelled ? undefined : 0}
             showIfZero

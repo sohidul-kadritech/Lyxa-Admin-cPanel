@@ -40,19 +40,19 @@ const options = {
   },
 };
 
-const validate = (newOrderStatus, currentOrderDelivery, currentOrder) => {
-  if (newOrderStatus === '') {
+const validate = (currentStatus, currentOrderDelivery, currentOrder) => {
+  if (currentStatus === '') {
     successMsg('Please select status');
     return false;
   }
 
-  if (newOrderStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
+  if (currentStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
     successMsg('Please select rider');
     return false;
   }
 
   if (
-    (newOrderStatus === 'delivered' || newOrderStatus === 'preparing') &&
+    (currentStatus === 'delivered' || currentStatus === 'preparing') &&
     !currentOrderDelivery?._id &&
     !currentOrder?.shop?.haveOwnDeliveryBoy
   ) {
@@ -86,14 +86,18 @@ const updateOrderStatusOptions = (currentOrder) => {
 export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
   const theme = useTheme();
   const { socket } = useSelector((state) => state.socketReducer);
-
-  const [newOrderStatus, setNewOrderStatus] = useState(currentOrder?.orderStatus);
-  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(currentOrder?.deliveryBoy || {});
   const queryClient = useQueryClient();
 
+  const [currentStatus, setCurrentStatus] = useState(currentOrder?.orderStatus);
+  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(currentOrder?.deliveryBoy || {});
   const [open, setOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showDelivery, setShowDelivery] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars
+  const populateState = (updatedOrder) => {
+    setCurrentStatus(updatedOrder?.orderStatus);
+    setCurrentOrderDelivery(updatedOrder?.deliveryBoy || {});
+  };
 
   const getNearByDeliveryBoys = () => {
     const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
@@ -110,7 +114,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
     {
       cacheTime: 0,
       staleTime: 0,
-      enabled: newOrderStatus === 'accepted_delivery_boy',
+      enabled: currentStatus === 'accepted_delivery_boy',
       onSuccess: (data) => {
         if (!data?.status) {
           successMsg(data?.message || 'Could not get delivery boys');
@@ -139,14 +143,18 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
           // emit socket
           if (config.service === 'regular') {
             if (config?.data?.orderStatus === 'accepted_delivery_boy')
-              socket.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
+              socket?.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
             else
-              socket.emit('updateOrder', {
+              socket?.emit('updateOrder', {
                 orderId: config.data?.orderId,
               });
           }
 
-          onClose();
+          console.log('new data', data);
+
+          // populateState()
+
+          // onClose();
         }
       },
       onError: (error) => {
@@ -156,13 +164,13 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
   );
 
   const updateStatus = () => {
-    if (!validate(newOrderStatus, currentOrderDelivery, currentOrder)) {
+    if (!validate(currentStatus, currentOrderDelivery, currentOrder)) {
       return;
     }
 
     const data = {};
     data.orderId = currentOrder?._id;
-    data.orderStatus = newOrderStatus;
+    data.orderStatus = currentStatus;
     data.deliveryBoy = currentOrderDelivery?._id;
     data.shop = currentOrder?.shop?._id;
 
@@ -214,9 +222,9 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
             }}
             fullWidth
             IconComponent={KeyboardArrowDownIcon}
-            value={newOrderStatus}
+            value={currentStatus}
             onChange={(e) => {
-              setNewOrderStatus(e.target.value);
+              setCurrentStatus(e.target.value);
             }}
             MenuProps={{
               sx: {
@@ -275,7 +283,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
                         {index + 1}. {item?.label}{' '}
                         {currentOrderDelivery?._id ? `- (${currentOrderDelivery?.name})` : ''}
                       </span>
-                      {item?.isDisabled && newOrderStatus !== 'accepted_delivery_boy' && (
+                      {item?.isDisabled && currentStatus !== 'accepted_delivery_boy' && (
                         <span
                           onClick={(e) => {
                             e.stopPropagation();
@@ -301,7 +309,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
             ))}
           </StyledSelect>
         </Box>
-        {(newOrderStatus === 'accepted_delivery_boy' || showDelivery) && (
+        {(currentStatus === 'accepted_delivery_boy' || showDelivery) && (
           <Box flex={1}>
             <StyledFormField
               label="Select Rider *"
