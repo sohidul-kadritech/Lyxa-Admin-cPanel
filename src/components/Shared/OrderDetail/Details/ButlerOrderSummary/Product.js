@@ -1,7 +1,8 @@
 import { Box, styled } from '@material-ui/core';
 import { Visibility } from '@mui/icons-material';
 import { Avatar, Stack, Typography } from '@mui/material';
-import { useGlobalContext } from '../../../../../context';
+import { useContext } from 'react';
+import { OrderContext } from '../../OrderContext';
 
 const ImageContainer = styled(Box)(() => ({
   width: 'auto',
@@ -42,8 +43,10 @@ const ImageContainer = styled(Box)(() => ({
 }));
 
 export default function ButlerProduct({ product, onImagePreview }) {
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
+  const context = useContext(OrderContext);
+  const { baseCurrency } = context || {};
+
+  console.log({ product });
 
   return (
     <Stack direction="row" alignItems="flex-center" gap={3}>
@@ -70,8 +73,8 @@ export default function ButlerProduct({ product, onImagePreview }) {
           </span>
         </Typography>
         <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
-          {currency}
-          {product?.totalProductAmount}
+          {baseCurrency}
+          {product?.baseCurrency_totalProductAmount}
         </Typography>
       </Stack>
     </Stack>

@@ -37,7 +37,7 @@ export const generalReducer = (state, { type, payload }) => {
     case 'appSetting':
       return {
         ...state,
-        currency: payload?.appSetting?.currency,
+        currency: payload?.appSetting?.baseCurrency,
         appSetting: payload?.appSetting,
       };
 

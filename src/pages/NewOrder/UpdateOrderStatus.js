@@ -78,6 +78,10 @@ const updateOrderStatusOptions = (currentOrder) => {
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
 
+  if (currentOrder?.isButler) {
+    list = list.filter((opt) => opt.value !== 'preparing' && opt.value !== 'ready_to_pickup');
+  }
+
   return list;
 };
 
@@ -126,6 +130,8 @@ export default function UpdateOrderStatus({
   );
 
   const onSuccess = (response, payload) => {
+    console.log('response', response);
+    console.log(socket);
     // notification
     successMsg(response?.message, response?.status ? 'success' : undefined);
 
@@ -166,7 +172,6 @@ export default function UpdateOrderStatus({
 
   const updateStatus = () => {
     if (!validate(currentStatus, currentOrderDelivery, currentOrder)) return;
-
     const data = {};
     data.orderId = currentOrder?._id;
     data.orderStatus = currentStatus;

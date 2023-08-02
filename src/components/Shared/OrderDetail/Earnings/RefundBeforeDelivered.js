@@ -3,10 +3,6 @@ import { Box } from '@mui/material';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function RefundBeforeDelivered({ order = {} }) {
-  const adminExchangeRate = order?.adminExchangeRate;
-
-  console.log('cancel tnx', order?.userCancelTnx?.[0]);
-
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       <Box pt={2}>
@@ -14,31 +10,32 @@ export default function RefundBeforeDelivered({ order = {} }) {
           <SummaryItem
             label="Refund Type"
             value={order?.userCancelTnx?.[0]?.isPartialRefund ? 'Partial' : 'Full'}
-            useAdminRate
+            showBaseOnly
           />
         </Box>
         <Box pt={3.5}>
           <SummaryItem
             label="Lyxa Cut"
             value={order?.userCancelTnx?.[0]?.adminCut + order?.userCancelTnx?.[0]?.adminVatCut}
-            useAdminRate
             tooltip="Lyxa Profit + Lyxa Vat"
             isNegative
             showIfZero
+            showBaseOnly
           />
+
           <SummaryItem
             label="Rider Cut"
             value={order?.userCancelTnx?.[0]?.deliveryBoyCut}
             isNegative
             showIfZero
-            useAdminRate
+            showBaseOnly
           />
-          <SummaryItem label="Shop Cut" value={order?.userCancelTnx?.[0]?.shopCut} isNegative useAdminRate />
+
+          <SummaryItem label="Shop Cut" value={order?.userCancelTnx?.[0]?.shopCut} isNegative showBaseOnly />
+
           <SummaryItem
             label="Total Refund"
             value={order?.userCancelTnx?.[0]?.amount}
-            useAdminRate
-            exchangeRate={adminExchangeRate}
             total
             isNegative
             isCurrency={false}

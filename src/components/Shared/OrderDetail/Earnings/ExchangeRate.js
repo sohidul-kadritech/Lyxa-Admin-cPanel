@@ -12,7 +12,9 @@ export default function ExchangeRate({ order }) {
     <StyledOrderDetailBox title="Exchange Rate">
       <Box pt={2}>
         <SummaryItem label="Lyxa Rate" value={`${currency} 1 = ${secondaryCurrency} ${adminExchangeRate}`} />
-        <SummaryItem label="Shop Rate" value={`${currency} 1 = ${secondaryCurrency} ${shopExchangeRate}`} pb={0} />
+        {!order?.isButler && (
+          <SummaryItem label="Shop Rate" value={`${currency} 1 = ${secondaryCurrency} ${shopExchangeRate}`} pb={0} />
+        )}
       </Box>
     </StyledOrderDetailBox>
   );
