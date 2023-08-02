@@ -44,8 +44,8 @@ export default function ButlerProfitDetails({ order = {} }) {
           />
           <SummaryItem
             label="Lyxa VAT"
-            value={order?.vatAmount?.baseCurrency_vatForAdmin}
-            valueSecondary={order?.vatAmount?.secondaryCurrency_vatForAdmin}
+            value={order?.summary?.baseCurrency_vat}
+            valueSecondary={order?.summary?.secondaryCurrency_vat}
             pb={0}
             showIfZero
           />

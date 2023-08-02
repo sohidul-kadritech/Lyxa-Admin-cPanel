@@ -24,7 +24,6 @@ export default function PaymentSummary({ order = {} }) {
           label="Subtotal"
           value={order?.summary?.baseCurrency_productAmount}
           valueSecondary={order?.summary?.secondaryCurrency_productAmount}
-          showIfZero
           pt={0}
         />
 
