@@ -9,11 +9,7 @@ export default function RefundDetails({ order = {} }) {
     <StyledOrderDetailBox title="Refund After Delivered">
       <Box pt={2} pb={1}>
         <Box borderBottom="1px solid #EEEEEE">
-          <SummaryItem
-            label="Refund Type"
-            value={order?.userRefundTnx?.[0]?.isPartialRefund ? 'Partial' : 'Full'}
-            useAdminRate
-          />
+          <SummaryItem label="Refund Type" value={order?.userRefundTnx?.[0]?.isPartialRefund ? 'Partial' : 'Full'} />
         </Box>
         <Box pt={3.5}>
           <SummaryItem
@@ -21,29 +17,32 @@ export default function RefundDetails({ order = {} }) {
             value={order?.userRefundTnx?.[0]?.adminCut}
             isNegative
             showIfZero
-            useAdminRate
+            showBaseOnly
           />
+
           <SummaryItem
             label="Admin VAT Cut"
             value={order?.userRefundTnx?.[0]?.adminVatCut}
             isNegative
             showIfZero
-            useAdminRate
+            showBaseOnly
           />
+
           <SummaryItem
             label="Rider Cut"
             value={order?.userRefundTnx?.[0]?.deliveryBoyCut}
             isNegative
             showIfZero
-            useAdminRate
+            showBaseOnly
           />
-          <SummaryItem label="Shop Cut" value={order?.userRefundTnx?.[0]?.shopCut} isNegative showIfZero useAdminRate />
+
+          <SummaryItem label="Shop Cut" value={order?.userRefundTnx?.[0]?.shopCut} isNegative showIfZero showBaseOnly />
           <SummaryItem
             pt={3.5}
             label="Total Refund"
             value={order?.userRefundTnx?.[0]?.amount}
             exchangeRate={adminExchangeRate}
-            useAdminRate
+            showBaseOnly
             isTotal
           />
         </Box>

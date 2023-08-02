@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Tooltip, Typography, useTheme } from '@mui/material';
@@ -52,7 +53,6 @@ export default function Operations({ viewUserType = 'shop' }) {
   const { currentUser } = useGlobalContext();
 
   const theme = useTheme();
-  // const [range, setRange] = useState({ ...dateRangeInit });
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
   const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
@@ -114,8 +114,8 @@ export default function Operations({ viewUserType = 'shop' }) {
         />
         <InfoCard
           title={<CardTitle title="Downtime" tooltip="How much time was your store unavailable during menu hours?" />}
-          value={`${Math.floor(query?.data?.data?.totalDownTime?.hours) || 0}h ${
-            Math.floor(query?.data?.data?.totalDownTime?.minutes) || 0
+          value={`${Math.floor(query?.data?.data?.totalDownTime?.totalMinutes / 60) || 0}h ${
+            Math.floor(query?.data?.data?.totalDownTime?.totalMinutes % 60) || 0
           }m`}
           isDropdown
           sm={6}
@@ -123,20 +123,13 @@ export default function Operations({ viewUserType = 'shop' }) {
           lg={3}
           valueSx={{ color: `${theme.palette.error.main}!important` }}
         >
-          {query?.data?.data?.totalDownTime?.hours !== 0 || query?.data?.data?.totalDownTime?.minutes !== 0 ? (
+          {query?.data?.data?.totalDownTime?.totalMinutes !== 0 ? (
             <Stack gap={2.5}>
-              {query?.data?.data?.dateWiseDowntime.map((downTime, i) => {
-                if (downTime?.hours === 0 && downTime?.minutes === 0) return null;
-
-                return (
-                  <Box key={i}>
-                    <ListItem
-                      label={moment(downTime?.date).format('ddd M/DD/YYYY')}
-                      value={`${Math.floor(downTime.hours) || 0}h ${Math.floor(downTime.minutes) || 0}m`}
-                    />
-                  </Box>
-                );
-              })}
+              {query?.data?.data?.dateWiseDowntime.map((downTime, i) => (
+                <Box key={i}>
+                  <ListItem label={moment(downTime?.Date).format('ddd M/DD/YYYY')} value={downTime?.summeryString} />
+                </Box>
+              ))}
             </Stack>
           ) : (
             <ListItem label="No downtime found" />
