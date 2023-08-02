@@ -28,8 +28,6 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
-  console.log({ data });
-
   return (
     <Box>
       <Stack direction="row" gap="25px" flexWrap="wrap">
@@ -110,7 +108,6 @@ function SellersProfile({
   setEditDocumentOpen,
   refatch,
 }) {
-  console.log('shop profile: ', currentSeller);
   const theme = useTheme();
 
   const [queryParams, setQueryParams] = useState({
@@ -136,7 +133,6 @@ function SellersProfile({
 
   const threeDotHandler = (menu) => {
     setSelectedMenu(menu);
-    console.log('=======>', menu);
 
     if (menu === 'view') {
       setOpen(true);
@@ -182,10 +178,8 @@ function SellersProfile({
           setQueryParams((prev) => ({ ...prev, totalPage }));
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
-  console.log('getSingleShop', getSingleShop?.data?.data?.shopList);
 
   return (
     <Box
