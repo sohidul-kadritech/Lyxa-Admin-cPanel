@@ -28,8 +28,6 @@ function SellerList2() {
 
   const { admin } = currentUser;
 
-  console.log('admin', admin, 'currentUser', currentUser);
-
   const [status, setStatus] = useState('all');
 
   // eslint-disable-next-line no-unused-vars
@@ -64,7 +62,6 @@ function SellerList2() {
     onSuccess: (data) => {
       if (data.status) {
         const zones = data?.data?.zones;
-        console.log('zones', zones);
         setZoneItems([...zoneItems, ...zones]);
       }
     },
@@ -271,7 +268,6 @@ function SellerList2() {
                 <SellersProfile
                   refatch={() => {
                     getAllSellersQuery.refetch();
-                    console.log('re-fetched');
                   }}
                   editSellerQuery={editSellerQuery}
                   editDocumentOpen={editDocumentOpen}
@@ -300,7 +296,7 @@ function SellerList2() {
           isEdit={isEdit}
           setLoading={setLoading}
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
-          sellerData={currentSeller}
+          sellerData={isEdit ? currentSeller : {}}
         />
       </Drawer>
 

@@ -130,8 +130,9 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
+          {params?.row?.summary?.totalDropGet < 0 ? '-' : ''}
           {currency}
-          {params?.row?.summary?.totalDropGet.toFixed(2)}
+          {Math.abs(params?.row?.summary?.totalDropGet || 0)?.toFixed(2)}
         </Typography>
       ),
     },
@@ -159,8 +160,9 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
+          {params?.row?.summary?.totalShopEarning < 0 ? '-' : ''}
           {currency}
-          {params?.row?.summary?.totalShopEarning}
+          {Math.abs(params?.row?.summary?.totalShopEarning || 0).toFixed(2)}
         </Typography>
       ),
     },

@@ -16,7 +16,7 @@ const generateData = (data, marketingSpentType = '') => {
       discount: 'totalDiscount',
       points: 'totalRewardAmount',
       doubleDeal: 'totalDoubleMenuItemPrice',
-      freeDelivery: 'freeDeliveryShopCut',
+      freeDelivery: 'totalFreeDelivery',
       featureAmount: 'totalFeaturedAmount',
     },
     shop: {
@@ -81,6 +81,8 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
     [marketingSpentType, marketingSpentQuery?.data]
   );
+
+  console.log('chartdata', marketingSpentQuery?.data);
 
   const lineChartData = {
     labels: chartdata.date,

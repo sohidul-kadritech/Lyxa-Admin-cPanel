@@ -5,6 +5,8 @@ import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 export default function RefundBeforeDelivered({ order = {} }) {
   const adminExchangeRate = order?.adminExchangeRate;
 
+  console.log('cancel tnx', order?.userCancelTnx?.[0]);
+
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       <Box pt={2}>

@@ -29,7 +29,7 @@ export default function ProfitChart({ viewUserType = 'shop' }) {
 
   const profitData = generateGraphData(
     profitGraphQuery?.data?.data?.info || [],
-    (item) => item.payout,
+    (item) => parseFloat((item.payout || 0).toFixed(2)),
     (item) => moment(item?.date).format('MMMM DD')
   );
 

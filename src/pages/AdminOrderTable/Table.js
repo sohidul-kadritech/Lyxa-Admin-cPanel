@@ -311,7 +311,7 @@ export default function Table({
           position: 'relative',
         }}
       >
-        {refetching && <LoadingOverlay />}
+        {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
         <StyledTable
           columns={filteredColumns}
           rows={orders}

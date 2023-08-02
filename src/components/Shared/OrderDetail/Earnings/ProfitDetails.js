@@ -9,6 +9,8 @@ export default function ProfitDetails({ order = {} }) {
   const adminExchangeRate = order?.adminExchangeRate;
   const shopExchangeRate = order?.shopExchangeRate;
 
+  console.log('order', order);
+
   const total =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
   const isCashAndCancelled =
@@ -134,13 +136,12 @@ export default function ProfitDetails({ order = {} }) {
             exchangeRate={adminExchangeRate}
             useAdminRate
           />
-          <SummaryItem
+          {/* <SummaryItem
             label="Rider Tip"
             value={order?.summary?.baseCurrency_riderTip}
-            showIfZero
             exchangeRate={adminExchangeRate}
             useAdminRate
-          />
+          /> */}
         </Box>
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           {!order?.shop?.haveOwnDeliveryBoy && (
@@ -182,7 +183,7 @@ export default function ProfitDetails({ order = {} }) {
           />
           <SummaryItem
             label="Lyxa VAT"
-            value={order?.vatAmount?.baseCurrency_vatForAdmin}
+            value={isCashAndCancelled ? 0 : order?.vatAmount?.baseCurrency_vatForAdmin}
             useAdminRate
             pb={isCashAndCancelled ? undefined : 0}
             showIfZero
