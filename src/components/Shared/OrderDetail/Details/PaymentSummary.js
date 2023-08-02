@@ -1,36 +1,57 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
-import { StyledOrderDetailBox, SummaryItem, getTotalOrderInSecondary } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
-  const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
-  const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
-  const total =
+  const refund = order?.userRefundTnx?.[0];
+  const cancel = order?.userCancelTnx?.[0];
+
+  const total_base =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
 
+  const total_secondary =
+    order?.summary?.secondaryCurrency_cash +
+      order?.summary?.secondaryCurrency_wallet +
+      order?.summary?.secondaryCurrency_card || 0;
+
   const currency = order?.baseCurrency?.symbol;
-  const secondaryCurrency = order?.secondaryCurrency?.code;
-  const shopExchangeRate = order?.shopExchangeRate;
   const adminExchangeRate = order?.adminExchangeRate;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
-        <SummaryItem label="Subtotal" value={order?.summary?.baseCurrency_productAmount} showIfZero pt={0} />
+        <SummaryItem
+          label="Subtotal"
+          value={order?.summary?.baseCurrency_productAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_productAmount}
+          showIfZero
+          pt={0}
+        />
 
         <SummaryItem
           label="Delivery fee"
           value={order?.summary?.baseCurrency_riderFee > 0 ? order?.summary?.baseCurrency_riderFee : 'FREE'}
-          exchangeRate={order?.shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate}
+          valueSecondary={order?.summary?.secondaryCurrency_riderFee}
         />
-        <SummaryItem label="Rider Tips" value={order?.summary?.baseCurrency_riderTip} />
-        <SummaryItem label="Discount" value={order?.summary?.baseCurrency_discount} isNegative />
+
+        <SummaryItem
+          label="Rider Tips"
+          value={order?.summary?.baseCurrency_riderTip}
+          valueSecondary={order?.summary?.secondaryCurrency_riderTip}
+        />
+
+        <SummaryItem
+          label="Discount"
+          value={order?.summary?.baseCurrency_discount}
+          valueSecondary={order?.summary?.secondaryCurrency_discount}
+          isNegative
+        />
 
         <SummaryItem
           label="Coupon Discount"
           value={order?.summary?.baseCurrency_couponDiscountAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
           isNegative
-          exchangeRate={adminExchangeRate}
         />
 
         <SummaryItem
@@ -41,29 +62,25 @@ export default function PaymentSummary({ order = {} }) {
           hide={!order?.summary?.reward?.baseCurrency_amount}
         />
 
-        <SummaryItem label="VAT" value={order?.summary?.baseCurrency_vat} showIfZero />
-
         <SummaryItem
-          label="Total"
-          value={
-            shopExchangeRate > 1
-              ? `${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`
-              : total
-          }
+          label="VAT"
+          value={order?.summary?.baseCurrency_vat}
+          valueSecondary={order?.summary?.secondaryCurrency_vat}
           showIfZero
-          isTotal
         />
+
+        <SummaryItem label="Total" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
 
         {/* group cart */}
         {order?.cart?.cartType === 'group' && (
           <Box>
             {order?.cart?.cartItems?.map((user) => {
-              const total = user?.isPaid
+              const total_base_user = user?.isPaid
                 ? user?.summary?.baseCurrency_cash +
                     user?.summary?.baseCurrency_wallet +
                     user?.summary?.baseCurrency_card || 0
                 : 0;
-              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total} isTotal />;
+              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total_base_user} isTotal />;
             })}
           </Box>
         )}
@@ -71,9 +88,10 @@ export default function PaymentSummary({ order = {} }) {
         <SummaryItem
           label="Total Refunded"
           value={refund?.amount}
-          exchangeRate={adminExchangeRate}
           isTotal
           hide={!order?.isRefundedAfterDelivered}
+          showIfZero
+          showBaseOnly
           pb={0}
         />
 
@@ -82,9 +100,21 @@ export default function PaymentSummary({ order = {} }) {
           value={cancel?.amount}
           exchangeRate={adminExchangeRate}
           hide={order?.orderStatus !== 'cancelled'}
+          showBaseOnly
+          showIfZero
           isTotal
           pb={0}
         />
+
+        {/* <SummaryItem
+          label="Total Refunded"
+          value={0}
+          isTotal
+          pb={0}
+          hide={!isCashAndCancelled}
+          showBaseOnly
+          showIfZero
+        /> */}
       </Box>
     </StyledOrderDetailBox>
   );

@@ -6,17 +6,21 @@ import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 export default function ButlerProfitDetails({ order = {} }) {
   const totalPayment =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
-  const adminExchangeRate = order?.adminExchangeRate;
+
+  const total_secondary =
+    order?.summary?.secondaryCurrency_cash +
+      order?.summary?.secondaryCurrency_wallet +
+      order?.summary?.secondaryCurrency_card || 0;
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
-        <SummaryItem label="Total Order Amount" value={totalPayment} showIfZero useAdminRate />
+        <SummaryItem label="Total Order Amount" value={totalPayment} valueSecondary={total_secondary} showIfZero />
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <SummaryItem
             label="Rider Profit"
             value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : order?.baseCurrency_riderFee}
-            useAdminRate
+            valueSecondary={order?.secondaryCurrency_riderFee}
             showIfZero
           />
         </Box>
@@ -25,8 +29,8 @@ export default function ButlerProfitDetails({ order = {} }) {
             <SummaryItem
               label="Lyxa Delivery Profit"
               value={order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
+              valueSecondary={order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
               showIfZero
-              useAdminRate
             />
           )}
         </Box>
@@ -34,16 +38,16 @@ export default function ButlerProfitDetails({ order = {} }) {
           <SummaryItem
             label="Total Lyxa Profit"
             value={order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
-            exchangeRate={adminExchangeRate}
+            valueSecondary={order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
             isTotal
-            useAdminRate
+            showIfZero
           />
           <SummaryItem
             label="Lyxa VAT"
             value={order?.vatAmount?.baseCurrency_vatForAdmin}
+            valueSecondary={order?.vatAmount?.secondaryCurrency_vatForAdmin}
             pb={0}
             showIfZero
-            useAdminRate
           />
         </Box>
       </Box>
