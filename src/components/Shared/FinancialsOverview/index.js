@@ -67,8 +67,6 @@ export default function Overview({ viewUserType }) {
     [query?.data, marketingSpentType]
   );
 
-  console.log('shopDashBoard:', query.data?.data?.summary);
-
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
       <OrderAmountChart viewUserType={viewUserType} />
