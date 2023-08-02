@@ -12,6 +12,8 @@ export default function ButlerProfitDetails({ order = {} }) {
       order?.summary?.secondaryCurrency_wallet +
       order?.summary?.secondaryCurrency_card || 0;
 
+  const isOrderCanceled = Boolean(order?.orderCancel || order?.userCancelTnx);
+
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
@@ -19,8 +21,8 @@ export default function ButlerProfitDetails({ order = {} }) {
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <SummaryItem
             label="Rider Profit"
-            value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : order?.baseCurrency_riderFee}
-            valueSecondary={order?.secondaryCurrency_riderFee}
+            value={isOrderCanceled ? 0 : order?.baseCurrency_riderFee}
+            valueSecondary={isOrderCanceled ? 0 : order?.secondaryCurrency_riderFee}
             showIfZero
           />
         </Box>
@@ -28,8 +30,8 @@ export default function ButlerProfitDetails({ order = {} }) {
           {!order?.shop?.haveOwnDeliveryBoy && (
             <SummaryItem
               label="Lyxa Delivery Profit"
-              value={order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
-              valueSecondary={order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
+              value={isOrderCanceled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
+              valueSecondary={isOrderCanceled ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
               showIfZero
             />
           )}
@@ -37,15 +39,15 @@ export default function ButlerProfitDetails({ order = {} }) {
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
           <SummaryItem
             label="Total Lyxa Profit"
-            value={order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
-            valueSecondary={order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
+            value={isOrderCanceled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
+            valueSecondary={isOrderCanceled ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
             isTotal
             showIfZero
           />
           <SummaryItem
             label="Lyxa VAT"
-            value={order?.summary?.baseCurrency_vat}
-            valueSecondary={order?.summary?.secondaryCurrency_vat}
+            value={isOrderCanceled ? 0 : order?.summary?.baseCurrency_vat}
+            valueSecondary={isOrderCanceled ? 0 : order?.summary?.secondaryCurrency_vat}
             pb={0}
             showIfZero
           />
