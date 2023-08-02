@@ -65,14 +65,12 @@ const validate = (currentStatus, currentOrderDelivery, currentOrder) => {
 
 const updateOrderStatusOptions = (currentOrder) => {
   let list = [];
-  const currentStatus = options[currentOrder?.orderStatus];
 
   Object.entries(options)?.forEach((opt) => {
     list.push({
       label: opt[1]?.label,
       value: opt[0],
-      isDisabled: opt[1]?.position <= currentStatus?.position,
-      isCurrentStatus: currentStatus?.position === opt[1]?.position,
+      position: opt[1]?.position,
     });
   });
 
@@ -83,21 +81,21 @@ const updateOrderStatusOptions = (currentOrder) => {
   return list;
 };
 
-export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
+export default function UpdateOrderStatus({
+  onClose,
+  currentOrder: order,
+  onSuccess: onUpdateSuccess,
+  refetchApiKey = Api.ORDER_LIST,
+}) {
   const theme = useTheme();
   const { socket } = useSelector((state) => state.socketReducer);
   const queryClient = useQueryClient();
 
-  const [currentStatus, setCurrentStatus] = useState(currentOrder?.orderStatus);
-  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(currentOrder?.deliveryBoy || {});
+  const [currentStatus, setCurrentStatus] = useState(order?.orderStatus);
+  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || {});
+  const [currentOrder, setCurrentOrder] = useState(order);
   const [open, setOpen] = useState(false);
   const [showDelivery, setShowDelivery] = useState(false);
-
-  // eslint-disable-next-line no-unused-vars
-  const populateState = (updatedOrder) => {
-    setCurrentStatus(updatedOrder?.orderStatus);
-    setCurrentOrderDelivery(updatedOrder?.deliveryBoy || {});
-  };
 
   const getNearByDeliveryBoys = () => {
     const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
@@ -127,36 +125,39 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
     }
   );
 
+  const onSuccess = (response, payload) => {
+    // notification
+    successMsg(response?.message, response?.status ? 'success' : undefined);
+
+    if (response.status) {
+      queryClient.invalidateQueries(refetchApiKey);
+      if (onUpdateSuccess) onUpdateSuccess(response);
+
+      // emit socket
+      if (payload.service === 'regular') {
+        if (payload?.data?.orderStatus === 'accepted_delivery_boy')
+          socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+        else
+          socket?.emit('updateOrder', {
+            orderId: payload.data?.orderId,
+          });
+      }
+
+      if (response?.data?.order?.orderStatus === 'delivered') {
+        onClose();
+      } else {
+        setCurrentOrder(response?.data?.order);
+      }
+    }
+  };
+
   const updateStatusMutation = useMutation(
     (payload) => {
       const API = payload.service === 'butler' ? Api.BUTLER_ORDER_UPDATE_STATUS : Api.ORDRE_UPDATE_STATUS;
       return AXIOS.post(API, payload.data);
     },
     {
-      onSuccess: (data, config) => {
-        successMsg(data?.message, data?.status ? 'success' : undefined);
-
-        if (data.status) {
-          queryClient.invalidateQueries(refetchApiKey);
-          if (onSuccess) onSuccess(data);
-
-          // emit socket
-          if (config.service === 'regular') {
-            if (config?.data?.orderStatus === 'accepted_delivery_boy')
-              socket?.emit('adminAcceptedOrder', { orderId: config.data?.orderId });
-            else
-              socket?.emit('updateOrder', {
-                orderId: config.data?.orderId,
-              });
-          }
-
-          console.log('new data', data);
-
-          // populateState()
-
-          // onClose();
-        }
-      },
+      onSuccess,
       onError: (error) => {
         console.log('api error: ', error);
       },
@@ -164,9 +165,7 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
   );
 
   const updateStatus = () => {
-    if (!validate(currentStatus, currentOrderDelivery, currentOrder)) {
-      return;
-    }
+    if (!validate(currentStatus, currentOrderDelivery, currentOrder)) return;
 
     const data = {};
     data.orderId = currentOrder?._id;
@@ -256,8 +255,9 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
           >
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
-                disabled={item?.isDisabled}
-                className={item?.isCurrentStatus ? 'active-status' : ''}
+                console={console.log(item?.position, options[currentOrder?.orderStatus]?.position)}
+                disabled={item?.position <= options[currentOrder?.orderStatus]?.position}
+                className={item?.position === options[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
                 sx={{
@@ -283,25 +283,26 @@ export default function UpdateOrderStatus({ onClose, currentOrder, onSuccess, re
                         {index + 1}. {item?.label}{' '}
                         {currentOrderDelivery?._id ? `- (${currentOrderDelivery?.name})` : ''}
                       </span>
-                      {item?.isDisabled && currentStatus !== 'accepted_delivery_boy' && (
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpen(false);
-                            setShowDelivery(true);
-                          }}
-                          style={{
-                            color: '#5E97A9',
-                            textDecoration: 'underline',
-                            zIndex: '999',
-                            pointerEvents: 'all',
-                            opacity: 1,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          Change Rider
-                        </span>
-                      )}
+                      {item?.position <= options[currentOrder?.orderStatus]?.position &&
+                        currentStatus !== 'accepted_delivery_boy' && (
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpen(false);
+                              setShowDelivery(true);
+                            }}
+                            style={{
+                              color: '#5E97A9',
+                              textDecoration: 'underline',
+                              zIndex: '999',
+                              pointerEvents: 'all',
+                              opacity: 1,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Change Rider
+                          </span>
+                        )}
                     </Stack>
                   )}
                 </ListItemText>
