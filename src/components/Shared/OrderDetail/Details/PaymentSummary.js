@@ -3,6 +3,9 @@ import { Box } from '@mui/material';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
+  const currency = order?.baseCurrency?.symbol;
+  const adminExchangeRate = order?.adminExchangeRate;
+
   const total_base =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
 
@@ -11,12 +14,10 @@ export default function PaymentSummary({ order = {} }) {
       order?.summary?.secondaryCurrency_wallet +
       order?.summary?.secondaryCurrency_card || 0;
 
-  const currency = order?.baseCurrency?.symbol;
-  const adminExchangeRate = order?.adminExchangeRate;
-
   const refund = order?.userRefundTnx?.[0];
   const butler_refund = order?.orderCancel || order?.userCancelTnx ? { amount: total_base } : undefined;
   const cancel = order?.userCancelTnx?.[0];
+
   const refund_amount = refund?.amount || cancel?.amount || butler_refund?.amount;
 
   return (
