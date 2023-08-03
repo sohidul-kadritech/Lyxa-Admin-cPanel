@@ -1,5 +1,5 @@
 import { Delete } from '@mui/icons-material';
-import { Box, Button, Stack, createFilterOptions, debounce, useTheme } from '@mui/material';
+import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -23,15 +23,13 @@ import {
 
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
-  // eslint-disable-next-line no-unused-vars
-  const theme = useTheme();
 
   console.log({ editRider });
 
   const [rider, setRider] = useState(
-    // eslint-disable-next-line prettier/prettier
     editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
   );
+
   const [loading, setLoading] = useState(false);
   const [searchKeyShop, setSearchKeyShop] = useState('');
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
@@ -48,7 +46,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -79,7 +76,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         successMsg(error?.message);
         setLoading(false);
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -141,7 +137,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
           return data?.data?.shops?.length > 0 ? data?.data?.shops : prev;
         });
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -152,7 +147,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
-    // eslint-disable-next-line prettier/prettier
     []
   );
 
@@ -242,6 +236,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 name: 'vehicleType',
                 value: rider.vehicleType,
                 onChange: commonChangeHandler,
+                disabled: Boolean(editRider?._id),
               }}
             />
             {/* Vehicle Number */}
