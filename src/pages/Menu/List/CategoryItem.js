@@ -33,8 +33,7 @@ export default function CategoryItem({
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
       shopId: shop?._id,
       isActive: status,
-      // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const favouritesMutation = useMutation((status) =>
@@ -42,7 +41,7 @@ export default function CategoryItem({
       shopId: shop?._id,
       isActive: status,
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const categoriesMutation = useMutation((data) => AXIOS.post(Api.EDIT_CATEGORY, data), {
