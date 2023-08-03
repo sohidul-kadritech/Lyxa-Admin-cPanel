@@ -12,9 +12,10 @@ export default function PaymentSummary({ order = {} }) {
       order?.summary?.secondaryCurrency_wallet +
       order?.summary?.secondaryCurrency_card || 0;
 
-  const refund = order?.userRefundTnx?.[0];
-  const cancel = order?.userCancelTnx?.[0];
-  const refund_amount = refund?.amount || cancel?.amount;
+  const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
+  const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
+
+  const refund_amount = refund || cancel;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
