@@ -4,8 +4,6 @@ import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
   const currency = order?.baseCurrency?.symbol;
-  const adminExchangeRate = order?.adminExchangeRate;
-
   const total_base =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
 
@@ -15,10 +13,8 @@ export default function PaymentSummary({ order = {} }) {
       order?.summary?.secondaryCurrency_card || 0;
 
   const refund = order?.userRefundTnx?.[0];
-  const butler_refund = order?.orderCancel || order?.userCancelTnx ? { amount: total_base } : undefined;
   const cancel = order?.userCancelTnx?.[0];
-
-  const refund_amount = refund?.amount || cancel?.amount || butler_refund?.amount;
+  const refund_amount = refund?.amount || cancel?.amount;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
@@ -87,35 +83,22 @@ export default function PaymentSummary({ order = {} }) {
           </Box>
         )}
 
-        {/* for refund after delivered */}
-        {/* <SummaryItem
-          label="Total Refunded"
-          value={refund?.amount}
-          isTotal
-          hide={!order?.isRefundedAfterDelivered}
-          showIfZero
-          showBaseOnly
-          pb={0}
-        /> */}
-
-        {/* for refund before  delivered */}
-        {/* <SummaryItem
-          label="Total Refunded"
-          value={cancel?.amount}
-          exchangeRate={adminExchangeRate}
-          hide={order?.orderStatus !== 'cancelled' || order?.isButler}
-          showBaseOnly
-          showIfZero
-          isTotal
-          pb={0}
-        /> */}
-
-        {/* for refund before  delivered */}
+        {/* normal order */}
         <SummaryItem
           label="Total Refunded"
           value={refund_amount}
-          exchangeRate={adminExchangeRate}
-          hide={!(refund || cancel || butler_refund)}
+          hide={!(refund || cancel)}
+          showBaseOnly
+          showIfZero
+          isTotal
+          pb={0}
+        />
+
+        {/* butler order */}
+        <SummaryItem
+          label="Total Refunded"
+          value={total_base}
+          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx))}
           showBaseOnly
           showIfZero
           isTotal
