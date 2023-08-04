@@ -2,12 +2,8 @@
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
-import StyledBox from '../../../StyledCharts/StyledBox';
-
-// project import
-// import { ReactComponent as StarIcon } from '../../../../assets/icons/star.svg';
-// import { useGlobalContext } from '../../../../context';
 import { useGlobalContext } from '../../../../context';
+import StyledBox from '../../../StyledCharts/StyledBox';
 import StyledDoughnutChart from '../../../StyledCharts/StyledPieChart';
 
 export function calculateDateDifference(date1, date2, unit) {
@@ -23,7 +19,7 @@ const customerTypeProps = {
     customers: 'totalCustomers',
     sales: 'totalCustomersSales',
     orders: 'totalCustomersOrders',
-    percent: 'totalCustomersSales',
+    percent: 'totalCustomersPercentOfSales',
     average: 'totalCustomersAvgOrders',
   },
   new: {
@@ -43,7 +39,7 @@ const customerTypeProps = {
     average: 'repeatedCustomersAvgOrders',
   },
   lapsed: {
-    graphTooltip: 'Lasped Customers',
+    graphTooltip: 'Lapsed Customers',
     customers: 'lapsedCustomers',
     sales: 'lapsedCustomersSales',
     orders: 'lapsedCustomersOrders',
@@ -100,6 +96,8 @@ export default function CustomerBreakdown({ title, customerType, range, details 
     ],
   };
 
+  console.log('order', details);
+
   return (
     <StyledBox
       padding
@@ -113,17 +111,6 @@ export default function CustomerBreakdown({ title, customerType, range, details 
       <Typography variant="body4" pb={4} color={theme.palette.text.secondary2}>
         Customers who ordered: Last {calculateDateDifference(range.startDate, range.endDate, 'day')} days
       </Typography>
-      {/* <Typography
-        variant="body1"
-        lineHeight="19px"
-        fontWeight={600}
-        color={theme.palette.success.main}
-        display="flex"
-        alignItems="center"
-        gap={2}
-      >
-        <StarIcon /> {shop?.rating?.toFixed(1)}
-      </Typography> */}
       <Grid container mt={15}>
         <Grid xs={12} lg={6}>
           <Stack direction="row" height="100%" alignItems="center" justifyContent="center">

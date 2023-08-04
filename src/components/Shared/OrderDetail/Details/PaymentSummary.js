@@ -3,14 +3,24 @@ import { Box } from '@mui/material';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
+  const summary = order?.summary;
   const currency = order?.baseCurrency?.symbol;
+
   const total_base =
-    order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount;
 
   const total_secondary =
-    order?.summary?.secondaryCurrency_cash +
-      order?.summary?.secondaryCurrency_wallet +
-      order?.summary?.secondaryCurrency_card || 0;
+    summary?.secondaryCurrency_totalAmount +
+    summary?.secondaryCurrency_vat +
+    summary?.secondaryCurrency_riderTip -
+    summary?.secondaryCurrency_discount -
+    summary?.reward?.secondaryCurrency_amount -
+    summary?.secondaryCurrency_couponDiscountAmount;
 
   const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
   const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
@@ -79,7 +89,16 @@ export default function PaymentSummary({ order = {} }) {
                     user?.summary?.baseCurrency_wallet +
                     user?.summary?.baseCurrency_card || 0
                 : 0;
-              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total_base_user} isTotal />;
+
+              return (
+                <SummaryItem
+                  key={user?.user?._id}
+                  label={user?.user?.name}
+                  value={total_base_user}
+                  showBaseOnly
+                  isTotal
+                />
+              );
             })}
           </Box>
         )}

@@ -54,7 +54,10 @@ export default function CategoryList2() {
     })
   );
 
-  const updateQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_CATEGORY, data));
+  const updateQuery = useMutation((data) => {
+    const EDIT_API = currentTab === 0 ? API_URL.EDIT_CATEGORY : API_URL.CATEGORY_UPDATE_MULTIPLE;
+    return AXIOS.post(EDIT_API, data);
+  });
 
   // menu handler
   const menuHandler = (menu) => {

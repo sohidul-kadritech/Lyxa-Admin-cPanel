@@ -29,6 +29,8 @@ export default function OrdersByHour() {
       })
   );
 
+  console.log('orders-by-hours', ordersGraph?.data?.data?.hourlyOrders);
+
   return (
     <Grid xs={12}>
       <StyledBox
