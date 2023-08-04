@@ -13,7 +13,6 @@ import StyledChip from '../../../components/Styled/StyledChips';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
-import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -38,6 +37,16 @@ const tabSx = {
   padding: '8px 12px',
   textTransform: 'none',
 };
+
+const getCategoryQueryParams = (shopType, shopId) => ({
+  page: 1,
+  pageSize: 100,
+  searchKey: '',
+  sortBy: 'desc',
+  type: shopType,
+  shopId,
+  userType: 'shop',
+});
 
 export default function AddProduct({ onClose, editProduct, productReadonly, newProductCategory }) {
   const queryClient = useQueryClient();
@@ -85,16 +94,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           shop: shop?._id,
           status: 'active',
         },
-      }),
-    {
-      staleTime: minInMiliSec(10),
-      // eslint-disable-next-line prettier/prettier
-    }
+      })
   );
 
   const adddons = useMemo(
     () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
-    // eslint-disable-next-line prettier/prettier
     [productsQuery?.data?.data?.products]
   );
 
@@ -103,65 +107,60 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // categories
   const setConvertCategories = (data) => {
-    setCategories(
-      // eslint-disable-next-line prettier/prettier
-      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
-    );
+    const items = [];
+    data?.data?.categories?.forEach((c) => {
+      items?.push({
+        value: c?.category?._id,
+        label: c?.category?.name,
+        disabled: c?.status === 'inactive',
+      });
+    });
+    setCategories(items);
   };
 
   const categoriesQuery = useQuery(
-    [
-      Api.GET_ALL_CATEGORY,
-      {
-        page: 1,
-        pageSize: 100,
-        searchKey: '',
-        sortBy: 'desc',
-        // status: 'active',
-        type: shop?.shopType,
-        shopId: shop?._id,
-        userType: 'shop',
-      },
-    ],
+    [Api.GET_ALL_CATEGORY, getCategoryQueryParams(shop?.shopType, shop?._id)],
     () =>
       AXIOS.get(Api.GET_ALL_CATEGORY, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          searchKey: '',
-          sortBy: 'desc',
-          // status: 'active',
-          type: shop?.shopType,
-          shopId: shop?._id,
-          userType: 'shop',
-        },
+        params: getCategoryQueryParams(shop?.shopType, shop?._id),
       }),
     {
-      staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         setConvertCategories(data);
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
+
+  const isCategoryIsDisabled = useMemo(() => {
+    let disabled = false;
+    categoriesQuery?.data?.data?.categories?.forEach((c) => {
+      if (product?.category === c?.category?._id && c?.status === 'inactive') disabled = true;
+    });
+    return disabled;
+  }, [categoriesQuery?.data, product?.category]);
 
   const subCategoriesQuery = useQuery(
     [
       Api.GET_ALL_SUB_CATEGORY,
       {
-        status: 'active',
         categoryId: product?.category,
       },
     ],
     () =>
       AXIOS.get(Api.GET_ALL_SUB_CATEGORY, {
         params: {
-          status: 'active',
           categoryId: product?.category,
         },
-        // eslint-disable-next-line prettier/prettier
       })
   );
+
+  const isSubCategoryIsDisabled = useMemo(() => {
+    let disabled = false;
+    subCategoriesQuery?.data?.data?.subCategories?.forEach((sc) => {
+      if (product?.subCategory === sc?._id && sc?.status === 'inactive') disabled = true;
+    });
+    return disabled;
+  }, [subCategoriesQuery?.data, product?.subCategory]);
 
   useEffect(() => {
     if (categoriesQuery.data?.status) {
@@ -193,15 +192,8 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-      // eslint-disable-next-line prettier/prettier
     }
   );
-
-  const productIsAddonMessage = `Product is used as  addon inside ${isProductAddonQuery?.data?.data?.products
-    ?.map((p, i) => `${i === 0 ? '' : ', '}${p?.name}`)
-    .join('')}. Products used as addon cannot have attributes.`;
-
-  console.log(productIsAddonMessage);
 
   // loading
   const __loading =
@@ -223,7 +215,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       })
     );
 
@@ -248,7 +239,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -357,7 +347,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       />
       {/* category */}
       <StyledFormField
-        label="Category"
+        label={<span>Category {isCategoryIsDisabled && <span style={{ color: '#dd5b63' }}>(Disabled)</span>}</span>}
         intputType="select"
         containerProps={{
           sx: fieldContainerSx,
@@ -373,7 +363,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       {/* sub-category */}
       {shop?.shopType !== 'food' && (
         <StyledFormField
-          label="Sub-Category"
+          label={
+            <span>Sub-Category {isSubCategoryIsDisabled && <span style={{ color: '#dd5b63' }}>(Disabled)</span>}</span>
+          }
           intputType="select"
           containerProps={{
             sx: fieldContainerSx,
@@ -385,12 +377,12 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             onChange: commonChangeHandler,
             readOnly: productReadonly,
             disabled: subCategoriesQuery.isLoading || !product?.category,
-            // console: console.log(subCategoriesQuery.isLoading) || console.log(!product?.category),
             getLabel: (item) => item?.name,
             getKey: (item) => item?._id,
             getValue: (item) => item?._id,
             getDisplayValue: (value) =>
               subCategoriesQuery?.data?.data?.subCategories?.find((category) => category?._id === value)?.name || '',
+            getDisabled: (value) => value?.status === 'inactive',
           }}
         />
       )}
@@ -444,13 +436,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           readOnly: productReadonly,
         }}
       />
-
       {secondaryCurrency?.symbol && exchangeRate !== 1 && (
         <Typography pt={2} variant="body3" display="block">
           Equivalent Price: {secondaryCurrency?.code} {Number(product.price) * Number(shop?.shopExchangeRate)}
         </Typography>
       )}
-
       {/* attributes */}
       {shop?.shopType === 'food' && (
         <Box sx={fieldContainerSx} id="add-product-features">
@@ -503,7 +493,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 return;
               }
 
-              console.log(product?.attributes);
               product?.attributes?.push(productAttrInit());
               setRender(!render);
             }}
@@ -609,7 +598,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 type="number"
                 readOnly={productReadonly}
                 onChange={(e) => {
-                  console.log(product.stockQuantity);
                   product.stockQuantity = e.target.value;
                   setRender(!render);
                 }}

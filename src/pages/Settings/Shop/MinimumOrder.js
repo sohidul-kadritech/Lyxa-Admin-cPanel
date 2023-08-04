@@ -18,7 +18,6 @@ export default function MinimumOrder({
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
-  console.log('currency', currency);
   return (
     <Box sx={props.boxSx}>
       <Typography sx={TypoSx}>Minimum Order ({currency})</Typography>

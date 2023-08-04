@@ -23,7 +23,7 @@ export default function GroupOrderSettings({ order }) {
   return (
     <StyledOrderDetailBox title="Group Order Settings">
       <Stack>
-        <StyledItem label="Creater" value={order?.cart?.creator?.name} />
+        <StyledItem label="Creator" value={order?.cart?.creator?.name} />
         <StyledItem label="Payment Preference" value={paymentPreferenceToLabelMap[order?.cart?.paymentPreferences]} />
         {order?.cart?.paymentPreferences === 'pay_for_everyone' && (
           <StyledItem

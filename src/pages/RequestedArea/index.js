@@ -31,13 +31,6 @@ function PointerWrapper() {
 function RequestedArea() {
   const [range, setRange] = useState({ ...dateRangeInit });
 
-  // const defaultProps = {
-  //   center: {
-  //     lat: 0,
-  //     lng: 0,
-  //   },
-  //   zoom: 12,
-  // };
   const { location } = useGeoLocation();
   const { coordinates } = location;
   const [currentArea, setCurrentArea] = useState([
@@ -59,7 +52,7 @@ function RequestedArea() {
     AXIOS.get(API_URL.REQUESTED_AREA, {
       params: { startDate: range.start, endDate: range.end },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   return (
@@ -69,9 +62,6 @@ function RequestedArea() {
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
         sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
           backgroundColor: '#fbfbfb',
           fontWeight: 700,
         }}
@@ -95,8 +85,7 @@ function RequestedArea() {
                           coordinates: [coordinates?.lon, coordinates?.lat],
                         },
                       },
-                      // eslint-disable-next-line prettier/prettier
-                    ],
+                    ]
               );
               return true;
             })
@@ -114,8 +103,8 @@ function RequestedArea() {
             padding: '20px 20px',
             marginTop: '30px',
             overflow: 'auto',
-            height: '70vh',
-            maxHeight: '700px',
+            // height: '70vh',
+            // maxHeight: '700px',
             borderRadius: '7px',
             border: `1px solid ${theme.palette.custom.border}`,
           }}

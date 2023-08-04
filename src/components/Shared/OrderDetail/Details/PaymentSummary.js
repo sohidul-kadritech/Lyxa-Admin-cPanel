@@ -1,82 +1,126 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
-import { StyledOrderDetailBox, SummaryItem, getTotalOrderInSecondary } from '../helpers';
+import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
-  const refund = order?.userRefundTnx?.length ? order?.userRefundTnx[0] : {};
-  const cancel = order?.userCancelTnx?.length ? order?.userCancelTnx[0] : {};
-  const total = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card || 0;
-
+  const summary = order?.summary;
   const currency = order?.baseCurrency?.symbol;
-  const secondaryCurrency = order?.secondaryCurrency?.code;
-  const shopExchangeRate = order?.shopExchangeRate;
-  const adminExchangeRate = order?.adminExchangeRate;
+
+  const total_base =
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount;
+
+  const total_secondary =
+    summary?.secondaryCurrency_totalAmount +
+    summary?.secondaryCurrency_vat +
+    summary?.secondaryCurrency_riderTip -
+    summary?.secondaryCurrency_discount -
+    summary?.reward?.secondaryCurrency_amount -
+    summary?.secondaryCurrency_couponDiscountAmount;
+
+  const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
+  const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
+
+  const refund_amount = refund || cancel;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
-        <SummaryItem label="Subtotal" value={order?.summary?.productAmount} showIfZero pt={0} />
+        <SummaryItem
+          label={order?.isButler ? 'EST item(s) price' : 'Subtotal'}
+          value={order?.summary?.baseCurrency_productAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_productAmount}
+          pt={0}
+        />
 
         <SummaryItem
           label="Delivery fee"
-          value={order?.summary?.deliveryFee > 0 ? order?.summary?.deliveryFee : 'FREE'}
-          exchangeRate={order?.shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate}
+          value={order?.summary?.baseCurrency_riderFee > 0 ? order?.summary?.baseCurrency_riderFee : 'FREE'}
+          valueSecondary={order?.summary?.secondaryCurrency_riderFee}
         />
-        <SummaryItem label="Rider Tips" value={order?.summary?.riderTip} />
-        <SummaryItem label="Discount" value={order?.summary?.discount} isNegative />
+
+        <SummaryItem
+          label="Rider Tips"
+          value={order?.summary?.baseCurrency_riderTip}
+          valueSecondary={order?.summary?.secondaryCurrency_riderTip}
+        />
+
+        <SummaryItem
+          label="Discount"
+          value={order?.summary?.baseCurrency_discount}
+          valueSecondary={order?.summary?.secondaryCurrency_discount}
+          isNegative
+        />
 
         <SummaryItem
           label="Coupon Discount"
-          value={order?.summary?.couponDiscountAmount}
+          value={order?.summary?.baseCurrency_couponDiscountAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
           isNegative
-          exchangeRate={adminExchangeRate}
         />
 
         <SummaryItem
           label="Rewards"
-          value={`${currency} ${(order?.summary?.reward?.amount || 0).toFixed(2)} = ${
+          value={`${currency} ${(order?.summary?.reward?.baseCurrency_amount || 0).toFixed(2)} = ${
             order?.summary?.reward?.points
           } Pts`}
-          hide={!order?.summary?.reward?.amount}
+          hide={!order?.summary?.reward?.baseCurrency_amount}
         />
-
-        <SummaryItem label="VAT" value={order?.summary?.vat} showIfZero />
 
         <SummaryItem
-          label="Total"
-          value={
-            shopExchangeRate > 1
-              ? `${secondaryCurrency} ${getTotalOrderInSecondary(order)} ~ ${currency} ${total}`
-              : total
-          }
+          label="VAT"
+          value={order?.summary?.baseCurrency_vat}
+          valueSecondary={order?.summary?.secondaryCurrency_vat}
           showIfZero
-          isTotal
         />
+
+        <SummaryItem label="Total" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
 
         {/* group cart */}
         {order?.cart?.cartType === 'group' && (
           <Box>
             {order?.cart?.cartItems?.map((user) => {
-              const total = user?.isPaid ? user?.summary?.cash + user?.summary?.wallet + user?.summary?.card || 0 : 0;
-              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total} isTotal />;
+              const total_base_user = user?.isPaid
+                ? user?.summary?.baseCurrency_cash +
+                    user?.summary?.baseCurrency_wallet +
+                    user?.summary?.baseCurrency_card || 0
+                : 0;
+
+              return (
+                <SummaryItem
+                  key={user?.user?._id}
+                  label={user?.user?.name}
+                  value={total_base_user}
+                  showBaseOnly
+                  isTotal
+                />
+              );
             })}
           </Box>
         )}
 
+        {/* normal order */}
         <SummaryItem
           label="Total Refunded"
-          value={refund?.amount}
-          exchangeRate={adminExchangeRate}
+          value={refund_amount}
+          hide={!(refund || cancel)}
+          showBaseOnly
+          showIfZero
           isTotal
-          hide={!order?.isRefundedAfterDelivered}
           pb={0}
         />
 
+        {/* butler order */}
         <SummaryItem
           label="Total Refunded"
-          value={cancel?.amount}
-          exchangeRate={adminExchangeRate}
-          hide={order?.orderStatus !== 'cancelled'}
+          value={total_base}
+          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx))}
+          showBaseOnly
+          showIfZero
           isTotal
           pb={0}
         />

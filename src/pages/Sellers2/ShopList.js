@@ -42,12 +42,7 @@ function ShopList({
   const routeMatch = useRouteMatch();
   const paramsQuery = useParams();
 
-  // eslint-disable-next-line no-unused-vars
-  const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
-  // eslint-disable-next-line no-unused-vars
-  const { shop, seller } = currentUser;
-  // eslint-disable-next-line no-unused-vars
-  console.log('current user: ', currentUser);
+  const { dispatchCurrentUser } = useGlobalContext();
 
   const allColumns = [
     {

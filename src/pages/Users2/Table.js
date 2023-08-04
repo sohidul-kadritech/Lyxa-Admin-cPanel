@@ -1,12 +1,13 @@
 import { Edit } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Stack, Typography } from '@mui/material';
+import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 
-export default function UserTable({ rows, onEdit, onDelete }) {
+export default function UserTable({ rows, onEdit, onDelete, loading }) {
   const columns = [
     {
       id: 1,
@@ -68,8 +69,14 @@ export default function UserTable({ rows, onEdit, onDelete }) {
     },
   ];
 
+  if (loading) return <TableSkeleton columns={['text', 'text', 'text']} rows={5} />;
+
   return (
-    <StyledBox padding>
+    <StyledBox
+      sx={{
+        padding: '4px 14px',
+      }}
+    >
       <StyledTable
         autoHeight
         columns={columns}

@@ -34,42 +34,9 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
         placeholder={searchPlaceHolder}
         value={localValue.searchKey}
         onChange={(e) => {
-          setLocalValue((prev) => ({ ...prev, searchKey: e.target.value }));
+          setLocalValue((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
         }}
       />
-      {/* start date */}
-      {/* <FilterDate
-        tooltip="Start Date"
-        maxDate={moment(localValue.date.end).subtract(1, 'day')}
-        value={localValue.date.start}
-        size="sm"
-        onChange={(e) => {
-          setLocalValue((prev) => ({
-            ...prev,
-            date: {
-              ...prev.date,
-              start: e._d,
-            },
-          }));
-        }}
-      /> */}
-      {/* end date */}
-      {/* <FilterDate
-        tooltip="End Date"
-        minDate={moment(localValue.date.start).add(1, 'day')}
-        value={localValue.date.end}
-        size="sm"
-        onChange={(e) => {
-          setLocalValue((prev) => ({
-            ...prev,
-            date: {
-              ...prev.date,
-              end: e._d,
-            },
-          }));
-        }}
-      /> */}
-      {/* end date */}
       <FilterSelect
         items={listFilterOptions}
         value={localValue.status}
@@ -80,7 +47,7 @@ export default function CommonFilters({ filtersValue, setFiltersValue, searchPla
           minWidth: 'auto',
         }}
         onChange={(e) => {
-          setLocalValue((prev) => ({ ...prev, status: e.target.value }));
+          setLocalValue((prev) => ({ ...prev, status: e.target.value, page: 1 }));
         }}
       />
     </Stack>

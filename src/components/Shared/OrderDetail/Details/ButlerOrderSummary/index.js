@@ -54,7 +54,7 @@ export default function ButlerOrderSummary({ order }) {
               Note: Estimated total will be{' '}
               <span style={{ fontWeight: 'bold' }}>
                 {currency}
-                {order?.summary?.productAmount}
+                {order?.summary?.baseCurrency_productAmount}
               </span>
               . This amount will be paid by <span style={{ fontWeight: 'bold' }}>cash</span>.
             </Typography>

@@ -13,7 +13,7 @@ import IncrementDecrementButton from '../../AppSettings2/IncrementDecrementButto
 
 function AddRemoveCredit({ onClose, storeAppSettings }) {
   const { general } = useGlobalContext();
-  const { exchangeRate, secondaryCurrency } = storeAppSettings;
+  const { adminExchangeRate, secondaryCurrency } = storeAppSettings;
   const currency = general?.currency?.symbol;
   const [searchedUserOptions, setSearchedUserOptions] = useState([]);
   const [user, setUser] = useState({});
@@ -56,7 +56,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
           return data?.data?.users?.length > 0 ? data?.data?.users : prev;
         });
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
@@ -65,7 +64,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
     },
   });
 
-  // eslint-disable-next-line no-unused-vars
   const creditMutation = useMutation((data) => AXIOS.post(data?.api, data?.data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
@@ -75,7 +73,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
         onClose();
       }
     },
-    // eslint-disable-next-line prettier/prettier
   });
 
   const addRemoveCredit = (type) => {
@@ -120,10 +117,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
   );
 
   const filterOptions = createFilterOptions({
-    stringify: ({ name, phone_number, _id }) => {
-      console.log(`===>: ${name} ${phone_number} ${_id}`);
-      return `${name} ${phone_number} ${_id}`;
-    },
+    stringify: ({ name, phone_number, _id }) => `${name} ${phone_number} ${_id}`,
   });
 
   const clearData = () => {
@@ -180,7 +174,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
       </Box>
       {secondaryCurrency?.symbol && (
         <Typography pt={2} variant="body3" display="block">
-          Equivalent Price: {secondaryCurrency?.code} {amount * parseInt(exchangeRate, 10)}
+          Equivalent Price: {secondaryCurrency?.code} {Math.round(amount * parseInt(adminExchangeRate, 10))}
         </Typography>
       )}
       <Box sx={{ marginTop: '20px' }}>

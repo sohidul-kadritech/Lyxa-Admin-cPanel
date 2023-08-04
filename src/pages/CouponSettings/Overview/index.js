@@ -11,8 +11,8 @@ import { createCouponOverviewRows } from '../helpers';
 import CouponOverviewTable from './Table';
 
 const queryParamsInit = {
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
+  startDate: moment().startOf('month'),
+  endDate: moment(),
 };
 
 export default function CouponOverview() {

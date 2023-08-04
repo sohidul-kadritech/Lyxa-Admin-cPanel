@@ -2,13 +2,13 @@
 import { Box, Tooltip, Typography } from '@mui/material';
 
 export const weekdays = {
-  1: 'monday',
-  2: 'tuesday',
-  3: 'wednesday',
-  4: 'thursday',
-  5: 'friday',
-  6: 'saturday',
-  7: 'sunday',
+  1: 'sunday',
+  2: 'monday',
+  3: 'tuesday',
+  4: 'wednesday',
+  5: 'thursday',
+  6: 'friday',
+  7: 'saturday',
 };
 
 export const frequencyMap = {
@@ -38,7 +38,6 @@ export const frequencyMap = {
 };
 
 export const createCharData = (data = []) => {
-  console.log(data);
   const hourInit = () => ({ monday: '0', tuesday: '0', wednesday: '0', thursday: '0', friday: '0', sunday: '0' });
   const rows = new Array(24).fill(0).map(() => hourInit());
 
@@ -79,9 +78,7 @@ export function CustomTooltip({ weekdayNum, hour, orders }) {
   return (
     <Box sx={{ width: '150px' }}>
       <Typography variant="body4" fontSize={12} lineHeight="20px" textTransform="capitalize">
-        {weekdays[weekdayNum]} {hour % 12}
-        {hour < 12 ? 'am' : 'pm'} - {(hour % 12) + 1}
-        {hour < 12 ? 'am' : 'pm'}
+        {weekdays[weekdayNum]} {hour % 12} {hour < 12 ? 'am' : 'pm'} - {(hour % 12) + 1} {hour < 12 ? 'am' : 'pm'}
       </Typography>
       <Typography
         variant="body4"

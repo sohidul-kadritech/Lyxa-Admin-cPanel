@@ -59,6 +59,7 @@ import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSet
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
+import Tickets from '../pages/Tickets';
 import UserProfile from '../pages/UsersProfile';
 import Vat2 from '../pages/Vat2';
 
@@ -191,4 +192,7 @@ export const admin_routes = [
   { path: '/display/banner/add', component: AddBanner },
   { path: '/display/banner/edit/:id', component: AddBanner },
   { path: '/admin/requested-area', component: RequestedArea },
+
+  // tickets
+  { path: '/tickets', component: Tickets },
 ];

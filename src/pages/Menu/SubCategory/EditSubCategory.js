@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -9,7 +8,6 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
-import minInMiliSec from '../../../helpers/minInMiliSec';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -20,33 +18,23 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
-  console.log(editSubCategory);
-
   const queryClient = useQueryClient();
 
-  const categoriesQuery = useQuery(
-    [Api.GET_ALL_CATEGORY, { shopId: shop?._id }],
-    () =>
-      AXIOS.get(Api.GET_ALL_CATEGORY, {
-        params: {
-          page: 1,
-          pageSize: 100,
-          searchKey: '',
-          sortBy: 'desc',
-          status: 'active',
-          type: shop?.shopType,
-          userType: 'shop',
-        },
-      }),
-    {
-      staleTime: minInMiliSec(10),
-      onSuccess: (data) => {},
-    }
+  const categoriesQuery = useQuery([Api.GET_ALL_CATEGORY, { shopId: shop?._id }], () =>
+    AXIOS.get(Api.GET_ALL_CATEGORY, {
+      params: {
+        page: 1,
+        pageSize: 100,
+        searchKey: '',
+        sortBy: 'desc',
+        type: shop?.shopType,
+        userType: 'shop',
+      },
+    })
   );
 
-  const [confirmModal, setConfirmModal] = useState(false);
-  const [confirmAction, setConfirmAction] = useState(confirmActionInit);
-
+  const [confirmModal] = useState(false);
+  const [confirmAction] = useState(confirmActionInit);
   const [subCategory, setSubCategory] = useState(editSubCategory);
 
   // input handler
@@ -83,20 +71,17 @@ export default function EditSubCategory({ onClose, editSubCategory }) {
   };
 
   // delete category
-  const deleteCategoryMutation = useMutation(
-    (data) => AXIOS.post(Api.DELETE_SUB_CATEGORY, { id: editSubCategory?._id }),
-    {
-      onSuccess: (data) => {
-        successMsg(data?.message, data?.status ? 'success' : undefined);
+  const deleteCategoryMutation = useMutation(() => AXIOS.post(Api.DELETE_SUB_CATEGORY, { id: editSubCategory?._id }), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
 
-        if (data?.status) {
-          queryClient.invalidateQueries('category-wise-products');
-          queryClient.invalidateQueries([Api.GET_ALL_SUB_CATEGORY]);
-          onClose();
-        }
-      },
-    }
-  );
+      if (data?.status) {
+        queryClient.invalidateQueries('category-wise-products');
+        queryClient.invalidateQueries([Api.GET_ALL_SUB_CATEGORY]);
+        onClose();
+      }
+    },
+  });
 
   return (
     <>

@@ -41,12 +41,12 @@ export const typeList = [
   'maxDiscount',
   'maxCustomerServiceValue',
   'searchDeliveryBoyKm',
-  'currency',
+  'baseCurrency',
   'vat',
   'maxTotalEstItemsPriceForButler',
   'nearByShopKmForUserHomeScreen',
   'secondaryCurrency',
-  'exchangeRate',
+  'adminExchangeRate',
   'acceptedCurrency',
 ];
 
@@ -67,7 +67,7 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (!hasDuplicates(newData?.searchDeliveryBoyKm, oldData?.searchDeliveryBoyKm)) {
     newType.push(typeList[4]);
   }
-  if (newData?.currency?.code?.toString() !== oldData?.currency?.code?.toString()) {
+  if (newData?.baseCurrency?.code?.toString() !== oldData?.baseCurrency?.code?.toString()) {
     newType.push(typeList[5]);
   }
   if (parseInt(newData?.vat, 10) !== parseInt(oldData?.vat, 10)) {
@@ -83,8 +83,8 @@ export const appSettingsValidateData = (oldData, newData) => {
     newType.push(typeList[9]);
   }
   if (
-    parseInt(newData?.exchangeRate, 10) !== parseInt(oldData?.exchangeRate, 10) ||
-    parseFloat(newData?.exchangeRate, 10) !== parseFloat(oldData?.exchangeRate, 10)
+    parseInt(newData?.adminExchangeRate, 10) !== parseInt(oldData?.adminExchangeRate, 10) ||
+    parseFloat(newData?.adminExchangeRate, 10) !== parseFloat(oldData?.adminExchangeRate, 10)
   ) {
     newType.push(typeList[10]);
   }
@@ -104,7 +104,7 @@ export const appSettingsValidateData = (oldData, newData) => {
     : '0';
   const nearByShopKm = parseInt(newData?.nearByShopKm, 10) > 0 ? parseInt(newData?.nearByShopKm, 10) : '0';
   const vat = parseInt(newData?.vat, 10) > 0 ? parseInt(newData?.vat, 10) : '0';
-  const exchangeRate = parseInt(newData?.exchangeRate, 10) > 0 ? parseInt(newData?.exchangeRate, 10) : '1';
+  const adminExchangeRate = parseInt(newData?.adminExchangeRate, 10);
 
   return {
     ...newData,
@@ -113,6 +113,6 @@ export const appSettingsValidateData = (oldData, newData) => {
     nearByShopKm,
     nearByShopKmForUserHomeScreen,
     type: newType,
-    exchangeRate,
+    adminExchangeRate,
   };
 };

@@ -1,5 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
+import moment from 'moment';
 import { useMemo } from 'react';
 import FilterSelect from '../Filter/FilterSelect';
 import StyledDateRangePicker from '../Styled/StyledDateRangePicker';
@@ -38,6 +39,9 @@ export default function SearchBar({
   menuHandler,
   menuItems,
   MenuButton,
+  customSelectOptions,
+  customSelectValue,
+  customSelectPlaceholder,
 }) {
   const updateSearch = useMemo(
     () =>
@@ -63,47 +67,16 @@ export default function SearchBar({
           startDate={queryParams.startDate}
           endDate={queryParams.endDate}
           onChange={({ startDate, endDate }) => {
+            console.log({ startDate, moment: moment(startDate) });
             setQueryParams((prev) => ({
               ...prev,
-              startDate: startDate?._d,
-              endDate: endDate?._d,
+              startDate,
+              endDate,
               page: 1,
             }));
           }}
         />
       )}
-      {/* start date */}
-      {/* {showFilters?.date && (
-        <FilterDate
-          tooltip="Start Date"
-          maxDate={moment(queryParams.endDate).subtract(1, 'day')}
-          value={queryParams.startDate}
-          size="sm"
-          onChange={(e) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              startDate: e._d,
-              page: 1,
-            }));
-          }}
-        />
-      )} */}
-      {/* end date */}
-      {/* {showFilters?.date && (
-        <FilterDate
-          tooltip="End Date"
-          minDate={moment(queryParams.startDate).add(1, 'day')}
-          value={queryParams.endDate}
-          size="sm"
-          onChange={(e) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              endDate: e._d,
-              page: 1,
-            }));
-          }}
-        />
-      )} */}
       {/* sort */}
       {showFilters?.sort && (
         <FilterSelect
@@ -133,6 +106,22 @@ export default function SearchBar({
           }}
           onChange={(e) => {
             setQueryParams((prev) => ({ ...prev, status: e.target.value, page: 1 }));
+          }}
+        />
+      )}
+      {/* custom */}
+      {showFilters?.customSelect && (
+        <FilterSelect
+          items={customSelectOptions}
+          value={queryParams[customSelectValue]}
+          placeholder={customSelectPlaceholder}
+          tooltip={customSelectPlaceholder}
+          size="sm"
+          sx={{
+            minWidth: 'auto',
+          }}
+          onChange={(e) => {
+            setQueryParams((prev) => ({ ...prev, [customSelectValue]: e.target.value, page: 1 }));
           }}
         />
       )}

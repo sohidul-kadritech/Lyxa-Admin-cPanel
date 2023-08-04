@@ -119,8 +119,9 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
+          {params?.row?.summary?.totalDropGet < 0 ? '-' : ''}
           {currency}
-          {params?.row?.summary?.totalDropGet.toFixed(2)}
+          {Math.abs(params?.row?.summary?.totalDropGet || 0)?.toFixed(2)}
         </Typography>
       ),
     },
@@ -165,8 +166,9 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
+          {params?.row?.summary?.totalSellerEarning < 0 ? '-' : ''}
           {currency}
-          {params?.row?.summary?.totalSellerEarning.toFixed(2)}
+          {Math.abs(params?.row?.summary?.totalSellerEarning || 0).toFixed(2)}
         </Typography>
       ),
     },

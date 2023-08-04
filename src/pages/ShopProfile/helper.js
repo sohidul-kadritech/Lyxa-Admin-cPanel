@@ -4,8 +4,8 @@ import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import { getImageUrl } from '../../helpers/images';
 
 export const getQueryParamsInit = (params) => ({
-  endDate: moment().format('YYYY-MM-DD'),
-  startDate: moment().subtract(7, 'days').format('YYYY-MM-DD'),
+  endDate: moment(),
+  startDate: moment().subtract(7, 'days'),
   searchKey: '',
   sortBy: 'DESC',
   ...params,
@@ -125,16 +125,12 @@ export function AverageOrderValue(totalProductsAmount, totalOrder) {
 }
 
 export function TagsAndCuisines(tags, cuisines) {
-  console.log(tags, cuisines);
-  // eslint-disable-next-line max-len
-  // return ` ${tags?.join(', ')}${cuisines?.length ? ', ' : ''}${cuisines?.map((cuisines) => cuisines.name).join(', ')}`;
   return ` ${cuisines?.map((cuisines) => cuisines.name).join(', ')}${
     tags?.length && cuisines?.length ? ', ' : ''
   }${tags?.join(', ')}`;
 }
 
 export function convertTimeToAmPm(time = []) {
-  console.log('time', time);
   const date = new Date();
   const [hours, minutes] = time.split(':');
   date.setHours(hours, minutes, 0, 0);
@@ -144,9 +140,7 @@ export function convertTimeToAmPm(time = []) {
   return `${displayHours}:${displayMinutes} ${suffix}`;
 }
 
-export function openingHours(normalHours) {
-  console.log({ normalHours });
-
+export function OpeningHours({ normalHours }) {
   const openingHoursSx = {
     fontSize: '14px',
     fontWeight: 500,

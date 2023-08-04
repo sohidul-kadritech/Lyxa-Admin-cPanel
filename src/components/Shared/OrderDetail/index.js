@@ -27,6 +27,8 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
     []
   );
 
+  console.log('order', order);
+
   return (
     <OrderContextProvider value={value}>
       <Box
@@ -104,8 +106,8 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
                 <Tab label="Order Details" />
                 <Tab label="Review" />
                 {userType === 'admin' && <Tab label="Earning Details" />}
-                <Tab label="Tickets" />
-                <Tab label="Rider Chat" />
+                {userType === 'admin' && <Tab label="Tickets" />}
+                {userType === 'admin' && <Tab label="Rider Chat" />}
               </Tabs>
             </Box>
           </Box>

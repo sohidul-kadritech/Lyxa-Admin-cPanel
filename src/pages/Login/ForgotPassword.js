@@ -97,9 +97,9 @@ export default function ForgotPassword({ onClose, accountType }) {
               fullWidth
               disabled={submitDisabled || mutation.isLoading}
               onClick={mutation.mutate}
-              rounded
               sx={{
                 fontSize: '14px',
+                borderRadius: '6px',
 
                 '&.Mui-disabled': {
                   opacity: '0.7',

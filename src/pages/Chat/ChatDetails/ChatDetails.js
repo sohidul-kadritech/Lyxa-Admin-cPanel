@@ -434,7 +434,7 @@ function ChatDetails() {
                       <Th>{item?.orderId}</Th>
                       <Td>{item?.orderStatus}</Td>
                       <Td>{item?.paymentStatus}</Td>
-                      <Td>{item?.summary?.totalAmount}</Td>
+                      <Td>{item?.summary?.baseCurrency_totalAmount}</Td>
                       <Td>
                         <div>
                           <Tooltip title="Details">

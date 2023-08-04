@@ -1,7 +1,7 @@
 // thrid party
 import { Cached, CalendarToday, ChevronRight, NotificationsPaused, PlayCircleFilledWhite } from '@mui/icons-material';
 import { Box, Button, Paper, Skeleton, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
-import LoadingOverlay from '../../components/Common/LoadingOverlay';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 
 function StatusTag({ status }) {
   const matches = useMediaQuery('(max-width: 1400px)');

@@ -54,28 +54,21 @@ export function SummaryItem({
   tooltip,
   label,
   value,
+  valueSecondary,
   isTotal,
   isRejected,
   isNegative,
   showIfZero,
-  exchangeRate,
-  skipExchangeRate,
-  useAdminRate,
   decimalPrecision = 2,
   showBaseOnly,
 }) {
   const theme = useTheme();
   const context = useContext(OrderContext);
-  const { baseCurrency, secondaryCurrency, shopExchangeRate, adminExchangeRate } = context || {};
-  let excRate = shopExchangeRate;
-  const hideSecondary = shopExchangeRate === 1;
+  const { baseCurrency, secondaryCurrency, adminExchangeRate } = context || {};
+  const hideSecondary = adminExchangeRate === 0;
 
   if (hide) return null;
   if (!showIfZero && !value) return null;
-
-  if (useAdminRate) excRate = adminExchangeRate;
-  if (exchangeRate) excRate = exchangeRate;
-  if (skipExchangeRate) excRate = 1;
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" pb={pb ?? 3.5} pt={pt}>
@@ -127,25 +120,25 @@ export function SummaryItem({
 
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative ? '-' : ''}${baseCurrency}${Math.abs(value).toFixed(decimalPrecision)}`}
+          `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value || 0).toFixed(decimalPrecision)}`}
 
         {typeof value !== 'string' &&
           !showBaseOnly &&
           `
-          ${
-            hideSecondary
-              ? ''
-              : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(Math.abs(value) * excRate) || 0} ~ `
-          }
-          ${isNegative ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${valueSecondary} ~ `}
+          ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>
   );
 }
 
 export const getTotalOrderInSecondary = (order) => {
-  const deliveryFee = order?.summary?.deliveryFee;
-  const totalExceptDeliveryFee = order?.summary?.cash + order?.summary?.wallet + order?.summary?.card - deliveryFee;
+  const deliveryFee = order?.summary?.baseCurrency_riderFee;
+  const totalExceptDeliveryFee =
+    order?.summary?.baseCurrency_cash +
+    order?.summary?.baseCurrency_wallet +
+    order?.summary?.baseCurrency_card -
+    deliveryFee;
 
   let totalBase = 0;
   totalBase += totalExceptDeliveryFee * order?.shopExchangeRate;

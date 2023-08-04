@@ -40,8 +40,8 @@ export const sellerDropChargeTypes = [
 ];
 
 export const validateSellersData = (data, adminType, isEdit = false) => {
-  console.log('generated Data', data);
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+
   if (!data?.name) {
     successMsg('Provide seller name');
     return false;
@@ -66,14 +66,16 @@ export const validateSellersData = (data, adminType, isEdit = false) => {
     successMsg('Provide seller password');
     return false;
   }
-
   if (!data?.company_name) {
     successMsg('Provide seller company name');
     return false;
   }
-
   if (!data?.sellerAddress?.address) {
     successMsg('Provide seller address');
+    return false;
+  }
+  if (data?.sellerChargeType === 'specific' && !Number(data?.dropPercentage)) {
+    successMsg('Provide correct Lyxa charge Amount');
     return false;
   }
   if (!data?.sellerAddress?.pin) {
@@ -151,7 +153,8 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
       sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
       national_id,
       sellerContractPaper,
-      sellerChargeType: undefined,
+      dropPercentage: sellerData?.sellerChargeType === 'specific' ? sellerData?.dropPercentage : undefined,
+      dropPercentageType: sellerData?.sellerChargeType === 'specific' ? sellerData?.dropPercentageType : undefined,
     };
   }
 
@@ -162,7 +165,8 @@ export const createSellerData = async (sellerData, team, isEdit = false) => {
     national_id,
     sellerStatus: sellerData?.sellerStatus ? sellerData?.sellerStatus : 'active',
     sellerContractPaper,
-    sellerChargeType: undefined,
+    dropPercentage: sellerData?.sellerChargeType === 'specific' ? sellerData?.dropPercentage : undefined,
+    dropPercentageType: sellerData?.sellerChargeType === 'specific' ? sellerData?.dropPercentageType : undefined,
   };
 
   return team?.adminType === 'sales' && team?._id ? { ...newData, createdBy: team?._id } : { ...newData };

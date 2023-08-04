@@ -24,8 +24,6 @@ import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.sv
 
 /* ======== shop ======== */
 export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
-  console.log('menuitem', shopType);
-
   const menuItems = [
     {
       title: 'Management',
@@ -230,16 +228,6 @@ export const admin_menu_items = [
         to: '/shop',
         icon: ShopIcon,
       },
-      // {
-      //   label: 'Shops Old',
-      //   to: '/shops/list',
-      //   icon: ShopIcon,
-      // },
-      // {
-      //   label: 'Users',
-      //   to: '/users/list',
-      //   icon: UsersIcon,
-      // },
       {
         label: 'Accounts',
         to: '/accounts',
@@ -260,11 +248,6 @@ export const admin_menu_items = [
         to: '/financials',
         icon: FinanceAdminIcon,
       },
-      // {
-      //   label: 'Team',
-      //   to: '/admin/list',
-      //   icon: TeamIcon,
-      // },
       {
         label: 'Team',
         to: '/admin/list',
@@ -276,6 +259,11 @@ export const admin_menu_items = [
         icon: DisplayIcon,
       },
       {
+        label: 'Chat New',
+        to: '/tickets',
+        icon: ChatIcon,
+      },
+      {
         label: 'Chat',
         to: '/customer-support',
         icon: ChatIcon,
@@ -283,230 +271,6 @@ export const admin_menu_items = [
       },
     ],
   },
-  // {
-  //   title: 'Order',
-  //   menu: [
-  //     {
-  //       label: 'Cancelled Orders',
-  //       to: '/orders/list/cancel',
-  //     },
-  //     {
-  //       label: 'Flagged Orders',
-  //       to: '/orders/list/flagged',
-  //       badgeId: 'sidebar-item-flagged-orders',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Sellers & Shop',
-  //   menu: [
-  //     {
-  //       label: 'Sellers Add',
-  //       to: '/seller/add',
-  //     },
-
-  //     {
-  //       label: 'Shops Add',
-  //       to: '/shops/add',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Products',
-  //   menu: [
-  //     {
-  //       label: 'Products List',
-  //       to: '/products/list',
-  //     },
-  //     {
-  //       label: 'Product Add',
-  //       to: '/products/add',
-  //     },
-  //     {
-  //       label: 'Unit Types',
-  //       to: '/products/unit-types',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'User & Delivery',
-  //   menu: [
-  //     {
-  //       label: 'Delivery Boy Add',
-  //       to: '/deliveryman/add',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Finance',
-  //   menu: [
-  //     {
-  //       label: 'Lyxa Pay',
-  //       to: '/lyxa-pay',
-  //     },
-  //     {
-  //       label: 'Seller TRX',
-  //       to: '/add-wallet/seller-transactions',
-  //     },
-  //     {
-  //       label: 'Delivery TRX',
-  //       to: '/add-wallet/delivery-transactions',
-  //     },
-  //     {
-  //       label: 'Transactions',
-  //       to: '/admin/transactions',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Notification & Chat',
-  //   menu: [
-  //     {
-  //       label: 'Notifications List',
-  //       to: '/admin/notifications/list',
-  //     },
-  //     {
-  //       label: 'Notifications List2',
-  //       to: '/admin/notifications',
-  //     },
-  //     {
-  //       label: 'Notifications Add',
-  //       to: '/admin/send-notifications',
-  //     },
-  //     {
-  //       label: 'Chat',
-  //       to: '/customer-support',
-  //       badgeId: 'sidebar-item-chat-badges',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Terms & Conditions',
-  //   menu: [
-  //     {
-  //       label: 'Terms And Conditions2',
-  //       to: '/terms-and-conditions2',
-  //     },
-  //     {
-  //       label: 'User App',
-  //       to: '/terms-and-conditions/user-app',
-  //     },
-  //     {
-  //       label: 'Shop App',
-  //       to: '/terms-and-conditions/shop-app',
-  //     },
-  //     {
-  //       label: 'Delivery App',
-  //       to: '/terms-and-conditions/delivery-app',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Settings',
-  //   menu: [
-  //     {
-  //       label: 'Admin Settings',
-  //       to: '/admin/settings',
-  //     },
-  //     {
-  //       label: 'App Settings',
-  //       to: '/app/settings',
-  //     },
-  //     {
-  //       label: 'App Settings2',
-  //       to: '/app/settings2',
-  //     },
-  //     {
-  //       label: 'Percentage Settings',
-  //       to: '/percentage-setting',
-  //     },
-  //     {
-  //       label: 'Reward Settings',
-  //       to: '/admin/settings/reward-settings',
-  //     },
-  //     {
-  //       label: 'Default Message',
-  //       to: '/admin/default-chat-message',
-  //     },
-  //     {
-  //       label: 'Support Reasons',
-  //       to: '/settings/support-reasons',
-  //     },
-  //     {
-  //       label: 'Cancel Order Reason',
-  //       to: '/admin/cancel-reason',
-  //     },
-  //     {
-  //       label: 'Cancel Order Reason2',
-  //       to: '/admin/cancel-reason2',
-  //     },
-  //     {
-  //       label: 'Support Reasons2',
-  //       to: '/settings/support-reasons2',
-  //     },
-  //     {
-  //       label: 'Zone',
-  //       to: '/admin/zone',
-  //     },
-  //     {
-  //       label: 'Requested Area',
-  //       to: '/admin/requested-area',
-  //     },
-  //     {
-  //       label: 'Database Collection',
-  //       to: '/admin/database/collections',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Need Design',
-  //   menu: [
-  //     {
-  //       label: 'Admin Settings',
-  //       to: '/admin/settings2',
-  //     },
-  //     {
-  //       label: 'Deals List',
-  //       to: '/deals/list',
-  //     },
-  //     {
-  //       label: 'Deals Add',
-  //       to: '/deals/add',
-  //     },
-  //     {
-  //       label: 'VAT',
-  //       to: '/vat',
-  //     },
-  //     {
-  //       label: 'Admins List',
-  //       to: '/admin/list',
-  //     },
-  //     {
-  //       label: 'Admins Add',
-  //       to: '/admin/create',
-  //     },
-  //     {
-  //       label: 'Categories List',
-  //       to: '/settings/categories/list',
-  //     },
-  //     {
-  //       label: 'Admin Log',
-  //       to: '/admin/percentage-settings-history',
-  //     },
-  //     {
-  //       label: 'Ratings',
-  //       to: '/settings/ratings',
-  //     },
-  //     {
-  //       label: 'Ratings2',
-  //       to: '/settings/ratings2',
-  //     },
-  //     {
-  //       label: 'Cancel Reason',
-  //       to: '/admin/cancel-reason',
-  //     },
-  //   ],
-  // },
 ];
 
 export const account_manager_menu_items = [

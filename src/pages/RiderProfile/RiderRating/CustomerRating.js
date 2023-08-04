@@ -87,7 +87,7 @@ export default function CustomerRating({ rows = [], loading }) {
       headerAlign: 'center',
       flex: 1,
       sortable: false,
-      renderCell: ({ row }) => <Typography variant="body4">{row?.order?.summary?.totalAmount}</Typography>,
+      renderCell: ({ row }) => <Typography variant="body4">{row?.order?.summary?.baseCurrency_totalAmount}</Typography>,
     },
     {
       id: 6,

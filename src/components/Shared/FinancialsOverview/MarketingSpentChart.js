@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -16,7 +16,7 @@ const generateData = (data, marketingSpentType = '') => {
       discount: 'totalDiscount',
       points: 'totalRewardAmount',
       doubleDeal: 'totalDoubleMenuItemPrice',
-      freeDelivery: 'freeDeliveryShopCut',
+      freeDelivery: 'totalFreeDelivery',
       featureAmount: 'totalFeaturedAmount',
     },
     shop: {
@@ -59,42 +59,30 @@ const generateData = (data, marketingSpentType = '') => {
   return { discount, points, doubleDeal, freeDelivery, featureAmount, date };
 };
 
-const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
-};
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
 
 export default function MarketingSpentChart({ viewUserType = 'shop' }) {
-  const [range, setRange] = useState({ ...dateRangeItit });
   const { currentUser } = useGlobalContext();
   const [marketingSpentType, setMarketingSpentType] = useState('all');
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
-  const marketingSpentQuery = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-        // eslint-disable-next-line prettier/prettier
-      })
+  const marketingSpentQuery = useQuery([Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
+      params: queryParams,
+    })
   );
 
   const chartdata = useMemo(
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
     [marketingSpentType, marketingSpentQuery?.data]
   );
+
+  console.log('chartdata', marketingSpentQuery?.data);
 
   const lineChartData = {
     labels: chartdata.date,
@@ -143,11 +131,15 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   return (
     <ChartBox
       chartHeight={325}
-      dateRange={range}
-      setDateRange={setRange}
-      title={
+      dateRange={queryParams}
+      setDateRange={setQueryParams}
+      startDateKey="startDate"
+      endDateKey="endDate"
+      customTitle={
         <Stack alignItems="center" gap={6} direction="row" justifyContent="space-between" pr={4}>
-          <span>Marketing Spent</span>
+          <Typography variant="body1" fontWeight={600}>
+            Marketing Spent
+          </Typography>
           <StyledTabs2
             size="small"
             options={marketingSpentTypeOptions}

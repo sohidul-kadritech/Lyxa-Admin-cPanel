@@ -7,7 +7,7 @@ export const getSubCategoryInit = () => ({
 
 export const getAddSubCategoriesInit = (categoryId) => ({
   categoryId: categoryId || '',
-  categories: [getSubCategoryInit(), getSubCategoryInit()],
+  categories: [getSubCategoryInit()],
 });
 
 export const validateAddSubCategories = (addSubCategories) => {
@@ -45,7 +45,8 @@ export const validateAddSubCategories = (addSubCategories) => {
   };
 };
 
-export const createCategoriesData = (addSubCategories) => ({
+export const createCategoriesData = (addSubCategories, shopId) => ({
+  shopId,
   subCategories: addSubCategories?.categories?.map((category, index) => ({
     name: category?.name,
     status: 'active',

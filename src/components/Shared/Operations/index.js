@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Tooltip, Typography, useTheme } from '@mui/material';
@@ -6,7 +7,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { useGlobalContext } from '../../../context';
-import { dateRangeInit } from '../../../helpers/dateRangeInit';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import DateRange from '../../StyledCharts/DateRange';
@@ -41,38 +41,30 @@ function CardTitle({ title, tooltip }) {
   );
 }
 
+const getQueryParamsInit = (type, id) => ({
+  endDate: moment(),
+  startDate: moment().subtract(7, 'd'),
+  type,
+  id,
+});
+
 // project import
 export default function Operations({ viewUserType = 'shop' }) {
   const { currentUser } = useGlobalContext();
 
   const theme = useTheme();
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
-  const query = useQuery(
-    [
-      Api.GET_SHOP_DASHBOARD_OPERATIONS,
-      {
-        startDate: moment(range.start).format('YYYY-MM-DD'),
-        endDate: moment(range.end).format('YYYY-MM-DD'),
-        id: currentUser[viewUserType]?._id,
-        type: viewUserType,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
-        params: {
-          startDate: moment(range.start).format('YYYY-MM-DD'),
-          endDate: moment(range.end).format('YYYY-MM-DD'),
-          id: currentUser[viewUserType]?._id,
-          type: viewUserType,
-        },
-      })
+  const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
+    AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
+      params: queryParams,
+    })
   );
 
   return (
     <Box>
       <Stack direction="row" alignItems="center" justifyContent="flex-end" marginTop="-70px" pb={10.5}>
-        <DateRange range={range} setRange={setRange} />
+        <DateRange range={queryParams} startKey="startDate" endKey="endDate" setRange={setQueryParams} />
       </Stack>
       <Grid container spacing={5}>
         <InfoCard
@@ -122,8 +114,8 @@ export default function Operations({ viewUserType = 'shop' }) {
         />
         <InfoCard
           title={<CardTitle title="Downtime" tooltip="How much time was your store unavailable during menu hours?" />}
-          value={`${Math.floor(query?.data?.data?.totalDownTime?.hours) || 0}h ${
-            Math.floor(query?.data?.data?.totalDownTime?.minutes) || 0
+          value={`${Math.floor(query?.data?.data?.totalDownTime?.totalMinutes / 60) || 0}h ${
+            Math.floor(query?.data?.data?.totalDownTime?.totalMinutes % 60) || 0
           }m`}
           isDropdown
           sm={6}
@@ -131,20 +123,13 @@ export default function Operations({ viewUserType = 'shop' }) {
           lg={3}
           valueSx={{ color: `${theme.palette.error.main}!important` }}
         >
-          {query?.data?.data?.totalDownTime?.hours !== 0 || query?.data?.data?.totalDownTime?.minutes !== 0 ? (
+          {query?.data?.data?.totalDownTime?.totalMinutes !== 0 ? (
             <Stack gap={2.5}>
-              {query?.data?.data?.dateWiseDowntime.map((downTime, i) => {
-                if (downTime?.hours === 0 && downTime?.minutes === 0) return null;
-
-                return (
-                  <Box key={i}>
-                    <ListItem
-                      label={moment(downTime?.date).format('ddd M/DD/YYYY')}
-                      value={`${Math.floor(downTime.hours) || 0}h ${Math.floor(downTime.minutes) || 0}m`}
-                    />
-                  </Box>
-                );
-              })}
+              {query?.data?.data?.dateWiseDowntime.map((downTime, i) => (
+                <Box key={i}>
+                  <ListItem label={moment(downTime?.Date).format('ddd M/DD/YYYY')} value={downTime?.summeryString} />
+                </Box>
+              ))}
             </Stack>
           ) : (
             <ListItem label="No downtime found" />

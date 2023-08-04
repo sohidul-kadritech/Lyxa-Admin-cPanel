@@ -51,7 +51,8 @@ export const isThereAnySubCategoryOrNot = (subCategory) => {
 
 export const getAddMenuOptions = (shopType, viewUserType, subCategoryLength = false) => {
   const options = [];
-  if (shopType === 'food' || viewUserType === 'admin') {
+
+  if (shopType === 'food') {
     options.push({
       label: 'Add category',
       value: 'add-category',
@@ -64,6 +65,7 @@ export const getAddMenuOptions = (shopType, viewUserType, subCategoryLength = fa
       value: 'add-sub-category',
     });
   }
+
   options.push({
     label: 'Add item',
     value: 'add-item',
@@ -282,7 +284,6 @@ export const getAttrOptionsValues = (attributeItem) => {
   const values = [];
   if (attributeItem?.required) values.push('required');
   if (attributeItem?.select === 'multiple') values.push('multiple');
-  console.log(values);
   return values;
 };
 

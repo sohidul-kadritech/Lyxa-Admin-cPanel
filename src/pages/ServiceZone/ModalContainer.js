@@ -16,7 +16,7 @@ function ModalContainer({ onClose, sx, children, title }) {
             {title || 'No Title'}
           </Typography>
           <CloseButton
-            disableRipple
+            disableRipples
             onClick={onClose}
             sx={{
               color: theme.palette.text.primary,

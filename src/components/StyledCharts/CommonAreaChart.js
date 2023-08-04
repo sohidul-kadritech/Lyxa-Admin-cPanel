@@ -7,13 +7,12 @@ import ChartBox from './ChartBox';
 import StyledAreaChart from './StyledAreaChart';
 
 const dateRangeItit = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(7, 'd').format('YYYY-MM-DD'),
+  end: moment(),
+  start: moment().subtract(7, 'd'),
 };
 
 export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps }) {
   const [range, setRange] = useState({ ...dateRangeItit });
-  console.log(params);
 
   const query = useQuery(
     [
@@ -62,7 +61,10 @@ export default function CommonAreaChart({ title, generateData, api, params, sx, 
       dateRange={range}
       setDateRange={setRange}
       title={title}
-      sx={sx}
+      sx={{
+        overflow: 'visible',
+        ...sx,
+      }}
       sm={12}
       {...gridProps}
     >

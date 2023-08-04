@@ -18,7 +18,6 @@ export default function SellerDashboard() {
       <Typography variant="h4" pt={9} pb={9}>
         Dashboard
       </Typography>
-
       <UserProfileInfo
         user={{
           name: seller?.company_name,

@@ -2,6 +2,7 @@ import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Rating from '../../components/Common/Rating';
@@ -106,6 +107,12 @@ export default function Table({
           name={
             <span>
               {row?.user?.name}
+              {row?.chats?.length || row?.admin_chat_request?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
               {row?.flag?.length ? (
                 <>
                   &nbsp;&nbsp;
@@ -118,7 +125,6 @@ export default function Table({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              console.log('triggered');
               setCurrentOrder(row);
               setDetailOpen(true);
             },
@@ -128,7 +134,7 @@ export default function Table({
             onClick: () => {
               history.push({
                 pathname: `/accounts/${row?.user?._id}`,
-                state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
               });
             },
           }}
@@ -169,7 +175,7 @@ export default function Table({
               onClick: () => {
                 history.push({
                   pathname: `/shop/profile/${row?.shop?._id}`,
-                  state: { from: routeMatch?.path, backToLabel: 'Back to Previous Page' },
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
                 });
               },
             }}
@@ -229,8 +235,9 @@ export default function Table({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const total = row?.summary?.cash + row?.summary?.wallet + row?.summary?.card;
+        const total =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
         return (
           <Typography variant="body4">
@@ -304,7 +311,7 @@ export default function Table({
           position: 'relative',
         }}
       >
-        {refetching && <LoadingOverlay />}
+        {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
         <StyledTable
           columns={filteredColumns}
           rows={orders}
@@ -350,11 +357,13 @@ export default function Table({
           setUpdateStatusModal(false);
         }}
       >
-        <UpdateOrderStatus
-          onClose={() => setUpdateStatusModal(false)}
-          setCurrentOrder={setCurrentOrder}
-          currentOrder={currentOrder}
-        />
+        <Box>
+          <UpdateOrderStatus
+            onClose={() => setUpdateStatusModal(false)}
+            setCurrentOrder={setCurrentOrder}
+            currentOrder={currentOrder}
+          />
+        </Box>
       </Modal>
       {/* flag add */}
       <Modal
@@ -363,7 +372,9 @@ export default function Table({
           setFlagModal(false);
         }}
       >
-        <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
       </Modal>
       {/*  cancel order */}
       <Modal
@@ -373,7 +384,9 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        <Box>
+          <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        </Box>
       </Modal>
       {/* rerfund order */}
       <Modal
@@ -383,16 +396,19 @@ export default function Table({
         }}
         sx={{ zIndex: '10 !important' }}
       >
-        <RefundOrder
-          currentOrder={currentOrder}
-          onClose={() => {
-            setOpenRefundModal(false);
-          }}
-        />
+        <Box>
+          <RefundOrder
+            currentOrder={currentOrder}
+            onClose={() => {
+              setOpenRefundModal(false);
+            }}
+          />
+        </Box>
       </Modal>
-
       <Modal open={openOrderTrackingModal} centered>
-        <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        <Box>
+          <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
+        </Box>
       </Modal>
     </>
   );

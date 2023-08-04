@@ -21,7 +21,6 @@ function ShopInfo({ title, theme, sx, children }) {
 
 function ViewSellerInfo({ onClose, selectedSeller = {} }) {
   const theme = useTheme();
-  console.log('selectedShop', selectedSeller);
   return (
     <Box
       sx={{

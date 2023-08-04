@@ -1,6 +1,6 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import { AverageOrderValue, TagsAndCuisines, openingHours } from '../../pages/ShopProfile/helper';
+import { AverageOrderValue, OpeningHours, TagsAndCuisines } from '../../pages/ShopProfile/helper';
 import CloseButton from '../Common/CloseButton';
 import Rating from '../Common/Rating';
 
@@ -9,7 +9,7 @@ const getDeliveryFee = (selectedShop) => {
     selectedShop?.marketings?.length > 0
       ? selectedShop?.marketings?.find(
           // eslint-disable-next-line prettier/prettier
-          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive,
+          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive
         )
       : null;
   if (selectedShop.haveOwnDeliveryBoy && !isFreeDelivery) {
@@ -219,7 +219,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
             </Typography>
           </ShopInfo>
           <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            {openingHours(selectedShop?.normalHours)}
+            <OpeningHours normalHours={selectedShop?.normalHours} />
           </ShopInfo>
           <Box sx={{ marginBottom: '16px' }}>
             <Typography variant="h4" sx={{ textTransform: 'capitalize', fontSize: '16px', fontWeight: '600' }}>

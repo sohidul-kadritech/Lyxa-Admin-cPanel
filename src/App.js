@@ -38,8 +38,6 @@ export default function App() {
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     enabled: false,
     onSuccess: (data) => {
-      console.log('appSetting', data?.data?.appSetting);
-
       if (data?.status && data?.data?.appSetting) {
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
       }
