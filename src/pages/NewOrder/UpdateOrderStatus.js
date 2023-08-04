@@ -116,7 +116,6 @@ export default function UpdateOrderStatus({
     {
       cacheTime: 0,
       staleTime: 0,
-      enabled: currentStatus === 'accepted_delivery_boy',
       onSuccess: (data) => {
         if (!data?.status) {
           successMsg(data?.message || 'Could not get delivery boys');

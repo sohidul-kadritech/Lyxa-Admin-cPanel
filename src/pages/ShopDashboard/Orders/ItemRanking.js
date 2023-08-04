@@ -1,6 +1,7 @@
 // third party
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 // import { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import StyledTable from '../../../components/Styled/StyledTable3';
@@ -10,10 +11,22 @@ import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
+const getQueryParamsInit = (shopId) => ({
+  page: 1,
+  pageSize: 20,
+  shopId,
+});
+
 export default function ItemRanking({ ...props }) {
-  const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING], () => AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING));
-  const { general } = useGlobalContext();
+  const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const [queryParams] = useState(getQueryParamsInit(currentUser?.shop?._id));
+
+  const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
+    AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING, {
+      params: queryParams,
+    })
+  );
 
   const column = [
     {
@@ -22,7 +35,7 @@ export default function ItemRanking({ ...props }) {
       field: 'rowNumber',
       flex: 1,
       sortable: false,
-      maxWidth: 90,
+      maxWidth: 50,
       renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
     },
     {
@@ -52,9 +65,11 @@ export default function ItemRanking({ ...props }) {
     },
     {
       id: 4,
-      renderHeader: () => <IncreaseDecrease status="neutral" amount="% ( Last 30 days )" />,
+      renderHeader: () => <IncreaseDecrease status="neutral" amount="% (30 days)" />,
       field: 'soldAvgInPercentage',
       flex: 1,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
       renderCell: ({ value }) => (
         <IncreaseDecrease status={value >= 0 ? 'increase' : 'decrease'} amount={value || 'none'} />
@@ -65,8 +80,8 @@ export default function ItemRanking({ ...props }) {
       headerName: 'SALES',
       field: 'totalAmount',
       flex: 1,
-      align: 'center',
-      headerAlign: 'center',
+      align: 'right',
+      headerAlign: 'right',
       sortable: false,
       renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
     },
@@ -91,7 +106,7 @@ export default function ItemRanking({ ...props }) {
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                {itemsQuery?.isLoading ? '' : 'No Items found'}
+                No Items found
               </Stack>
             ),
           }}
@@ -100,3 +115,9 @@ export default function ItemRanking({ ...props }) {
     </Grid>
   );
 }
+
+/* <TablePagination
+          currentPage={queryParams?.page}
+          lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+          totalPage={queryParams?.totalPage}
+/> */

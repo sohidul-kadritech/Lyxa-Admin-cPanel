@@ -3,6 +3,8 @@ import { Box } from '@mui/material';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function RefundBeforeDelivered({ order = {} }) {
+  const totalRefundAmount = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
+
   return (
     <StyledOrderDetailBox title="Refund Before Delivered">
       <Box pt={2}>
@@ -33,13 +35,7 @@ export default function RefundBeforeDelivered({ order = {} }) {
 
           <SummaryItem label="Shop Cut" value={order?.userCancelTnx?.[0]?.shopCut} isNegative showBaseOnly />
 
-          <SummaryItem
-            label="Total Refund"
-            value={order?.userCancelTnx?.[0]?.amount}
-            total
-            isNegative
-            isCurrency={false}
-          />
+          <SummaryItem label="Total Refund" value={totalRefundAmount} total isNegative isCurrency={false} />
         </Box>
       </Box>
     </StyledOrderDetailBox>

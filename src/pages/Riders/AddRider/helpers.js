@@ -36,7 +36,7 @@ export const getRiderInit = (riderFor, riderShop) => ({
   nationalIdDocument: [],
   vehicleRegistrationDocument: [],
   contractImage: [],
-  vehicleType: '',
+  vehicleType: 'Bike',
   shift: '',
   zoneId: '',
   deliveryBoyType: riderFor === 'shop' ? 'shopRider' : '',

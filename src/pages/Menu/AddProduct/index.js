@@ -44,7 +44,6 @@ const getCategoryQueryParams = (shopType, shopId) => ({
   searchKey: '',
   sortBy: 'desc',
   type: shopType,
-  status: 'active',
   shopId,
   userType: 'shop',
 });
@@ -108,9 +107,15 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   // categories
   const setConvertCategories = (data) => {
-    setCategories(
-      (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev
-    );
+    const items = [];
+    data?.data?.categories?.forEach((c) => {
+      items?.push({
+        value: c?.category?._id,
+        label: c?.category?.name,
+        disabled: c?.status === 'inactive',
+      });
+    });
+    setCategories(items);
   };
 
   const categoriesQuery = useQuery(
@@ -126,22 +131,36 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     }
   );
 
+  const isCategoryIsDisabled = useMemo(() => {
+    let disabled = false;
+    categoriesQuery?.data?.data?.categories?.forEach((c) => {
+      if (product?.category === c?.category?._id && c?.status === 'inactive') disabled = true;
+    });
+    return disabled;
+  }, [categoriesQuery?.data, product?.category]);
+
   const subCategoriesQuery = useQuery(
     [
       Api.GET_ALL_SUB_CATEGORY,
       {
-        status: 'active',
         categoryId: product?.category,
       },
     ],
     () =>
       AXIOS.get(Api.GET_ALL_SUB_CATEGORY, {
         params: {
-          status: 'active',
           categoryId: product?.category,
         },
       })
   );
+
+  const isSubCategoryIsDisabled = useMemo(() => {
+    let disabled = false;
+    subCategoriesQuery?.data?.data?.subCategories?.forEach((sc) => {
+      if (product?.subCategory === sc?._id && sc?.status === 'inactive') disabled = true;
+    });
+    return disabled;
+  }, [subCategoriesQuery?.data, product?.subCategory]);
 
   useEffect(() => {
     if (categoriesQuery.data?.status) {
@@ -328,7 +347,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       />
       {/* category */}
       <StyledFormField
-        label="Category"
+        label={<span>Category {isCategoryIsDisabled && <span style={{ color: '#dd5b63' }}>(Disabled)</span>}</span>}
         intputType="select"
         containerProps={{
           sx: fieldContainerSx,
@@ -344,7 +363,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       {/* sub-category */}
       {shop?.shopType !== 'food' && (
         <StyledFormField
-          label="Sub-Category"
+          label={
+            <span>Sub-Category {isSubCategoryIsDisabled && <span style={{ color: '#dd5b63' }}>(Disabled)</span>}</span>
+          }
           intputType="select"
           containerProps={{
             sx: fieldContainerSx,
@@ -356,12 +377,12 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             onChange: commonChangeHandler,
             readOnly: productReadonly,
             disabled: subCategoriesQuery.isLoading || !product?.category,
-            // console: console.log(subCategoriesQuery.isLoading) || console.log(!product?.category),
             getLabel: (item) => item?.name,
             getKey: (item) => item?._id,
             getValue: (item) => item?._id,
             getDisplayValue: (value) =>
               subCategoriesQuery?.data?.data?.subCategories?.find((category) => category?._id === value)?.name || '',
+            getDisabled: (value) => value?.status === 'inactive',
           }}
         />
       )}
@@ -415,13 +436,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           readOnly: productReadonly,
         }}
       />
-
       {secondaryCurrency?.symbol && exchangeRate !== 1 && (
         <Typography pt={2} variant="body3" display="block">
           Equivalent Price: {secondaryCurrency?.code} {Number(product.price) * Number(shop?.shopExchangeRate)}
         </Typography>
       )}
-
       {/* attributes */}
       {shop?.shopType === 'food' && (
         <Box sx={fieldContainerSx} id="add-product-features">
@@ -474,7 +493,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 return;
               }
 
-              console.log(product?.attributes);
               product?.attributes?.push(productAttrInit());
               setRender(!render);
             }}
@@ -580,7 +598,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 type="number"
                 readOnly={productReadonly}
                 onChange={(e) => {
-                  console.log(product.stockQuantity);
                   product.stockQuantity = e.target.value;
                   setRender(!render);
                 }}
