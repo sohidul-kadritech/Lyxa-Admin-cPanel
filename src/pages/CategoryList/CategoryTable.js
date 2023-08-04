@@ -118,7 +118,7 @@ export default function CategoryTable({
 
         return (
           <Stack flexDirection="row" gap="16px">
-            {row?.ids?.length <= 1 && (
+            {(row?.ids?.length <= 1 || type !== 'food') && (
               <StyledSwitch
                 checked={row?.status === 'active'}
                 onChange={() => {
@@ -127,6 +127,7 @@ export default function CategoryTable({
                   updateQuery.mutate({
                     id: row?._id,
                     status: row?.status,
+                    ids: row?.ids,
                   });
                 }}
               />
@@ -147,9 +148,7 @@ export default function CategoryTable({
     },
   ];
 
-  if (loading) {
-    return <TableSkeleton rows={7} columns={['avatar', 'text', 'text', 'text']} />;
-  }
+  if (loading) return <TableSkeleton rows={7} columns={['avatar', 'text', 'text', 'text']} />;
 
   return (
     <>
@@ -163,7 +162,6 @@ export default function CategoryTable({
       >
         <StyledTable
           columns={allColumns}
-          // columns={allColumns.filter((col) => col?.showFor?.includes(type))}
           rows={data}
           getRowId={(row) => row?._id}
           rowHeight={72}

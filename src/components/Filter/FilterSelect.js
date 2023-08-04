@@ -143,6 +143,7 @@ export default function FilterSelect({
   getLabel,
   getKey,
   getDisplayValue,
+  getDisabled,
   size,
   sx,
   tooltip,
@@ -189,6 +190,7 @@ export default function FilterSelect({
           <MenuItem
             key={getKey ? getKey(item) : item.value}
             value={getValue ? getValue(item) : item.value}
+            disabled={item.disabled || (getDisabled ? getDisabled(item) : false)}
             sx={{
               '&:hover': {
                 background: '#ecf0f5',

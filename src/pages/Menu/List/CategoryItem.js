@@ -40,7 +40,6 @@ export default function CategoryItem({
     AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
       shopId: shop?._id,
       isActive: status,
-      // eslint-disable-next-line prettier/prettier
     })
   );
 
@@ -96,9 +95,28 @@ export default function CategoryItem({
                 </Avatar>
               )}
               <Box>
-                <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
-                  {category?.category?.name}
-                </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5} pb={1.5}>
+                  {category?.category?.status === 'inactive' && (
+                    <Box
+                      sx={{
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        background: '#FFAB09',
+                      }}
+                    />
+                  )}
+                  <Typography
+                    variant="body4"
+                    fontWeight={600}
+                    color="textPrimary"
+                    display="block"
+                    console={console.log(category)}
+                  >
+                    {category?.category?.name}
+                  </Typography>
+                </Stack>
+
                 <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
                   {shop?.shopType === 'food' &&
                     (isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) ')}
@@ -131,7 +149,7 @@ export default function CategoryItem({
                 }}
               />
             )}
-            {isOridanryCategory && (shop?.shopType === 'food' || currentUser?.userType === 'admin') && (
+            {isOridanryCategory && shop?.shopType === 'food' && (
               <>
                 <StyledIconButton
                   color="primary"
