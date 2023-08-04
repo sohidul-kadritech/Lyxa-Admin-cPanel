@@ -191,7 +191,7 @@ export default function MenuPage() {
                     <CategoryItem
                       secondaryCurrency={secondaryCurrency}
                       asSearchResult={searchValue !== ''}
-                      gOpen={category_open}
+                      gOpen={searchValue ? true : category_open}
                       category={category}
                       setEditCategory={(editCategory) => {
                         setEditCategory(editCategory);

@@ -15,8 +15,26 @@ export default function ProfitDetails({ order = {} }) {
       order?.summary?.secondaryCurrency_wallet +
       order?.summary?.secondaryCurrency_card || 0;
 
-  const isCashAndCancelled =
-    order?.orderStatus === 'cancelled' && !order?.userCancelTnx?.length && !order?.isRefundedAfterDelivered;
+  let hideExtraFields = false;
+  let cashCanceled = false;
+  let noRefund = false;
+
+  if (
+    order?.orderStatus === 'cancelled' &&
+    !order?.userCancelTnx?.length &&
+    !order?.isRefundedAfterDelivered &&
+    order?.refundType !== 'none'
+  ) {
+    hideExtraFields = true;
+    cashCanceled = true;
+  }
+
+  if (order?.refundType === 'none') {
+    hideExtraFields = true;
+    noRefund = true;
+  }
+
+  console.log(cashCanceled);
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
@@ -51,7 +69,7 @@ export default function ProfitDetails({ order = {} }) {
               </ul>
             </Box>
           }
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -59,7 +77,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceAdmin}
           valueSecondary={order?.doubleMenuItemPrice?.secondaryCurrency_doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -67,7 +85,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceShop}
           valueSecondary={order?.doubleMenuItemPrice?.secondaryCurrency_doubleMenuItemPriceShop}
           tooltip="Buy 1 Get 1 deal added by shop"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -75,7 +93,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.discountCut?.baseCurrency_discountAdminCut}
           valueSecondary={order?.discountCut?.secondaryCurrency_discountAdminCut}
           tooltip="Discount deal added by admin"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -83,7 +101,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.discountCut?.baseCurrency_discountShopCut}
           valueSecondary={order?.discountCut?.secondaryCurrency_discountShopCut}
           tooltip="Discount deal added by shop"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -91,7 +109,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.orderDeliveryCharge?.dropCut}
           valueSecondary={order?.orderDeliveryCharge?.dropCut * adminExchangeRate}
           tooltip="Free Delivery added by admin"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -99,7 +117,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.orderDeliveryCharge?.shopCut}
           valueSecondary={order?.orderDeliveryCharge?.shopCut * adminExchangeRate}
           tooltip="Free Delivery added by shop"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         <SummaryItem
@@ -107,7 +125,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.summary?.baseCurrency_couponDiscountAmount}
           valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
           tooltip="Discount coupon created by admin"
-          hide={isCashAndCancelled}
+          hide={hideExtraFields}
         />
 
         {/* not needed for butler order */}
@@ -115,22 +133,22 @@ export default function ProfitDetails({ order = {} }) {
           <Box pt={3.5} borderTop="1px solid #EEEEEE">
             <SummaryItem
               label="Shop Profit"
-              value={isCashAndCancelled ? 0 : order?.baseCurrency_shopEarnings}
-              valueSecondary={isCashAndCancelled ? 0 : order?.secondaryCurrency_shopEarnings}
+              value={hideExtraFields ? 0 : order?.baseCurrency_shopEarnings}
+              valueSecondary={hideExtraFields ? 0 : order?.secondaryCurrency_shopEarnings}
               showIfZero
             />
 
             <SummaryItem
               label="Shop VAT"
-              value={isCashAndCancelled ? 0 : order?.vatAmount?.baseCurrency_vatForShop}
-              valueSecondary={isCashAndCancelled ? 0 : order?.vatAmount?.secondaryCurrency_vatForShop}
+              value={hideExtraFields ? 0 : order?.vatAmount?.baseCurrency_vatForShop}
+              valueSecondary={hideExtraFields ? 0 : order?.vatAmount?.secondaryCurrency_vatForShop}
               showIfZero
             />
 
             <SummaryItem
               label="Deal compensation amount"
-              value={isCashAndCancelled ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
-              valueSecondary={isCashAndCancelled ? 0 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuAdminCut}
+              value={hideExtraFields ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
+              valueSecondary={hideExtraFields ? 0 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuAdminCut}
               tooltip="This amount in already included in shop profit"
               isRejected
             />
@@ -140,11 +158,9 @@ export default function ProfitDetails({ order = {} }) {
         <Box pt={3.5} borderTop="1px solid #EEEEEE">
           <SummaryItem
             label="Rider Profit"
-            value={
-              order?.shop?.haveOwnDeliveryBoy ? 'Self' : isCashAndCancelled ? 0 : order?.baseCurrency_riderFee || 0
-            }
+            value={order?.shop?.haveOwnDeliveryBoy ? 'Self' : hideExtraFields ? 0 : order?.baseCurrency_riderFee || 0}
             valueSecondary={
-              order?.shop?.haveOwnDeliveryBoy ? 'Self' : isCashAndCancelled ? 0 : order?.secondaryCurrency_riderFee || 0
+              order?.shop?.haveOwnDeliveryBoy ? 'Self' : hideExtraFields ? 0 : order?.secondaryCurrency_riderFee || 0
             }
             showIfZero
           />
@@ -154,53 +170,87 @@ export default function ProfitDetails({ order = {} }) {
           {!order?.shop?.haveOwnDeliveryBoy && (
             <SummaryItem
               label="Lyxa Delivery Profit"
-              value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
-              valueSecondary={isCashAndCancelled ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
+              value={hideExtraFields ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
+              valueSecondary={hideExtraFields ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
               showIfZero
             />
           )}
 
           <SummaryItem
             label="Lyxa Order Profit"
-            value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromOrder}
-            valueSecondary={isCashAndCancelled ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromOrder}
+            value={hideExtraFields ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromOrder}
+            valueSecondary={hideExtraFields ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromOrder}
             showIfZero
           />
 
           <SummaryItem
             label="Deal compensation amount"
             value={
-              isCashAndCancelled
+              hideExtraFields
                 ? 0
                 : order?.doubleMenuCut?.baseCurrency_doubleMenuShopCut + order?.orderDeliveryCharge?.shopCut
             }
             valueSecondary={
-              isCashAndCancelled
+              hideExtraFields
                 ? 0
                 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuShopCut +
                   order?.orderDeliveryCharge?.shopCut * adminExchangeRate
             }
             tooltip="This amount already in included lyxa profit"
             isRejected
-            hide={isCashAndCancelled}
+            hide={hideExtraFields}
           />
         </Box>
+
         <Box borderTop="1px solid #EEEEEE" pt={3.5}>
+          {/* for delivered orders */}
           <SummaryItem
             label="Total Lyxa Profit"
-            isCurrency={false}
-            value={isCashAndCancelled ? 0 : order?.adminCharge?.baseCurrency_totalAdminCharge}
-            valueSecondary={isCashAndCancelled ? 0 : order?.adminCharge?.secondaryCurrency_totalAdminCharge}
-            exchangeRate={adminExchangeRate}
+            value={order?.adminCharge?.baseCurrency_totalAdminCharge}
+            valueSecondary={order?.adminCharge?.secondaryCurrency_totalAdminCharge}
+            hide={hideExtraFields}
             showIfZero
             isTotal
           />
 
+          {/* for cash+canceled orders */}
+          <SummaryItem label="Total Lyxa Profit" value={0} valueSecondary={0} hide={!cashCanceled} showIfZero isTotal />
+
+          {/* for no refund orders */}
+          <SummaryItem
+            label="Total Lyxa Profit"
+            value={
+              order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card - order?.summary?.baseCurrency_vat
+            }
+            valueSecondary={
+              order?.summary?.secondaryCurrency_wallet +
+              order?.summary?.secondaryCurrency_card -
+              order?.summary?.secondaryCurrency_vat
+            }
+            hide={!noRefund}
+            showIfZero
+            isTotal
+          />
+
+          {/* for delivered orders */}
           <SummaryItem
             label="Lyxa VAT"
-            value={isCashAndCancelled ? 0 : order?.vatAmount?.baseCurrency_vatForAdmin}
-            valueSecondary={isCashAndCancelled ? 0 : order?.vatAmount?.secondaryCurrency_vatForAdmin}
-            pb={isCashAndCancelled ? undefined : 0}
+            value={order?.vatAmount?.baseCurrency_vatForAdmin}
+            valueSecondary={order?.vatAmount?.secondaryCurrency_vatForAdmin}
+            hide={hideExtraFields}
+            showIfZero
+            pb={0}
+          />
+
+          {/* for cash+canceled orders */}
+          <SummaryItem label="Lyxa VAT" value={0} valueSecondary={0} hide={!cashCanceled} showIfZero />
+
+          {/* for no refund orders */}
+          <SummaryItem
+            label="Lyxa VAT"
+            value={order?.summary?.baseCurrency_vat}
+            valueSecondary={order?.summary?.secondaryCurrency_vat}
+            hide={!noRefund}
             showIfZero
           />
 
@@ -209,7 +259,7 @@ export default function ProfitDetails({ order = {} }) {
             value={0}
             isTotal
             pb={0}
-            hide={!isCashAndCancelled}
+            hide={!hideExtraFields}
             showBaseOnly
             showIfZero
           />

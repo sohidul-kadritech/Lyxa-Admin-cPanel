@@ -39,6 +39,9 @@ export default function SearchBar({
   menuHandler,
   menuItems,
   MenuButton,
+  customSelectOptions,
+  customSelectValue,
+  customSelectPlaceholder,
 }) {
   const updateSearch = useMemo(
     () =>
@@ -74,38 +77,6 @@ export default function SearchBar({
           }}
         />
       )}
-      {/* start date */}
-      {/* {showFilters?.date && (
-        <FilterDate
-          tooltip="Start Date"
-          maxDate={moment(queryParams.endDate).subtract(1, 'day')}
-          value={queryParams.startDate}
-          size="sm"
-          onChange={(e) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              startDate: e._d,
-              page: 1,
-            }));
-          }}
-        />
-      )} */}
-      {/* end date */}
-      {/* {showFilters?.date && (
-        <FilterDate
-          tooltip="End Date"
-          minDate={moment(queryParams.startDate).add(1, 'day')}
-          value={queryParams.endDate}
-          size="sm"
-          onChange={(e) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              endDate: e._d,
-              page: 1,
-            }));
-          }}
-        />
-      )} */}
       {/* sort */}
       {showFilters?.sort && (
         <FilterSelect
@@ -135,6 +106,22 @@ export default function SearchBar({
           }}
           onChange={(e) => {
             setQueryParams((prev) => ({ ...prev, status: e.target.value, page: 1 }));
+          }}
+        />
+      )}
+      {/* custom */}
+      {showFilters?.customSelect && (
+        <FilterSelect
+          items={customSelectOptions}
+          value={queryParams[customSelectValue]}
+          placeholder={customSelectPlaceholder}
+          tooltip={customSelectPlaceholder}
+          size="sm"
+          sx={{
+            minWidth: 'auto',
+          }}
+          onChange={(e) => {
+            setQueryParams((prev) => ({ ...prev, [customSelectValue]: e.target.value, page: 1 }));
           }}
         />
       )}

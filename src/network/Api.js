@@ -298,6 +298,9 @@ export const ONGOING_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/ongoing-chats`
 export const SINGLE_USER_ORDER_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/user/all-order-chats`;
 export const SINGLE_USER_ACCOUNTS_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/user/all-account-chats`;
 
+export const ADMIN_ORDER_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/all-order-chats`;
+export const ADMIN_ACCOUNT_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/all-account-chats`;
+
 // TERMS AND CONDITIONS
 export const ADD_TERMS_AND_CONDITIONS = `${ADMIN_ENDPOINT}/`;
 

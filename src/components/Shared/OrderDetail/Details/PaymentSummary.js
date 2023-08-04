@@ -3,21 +3,29 @@ import { Box } from '@mui/material';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function PaymentSummary({ order = {} }) {
+  const summary = order?.summary;
+  const currency = order?.baseCurrency?.symbol;
+
   const total_base =
-    order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount;
 
   const total_secondary =
-    order?.summary?.secondaryCurrency_cash +
-      order?.summary?.secondaryCurrency_wallet +
-      order?.summary?.secondaryCurrency_card || 0;
+    summary?.secondaryCurrency_totalAmount +
+    summary?.secondaryCurrency_vat +
+    summary?.secondaryCurrency_riderTip -
+    summary?.secondaryCurrency_discount -
+    summary?.reward?.secondaryCurrency_amount -
+    summary?.secondaryCurrency_couponDiscountAmount;
 
-  const currency = order?.baseCurrency?.symbol;
-  const adminExchangeRate = order?.adminExchangeRate;
+  const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
+  const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
 
-  const refund = order?.userRefundTnx?.[0];
-  const butler_refund = order?.orderCancel || order?.userCancelTnx ? { amount: total_base } : undefined;
-  const cancel = order?.userCancelTnx?.[0];
-  const refund_amount = refund?.amount || cancel?.amount || butler_refund?.amount;
+  const refund_amount = refund || cancel;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
@@ -81,40 +89,36 @@ export default function PaymentSummary({ order = {} }) {
                     user?.summary?.baseCurrency_wallet +
                     user?.summary?.baseCurrency_card || 0
                 : 0;
-              return <SummaryItem key={user?.user?._id} label={user?.user?.name} value={total_base_user} isTotal />;
+
+              return (
+                <SummaryItem
+                  key={user?.user?._id}
+                  label={user?.user?.name}
+                  value={total_base_user}
+                  showBaseOnly
+                  isTotal
+                />
+              );
             })}
           </Box>
         )}
 
-        {/* for refund after delivered */}
-        {/* <SummaryItem
-          label="Total Refunded"
-          value={refund?.amount}
-          isTotal
-          hide={!order?.isRefundedAfterDelivered}
-          showIfZero
-          showBaseOnly
-          pb={0}
-        /> */}
-
-        {/* for refund before  delivered */}
-        {/* <SummaryItem
-          label="Total Refunded"
-          value={cancel?.amount}
-          exchangeRate={adminExchangeRate}
-          hide={order?.orderStatus !== 'cancelled' || order?.isButler}
-          showBaseOnly
-          showIfZero
-          isTotal
-          pb={0}
-        /> */}
-
-        {/* for refund before  delivered */}
+        {/* normal order */}
         <SummaryItem
           label="Total Refunded"
           value={refund_amount}
-          exchangeRate={adminExchangeRate}
-          hide={!(refund || cancel || butler_refund)}
+          hide={!(refund || cancel)}
+          showBaseOnly
+          showIfZero
+          isTotal
+          pb={0}
+        />
+
+        {/* butler order */}
+        <SummaryItem
+          label="Total Refunded"
+          value={total_base}
+          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx))}
           showBaseOnly
           showIfZero
           isTotal

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -17,15 +16,13 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 
-export default function AddSubCategory({ onClose, editCategory, newSubCategoryId }) {
-  // const shop = useSelector((store) => store.Login.admin);
+export default function AddSubCategory({ onClose, newSubCategoryId }) {
   const { currentUser } = useGlobalContext();
-  const { userType, shop } = currentUser;
+  const { shop } = currentUser;
 
   const queryClient = useQueryClient();
 
   const [subCategory, setSubCategory] = useState(getAddSubCategoriesInit(newSubCategoryId));
-  const [successCounter, setSuccessCounter] = useState(0);
   const [categories, setCategories] = useState();
   const [render, setRender] = useState(false);
 
@@ -40,7 +37,6 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
         sortBy: 'desc',
         type: shop?.shopType,
         userType: 'shop',
-        status: 'active',
         shopId: shop?._id,
       },
     ],
@@ -53,12 +49,11 @@ export default function AddSubCategory({ onClose, editCategory, newSubCategoryId
           sortBy: 'desc',
           type: shop?.shopType,
           userType: 'shop',
-          status: 'active',
           shopId: shop?._id,
+          status: 'active',
         },
       }),
     {
-      // staleTime: minInMiliSec(10),
       onSuccess: (data) => {
         setCategories(
           (prev) => data?.data?.categories?.map((c) => ({ value: c?.category?._id, label: c?.category?.name })) || prev

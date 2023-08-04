@@ -80,7 +80,6 @@ export default function UserProfile() {
               paddingRight: { md: '50px', sm: '0px' },
               borderRight: { md: '1px solid #EEEEEE', sm: 'none' },
               height: '100%',
-              overflow: 'auto',
             }}
           >
             <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>

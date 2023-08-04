@@ -24,10 +24,7 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
     }
   }, [gOpen]);
 
-  const product = () => {
-    if (subCategory?.sortedProducts === undefined) console.log('====>', subCategory);
-    return subCategory?.sortedProducts || [];
-  };
+  const product = () => subCategory?.sortedProducts || [];
 
   // categoryMutation
   const subCategoryMutation = useMutation(
@@ -39,13 +36,11 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
       }),
     {
       onSuccess: (data, args) => {
-        console.log(data);
         if (data?.status) {
           subCategory.subCategory.status = args.status;
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (
@@ -64,9 +59,21 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
             <HandleIcon className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler-sub-category grabable'}`} />
             <Stack direction="row" alignItems="center" gap={5}>
               <Box>
-                <Typography variant="body4" fontWeight={600} color="textPrimary" display="block" pb={1.5}>
-                  {subCategory?.subCategory?.name}
-                </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5} pb={1.5}>
+                  {subCategory?.subCategory?.status === 'inactive' && (
+                    <Box
+                      sx={{
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        background: '#FFAB09',
+                      }}
+                    />
+                  )}
+                  <Typography variant="body4" fontWeight={600} color="textPrimary" display="block">
+                    {subCategory?.subCategory?.name}
+                  </Typography>
+                </Stack>
                 <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
                   {subCategory?.sortedProducts?.length || 0} Items
                 </Typography>
@@ -109,19 +116,6 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
       </StyledAccordionSummary>
       <AccordionDetails>
         <ProductsContainer secondaryCurrency={secondaryCurrency} products={product()} asSearchResult={asSearchResult} />
-        {/* <Box pl={8.5} pt={6}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            startIcon={<Add />}
-            onClick={() => {
-              // setNewSubCategoryId(category?.category?.category?._id);
-            }}
-          >
-            Add Product
-          </Button>
-        </Box> */}
       </AccordionDetails>
     </StyledAccordion>
   );
