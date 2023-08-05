@@ -138,14 +138,18 @@ export default function UpdateOrderStatus({
       queryClient.invalidateQueries(refetchApiKey);
       if (onUpdateSuccess) onUpdateSuccess(response);
 
+      console.log('payload', payload);
+
       // emit socket
       if (payload.service === 'regular') {
-        if (payload?.data?.orderStatus === 'accepted_delivery_boy')
+        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
           socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
-        else
+        } else {
+          console.log('socket emited');
           socket?.emit('updateOrder', {
             orderId: payload.data?.orderId,
           });
+        }
       }
 
       if (response?.data?.order?.orderStatus === 'delivered') {

@@ -84,11 +84,15 @@ export default function PaymentSummary({ order = {} }) {
         {order?.cart?.cartType === 'group' && (
           <Box>
             {order?.cart?.cartItems?.map((user) => {
-              const total_base_user = user?.isPaid
-                ? user?.summary?.baseCurrency_cash +
-                    user?.summary?.baseCurrency_wallet +
-                    user?.summary?.baseCurrency_card || 0
-                : 0;
+              const summary = user?.summary;
+
+              const total_base_user =
+                summary?.baseCurrency_totalAmount +
+                summary?.baseCurrency_vat +
+                summary?.baseCurrency_riderTip -
+                summary?.baseCurrency_discount -
+                summary?.reward?.baseCurrency_amount -
+                summary?.baseCurrency_couponDiscountAmount;
 
               return (
                 <SummaryItem

@@ -131,23 +131,3 @@ export function SummaryItem({
     </Stack>
   );
 }
-
-export const getTotalOrderInSecondary = (order) => {
-  const deliveryFee = order?.summary?.baseCurrency_riderFee;
-  const totalExceptDeliveryFee =
-    order?.summary?.baseCurrency_cash +
-    order?.summary?.baseCurrency_wallet +
-    order?.summary?.baseCurrency_card -
-    deliveryFee;
-
-  let totalBase = 0;
-  totalBase += totalExceptDeliveryFee * order?.shopExchangeRate;
-
-  if (order?.shop?.haveOwnDeliveryBoy) {
-    totalBase += deliveryFee * order?.shopExchangeRate;
-  } else {
-    totalBase += deliveryFee * order?.adminExchangeRate;
-  }
-
-  return totalBase;
-};
