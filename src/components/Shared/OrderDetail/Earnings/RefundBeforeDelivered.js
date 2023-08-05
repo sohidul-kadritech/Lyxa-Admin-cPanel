@@ -35,7 +35,14 @@ export default function RefundBeforeDelivered({ order = {} }) {
 
           <SummaryItem label="Shop Cut" value={order?.userCancelTnx?.[0]?.shopCut} isNegative showBaseOnly />
 
-          <SummaryItem label="Total Refund" value={totalRefundAmount} total isNegative isCurrency={false} />
+          <SummaryItem
+            label="Total Refund"
+            value={totalRefundAmount}
+            total
+            isNegative
+            isCurrency={false}
+            showBaseOnly
+          />
         </Box>
       </Box>
     </StyledOrderDetailBox>

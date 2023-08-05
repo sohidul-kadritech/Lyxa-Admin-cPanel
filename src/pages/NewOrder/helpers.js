@@ -154,8 +154,14 @@ export const fiterOrders = (orders = [], filter) => {
 
 export const getOrderProfit = (order, adminType = 'shop') => {
   if (adminType === 'shop') return order?.baseCurrency_shopEarnings;
+  const summary = order?.summary;
   return (
-    order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount
   );
 };
 
