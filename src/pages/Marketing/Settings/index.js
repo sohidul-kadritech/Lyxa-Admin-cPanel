@@ -29,7 +29,6 @@ import {
   ItemsTitle,
   confirmActionInit,
   createProductData,
-  // durationInit,
   getCurrentFeaturedWeekOption,
   getDateRange,
   getDurationLeft,
@@ -894,7 +893,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               </>
             )}
             {pageMode === 1 && (
-              <Stack direction="row" alignItems="center" justifyContent="flex-end">
+              <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={3}>
                 <Button
                   variant="contained"
                   sx={{
@@ -905,12 +904,36 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     },
                   }}
                   disabled={marketingMutation.isLoading}
-                  // rounded
                   onClick={() => {
                     updateLoyaltySettings();
                   }}
                 >
                   Resume Promotion
+                </Button>
+                <Button
+                  disabled={loyaltySettingsDeleteMutation.isLoading}
+                  variant="contained"
+                  color="danger"
+                  disableRipple
+                  sx={{
+                    borderRadius: '6px',
+                  }}
+                  onClick={() => {
+                    setConfirmModal(true);
+                    setConfirmAction({
+                      message:
+                        marketingType === 'featured' && marketingQuery?.data?.data?.marketing?.status === 'active'
+                          ? `Deleting this campaign will not refund your ${currency} ${featuredAmount} ?`
+                          : 'Are you sure?. Your campaign will be deleted.',
+                      onCancel: () => setConfirmModal(false),
+                      onConfirm: () => {
+                        loyaltySettingsDeleteMutation.mutate();
+                        setConfirmModal(false);
+                      },
+                    });
+                  }}
+                >
+                  Delete Promotion
                 </Button>
               </Stack>
             )}
@@ -946,7 +969,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       disabled={loyaltySettingsDeleteMutation.isLoading}
                       variant="outlined"
                       color="primary"
-                      // rounded
                       sx={{
                         borderRadius: '6px',
                       }}
@@ -962,7 +984,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         variant="contained"
                         color="danger"
                         disabled={loyaltySettingsDeleteMutation.isLoading || marketingMutation.isLoading}
-                        // rounded
                         sx={{
                           borderRadius: '6px',
                         }}
@@ -1013,7 +1034,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   disabled={marketingMutation.isLoading}
                   variant="contained"
                   color="primary"
-                  // rounded
                   sx={{
                     borderRadius: '6px',
                   }}
