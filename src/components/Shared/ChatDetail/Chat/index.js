@@ -19,7 +19,7 @@ export const getChatRequestId = (chats = []) => {
 
 const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
 
-export default function Chat({ chat, onClose, onAcceptChat }) {
+export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   const queryClient = useQueryClient();
   const { access_token } = getCookiesAsObject();
 
@@ -172,7 +172,7 @@ export default function Chat({ chat, onClose, onAcceptChat }) {
     >
       <ChatIssues chat={chat} />
       <ChatBox
-        showInput={chat.status === 'accepted'}
+        showInput={chat.status === 'accepted' && !readOnly}
         sendMessageLoading={messageMutation.isLoading}
         messages={messages}
         message={message}
@@ -180,7 +180,7 @@ export default function Chat({ chat, onClose, onAcceptChat }) {
         onSendMessage={onSendMessage}
         loading={orderChatQuery?.isLoading || accountChatQuery?.isLoading}
       />
-      {chat?.status === 'pending' && (
+      {chat?.status === 'pending' && !readOnly && (
         <Button
           variant="contained"
           color="primary"
@@ -192,7 +192,7 @@ export default function Chat({ chat, onClose, onAcceptChat }) {
           Accept Enquiry
         </Button>
       )}
-      {chat?.status === 'accepted' && (
+      {chat?.status === 'accepted' && !readOnly && (
         <Button
           variant="contained"
           color="primary"
