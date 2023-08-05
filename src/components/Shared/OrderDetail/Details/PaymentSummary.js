@@ -22,6 +22,7 @@ export default function PaymentSummary({ order = {} }) {
     summary?.reward?.secondaryCurrency_amount -
     summary?.secondaryCurrency_couponDiscountAmount;
 
+  const avg_rate = total_secondary / total_base;
   const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
   const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
 
@@ -79,6 +80,28 @@ export default function PaymentSummary({ order = {} }) {
         />
 
         <SummaryItem label="Total" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
+
+        <SummaryItem
+          label="Cash"
+          value={summary?.baseCurrency_cash}
+          valueSecondary={summary?.baseCurrency_cash * avg_rate}
+          showIfZero
+          isTotal
+        />
+
+        <SummaryItem
+          label="Card"
+          value={summary?.baseCurrency_card}
+          valueSecondary={summary?.baseCurrency_card * avg_rate}
+          isTotal
+        />
+
+        <SummaryItem
+          label="Wallet"
+          value={summary?.baseCurrency_wallet}
+          valueSecondary={summary?.baseCurrency_wallet * avg_rate}
+          isTotal
+        />
 
         {/* group cart */}
         {order?.cart?.cartType === 'group' && (
