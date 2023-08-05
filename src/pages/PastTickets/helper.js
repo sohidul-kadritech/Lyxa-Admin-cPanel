@@ -1,18 +1,27 @@
 /* eslint-disable no-unsafe-optional-chaining */
-export const statusColorVariants = {
-  active: {
+export const chatStatusColorMap = {
+  pending: {
     color: '#417C45',
     background: '#DCFCE7',
+    label: 'Pending',
   },
 
-  suspended: {
-    color: '#FFAB09',
-    background: 'rgba(255, 176, 23, 0.2)',
+  closed: {
+    color: '#8950FC',
+    background: '#E1D2FF',
+    label: 'Resolved',
   },
 
-  inactive: {
+  accepted: {
     color: '#FFAB09',
     background: 'rgba(255, 176, 23, 0.2)',
+    label: 'Ongoing',
+  },
+
+  timeout: {
+    color: '#DD5B63',
+    background: '#F3BCBF',
+    label: 'Timed Out',
   },
 };
 

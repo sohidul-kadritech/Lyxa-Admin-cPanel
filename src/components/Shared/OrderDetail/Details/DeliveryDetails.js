@@ -107,7 +107,7 @@ export default function DeliveryDetails({ order = {} }) {
           <OrderTrackingMap
             pickup={order?.pickUpLocation}
             dropoff={order?.dropOffLocation}
-            orderType={order?.isButler ? 'butler' : order.orderType}
+            orderType={order?.isButler ? 'butler' : order?.orderType}
           />
         </AccordionDetails>
       </Accordion>
