@@ -6,7 +6,7 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
-import { statusColorVariants } from './helper';
+import { chatStatusColorMap } from './helper';
 
 export default function TicketTable({
   rows = [],
@@ -122,7 +122,7 @@ export default function TicketTable({
             padding: '12px 23px',
             borderRadius: '40px',
             textTransform: 'capitalize',
-            ...(statusColorVariants[row?.status] || {}),
+            ...(chatStatusColorMap[row?.status] || {}),
           }}
           variant="contained"
         />

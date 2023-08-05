@@ -26,11 +26,16 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
   const currency = general?.currency?.symbol;
 
   const isNewChat = chat?.status === 'pending';
+
+  const summary = chat?.order?.summary;
+
   const totalOrderAmount =
-    chat?.order?.summary?.baseCurrency_cash +
-      chat?.order?.summary?.baseCurrency_wallet +
-      chat?.order?.summary?.baseCurrency_card || 0;
-  const shopExchangeRate = chat?.order?.shopExchangeRate;
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount;
 
   return (
     <Stack direction="row" alignItems="center" gap={5}>
@@ -89,7 +94,7 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
           {chat?.chatType === 'order' && (
             <Typography variant="body4" fontWeight={600}>
               {currency}
-              {(totalOrderAmount / shopExchangeRate || 0).toFixed(2)}
+              {totalOrderAmount.toFixed(2)}
             </Typography>
           )}
           <Typography variant="body4" fontWeight={400}>

@@ -217,14 +217,14 @@ export default function MarketingOverview({ viewUserType }) {
 
   const openHandler = (marketingType, mData = {}) => {
     const marketing = mData?.data?.marketing;
+    console.log(mData);
 
     if (!mData?.isMarketing) {
       if (viewUserType === 'shop' && userType === 'admin' && mData?.isNotEligible) {
-        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}`);
+        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${mData?.marketing?._id}`);
       } else {
         setCurrentModal(marketingType);
       }
-      console.log('ending here');
     } else if (viewUserType === 'shop' && userType === 'shop') {
       history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
     } else if (viewUserType === 'shop' && userType === 'seller') {
