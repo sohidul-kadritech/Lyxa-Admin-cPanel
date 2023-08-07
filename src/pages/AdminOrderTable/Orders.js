@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
@@ -24,7 +24,8 @@ const getQueryParamsInit = (type, searchParams) => {
 
   Object.keys(params).forEach((key) => {
     if (searchParams?.get(key)) {
-      params[key] = searchParams.get(key);
+      if (key === 'startDate' || key === 'endDate') params[key] = moment(searchParams.get(key), 'YYYY/MM/DD');
+      else params[key] = searchParams.get(key);
     }
   });
 
@@ -41,8 +42,8 @@ const tabsOptions = [
 
 export default function Orders({ type }) {
   const location = useLocation();
+  const history = useHistory();
   const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
-
   const [totalPage, setTotalPage] = useState(1);
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, searchParams));
   const [currentTab, setCurrentTab] = useState('all');
@@ -59,6 +60,10 @@ export default function Orders({ type }) {
       },
     }
   );
+
+  useEffect(() => {
+    history.replace({ search: '' });
+  }, []);
 
   return (
     <Box pt={7.5}>
