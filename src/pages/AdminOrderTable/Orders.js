@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
@@ -42,7 +42,7 @@ const tabsOptions = [
 
 export default function Orders({ type }) {
   const location = useLocation();
-  const history = useHistory();
+  // const history = useHistory();
   const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
   const [totalPage, setTotalPage] = useState(1);
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, searchParams));
@@ -60,10 +60,6 @@ export default function Orders({ type }) {
       },
     }
   );
-
-  useEffect(() => {
-    history.replace({ search: '' });
-  }, []);
 
   return (
     <Box pt={7.5}>

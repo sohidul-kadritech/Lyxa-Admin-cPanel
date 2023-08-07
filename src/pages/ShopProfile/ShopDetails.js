@@ -59,7 +59,6 @@ export default function ShopDetails({ shop }) {
           label="Opening Hours"
           icon={AccessTimeFilled}
           valueComponent={<OpeningHours normalHours={shop?.normalHours} />}
-          // value={<OpeningHours normalHours={shop?.normalHours} />}
         />
       </Box>
     </Stack>

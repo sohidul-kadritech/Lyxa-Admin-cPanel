@@ -59,7 +59,7 @@ export default function CategoryTable({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
-        if (!row?.shops?.length) return '_';
+        if (!row?.shops?.find((item) => typeof item === 'object')) return '_';
 
         return (
           <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">

@@ -61,7 +61,7 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
       </Stack>
       <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
         <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
-          Order# {chat?.order?.orderId}
+          Order #{chat?.order?.orderId}
         </Typography>
         <Typography
           variant="h5"

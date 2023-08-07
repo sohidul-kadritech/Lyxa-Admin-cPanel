@@ -1,6 +1,7 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { React, useEffect, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { React, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
@@ -17,19 +18,17 @@ const typeOptions = [
 ];
 
 export default function AddRemoveCredit({ userId, onClose }) {
-  // const { exchangeRate, secondaryCurrency } = storeAppSettings;
   const queryClient = useQueryClient();
-  const [data, setData] = useState(getDataInit(userId));
-  const [maxValue, setMaxValue] = useState(null);
-  const [type, setType] = useState('');
-  const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
 
-  const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      setMaxValue(data?.data?.appSetting?.maxCustomerServiceValue);
-    },
-  });
+  const [data, setData] = useState(getDataInit(userId));
+  const [type, setType] = useState('add');
+
+  const { general } = useGlobalContext();
+  const { appSetting } = general;
+  const { secondaryCurrency, adminExchangeRate, baseCurrency } = appSetting;
+
+  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
+  const max = appSetting?.maxCustomerServiceValue;
 
   const creditMutation = useMutation(
     (data) => {
@@ -45,7 +44,6 @@ export default function AddRemoveCredit({ userId, onClose }) {
           onClose();
         }
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
@@ -55,8 +53,8 @@ export default function AddRemoveCredit({ userId, onClose }) {
       return;
     }
 
-    if (data?.amount > maxValue) {
-      successMsg(`Amount can't be more than ${maxValue}`, 'error');
+    if (data?.amount > max) {
+      successMsg(`Amount can't be more than ${max}`, 'error');
       return;
     }
 
@@ -67,14 +65,6 @@ export default function AddRemoveCredit({ userId, onClose }) {
 
     creditMutation.mutate(data);
   };
-
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS));
-
-  const appSetting = getAppSettingsData?.data?.data?.appSetting;
-
-  useEffect(() => {
-    setMaxValue(settingsQuery?.data?.data?.appSetting?.maxCustomerServiceValue || null);
-  }, []);
 
   return (
     <Box
@@ -104,21 +94,19 @@ export default function AddRemoveCredit({ userId, onClose }) {
           />
         </Box>
         <StyledFormField
-          label={`Amount * (max ${maxValue || 0} ${currency})`}
+          label={`Amount * (max ${baseCurrency?.code} ${max} )`}
           intputType="text"
           inputProps={{
             type: 'number',
             value: data?.amount,
             onChange: (e) => {
-              if (e.target.value > 0) setData({ ...data, amount: e.target.value });
-              else setData({ ...data, amount: 1 });
+              setData({ ...data, amount: e.target.value });
             },
           }}
         />
-        {appSetting?.secondaryCurrency?.symbol && (
+        {isSecondaryCurrencyEnabled && (
           <Typography mt="-8px" variant="body3" display="block">
-            Equivalent Price: {appSetting?.secondaryCurrency?.code}{' '}
-            {data.amount * parseInt(appSetting?.exchangeRate, 10)}
+            Equivalent Price: {secondaryCurrency?.code} {data.amount * appSetting?.adminExchangeRate}
           </Typography>
         )}
         <StyledFormField
@@ -145,7 +133,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
             variant="contained"
             sx={{ width: '200px' }}
             onClick={addRemoveCredit}
-            disabled={creditMutation.isLoading || maxValue === null}
+            disabled={creditMutation.isLoading}
           >
             Pay
           </Button>
