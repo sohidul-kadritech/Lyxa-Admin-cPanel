@@ -10,7 +10,9 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
 
-const getQueryParamsInit = (type, state = {}) => {
+const getQueryParamsInit = (type, state) => {
+  const obj = state || {};
+
   const params = {
     page: 1,
     pageSize: 20,
@@ -23,7 +25,7 @@ const getQueryParamsInit = (type, state = {}) => {
     model: '',
   };
 
-  Object.keys(state).forEach((key) => {
+  Object.keys(obj).forEach((key) => {
     if (key === 'startDate' || key === 'endDate') params[key] = moment(state[key], 'YYYY/MM/DD');
     else params[key] = state[key];
   });
