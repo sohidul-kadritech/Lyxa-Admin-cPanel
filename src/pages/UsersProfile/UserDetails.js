@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { ReactComponent as Calender } from '../../assets/icons/calender.svg';
 import { ReactComponent as Dob } from '../../assets/icons/dob.svg';
@@ -15,8 +15,7 @@ import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 
 export default function UserDetails({ user = {} }) {
-  const address = user?.address?.find((adrs) => adrs.primary) || user?.address?.at(0);
-  console.log(user);
+  console.log({ user });
 
   return (
     <Box
@@ -40,7 +39,11 @@ export default function UserDetails({ user = {} }) {
         }}
       />
       <ProfileSidebarInfo label="Phone number" value={user?.phone_number} icon={Phone} />
-      <ProfileSidebarInfo label="Location" value={address?.address || 'Not Added'} icon={Loacation} />
+      {user?.address?.length ? (
+        <UserAddress address={user?.address} />
+      ) : (
+        <ProfileSidebarInfo label="Address" value="Not Added" icon={Loacation} />
+      )}
       <ProfileSidebarInfo
         label="Date of Birth"
         value={user?.dob ? moment(user?.dob).format('MMM DD, YYYY') : 'Not Added'}
@@ -53,6 +56,30 @@ export default function UserDetails({ user = {} }) {
       <ProfileSidebarInfo label="Reward Points" value={(user?.tempRewardPoints || 0)?.toFixed(2)} icon={Reward} />
       <ProfileSidebarInfo label="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} icon={Check} />
       <ProfileSidebarInfo label="Register Type" value={user?.registerType} icon={Register} />
+    </Box>
+  );
+}
+
+function UserAddress({ address }) {
+  return (
+    <Box>
+      <Stack direction="row" sx={{ justifyItems: 'center', alignItems: 'center', gap: '11px' }} pb={4.5}>
+        <Loacation />
+        <Typography variant="inherit" sx={{ fontSize: '14px', fontWeight: '600' }}>
+          Address
+        </Typography>
+      </Stack>
+      <Stack gap={4}>
+        {address?.map((item) => (
+          <Typography
+            key={item?.id}
+            variant="inherit"
+            sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}
+          >
+            {item?.address}
+          </Typography>
+        ))}
+      </Stack>
     </Box>
   );
 }
