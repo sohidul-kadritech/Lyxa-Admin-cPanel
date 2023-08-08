@@ -291,7 +291,8 @@ export const orderCancelDataFormation = (menu, order, orderCancel) => {
         refundType: 'none',
         partialPayment: {
           deliveryBoy: '',
-          admin: '',
+          adminOrderProfit: '',
+          adminRiderProfit: '',
         },
         summary: order?.summary,
       };
@@ -311,7 +312,8 @@ export const orderCancelDataFormation = (menu, order, orderCancel) => {
       refundType: 'none',
       partialPayment: {
         deliveryBoy: '',
-        admin: '',
+        adminOrderProfit: '',
+        adminRiderProfit: '',
       },
       vatAmount: order?.vatAmount,
       summary: order?.summary,
@@ -332,12 +334,13 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       partialPayment: {
         shop: orderCancel?.partialPayment?.shop ? orderCancel?.partialPayment?.shop : 0,
         admin: orderCancel?.partialPayment?.admin ? orderCancel?.partialPayment?.admin : 0,
-        adminVat: getRefundedVatForAdmin(
-          orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
-          riderAndAdmin,
-          // eslint-disable-next-line prettier/prettier
-          appVat
-        ),
+        adminOrderProfit: orderCancel?.partialPayment?.adminOrderProfit
+          ? orderCancel?.partialPayment?.adminOrderProfit
+          : 0,
+        adminRiderProfit: orderCancel?.partialPayment?.adminRiderProfit
+          ? orderCancel?.partialPayment?.adminRiderProfit
+          : 0,
+        adminVat: getRefundedVatForAdmin(orderCancel?.vatAmount?.baseCurrency_vatForAdmin, riderAndAdmin, appVat),
       },
     };
   }
@@ -351,7 +354,6 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       adminVat: getRefundedVatForAdmin(
         orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
-        // eslint-disable-next-line prettier/prettier
         appVat
       ),
     },

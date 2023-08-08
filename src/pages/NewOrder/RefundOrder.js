@@ -14,7 +14,6 @@ import {
   getAdminRefundedAmount,
   getRefundedVatForAdmin,
   orderCancelDataFormation,
-  returnNewValue,
 } from './helpers';
 
 const cancelOrderInit = {
@@ -212,18 +211,14 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
               </>
             </RadioGroup>
           </FormControl>
+
           {orderCancel?.refundType === 'partial' && (
             <Box>
               <StyledFormField
                 label={
                   <TitleWithToolTip
-                    title={`Lyxa Refund: ${
-                      orderPayment?.admin < 0
-                        ? returnNewValue(orderPayment?.deliveryBoy).toFixed(2) || 0
-                        : // eslint-disable-next-line no-unsafe-optional-chaining
-                          (orderPayment?.admin + orderPayment?.deliveryBoy).toFixed(2)
-                    }`}
-                    tooltip="Lyxa Earning+Rider Earning"
+                    title={`Lyxa Order Refund: ${(orderPayment?.admin < 0 ? 0 : orderPayment?.admin)?.toFixed(2)}`}
+                    tooltip="Lyxa Earning + Rider Earning"
                   />
                 }
                 intputType="text"
@@ -234,11 +229,35 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                   },
                 }}
                 inputProps={{
-                  value: orderCancel?.partialPayment?.admin,
+                  value: orderCancel?.partialPayment?.adminOrderProfit,
                   min: 0,
                   type: 'number',
-                  name: 'admin',
-                  placeholder: 'Enter Admin Amount',
+                  name: 'adminOrderProfit',
+                  placeholder: 'Enter  Amount',
+                  onChange: updateRefundAmount,
+                }}
+              />
+
+              <StyledFormField
+                label={
+                  <TitleWithToolTip
+                    title={`Lyxa Delivery Refund: ${orderPayment?.deliveryBoy}`}
+                    tooltip="Lyxa Earning + Rider Earning"
+                  />
+                }
+                intputType="text"
+                containerProps={{
+                  sx: {
+                    padding: '14px 0px 23px 0',
+                    flex: '1',
+                  },
+                }}
+                inputProps={{
+                  value: orderCancel?.partialPayment?.adminRiderProfit,
+                  min: 0,
+                  type: 'number',
+                  name: 'adminRiderProfit',
+                  placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
                 }}
               />
