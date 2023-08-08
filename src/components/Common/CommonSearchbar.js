@@ -32,6 +32,7 @@ const statusOptions = [
 export default function SearchBar({
   searchPlaceHolder,
   searchDebounceTime = 300,
+  searchDefaultValue,
   queryParams,
   setQueryParams,
   showFilters,
@@ -58,6 +59,7 @@ export default function SearchBar({
     <Stack direction="row" alignItems="center" gap="20px">
       {showFilters?.search && (
         <StyledSearchBar
+          defaultValue={searchDefaultValue}
           fullWidth
           placeholder={searchPlaceHolder}
           onChange={(e) => {

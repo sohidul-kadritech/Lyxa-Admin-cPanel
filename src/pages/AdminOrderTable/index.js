@@ -2,7 +2,7 @@
 import { Box, Tab, Tabs } from '@mui/material';
 
 // project import
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
@@ -25,8 +25,8 @@ const orderFilterToTabValueMap = {
 
 export default function AdminOrders() {
   const location = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
-  const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[searchParams?.get('type')] || 0);
+  console.log('type', location?.state);
+  const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[location?.state?.type] || 0);
 
   return (
     <Box pb={9}>
