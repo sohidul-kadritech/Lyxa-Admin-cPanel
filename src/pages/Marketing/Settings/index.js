@@ -153,8 +153,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
 
-  console.log('moment', Math.ceil(moment().diff(moment().startOf('day'), 'days', true)));
-
   const setLocalData = (data) => {
     setProducts(data?.products);
     setDateRange(getDateRange(data));

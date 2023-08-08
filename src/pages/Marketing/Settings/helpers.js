@@ -208,7 +208,11 @@ export const getDurationLeft = (date) => {
 };
 
 export const getDateRange = (mData) => {
+  console.log('date--', moment(mData?.duration?.start).format('DD/MM/YYYY'));
+  console.log('date--', moment(mData?.marketingPausedAt).format('DD/MM/YYYY'));
+
   if (mData?.status === 'inactive') {
+    console.log('date--', 'from this');
     return Math.ceil(
       moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true)
     );

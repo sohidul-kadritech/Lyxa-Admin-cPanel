@@ -59,33 +59,35 @@ export default function CategoryTable({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
-        if (!row?.shops?.find((item) => typeof item === 'object')) return '_';
+        if (!row?.shops?.find((item) => Boolean(item?._id))) return '_';
 
         return (
           <Stack width="100%" flexDirection="row" alignItems="center" gap="10px">
-            {row?.shops?.map((shop, i, { length: l }) => (
-              <Box display="inline-block">
-                <Typography
-                  variant="body4"
-                  display="inline"
-                  sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    color: 'primary.main',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    history.push({
-                      pathname: `/shop/profile/${shop?._id}`,
-                      state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
-                    });
-                  }}
-                >
-                  {shop?.shopName?.trim()}
-                </Typography>
-                {i !== l - 1 && <span>,</span>}
-              </Box>
-            ))}
+            {row?.shops
+              ?.filter((item) => Boolean(item?._id))
+              ?.map((shop, i, { length: l }) => (
+                <Box display="inline-block">
+                  <Typography
+                    variant="body4"
+                    display="inline"
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      color: 'primary.main',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      history.push({
+                        pathname: `/shop/profile/${shop?._id}`,
+                        state: { from: routeMatch?.path, backToLabel: 'Back to Categories' },
+                      });
+                    }}
+                  >
+                    {shop?.shopName?.trim()}
+                  </Typography>
+                  {i !== l - 1 && <span>,</span>}
+                </Box>
+              ))}
           </Stack>
         );
       },
