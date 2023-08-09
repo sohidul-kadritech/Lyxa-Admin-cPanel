@@ -1,4 +1,3 @@
-/* eslint-disable no-unsafe-optional-chaining */
 // project import
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -56,7 +55,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'scheduled'],
       id: 1,
       headerName: 'ACCOUNT',
       field: 'orders',
@@ -138,7 +137,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'userProfile'],
+      showFor: ['ongoing', 'userProfile', 'scheduled'],
       id: 2,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
@@ -151,12 +150,21 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'userProfile', 'riderProfile'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'userProfile', 'riderProfile', 'scheduled'],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
       sortable: false,
       flex: orderType === 'cancelled' ? 1.5 : 1,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['scheduled'],
+      id: 3,
+      headerName: 'SCHEDULED FOR',
+      field: 'scheduleDate',
+      sortable: false,
+      flex: 1,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {

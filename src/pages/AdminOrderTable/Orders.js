@@ -33,18 +33,24 @@ const getQueryParamsInit = (type, state) => {
   return params;
 };
 
-const tabsOptions = [
-  { value: 'all', label: 'All Categories' },
-  { value: 'food', label: 'Restaurant' },
-  { value: 'grocery', label: 'Grocery' },
-  { value: 'pharmacy', label: 'Pharmacy' },
-  { value: 'butler', label: 'Butler' },
-];
+const getTabOptions = (type) => {
+  const tabsOptions = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'food', label: 'Restaurant' },
+    { value: 'grocery', label: 'Grocery' },
+    { value: 'pharmacy', label: 'Pharmacy' },
+    { value: 'butler', label: 'Butler' },
+  ];
+
+  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
+
+  return tabsOptions;
+};
 
 export default function Orders({ type }) {
   const location = useLocation();
   const history = useHistory();
-  console.log('state', location?.state);
+  console.log('type', type);
 
   const [totalPage, setTotalPage] = useState(1);
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, location?.state));
@@ -71,7 +77,7 @@ export default function Orders({ type }) {
     <Box pt={7.5}>
       <StyledTabs2
         value={currentTab}
-        options={tabsOptions}
+        options={getTabOptions(type)}
         onChange={(value) => {
           setCurrentTab(value);
           if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));

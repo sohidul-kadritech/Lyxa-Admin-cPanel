@@ -16,16 +16,17 @@ const orderFilterToTabValueMap = {
   2: 'cancelled',
   3: 'flags',
   4: 'low-rating',
+  5: 'scheduled',
   ongoing: 0,
   delivered: 1,
   cancelled: 2,
   flags: 3,
   'low-rating': 4,
+  scheduled: 5,
 };
 
 export default function AdminOrders() {
   const location = useLocation();
-  console.log('type', location?.state);
   const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[location?.state?.type] || 0);
 
   return (
@@ -48,6 +49,7 @@ export default function AdminOrders() {
         <Tab label="Incomplete" />
         <Tab label="Flags" />
         <Tab label="Low Rating" />
+        <Tab label="Scheduled" />
       </Tabs>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
@@ -63,6 +65,9 @@ export default function AdminOrders() {
           <Flags />
         </TabPanel>
         <TabPanel index={4} value={currentTab} noPadding>
+          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        </TabPanel>
+        <TabPanel index={5} value={currentTab} noPadding>
           <Orders type={orderFilterToTabValueMap[currentTab]} />
         </TabPanel>
       </Box>
