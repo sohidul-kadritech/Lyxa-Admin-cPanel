@@ -6,6 +6,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useDidRecover } from 'react-router-cache-route';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
+import IncrementDecrementInput from '../../../components/Form/IncrementDecrementInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
@@ -19,14 +20,7 @@ import RateContainer from './Rate';
 import { ShopSettingsSection2 } from './ShopSettingsSection/ShopSettingsSection2';
 import { ShopSettingsSection3 } from './ShopSettingsSection/ShopSettingsSection3';
 import { General as ShopSettingsSection } from './ShopSettingsSection/index';
-import {
-  DeliverySettings,
-  // DietarySettings,
-  PaymentInformationList,
-  PriceRange,
-  createShopSettingsData,
-  maxDiscountOptions,
-} from './helper';
+import { DeliverySettings, PaymentInformationList, PriceRange, createShopSettingsData } from './helper';
 
 const boxSx2 = {
   padding: '32px 56px 21px 30px',
@@ -91,31 +85,29 @@ function ShopSettings() {
   const [newTags, setNewTags] = useState(newShop?.tagsId || []);
   const [newCusines, setNewCusines] = useState(newShop?.cuisineType || []);
 
-  // eslint-disable-next-line no-unused-vars
   const [newSpecialInstructions, setNewSpecialInstructions] = useState(newShop?.specialInstructions || false);
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
   const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount?.toString() || '100');
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
-  // eslint-disable-next-line no-unused-vars
   const [rateofShop, setRateofShop] = useState({
     shopExchangeRate: newShop?.shopExchangeRate,
   });
 
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      if (data.status) {
-        setRateofShop((prev) => ({
-          ...prev,
-          secondaryCurrency: data?.data?.appSetting.secondaryCurrency,
-          currency: data?.data?.appSetting.currency,
-          baseExchangeRate: data?.data?.appSetting?.exchangeRate,
-          shopAcceptedCurrency: data?.data?.appSetting?.acceptedCurrency,
-        }));
-      }
-    },
-  });
+  // const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS), {
+  //   onSuccess: (data) => {
+  //     if (data.status) {
+  //       setRateofShop((prev) => ({
+  //         ...prev,
+  //         secondaryCurrency: data?.data?.appSetting.secondaryCurrency,
+  //         currency: data?.data?.appSetting.currency,
+  //         baseExchangeRate: data?.data?.appSetting?.exchangeRate,
+  //         shopAcceptedCurrency: data?.data?.appSetting?.acceptedCurrency,
+  //       }));
+  //     }
+  //   },
+  // });
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
@@ -132,14 +124,12 @@ function ShopSettings() {
         shop.tagsId = data?.data?.shop.tagsId || shop.tagsId;
         shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
         shop.shopExchangeRate = data?.data?.shop.shopExchangeRate;
-        // shop.shopAcceptedCurrency = data?.data?.shop.shopAcceptedCurrency;
         set_has_unsaved_change(false);
       }
     },
   });
 
   const updateShopSettings = () => {
-    // eslint-disable-next-line no-unused-vars
     const { shopAcceptedCurrency, shopExchangeRate } = rateofShop;
     const data = createShopSettingsData(
       shop,
@@ -209,6 +199,7 @@ function ShopSettings() {
       return prev;
     });
   };
+
   // Handle decremented by one
   const decrementOrder = (setValue) => {
     set_has_unsaved_change(true);
@@ -358,7 +349,6 @@ function ShopSettings() {
           <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
-                // width: '100%',
                 paddingBottom: '20px',
               }}
               buttonType={2}
@@ -423,6 +413,7 @@ function ShopSettings() {
             <Box
               sx={{
                 paddingTop: '21px',
+                paddingBottom: '21px',
               }}
             >
               <Stack direction="row" alignItems="center" gap={10}>
@@ -458,8 +449,32 @@ function ShopSettings() {
                 </Box>
               )}
             </Box>
+            <Divider variant="middle" sx={{ background: '#000000' }} />
+            <Box
+              sx={{
+                paddingTop: '21px',
+              }}
+            >
+              <Typography sx={TypoSx}>Max Discount</Typography>
+              <Box
+                sx={{
+                  marginTop: '15px',
+                }}
+              >
+                <IncrementDecrementInput
+                  min={0}
+                  step={5}
+                  dynamicWidth
+                  value={newMaxDiscount}
+                  onChange={(value) => {
+                    set_has_unsaved_change(true);
+                    maxDiscountHandler(value);
+                  }}
+                />
+              </Box>
+            </Box>
           </Box>
-          <Box sx={boxSx2}>
+          {/* <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
                 // width: '100%',
@@ -477,7 +492,7 @@ function ShopSettings() {
               action={maxDiscountHandler}
               isInput
             />
-          </Box>
+          </Box> */}
           {rateofShop?.secondaryCurrency?.symbol && (
             <Box sx={boxSx2}>
               <RateContainer

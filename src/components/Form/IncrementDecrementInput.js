@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Button, Input, Stack, styled } from '@mui/material';
@@ -10,19 +11,30 @@ const StyledContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function IncrementDecrementInput({
-  value,
   onChange,
+  dynamicWidth,
   min = Number.MIN_SAFE_INTEGER,
   max = Number.MAX_SAFE_INTEGER,
+  value = 0,
+  step = 1,
 }) {
+  const length = 190 + Math.max(value?.toString().length - 1, 0) * 8;
+
   return (
-    <StyledContainer direction="row" justifyContent="space-between" alignItems="center">
+    <StyledContainer
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{
+        width: dynamicWidth ? `${length}px` : '100%',
+      }}
+    >
       <Button
         disabled={Number(value) === min}
         disableRipple
-        onClick={() => {
+        onClick={(e) => {
           if (Number(value) > min) {
-            onChange(Number(value) - 1);
+            onChange(Number(value) - step, e);
           }
         }}
       >
@@ -42,20 +54,20 @@ export default function IncrementDecrementInput({
         value={value}
         onChange={(e) => {
           if (Number(e.target.value) < min) {
-            onChange(min);
+            onChange(min, e);
           } else if (Number(e.target.value) > max) {
-            onChange(max);
+            onChange(max, e);
           } else {
-            onChange(Number(e.target.value));
+            onChange(Number(e.target.value), e);
           }
         }}
       />
       <Button
         disableRipple
         disabled={Number(value) === max}
-        onClick={() => {
+        onClick={(e) => {
           if (Number(value) < max) {
-            onChange(Number(value) + 1);
+            onChange(Number(value) + step, e);
           }
         }}
       >

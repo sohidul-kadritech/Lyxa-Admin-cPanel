@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, FormControl, FormControlLabel, Paper, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -11,7 +12,6 @@ import {
   TitleWithToolTip,
   calculateTotalRefund,
   generateRefundAfterDeliveredData,
-  getAdminRefundedAmount,
   getRefundedVatForAdmin,
   orderCancelDataFormation,
 } from './helpers';
@@ -51,7 +51,6 @@ const getOrderPayment = (currentOrder) => {
 function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
   const [appVat, setAppVat] = useState(0);
   const [orderCancel, setOrderCancel] = useState(
-    // eslint-disable-next-line no-use-before-define, prettier/prettier
     orderCancelDataFormation('refund_order', currentOrder, cancelOrderInit)
   );
   // eslint-disable-next-line no-unused-vars
@@ -107,7 +106,8 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
           shop + orderCancel.vatAmount.baseCurrency_vatForShop + deliveryBoy
         : shop + orderCancel.vatAmount.baseCurrency_vatForShop;
 
-    const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, currentOrder?.orderStatus);
+    // const forAdmin = getAdminRefundedAmount(admin, deliveryBoy, currentOrder?.orderStatus);
+    const adminOrderProfit = admin > 0 ? admin : 0;
 
     if (Number(value) <= 0) {
       setOrderCancel({
@@ -121,12 +121,23 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
       return;
     }
 
-    if (name === 'admin' && Number(value) > forAdmin) {
+    if (name === 'adminOrderProfit' && Number(value) > adminOrderProfit) {
       setOrderCancel({
         ...orderCancel,
         partialPayment: {
           ...orderCancel?.partialPayment,
-          [name]: Number(forAdmin),
+          [name]: Number(adminOrderProfit),
+        },
+      });
+      return;
+    }
+
+    if (name === 'adminRiderProfit' && Number(value) > deliveryBoy) {
+      setOrderCancel({
+        ...orderCancel,
+        partialPayment: {
+          ...orderCancel?.partialPayment,
+          [name]: Number(deliveryBoy),
         },
       });
       return;
@@ -171,9 +182,19 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
     };
 
     delete data.deliveryBoy;
-    // console.log('data-->', generateRefundAfterDeliveredData(orderCancel, orderPayment, props?.appVat));
     refundOrderMutation.mutate(generateRefundAfterDeliveredData(orderCancel, orderPayment, appVat));
   };
+
+  const summary = currentOrder?.summary;
+
+  // eslint-disable-next-line no-unused-vars
+  const total_base =
+    summary?.baseCurrency_totalAmount +
+    summary?.baseCurrency_vat +
+    summary?.baseCurrency_riderTip -
+    summary?.baseCurrency_discount -
+    summary?.reward?.baseCurrency_amount -
+    summary?.baseCurrency_couponDiscountAmount;
 
   return (
     <Paper
@@ -205,7 +226,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
             >
               <>
                 <FormControlLabel value="full" control={<Radio />} label="Full Refund" />
-                {orderCancel?.deliveryBoy?._id && orderCancel?.cartType !== 'group' && (
+                {orderCancel?.cartType !== 'group' && (
                   <FormControlLabel value="partial" control={<Radio />} label="Partial Refund" />
                 )}
               </>
@@ -317,7 +338,6 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                           Number(orderCancel?.summary?.baseCurrency_wallet),
                           Number(orderCancel?.summary?.baseCurrency_card),
                         ],
-                        // eslint-disable-next-line prettier/prettier
                         'full'
                       )
                     : calculateTotalRefund(
