@@ -23,7 +23,7 @@ const tabValueToPropsMap = {
   },
 
   repeated: {
-    title: 'Return Customers',
+    title: 'Repeated Customers',
     graphValueProp: 'repeatedCustomersSales',
   },
 
@@ -71,6 +71,8 @@ export default function Customers({ viewUserType }) {
               index="total"
               onClick={handleTabChange}
               percentage={query?.data?.data?.totalCustomersPercentOfSales || 0}
+              // eslint-disable-next-line max-len
+              tooltip="Total number of customers is regardless of time range. But other details are for specified time range"
             />
             <CustomerInfoCard
               title="New customers"
@@ -80,6 +82,7 @@ export default function Customers({ viewUserType }) {
               index="new"
               onClick={handleTabChange}
               percentage={query?.data?.data?.newCustomersPercentOfSales || 0}
+              tooltip="Number of new customers in specified time range and their details"
             />
             <CustomerInfoCard
               title="Repeated customers"
@@ -89,6 +92,7 @@ export default function Customers({ viewUserType }) {
               index="repeated"
               onClick={handleTabChange}
               percentage={query?.data?.data?.repeatedCustomersPercentOfSales || 0}
+              tooltip="Number of old customers that have ordered in specified time range and their details"
             />
             <CustomerInfoCard
               title="Lapsed customers"
@@ -97,7 +101,8 @@ export default function Customers({ viewUserType }) {
               index="lapsed"
               isActive={currentTab === 'lapsed'}
               onClick={handleTabChange}
-              percentage={query?.data?.data?.lapsedCustomersPercentOfSales || 0}
+              hidePercentage
+              tooltip="Number of old customers that did not order in specified time range"
             />
           </Stack>
         </Grid>
@@ -109,21 +114,23 @@ export default function Customers({ viewUserType }) {
             range={queryParams}
           />
         </Grid>
-        <CommonAreaChart
-          api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
-          title={tabValueToPropsMap[currentTab].title}
-          params={{
-            type: viewUserType,
-            id: currentUser[viewUserType]?._id,
-          }}
-          generateData={(data = {}) =>
-            generateGraphData(
-              data?.data?.info || [],
-              (item) => item[tabValueToPropsMap[currentTab].graphValueProp],
-              (item) => moment(item?.date).format('MMMM DD')
-            )
-          }
-        />
+        {currentTab !== 'lapsed' && (
+          <CommonAreaChart
+            api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
+            title={tabValueToPropsMap[currentTab].title}
+            params={{
+              type: viewUserType,
+              id: currentUser[viewUserType]?._id,
+            }}
+            generateData={(data = {}) =>
+              generateGraphData(
+                data?.data?.info || [],
+                (item) => item[tabValueToPropsMap[currentTab].graphValueProp],
+                (item) => moment(item?.date).format('MMMM DD')
+              )
+            }
+          />
+        )}
       </Grid>
     </Box>
   );
