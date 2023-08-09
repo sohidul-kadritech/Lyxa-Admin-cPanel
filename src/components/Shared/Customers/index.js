@@ -13,7 +13,7 @@ import CustomerInfoCard from './Infocard';
 
 const tabValueToPropsMap = {
   total: {
-    title: 'Total customers',
+    title: 'Total Shop customers',
     graphValueProp: 'totalCustomersSales',
   },
 
@@ -64,7 +64,7 @@ export default function Customers({ viewUserType }) {
         <Grid xs={12} lg={3}>
           <Stack gap={6}>
             <CustomerInfoCard
-              title="Total customers"
+              title="Total Shop customers"
               dotColor="#3CACDD"
               amount={query?.data?.data?.totalCustomers || 0}
               isActive={currentTab === 'total'}

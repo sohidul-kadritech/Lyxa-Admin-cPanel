@@ -128,7 +128,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
                 }}
               >
                 <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={2}>
-                  {(details[amount] / details?.totalCustomers) * 100 || 0}%
+                  {Math.round((details[amount] / details?.totalCustomers) * 100 || 0)}%
                 </Typography>
                 <Typography variant="body1" fontWeight={600} color={theme.palette.text.secondary2}>
                   of customer base
