@@ -95,19 +95,7 @@ function ShopSettings() {
     shopExchangeRate: newShop?.shopExchangeRate,
   });
 
-  // const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => Axios.get(Api.APP_SETTINGS), {
-  //   onSuccess: (data) => {
-  //     if (data.status) {
-  //       setRateofShop((prev) => ({
-  //         ...prev,
-  //         secondaryCurrency: data?.data?.appSetting.secondaryCurrency,
-  //         currency: data?.data?.appSetting.currency,
-  //         baseExchangeRate: data?.data?.appSetting?.exchangeRate,
-  //         shopAcceptedCurrency: data?.data?.appSetting?.acceptedCurrency,
-  //       }));
-  //     }
-  //   },
-  // });
+  console.log({ rateofShop });
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
@@ -474,26 +462,7 @@ function ShopSettings() {
               </Box>
             </Box>
           </Box>
-          {/* <Box sx={boxSx2}>
-            <ShopSettingsSection2
-              boxSx={{
-                // width: '100%',
-                paddingBottom: '0px',
-              }}
-              fieldContainerSx={{
-                padding: '14px 0',
-                width: '250px',
-              }}
-              buttonType={2}
-              title="Change Maximum Discount"
-              // title2=""
-              value={newMaxDiscount || ''}
-              options={maxDiscountOptions(getAppSettingsData?.data?.data?.appSetting?.maxDiscount || [])}
-              action={maxDiscountHandler}
-              isInput
-            />
-          </Box> */}
-          {rateofShop?.secondaryCurrency?.symbol && (
+          {Number(rateofShop?.shopExchangeRate) ? (
             <Box sx={boxSx2}>
               <RateContainer
                 boxSx={{
@@ -505,7 +474,7 @@ function ShopSettings() {
                 setHasChanged={set_has_unsaved_change}
               />
             </Box>
-          )}
+          ) : null}
           <Stack
             direction="row"
             justifyContent="flex-end"
