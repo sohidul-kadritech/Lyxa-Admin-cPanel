@@ -24,9 +24,12 @@ export default function MarketingProductsTable({
   rewardAmount,
   rewardDealOptions = [],
   rewardCategoryOptions,
+  creatorType,
 }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const adminMaxDiscount = general?.appSetting?.maxDiscount;
+  const maxDiscount = Number(creatorType === 'shop' ? shop?.maxDiscount : adminMaxDiscount);
 
   const [render, setRender] = useState(false);
 
@@ -238,8 +241,7 @@ export default function MarketingProductsTable({
                 <Typography variant="body1" color="text.danger">
                   {currency}{' '}
                   {(
-                    params?.row?.price -
-                    (shop?.maxDiscount > 0 ? Math.min(discountAmount, shop?.maxDiscount) : discountAmount)
+                    params?.row?.price - (maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount)
                   )?.toFixed(2)}{' '}
                 </Typography>
               )}

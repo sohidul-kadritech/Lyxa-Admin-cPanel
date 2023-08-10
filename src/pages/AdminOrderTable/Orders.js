@@ -1,15 +1,18 @@
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
 
-const getQueryParamsInit = (type, searchParams) => {
+const getQueryParamsInit = (type, state) => {
+  const obj = state || {};
+
   const params = {
     page: 1,
     pageSize: 20,
@@ -22,29 +25,35 @@ const getQueryParamsInit = (type, searchParams) => {
     model: '',
   };
 
-  Object.keys(params).forEach((key) => {
-    if (searchParams?.get(key)) {
-      params[key] = searchParams.get(key);
-    }
+  Object.keys(obj).forEach((key) => {
+    if (key === 'startDate' || key === 'endDate') params[key] = moment(state[key], 'YYYY/MM/DD');
+    else params[key] = state[key];
   });
 
   return params;
 };
 
-const tabsOptions = [
-  { value: 'all', label: 'All Categories' },
-  { value: 'food', label: 'Restaurant' },
-  { value: 'grocery', label: 'Grocery' },
-  { value: 'pharmacy', label: 'Pharmacy' },
-  { value: 'butler', label: 'Butler' },
-];
+const getTabOptions = (type) => {
+  const tabsOptions = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'food', label: 'Restaurant' },
+    { value: 'grocery', label: 'Grocery' },
+    { value: 'pharmacy', label: 'Pharmacy' },
+    { value: 'butler', label: 'Butler' },
+  ];
+
+  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
+
+  return tabsOptions;
+};
 
 export default function Orders({ type }) {
   const location = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(location?.search), []);
+  const history = useHistory();
+  console.log('type', type);
 
   const [totalPage, setTotalPage] = useState(1);
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, searchParams));
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, location?.state));
   const [currentTab, setCurrentTab] = useState('all');
 
   const ordersQuery = useQuery(
@@ -60,11 +69,15 @@ export default function Orders({ type }) {
     }
   );
 
+  useEffect(() => {
+    history.replace();
+  }, []);
+
   return (
     <Box pt={7.5}>
       <StyledTabs2
         value={currentTab}
-        options={tabsOptions}
+        options={getTabOptions(type)}
         onChange={(value) => {
           setCurrentTab(value);
           if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
@@ -77,6 +90,7 @@ export default function Orders({ type }) {
           searchPlaceHolder="Search orders"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
+          searchDefaultValue={queryParams?.searchKey}
           showFilters={{
             search: true,
             sort: true,

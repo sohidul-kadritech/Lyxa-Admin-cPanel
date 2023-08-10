@@ -62,6 +62,7 @@ export default function ViewCategoryContent({ onClose, category }) {
         <Box pt={1} pb={5}>
           <SearchBar
             searchPlaceHolder="Search"
+            searchDebounceTime={10}
             showFilters={{
               search: true,
             }}

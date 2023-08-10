@@ -38,6 +38,8 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
   const [confirmAction] = useState(confirmActionInit);
   const [loading, setLoading] = useState(false);
 
+  console.log(editCategory);
+
   const [category, setCategory] = useState(
     editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit(shopType, shopId)
   );

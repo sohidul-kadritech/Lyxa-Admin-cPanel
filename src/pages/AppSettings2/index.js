@@ -7,6 +7,7 @@ import currenciesList from '../../common/data/currencyList';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
 import Taglist from '../../components/Common/Taglist';
+import IncrementDecrementInput from '../../components/Form/IncrementDecrementInput';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
@@ -27,6 +28,7 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
 const initialCurrency = {
   symbol: '€',
   name: 'Euro',
@@ -499,34 +501,18 @@ function Appsettings2() {
                 currentValue={newAppSettings?.nearByShopKmForUserHomeScreen}
               />
             </StyledBox>
-            <StyledBox title={`Maximum Discount for Shops (${newAppSettings?.baseCurrency?.symbol})`}>
-              <Taglist
-                listContainerSx={{
-                  mb: 2.5,
-                  mt: 2,
-                }}
-                addButtonLabel="Add"
-                items={newAppSettings?.maxDiscount || []}
-                onAdd={(value) => {
+            <StyledBox title={`Maximum Discount for Lyxa (${newAppSettings?.baseCurrency?.symbol})`}>
+              <IncrementDecrementInput
+                min={0}
+                step={5}
+                dynamicWidth
+                onChange={(value) => {
                   setHasChanged(true);
-                  addNewBundleItem(
-                    value,
-                    setNewAppSettings,
-                    newAppSettings?.maxDiscount,
-                    // eslint-disable-next-line prettier/prettier
-                    'maxDiscount'
-                  );
+                  setNewAppSettings((prev) => ({ ...prev, maxDiscount: value }));
                 }}
-                onDelete={(item) => {
-                  setHasChanged(true);
-                  setNewAppSettings((prev) => ({
-                    ...prev,
-                    maxDiscount: prev?.maxDiscount.filter((value) => value !== item),
-                  }));
-                }}
+                value={newAppSettings?.maxDiscount}
               />
             </StyledBox>
-
             <StyledBox title="Units">
               <Taglist
                 listContainerSx={{

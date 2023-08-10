@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Add, Edit, ExpandMore } from '@mui/icons-material';
-import { AccordionDetails, Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { AccordionDetails, Avatar, Box, Button, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
@@ -97,14 +97,16 @@ export default function CategoryItem({
               <Box>
                 <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5} pb={1.5}>
                   {category?.category?.status === 'inactive' && (
-                    <Box
-                      sx={{
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '50%',
-                        background: '#FFAB09',
-                      }}
-                    />
+                    <Tooltip title={shop?.shopType === 'food' ? 'Deactivated by shop' : 'Deactivated by admin'}>
+                      <Box
+                        sx={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          background: '#FFAB09',
+                        }}
+                      />
+                    </Tooltip>
                   )}
                   <Typography
                     variant="body4"
@@ -196,7 +198,7 @@ export default function CategoryItem({
           />
         )}
         {/* add product */}
-        {isOridanryCategory && shop?.shopType === 'food' && (
+        {isOridanryCategory && shop?.shopType === 'food' && category?.category?.status === 'active' && (
           <Box pl={8.5} pt={2.5} pb={2.5}>
             <Button
               variant="contained"
@@ -212,7 +214,7 @@ export default function CategoryItem({
           </Box>
         )}
         {/* add sub-category */}
-        {shop?.shopType !== 'food' && (
+        {shop?.shopType !== 'food' && category?.category?.status === 'active' && (
           <Stack pl={8.5} pt={2.5} pb={2.5} alignItems="center" direction="row" gap={2}>
             <Button
               variant="contained"

@@ -1,9 +1,8 @@
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useGlobalContext } from '../../../../context';
-import { StyledProfileBox } from './helpers';
+import { useGlobalContext } from '../../../../../context';
 
-function CouponItem({ coupon, isFirst, isLast }) {
+export default function CouponItem({ coupon, isFirst, isLast }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -32,7 +31,7 @@ function CouponItem({ coupon, isFirst, isLast }) {
           {coupon?.couponDiscountType === 'percentage' ? '%' : ''} off your order {coupon?.couponCondition}
         </Typography>
         <Typography variant="inherit" fontSize="12px" lineHeight="15px" fontWeight={400}>
-          {moment(coupon?.createdAt).format('ddd DD, MMM, YYYY')}
+          {moment(coupon?.couponDuration?.end).format('ddd DD, MMM, YYYY')}
         </Typography>
       </Stack>
       <Box
@@ -49,15 +48,5 @@ function CouponItem({ coupon, isFirst, isLast }) {
         {coupon?.couponName}
       </Box>
     </Stack>
-  );
-}
-
-export default function Coupons({ coupons = [] }) {
-  return (
-    <StyledProfileBox title="Coupons">
-      {coupons?.map((coupon, index, { length }) => (
-        <CouponItem coupon={coupon} isFirst={index === 0} isLast={index === length - 1} key={index} />
-      ))}
-    </StyledProfileBox>
   );
 }

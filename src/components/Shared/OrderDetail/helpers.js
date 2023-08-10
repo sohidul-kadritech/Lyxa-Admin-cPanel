@@ -125,7 +125,7 @@ export function SummaryItem({
         {typeof value !== 'string' &&
           !showBaseOnly &&
           `
-          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${valueSecondary} ~ `}
+          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(valueSecondary)} ~ `}
           ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>

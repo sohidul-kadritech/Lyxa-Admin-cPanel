@@ -25,7 +25,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
 
   // eslint-disable-next-line no-unused-vars
   const getAllZones = useQuery(
-    [API_URL.GET_ALL_ZONE, { searchedValue }],
+    [API_URL.GET_ALL_ZONE, { searchedValue, pageNo }],
     () =>
       AXIOS.get(API_URL.GET_ALL_ZONE, {
         params: {
@@ -34,7 +34,6 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           searchKey: searchedValue,
           pageSize: selectedPageSize,
         },
-        // eslint-disable-next-line prettier/prettier
       }),
     {
       onSuccess: (data) => {
@@ -52,7 +51,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const columns = [
@@ -218,6 +217,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           currentPage={pageNo}
           lisener={(newPage) => {
             setPageNo(newPage);
+            console.log(true);
           }}
           totalPage={totalPage}
         />
