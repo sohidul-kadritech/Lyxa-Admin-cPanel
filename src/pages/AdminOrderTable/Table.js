@@ -92,7 +92,7 @@ export default function Table({
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 1,
       headerName: 'ACCOUNT',
       field: 'orders',
@@ -142,7 +142,7 @@ export default function Table({
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
       id: 2,
       headerName: `TYPE`,
       field: 'shopType',
@@ -154,7 +154,7 @@ export default function Table({
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
       id: 3,
       headerName: 'SHOP',
       field: 'shop',
@@ -184,7 +184,7 @@ export default function Table({
       },
     },
     {
-      showFor: ['ongoing', 'delivered', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
       id: 4,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
@@ -219,7 +219,17 @@ export default function Table({
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
+      showFor: ['scheduled'],
+      id: 5,
+      headerName: 'SCHEDULED FOR',
+      field: 'scheduleDate',
+      sortable: false,
+      flex: 1,
+      minWidth: 220,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 6,
       headerName: 'DATE',
       field: 'createdAt',
@@ -228,7 +238,7 @@ export default function Table({
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 7,
       headerName: `ORDER AMOUNT`,
       field: 'profit',
@@ -273,7 +283,7 @@ export default function Table({
       },
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating'],
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 6,
       headerName: `ACTION`,
       sortable: false,

@@ -59,18 +59,28 @@ const timelineStatusNoteMap = {
   refunded: 'Order was refunded',
 };
 
-// order?.isRefundedAfterDelivered;
-
 export default function OrderTimeline({ order = {}, ...props }) {
   const theme = useTheme();
   const orderTimeline = [...(order?.timeline || [])];
+
+  // order scheduled
+  if (order?.type === 'schedule') {
+    orderTimeline?.unshift({
+      active: true,
+      status: 'custom',
+      createdAt: order?.createdAt,
+      note: `Scheduled for ${moment(order?.scheduleDate).format('MMM DD,')} ${moment(order?.scheduleDate)?.format(
+        'hh:mm A'
+      )}`,
+    });
+  }
 
   // order got cancelled
   if (order?.orderStatus === 'cancelled') {
     orderTimeline?.push({
       active: true,
       createdAt: order?.orderCancel?.createdAt,
-      status: 'cancelled',
+      status: 'custom',
       note: `Order got cancelled ${order?.orderCancel?.canceledBy !== 'automatically' ? 'by' : ''} ${
         order?.orderCancel?.canceledBy
       }`,
@@ -84,7 +94,7 @@ export default function OrderTimeline({ order = {}, ...props }) {
     orderTimeline?.push({
       active: true,
       createdAt: trx?.createdAt,
-      status: 'refunded',
+      status: 'custom',
       note: `Order was ${trx?.isPartialRefund ? 'partially' : 'fully'} refunded`,
     });
   }
@@ -131,11 +141,7 @@ export default function OrderTimeline({ order = {}, ...props }) {
                 >
                   {timeline?.active ? moment(timeline?.createdAt).format('hh:mm a') : '_'}
                 </span>
-                <span>
-                  {timeline?.status === 'cancelled' || timeline?.status === 'refunded'
-                    ? timeline?.note
-                    : timelineStatusNoteMap[timeline?.status]}
-                </span>
+                <span>{timeline?.status === 'custom' ? timeline?.note : timelineStatusNoteMap[timeline?.status]}</span>
               </Typography>
             </TimelineContent>
           </TimelineItem>

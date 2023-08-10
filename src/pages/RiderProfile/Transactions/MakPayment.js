@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
@@ -19,10 +19,9 @@ const typeToApiMap = { shop: Api.SHOP_MAKE_PAYMENT, rider: Api.RIDER_MAKE_PAYMEN
 export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
   const { general } = useGlobalContext();
-
-  const [storeAppSettings, setStoreAppSettings] = useState({});
-
-  const currency = general?.currency?.symbol;
+  const { appSetting } = general;
+  const { secondaryCurrency, adminExchangeRate } = appSetting;
+  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
 
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
@@ -39,21 +38,7 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
     },
   });
 
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      if (data.status) {
-        setStoreAppSettings({ ...getAppSettingsData?.data?.data?.appSetting });
-      }
-    },
-  });
-
   const onSubmit = () => {
-    // bounds
-    // if (payment?.amount <= 0) {
-    //   successMsg('Amount must be greater than 0', 'error');
-    //   return;
-    // }
-
     if (payment?.amount > amount) {
       successMsg('Amount is greater than remaining amount', 'error');
       return;
@@ -71,82 +56,57 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
         minWidth: '700px',
       }}
     >
-      {!getAppSettingsData?.isLoading ? (
+      <Box>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" pb={3}>
+          <Typography fontSize="18px" variant="h4">
+            Make Payment
+          </Typography>
+          <CloseButton onClick={onClose} size="sm" />
+        </Stack>
         <Box>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" pb={3}>
-            <Typography fontSize="18px" variant="h4">
-              Make Payment
+          <StyledFormField
+            label="Settle Amount *"
+            intputType="text"
+            inputProps={{
+              type: 'number',
+              name: 'name',
+              value: payment.amount,
+              onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
+            }}
+          />
+          {isSecondaryCurrencyEnabled && (
+            <Typography mt="-8px" variant="body3" display="block">
+              Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}
             </Typography>
-            <CloseButton onClick={onClose} size="sm" />
-          </Stack>
-          <Box>
-            <StyledFormField
-              label="Settle Amount *"
-              intputType="text"
-              inputProps={{
-                type: 'number',
-                name: 'name',
-                value: payment.amount,
-                onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
-              }}
-            />
-            {storeAppSettings?.secondaryCurrency?.symbol && (
-              <Typography mt="-8px" variant="body3" display="block">
-                Equivalent Price: {storeAppSettings?.secondaryCurrency?.code}{' '}
-                {payment.amount * parseInt(storeAppSettings?.exchangeRate, 10)}
-              </Typography>
-            )}
-            <Stack pt={5}>
-              <ListItem
-                label="Total Unsettled Amount"
-                value={`${currency} ${amount}${
-                  storeAppSettings?.secondaryCurrency?.symbol
-                    ? ` ~ ${storeAppSettings?.secondaryCurrency?.code}
-                ${amount * parseInt(storeAppSettings?.exchangeRate, 10)}`
-                    : ''
-                }`}
-              />
-              <ListItem
-                label="Settle Amount"
-                value={`${currency} ${payment.amount}${
-                  storeAppSettings?.secondaryCurrency?.symbol
-                    ? ` ~ ${storeAppSettings?.secondaryCurrency?.code}
-                ${payment.amount * parseInt(storeAppSettings?.exchangeRate, 10)}`
-                    : ''
-                }`}
-              />
-              <ListItem
-                label="Remaining Unsettled Amount"
-                value={`${currency} ${amount - payment.amount}${
-                  storeAppSettings?.secondaryCurrency?.symbol
-                    ? ` ~ ${storeAppSettings?.secondaryCurrency?.code}
-                ${(amount - payment.amount) * parseInt(storeAppSettings?.exchangeRate, 10)}`
-                    : ''
-                }`}
-                isTotal
-              />
-            </Stack>
-          </Box>
-          <Stack direction="row" alignItems="center" justifyContent="flex-end" pt={6.5}>
-            <Button
-              color="primary"
-              variant="contained"
-              sx={{ width: '200px' }}
-              onClick={onSubmit}
-              disabled={paymentMutation.isLoading}
-            >
-              Pay
-            </Button>
+          )}
+          <Stack pt={5}>
+            <ListItem label="Total Unsettled Amount" value={amount} />
+            <ListItem label="Settle Amount" value={payment.amount} />
+            <ListItem label="Remaining Unsettled Amount" value={amount - payment.amount} isTotal />
           </Stack>
         </Box>
-      ) : (
-        <Box>Loading...</Box>
-      )}
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" pt={6.5}>
+          <Button
+            color="primary"
+            variant="contained"
+            sx={{ width: '200px' }}
+            onClick={onSubmit}
+            disabled={paymentMutation.isLoading}
+          >
+            Pay
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 }
 
 function ListItem({ label, value, isTotal }) {
+  const { general } = useGlobalContext();
+  const { appSetting } = general;
+  const { baseCurrency, secondaryCurrency, adminExchangeRate } = appSetting;
+  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
+
   return (
     <Stack
       direction="row"
@@ -162,7 +122,13 @@ function ListItem({ label, value, isTotal }) {
         {label}
       </Typography>
       <Typography variant="body4" color="initial">
-        {value}
+        {isSecondaryCurrencyEnabled
+          ? // with secondary currency
+            `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
+              value * adminExchangeRate
+            )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
+          : // without secondary currency
+            `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}
       </Typography>
     </Stack>
   );

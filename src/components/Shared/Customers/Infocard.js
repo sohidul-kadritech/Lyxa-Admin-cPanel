@@ -1,12 +1,25 @@
 // third party
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
+import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 
 // project import
 import IncreaseDecrease from '../../StyledCharts/IncreaseDecrease';
 import StyledBox from '../../StyledCharts/StyledBox';
 
-export default function CustomerInfoCard({ title, percentage, dotColor, amount, isActive, onClick, index }) {
+export default function CustomerInfoCard({
+  title,
+  percentage,
+  dotColor,
+  amount,
+  isActive,
+  onClick,
+  index,
+  hidePercentage,
+  tooltip,
+}) {
   const theme = useTheme();
+
+  console.log({ hidePercentage });
 
   return (
     <StyledBox
@@ -36,13 +49,23 @@ export default function CustomerInfoCard({ title, percentage, dotColor, amount, 
         {/* title */}
         <Typography variant="body1" fontWeight={600}>
           {title}
+          {tooltip && (
+            <>
+              &nbsp;
+              <Tooltip title={tooltip}>
+                <InfoIcon />
+              </Tooltip>
+            </>
+          )}
         </Typography>
       </Stack>
       <Stack direction="row" alignItems="flex-end">
         <Typography variant="inherit" fontSize={40} fontWeight={600} lineHeight={1}>
           {amount}
         </Typography>
-        <IncreaseDecrease amount={`${percentage || 0}%`} status={`${percentage >= 0 ? 'increase' : 'decrease'}`} />
+        {!hidePercentage && (
+          <IncreaseDecrease amount={`${percentage || 0}%`} status={`${percentage >= 0 ? 'increase' : 'decrease'}`} />
+        )}
       </Stack>
     </StyledBox>
   );

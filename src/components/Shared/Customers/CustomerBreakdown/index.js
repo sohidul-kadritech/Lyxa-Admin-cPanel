@@ -21,6 +21,7 @@ const customerTypeProps = {
     orders: 'totalCustomersOrders',
     percent: 'totalCustomersPercentOfSales',
     average: 'totalCustomersAvgOrders',
+    chartColor: '#3CACDD',
   },
   new: {
     graphTooltip: 'New Customers',
@@ -29,6 +30,7 @@ const customerTypeProps = {
     orders: 'newCustomersOrders',
     percent: 'newCustomersPercentOfSales',
     average: 'newCustomersAvgOrders',
+    chartColor: '#50CD89',
   },
   repeated: {
     graphTooltip: 'Repeated Customers',
@@ -37,6 +39,7 @@ const customerTypeProps = {
     orders: 'repeatedCustomersOrders',
     percent: 'repeatedCustomersPercentOfSales',
     average: 'repeatedCustomersAvgOrders',
+    chartColor: '#FF8C51',
   },
   lapsed: {
     graphTooltip: 'Lapsed Customers',
@@ -45,6 +48,7 @@ const customerTypeProps = {
     orders: 'lapsedCustomersOrders',
     percent: 'lapsedCustomersPercentOfSales',
     average: 'lapsedCustomersAvgOrders',
+    chartColor: '#8950FC',
   },
 };
 
@@ -82,7 +86,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
     labels:
       customerType === 'total'
         ? ['Total Customers']
-        : ['Total Customers', customerTypeProps[customerType].graphTooltip],
+        : [`Other Customers`, customerTypeProps[customerType]?.graphTooltip],
     datasets: [
       {
         label: '% of Customers',
@@ -90,13 +94,13 @@ export default function CustomerBreakdown({ title, customerType, range, details 
           customerType === 'total'
             ? [details?.totalCustomers || 0]
             : [details?.totalCustomers - details[amount] || 0, details[amount] || 0],
-        backgroundColor: ['rgba(80, 205, 137, 1)', 'rgba(255, 140, 81, 0.2)', 'rgba(137, 80, 252, 0.2)'],
+        backgroundColor: [customerTypeProps?.total?.chartColor, customerTypeProps[customerType]?.chartColor],
         borderWidth: 0,
       },
     ],
   };
 
-  console.log('order', details);
+  // console.log('order', details);
 
   return (
     <StyledBox
@@ -115,7 +119,14 @@ export default function CustomerBreakdown({ title, customerType, range, details 
         <Grid xs={12} lg={6}>
           <Stack direction="row" height="100%" alignItems="center" justifyContent="center">
             <Box sx={{ width: 260, height: 260, position: 'relative' }}>
-              <StyledDoughnutChart data={data} />
+              <StyledDoughnutChart
+                data={data}
+                options={{
+                  tooltip: {
+                    enabled: false,
+                  },
+                }}
+              />
               {/* middle */}
               <Box
                 sx={{
@@ -128,7 +139,7 @@ export default function CustomerBreakdown({ title, customerType, range, details 
                 }}
               >
                 <Typography variant="inherit" fontSize={30} fontWeight={600} lineHeight={1} pb={2}>
-                  {(details[amount] / details?.totalCustomers) * 100 || 0}%
+                  {Math.round((details[amount] / details?.totalCustomers) * 100 || 0)}%
                 </Typography>
                 <Typography variant="body1" fontWeight={600} color={theme.palette.text.secondary2}>
                   of customer base
@@ -137,18 +148,20 @@ export default function CustomerBreakdown({ title, customerType, range, details 
             </Box>
           </Stack>
         </Grid>
-        <Grid xs={12} lg={6}>
-          <Stack direction="row" height="100%" alignItems="center" gap={16.5}>
-            <Stack gap={15}>
-              <AmountItem amount={`${currency} ${details[sales] || 0}`} title="Sales" />
-              <AmountItem amount={details[percent] || 0} title="Percent of sales" />
+        {customerType !== 'lapsed' && (
+          <Grid xs={12} lg={6}>
+            <Stack direction="row" height="100%" alignItems="center" gap={16.5}>
+              <Stack gap={15}>
+                <AmountItem amount={`${currency} ${(details[sales] || 0)?.toFixed(2)}`} title="Sales" />
+                <AmountItem amount={(details[percent] || 0)?.toFixed(2)} title="Percent of sales" />
+              </Stack>
+              <Stack gap={15}>
+                <AmountItem amount={details[orders] || 0} title="Orders" />
+                <AmountItem amount={(details[average] || 0)?.toFixed(2)} title="Avg. orders value" />
+              </Stack>
             </Stack>
-            <Stack gap={15}>
-              <AmountItem amount={details[orders] || 0} title="Orders" />
-              <AmountItem amount={details[average] || 0} title="Avg. orders value" />
-            </Stack>
-          </Stack>
-        </Grid>
+          </Grid>
+        )}
       </Grid>
     </StyledBox>
   );

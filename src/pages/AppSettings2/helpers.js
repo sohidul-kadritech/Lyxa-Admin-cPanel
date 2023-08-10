@@ -19,7 +19,6 @@ function convertArrayToInteger(arr) {
 export function hasDuplicates(arr1, arr2) {
   const sortedArr1 = convertArrayToInteger(arr1).sort();
   const sortedArr2 = convertArrayToInteger(arr2).sort();
-  console.log(' newOne ', sortedArr1, ' oldeone ', sortedArr2);
   // Check if the lengths are equal
   if (sortedArr1.length !== sortedArr2.length) {
     return false;
@@ -58,7 +57,7 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (parseInt(newData?.maxDistanceForButler, 10) !== parseInt(oldData?.maxDistanceForButler, 10)) {
     newType.push(typeList[1]);
   }
-  if (!hasDuplicates(newData?.maxDiscount, oldData?.maxDiscount)) {
+  if (newData?.maxDiscount !== oldData?.maxDiscount) {
     newType.push(typeList[2]);
   }
   if (parseInt(newData?.maxCustomerServiceValue, 10) !== parseInt(oldData?.maxCustomerServiceValue, 10)) {

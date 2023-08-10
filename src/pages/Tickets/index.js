@@ -13,7 +13,7 @@ import TicketTable from './Table';
 
 export const queryParamsInit = {
   page: 1,
-  pageSize: 1,
+  pageSize: 15,
   sortBy: 'DESC',
   startDate: moment().subtract(7, 'days'),
   endDate: moment(),

@@ -1,12 +1,28 @@
 import { Stack } from '@mui/material';
 import { useMemo } from 'react';
+import ButlerOrderSummary from '../OrderDetail/Details/ButlerOrderSummary';
 import CallUser from '../OrderDetail/Details/CallUser';
 import DeliveryDetails from '../OrderDetail/Details/DeliveryDetails';
+import OrderSummary from '../OrderDetail/Details/OrderSummary';
 import OrderTimeline from '../OrderDetail/Details/OrderTimeline';
 import PaymentMethod from '../OrderDetail/Details/PaymentMethod';
 import PaymentDetails from '../OrderDetail/Details/PaymentSummary';
-import OrderSummary from '../OrderDetail/Details/Summary';
 import OrderContextProvider from '../OrderDetail/OrderContext';
+
+/*
+      {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
+      <OrderTimeline order={order} />
+      {order?.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
+      <DeliveryDetails order={order} />
+      {order?.leaveAtDoorImage && <Attachments order={order} />}
+      {order?.isButler && <ButlerOrderSummary order={order} />}
+      {!order?.isButler && <OrderSummary order={order} />}
+      <PaymentMethod method={order?.paymentMethod} />
+      {order?.couponDetails && <CouponDetails coupon={order?.couponDetails} />}
+      {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
+      {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
+      <PaymentSummary order={order} />
+*/
 
 export default function ChatOrderDetail({ order }) {
   const value = useMemo(
@@ -31,18 +47,8 @@ export default function ChatOrderDetail({ order }) {
         />
         <OrderTimeline order={order} />
         <DeliveryDetails order={order} />
-        {order?.orderFor === 'global' && order?.deliveryBoy && (
-          <CallUser
-            user={{
-              name: order?.deliveryBoy?.name,
-              image: order?.deliveryBoy?.image,
-              secondary: order?.orderStatus === 'delivered' ? 'Delivered' : 'Delivering',
-              vehicleNumber: order?.deliveryBoy?.vehicleNumber,
-              number: order?.deliveryBoy?.number,
-            }}
-          />
-        )}
-        <OrderSummary productsDetails={order?.productsDetails} />
+        {order?.isButler && <ButlerOrderSummary order={order} />}
+        {!order?.isButler && <OrderSummary order={order} />}
         <PaymentMethod method={order?.paymentMethod} />
         <PaymentDetails order={order} />
       </Stack>
