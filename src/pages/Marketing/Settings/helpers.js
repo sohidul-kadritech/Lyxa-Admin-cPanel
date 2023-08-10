@@ -18,8 +18,14 @@ export const confirmActionInit = {
   onCancel: () => {},
 };
 
-export const createProductData = (products, { marketingType, rewardAmount, maxDiscount }) => {
+export const createProductData = (
+  products,
+  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType }
+) => {
   let prb = null;
+  const maxDiscount = Number(creatorType === 'shop' ? shopMaxDiscount : adminMaxDiscount);
+
+  console.log({ maxDiscount });
 
   const data = products.map((item) => {
     // reward

@@ -38,6 +38,7 @@ import {
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const adminMaxDiscount = general?.appSetting?.maxDiscount;
 
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -317,7 +318,13 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   const updateLoyaltySettings = (status) => {
     // will be array if no issue else string
-    const productsData = createProductData(products, { marketingType, rewardAmount, maxDiscount: shop?.maxDiscount });
+    const productsData = createProductData(products, {
+      marketingType,
+      rewardAmount,
+      shopMaxDiscount: shop?.maxDiscount,
+      adminMaxDiscount,
+      creatorType,
+    });
 
     if (marketingType !== 'free_delivery' && marketingType !== 'featured' && products?.length === 0) {
       successMsg('Products cannot be empty!', 'warn');
@@ -328,16 +335,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       successMsg(productsData, 'warn');
       return;
     }
-
-    // if (new Date(duration.end).getTime() < new Date().getTime() && marketingType !== 'featured') {
-    //   successMsg('Invalid end date', 'warn');
-    //   return;
-    // }
-
-    // if (new Date(duration.end).getTime() < new Date(duration.start).getTime() && marketingType !== 'featured') {
-    //   successMsg('Invalid start date', 'warn');
-    //   return;
-    // }
 
     if (spendLimitChecked && !Number(spendLimit)) {
       successMsg('Invalid spend limit', 'warn');
@@ -588,6 +585,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                           rewardAmount={rewardAmount}
                           rewardCategoryOptions={rewardSettingsQuery?.data?.data?.rewardSetting?.rewardCategory}
                           rewardDealOptions={rewardSettingsQuery.data?.data?.rewardSetting?.rewardBundle}
+                          creatorType={creatorType}
                         />
                       </Box>
                     </Box>
