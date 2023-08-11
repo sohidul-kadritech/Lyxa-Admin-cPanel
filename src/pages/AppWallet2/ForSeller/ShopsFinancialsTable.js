@@ -21,7 +21,8 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
     history.push({
       pathname: `/add-wallet/shop-transactions`,
       search: `?shopId=${shopId}&shopName=${shopName}&sellerId=${searchParams.get(
-        'sellerId'
+        // eslint-disable-next-line prettier/prettier
+        'sellerId',
       )}&companyName=${searchParams.get('companyName')}`,
     });
   };
@@ -53,7 +54,8 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
                   pathname: `/shop/profile/${params?.row?._id}`,
                   state: {
                     from: `${routeMatch?.path}?sellerId=${searchParams.get('sellerId')}&companyName=${searchParams.get(
-                      'companyName'
+                      // eslint-disable-next-line prettier/prettier
+                      'companyName',
                     )}`,
                     backToLabel: 'Back to Seller Transaction',
                   },
@@ -100,13 +102,19 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.productAmount}
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const totalProductAmount = params?.row?.summary?.orderValue?.productAmount;
+        const totalDiscount = params?.row?.summary?.orderValue?.totalDiscount;
+        const totalRewardAmount = params?.row?.summary?.orderValue?.totalRewardAmount;
+        const totalRewards = totalDiscount + totalRewardAmount;
+        const results = totalProductAmount - totalRewards;
+        return (
+          <Typography variant="body1">
+            {currency}
+            {(results || 0).toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       id: 4,
@@ -128,13 +136,18 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {params?.row?.summary?.totalDropGet < 0 ? '-' : ''}
-          {currency}
-          {Math.abs(params?.row?.summary?.totalDropGet || 0)?.toFixed(2)}
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const totalDropGet = params?.row?.summary?.totalDropGet;
+        const pointsCashback = params?.row?.summary?.orderValue?.pointsCashback;
+        const lyxaProfit = totalDropGet + pointsCashback;
+        return (
+          <Typography variant="body1">
+            {lyxaProfit < 0 ? '-' : ''}
+            {currency}
+            {Math.abs(lyxaProfit || 0)?.toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       id: 6,

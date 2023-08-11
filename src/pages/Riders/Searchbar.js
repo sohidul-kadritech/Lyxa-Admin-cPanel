@@ -3,6 +3,7 @@ import { Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { riderLiveStatusOptions, riderStatusOptions } from './helper';
@@ -12,7 +13,7 @@ import AXIOS from '../../network/axios';
 
 import StyledFormField from '../../components/Form/StyledFormField';
 
-export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAdd }) {
+export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAdd, onMapView }) {
   const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
@@ -37,7 +38,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
   return (
     <Stack direction="row" alignItems="center" gap="20px" pb={6.5}>
       <StyledSearchBar
-        fullWidth
+        sx={{ flex: 1 }}
         placeholder={searchPlaceHolder}
         onChange={(e) => {
           updateSearch(e);
@@ -91,6 +92,9 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       />
       <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
         Add
+      </Button>
+      <Button size="small" variant="contained" onClick={onMapView} startIcon={<LocationIcon />}>
+        Map View
       </Button>
     </Stack>
   );
