@@ -97,9 +97,15 @@ function GraphInfo({ graphType }) {
   useEffect(() => {
     if (data.length > 0) {
       const labelsData = data?.map((item) =>
-        item.date ? new Date(item?.date).toLocaleDateString('en-GB', options) : moment(item?.month, 'M').format('MMMM')
+        // eslint-disable-next-line prettier/prettier
+        item.date ? new Date(item?.date).toLocaleDateString('en-GB', options) : moment(item?.month, 'M').format('MMMM'),
       );
-      const seriesData = data?.map((item) => item[graphType]);
+      const seriesData = data?.map((item) => {
+        if (graphType !== 'earning') {
+          return item[graphType];
+        }
+        return item[graphType].toFixed(2);
+      });
       if (labelsData && seriesData) {
         const chartInfo = {
           labels: labelsData,

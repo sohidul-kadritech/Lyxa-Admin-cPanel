@@ -136,7 +136,7 @@ function SidebarZone({ setIsSideBarOpen, currentRowData }) {
             zoneName={currentRowData?.zoneName}
             theme={theme}
             setIsSideBarOpen={setIsSideBarOpen}
-            infoData={currentRowData.stats[statsTracker[currentTab]]}
+            infoData={currentRowData[statsTracker[currentTab]]}
             polygon={currentRowData?.zoneGeometry?.coordinates}
           />
         </TabPanel>

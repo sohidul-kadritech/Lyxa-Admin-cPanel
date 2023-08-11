@@ -4,30 +4,36 @@ import { useQuery } from 'react-query';
 import AppPagination from '../../components/Common/AppPagination2';
 import StyledTable from '../../components/Styled/StyledTable3';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
-import { createDataForTable, getZoneStatusColor } from './helper';
+import { getZoneStatusColor } from './helper';
 
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
 function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
+  // eslint-disable-next-line no-unused-vars
   const [loading, setIsloading] = useState(true);
+
+  // eslint-disable-next-line no-unused-vars
   const [tempAllZones, setTempAllZones] = useState([]);
+
   const [pageNo, setPageNo] = useState(1);
 
   const [searchedValue, setSearchedValue] = useState('');
 
   // eslint-disable-next-line no-unused-vars
   const [totalPage, setTotalPage] = useState(1);
+
   // eslint-disable-next-line no-unused-vars
   const [selectedPageSize, setSelectedPageSize] = useState(5);
+
   const theme = useTheme();
 
   // eslint-disable-next-line no-unused-vars
-  const getAllZones = useQuery(
-    [API_URL.GET_ALL_ZONE, { searchedValue, pageNo }],
+  const getMapoverView = useQuery(
+    [API_URL.ZONE_MAP_OVERVIEW, { searchedValue, pageNo }],
     () =>
-      AXIOS.get(API_URL.GET_ALL_ZONE, {
+      AXIOS.get(API_URL.ZONE_MAP_OVERVIEW, {
         params: {
           zoneStatus: 'active',
           page: pageNo,
@@ -37,22 +43,45 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
       }),
     {
       onSuccess: (data) => {
-        setIsloading(true);
-        if (data.status) {
+        if (data?.status) {
+          console.log('map over view: ', data?.data?.zones);
           setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-
-          // eslint-disable-next-line no-unused-vars
-          const filteredData = createDataForTable(data?.data?.zones).then((data) => {
-            setTempAllZones(data);
-            setIsloading(false);
-          });
-        } else {
-          setIsloading(false);
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
+
+  // eslint-disable-next-line no-unused-vars
+  // const getAllZones = useQuery(
+  //   [API_URL.GET_ALL_ZONE, { searchedValue, pageNo }],
+  //   () =>
+  //     AXIOS.get(API_URL.GET_ALL_ZONE, {
+  //       params: {
+  //         zoneStatus: 'active',
+  //         page: pageNo,
+  //         searchKey: searchedValue,
+  //         pageSize: selectedPageSize,
+  //       },
+  //     }),
+  //   {
+  //     onSuccess: (data) => {
+  //       setIsloading(true);
+  //       if (data?.status) {
+  //         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
+
+  //         // eslint-disable-next-line no-unused-vars
+  //         const filteredData = createDataForTable(data?.data?.zones).then((data) => {
+  //           setTempAllZones(data);
+  //           setIsloading(false);
+  //         });
+  //       } else {
+  //         setIsloading(false);
+  //       }
+  //     },
+  //     // eslint-disable-next-line prettier/prettier
+  //   },
+  // );
 
   const columns = [
     {
@@ -93,7 +122,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {row?.stats?.users?.length || 0}
+            {row?.users?.length || 0}
           </Typography>
         </Box>
       ),
@@ -113,7 +142,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {row?.stats?.orders?.length || 0}
+            {row?.orders?.length || 0}
           </Typography>
         </Box>
       ),
@@ -133,7 +162,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {row?.stats?.riders?.length || 0}
+            {row?.riders?.length || 0}
           </Typography>
         </Box>
       ),
@@ -153,7 +182,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           }}
         >
           <Typography sx={{ whiteSpace: 'no-wrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {row?.stats?.shops?.length || 0}
+            {row?.shops?.length || 0}
           </Typography>
         </Box>
       ),
@@ -181,14 +210,15 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
           marginBottom: '30px 0px',
         }}
       >
-        {loading ? (
+        {getMapoverView?.isLoading ? (
           <TablePageSkeleton row={4} column={5} />
         ) : (
           <StyledTable
             columns={columns}
-            rows={tempAllZones || []}
+            rows={getMapoverView?.data?.data?.zones || []}
             onRowClick={(data) => {
               setIsSideBarOpen(true);
+              console.log('row data', data?.row);
               setCurrentRowData(data?.row);
             }}
             getRowId={(row) => row?._id}

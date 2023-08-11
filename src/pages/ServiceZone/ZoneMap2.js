@@ -66,7 +66,7 @@ function ZoneMap2({ infoData, polygon, zoneName }) {
           <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
             <Stack direction="row" gap="5.2px" alignItems="center">
               {' '}
-              <Avatar src={data?.shopLogo || data?.image} width="36px" height="36px"></Avatar>
+              <Avatar src={data?.shopLogo || data?.image} width="16px" height="16px"></Avatar>
               <Typography sx={{ textTransform: 'capitalize' }}>{getMarkerLabel(data)}</Typography>
             </Stack>
           </Tooltip>
