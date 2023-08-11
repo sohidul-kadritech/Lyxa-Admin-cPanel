@@ -1,9 +1,10 @@
 // third party
-import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
-// import { useState } from 'react';
+import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import IncreaseDecrease from '../../../components/StyledCharts/IncreaseDecrease';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
@@ -13,16 +14,16 @@ import AXIOS from '../../../network/axios';
 
 const getQueryParamsInit = (shopId) => ({
   page: 1,
-  pageSize: 20,
+  pageSize: 5,
   shopId,
 });
 
 export default function ItemRanking({ ...props }) {
   const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
-  const [queryParams] = useState(getQueryParamsInit(currentUser?.shop?._id));
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit(currentUser?.shop?._id));
 
-  const itemsQuery = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
+  const query = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
     AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING, {
       params: queryParams,
     })
@@ -87,37 +88,46 @@ export default function ItemRanking({ ...props }) {
     },
   ];
 
+  const getRowNo = (index) => {
+    const prev = (queryParams.page - 1) * queryParams.pageSize;
+    return prev + index + 1;
+  };
+
   return (
     <Grid xs={12} {...props}>
       <StyledBox padding>
         <Typography variant="body1" fontWeight={600} pb={5}>
           Item Ranking
         </Typography>
-        <StyledTable
-          columns={column}
-          rows={
-            itemsQuery?.data?.data?.items?.map((row, index) => ({
-              ...row,
-              rowNumber: index + 1,
-            })) || []
-          }
-          getRowId={(row) => row?.product?._id}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Items found
-              </Stack>
-            ),
-          }}
-        />
+        {!query?.isLoading && (
+          <Box>
+            <StyledTable
+              columns={column}
+              rows={
+                query?.data?.data?.items?.map((row, index) => ({
+                  ...row,
+                  rowNumber: getRowNo(index),
+                })) || []
+              }
+              getRowId={(row) => row?.product?._id}
+              rowHeight={71}
+              components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    No products ranked
+                  </Stack>
+                ),
+              }}
+            />
+            <TablePagination
+              currentPage={queryParams?.page}
+              lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
+            />
+          </Box>
+        )}
+        {query?.isLoading && <TableSkeleton columns={['text', 'text', 'text', 'text', 'text']} rows={7} />}
       </StyledBox>
     </Grid>
   );
 }
-
-/* <TablePagination
-          currentPage={queryParams?.page}
-          lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
-          totalPage={queryParams?.totalPage}
-/> */
