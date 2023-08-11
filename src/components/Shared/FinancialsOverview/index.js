@@ -16,7 +16,6 @@ import StyledTabs2 from '../../Styled/StyledTab2';
 import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../StyledCharts/InfoCard';
 import MarketingSpentChart from './MarketingSpentChart';
-import OrderAmountChart from './OrderAmontChat';
 import PayoutDetails from './PayoutDetails';
 import PriceItem from './PriceItem';
 import ProfitChart from './ProfitChart';
@@ -69,7 +68,7 @@ export default function Overview({ viewUserType }) {
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
-      <OrderAmountChart viewUserType={viewUserType} />
+      {/* <OrderAmountChart viewUserType={viewUserType} /> */}
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
           <Button
