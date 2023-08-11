@@ -89,7 +89,6 @@ export default function PaymentSummary({ order = {} }) {
           label="Cash"
           value={summary?.baseCurrency_cash}
           valueSecondary={summary?.baseCurrency_cash * avg_rate}
-          showIfZero
           isTotal
         />
 
@@ -147,9 +146,10 @@ export default function PaymentSummary({ order = {} }) {
 
         {/* butler order */}
         <SummaryItem
+          console={console.log('butler cancel', order?.orderCancel, order?.userCancelTnx)}
           label="Total Refunded"
           value={total_base}
-          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx))}
+          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx?.length))}
           showBaseOnly
           showIfZero
           isTotal

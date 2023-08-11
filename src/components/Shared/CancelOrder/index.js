@@ -284,7 +284,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
             {order?.orderFor === 'global' && maxAmounts?.deliveryBoy > 0 && (
               <StyledFormField
                 labelComponent={
-                  <TitleWithToolTip title={`Delivery boy Earning: ${maxAmounts?.deliveryBoy}`} tooltip="Rider Profit" />
+                  <TitleWithToolTip title={`Rider Earning: ${maxAmounts?.deliveryBoy}`} tooltip="Rider Profit" />
                 }
                 intputType="text"
                 inputProps={{

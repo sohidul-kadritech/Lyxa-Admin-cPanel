@@ -78,7 +78,7 @@ export default function ItemRanking({ ...props }) {
     },
     {
       id: 5,
-      headerName: 'SALES',
+      headerName: `SALES (${currency})`,
       field: 'totalAmount',
       flex: 1,
       align: 'right',

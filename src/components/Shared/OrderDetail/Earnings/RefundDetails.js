@@ -36,8 +36,10 @@ export default function RefundDetails({ order = {} }) {
             isNegative
             showIfZero
           />
+
           <SummaryItem
             pt={3.5}
+            pb={0}
             label="Total Refund"
             value={order?.userRefundTnx?.[0]?.amount}
             valueSecondary={order?.userRefundTnx?.[0]?.secondaryCurrency_amount}

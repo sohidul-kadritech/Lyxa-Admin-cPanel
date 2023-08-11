@@ -17,6 +17,8 @@ export const getCancelRefundTypeOptions = (order) => {
   if (order?.orderFor === 'global' && order?.orderActivity?.length <= 2)
     return options.filter((opt) => opt.value !== 'partial');
 
+  if (order?.isButler) return options.filter((opt) => opt.value !== 'partial');
+
   return options;
 };
 
@@ -36,7 +38,7 @@ export const getRefundMaxAmounts = (order) => {
     return {
       deliveryBoy,
       adminRiderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromDelivery, 0),
-      adminVat: order?.vatAmount?.baseCurrency_vatForAdmin,
+      adminVat: order?.summary?.baseCurrency_vat,
     };
   }
 
@@ -65,6 +67,8 @@ export const cancelOrderInit = {
 };
 
 export const getTotalRefundAmount = ({ maxAmounts, cancelData }) => {
+  console.log({ maxAmounts });
+
   if (cancelData?.refundType === 'full') {
     return Object.values(maxAmounts).reduce((a, b) => a + Number(b), 0);
   }

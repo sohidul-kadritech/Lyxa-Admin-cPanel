@@ -15,6 +15,10 @@ export default function Overview() {
   return (
     <Grid container spacing={6.5}>
       <CommonAreaChart
+        gridProps={{
+          sm: 12,
+          lg: 6,
+        }}
         title="Total Orders"
         api={Api.SHOP_DASHBOARD_ORDER_GRAPH}
         params={{
