@@ -23,10 +23,14 @@ export default function PaymentSummary({ order = {} }) {
     summary?.secondaryCurrency_couponDiscountAmount;
 
   const avg_rate = total_secondary / total_base;
+
   const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
+  const refundSecondary = order?.userRefundTnx?.reduce((a, b) => a + b?.secondaryCurrency_amount, 0);
+
   const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
 
   const refund_amount = refund || cancel;
+  const refund_amount_secondary = refund ? refundSecondary : cancel;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
@@ -134,8 +138,8 @@ export default function PaymentSummary({ order = {} }) {
         <SummaryItem
           label="Total Refunded"
           value={refund_amount}
+          valueSecondary={refund_amount_secondary}
           hide={!(refund || cancel)}
-          showBaseOnly
           showIfZero
           isTotal
           pb={0}

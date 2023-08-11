@@ -11,6 +11,8 @@ import Transactions from './Transactions';
 export default function UserDetails({ user }) {
   const [modalOpen, setModalOpen] = useState(false);
 
+  console.log({ user });
+
   return (
     <Stack gap={5} pb={2.5}>
       <AccountInformation user={user} />

@@ -4,6 +4,7 @@ import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function RefundDetails({ order = {} }) {
   const adminExchangeRate = order?.adminExchangeRate;
+  console.log('best-shop', order?.userRefundTnx?.[0]);
 
   return (
     <StyledOrderDetailBox title="Refund After Delivered">
@@ -14,35 +15,33 @@ export default function RefundDetails({ order = {} }) {
         <Box pt={3.5}>
           <SummaryItem
             label="Admin Cut"
-            value={order?.userRefundTnx?.[0]?.adminCut}
+            value={order?.userRefundTnx?.[0]?.baseCurrency_adminCut}
+            valueSecondary={order?.userRefundTnx?.[0]?.secondaryCurrency_adminCut}
             isNegative
             showIfZero
-            showBaseOnly
           />
 
           <SummaryItem
             label="Admin VAT Cut"
-            value={order?.userRefundTnx?.[0]?.adminVatCut}
+            value={order?.userRefundTnx?.[0]?.baseCurrency_adminVatCut}
+            valueSecondary={order?.userRefundTnx?.[0]?.secondaryCurrency_adminVatCut}
             isNegative
             showIfZero
-            showBaseOnly
           />
 
           <SummaryItem
-            label="Rider Cut"
-            value={order?.userRefundTnx?.[0]?.deliveryBoyCut}
+            label="Shop Cut"
+            value={order?.userRefundTnx?.[0]?.baseCurrency_shopCut}
+            valueSecondary={order?.userRefundTnx?.[0]?.secondaryCurrency_shopCut}
             isNegative
             showIfZero
-            showBaseOnly
           />
-
-          <SummaryItem label="Shop Cut" value={order?.userRefundTnx?.[0]?.shopCut} isNegative showIfZero showBaseOnly />
           <SummaryItem
             pt={3.5}
             label="Total Refund"
             value={order?.userRefundTnx?.[0]?.amount}
+            valueSecondary={order?.userRefundTnx?.[0]?.secondaryCurrency_amount}
             exchangeRate={adminExchangeRate}
-            showBaseOnly
             isTotal
           />
         </Box>
