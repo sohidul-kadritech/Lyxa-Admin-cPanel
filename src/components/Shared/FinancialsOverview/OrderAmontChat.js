@@ -57,6 +57,7 @@ export default function OrderAmountChart({ viewUserType }) {
       startDateKey="startDate"
       endDateKey="endDate"
       title="Total Order Amount"
+      lg={6}
       sm={12}
     >
       <StyledAreaChart data={areaChartData} />

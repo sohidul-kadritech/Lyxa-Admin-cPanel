@@ -16,7 +16,8 @@ function OrderTrackingModal({ onClose, currentOrder }) {
       shopExchangeRate: currentOrder?.shopExchangeRate,
       adminExchangeRate: currentOrder?.adminExchangeRate,
     }),
-    []
+    // eslint-disable-next-line prettier/prettier
+    [],
   );
 
   return (

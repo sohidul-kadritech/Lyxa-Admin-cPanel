@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
@@ -8,7 +7,6 @@ import ViewUserInfoItem from '../../components/Common/ViewUserInfoItems';
 
 export default function ViewAccountInfo({ onClose, user = {} }) {
   console.log(user);
-  const address = user?.address?.find((adrs) => adrs.primary) || user?.address?.at(0) || user?.address[0];
 
   return (
     <Box
@@ -25,7 +23,6 @@ export default function ViewAccountInfo({ onClose, user = {} }) {
             background: '#fff',
             padding: '25px 0px 40px',
             zIndex: '999',
-            // marginBottom: '39px',
           }}
         >
           <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -61,13 +58,32 @@ export default function ViewAccountInfo({ onClose, user = {} }) {
             <ViewUserInfoItem title="Account Name" value={user?.name} />
             <ViewUserInfoItem title="E-mail" value={user?.email} valueSx={{ textTransform: 'normal' }} />
             <ViewUserInfoItem title="Phone Number" value={user?.phone_number} />
-            <ViewUserInfoItem title="Address" value={address?.address || 'No address found'} />
+            {user?.address?.length ? (
+              <Stack mb={7} gap="10px">
+                <Typography variant="body4" color="text.secondary2">
+                  Address
+                </Typography>
+                <Stack gap={4}>
+                  {user?.address?.map((item) => (
+                    <Typography
+                      key={item?.id}
+                      variant="inherit"
+                      sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}
+                    >
+                      {item?.address}
+                    </Typography>
+                  ))}
+                </Stack>
+              </Stack>
+            ) : (
+              <ViewUserInfoItem title="Address" value="No address found" />
+            )}
             {user?.dob && <ViewUserInfoItem title="Date of Birth" value={moment(user?.dob).format('MMM DD, YYYY')} />}
             {user?.gender && <ViewUserInfoItem title="Gender" value={user?.gender} />}
             <ViewUserInfoItem title="Join Date" value={moment(user?.createdAt).format('MMM DD, YYYY')} />
             <ViewUserInfoItem title="Status" value={user?.status} />
             <ViewUserInfoItem title="Lyxa Balance" value={user?.tempBalance?.toFixed(2)} />
-            <ViewUserInfoItem title="Reward Points" value={user?.tempRewardPoints} />
+            <ViewUserInfoItem title="Reward Points" value={Math.round(user?.tempRewardPoints)} />
             <ViewUserInfoItem title="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} />
             <ViewUserInfoItem title="Register Type" value={user?.registerType} />
           </Box>

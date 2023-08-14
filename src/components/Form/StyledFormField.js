@@ -26,7 +26,15 @@ function Wrapper({ tooltip, children }) {
   return children;
 }
 
-export default function StyledFormField({ containerProps, label, labelProps, intputType, inputProps, tooltip }) {
+export default function StyledFormField({
+  containerProps,
+  label,
+  labelComponent,
+  labelProps,
+  intputType,
+  inputProps,
+  tooltip,
+}) {
   const theme = useTheme();
   return (
     <Wrapper tooltip={tooltip}>
@@ -53,6 +61,8 @@ export default function StyledFormField({ containerProps, label, labelProps, int
             {label}
           </Typography>
         )}
+
+        {labelComponent && labelComponent}
 
         {/* text field */}
         {intputType === 'text' && (

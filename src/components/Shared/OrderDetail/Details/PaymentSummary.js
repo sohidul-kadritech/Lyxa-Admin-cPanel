@@ -23,10 +23,15 @@ export default function PaymentSummary({ order = {} }) {
     summary?.secondaryCurrency_couponDiscountAmount;
 
   const avg_rate = total_secondary / total_base;
-  const refund = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
-  const cancel = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
 
-  const refund_amount = refund || cancel;
+  const refundBase = order?.userRefundTnx?.reduce((a, b) => a + b?.amount, 0);
+  const refundSecondary = order?.userRefundTnx?.reduce((a, b) => a + b?.secondaryCurrency_amount, 0);
+
+  const cancelBase = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
+  const cancelSecondary = order?.userCancelTnx?.reduce((a, b) => a + b?.secondaryCurrency_amount, 0);
+
+  // const refund_amount = refund || cancel;
+  // const refund_amount_secondary = refund ? refundSecondary : cancel;
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
@@ -85,7 +90,6 @@ export default function PaymentSummary({ order = {} }) {
           label="Cash"
           value={summary?.baseCurrency_cash}
           valueSecondary={summary?.baseCurrency_cash * avg_rate}
-          showIfZero
           isTotal
         />
 
@@ -130,27 +134,41 @@ export default function PaymentSummary({ order = {} }) {
           </Box>
         )}
 
-        {/* normal order */}
-        <SummaryItem
-          label="Total Refunded"
-          value={refund_amount}
-          hide={!(refund || cancel)}
-          showBaseOnly
-          showIfZero
-          isTotal
-          pb={0}
-        />
+        {/* normal order refund */}
+        {!order?.isButler && order?.userRefundTnx?.length ? (
+          <SummaryItem
+            label="Total Refunded"
+            value={refundBase}
+            valueSecondary={refundSecondary}
+            showIfZero
+            isTotal
+            pb={0}
+          />
+        ) : null}
 
-        {/* butler order */}
-        <SummaryItem
-          label="Total Refunded"
-          value={total_base}
-          hide={!(order?.isButler && (order?.orderCancel || order?.userCancelTnx))}
-          showBaseOnly
-          showIfZero
-          isTotal
-          pb={0}
-        />
+        {/* normal order user cancel */}
+        {!order?.isButler && order?.userCancelTnx?.length ? (
+          <SummaryItem
+            label="Total Refunded"
+            value={cancelBase}
+            valueSecondary={cancelSecondary}
+            showIfZero
+            isTotal
+            pb={0}
+          />
+        ) : null}
+
+        {/* butler refund */}
+        {order?.isButler && (order?.orderCancel || order?.userCancelTnx?.length) ? (
+          <SummaryItem
+            label="Total Refunded"
+            value={total_base}
+            valueSecondary={total_secondary}
+            showIfZero
+            isTotal
+            pb={0}
+          />
+        ) : null}
       </Box>
     </StyledOrderDetailBox>
   );

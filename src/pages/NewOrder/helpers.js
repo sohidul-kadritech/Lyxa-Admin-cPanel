@@ -5,23 +5,25 @@ import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 
-export function TitleWithToolTip({ title, tooltip }) {
+export function TitleWithToolTip({ title, tooltip, sx }) {
   return (
-    <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={2}>
+    <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={2} sx={sx}>
       <Typography variant="body1" fontWeight={600}>
         {title}
       </Typography>
-      <Tooltip
-        arrow
-        title={tooltip}
-        sx={{
-          '.MuiTooltip-popper': {
-            zIndex: '9999999 !important',
-          },
-        }}
-      >
-        <InfoIcon />
-      </Tooltip>
+      {tooltip && (
+        <Tooltip
+          arrow
+          title={tooltip}
+          sx={{
+            '.MuiTooltip-popper': {
+              zIndex: '9999999 !important',
+            },
+          }}
+        >
+          <InfoIcon />
+        </Tooltip>
+      )}
     </Stack>
   );
 }
@@ -203,9 +205,8 @@ export const getThreedotMenuOptions = (order, userType) => {
 export const getRefundedVatForAdmin = (adminVat, value, vatPercentage) => {
   const refundedVat = (vatPercentage / 100) * value;
 
-  if (refundedVat > adminVat) {
-    return Number(adminVat.toFixed(2));
-  }
+  if (refundedVat > adminVat) return Number(adminVat.toFixed(2));
+
   if (refundedVat <= adminVat) return Number(refundedVat.toFixed(2));
 
   return 0;

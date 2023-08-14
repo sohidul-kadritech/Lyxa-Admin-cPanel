@@ -31,6 +31,7 @@ export const getRiderInit = (riderFor, riderShop) => ({
   confirm_password: '',
   number: '',
   deliveryBoyAddress: '',
+  deliveryBoyNationality: '',
   image: [],
   vehicleNumber: '',
   nationalIdDocument: [],
@@ -49,6 +50,7 @@ export const validateRider = (rider, isEditRider) => {
     status: false,
     msg: null,
   };
+
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 
   if (!rider?.name?.trim()) {
@@ -83,6 +85,11 @@ export const validateRider = (rider, isEditRider) => {
 
   if (!rider?.number) {
     status.msg = 'Rider number cannot be empty!';
+    return status;
+  }
+
+  if (!rider?.deliveryBoyNationality?.trim()) {
+    status.msg = 'Rider nationality cannot be empty!';
     return status;
   }
 
@@ -170,6 +177,7 @@ export const createRiderData = async (rider) => {
     password: rider?.password || undefined,
     number: rider?.number?.trim(),
     deliveryBoyAddress: rider?.deliveryBoyAddress?.trim(),
+    deliveryBoyNationality: rider?.deliveryBoyNationality?.trim(),
     image,
     vehicleNumber: rider?.vehicleNumber?.trim(),
     nationalIdDocument,
@@ -193,7 +201,7 @@ export const convertEditRiderData = (rider, riderFor, riderShop) => ({
   nationalIdDocument: [{ preview: rider?.nationalIdDocument }],
   vehicleRegistrationDocument: [{ preview: rider?.vehicleRegistrationDocument }],
   deliveryBoyAddress: rider?.address,
-  zoneId: rider?.zone,
+  zoneId: rider?.zone?._id,
   shopId: riderFor === 'shop' ? riderShop : null,
   password: '',
   id: rider?._id,

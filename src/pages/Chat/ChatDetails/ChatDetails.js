@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from 'react-super-responsive-table';
@@ -37,9 +38,11 @@ function ChatDetails() {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { status, loading, selectedMsg, isSendingMsg, isChatClose, isChatAccepted } = useSelector(
-    (state) => state.chatReducer
+    // eslint-disable-next-line prettier/prettier
+    (state) => state.chatReducer,
   );
   const { socket } = useSelector((state) => state.socketReducer);
+
   const { access_token } = getCookiesAsObject();
 
   const [request, setRequest] = useState([]);
@@ -130,7 +133,7 @@ function ChatDetails() {
       sendMsgToUser({
         id: requestId,
         message,
-      })
+      }),
     );
   };
 
