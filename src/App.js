@@ -81,10 +81,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!socket && userType) {
+    if (userType) {
       dispatch(socketConnect());
     }
-  }, [socket, userType]);
+  }, [userType]);
 
   useEffect(() => {
     let listenerID;
