@@ -15,8 +15,6 @@ import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 
 export default function UserDetails({ user = {} }) {
-  console.log({ user });
-
   return (
     <Box
       pb={12}
@@ -53,7 +51,7 @@ export default function UserDetails({ user = {} }) {
       <ProfileSidebarInfo label="Join Date" value={moment(user?.createdAt).format('MMM DD, YYYY')} icon={Calender} />
       <ProfileSidebarInfo label="Status" value={user?.status} icon={Warning} />
       <ProfileSidebarInfo label="Lyxa Balance" value={(user?.tempBalance || 0)?.toFixed(2)} icon={Scale} />
-      <ProfileSidebarInfo label="Reward Points" value={(user?.tempRewardPoints || 0)?.toFixed(2)} icon={Reward} />
+      <ProfileSidebarInfo label="Reward Points" value={Math.round(user?.tempRewardPoints)} icon={Reward} />
       <ProfileSidebarInfo label="Number Verified" value={user?.phoneVerify ? 'Yes' : 'No'} icon={Check} />
       <ProfileSidebarInfo label="Register Type" value={user?.registerType} icon={Register} />
     </Box>

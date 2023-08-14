@@ -32,18 +32,16 @@ export default function ProfitDetails({ order = {} }) {
     order?.orderStatus === 'cancelled' &&
     !order?.userCancelTnx?.length &&
     !order?.isRefundedAfterDelivered &&
-    order?.refundType !== 'none'
+    order?.paymentMethod === 'cash'
   ) {
     hideExtraFields = true;
     cashCanceled = true;
   }
 
-  if (order?.refundType === 'none') {
+  if (order?.refundType === 'none' && order?.paymentMethod !== 'cash') {
     hideExtraFields = true;
     noRefund = true;
   }
-
-  console.log(cashCanceled);
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">
@@ -228,14 +226,8 @@ export default function ProfitDetails({ order = {} }) {
           {/* for no refund orders */}
           <SummaryItem
             label="Total Lyxa Profit"
-            value={
-              order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card - order?.summary?.baseCurrency_vat
-            }
-            valueSecondary={
-              order?.summary?.secondaryCurrency_wallet +
-              order?.summary?.secondaryCurrency_card -
-              order?.summary?.secondaryCurrency_vat
-            }
+            value={total_base}
+            valueSecondary={total_secondary}
             hide={!noRefund}
             showIfZero
             isTotal
@@ -263,15 +255,7 @@ export default function ProfitDetails({ order = {} }) {
             showIfZero
           />
 
-          <SummaryItem
-            label="Total Refunded"
-            value={0}
-            isTotal
-            pb={0}
-            hide={!hideExtraFields}
-            showBaseOnly
-            showIfZero
-          />
+          <SummaryItem label="Refund Type" value="None" isTotal pb={0} hide={!noRefund} />
         </Box>
       </Box>
     </StyledOrderDetailBox>

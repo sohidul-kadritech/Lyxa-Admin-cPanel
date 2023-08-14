@@ -54,7 +54,6 @@ export const GET_SINGLE_BANNER = `${ADMIN_ENDPOINT}/banner/`;
 export const EDIT_BANNER = `${ADMIN_ENDPOINT}/banner/update`;
 
 // ADMIN
-
 export const ADD_ADMIN = `${ADMIN_ENDPOINT}/admins/add-admin`;
 export const GET_ALL_ADMIN = `${ADMIN_ENDPOINT}/admins/`;
 export const DELETE_ADMIN = `${ADMIN_ENDPOINT}/admins/delete`;
@@ -258,6 +257,8 @@ export const RIDER_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-d
 
 export const RIDER_RECEIVED_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/cash-received-from-delivery-boy`;
 
+export const RIDER_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/current-location`;
+
 // ORDERS
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
@@ -401,3 +402,4 @@ export const CREATE_ZONE = `${ADMIN_ENDPOINT}/zone/add`;
 export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
 export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
 export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;
+export const ZONE_MAP_OVERVIEW = `${ADMIN_ENDPOINT}/zone/map-overview`;

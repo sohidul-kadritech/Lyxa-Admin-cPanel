@@ -55,6 +55,8 @@ export default function OngoingTickets() {
       updateSelectedChatOrder(newData);
   };
 
+  console.log('query', query?.data?.data);
+
   return (
     <Box
       sx={{
@@ -100,7 +102,6 @@ export default function OngoingTickets() {
             <Tab label="Orders Ticket" />
             <Tab label="Account Tickets" />
           </Tabs>
-          {console.log('page', query?.data?.data?.paginate)}
 
           <Box pt={9}>
             <ChatList

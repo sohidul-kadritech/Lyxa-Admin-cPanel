@@ -9,13 +9,14 @@ import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
+import OrderCancel from '../../components/Shared/CancelOrder';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import RefundOrder from '../../components/Shared/RefundOrder';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
-import OrderCancel from '../NewOrder/OrderCancel';
-import RefundOrder from '../NewOrder/RefundOrder';
+// import OrderCancel from '../NewOrder/OrderCancel';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
 import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
 import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
@@ -395,22 +396,28 @@ export default function Table({
         sx={{ zIndex: '10 !important' }}
       >
         <Box>
-          <OrderCancel setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+          <OrderCancel order={currentOrder} onClose={() => setOpenCancelModal(false)} />
+          {/* <OrderCancel
+            currentOrder={currentOrder}
+            setOpenCancelModal={() => setOpenCancelModal(false)}
+            order={currentOrder}
+            onClose={() => setOpenCancelModal(false)}
+          /> */}
         </Box>
       </Modal>
       {/* rerfund order */}
       <Modal
         open={openRefundModal}
+        sx={{ zIndex: '10 !important' }}
         onClose={() => {
           setOpenRefundModal(!openRefundModal);
         }}
-        sx={{ zIndex: '10 !important' }}
       >
         <Box>
           <RefundOrder
-            currentOrder={currentOrder}
+            order={currentOrder}
             onClose={() => {
-              setOpenRefundModal(false);
+              setOpenRefundModal(!openRefundModal);
             }}
           />
         </Box>

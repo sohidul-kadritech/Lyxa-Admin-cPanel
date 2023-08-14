@@ -10,6 +10,7 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
   const { general } = useGlobalContext();
   const routeMatch = useRouteMatch();
   const theme = useTheme();
+  console.log('data', data);
   const currency = general?.currency?.symbol;
 
   const history = useHistory();
@@ -87,13 +88,20 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {' '}
-          {currency}
-          {params?.row?.summary?.orderValue?.productAmount.toFixed(2)}
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const totalProductAmount = params?.row?.summary?.orderValue?.productAmount;
+        const totalDiscount = params?.row?.summary?.orderValue?.totalDiscount;
+        const totalRewardAmount = params?.row?.summary?.orderValue?.totalRewardAmount;
+        const totalRewards = totalDiscount + totalRewardAmount;
+        const results = totalProductAmount - totalRewards;
+
+        return (
+          <Typography variant="body1">
+            {currency}
+            {(results || 0).toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       id: 4,
@@ -117,13 +125,18 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
       sortable: false,
       flex: 1,
       minWidth: 100,
-      renderCell: (params) => (
-        <Typography variant="body1">
-          {params?.row?.summary?.totalDropGet < 0 ? '-' : ''}
-          {currency}
-          {Math.abs(params?.row?.summary?.totalDropGet || 0)?.toFixed(2)}
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const totalDropGet = params?.row?.summary?.totalDropGet;
+        const pointsCashback = params?.row?.summary?.orderValue?.pointsCashback;
+        const lyxaProfit = totalDropGet + pointsCashback;
+        return (
+          <Typography variant="body1">
+            {lyxaProfit < 0 ? '-' : ''}
+            {currency}
+            {Math.abs(lyxaProfit || 0)?.toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       id: 6,

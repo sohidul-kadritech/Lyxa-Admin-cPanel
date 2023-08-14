@@ -4,6 +4,7 @@
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import ButlerLocation from '../../../assets/icons/butler-location.png';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
@@ -11,6 +12,7 @@ import GroceryLocation from '../../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import RiderLocation from '../../../assets/icons/riderPin.png';
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import './gmap.css';
 import { dummyLocationRider, getTitleForMarker } from './helpers';
 
@@ -32,6 +34,11 @@ let deltaLat;
 let deltaLng;
 
 export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, orderType = '' }) {
+  const { socket } = useSelector((state) => state.socketReducer);
+
+  const { access_token } = getCookiesAsObject();
+
+  const [riderLoc, setRiderLoc] = useState({});
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState('');
@@ -56,6 +63,27 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       },
     });
   };
+
+  useEffect(() => {
+    if (order?._id && socket) {
+      socket.emit('join_room', { room: order?._id, data: { access_token } });
+
+      socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
+        console.log('socket data', data);
+        setRiderLoc(() => {
+          console.log('data', data);
+          return data;
+        });
+      });
+    } else {
+      console.log('socket for deliveryboy else', socket);
+    }
+    return () => {
+      socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
+    };
+  }, [order?._id, socket]);
+
+  console.log('riderLoc', riderLoc);
 
   useEffect(() => {
     let isMounted = true;

@@ -7,7 +7,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import Customers from '../../components/Shared/Customers';
 import Operations from '../../components/Shared/Operations';
 import Greeting from './Greeting';
-import Orders from './Orders';
+import Overview from './Overview';
 
 export default function ShopDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -31,14 +31,14 @@ export default function ShopDashboard() {
             },
           }}
         >
-          <Tab label="Orders" />
+          <Tab label="Overview" />
           <Tab label="Customers" />
           <Tab label="Operations" />
         </Tabs>
       </Stack>
       <Box pt={7.5}>
         <TabPanel index={0} value={currentTab} noPadding>
-          <Orders />
+          <Overview />
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
           <Customers viewUserType="shop" />

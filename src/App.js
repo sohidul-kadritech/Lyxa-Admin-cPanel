@@ -16,13 +16,13 @@ import CircularLoader from './components/CircularLoader';
 // Import scss
 import './assets/scss/theme.scss';
 import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
-import { incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
+import socketServices from './common/socketService';
 import { useGlobalContext } from './context';
 import { successMsg } from './helpers/successMsg';
 import * as Api from './network/Api';
@@ -30,6 +30,7 @@ import AXIOS from './network/axios';
 
 export default function App() {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
   const { userType } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
@@ -81,27 +82,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!socket && userType) {
-      dispatch(socketConnect());
-    }
-  }, [socket, userType]);
-
-  useEffect(() => {
-    let listenerID;
-
-    if (socket) {
-      listenerID = socket.on('user_send_chat_request', (data) => {
-        dispatch(incrementOpenChats());
-        return successMsg(`New chat request from ${data?.user?.name}`, 'success');
+    dispatch(socketConnect());
+    if (userType) {
+      socketServices?.on('user_send_chat_request', (data) => {
+        successMsg(`New chat request from ${data?.user?.name}`, 'success');
+        queryClient.invalidateQueries(Api.ONGOING_CHATS);
       });
     }
 
     return () => {
-      if (socket) {
-        socket.off('user_send_chat_request', listenerID);
-      }
+      socketServices?.removeListener(`user_send_chat_request`);
     };
-  }, [socket]);
+  }, [userType]);
 
   return (
     <Box>
