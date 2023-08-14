@@ -32,13 +32,13 @@ export default function ProfitDetails({ order = {} }) {
     order?.orderStatus === 'cancelled' &&
     !order?.userCancelTnx?.length &&
     !order?.isRefundedAfterDelivered &&
-    order?.refundType !== 'none'
+    order?.paymentMethod === 'cash'
   ) {
     hideExtraFields = true;
     cashCanceled = true;
   }
 
-  if (order?.refundType === 'none') {
+  if (order?.refundType === 'none' && order?.paymentMethod !== 'cash') {
     hideExtraFields = true;
     noRefund = true;
   }
@@ -255,7 +255,7 @@ export default function ProfitDetails({ order = {} }) {
             showIfZero
           />
 
-          <SummaryItem label="Refund Type" value="None" isTotal pb={0} hide={!hideExtraFields} />
+          <SummaryItem label="Refund Type" value="None" isTotal pb={0} hide={!noRefund} />
         </Box>
       </Box>
     </StyledOrderDetailBox>
