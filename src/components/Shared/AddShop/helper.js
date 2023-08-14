@@ -35,6 +35,8 @@ export const statusOptions = [
 export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
 
+  console.log('clone', clone);
+
   return {
     ...clone,
     phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+961${shop?.phone_number}`,
@@ -96,6 +98,11 @@ export const validateShopDetails = (shopData, isEditShop, adminType) => {
   }
   if (!shopData?.shopAddress?.address) {
     status.msg = 'Please provide shop address';
+    return status;
+  }
+
+  if (!shopData?.shopZone) {
+    status.msg = 'Please assigned a zone for this shop';
     return status;
   }
 
@@ -218,6 +225,8 @@ export const createEditShopData = async (shopData) => {
     };
   }
 
+  console.log('shopData?.shopZone', shopData?.shopZone);
+
   return {
     id: shopData?._id,
     shopName: shopData?.shopName,
@@ -236,6 +245,7 @@ export const createEditShopData = async (shopData) => {
     // shopAddress: {
     //   ...shopData?.address,
     // },
+    shopZone: shopData?.shopZone,
     shopLogo,
     shopBanner,
   };
@@ -291,6 +301,7 @@ export const updateShopData = (oldShop, newShop) => {
   oldShop.bank_postal_code = newShop?.bank_postal_code || oldShop?.bank_postal_code;
   oldShop.bank_address = newShop?.bank_address || oldShop?.bank_address;
   oldShop.account_swift = newShop?.account_swift || oldShop?.account_swift;
+  oldShop.shopZone = newShop?.shopZone || oldShop?.shopZone;
 };
 
 export const shopNormalHours = [
@@ -417,3 +428,11 @@ export const shopInit = (sellerId) => ({
   bank_postal_code: '',
   account_swift: '',
 });
+
+export const getZoneDataFromLatLng = (zones = []) => {
+  if (zones.length) {
+    return zones.map((zone) => ({ label: zone?.zoneName, value: zone?._id }));
+  }
+
+  return [{ label: 'No zone found', value: '' }];
+};
