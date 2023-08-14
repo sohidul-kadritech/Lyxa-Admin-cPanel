@@ -15,8 +15,6 @@ import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 
 export default function UserDetails({ user = {} }) {
-  console.log({ user });
-
   return (
     <Box
       pb={12}
