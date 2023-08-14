@@ -30,29 +30,37 @@ export default function PaymentSummary({ order = {} }) {
   const cancelBase = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
   const cancelSecondary = order?.userCancelTnx?.reduce((a, b) => a + b?.secondaryCurrency_amount, 0);
 
-  // const refund_amount = refund || cancel;
-  // const refund_amount_secondary = refund ? refundSecondary : cancel;
+  console.log({ summary });
 
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
-        <SummaryItem
-          label={order?.isButler ? 'EST item(s) price' : 'Subtotal'}
-          value={order?.summary?.baseCurrency_productAmount}
-          valueSecondary={order?.summary?.secondaryCurrency_productAmount}
-          pt={0}
-        />
-
-        <SummaryItem
-          label="Delivery fee"
-          value={order?.summary?.baseCurrency_riderFee > 0 ? order?.summary?.baseCurrency_riderFee : 'FREE'}
-          valueSecondary={order?.summary?.secondaryCurrency_riderFee}
-        />
-
+        {order?.isButler ? (
+          <SummaryItem
+            label="EST item(s) price"
+            value={order?.summary?.baseCurrency_productAmount}
+            valueSecondary={order?.summary?.secondaryCurrency_productAmount}
+            pt={0}
+          />
+        ) : (
+          <SummaryItem
+            label="Subtotal"
+            value={summary?.baseCurrency_productAmount + summary?.baseCurrency_doubleMenuItemPrice}
+            valueSecondary={summary?.secondaryCurrency_productAmount + summary?.secondaryCurrency_doubleMenuItemPrice}
+            pt={0}
+          />
+        )}
         <SummaryItem
           label="Rider Tips"
           value={order?.summary?.baseCurrency_riderTip}
           valueSecondary={order?.summary?.secondaryCurrency_riderTip}
+        />
+
+        <SummaryItem
+          label="Buy 1 Get 1"
+          value={order?.summary?.baseCurrency_doubleMenuItemPrice}
+          valueSecondary={order?.summary?.secondaryCurrency_doubleMenuItemPrice}
+          isNegative
         />
 
         <SummaryItem
@@ -75,6 +83,12 @@ export default function PaymentSummary({ order = {} }) {
             order?.summary?.reward?.points
           } Pts`}
           hide={!order?.summary?.reward?.baseCurrency_amount}
+        />
+
+        <SummaryItem
+          label="Delivery fee"
+          value={order?.summary?.baseCurrency_riderFee > 0 ? order?.summary?.baseCurrency_riderFee : 'FREE'}
+          valueSecondary={order?.summary?.secondaryCurrency_riderFee}
         />
 
         <SummaryItem

@@ -22,6 +22,7 @@ export default function CategoryItem({
   gOpen,
   secondaryCurrency,
   asSearchResult,
+  setEditFavorite,
 }) {
   const theme = useTheme();
   const { currentUser } = useGlobalContext();
@@ -108,17 +109,10 @@ export default function CategoryItem({
                       />
                     </Tooltip>
                   )}
-                  <Typography
-                    variant="body4"
-                    fontWeight={600}
-                    color="textPrimary"
-                    display="block"
-                    console={console.log(category)}
-                  >
+                  <Typography variant="body4" fontWeight={600} color="textPrimary" display="block">
                     {category?.category?.name}
                   </Typography>
                 </Stack>
-
                 <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
                   {shop?.shopType === 'food' &&
                     (isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) ')}
@@ -135,22 +129,42 @@ export default function CategoryItem({
               e.stopPropagation();
             }}
           >
+            {/* for best seller and favorites */}
             {!isOridanryCategory && (
-              <StyledSwitch
-                checked={
-                  category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
-                }
-                onChange={(e) => {
-                  if (category?.category?.isShopBestSellers) {
-                    bestSellerMutation.mutate(e.target.checked);
-                    shop.bestSeller.isActive = e.target.checked;
-                  } else {
-                    favouritesMutation.mutate(e.target.checked);
-                    shop.shopFavourites.isActive = e.target.checked;
+              <>
+                {/* only for favorites */}
+                {!category?.category?.isShopBestSellers && (
+                  <StyledIconButton
+                    color="primary"
+                    onClick={() => {
+                      setEditFavorite();
+                    }}
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        color: 'inherit',
+                      },
+                    }}
+                  >
+                    <Edit />
+                  </StyledIconButton>
+                )}
+                <StyledSwitch
+                  checked={
+                    category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
                   }
-                }}
-              />
+                  onChange={(e) => {
+                    if (category?.category?.isShopBestSellers) {
+                      bestSellerMutation.mutate(e.target.checked);
+                      shop.bestSeller.isActive = e.target.checked;
+                    } else {
+                      favouritesMutation.mutate(e.target.checked);
+                      shop.shopFavourites.isActive = e.target.checked;
+                    }
+                  }}
+                />
+              </>
             )}
+            {/* for ordinary categories */}
             {isOridanryCategory && shop?.shopType === 'food' && (
               <>
                 <StyledIconButton
