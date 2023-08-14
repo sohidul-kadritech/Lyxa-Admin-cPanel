@@ -41,7 +41,9 @@ export const StyledAccordion = styled(Accordion)(() => ({
   },
 }));
 
-export const createCatagory = (data, type) => {
+export const createCatagory = (data, type, favoriteTitle) => {
+  console.log({ favoriteTitle, type });
+
   if (type === 'bestseller') {
     const sortedProducts = [];
 
@@ -91,7 +93,7 @@ export const createCatagory = (data, type) => {
   return {
     category: {
       _id: 'shopfavoriteItems',
-      name: 'Favourites',
+      name: favoriteTitle,
       isUnsortable: true,
       isShopFavorites: true,
     },

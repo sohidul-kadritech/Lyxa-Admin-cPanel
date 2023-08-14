@@ -16,6 +16,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
+import EditFavorite from './EditFavorite';
 import CategoryItem from './List/CategoryItem';
 import { createCatagory } from './List/helpers';
 import PageSkeleton from './PageSkeleton';
@@ -31,6 +32,8 @@ export default function MenuPage() {
   const Deals = useMemo(() => new ShopDeals(shop), []);
 
   const [render, setRender] = useState(false);
+  const [favoriteChanged, setFavoriteChanged] = useState(false);
+
   const [sidebar, setSidebar] = useState(null);
   const [category_open, set_category_open] = useState(null);
   const [searchValue, setSearchValue] = useState('');
@@ -75,20 +78,21 @@ export default function MenuPage() {
       staleTime: 1000 * 60 * 5,
       onSuccess: (data) => {
         setCategories((prev) => data?.data?.productsGroupByCategory || prev);
-        setFavorites((prev) => createCatagory(data?.data || {}, 'favorites') || prev);
+        setFavorites((prev) => createCatagory(data?.data || {}, 'favorites', shop?.shopFavourites?.title) || prev);
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
-      // eslint-disable-next-line prettier/prettier
     }
   );
 
   useEffect(() => {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
-      setFavorites((prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites') || prev);
+      setFavorites(
+        (prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites', shop?.shopFavourites?.title) || prev
+      );
       setBestSellers((prev) => createCatagory(productsQuery?.data?.data || {}, 'bestseller') || prev);
     }
-  }, [currentUser?.shop]);
+  }, [currentUser?.shop, favoriteChanged]);
 
   // product search
   const onSearch = (str) => {
@@ -177,7 +181,14 @@ export default function MenuPage() {
             {shop.shopType === 'food' && searchValue === '' && (
               <>
                 <CategoryItem secondaryCurrency={secondaryCurrency} category={bestSellers} gOpen={category_open} />
-                <CategoryItem secondaryCurrency={secondaryCurrency} category={favorites} gOpen={category_open} />
+                <CategoryItem
+                  secondaryCurrency={secondaryCurrency}
+                  category={favorites}
+                  gOpen={category_open}
+                  setEditFavorite={() => {
+                    setSidebar('edit-favorite');
+                  }}
+                />
               </>
             )}
             <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
@@ -238,6 +249,14 @@ export default function MenuPage() {
             onClose={() => {
               setSidebar(null);
               setEditCategory({});
+            }}
+          />
+        )}
+        {sidebar === 'edit-favorite' && (
+          <EditFavorite
+            onClose={() => {
+              setSidebar(null);
+              setFavoriteChanged((prev) => !prev);
             }}
           />
         )}
