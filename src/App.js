@@ -19,7 +19,7 @@ import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
 import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
 import socketServices from './common/socketService';
@@ -30,6 +30,7 @@ import AXIOS from './network/axios';
 
 export default function App() {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
   const { userType } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
@@ -85,6 +86,7 @@ export default function App() {
     if (userType) {
       socketServices?.on('user_send_chat_request', (data) => {
         successMsg(`New chat request from ${data?.user?.name}`, 'success');
+        queryClient.invalidateQueries(Api.ONGOING_CHATS);
       });
     }
 
