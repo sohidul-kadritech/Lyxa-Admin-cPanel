@@ -191,6 +191,8 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       let latlng = new google.maps.LatLng(lat, lng);
 
       riderLocation.setPosition(latlng);
+      map.fitBounds(bounds);
+      bounds.extend(riderLocation.getPosition());
       if (i !== numDeltas) {
         i++;
         setTimeout(moveMarker, delay);
@@ -216,12 +218,12 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
         const newPosition = new google.maps.LatLng(coordinates[1], coordinates[0]);
 
         console.log('socket order', order);
-        map.panTo({
+
+        transition({
           lat: coordinates[1],
           lng: coordinates[0],
         });
-
-        transition({
+        map.panTo({
           lat: coordinates[1],
           lng: coordinates[0],
         });
