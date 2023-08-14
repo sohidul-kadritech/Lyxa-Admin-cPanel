@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Button, Stack } from '@mui/material';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import socketServices from '../../../../common/socketService';
 import getCookiesAsObject from '../../../../helpers/cookies/getCookiesAsObject';
@@ -31,6 +31,12 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
 
+  const listContainerRef = useRef();
+  // scroll into bottom
+  const scrollToBottom = () => {
+    listContainerRef?.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  };
+
   // chat orderChatQuery
   const setMessageData = (data, type) => {
     if (data?.status && type === 'order') setMessages(data?.data?.chats || []);
@@ -43,7 +49,12 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
       AXIOS.get(Api.SINGLE_CHAT, {
         params: { orderId },
       }),
-    { enabled: chat?.chatType === 'order', onSuccess: (data) => setMessageData(data, 'order') }
+    {
+      enabled: chat?.chatType === 'order',
+      onSuccess: (data) => {
+        setMessageData(data, 'order');
+      },
+    }
   );
 
   const accountChatQuery = useQuery(
@@ -65,6 +76,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
         socketServices.emit('admin_message_sent', { room: requestId });
         setMessages((prev) => [...prev, data?.data?.request]);
         setMessage('');
+        scrollToBottom();
       }
     },
   });
@@ -139,6 +151,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     // listen for user messages
     socketServices?.on(`user_message_sent-${requestId}`, (data) => {
       setMessages((prev) => [...prev, data]);
+      scrollToBottom();
     });
 
     socketServices?.on(`admin_accepted_chat_request-${requestId}`, (data) => {
@@ -170,8 +183,6 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     }
   }, [chat]);
 
-  // console.log(messages);
-
   return (
     <Stack
       pb={5}
@@ -182,6 +193,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     >
       <ChatIssues chat={chat} />
       <ChatBox
+        ref={listContainerRef}
         showInput={chat.status === 'accepted' && !readOnly}
         sendMessageLoading={messageMutation.isLoading}
         messages={messages}
@@ -214,6 +226,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
           Resolve Ticket
         </Button>
       )}
+      {/* <Box ref={containerRef}></Box> */}
     </Stack>
   );
 }

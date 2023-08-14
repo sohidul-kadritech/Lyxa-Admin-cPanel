@@ -1,18 +1,14 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
+import React from 'react';
 import MessageItem from './MessageItem';
 import MessageListSkeleton from './Skeleton';
 
-export default function MessageList({ messages, loading }) {
-  // console.log('loading inside loader', loading);
-  // console.log('messages', messages);
+const MessageList = React.forwardRef(({ messages, loading }, ref) => (
+  <Stack gap={2} pt={5}>
+    {!loading && messages?.map((message, index) => <MessageItem key={index} message={message} />)}
+    {loading && <MessageListSkeleton />}
+    <Box ref={ref} height={80}></Box>
+  </Stack>
+));
 
-  if (loading) return <MessageListSkeleton />;
-
-  return (
-    <Stack gap={2} pt={5}>
-      {messages?.map((message, index) => (
-        <MessageItem key={index} message={message} />
-      ))}
-    </Stack>
-  );
-}
+export default MessageList;
