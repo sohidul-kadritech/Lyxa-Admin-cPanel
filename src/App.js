@@ -16,13 +16,13 @@ import CircularLoader from './components/CircularLoader';
 // Import scss
 import './assets/scss/theme.scss';
 import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
-import { incrementOpenChats } from './store/chat/chatAction';
 import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
 import { useQuery } from 'react-query';
 import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
+import socketServices from './common/socketService';
 import { useGlobalContext } from './context';
 import { successMsg } from './helpers/successMsg';
 import * as Api from './network/Api';
@@ -81,27 +81,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    dispatch(socketConnect());
     if (userType) {
-      dispatch(socketConnect());
-    }
-  }, [userType]);
-
-  useEffect(() => {
-    let listenerID;
-
-    if (socket) {
-      listenerID = socket.on('user_send_chat_request', (data) => {
-        dispatch(incrementOpenChats());
-        return successMsg(`New chat request from ${data?.user?.name}`, 'success');
+      socketServices?.on('user_send_chat_request', (data) => {
+        successMsg(`New chat request from ${data?.user?.name}`, 'success');
       });
     }
 
     return () => {
-      if (socket) {
-        socket.off('user_send_chat_request', listenerID);
-      }
+      socketServices?.removeListener(`user_send_chat_request`);
     };
-  }, [socket]);
+  }, [userType]);
 
   return (
     <Box>

@@ -143,7 +143,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     // console.log('changes with chat', 'this changes with chat');
     // console.log({ requestId });
 
-    // console.log(requestId);
+    console.log(requestId);
 
     // join room
     if (requestId) socketServices?.emit('join_user_and_admin_chat', { room: requestId, data: { access_token } });
