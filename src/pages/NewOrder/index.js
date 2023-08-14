@@ -18,6 +18,7 @@ const orderFilterToTabValueMap = {
   0: 'ongoing',
   1: 'delivered',
   2: 'cancelled',
+  3: 'scheduled',
 };
 
 export default function NewOrders({ showFor }) {
@@ -43,8 +44,6 @@ export default function NewOrders({ showFor }) {
     }
   );
 
-  console.log({ showFor });
-
   return (
     <Box pb={9}>
       <PageTop title="Orders" />
@@ -56,7 +55,6 @@ export default function NewOrders({ showFor }) {
         }}
         sx={{
           paddingBottom: '30px',
-
           '& .MuiTab-root': {
             padding: '8px 12px',
             textTransform: 'none',
@@ -66,6 +64,7 @@ export default function NewOrders({ showFor }) {
         <Tab label="Ongoing" />
         <Tab label="Delivered" />
         <Tab label="Incomplete" />
+        <Tab label="Scheduled" />
       </Tabs>
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
       <OrderTable

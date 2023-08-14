@@ -1,9 +1,9 @@
-import { Box, Button, Modal, Stack } from '@mui/material';
+import { Button, Modal, Stack } from '@mui/material';
 import { React, useState } from 'react';
 import AddRemoveCredit from '../../../../pages/UsersProfile/Transactions/AddRemoveCredit';
 import AccountInformation from './AccountInformation';
 import Address from './Address';
-import Coupons from './Coupon';
+import Coupons from './Coupons';
 import CreditCards from './CreditCards';
 import LastOrders from './LastOrders';
 import Transactions from './Transactions';
@@ -11,8 +11,10 @@ import Transactions from './Transactions';
 export default function UserDetails({ user }) {
   const [modalOpen, setModalOpen] = useState(false);
 
+  console.log({ user });
+
   return (
-    <Stack gap={5} pb={5}>
+    <Stack gap={5} pb={2.5}>
       <AccountInformation user={user} />
       <CreditCards cards={user?.cards} />
       <Address addressList={user?.address} />
@@ -24,11 +26,6 @@ export default function UserDetails({ user }) {
           Add Credit / Remove Credit
         </Button>
       </Stack>
-      <Box>
-        <Button variant="text" fullWidth sx={{ color: 'error.main', fontWeight: '400', textDecoration: 'underline' }}>
-          Deactivate Account
-        </Button>
-      </Box>
       <Modal
         open={modalOpen}
         onClose={() => {

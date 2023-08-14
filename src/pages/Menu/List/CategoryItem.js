@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Add, Edit, ExpandMore } from '@mui/icons-material';
-import { AccordionDetails, Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { AccordionDetails, Avatar, Box, Button, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
@@ -22,6 +22,7 @@ export default function CategoryItem({
   gOpen,
   secondaryCurrency,
   asSearchResult,
+  setEditFavorite,
 }) {
   const theme = useTheme();
   const { currentUser } = useGlobalContext();
@@ -97,26 +98,21 @@ export default function CategoryItem({
               <Box>
                 <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5} pb={1.5}>
                   {category?.category?.status === 'inactive' && (
-                    <Box
-                      sx={{
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '50%',
-                        background: '#FFAB09',
-                      }}
-                    />
+                    <Tooltip title={shop?.shopType === 'food' ? 'Deactivated by shop' : 'Deactivated by admin'}>
+                      <Box
+                        sx={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          background: '#FFAB09',
+                        }}
+                      />
+                    </Tooltip>
                   )}
-                  <Typography
-                    variant="body4"
-                    fontWeight={600}
-                    color="textPrimary"
-                    display="block"
-                    console={console.log(category)}
-                  >
+                  <Typography variant="body4" fontWeight={600} color="textPrimary" display="block">
                     {category?.category?.name}
                   </Typography>
                 </Stack>
-
                 <Typography variant="body4" fontWeight={600} color={theme.palette.text.secondary2} display="block">
                   {shop?.shopType === 'food' &&
                     (isOridanryCategory ? `${category?.sortedProducts?.length} items` : '3 items (max) ')}
@@ -133,22 +129,42 @@ export default function CategoryItem({
               e.stopPropagation();
             }}
           >
+            {/* for best seller and favorites */}
             {!isOridanryCategory && (
-              <StyledSwitch
-                checked={
-                  category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
-                }
-                onChange={(e) => {
-                  if (category?.category?.isShopBestSellers) {
-                    bestSellerMutation.mutate(e.target.checked);
-                    shop.bestSeller.isActive = e.target.checked;
-                  } else {
-                    favouritesMutation.mutate(e.target.checked);
-                    shop.shopFavourites.isActive = e.target.checked;
+              <>
+                {/* only for favorites */}
+                {!category?.category?.isShopBestSellers && (
+                  <StyledIconButton
+                    color="primary"
+                    onClick={() => {
+                      setEditFavorite();
+                    }}
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        color: 'inherit',
+                      },
+                    }}
+                  >
+                    <Edit />
+                  </StyledIconButton>
+                )}
+                <StyledSwitch
+                  checked={
+                    category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
                   }
-                }}
-              />
+                  onChange={(e) => {
+                    if (category?.category?.isShopBestSellers) {
+                      bestSellerMutation.mutate(e.target.checked);
+                      shop.bestSeller.isActive = e.target.checked;
+                    } else {
+                      favouritesMutation.mutate(e.target.checked);
+                      shop.shopFavourites.isActive = e.target.checked;
+                    }
+                  }}
+                />
+              </>
             )}
+            {/* for ordinary categories */}
             {isOridanryCategory && shop?.shopType === 'food' && (
               <>
                 <StyledIconButton
@@ -196,7 +212,7 @@ export default function CategoryItem({
           />
         )}
         {/* add product */}
-        {isOridanryCategory && shop?.shopType === 'food' && (
+        {isOridanryCategory && shop?.shopType === 'food' && category?.category?.status === 'active' && (
           <Box pl={8.5} pt={2.5} pb={2.5}>
             <Button
               variant="contained"
@@ -212,7 +228,7 @@ export default function CategoryItem({
           </Box>
         )}
         {/* add sub-category */}
-        {shop?.shopType !== 'food' && (
+        {shop?.shopType !== 'food' && category?.category?.status === 'active' && (
           <Stack pl={8.5} pt={2.5} pb={2.5} alignItems="center" direction="row" gap={2}>
             <Button
               variant="contained"

@@ -18,8 +18,14 @@ export const confirmActionInit = {
   onCancel: () => {},
 };
 
-export const createProductData = (products, { marketingType, rewardAmount, maxDiscount }) => {
+export const createProductData = (
+  products,
+  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType }
+) => {
   let prb = null;
+  const maxDiscount = Number(creatorType === 'shop' ? shopMaxDiscount : adminMaxDiscount);
+
+  console.log({ maxDiscount });
 
   const data = products.map((item) => {
     // reward
@@ -209,10 +215,12 @@ export const getDurationLeft = (date) => {
 
 export const getDateRange = (mData) => {
   if (mData?.status === 'inactive') {
-    return Math.ceil(
+    // console.log('here');
+    const d = Math.ceil(
       moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true)
     );
+    return d < 0 ? 0 : d;
   }
-
+  // console.log('there');
   return Math.ceil(moment(mData?.duration?.end).endOf('day').diff(moment().startOf('day'), 'days', true));
 };

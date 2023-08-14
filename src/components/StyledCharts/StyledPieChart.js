@@ -1,7 +1,7 @@
 import { Doughnut } from 'react-chartjs-2';
 
 const defaultOptions = {
-  reponsive: true,
+  responsive: true,
   maintainAspectRatio: false,
   cutoutPercentage: 70,
   legend: {
@@ -9,6 +9,6 @@ const defaultOptions = {
   },
 };
 
-export default function StyledDoughnutChart({ data }) {
-  return <Doughnut options={defaultOptions} data={data} />;
+export default function StyledDoughnutChart({ data, options }) {
+  return <Doughnut options={{ ...defaultOptions, ...options }} data={data} />;
 }

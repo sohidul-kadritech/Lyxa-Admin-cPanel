@@ -156,135 +156,12 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         {zonesQuery?.isLoading && <PageSkeleton />}
         {!zonesQuery?.isLoading && (
           <Box>
-            {/* name */}
-            <StyledFormField
-              label="Name"
-              intputType="text"
-              inputProps={{
-                type: 'text',
-                name: 'name',
-                value: rider.name,
-                onChange: commonChangeHandler,
-              }}
-            />
-
-            <StyledFormField
-              label="Phone Number *"
-              intputType="phoneNumber"
-              inputProps={{
-                value: rider?.number,
-                type: 'text',
-                name: 'phone_number',
-                onChange: (value) => {
-                  setRider((prev) => ({ ...prev, number: value }));
-                },
-              }}
-            />
-
-            {/* E-mail address */}
-            <StyledFormField
-              label="E-mail address"
-              intputType="text"
-              inputProps={{
-                type: 'email',
-                name: 'email',
-                value: rider.email,
-                onChange: commonChangeHandler,
-              }}
-            />
-            {/* Password */}
-            <StyledFormField
-              label="Password"
-              intputType="text"
-              inputProps={{
-                type: 'password',
-                name: 'password',
-                value: rider.password,
-                onChange: commonChangeHandler,
-              }}
-            />
-            {/* Re-enter Password */}
-            {!editRider?._id && (
-              <StyledFormField
-                label="Re-enter Password"
-                intputType="text"
-                inputProps={{
-                  type: 'password',
-                  name: 'confirm_password',
-                  value: rider.confirm_password,
-                  onChange: commonChangeHandler,
-                }}
-              />
-            )}
-            {/* Address */}
-            <StyledFormField
-              label="Address"
-              intputType="text"
-              inputProps={{
-                type: 'text',
-                name: 'deliveryBoyAddress',
-                value: rider.deliveryBoyAddress,
-                onChange: commonChangeHandler,
-              }}
-            />
-            {/* Vehicle Type */}
-            <StyledFormField
-              label="Vehicle Type"
-              intputType="text"
-              inputProps={{
-                type: 'text',
-                name: 'vehicleType',
-                value: rider.vehicleType,
-                onChange: commonChangeHandler,
-                disabled: Boolean(editRider?._id),
-              }}
-            />
-            {/* Vehicle Number */}
-            <StyledFormField
-              label="Vehicle Number"
-              intputType="text"
-              inputProps={{
-                type: 'text',
-                name: 'vehicleNumber',
-                value: rider.vehicleNumber,
-                onChange: commonChangeHandler,
-              }}
-            />
-            {/* Shift */}
-            <StyledFormField
-              label="Shift"
-              intputType="select"
-              inputProps={{
-                name: 'shift',
-                value: rider.shift,
-                items: riderShiftOptions,
-                onChange: commonChangeHandler,
-              }}
-            />
-            {/* Area Covered */}
-            {rider.deliveryBoyType !== 'shopRider' && (
-              <StyledFormField
-                label="Area Covered"
-                intputType="select"
-                inputProps={{
-                  name: 'zoneId',
-                  value: rider.zoneId,
-                  items: zonesQuery?.data?.data?.zones || [],
-                  getLabel: (option) => option?.zoneName,
-                  getValue: (option) => option?._id,
-                  getDisplayValue: (currentValue) =>
-                    zonesQuery?.data?.data?.zones?.find((zone) => zone?._id === currentValue)?.zoneName,
-                  onChange: commonChangeHandler,
-                }}
-              />
-            )}
             {/* Rider Type */}
             <StyledFormField
               label="Rider Type"
               intputType="select"
               inputProps={{
                 name: 'deliveryBoyType',
-                // value: riderFor === 'shop' ? 'shopRider' : rider.deliveryBoyType,
                 value: rider.deliveryBoyType,
                 items: riderTypeOptions,
                 onChange: commonChangeHandler,
@@ -324,9 +201,140 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 />
               </Box>
             )}
+            {/* name */}
+            <StyledFormField
+              label="Full name"
+              intputType="text"
+              inputProps={{
+                type: 'text',
+                name: 'name',
+                value: rider.name,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* E-mail address */}
+            <StyledFormField
+              label="Email ID"
+              intputType="text"
+              inputProps={{
+                type: 'email',
+                name: 'email',
+                value: rider.email,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* Nationality */}
+            <StyledFormField
+              label="Nationality *"
+              intputType="text"
+              inputProps={{
+                type: 'text',
+                name: 'deliveryBoyNationality',
+                value: rider.deliveryBoyNationality,
+                onChange: commonChangeHandler,
+              }}
+            />
+            <StyledFormField
+              label="Mobile Number *"
+              intputType="phoneNumber"
+              inputProps={{
+                value: rider?.number,
+                type: 'text',
+                name: 'phone_number',
+                onChange: (value) => {
+                  setRider((prev) => ({ ...prev, number: value }));
+                },
+              }}
+            />
+            {/* Password */}
+            <StyledFormField
+              label="Choose a Password"
+              intputType="password"
+              inputProps={{
+                type: 'password',
+                name: 'password',
+                value: rider.password,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* Re-enter Password */}
+            {!editRider?._id && (
+              <StyledFormField
+                label="Confirm Password"
+                intputType="password"
+                inputProps={{
+                  type: 'password',
+                  name: 'confirm_password',
+                  value: rider.confirm_password,
+                  onChange: commonChangeHandler,
+                }}
+              />
+            )}
+            {/* Address */}
+            <StyledFormField
+              label="Address"
+              intputType="text"
+              inputProps={{
+                type: 'text',
+                name: 'deliveryBoyAddress',
+                value: rider.deliveryBoyAddress,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* Vehicle Number */}
+            <StyledFormField
+              label="Vehicle Number"
+              intputType="text"
+              inputProps={{
+                type: 'text',
+                name: 'vehicleNumber',
+                value: rider.vehicleNumber,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* Vehicle Type */}
+            <StyledFormField
+              label="Vehicle Type"
+              intputType="text"
+              inputProps={{
+                type: 'text',
+                name: 'vehicleType',
+                value: rider.vehicleType,
+                onChange: commonChangeHandler,
+                disabled: Boolean(editRider?._id),
+              }}
+            />
+            {/* Shift */}
+            <StyledFormField
+              label="Shift"
+              intputType="select"
+              inputProps={{
+                name: 'shift',
+                value: rider.shift,
+                items: riderShiftOptions,
+                onChange: commonChangeHandler,
+              }}
+            />
+            {/* Area Covered */}
+            {rider.deliveryBoyType !== 'shopRider' && (
+              <StyledFormField
+                label="Area Covered"
+                intputType="select"
+                inputProps={{
+                  name: 'zoneId',
+                  value: rider.zoneId,
+                  items: zonesQuery?.data?.data?.zones || [],
+                  getLabel: (option) => option?.zoneName,
+                  getValue: (option) => option?._id,
+                  getDisplayValue: (currentValue) =>
+                    zonesQuery?.data?.data?.zones?.find((zone) => zone?._id === currentValue)?.zoneName,
+                  onChange: commonChangeHandler,
+                }}
+              />
+            )}
             {/* Photo */}
             <StyledFormField
-              label="Photo"
+              label="Profile photo"
               intputType="file"
               inputProps={{
                 onDrop: (acptFiles) => onDrop(acptFiles, 'image'),
@@ -348,6 +356,18 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
               }}
             />
+            {/* Contract Paper */}
+            <StyledFormField
+              label="Contract document"
+              intputType="file"
+              inputProps={{
+                onDrop: (acptFiles) => onDrop(acptFiles, 'contractImage'),
+                maxSize: 1000 * 1000,
+                text: 'Drag and drop or chose photo',
+                files: rider.contractImage || [],
+                helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
+              }}
+            />
             {/* Vehicle document */}
             <StyledFormField
               label="Vehicle document"
@@ -360,18 +380,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
               }}
             />
-            {/* Contract Paper */}
-            <StyledFormField
-              label="Contract Paper"
-              intputType="file"
-              inputProps={{
-                onDrop: (acptFiles) => onDrop(acptFiles, 'contractImage'),
-                maxSize: 1000 * 1000,
-                text: 'Drag and drop or chose photo',
-                files: rider.contractImage || [],
-                helperText1: 'Allowed Type: PNG, JPG, or WEBP up to 1MB',
-              }}
-            />
+
             {/* status */}
             {editRider?._id && (
               <StyledFormField

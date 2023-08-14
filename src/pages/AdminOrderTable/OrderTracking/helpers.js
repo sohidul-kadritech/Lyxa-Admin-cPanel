@@ -45,7 +45,7 @@ export const dummyLocationRider = [
 // eslint-disable-next-line no-unused-vars
 export const getTitleForMarker = (title) =>
   // console.log(route);
-  `<div style="padding:6px 10px 0px;position:relative;right:8px; width:auto;">
+  `<div style="padding:4px 8px 0px;position:relative;right:8px; width:auto;">
     <p style="text-align:center;font-size:16px;font-weight:bold;color:#5E97A9;cursor:pointer;"
     ><b>${title}</b></p>
   </div>`;

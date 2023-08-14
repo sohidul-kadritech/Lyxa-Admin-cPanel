@@ -22,7 +22,7 @@ export default function OrderItem({ order }) {
   return (
     <Stack direction="row" alignItems="center">
       <Avatar alt="shop-image" src={order?.shop?.shopLogo} sx={{ width: 36, height: 36 }}>
-        {order?.shop?.shopName?.charAt(0)}
+        {order?.isButler ? 'B' : order?.shop?.shopName?.charAt(0)}
       </Avatar>
       <Typography
         variant="inherit"
@@ -33,14 +33,14 @@ export default function OrderItem({ order }) {
         pl={5}
         pr={1.5}
         onClick={() => {
-          history.push(
-            `/orders?type=${getOrderSearchType(order)}&searchKey=${order?.orderId}&startDate=${moment(
-              order?.createdAt
-            ).format('YYYY-MM-DD')}`
-          );
+          history.push(`/orders`, {
+            type: getOrderSearchType(order),
+            searchKey: order?.orderId,
+            startDate: moment(order?.createdAt).format('YYYY-MM-DD'),
+          });
         }}
       >
-        {order?.shop?.shopName}
+        {order?.isButler ? 'Butler' : order?.shop?.shopName}
       </Typography>
       <Typography variant="inherit" fontSize="11px" lineHeight="22px" color="text.secondary2">
         {orderStatusMap[order?.orderStatus]} {time ? `: ${time}` : ''}

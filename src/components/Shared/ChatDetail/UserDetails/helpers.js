@@ -1,7 +1,7 @@
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 
 // Order Details Handling
-export function StyledProfileBox({ title, children }) {
+export function StyledProfileBox({ title, children, titleComponent }) {
   return (
     <Box
       sx={{
@@ -16,6 +16,7 @@ export function StyledProfileBox({ title, children }) {
           {title}
         </Typography>
       )}
+      {titleComponent && titleComponent}
       {children}
     </Box>
   );

@@ -152,7 +152,6 @@ function ServiceZone() {
   });
 
   // delete a zones
-  // eslint-disable-next-line no-unused-vars
   const deleteAZoneQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_ZONE, data), {
     onSuccess: (data) => {
       if (data?.status) {
@@ -184,8 +183,6 @@ function ServiceZone() {
 
   // eslint-disable-next-line no-unused-vars
   const onStatusChange = (value, data) => {
-    // data.zoneStatus = value;
-
     if (value !== 'busy') {
       data.zoneStatus = value;
       updateAZoneQuery.mutate({

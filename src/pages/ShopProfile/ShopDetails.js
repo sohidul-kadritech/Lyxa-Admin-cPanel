@@ -39,15 +39,17 @@ export default function ShopDetails({ shop }) {
       />
       <ProfileSidebarInfo label="Payment Options" value={shop?.paymentOption?.join(', ')} icon={InfoIcon} />
       <ProfileSidebarInfo
-        label="Tags & cuisines"
+        label={shop?.shopType === 'food' ? 'Tags & cuisines' : 'Tags'}
         value={TagsAndCuisines(shop?.tags, shop?.cuisineType)}
         icon={TagIcon}
       />
-      <ProfileSidebarInfo
-        label="Dietary"
-        value={shop?.dietary?.length > 0 ? shop?.dietary?.join(', ') : 'No dietary found'}
-        icon={Dietary}
-      />
+      {shop?.shopType !== 'pharmacy' && (
+        <ProfileSidebarInfo
+          label="Dietary"
+          value={shop?.dietary?.length > 0 ? shop?.dietary?.join(', ') : 'No dietary found'}
+          icon={Dietary}
+        />
+      )}
       <ProfileSidebarInfo
         label="Average Ord. Value"
         value={AverageOrderValue(shop?.orderValue?.productAmount, shop?.orderValue?.count)}
@@ -59,7 +61,6 @@ export default function ShopDetails({ shop }) {
           label="Opening Hours"
           icon={AccessTimeFilled}
           valueComponent={<OpeningHours normalHours={shop?.normalHours} />}
-          // value={<OpeningHours normalHours={shop?.normalHours} />}
         />
       </Box>
     </Stack>

@@ -2,10 +2,16 @@ import { Stack } from '@mui/material';
 
 import { isNumber } from 'lodash';
 import React from 'react';
+import { useGlobalContext } from '../../../../context';
 import IncrementDecrementButton from '../../../AppSettings2/IncrementDecrementButton';
 import InputBox from '../../Admin/Marketing/LoyaltySettings/InputBox';
 
 function Rate({ shopSettings, setShopSettings, setHasChanged }) {
+  const { general } = useGlobalContext();
+  const { appSetting } = general;
+  const secondaryCurrency = appSetting?.secondaryCurrency?.code;
+  // const appSetting = appSetting?.baseCurrency;
+
   const incrementHandler = (setValue, key) => {
     setHasChanged(true);
     setValue((prev) => {
@@ -28,8 +34,8 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
   return (
     <Stack direction="row" alignItems="center" flexWrap="wrap">
       <InputBox
-        title={`Amount of (${shopSettings?.currency?.symbol})`}
-        endAdornment={`${shopSettings?.currency?.symbol}`}
+        title={`Amount of (${appSetting?.baseCurrency?.symbol})`}
+        endAdornment={`${secondaryCurrency}`}
         inputValue={`${1}`}
         inputType="number"
         sxLeft={{ width: '200px' }}
@@ -40,9 +46,9 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
 
       <InputBox
         title={`Equivalent to ${
-          shopSettings?.secondaryCurrency?.symbol ? `(${shopSettings?.secondaryCurrency?.code})` : ''
+          appSetting?.secondaryCurrency?.symbol ? `(${appSetting?.secondaryCurrency?.code})` : ''
         }`}
-        endAdornment={`${shopSettings?.secondaryCurrency?.symbol ? shopSettings?.secondaryCurrency?.code : ''}`}
+        endAdornment={`${appSetting?.secondaryCurrency?.symbol ? appSetting?.secondaryCurrency?.code : ''}`}
         inputType="number"
         sxLeft={{ width: '200px' }}
         sxRight={{ width: '140px' }}

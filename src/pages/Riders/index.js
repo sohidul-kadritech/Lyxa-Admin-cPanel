@@ -9,6 +9,7 @@ import AXIOS from '../../network/axios';
 import AddRider from './AddRider';
 import RiderLocation from './RiderLocation';
 import RidersTable from './RiderTable';
+import RidersMapView from './RidersMapView';
 import SearchBar from './Searchbar';
 import TableSkeleton from './TableSkeleton';
 import { getQueryParamsInit } from './helper';
@@ -25,6 +26,7 @@ export default function RiderList({ viewUserType }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, shop?._id));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [openRidersMapViewModal, setOpenRidersMapViewModal] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
   const [currentRider, setCurrentRider] = useState({});
 
@@ -53,6 +55,9 @@ export default function RiderList({ viewUserType }) {
         setQueryParams={setQueryParams}
         onAdd={() => {
           setSidebarOpen(true);
+        }}
+        onMapView={() => {
+          setOpenRidersMapViewModal(true);
         }}
         searchPlaceHolder={`Search${` ${query?.data?.data?.deliveryBoys?.length || ''}`} items`}
       />
@@ -111,6 +116,12 @@ export default function RiderList({ viewUserType }) {
               setCurrentRider({});
             }}
           />
+        </Box>
+      </Modal>
+
+      <Modal open={openRidersMapViewModal} centered>
+        <Box>
+          <RidersMapView onClose={() => setOpenRidersMapViewModal(false)} />
         </Box>
       </Modal>
     </Box>

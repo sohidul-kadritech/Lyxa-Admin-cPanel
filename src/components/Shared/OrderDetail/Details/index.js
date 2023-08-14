@@ -13,12 +13,14 @@ import OrderTimeline from './OrderTimeline';
 import PaymentMethod from './PaymentMethod';
 import PaymentSummary from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
+import OrderScheduleTimer from './ScheduleTimer';
 
 export default function Detail({ order, hideIssues, userType }) {
   const [, setRender] = useState(false);
 
   return (
     <Stack gap={5}>
+      {order?.orderStatus === 'schedule' && <OrderScheduleTimer order={order} />}
       {order?.flag?.length && !hideIssues ? <OrderIssues flags={order?.flag} /> : null}
       <OrderTimeline order={order} />
       {order?.orderStatus === 'cancelled' && <CancelReason cancelReason={order?.orderCancel} />}
