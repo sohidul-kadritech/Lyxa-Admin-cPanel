@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import nationalities from '../../../assets/nationalities';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
@@ -23,8 +24,6 @@ import {
 
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
-
-  console.log({ editRider });
 
   const [rider, setRider] = useState(
     editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
@@ -226,11 +225,11 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
             {/* Nationality */}
             <StyledFormField
               label="Nationality *"
-              intputType="text"
+              intputType="select"
               inputProps={{
-                type: 'text',
                 name: 'deliveryBoyNationality',
                 value: rider.deliveryBoyNationality,
+                items: nationalities,
                 onChange: commonChangeHandler,
               }}
             />
