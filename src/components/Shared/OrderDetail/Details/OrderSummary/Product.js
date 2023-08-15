@@ -20,15 +20,8 @@ export default function Product({ product, isFirst, isLast }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const deal = productDeal(product);
-  let finalPrice = product?.baseCurrency_finalPrice;
-  let quantity = product?.productQuantity;
-
-  if (deal === 'double_menu') {
-    finalPrice *= 2;
-    quantity *= 2;
-  }
-
-  console.log({ product });
+  const finalPrice = product?.baseCurrency_finalPrice;
+  const quantity = product?.productQuantity;
 
   return (
     <Box
@@ -64,6 +57,7 @@ export default function Product({ product, isFirst, isLast }) {
             {currency} {(finalPrice || 0)?.toFixed(2)}
           </Typography>
         </Stack>
+        {/* deal info */}
         {deal && (
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={500}>
@@ -91,7 +85,10 @@ export default function Product({ product, isFirst, isLast }) {
                 `${product?.finalReward?.points} pts + ${currency} ${product?.finalReward?.baseCurrency_amount}`}
 
               {/* double menu */}
-              {deal === 'double_menu' && `${currency} ${(product?.baseCurrency_finalPrice || 0).toFixed(2)}`}
+              {deal === 'double_menu' &&
+                `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
+                  2
+                )}`}
             </Typography>
           </Stack>
         )}

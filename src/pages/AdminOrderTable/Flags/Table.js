@@ -56,7 +56,7 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/accounts/${value?.user?._id}`);
+              history.push(`/users/${value?.user?._id}`);
             },
           }}
         />

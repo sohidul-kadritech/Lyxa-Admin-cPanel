@@ -82,24 +82,19 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
               sx={{ background: getShopStatusColor(shop)?.color, width: '11px', height: '11px', borderRadius: '50%' }}
             />
           </Tooltip>
-          <Box>
-            <Typography
-              variant="h2"
-              sx={{ fontSize: { xs: '14px', sm: '16px', md: '20px', lg: '30px' }, fontWeight: 500 }}
-            >
-              {shop?.shopName}
-            </Typography>
-          </Box>
+          <Typography
+            variant="h2"
+            sx={{ fontSize: { xs: '14px', sm: '16px', md: '20px', lg: '30px' }, fontWeight: 500 }}
+          >
+            {shop?.shopName}
+          </Typography>
+          {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
-            <Stack alignItems="center" alignContent="center" justifyContent="center" direction="row">
-              {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
-            </Stack>
-            <Box>
-              <ThreeDotsMenu
-                menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}
-                handleMenuClick={menuHandler}
-              />
-            </Box>
+            <Box />
+            <ThreeDotsMenu
+              menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}
+              handleMenuClick={menuHandler}
+            />
           </Box>
         </Box>
         <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
