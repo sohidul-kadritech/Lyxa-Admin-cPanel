@@ -233,11 +233,9 @@ export const createEditShopData = async (shopData) => {
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
     shopAddress: shopData?.shopAddress,
-    // shopAddress: {
-    //   ...shopData?.address,
-    // },
     shopLogo,
     shopBanner,
+    liveStatus: 'offline',
   };
 };
 

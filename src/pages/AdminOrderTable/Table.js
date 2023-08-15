@@ -134,7 +134,7 @@ export default function Table({
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
               history.push({
-                pathname: `/accounts/${row?.user?._id}`,
+                pathname: `/users/${row?.user?._id}`,
                 state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
               });
             },

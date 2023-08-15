@@ -23,7 +23,7 @@ const getBreadCrumbItems = (searchUrl, id) => {
     },
     {
       label: 'User Profile',
-      to: `/accounts/${id}?financials=${searchUrl.get('financials')}`,
+      to: `/users/${id}?financials=${searchUrl.get('financials')}`,
     },
   ];
 
@@ -63,8 +63,8 @@ export default function UserProfile() {
         breadcrumbItems={
           searchParams.get('financials') === 'user' ? getBreadCrumbItems(searchParams, params?.userId) : undefined
         }
-        backButtonLabel={location?.state?.backToLabel ? location?.state?.backToLabel : 'Back to Accounts'}
-        backTo={location?.state?.backToLabel ? location?.state?.from : '/accounts'}
+        backButtonLabel={location?.state?.backToLabel ? location?.state?.backToLabel : 'Back to Users'}
+        backTo={location?.state?.backToLabel ? location?.state?.from : '/users'}
       />
       {query?.isLoading && <ProfileSkeleton />}
       {!query?.isLoading && (
