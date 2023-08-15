@@ -82,7 +82,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
               sx={{ cursor: 'pointer' }}
               onClick={() => {
                 history.push({
-                  pathname: `/accounts/${row?.couponInfluencer?._id}`,
+                  pathname: `/users/${row?.couponInfluencer?._id}`,
                   state: { from: routeMatch?.path, backToLabel: 'Back to coupons' },
                 });
               }}
@@ -275,7 +275,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
           color="primary"
           onClick={() => {
             history.push({
-              pathname: `/accounts/${value[0]?._id}`,
+              pathname: `/users/${value[0]?._id}`,
               state: { from: routeMatch?.path, backToLabel: 'Back to coupons' },
             });
           }}

@@ -90,7 +90,7 @@ export default function ShopRatingTable({ rows = [], loading }) {
           }}
           variant="body4"
           onClick={() => {
-            history.push(`/accounts/${value?._id}`);
+            history.push(`/users/${value?._id}`);
           }}
         >
           {value?.name}

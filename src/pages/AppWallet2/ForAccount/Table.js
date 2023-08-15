@@ -47,7 +47,7 @@ function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPa
               onClick={(e) => {
                 e.stopPropagation();
                 history?.push({
-                  pathname: `/accounts/${params?.row?.user?._id}`,
+                  pathname: `/users/${params?.row?.user?._id}`,
                   state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
                 });
               }}
@@ -144,7 +144,7 @@ function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPa
           rows={data}
           onRowClick={({ row }) => {
             history?.push({
-              pathname: `/accounts/${row?.user?._id}`,
+              pathname: `/users/${row?.user?._id}`,
               search: 'financials=user',
               state: { from: routeMatch?.path, backToLabel: 'Back to Lyxa Pay' },
             });

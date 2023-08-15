@@ -38,7 +38,7 @@ export default function AccountInfomation({ user }) {
           columnGap: '20px',
         }}
       >
-        <ListItem label="Full Name" value={user?.name} link={`/accounts/${user?._id}`} />
+        <ListItem label="Full Name" value={user?.name} link={`/users/${user?._id}`} />
         <ListItem label="Gender" value="Male" />
         <ListItem label="Email ID" value={user?.email} />
         <ListItem label="Date of Birth" value="June 26, 1995" />
