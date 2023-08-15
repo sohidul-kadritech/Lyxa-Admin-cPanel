@@ -229,8 +229,8 @@ export const admin_menu_items = [
         icon: ShopIcon,
       },
       {
-        label: 'Accounts',
-        to: '/accounts',
+        label: 'Users',
+        to: '/users',
         icon: UsersIcon,
       },
       {
@@ -336,8 +336,8 @@ export const customer_service_menu_items = [
         icon: RidersAdminIcons,
       },
       {
-        label: 'Accounts',
-        to: '/accounts',
+        label: 'Users',
+        to: '/users',
         icon: UserIcon,
         SellersIcon,
       },

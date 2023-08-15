@@ -23,7 +23,7 @@ const breadcrumbItems = [
     to: '/financials',
   },
   {
-    label: 'For Accounts',
+    label: 'For Users',
     to: '#',
   },
 ];

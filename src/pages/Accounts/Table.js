@@ -66,7 +66,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/accounts/${row?._id}`, {
+              history.push(`/users/${row?._id}`, {
                 user: row,
               });
             },

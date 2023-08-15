@@ -42,13 +42,13 @@ export default function AccountList() {
   return (
     <Box pb={9}>
       <PageTop
-        title="Accounts"
+        title="Users"
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
       />
       <Box pb={7.5}>
         <SearchBar
-          searchPlaceHolder="Search accounts"
+          searchPlaceHolder="Search users"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"

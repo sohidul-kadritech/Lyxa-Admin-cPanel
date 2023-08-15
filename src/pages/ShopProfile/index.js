@@ -140,8 +140,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     shopMutation.mutate({ ...shopData });
   };
 
-  // if (shopQuery?.isLoading || !shop?._id) return <ShopProfileSkeleton />;
-
   return (
     <Box>
       <PageTop

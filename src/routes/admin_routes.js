@@ -75,8 +75,8 @@ export const admin_routes = [
   { path: `/riders/:riderId`, component: RiderProfile },
 
   // users
-  { path: '/accounts', component: AccountList },
-  { path: '/accounts/:userId', component: UserProfile },
+  { path: '/users', component: AccountList },
+  { path: '/users/:userId', component: UserProfile },
 
   // sellers
   { path: '/seller/list', component: SellerList2 },

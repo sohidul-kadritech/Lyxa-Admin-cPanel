@@ -156,7 +156,8 @@ export default function ProfitDetails({ order = {} }) {
               label="Deal compensation amount"
               value={hideExtraFields ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
               valueSecondary={hideExtraFields ? 0 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuAdminCut}
-              tooltip="This amount in already included in shop profit"
+              // eslint-disable-next-line max-len
+              tooltip="This amount is paid by admin as compensation for applying Discount, Buy 1 Get 1, or Free Delivery on shop. The amount is already included in shop profit. "
               isRejected
             />
           </Box>

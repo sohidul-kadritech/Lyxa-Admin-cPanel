@@ -32,7 +32,7 @@ export default function CustomerRating({ rows = [], loading }) {
           variant="body4"
           sx={{ color: 'primary.main', cursor: 'pointer' }}
           onClick={() => {
-            history.push(`/accounts/${value?._id}`);
+            history.push(`/users/${value?._id}`);
           }}
         >
           {value?.name}
