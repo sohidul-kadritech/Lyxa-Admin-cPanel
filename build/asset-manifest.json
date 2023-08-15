@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.baf1d0b7.css",
-    "main.js": "/static/js/main.ce3b2fa9.js",
+    "main.js": "/static/js/main.b985b5ba.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -113,7 +113,6 @@
     "static/media/user.svg": "/static/media/user.15408b3b3d1bab5d8e7a3fe2df8abb09.svg",
     "static/media/tag.svg": "/static/media/tag.c5186c905efa96a2346c991b4313fdf9.svg",
     "static/media/marketing.svg": "/static/media/marketing.9c92ebe79f970135dfa3364030e4b047.svg",
-    "static/media/file-add-icon.svg": "/static/media/file-add-icon.f9f91365e727cb955eb021b7de6de0a9.svg",
     "static/media/calender.svg": "/static/media/calender.e66797d6b57196066911a5394208dd04.svg",
     "static/media/timeline-check.svg": "/static/media/timeline-check.ff1676dd29557b031c14b85dce8ebbfd.svg",
     "static/media/down.svg": "/static/media/down.824c24c6b5ce0693676a6d81edce1cf7.svg",
@@ -141,6 +140,6 @@
   },
   "entrypoints": [
     "static/css/main.baf1d0b7.css",
-    "static/js/main.ce3b2fa9.js"
+    "static/js/main.b985b5ba.js"
   ]
 }
