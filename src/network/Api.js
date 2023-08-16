@@ -404,3 +404,4 @@ export const UPDATE_ZONE = `${ADMIN_ENDPOINT}/zone/update`;
 export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
 export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;
 export const ZONE_MAP_OVERVIEW = `${ADMIN_ENDPOINT}/zone/map-overview`;
+export const GET_ZONE_FROM_LATLNG = `${ADMIN_ENDPOINT}/shop/get-zones`;

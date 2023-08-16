@@ -14,7 +14,7 @@ import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import RiderLocation from '../../../assets/icons/riderPin.png';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import './gmap.css';
-import { dummyLocationRider, getTitleForMarker } from './helpers';
+import { getTitleForMarker } from './helpers';
 
 const orderTypeToIconMap = {
   grocery: GroceryLocation,
@@ -25,7 +25,7 @@ const orderTypeToIconMap = {
 };
 
 let counter = 0;
-let position = [23.774390073503145, 90.41418541219299];
+// let position = [23.774390073503145, 90.41418541219299];
 
 let numDeltas = 100;
 let delay = 100; // milliseconds
@@ -64,26 +64,28 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     });
   };
 
-  useEffect(() => {
-    if (order?._id && socket) {
-      socket.emit('join_room', { room: order?._id, data: { access_token } });
+  // useEffect(() => {
+  //   if (order?._id && socket) {
+  //     console.log('socket emmitting');
 
-      socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
-        console.log('socket data', data);
-        setRiderLoc(() => {
-          console.log('data', data);
-          return data;
-        });
-      });
-    } else {
-      console.log('socket for deliveryboy else', socket);
-    }
-    return () => {
-      socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
-    };
-  }, [order?._id, socket]);
+  //     socket.emit('join_room', { room: order?._id, data: { access_token } });
 
-  console.log('riderLoc', riderLoc);
+  //     socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
+  //       console.log('socket data', data);
+  //       setRiderLoc(() => {
+  //         console.log('data', data);
+  //         return data;
+  //       });
+  //     });
+  //   } else {
+  //     console.log('socket for deliveryboy else', socket);
+  //   }
+  //   return () => {
+  //     socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
+  //   };
+  // }, [order?._id, socket]);
+
+  // console.log('riderLoc', riderLoc);
 
   useEffect(() => {
     let isMounted = true;
@@ -126,25 +128,38 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       map,
     });
 
-    const riderLocation = new google.maps.Marker({
-      position: {
-        lat: 23.774390073503145,
-        lng: 90.41418541219299,
-      },
-      icon: RiderIcon,
-      map,
-    });
+    let riderLocation;
 
-    // Rider Title
+    let bounds = new google.maps.LatLngBounds();
 
-    let infowindowForRider = new google.maps.InfoWindow({
-      content: getTitleForMarker(order?.deliveryBoy?.name || 'Rider Title'),
-    });
+    // check wheather there have any delivery boy or not.
+    if (order?.deliveryBoy) {
+      riderLocation = new google.maps.Marker({
+        position: {
+          lat: order?.deliveryBoy?.location?.coordinates[1] || 0,
+          lng: order?.deliveryBoy?.location?.coordinates[0] || 0,
+        },
+        icon: RiderIcon,
+        map,
+      });
+      // Rider Title
 
-    infowindowForRider.open(map, riderLocation);
+      let infowindowForRider = new google.maps.InfoWindow({
+        content: getTitleForMarker(order?.deliveryBoy?.name || 'Rider Title'),
+      });
+
+      infowindowForRider.open(map, riderLocation);
+
+      riderLocation.addListener('click', () => {
+        redirectWithId(order?.deliveryBoy?._id, 'rider');
+      });
+      bounds.extend(riderLocation.getPosition());
+    }
+    bounds.extend(userLocation.getPosition());
+    bounds.extend(shopLocation.getPosition());
+    map.fitBounds(bounds);
 
     // shop title
-
     let infowindowForShop = new google.maps.InfoWindow({
       content: getTitleForMarker(order?.shop?.shopName || 'Rider Title'),
     });
@@ -152,16 +167,11 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     infowindowForShop.open(map, shopLocation);
 
     // user title
-
     let infowindowForUser = new google.maps.InfoWindow({
       content: getTitleForMarker(order?.user?.name || 'User Title Not Found'),
     });
 
     infowindowForUser.open(map, userLocation);
-
-    riderLocation.addListener('click', () => {
-      redirectWithId(order?.deliveryBoy?._id, 'rider');
-    });
 
     shopLocation.addListener('click', () => {
       redirectWithId(order?.shop?._id, 'shop');
@@ -172,21 +182,17 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     });
 
     // fit all the markers
-    let bounds = new google.maps.LatLngBounds();
-    bounds.extend(riderLocation.getPosition());
-    bounds.extend(userLocation.getPosition());
-    bounds.extend(shopLocation.getPosition());
-    map.fitBounds(bounds);
-
     function moveMarker() {
       let lat = riderLocation.getPosition().lat();
       let lng = riderLocation.getPosition().lng();
       lat += deltaLat;
       lng += deltaLng;
-      // console.log('latlng', );
+
       let latlng = new google.maps.LatLng(lat, lng);
-      // riderLocation.setTitle(`Latitude:${result.lat} | Longitude:${result.lng}`);
+
       riderLocation.setPosition(latlng);
+      map.fitBounds(bounds);
+      bounds.extend(riderLocation.getPosition());
       if (i !== numDeltas) {
         i++;
         setTimeout(moveMarker, delay);
@@ -196,54 +202,40 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     function transition(result) {
       i = 0;
       const lat = riderLocation.getPosition().lat();
-      // console.log('lat', lat, 'res', result.lat - lat);
       const lng = riderLocation.getPosition().lng();
-      // console.log('lng', lng, 'res', result.lng - lng);
       deltaLat = (result.lat - lat) / numDeltas;
       deltaLng = (result.lng - lng) / numDeltas;
       moveMarker();
     }
 
-    setInterval(() => {
-      const newPosition = new google.maps.LatLng(dummyLocationRider[counter]?.lat, dummyLocationRider[counter]?.lng);
-      let old = counter < dummyLocationRider?.length ? counter : 0;
-      transition(dummyLocationRider[old]);
-      counter = counter < dummyLocationRider?.length ? counter + 1 : 0;
-    }, 1000);
+    // listening current delivery location via socket
+    if (order?._id && socket && order?.deliveryBoy) {
+      socket.emit('join_room', { room: order?._id, data: { access_token } });
 
-    function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-      directionsService
-        .route({
-          origin: { lat: pickup?.latitude, lng: pickup?.longitude },
-          destination: { lat: dropoff?.latitude, lng: dropoff?.longitude },
-          travelMode: google?.maps?.TravelMode.DRIVING,
-        })
-        .then((response) => {
-          const route = response.routes[0];
-          directionsRenderer.setDirections(response);
+      socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
+        console.log('socket data', data);
+        const coordinates = data?.location?.coordinates;
+        const newPosition = new google.maps.LatLng(coordinates[1], coordinates[0]);
 
-          if (isMounted) {
-            setDistance(route.legs[0].distance.value.toString());
-            setDuration(route.legs[0].duration.value.toString());
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-          // eslint-disable-next-line no-alert
-          window.alert(`Directions request failed due to ${e.message}`);
+        console.log('socket order', order);
+
+        transition({
+          lat: coordinates[1],
+          lng: coordinates[0],
         });
+        map.panTo({
+          lat: coordinates[1],
+          lng: coordinates[0],
+        });
+      });
     }
-
-    // directionsRenderer_.setMap(map);
-    // directionsRenderer_.setPanel(sidebar.current);
 
     const control = floatingPanel.current;
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
-    // calculateAndDisplayRoute(directionsService_, directionsRenderer_);
-
     return () => {
       isMounted = false;
+      socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
     };
   }, []);
 
