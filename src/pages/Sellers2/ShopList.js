@@ -32,6 +32,7 @@ function ShopList({
   isConfirmModal,
   setIsConfirmModal,
   loading,
+  adminType,
   ...props
 }) {
   const theme = useTheme();
@@ -194,16 +195,18 @@ function ShopList({
       renderCell: (params) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* edit */}
-          <StyledIconButton
-            onClick={() => {
-              setOpen(true);
-              props.setSelectedMenu('edit_shop');
-              setSelectedShop(params?.row);
-            }}
-            color="primary"
-          >
-            <Edit />
-          </StyledIconButton>
+          {adminType !== 'customerService' && (
+            <StyledIconButton
+              onClick={() => {
+                setOpen(true);
+                props.setSelectedMenu('edit_shop');
+                setSelectedShop(params?.row);
+              }}
+              color="primary"
+            >
+              <Edit />
+            </StyledIconButton>
+          )}
           <StyledIconButton
             onClick={() => {
               setSelectedShop(params?.row);
@@ -232,24 +235,28 @@ function ShopList({
           <StyledIconButton color="primary">
             <DownloadIcon />
           </StyledIconButton>
-          <StyledIconButton
-            onClick={() => {
-              setCurrentDocumet(row);
-              props?.setEditDocumentOpen(true);
-            }}
-            color="primary"
-          >
-            <Edit />
-          </StyledIconButton>
-          <StyledIconButton
-            color="primary"
-            onClick={() => {
-              setIsConfirmModal(true);
-              setCurrentDocumet(row);
-            }}
-          >
-            <CloseIcon />
-          </StyledIconButton>
+          {adminType !== 'customerService' && (
+            <StyledIconButton
+              onClick={() => {
+                setCurrentDocumet(row);
+                props?.setEditDocumentOpen(true);
+              }}
+              color="primary"
+            >
+              <Edit />
+            </StyledIconButton>
+          )}
+          {adminType !== 'customerService' && (
+            <StyledIconButton
+              color="primary"
+              onClick={() => {
+                setIsConfirmModal(true);
+                setCurrentDocumet(row);
+              }}
+            >
+              <CloseIcon />
+            </StyledIconButton>
+          )}
         </Stack>
       ),
     },

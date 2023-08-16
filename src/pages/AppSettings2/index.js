@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack } from '@mui/material';
 import { isNumber } from 'lodash';
@@ -9,6 +10,7 @@ import PageTop from '../../components/Common/PageTop';
 import Taglist from '../../components/Common/Taglist';
 import IncrementDecrementInput from '../../components/Form/IncrementDecrementInput';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -120,6 +122,7 @@ function Appsettings2() {
   const [newAppSettings, setNewAppSettings] = useState({});
   const [oldAppSettings, setOldAppSettings] = useState({});
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
+  const { general, dispatchGeneral } = useGlobalContext();
 
   // Get all shop settings data
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
@@ -183,6 +186,7 @@ function Appsettings2() {
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
           setNewAppSettings(data[0]?.data?.appSetting);
+          dispatchGeneral({ type: 'appSetting', payload: { appSetting: data[0]?.data?.appSetting } });
 
           if (data[1]?.data) {
             setOldUnits(() => {
@@ -196,7 +200,7 @@ function Appsettings2() {
           }
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
@@ -204,6 +208,7 @@ function Appsettings2() {
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
           setNewAppSettings(data[0]?.data?.appSetting);
+          dispatchGeneral({ type: 'appSetting', payload: { appSetting: data[0]?.data?.appSetting } });
           if (data[1]?.data) {
             if (data[1]?.data) {
               setOldUnits(() => {
@@ -218,7 +223,7 @@ function Appsettings2() {
           }
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else if (data.length === 1 && data[0].status) {
@@ -226,9 +231,10 @@ function Appsettings2() {
           setHasChanged(false);
           setOldAppSettings(data[0]?.data?.appSetting);
           setNewAppSettings(data[0]?.data?.appSetting);
+          dispatchGeneral({ type: 'appSetting', payload: { appSetting: data[0]?.data?.appSetting } });
           setIsUsedSecondaryCurrency(() =>
             // eslint-disable-next-line prettier/prettier
-            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable'
+            Object?.keys(data[0]?.data?.appSetting?.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable',
           );
           queryClient.invalidateQueries([API_URL.UPDATE_APP_SETTINGS, API_URL.ADD_UNIT, API_URL.DELETE_UNIT]);
         } else {
@@ -236,7 +242,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // reset data
@@ -256,7 +262,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type
+        type,
       ) &&
       type === 'text'
     ) {
@@ -327,8 +333,8 @@ function Appsettings2() {
 
     if (
       isUsedSecondaryCurrency === 'enable' &&
-      newAppSettings.secondaryCurrency?.symbol &&
-      newAppSettings.secondaryCurrency?.symbol === newAppSettings.baseCurrency?.symbol
+      newAppSettings?.secondaryCurrency?.symbol &&
+      newAppSettings?.secondaryCurrency?.symbol === newAppSettings?.baseCurrency?.symbol
     ) {
       successMsg('Secondary currency should not same as base currency!', 'error');
       return;
@@ -337,7 +343,7 @@ function Appsettings2() {
     const updatedUnits = separatesUpdatedData(
       oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name)
+      units?.map((unit) => unit.name),
     );
 
     console.log('', updatedUnits);
@@ -458,7 +464,7 @@ function Appsettings2() {
                       setNewAppSettings,
                       newAppSettings?.searchDeliveryBoyKm,
                       // eslint-disable-next-line prettier/prettier
-                      'searchDeliveryBoyKm'
+                      'searchDeliveryBoyKm',
                     );
                   } else {
                     successMsg('Maximum 3 items can add ');
@@ -699,7 +705,7 @@ function Appsettings2() {
                       value: newAppSettings?.acceptedCurrency || '',
                       items: getAcceptedCurrencyOptions(
                         newAppSettings?.baseCurrency,
-                        newAppSettings?.secondaryCurrency
+                        newAppSettings?.secondaryCurrency,
                       ),
                       onChange: (e) => {
                         setHasChanged(true);

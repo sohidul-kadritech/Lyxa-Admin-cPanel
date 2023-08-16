@@ -12,6 +12,7 @@ import FilterSelect from '../../components/Filter/FilterSelect';
 import EditUser from '../../components/Shared/EditUser/index ';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import TableSkeleton from './Skeleton';
@@ -30,6 +31,10 @@ const listFilterOptions = [
 
 export default function UsersTable({ users = [], page, setPage, totalPage, loading }) {
   const queryClient = useQueryClient();
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
   const history = useHistory();
   const [render, setRender] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(null);
@@ -165,15 +170,17 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       headerAlign: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
-          <StyledIconButton
-            onClick={() => {
-              setSidebarOpen('edit');
-              setSelectedUser(row);
-            }}
-            color="primary"
-          >
-            <Edit />
-          </StyledIconButton>
+          {admin?.adminType !== 'customerService' && (
+            <StyledIconButton
+              onClick={() => {
+                setSidebarOpen('edit');
+                setSelectedUser(row);
+              }}
+              color="primary"
+            >
+              <Edit />
+            </StyledIconButton>
+          )}
           <StyledIconButton
             color="primary"
             onClick={() => {

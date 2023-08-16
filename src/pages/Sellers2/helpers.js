@@ -2,32 +2,47 @@ import { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
-export const getThreedotMenuOptions = [
-  {
-    label: 'View',
-    value: 'view',
-  },
-  {
-    label: 'Edit Seller',
-    value: 'edit_seller',
-  },
-  {
-    label: 'Access as Seller',
-    value: 'access_as_seller',
-  },
-  {
-    label: 'Update Lyxa Charge',
-    value: 'update_lyxa_charge',
-  },
-  {
-    label: 'Go to Financials',
-    value: 'go_to_financials',
-  },
-  {
-    label: 'Add Shop',
-    value: 'add_shop',
-  },
-];
+export const getThreedotMenuOptions = (adminType) => {
+  const menu = [
+    {
+      label: 'View',
+      value: 'view',
+    },
+
+    {
+      label: 'Access as Seller',
+      value: 'access_as_seller',
+    },
+
+    {
+      label: 'Go to Financials',
+      value: 'go_to_financials',
+    },
+  ];
+
+  if (adminType !== 'customerService') {
+    const newMenu = [
+      {
+        label: 'Edit Seller',
+        value: 'edit_seller',
+        disabled: adminType === 'customerService',
+      },
+      {
+        label: 'Update Lyxa Charge',
+        value: 'update_lyxa_charge',
+        disabled: adminType === 'customerService',
+      },
+      {
+        label: 'Add Shop',
+        value: 'add_shop',
+        disabled: adminType === 'customerService',
+      },
+    ];
+    return [...newMenu, ...menu];
+  }
+
+  return menu;
+};
 
 export const sellerShopTabType = {
   0: 'Shop List',

@@ -4,6 +4,7 @@ import { Button, Stack } from '@mui/material';
 import React from 'react';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { useGlobalContext } from '../../context';
 
 const listFilterOptions = [
   {
@@ -17,6 +18,10 @@ const listFilterOptions = [
 ];
 
 export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder, onAdd }) {
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
   return (
     <Stack direction="row" alignItems="center" gap="20px">
       <StyledSearchBar
@@ -53,7 +58,13 @@ export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder,
           setFilters((prev) => ({ ...prev, status: e.target.value }));
         }}
       />
-      <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
+      <Button
+        size="small"
+        variant="contained"
+        disabled={admin?.adminType === 'customerService'}
+        onClick={onAdd}
+        startIcon={<Add />}
+      >
         Add
       </Button>
     </Stack>

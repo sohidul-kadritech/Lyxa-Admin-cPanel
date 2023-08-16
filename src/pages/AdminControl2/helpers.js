@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { successMsg } from '../../helpers/successMsg';
 
@@ -80,4 +81,18 @@ export const isItActiveOrNot = (value, oldList) => {
 export const getManagerSellerIds = (data) => {
   if (data?.length) return data.map((value) => value._id);
   return [];
+};
+
+export const getTeamPermissionText = (adminType) => {
+  const text = {
+    admin: '*Super Admin has full access.',
+    customerService:
+      '*Access to all orders and customer management and support, riders, users and sellers pages, except for those related to payments, edit, tax, marketing, and settings.',
+    sales:
+      '*Access to only those sellers page which only added by sales manager himself, except for those related to payments, tax, marketing, and settings.',
+    accountManager:
+      "*Access to only those sellers page which only assigned by admin for this Account manager, except for those related to payments, tax, marketing, and settings. (Account manager can't create sellers)",
+  };
+
+  return text[adminType];
 };
