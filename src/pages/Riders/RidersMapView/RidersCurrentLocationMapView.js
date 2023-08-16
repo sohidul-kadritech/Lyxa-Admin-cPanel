@@ -3,11 +3,11 @@ import { Box } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import RiderLocation from '../../../assets/icons/riderPin.png';
+import { successMsg } from '../../../helpers/successMsg';
 import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 
 function RidersCurrentLocationMapView({ riders = [] }) {
   const { google } = window;
-
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
   const [distance, setDistance] = useState('');
@@ -67,24 +67,28 @@ function RidersCurrentLocationMapView({ riders = [] }) {
 
     const bounds = new google.maps.LatLngBounds();
 
-    riders?.forEach((rider) => {
-      const marker = new google.maps.Marker({
-        position: { lat: rider?.location?.coordinates[1], lng: rider?.location?.coordinates[0] },
-        icon: RiderIcon,
-        map,
-      });
+    if (riders?.length > 0) {
+      riders?.forEach((rider) => {
+        const marker = new google.maps.Marker({
+          position: { lat: rider?.location?.coordinates[1], lng: rider?.location?.coordinates[0] },
+          icon: RiderIcon,
+          map,
+        });
 
-      const infowindow = new google.maps.InfoWindow({
-        content: getTitleForMarker(`${rider?.name || 'Rider Title'} (${rider?.ongoingOrders || 0})` || 'Rider Title'),
-      });
+        const infowindow = new google.maps.InfoWindow({
+          content: getTitleForMarker(`${rider?.name || 'Rider Title'} (${rider?.ongoingOrders || 0})` || 'Rider Title'),
+        });
 
-      // Add a click event listener to open the info window when marker is clicked
-      infowindow.open(map, marker);
-      marker.addListener('click', () => {
-        redirectWithId(rider?._id);
+        // Add a click event listener to open the info window when marker is clicked
+        infowindow.open(map, marker);
+        marker.addListener('click', () => {
+          redirectWithId(rider?._id);
+        });
+        bounds.extend(marker.getPosition());
       });
-      bounds.extend(marker.getPosition());
-    });
+    } else {
+      successMsg('No riders found!');
+    }
 
     map.fitBounds(bounds);
 
@@ -92,7 +96,7 @@ function RidersCurrentLocationMapView({ riders = [] }) {
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
   }, [riders]);
 
-  return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
+  return <Box ref={mapRef} className="map" sx={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }
 
 export default RidersCurrentLocationMapView;

@@ -24,7 +24,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
 
   const [polygonArea, setPolygonArea] = useState(
     // eslint-disable-next-line prettier/prettier
-    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0
+    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0,
   );
   // eslint-disable-next-line no-unused-vars
   const [createdZoneGeometry, setCreatedZoneGeometry] = useState([
@@ -146,7 +146,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
         </Stack>
         <Box sx={{ position: 'relative' }}>
           <ZoneMap
-            currentZoneName={rowData?.zoneName || ''}
+            currentZone={rowData?.zoneName || ''}
             setPolygonArea={setPolygonArea}
             currentLocation={currentLocation}
             allZones={allZones}

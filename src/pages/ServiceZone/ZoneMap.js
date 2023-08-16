@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-restricted-syntax */
 import { Avatar, Box, CircularProgress, Stack, Typography } from '@mui/material';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
+import * as turf from '@turf/turf';
 import L from 'leaflet';
 import { FeatureGroup, MapContainer, Marker, Polygon, TileLayer, Tooltip } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
@@ -11,9 +15,68 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import './ZoneMap.css';
-import { calculatePolygonArea, colorList, convertedLonLatToLatLon, getLocationFromLatLng } from './helper';
+import {
+  calculatePolygonArea,
+  colorList,
+  convertedLatLonToLonLat,
+  convertedLonLatToLatLon,
+  getLocationFromLatLng,
+} from './helper';
 import mapUrlProvider from './mapUrlProvider';
 
+function getTurfPolygonData(data) {
+  console.log('data', data);
+  if (data.length > 4) {
+    return [[...data, data[0]]];
+  }
+
+  return [[...data, data[0], data[0], data[0]]];
+}
+
+function isThisPolygonHasAnyStore(polygon, stores) {
+  let isIntersects = false;
+
+  const polygonFeature = turf.polygon(getTurfPolygonData(polygon));
+
+  const allStore = stores.map((store) => ({ shopZone: store?.shopZone, markerPosition: store?.location?.coordinates }));
+
+  allStore.forEach(({ shopZone, markerPosition }, i) => {
+    const markerPoint = turf.point([markerPosition[1], markerPosition[0]]);
+
+    if (turf.booleanPointInPolygon(markerPoint, polygonFeature) && shopZone) {
+      console.log('shopZone');
+      isIntersects = true;
+    }
+  });
+
+  return isIntersects;
+}
+
+function checkPolygonIntersections(newPolygons, existingPolygons) {
+  let isIntersects = false;
+
+  const allZones = existingPolygons.map((loc) => convertedLatLonToLonLat(loc?.zoneGeometry?.coordinates[0]));
+
+  console.log('allZones', allZones);
+
+  console.log('newPolygons', newPolygons);
+
+  const poly1 = turf.polygon(getTurfPolygonData(newPolygons));
+
+  allZones.forEach((item, i) => {
+    const poly2 = turf.polygon(getTurfPolygonData(item));
+    // console.log(newPolygon.getBounds().intersects(existingPolygon.getBounds()));
+
+    const intersection = turf.intersect(poly1, poly2);
+
+    console.log('intersection', intersection);
+    if (intersection) {
+      isIntersects = true;
+    }
+  });
+
+  return isIntersects; // No intersection found
+}
 const defaultCenter = { lat: 23.1, lon: 80.0 };
 
 function ZoneMap({
@@ -23,11 +86,29 @@ function ZoneMap({
   currentLocation = {},
   setPolygonArea = 0,
   setCreatedZoneArea,
-  currentZoneName = null,
+  currentZone = null,
+  isEditZone = false,
   isEditable = true,
   isLoading = false,
+  setIsDisable,
 }) {
-  const [currentLocationName, setCurrentLocationName] = useState(currentZoneName || '');
+  // eslint-disable-next-line no-unused-vars
+  const existingPolygons = [
+    [
+      [90.27836217031873, 23.80625533896962],
+      [90.30204893256419, 23.809398698822793],
+      [90.30204893256419, 23.8026403810798],
+      [90.28591447132455, 23.793523953586853],
+      [90.27836217031873, 23.80625533896962],
+      [90.27836217031873, 23.80625533896962],
+    ],
+    // Add more polygons if needed...
+  ];
+
+  // console.log('getBounds(existingPolygons);', checkPolygonIntersections(existingPolygons));
+
+  const [currentLocationName, setCurrentLocationName] = useState(currentZone?.zoneName || '');
+
   const [center, setCenter] = useState(
     // eslint-disable-next-line prettier/prettier
     currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
@@ -38,8 +119,6 @@ function ZoneMap({
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
-
-  useEffect(() => {}, []);
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png',
@@ -52,17 +131,45 @@ function ZoneMap({
   const mapRef = useRef(null);
 
   // getAllStore
-  const getAllStore = useQuery([API_URL.ALL_SHOP, { isLoading }], () => AXIOS.get(API_URL.ALL_SHOP));
+  const getAllStore = useQuery([API_URL?.ALL_SHOP, { isLoading }], () => AXIOS.get(API_URL?.ALL_SHOP), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('data', data?.data?.shops);
+      }
+    },
+  });
+
   const createdPolygon = (e) => {
     const polygon = e.layer;
     setPolygonArea(calculatePolygonArea(polygon));
+
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
     const polygonCenter = polygon.getBounds().getCenter();
     const location = getLocationFromLatLng(polygonCenter.lat, polygonCenter.lng).catch((error) => console.log(error));
     location.then((res) => {
       setCreatedZoneArea(res?.data?.results[0]?.formatted_address);
     });
+
+    if (
+      checkPolygonIntersections(coordinates, allZones) &&
+      !isThisPolygonHasAnyStore(coordinates, getAllStore?.data?.data?.shops)
+    ) {
+      successMsg('Already assigned a zone in this area!');
+    }
+
     setCreatedZoneGeometry(coordinates);
+
+    if (
+      checkPolygonIntersections(coordinates, allZones) &&
+      isThisPolygonHasAnyStore(coordinates, getAllStore?.data?.data?.shops) &&
+      !isEditZone
+    ) {
+      successMsg('Already assigned a shop in this area try different area!');
+      setIsDisable(true);
+      return;
+    }
+
+    setIsDisable(false);
   };
 
   const polygonEdited = (e) => {
@@ -75,6 +182,10 @@ function ZoneMap({
       setCreatedZoneArea(res?.data?.results[0]?.formatted_address);
     });
     const coordinates = polygon?.getLatLngs()[0]?.map((latLng) => [latLng.lat, latLng.lng]) || [];
+
+    if (checkPolygonIntersections(coordinates, allZones)) {
+      successMsg('Already assigned a zone in this area!');
+    }
     // setPolygonGeoData(coordinates);
     setCreatedZoneGeometry(coordinates);
   };
@@ -87,6 +198,7 @@ function ZoneMap({
       [0, 0],
       [0, 0],
     ]);
+    setIsDisable(false);
   };
 
   // Map view handler
@@ -139,6 +251,7 @@ function ZoneMap({
 
   return (
     <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
+      {/* When all store is loading it will show a circular loader */}
       {getAllStore?.isLoading ? (
         <Stack
           sx={{
@@ -219,11 +332,12 @@ function ZoneMap({
                   ? currentLocation?.isCurrent === false
                     ? `Please give permission to get your current location`
                     : `${currentLocationName} (Your Location)`
-                  : `${currentZoneName} (Current Zone)`}
+                  : `${currentZone?.zoneName} (Current Zone)`}
               </Typography>
             </Tooltip>
             {/* <Popup>{JSON.stringify(center)}</Popup> */}
           </Marker>
+
           {getAllStore?.data?.data?.shops.map((store) => (
             <Marker position={[store?.location?.coordinates[1], store?.location?.coordinates[0]]}>
               {/* <Popup>{store?.shopName}</Popup> */}
