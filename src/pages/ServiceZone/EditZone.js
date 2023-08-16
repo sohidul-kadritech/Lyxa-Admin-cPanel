@@ -31,6 +31,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   console.log('current location in edited section: ', currentLocation);
   // eslint-disable-next-line no-unused-vars
   const [searchLoading, setSearchLoading] = useState(false);
+  const [isDisable, setIsDisable] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [createdZoneGeometry, setCreatedZoneGeometry] = useState(
     convertedLonLatToLatLon(rowData?.zoneGeometry?.coordinates[0]).slice(0, -1) || [
@@ -238,8 +239,10 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
 
         <Box sx={{ position: 'relative' }}>
           <ZoneMap
-            currentZoneName={rowData?.zoneName || ''}
+            isEditZone
+            currentZone={rowData || ''}
             setPolygonArea={setPolygonArea}
+            setIsDisable={setIsDisable}
             allZones={allZones}
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
@@ -271,7 +274,12 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
               <ConvertArea squareMeters={polygonArea} />
             </Box>
             <Stack flexDirection="row" gap="20px">
-              <Button disabled={editZone?.isLoading} onClick={updateZone} variant="contained" color="primary">
+              <Button
+                disabled={editZone?.isLoading || isDisable}
+                onClick={updateZone}
+                variant="contained"
+                color="primary"
+              >
                 Save Changes
               </Button>
             </Stack>

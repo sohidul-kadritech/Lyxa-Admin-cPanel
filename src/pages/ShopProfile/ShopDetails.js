@@ -1,6 +1,7 @@
 import { AccessTimeFilled, Email } from '@mui/icons-material';
 import HashIcon from '@mui/icons-material/Tag';
 import { Box, Stack } from '@mui/material';
+import { ReactComponent as AreaCovered } from '../../assets/icons/areaCovered.svg';
 import { ReactComponent as AverageIcon } from '../../assets/icons/averageIcon.svg';
 import { ReactComponent as CalenderIcon } from '../../assets/icons/calender.svg';
 import { ReactComponent as DeliveryIcon } from '../../assets/icons/delivery-icon3.svg';
@@ -50,6 +51,9 @@ export default function ShopDetails({ shop }) {
           icon={Dietary}
         />
       )}
+
+      <ProfileSidebarInfo label="Area Covered" value={shop?.shopZone?.zoneName || 'No zone found'} icon={AreaCovered} />
+
       <ProfileSidebarInfo
         label="Average Ord. Value"
         value={AverageOrderValue(shop?.orderValue?.productAmount, shop?.orderValue?.count)}

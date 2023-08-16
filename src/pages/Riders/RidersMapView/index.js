@@ -19,6 +19,8 @@ function RidersMapView({ onClose, currentOrder }) {
       params: {
         status: 'active',
         liveStatus: 'online',
+        type: 'available',
+
         // deliveryBoyType: 'dropRider',
       },
     }),
@@ -41,16 +43,13 @@ function RidersMapView({ onClose, currentOrder }) {
     >
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: { md: '1fr' },
-          height: { lg: '100%', md: 'auto' },
-          gap: '20px',
+          height: '100%',
         }}
       >
         {getAllRiders?.isLoading ? (
           <MapSkeleton />
         ) : (
-          <RidersCurrentLocationMapView riders={getAllRiders?.data?.data?.deliveryBoys || []} />
+          <RidersCurrentLocationMapView riders={getAllRiders?.data?.data?.deliveryBoys} />
         )}
       </Box>
     </ModalContainer>

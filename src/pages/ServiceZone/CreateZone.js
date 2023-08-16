@@ -18,7 +18,10 @@ const fieldContainerSx = {
 
 function CreateZone({ onClose, addNewZone, allZones, ...props }) {
   const theme = useTheme();
+
   const [searchLoading, setSearchLoading] = useState(false);
+
+  const [isDisable, setIsDisable] = useState(false);
 
   const { location: currentLocation, getCurrentLocation } = useGeoLocation();
 
@@ -208,6 +211,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
 
         <Box sx={{ position: 'relative' }}>
           <ZoneMap
+            setIsDisable={setIsDisable}
             setPolygonArea={setPolygonArea}
             currentLocation={currentLocation}
             allZones={allZones}
@@ -263,7 +267,12 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
               >
                 <MyLocation />
               </IconButton>
-              <Button disabled={addNewZone?.isLoading} onClick={createNewZone} variant="contained" color="primary">
+              <Button
+                disabled={addNewZone?.isLoading || isDisable}
+                onClick={createNewZone}
+                variant="contained"
+                color="primary"
+              >
                 Save Zone
               </Button>
             </Stack>

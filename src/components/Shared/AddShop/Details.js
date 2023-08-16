@@ -2,10 +2,13 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../context';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledInput from '../../Styled/StyledInput';
-import { statusOptions } from './helper';
+import { getZoneDataFromLatLng, statusOptions } from './helper';
 
 const addressInit = {
   address: '',
@@ -23,6 +26,36 @@ const addressInit = {
 export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
   const [render, setRender] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
+
+  const [latlngForZone, setLatLngForZone] = useState({
+    longitude: shop?.shopAddress?.longitude || 0,
+    latitude: shop?.shopAddress?.latitude || 0,
+  });
+
+  const [zones, setZones] = useState([]);
+
+  const getZoneFromAddress = useQuery(
+    [Api.GET_ZONE_FROM_LATLNG, { ...latlngForZone }],
+    () =>
+      AXIOS.get(Api.GET_ZONE_FROM_LATLNG, {
+        params: { ...latlngForZone },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          console.log(data);
+
+          setZones(() => {
+            const zones = getZoneDataFromLatLng(data?.data?.zones);
+            console.log('zones: ', zones);
+            return zones;
+          });
+        }
+      },
+      // eslint-disable-next-line prettier/prettier
+    },
+  );
+  console.log('data.getZoneFromAddress', getZoneFromAddress?.data?.data);
 
   const { currentUser } = useGlobalContext();
   const { adminType } = currentUser;
@@ -58,6 +91,8 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
         newAddress.state = address_component?.long_name;
       }
     });
+
+    setLatLngForZone((prev) => ({ ...prev, latitude: newAddress.latitude, longitude: newAddress.longitude }));
 
     shop.shopAddress = newAddress;
     setRender(!render);
@@ -206,6 +241,20 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           )}
         </PlacesAutocomplete>
       </Stack>
+
+      {/* select zone */}
+      {!getZoneFromAddress?.isLoading && (
+        <StyledFormField
+          label="Select a Zone *"
+          intputType="select"
+          inputProps={{
+            name: 'shopZone',
+            value: shop?.shopZone?._id || shop?.shopZone || '',
+            items: zones,
+            onChange,
+          }}
+        />
+      )}
       {/* zip code */}
       <StyledFormField
         label="Zip Code *"
