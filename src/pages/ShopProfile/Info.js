@@ -44,8 +44,11 @@ export const getShopStatusColor = (shop) => {
 export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
+  const { admin } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
+
+  console.log('currentUser?.userType', currentUser?.userType, admin?.adminType);
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
@@ -90,13 +93,16 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             {shop?.shopName}
           </Typography>
           {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
-            <Box />
-            <ThreeDotsMenu
-              menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}
-              handleMenuClick={menuHandler}
-            />
-          </Box>
+          {routeMatch?.path === '/seller/dashboard/:sellerId/shop/dashboard/:shopId/profile' &&
+          admin?.adminType === 'customerService' ? null : (
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
+              <Box />
+              <ThreeDotsMenu
+                menuItems={menuOtions(currentUser?.userType, routeMatch?.path, admin?.adminType)}
+                handleMenuClick={menuHandler}
+              />
+            </Box>
+          )}
         </Box>
         <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
           <Stack direction="row" alignItems="center">

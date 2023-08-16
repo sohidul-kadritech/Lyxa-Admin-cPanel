@@ -10,6 +10,7 @@ export function ShopSettingsSection2({
   title2,
   isButton,
   buttonType,
+  adminType,
   isMethod,
   options,
   isInput,

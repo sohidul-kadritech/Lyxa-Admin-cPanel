@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line no-unused-vars
-import { Box, useTheme } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useQuery } from 'react-query';
 import * as API_URL from '../../../network/Api';
@@ -20,8 +20,7 @@ function RidersMapView({ onClose, currentOrder }) {
         status: 'active',
         liveStatus: 'online',
         type: 'available',
-
-        // deliveryBoyType: 'dropRider',
+        deliveryBoyType: 'dropRider',
       },
     }),
   );
@@ -30,7 +29,14 @@ function RidersMapView({ onClose, currentOrder }) {
 
   return (
     <ModalContainer
-      title="Riders"
+      title={
+        <Stack>
+          <Typography sx={{ fontSize: '20px', fontWeight: 600, lineHeight: '24px', color: theme.palette.text.primary }}>
+            Riders
+          </Typography>
+          <Typography variant="body3">*Only available and active riders will show here</Typography>
+        </Stack>
+      }
       onClose={onClose}
       sx={{
         width: 'calc(100vw - 40px)',

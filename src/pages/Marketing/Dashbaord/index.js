@@ -60,7 +60,7 @@ export default function MarketingDashboard({ viewUserType }) {
           setCurrentShop(data?.data?.shop);
         }
       },
-    }
+    },
   );
 
   const marketingQuery = useQuery(
@@ -85,12 +85,12 @@ export default function MarketingDashboard({ viewUserType }) {
         console.log(error);
         history?.goForward();
       },
-    }
+    },
   );
 
   const marketingDuration = marketingDurationTime(
     marketingQuery?.data?.data?.marketing?.duration?.start,
-    marketingQuery?.data?.data?.marketing?.duration?.end
+    marketingQuery?.data?.data?.marketing?.duration?.end,
   );
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
@@ -98,7 +98,7 @@ export default function MarketingDashboard({ viewUserType }) {
       params: {
         marketingId: params?.id,
       },
-    })
+    }),
   );
 
   // orders graph
@@ -114,14 +114,14 @@ export default function MarketingDashboard({ viewUserType }) {
           endDate: moment(orderRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   const oData = generateGraphData(
     ordersGraphQuery?.data?.data?.info || [],
     (item) => item.order,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const oGraphData = {
@@ -150,14 +150,14 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: moment(customerRange.start).format('YYYY-MM-DD'),
           endDate: moment(customerRange.end).format('YYYY-MM-DD'),
         },
-      })
+      }),
   );
 
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const cGraphData = {
@@ -184,14 +184,14 @@ export default function MarketingDashboard({ viewUserType }) {
           endDate: moment(amountRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   const aData = generateGraphData(
     amountGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const aGraphData = {
@@ -219,14 +219,14 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: moment(loyalityRange.start).format('YYYY-MM-DD'),
           endDate: moment(loyalityRange.end).format('YYYY-MM-DD'),
         },
-      })
+      }),
   );
 
   const pData = generateGraphData(
     loyalityGraphQuery?.data?.data?.info || [],
     (item) => item.amountSpent,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const pGraphData = {
@@ -312,7 +312,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 }
                 amount={`${Math.round(
                   marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
+                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
                 )}% in ${marketingDuration}`}
               />
             }
@@ -334,7 +334,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 }
                 amount={`${Math.round(
                   marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
                 )}% in ${marketingDuration}`}
               />
             }
@@ -360,22 +360,24 @@ export default function MarketingDashboard({ viewUserType }) {
             title="Customers"
             sm={12}
             md={12}
-            lg={6}
+            lg={params?.type !== 'featured' ? 6 : 12}
           >
             <StyledBarChart data={cGraphData} />
           </ChartBox>
-          <ChartBox
-            chartHeight={325}
-            dateRange={amountRange}
-            setDateRange={setAmountRange}
-            loading={amountGraphQuery.isLoading}
-            title="Amount spent"
-            sm={12}
-            md={12}
-            lg={6}
-          >
-            <StyledAreaChartfrom data={aGraphData} />
-          </ChartBox>
+          {params?.type !== 'featured' && (
+            <ChartBox
+              chartHeight={325}
+              dateRange={amountRange}
+              setDateRange={setAmountRange}
+              loading={amountGraphQuery.isLoading}
+              title="Amount spent"
+              sm={12}
+              md={12}
+              lg={6}
+            >
+              <StyledAreaChartfrom data={aGraphData} />
+            </ChartBox>
+          )}
         </Grid>
       )}
       <MSettingsModal open={Boolean(isModalOpen)}>

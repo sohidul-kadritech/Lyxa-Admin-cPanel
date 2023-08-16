@@ -35,6 +35,7 @@ function SellerList2() {
   const [searchKey, setSearchKey] = useState('');
 
   const [open, setOpen] = useState(false);
+
   const [editDocumentOpen, setEditDocumentOpen] = useState(false);
 
   const [openLyxaChargeSidebar, setOpenLyxaChargeSidebar] = useState(false);
@@ -98,7 +99,7 @@ function SellerList2() {
             if (updatedCurrentSeller) {
               setCurrentSeller(
                 // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {}
+                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
               );
             } else {
               setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
@@ -107,7 +108,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getSingleSellersQuery = useQuery(
@@ -127,7 +128,8 @@ function SellerList2() {
           }
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -224,7 +226,7 @@ function SellerList2() {
             onChange: (e) => setZoneId(e.target.value),
           }}
         />
-        {admin?.adminType !== 'accountManager' && (
+        {admin?.adminType !== 'accountManager' && admin?.adminType !== 'customerService' && (
           <AddMenuButton
             onClick={() => {
               setOpen(() => {

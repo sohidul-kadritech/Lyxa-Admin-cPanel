@@ -11,14 +11,16 @@ export const getQueryParamsInit = (params) => ({
   ...params,
 });
 
-export const menuOtions = (userType, currentRoute) => {
-  const options = [
-    {
+export const menuOtions = (userType, currentRoute, adminType) => {
+  const options = [];
+
+  if (adminType !== 'customerService') {
+    options?.push({
       label: 'Edit Shop',
       value: 'edit',
-    },
-  ];
-
+      disabled: adminType === 'customerService',
+    });
+  }
   if (userType !== 'shop' && currentRoute?.search('shop/dashboard') === -1) {
     options?.push({
       label: 'Access as Shop',

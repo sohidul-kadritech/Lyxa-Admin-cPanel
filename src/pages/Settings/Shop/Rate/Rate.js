@@ -10,6 +10,9 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
   const { general } = useGlobalContext();
   const { appSetting } = general;
   const secondaryCurrency = appSetting?.secondaryCurrency?.code;
+
+  console.log(appSetting);
+
   // const appSetting = appSetting?.baseCurrency;
 
   const incrementHandler = (setValue, key) => {
