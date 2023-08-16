@@ -155,7 +155,10 @@ export default function UpdateOrderStatus({
       if (response?.data?.order?.orderStatus === 'delivered') {
         onClose();
       } else {
+        const items = updateOrderStatusOptions(currentOrder);
+        const currIdx = items?.findIndex((obj) => obj.value === response?.data?.order?.orderStatus);
         setCurrentOrder(response?.data?.order);
+        setCurrentStatus(items[currIdx + 1]?.value);
       }
     }
   };

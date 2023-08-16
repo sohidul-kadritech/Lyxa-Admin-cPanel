@@ -52,11 +52,11 @@ export const getRefundMaxAmounts = (order) => {
   };
 };
 
-export const cancelOrderInit = {
-  orderId: '',
+export const getCancelOrderInit = (order) => ({
+  orderId: order?._id,
   cancelReasonId: null,
   otherReason: '',
-  refundType: 'full',
+  refundType: order?.paymentMethod === 'cash' ? 'none' : 'full',
   partialPayment: {
     shop: '',
     deliveryBoy: '',
@@ -64,7 +64,7 @@ export const cancelOrderInit = {
     adminRiderProfit: '',
     adminVat: '',
   },
-};
+});
 
 export const getTotalRefundAmount = ({ maxAmounts, cancelData }) => {
   console.log({ maxAmounts });

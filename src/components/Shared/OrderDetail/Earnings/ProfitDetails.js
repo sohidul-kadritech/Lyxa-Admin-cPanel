@@ -32,13 +32,13 @@ export default function ProfitDetails({ order = {} }) {
     order?.orderStatus === 'cancelled' &&
     !order?.userCancelTnx?.length &&
     !order?.isRefundedAfterDelivered &&
-    order?.refundType !== 'none'
+    order?.paymentMethod === 'cash'
   ) {
     hideExtraFields = true;
     cashCanceled = true;
   }
 
-  if (order?.refundType === 'none') {
+  if (order?.refundType === 'none' && order?.paymentMethod !== 'cash') {
     hideExtraFields = true;
     noRefund = true;
   }
@@ -156,7 +156,8 @@ export default function ProfitDetails({ order = {} }) {
               label="Deal compensation amount"
               value={hideExtraFields ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
               valueSecondary={hideExtraFields ? 0 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuAdminCut}
-              tooltip="This amount in already included in shop profit"
+              // eslint-disable-next-line max-len
+              tooltip="This amount is paid by admin as compensation for applying Discount, Buy 1 Get 1, or Free Delivery on shop. The amount is already included in shop profit. "
               isRejected
             />
           </Box>
@@ -255,7 +256,7 @@ export default function ProfitDetails({ order = {} }) {
             showIfZero
           />
 
-          <SummaryItem label="Refund Type" value="None" isTotal pb={0} hide={!hideExtraFields} />
+          <SummaryItem label="Refund Type" value="None" isTotal pb={0} hide={!noRefund} />
         </Box>
       </Box>
     </StyledOrderDetailBox>

@@ -248,6 +248,7 @@ export const createEditShopData = async (shopData) => {
     shopZone: shopData?.shopZone,
     shopLogo,
     shopBanner,
+    liveStatus: 'offline',
   };
 };
 

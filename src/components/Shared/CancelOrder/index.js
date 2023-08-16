@@ -12,8 +12,8 @@ import StyledFormField from '../../Form/StyledFormField';
 import StyledCheckbox from '../../Styled/StyledCheckbox';
 import StyledRadioGroup from '../../Styled/StyledRadioGroup';
 import {
-  cancelOrderInit,
   createCancelOrderPayload,
+  getCancelOrderInit,
   getCancelRefundTypeOptions,
   getRefundMaxAmounts,
   getTotalRefundAmount,
@@ -26,7 +26,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
   const { general } = useGlobalContext();
   const vatPercentage = general?.appSetting?.vat;
 
-  const [cancelData, setCancelData] = useState({ ...cancelOrderInit, orderId: order?._id });
+  const [cancelData, setCancelData] = useState(getCancelOrderInit(order));
   const [maxAmounts, setMaxAmounts] = useState(getRefundMaxAmounts(order));
   const [isOtherReason, setIsOtherReason] = useState(false);
 
@@ -49,11 +49,9 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
   const normalMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
     onSuccess: (data) => {
-      console.log('data response: ', data);
       if (data.success) {
         if (onSuccess) onSuccess(data);
         successMsg(data.message, 'success');
-        console.log('data status true');
         onClose(false);
         queryClient.invalidateQueries(refetchApiKey);
       } else {
@@ -100,8 +98,6 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
     const data = createCancelOrderPayload(cancelData);
 
-    console.log('payload', data);
-
     if (order?.isButler) {
       butlerMutation.mutate(data);
     } else {
@@ -141,26 +137,27 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
         borderRadius: '8px',
       }}
     >
-      <Box padding={5}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
+      <Stack padding={5} gap={5}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography fontSize="18px" variant="h4">
             Cancel Order
           </Typography>
           <CloseButton onClick={onClose} size="sm" />
         </Stack>
 
-        <StyledRadioGroup
-          items={getCancelRefundTypeOptions(order)}
-          value={cancelData.refundType}
-          onChange={(e) => setCancelData((prev) => ({ ...prev, refundType: e.target.value }))}
-          sx={{
-            flexDirection: 'row',
-            gap: '25px',
-            pb: 4,
-          }}
-        />
+        {order?.paymentMethod !== 'cash' && (
+          <StyledRadioGroup
+            items={getCancelRefundTypeOptions(order)}
+            value={cancelData.refundType}
+            onChange={(e) => setCancelData((prev) => ({ ...prev, refundType: e.target.value }))}
+            sx={{
+              flexDirection: 'row',
+              gap: '25px',
+            }}
+          />
+        )}
 
-        <Stack direction="row" alignItems="center" pt={1} pb={1}>
+        <Stack direction="row" alignItems="center">
           <StyledCheckbox
             disableRipple
             checked={isOtherReason}
@@ -180,6 +177,9 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
           <StyledFormField
             label="Select Cancel Reason"
             intputType="autocomplete"
+            containerProps={{
+              sx: { padding: 0 },
+            }}
             inputProps={{
               placeholder: 'Choose Reason',
               disabled: isOtherReason,
@@ -209,6 +209,9 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
           <StyledFormField
             label="Other Reason"
             intputType="text"
+            containerProps={{
+              sx: { padding: 0 },
+            }}
             inputProps={{
               placeholder: 'Type Reason...',
               value: cancelData.otherReason,
@@ -300,14 +303,10 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
         )}
 
         {cancelData?.refundType === 'partial' && (
-          <TitleWithToolTip
-            sx={{ pt: 5 }}
-            title={`Total Admin Vat: ${(cancelData?.partialPayment?.adminVat || 0)?.toFixed(2)}`}
-          />
+          <TitleWithToolTip title={`Total Admin Vat: ${(cancelData?.partialPayment?.adminVat || 0)?.toFixed(2)}`} />
         )}
 
         <TitleWithToolTip
-          sx={{ pt: 5 }}
           title={`Total Refund Amount: ${totalRefundAmount?.toFixed(2)}`}
           tooltip="Lyxa Earning + Lyxa Vat + Shop Earning + Shop VAT + Delivery Boy Earning"
         />
@@ -323,7 +322,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
             Confirm
           </Button>
         </Box>
-      </Box>
+      </Stack>
     </Paper>
   );
 }

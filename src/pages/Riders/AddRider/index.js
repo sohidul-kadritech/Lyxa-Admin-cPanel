@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
+import nationalities from '../../../assets/nationalities';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
@@ -23,8 +24,6 @@ import {
 
 export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDelete, riderFor, riderShop }) {
   const queryClient = useQueryClient();
-
-  console.log({ editRider });
 
   const [rider, setRider] = useState(
     editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
@@ -162,13 +161,45 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               intputType="select"
               inputProps={{
                 name: 'deliveryBoyType',
-                // value: riderFor === 'shop' ? 'shopRider' : rider.deliveryBoyType,
                 value: rider.deliveryBoyType,
                 items: riderTypeOptions,
                 onChange: commonChangeHandler,
                 readOnly: Boolean(editRider?._id) || riderFor === 'shop',
               }}
             />
+            {/* shop */}
+            {rider.deliveryBoyType === 'shopRider' && (
+              <Box position="relative">
+                <StyledFormField
+                  label="Select Shop"
+                  intputType="autocomplete"
+                  inputProps={{
+                    multiple: false,
+                    maxHeight: '110px',
+                    options: searchedShopOptions,
+                    value: rider.shopId,
+                    placeholder: 'Choose',
+                    noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
+                    filterOptions,
+                    getOptionLabel: (option) => option?.shopName,
+                    isOptionEqualToValue: (option, value) => option?._id === value?._id,
+                    onChange: (e, v) => {
+                      console.log('value: ', v);
+                      setRider((prev) => ({ ...prev, shopId: v }));
+                    },
+                    onInputChange: (e) => {
+                      getShops(e?.target?.value);
+                    },
+                    readOnly: riderFor === 'shop',
+                    sx: {
+                      '& .MuiFormControl-root': {
+                        minWidth: '200px',
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            )}
             {/* name */}
             <StyledFormField
               label="Full name"
@@ -180,7 +211,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 onChange: commonChangeHandler,
               }}
             />
-
             {/* E-mail address */}
             <StyledFormField
               label="Email ID"
@@ -192,7 +222,17 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 onChange: commonChangeHandler,
               }}
             />
-
+            {/* Nationality */}
+            <StyledFormField
+              label="Nationality *"
+              intputType="select"
+              inputProps={{
+                name: 'deliveryBoyNationality',
+                value: rider.deliveryBoyNationality,
+                items: nationalities,
+                onChange: commonChangeHandler,
+              }}
+            />
             <StyledFormField
               label="Mobile Number *"
               intputType="phoneNumber"
@@ -205,11 +245,10 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                 },
               }}
             />
-
             {/* Password */}
             <StyledFormField
               label="Choose a Password"
-              intputType="text"
+              intputType="password"
               inputProps={{
                 type: 'password',
                 name: 'password',
@@ -221,7 +260,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
             {!editRider?._id && (
               <StyledFormField
                 label="Confirm Password"
-                intputType="text"
+                intputType="password"
                 inputProps={{
                   type: 'password',
                   name: 'confirm_password',
@@ -291,40 +330,6 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
                   onChange: commonChangeHandler,
                 }}
               />
-            )}
-
-            {/* shop */}
-            {rider.deliveryBoyType === 'shopRider' && (
-              <Box position="relative">
-                <StyledFormField
-                  label="Select Shop"
-                  intputType="autocomplete"
-                  inputProps={{
-                    multiple: false,
-                    maxHeight: '110px',
-                    options: searchedShopOptions,
-                    value: rider.shopId,
-                    placeholder: 'Choose',
-                    noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No shops',
-                    filterOptions,
-                    getOptionLabel: (option) => option?.shopName,
-                    isOptionEqualToValue: (option, value) => option?._id === value?._id,
-                    onChange: (e, v) => {
-                      console.log('value: ', v);
-                      setRider((prev) => ({ ...prev, shopId: v }));
-                    },
-                    onInputChange: (e) => {
-                      getShops(e?.target?.value);
-                    },
-                    readOnly: riderFor === 'shop',
-                    sx: {
-                      '& .MuiFormControl-root': {
-                        minWidth: '200px',
-                      },
-                    },
-                  }}
-                />
-              </Box>
             )}
             {/* Photo */}
             <StyledFormField

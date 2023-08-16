@@ -24,6 +24,8 @@ import {
 } from './helper';
 
 export default function AddShop({ onClose, editShop, seller: customSeller, refetch = () => {} }) {
+  console.log('shop', editShop);
+
   const queryClient = useQueryClient();
 
   const { currentUser } = useGlobalContext();

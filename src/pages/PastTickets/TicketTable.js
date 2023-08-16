@@ -40,7 +40,7 @@ export default function TicketTable({
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              history.push(`/accounts/${row?.user?._id}`);
+              history.push(`/users/${row?.user?._id}`);
             },
           }}
           subTitleProps={{

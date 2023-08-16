@@ -53,7 +53,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
   const redirectWithId = (id, type) => {
     console.log('click me');
-    const path = type === 'shop' ? '/shop/profile/' : type === 'user' ? '/accounts/' : '/riders/';
+    const path = type === 'shop' ? '/shop/profile/' : type === 'user' ? '/users/' : '/riders/';
     history.push({
       pathname: `${path}${id}`,
       state: {

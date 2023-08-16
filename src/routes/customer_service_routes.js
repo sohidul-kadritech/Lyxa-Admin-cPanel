@@ -24,8 +24,8 @@ export const customer_service_routes = [
 
   { path: `/orders`, component: AdminOrders },
 
-  { path: `/accounts`, component: AccountList },
-  { path: '/accounts/:userId', component: UserProfile },
+  { path: `/users`, component: AccountList },
+  { path: '/users/:userId', component: UserProfile },
 
   { path: '/seller/list', component: SellerList2 },
   { path: '/seller/list/:sellerId', component: SellerList2 },

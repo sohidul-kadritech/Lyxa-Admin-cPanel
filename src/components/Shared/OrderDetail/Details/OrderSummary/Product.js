@@ -3,8 +3,8 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
 
 const productDeal = (product) => {
-  if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.isDoubleDeal) return 'double_menu';
+  if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
 
   return null;
@@ -20,6 +20,8 @@ export default function Product({ product, isFirst, isLast }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const deal = productDeal(product);
+  const finalPrice = product?.baseCurrency_finalPrice;
+  const quantity = product?.productQuantity;
 
   return (
     <Box
@@ -39,7 +41,7 @@ export default function Product({ product, isFirst, isLast }) {
                 fontStyle: 'italic',
               }}
             >
-              x{product?.productQuantity || 0}
+              x{quantity || 0}
             </span>
           </Typography>
           <Typography
@@ -47,31 +49,46 @@ export default function Product({ product, isFirst, isLast }) {
             fontSize="15px"
             lineHeight="22px"
             fontWeight={600}
-            color={deal !== null && deal !== 'double_menu' ? 'text.secondary2' : undefined}
+            color={deal !== null ? 'text.secondary2' : undefined}
             sx={{
-              textDecoration: deal !== null && deal !== 'double_menu' ? 'line-through' : undefined,
+              textDecoration: deal !== null ? 'line-through' : undefined,
             }}
           >
-            {currency} {(product?.baseCurrency_finalPrice || 0)?.toFixed(2)}
+            {currency} {(finalPrice || 0)?.toFixed(2)}
           </Typography>
         </Stack>
+        {/* deal info */}
         {deal && (
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={500}>
+              {/* percentage */}
               {deal === 'percentage' && `${dealTypeToLabelMap[deal]} ${product?.product?.discountPercentage}%`}
+
+              {/* double_menu */}
               {deal === 'double_menu' && `${dealTypeToLabelMap[deal]}`}
+
+              {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
                   product?.finalReward?.points / product?.productQuantity
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
+              {/* percentage */}
               {deal === 'percentage' &&
                 `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
                   2
                 )}`}
+
+              {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${currency} ${product?.finalReward?.baseCurrency_amount}`}
+
+              {/* double menu */}
+              {deal === 'double_menu' &&
+                `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
+                  2
+                )}`}
             </Typography>
           </Stack>
         )}
