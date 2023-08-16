@@ -27,15 +27,15 @@ class WSService {
   };
 
   emit(event, data = {}) {
-    this.socket.emit(event, data);
+    this.socket?.emit(event, data);
   }
 
   on(event, cb) {
-    this.socket.on(event, cb);
+    this.socket?.on(event, cb);
   }
 
   close() {
-    this.socket.close();
+    this.socket?.close();
   }
 
   removeListener(listenerName) {

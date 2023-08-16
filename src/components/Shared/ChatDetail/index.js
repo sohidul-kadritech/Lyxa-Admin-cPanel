@@ -2,7 +2,9 @@ import { Avatar, Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import CloseButton from '../../Common/CloseButton';
+import LoadingOverlay from '../../Common/LoadingOverlay';
 import TabPanel from '../../Common/TabPanel';
+// import OrderDetail from '../OrderDetail/Details';
 import Chat from './Chat';
 import ChatOrderDetail from './OrderDetail';
 import UserDetails from './UserDetails';
@@ -37,8 +39,10 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
         height: '100%',
         px: 5,
         paddingBottom: '20px',
+        position: 'relative',
       }}
     >
+      {chat?.acceptedByOther && <LoadingOverlay />}
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack direction="row" alignItems="center" gap={3}>
           <Avatar alt="user-image" src={chat?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
@@ -61,7 +65,7 @@ export default function ChatDetails({ chat, onClose, showingFor, onAcceptChat = 
       </Stack>
       <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
         <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
-          Order #{chat?.order?.orderId}
+          {showingFor === 'order' ? `Order #${chat?.order?.orderId}` : ''}
         </Typography>
         <Typography
           variant="h5"

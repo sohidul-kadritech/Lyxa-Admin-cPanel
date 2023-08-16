@@ -4,6 +4,7 @@ import { Button, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import socketServices from '../../../../common/socketService';
+import { useGlobalContext } from '../../../../context';
 import getCookiesAsObject from '../../../../helpers/cookies/getCookiesAsObject';
 import { successMsg } from '../../../../helpers/successMsg';
 import * as Api from '../../../../network/Api';
@@ -24,6 +25,9 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   const queryClient = useQueryClient();
   const { access_token } = getCookiesAsObject();
 
+  const { currentUser } = useGlobalContext();
+  const { admin } = currentUser;
+
   const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats));
   const [orderId, setOrderId] = useState(getOrderId(chat));
 
@@ -32,9 +36,12 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   const [message, setMessage] = useState('');
 
   const listContainerRef = useRef();
+
   // scroll into bottom
   const scrollToBottom = () => {
+    listContainerRef.current.style.height = '80px';
     listContainerRef?.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    listContainerRef.current.style.height = '0px';
   };
 
   // chat orderChatQuery
@@ -129,6 +136,16 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
         socketServices.emit('admin_accepted_chat_request', { requestId });
         chat.status = 'accepted';
         setRender((prev) => !prev);
+
+        console.log('accepted data', data);
+
+        messages?.push({
+          type: 'admin',
+          createdAt: new Date(),
+          message: `Hi, I am ${admin?.name}. How can I help you.`,
+          admin,
+        });
+
         onAcceptChat(data);
         chatConnect();
       }
@@ -140,30 +157,21 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   });
 
   useEffect(() => {
-    // console.log('changes with chat', 'this changes with chat');
-    // console.log({ requestId });
+    if (!readOnly) {
+      // join room
+      if (requestId) chatConnect();
 
-    console.log(requestId);
+      // listen for user messages
+      socketServices?.on(`user_message_sent-${requestId}`, (data) => {
+        setMessages((prev) => [...prev, data]);
+        scrollToBottom();
+      });
 
-    // join room
-    if (requestId) socketServices?.emit('join_user_and_admin_chat', { room: requestId, data: { access_token } });
-
-    // listen for user messages
-    socketServices?.on(`user_message_sent-${requestId}`, (data) => {
-      setMessages((prev) => [...prev, data]);
-      scrollToBottom();
-    });
-
-    socketServices?.on(`admin_accepted_chat_request-${requestId}`, (data) => {
-      const message = { type: 'admin', _id: Math.random, message: data?.acceptedStatus };
-      setMessages((prev) => [...prev, message]);
-    });
-
-    // listen for user chat close
-    socketServices?.on(`chat-close-${requestId}`, () => afterCloseChat('user'));
+      // listen for user chat close
+      socketServices?.on(`chat-close-${requestId}`, () => afterCloseChat('user'));
+    }
 
     return () => {
-      // console.log({ requestId }, 'from return');
       socketServices?.removeListener(`user_message_sent-${requestId}`);
       socketServices?.removeListener(`chat-close-${requestId}`);
       socketServices?.removeListener(`admin_accepted_chat_request-${requestId}`);
@@ -226,7 +234,6 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
           Resolve Ticket
         </Button>
       )}
-      {/* <Box ref={containerRef}></Box> */}
     </Stack>
   );
 }

@@ -1,22 +1,17 @@
 /* eslint-disable max-len */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import socketServices from '../../common/socketService';
+import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatList from '../../components/Shared/ChatList';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SlideInContainer from './SlideInContainer';
-
-const queryParamsInit = {
-  page: 1,
-  pageSize: 10,
-  chatType: 'order',
-};
-
-const tabValueToChatTypeMap = { 0: 'order', 1: 'account' };
 
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
@@ -25,16 +20,75 @@ export default function OngoingTickets() {
   const [currentTab, setCurrentTab] = useState(0);
   const [, setRender] = useState(false);
 
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
 
-  const query = useQuery([Api.ONGOING_CHATS, queryParams], () =>
-    AXIOS.get(Api.ONGOING_CHATS, {
-      params: queryParams,
-    })
+  const [ordersList, setOrdersList] = useState([]);
+  const [accountsList, setAccountsList] = useState([]);
+
+  const ordersQuery = useQuery(
+    [Api.ONGOING_CHATS, { chatType: 'order' }],
+    () =>
+      AXIOS.get(Api.ONGOING_CHATS, {
+        params: { chatType: 'order' },
+      }),
+    {
+      onSuccess: (data) => {
+        setOrdersList(data?.data?.list);
+        console.log(data);
+      },
+    }
   );
+
+  const accountsQuery = useQuery(
+    [Api.ONGOING_CHATS, { chatType: 'account' }],
+    () =>
+      AXIOS.get(Api.ONGOING_CHATS, {
+        params: { chatType: 'account' },
+      }),
+    {
+      onSuccess: (data) => {
+        setAccountsList(data?.data?.list);
+        console.log(data);
+      },
+    }
+  );
+
+  // realtime add and remove chats
+  useEffect(() => {
+    socketServices.on('user_send_chat_request', (data) => {
+      successMsg(`New chat request from ${data?.user?.name}`, 'success');
+      console.log('add-chat', data);
+      if (data?.chatType === 'order') {
+        setOrdersList((prev) => [data, ...prev]);
+      } else {
+        setAccountsList((prev) => [data, ...prev]);
+      }
+    });
+
+    socketServices.on('admin_accepted_chat_remove', (data) => {
+      console.log('remove-chat', data);
+
+      if (data?.admin?._id === admin?._id) {
+        return;
+      }
+
+      if (selectedChat?._id === data?._id) {
+        selectedChat.acceptedByOther = true;
+      }
+
+      if (data?.chatType === 'order') {
+        setOrdersList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+      } else {
+        setAccountsList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+      }
+    });
+
+    return () => {
+      socketServices?.removeListener(`user_send_chat_request`);
+      socketServices?.removeListener(`admin_accepted_chat_remove`);
+    };
+  }, []);
 
   const onViewDetails = (chat) => {
     setSelectedChat(chat);
@@ -54,8 +108,6 @@ export default function OngoingTickets() {
     if (actionType === 'flag' || actionType === 'cancelOrder' || actionType === 'updateStatus')
       updateSelectedChatOrder(newData);
   };
-
-  console.log('query', query?.data?.data);
 
   return (
     <Box
@@ -89,7 +141,6 @@ export default function OngoingTickets() {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
-              setQueryParams((prev) => ({ ...prev, chatType: tabValueToChatTypeMap[newValue] }));
             }}
             sx={{
               paddingTop: '40px',
@@ -102,18 +153,27 @@ export default function OngoingTickets() {
             <Tab label="Orders Ticket" />
             <Tab label="Account Tickets" />
           </Tabs>
-
           <Box pt={9}>
-            <ChatList
-              page={queryParams?.page}
-              setPage={(page) => setQueryParams((prev) => ({ ...prev, page }))}
-              totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
-              refetching={query?.isFetching}
-              onViewDetails={onViewDetails}
-              chats={query?.data?.data?.list}
-              loading={query?.isLoading}
-              onAction={onAction}
-            />
+            <TabPanel index={0} noPadding value={currentTab}>
+              <ChatList
+                hidePagination
+                refetching={false}
+                onViewDetails={onViewDetails}
+                chats={ordersList}
+                loading={ordersQuery?.isLoading}
+                onAction={onAction}
+              />
+            </TabPanel>
+            <TabPanel index={1} noPadding value={currentTab}>
+              <ChatList
+                hidePagination
+                refetching={false}
+                onViewDetails={onViewDetails}
+                chats={accountsList}
+                loading={accountsQuery?.isLoading}
+                onAction={onAction}
+              />
+            </TabPanel>
           </Box>
         </SlideInContainer>
       </Box>

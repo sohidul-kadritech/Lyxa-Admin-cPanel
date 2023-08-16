@@ -65,6 +65,10 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
         onClose();
       }
     },
+    onError: (error) => {
+      console.log(error);
+      successMsg('Sever error!', 'error');
+    },
   });
 
   const submitRefund = () => {
