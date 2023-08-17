@@ -87,11 +87,11 @@ export const getTeamPermissionText = (adminType) => {
   const text = {
     admin: '*Super Admin has full access.',
     customerService:
-      '*Access to all orders and customer management and support, riders, users and sellers pages, except for those related to payments, edit, tax, marketing, and settings.',
+      '*Access to the pages for riders, users, and sellers, as well as to Manage orders and Customer Support (chat), with the exception of those related to payments, edit, tax, marketing, and settings.',
     sales:
-      '*Access to only those sellers page which only added by sales manager himself, except for those related to payments, tax, marketing, and settings.',
+      '*Access to only those seller pages and shops related to each seller for this sales manager that were added by Lyxa or the sales manager himself, excluding pages for payments, taxes, marketing, and settings. (Sales managers are able to create sellers and shops)',
     accountManager:
-      "*Access to only those sellers page which only assigned by admin for this Account manager, except for those related to payments, tax, marketing, and settings. (Account manager can't create sellers)",
+      "*Account Manager only has access to the sellers' pages that the admin has specifically assigned to them. (Account manager is unable to add sellers.), except for those related to payments, tax, marketing, and settings. (Although the account manager cannot create sellers, they can only edit existing sellers and create shops that are related to each seller that was given to them.)",
   };
 
   return text[adminType];

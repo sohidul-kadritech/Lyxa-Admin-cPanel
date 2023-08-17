@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
@@ -93,15 +94,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setEntireMenu(false);
         }
       },
-    }
+    },
   );
 
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing?.type === marketingType
+        (p) => p.marketing === undefined || p?.marketing?.type === marketingType,
       ),
-    [productsQuery?.data]
+    [productsQuery?.data],
   );
 
   useEffect(() => {
@@ -119,7 +120,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       }),
     {
       enabled: marketingType === 'percentage',
-    }
+    },
   );
 
   // featured settinsg
@@ -128,7 +129,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       params: {
         featuredType: shop?.shopType,
       },
-    })
+    }),
   );
 
   const featuredSettingsOptions = useMemo(() => {
@@ -238,12 +239,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
           window.alert(
-            'Looks like something has changed in marketing since you came here. We will just reload the page'
+            'Looks like something has changed in marketing since you came here. We will just reload the page',
           );
           window.location.reload();
         }
       },
-    }
+    },
   );
 
   const selectionChangeConfirm = (value) => {
@@ -401,7 +402,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           onDelete();
         }
       },
-    }
+    },
   );
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
@@ -942,7 +943,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
             )}
             {pageMode === 2 && (
               <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Box>
+                <Stack alignItems="flex-start">
                   <Button
                     disabled={loyaltySettingsDeleteMutation.isLoading}
                     variant="text"
@@ -965,7 +966,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   >
                     Delete Promotion
                   </Button>
-                </Box>
+                  {marketingType === 'featured' && (
+                    <Typography variant="body3" sx={{ fontSize: 12 }}>
+                      *In case of delete promotion, the remaining amount is non refundable
+                    </Typography>
+                  )}
+                </Stack>
                 {marketingType !== 'featured' && (
                   <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                     <Button

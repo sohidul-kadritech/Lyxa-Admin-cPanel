@@ -87,8 +87,8 @@ function SellerList2() {
           searchKey,
           sellerType: currentTab,
           zoneId: zoneId === 'all' ? null : zoneId,
-          createdBy: admin?.adminType === 'sales' ? admin?._id : '',
-          accountManagerId: admin?.adminType === 'accountManager' ? admin?._id : '',
+          // createdBy: admin?.adminType === 'sales' ? admin?._id : '',
+          adminId: admin?.adminType === 'accountManager' || admin?.adminType === 'sales' ? admin?._id : '',
         },
       }),
     {

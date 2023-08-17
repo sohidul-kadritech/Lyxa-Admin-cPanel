@@ -2,7 +2,8 @@ import { Stack } from '@mui/material';
 
 import React from 'react';
 import StyledFormField from '../../../../components/Form/StyledFormField';
-import { getAcceptedCurrencyOptions } from '../../../AppSettings2';
+
+import { getAcceptedCurrencyOptions } from '../../../AppSettings2/helpers';
 import InputBox from '../../Admin/Marketing/LoyaltySettings/InputBox';
 
 function AcceptedCurrency({ shopSettings, setShopSettings, setHasChanged }) {
