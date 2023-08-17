@@ -44,7 +44,9 @@ export default function Coupons({ user }) {
         </Stack>
       }
     >
-      <Typography variant="inherit">Total - {filteredCoupons?.length} coupons</Typography>
+      <Typography variant="inherit" textTransform="capitalize">
+        {currentTab} - {filteredCoupons?.length} coupons
+      </Typography>
       {/* collapsed */}
       <Accordion
         expanded={open}

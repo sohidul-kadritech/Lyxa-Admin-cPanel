@@ -14,6 +14,7 @@ import Transactions from './Transactions';
 export default function UserDetails({ chat }) {
   let user = chat?.user;
   const [modalOpen, setModalOpen] = useState(false);
+  const [, setRender] = useState(false);
 
   useQuery(
     [Api.SINGLE_USER, { id: user?._id }],
@@ -26,6 +27,7 @@ export default function UserDetails({ chat }) {
         if (data?.status) {
           chat.user = data?.data?.user;
           user = data?.data?.user;
+          setRender((prev) => !prev);
         }
       },
     }
