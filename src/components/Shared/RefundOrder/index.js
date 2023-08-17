@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -39,11 +40,24 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   // secondary currency
   const shopExchangeRate = order?.shopExchangeRate;
   const secondaryCurrency = order?.secondaryCurrency?.code;
+  const baseCurrency = order?.baseCurrency?.code;
   const adminExchangeRate = order?.adminExchangeRate;
   const isSecondaryCurrencyEnabled = order?.shopExchangeRate > 0;
 
+  // data will update every time react re-renders
+  const secondaryValues = {
+    shop: Number(refundData?.partialPayment?.shop) * shopExchangeRate,
+    adminOrderProfit: Number(refundData?.partialPayment?.adminOrderProfit) * shopExchangeRate,
+    adminRiderProfit: Number(refundData?.partialPayment?.adminRiderProfit) * adminExchangeRate,
+    adminVat: Number(refundData?.partialPayment?.adminVat) * shopExchangeRate,
+  };
+
   // total amount showed
-  const totalRefundAmount = getTotalRefundAmount({ refundData, maxAmounts, vatPercentage });
+  const { base: totalRefundAmount, secondary: totalRefundSecondary } = getTotalRefundAmount({
+    refundData,
+    maxAmounts,
+    secondaryValues,
+  });
 
   // updates vat amount when order or delivery cut changed
   useEffect(() => {
@@ -127,8 +141,11 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
       {refundData?.refundType === 'partial' && (
         <Box
+          pb={7}
+          display="flex"
+          flexDirection="column"
+          gap={3}
           sx={{
-            pb: 5,
             '& >*:first-of-type': {
               paddingTop: 0,
             },
@@ -136,7 +153,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
         >
           {/* Order Refund */}
           {maxAmounts?.adminOrderProfit > 0 && (
-            <>
+            <Box>
               <StyledFormField
                 intputType="text"
                 labelComponent={
@@ -160,12 +177,12 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
                   {Number(refundData?.partialPayment?.adminOrderProfit) * shopExchangeRate}
                 </Typography>
               )}
-            </>
+            </Box>
           )}
 
           {/* Delivery Refund */}
           {maxAmounts?.adminRiderProfit > 0 && (
-            <>
+            <Box>
               <StyledFormField
                 labelComponent={
                   <TitleWithToolTip
@@ -188,12 +205,12 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
                   {Number(refundData?.partialPayment?.adminRiderProfit) * adminExchangeRate}
                 </Typography>
               )}
-            </>
+            </Box>
           )}
 
           {/* Shop Profit */}
           {maxAmounts?.shop > 0 && (
-            <>
+            <Box>
               <StyledFormField
                 labelComponent={
                   <TitleWithToolTip
@@ -212,10 +229,10 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
               />
               {isSecondaryCurrencyEnabled && (
                 <Typography mt="-8px" variant="body3" display="block">
-                  Equivalent Price: {secondaryCurrency} {Number(refundData?.partialPayment?.shop) * secondaryCurrency}
+                  Equivalent Price: {secondaryCurrency} {Number(refundData?.partialPayment?.shop) * shopExchangeRate}
                 </Typography>
               )}
-            </>
+            </Box>
           )}
         </Box>
       )}
@@ -223,12 +240,20 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
       {refundData?.refundType === 'partial' && (
         <TitleWithToolTip
           sx={{ pb: 4 }}
-          title={`Admin Vat: ${(refundData?.partialPayment?.adminVat || 0)?.toFixed(2)}`}
+          title={`Total Admin Vat: ${baseCurrency} ${(refundData?.partialPayment?.adminVat || 0)?.toFixed(2)} 
+          ${
+            isSecondaryCurrencyEnabled
+              ? ` ~ ${secondaryCurrency} ${Math.round(refundData?.partialPayment?.adminVat * shopExchangeRate)}`
+              : ''
+          }
+          `}
         />
       )}
 
       <TitleWithToolTip
-        title={`Total Refund Amount: ${(totalRefundAmount || 0)?.toFixed(2)}`}
+        title={`Total Refund Amount: ${(totalRefundAmount || 0)?.toFixed(2)}  ${
+          isSecondaryCurrencyEnabled ? ` ~ ${secondaryCurrency} ${Math.round(totalRefundSecondary)}` : ''
+        }`}
         tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT+Rider Earning + Rider VAT"
       />
 
