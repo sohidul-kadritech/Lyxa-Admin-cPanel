@@ -24,31 +24,49 @@ export const getCancelRefundTypeOptions = (order) => {
 
 export const getRefundMaxAmounts = (order) => {
   let deliveryBoy = order?.baseCurrency_riderFee;
+  let deliveryBoySecondary = order?.secondaryCurrency_riderFee;
   let shop = order?.baseCurrency_shopEarnings + order?.vatAmount?.baseCurrency_vatForShop;
+  let shopSecondary = order?.secondaryCurrency_shopEarnings + order?.vatAmount?.secondaryCurrency_vatForShop;
 
   if (order?.adminCharge?.baseCurrency_adminChargeFromDelivery < 0) {
     deliveryBoy -= Math.abs(order?.adminCharge?.baseCurrency_adminChargeFromDelivery);
+    deliveryBoySecondary -= Math.abs(order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery);
   }
 
   if (order?.adminCharge?.baseCurrency_adminChargeFromOrder < 0) {
     shop -= Math.abs(order?.adminCharge?.baseCurrency_adminChargeFromOrder);
+    shopSecondary -= Math.abs(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder);
   }
 
   if (order?.isButler) {
     return {
       deliveryBoy,
+      deliveryBoySecondary,
+
       adminRiderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromDelivery, 0),
+      adminRiderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery, 0),
+
       adminVat: order?.summary?.baseCurrency_vat,
+      adminVatSecondary: order?.vatAmount?.secondaryCurrency_vatForAdmin,
     };
   }
 
   // normal order
   return {
     shop,
+    shopSecondary,
+
     deliveryBoy,
+    deliveryBoySecondary,
+
     adminOrderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
+    adminOrderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder, 0),
+
     adminRiderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromDelivery, 0),
+    adminRiderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery, 0),
+
     adminVat: order?.vatAmount?.baseCurrency_vatForAdmin,
+    adminVatSecondary: order?.vatAmount?.secondaryCurrency_vatForAdmin,
   };
 };
 
@@ -66,20 +84,30 @@ export const getCancelOrderInit = (order) => ({
   },
 });
 
-export const getTotalRefundAmount = ({ maxAmounts, cancelData }) => {
+export const getTotalRefundAmount = ({ maxAmounts, cancelData, secondaryValues = {} }) => {
   console.log({ maxAmounts });
 
+  let base = 0;
+  let secondary = 0;
+
   if (cancelData?.refundType === 'full') {
-    return Object.values(maxAmounts).reduce((a, b) => a + Number(b), 0);
+    Object.entries(maxAmounts).forEach(([key, value]) => {
+      if (key.search('Secondary') > -1) {
+        secondary += Number(value);
+      } else {
+        base += Number(value);
+      }
+    });
+
+    return { base, secondary };
   }
 
-  if (cancelData?.refundType === 'none') {
-    return 0;
+  if (cancelData?.refundType === 'partial') {
+    base = Object.values(cancelData.partialPayment).reduce((a, b) => a + Number(b), 0);
+    secondary = Object.values(secondaryValues).reduce((a, b) => a + Number(b), 0);
   }
 
-  const total = Object.values(cancelData.partialPayment).reduce((a, b) => a + Number(b), 0);
-
-  return total;
+  return { base, secondary };
 };
 
 export const validateCancelData = ({ cancelData, isOtherReason, maxAmounts }) => {
@@ -113,7 +141,7 @@ export const validateCancelData = ({ cancelData, isOtherReason, maxAmounts }) =>
       }
     });
 
-    const totalRefundAmount = getTotalRefundAmount({ maxAmounts, cancelData });
+    const { base: totalRefundAmount } = getTotalRefundAmount({ maxAmounts, cancelData });
 
     if (!totalRefundAmount) {
       error.msg = `Total refund amount is invalid`;

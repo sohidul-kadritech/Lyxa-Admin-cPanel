@@ -36,6 +36,12 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     }
   };
 
+  // secondary currency
+  const shopExchangeRate = order?.shopExchangeRate;
+  const secondaryCurrency = order?.secondaryCurrency?.code;
+  const adminExchangeRate = order?.adminExchangeRate;
+  const isSecondaryCurrencyEnabled = order?.shopExchangeRate > 0;
+
   // total amount showed
   const totalRefundAmount = getTotalRefundAmount({ refundData, maxAmounts, vatPercentage });
 
@@ -130,62 +136,86 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
         >
           {/* Order Refund */}
           {maxAmounts?.adminOrderProfit > 0 && (
-            <StyledFormField
-              intputType="text"
-              labelComponent={
-                <TitleWithToolTip
-                  title={`Lyxa Order Refund: ${(maxAmounts?.adminOrderProfit || 0)?.toFixed(2)}`}
-                  tooltip="Lyxa Order Profit"
-                />
-              }
-              inputProps={{
-                value: refundData?.partialPayment?.adminOrderProfit,
-                type: 'number',
-                name: 'adminOrderProfit',
-                placeholder: 'Enter Amount',
-                onChange: updateRefundAmount,
-              }}
-            />
+            <>
+              <StyledFormField
+                intputType="text"
+                labelComponent={
+                  <TitleWithToolTip
+                    title={`Lyxa Order Refund: ${(maxAmounts?.adminOrderProfit || 0)?.toFixed(2)}`}
+                    tooltip="Lyxa Order Profit"
+                  />
+                }
+                inputProps={{
+                  value: refundData?.partialPayment?.adminOrderProfit,
+                  type: 'number',
+                  name: 'adminOrderProfit',
+                  placeholder: 'Enter Amount',
+                  onChange: updateRefundAmount,
+                }}
+              />
+
+              {isSecondaryCurrencyEnabled && (
+                <Typography mt="-8px" variant="body3" display="block">
+                  Equivalent Price: {secondaryCurrency}{' '}
+                  {Number(refundData?.partialPayment?.adminOrderProfit) * shopExchangeRate}
+                </Typography>
+              )}
+            </>
           )}
 
           {/* Delivery Refund */}
           {maxAmounts?.adminRiderProfit > 0 && (
-            <StyledFormField
-              labelComponent={
-                <TitleWithToolTip
-                  title={`Lyxa Delivery Refund: ${(maxAmounts?.adminRiderProfit || 0)?.toFixed(2)}`}
-                  tooltip="Lyxa Delivery Profit"
-                />
-              }
-              intputType="text"
-              inputProps={{
-                value: refundData?.partialPayment?.adminRiderProfit,
-                type: 'number',
-                name: 'adminRiderProfit',
-                placeholder: 'Enter Amount',
-                onChange: updateRefundAmount,
-              }}
-            />
+            <>
+              <StyledFormField
+                labelComponent={
+                  <TitleWithToolTip
+                    title={`Lyxa Delivery Refund: ${(maxAmounts?.adminRiderProfit || 0)?.toFixed(2)}`}
+                    tooltip="Lyxa Delivery Profit"
+                  />
+                }
+                intputType="text"
+                inputProps={{
+                  value: refundData?.partialPayment?.adminRiderProfit,
+                  type: 'number',
+                  name: 'adminRiderProfit',
+                  placeholder: 'Enter Amount',
+                  onChange: updateRefundAmount,
+                }}
+              />
+              {isSecondaryCurrencyEnabled && (
+                <Typography mt="-8px" variant="body3" display="block">
+                  Equivalent Price: {secondaryCurrency}{' '}
+                  {Number(refundData?.partialPayment?.adminRiderProfit) * adminExchangeRate}
+                </Typography>
+              )}
+            </>
           )}
 
           {/* Shop Profit */}
           {maxAmounts?.shop > 0 && (
-            <StyledFormField
-              labelComponent={
-                <TitleWithToolTip
-                  title={`Shop Refund: ${(maxAmounts?.shop || 0)?.toFixed(2)}`}
-                  tooltip="Shop Earning + Shop VAT"
-                />
-              }
-              intputType="text"
-              inputProps={{
-                value: refundData?.partialPayment?.shop,
-                type: 'number',
-                name: 'shop',
-                placeholder: 'Enter Amount',
-                onChange: updateRefundAmount,
-              }}
-            />
+            <>
+              <StyledFormField
+                labelComponent={
+                  <TitleWithToolTip
+                    title={`Shop Refund: ${(maxAmounts?.shop || 0)?.toFixed(2)}`}
+                    tooltip="Shop Earning + Shop VAT"
+                  />
+                }
+                intputType="text"
+                inputProps={{
+                  value: refundData?.partialPayment?.shop,
+                  type: 'number',
+                  name: 'shop',
+                  placeholder: 'Enter Amount',
+                  onChange: updateRefundAmount,
+                }}
+              />
+              {isSecondaryCurrencyEnabled && (
+                <Typography mt="-8px" variant="body3" display="block">
+                  Equivalent Price: {secondaryCurrency} {Number(refundData?.partialPayment?.shop) * secondaryCurrency}
+                </Typography>
+              )}
+            </>
           )}
         </Box>
       )}

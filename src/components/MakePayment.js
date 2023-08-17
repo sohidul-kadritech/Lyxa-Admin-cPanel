@@ -8,7 +8,6 @@ import { riderMakePayment, shopMakePayment } from '../store/appWallet/appWalletA
 
 function MakePayment({ unSettleAmount = 0, id, userType }) {
   const { loading } = useSelector((state) => state.appWalletReducer);
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { general } = useGlobalContext();
   console.log(general?.currency);
   const currency = general?.currency?.symbol;
@@ -39,16 +38,6 @@ function MakePayment({ unSettleAmount = 0, id, userType }) {
           amount: settleAmount,
         })
       );
-      // if (receivedPayment) {
-      //   dispatch(
-      //     riderReceivedPayment({
-      //       deliveryBoyId: id,
-      //       amount: settleAmount,
-      //     })
-      //   );
-      // } else {
-
-      // }
     }
   };
 
