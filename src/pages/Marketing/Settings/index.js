@@ -360,6 +360,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         featuredAmount,
       });
     } else {
+      const startDate = moment();
+      const endDate = moment().add(dateRange - 1, 'days');
+      const invalid = endDate.isBefore(startDate);
+
+      console.log('is invalid', invalid);
+
       marketingMutation.mutate({
         shop: shop?._id,
         type: marketingType,
@@ -372,7 +378,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
             .format('YYYY-MM-DD'),
         },
         spendLimit: spendLimitChecked ? spendLimit : 0,
-        status: status || 'active',
+        status: invalid ? 'inactive' : status || 'active',
         itemSelectionType: itemSelectType,
       });
     }
@@ -901,7 +907,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   }}
                   disabled={marketingMutation.isLoading}
                   onClick={() => {
-                    updateLoyaltySettings();
+                    setIsPageDisabled(false);
+                    setPageMode(3);
                   }}
                 >
                   Resume Promotion
