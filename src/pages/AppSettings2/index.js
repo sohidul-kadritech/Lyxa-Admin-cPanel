@@ -156,7 +156,6 @@ function Appsettings2() {
       // eslint-disable-next-line prettier/prettier
     },
   );
-
   // reset data
   const populateData = () => {
     setNewAppSettings(getAppSettingsData?.data?.data?.appSetting);
@@ -171,7 +170,7 @@ function Appsettings2() {
 
     setUnits(getAllUnits?.data?.data || []);
   };
-
+  // add new bundle
   const addNewBundleItem = (bundle, setBundle, oldbundle, objectKey, type = 'number') => {
     if (validateList(bundle, oldbundle, type) && type === 'number') {
       setBundle((prev) => ({ ...prev, [objectKey]: [...oldbundle, Number(bundle)] }));
@@ -202,7 +201,7 @@ function Appsettings2() {
     }
     return false;
   };
-
+  // on update handler
   const updateData = () => {
     console.log({ newAppSettings });
     const generatedData = appSettingsValidateData(oldAppSettings, newAppSettings);

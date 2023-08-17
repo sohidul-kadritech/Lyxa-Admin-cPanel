@@ -291,9 +291,12 @@ function ShopSettings() {
               buttonType={2}
               disabled={admin?.adminType === 'admin' ? false : admin?.adminType !== 'accountManager'}
               title="Price Range"
+              title2="Method"
+              accessType="SUPERADMIN/ACCOUNTMANAGER"
               value={newPriceRange}
               action={handlePriceRange}
               options={PriceRange}
+              isMethod
               isButton
             />
           </Box>

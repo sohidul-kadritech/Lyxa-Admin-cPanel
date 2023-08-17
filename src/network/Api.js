@@ -362,6 +362,7 @@ export const GET_MARKETING_DASHBOARD_ORDER_GRAPH = `${ADMIN_ENDPOINT}/marketing/
 export const GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/customers`;
 export const GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/amount-spent`;
 export const GET_MARKETING_DASHBOARD_LOYALTY_POINTS_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/loyalty-points`;
+export const GET_MARKETING_DASHBOARD_LOYALTY_POINTS_AMOUNT_SPENT_GRAPH = `${ADMIN_ENDPOINT}/marketing/graph/loyalty-points/amount-spent`;
 
 // TAGS AND CUSINE
 export const GET_ALL_TAGS_AND_CUSINES = `${ADMIN_ENDPOINT}/tags-cuisines`;
