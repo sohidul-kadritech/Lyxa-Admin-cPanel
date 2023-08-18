@@ -97,8 +97,13 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       })
   );
 
-  const adddons = useMemo(
-    () => productsQuery?.data?.data?.products?.filter((p) => !p?.attributes?.length),
+  console.log('products', productsQuery?.data?.data?.products);
+
+  const addons = useMemo(
+    () =>
+      productsQuery?.data?.data?.products?.filter(
+        (p) => !p?.attributes?.length && p?.marketing?.type !== 'double_menu'
+      ),
     [productsQuery?.data?.data?.products]
   );
 
@@ -514,7 +519,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             multiple: true,
             label: 'Choose',
             maxHeight: '200px',
-            options: adddons,
+            options: addons,
             value: product?.addons || [],
             getOptionLabel: (option) => option?.name || '',
             isOptionEqualToValue: (option, value) => option?._id === value?._id,

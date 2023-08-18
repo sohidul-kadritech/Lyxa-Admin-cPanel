@@ -73,6 +73,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           status: 'active',
           shop: shop?._id,
           inStock: true,
+          hideAddons: marketingType === 'double_menu',
         },
       }),
     {

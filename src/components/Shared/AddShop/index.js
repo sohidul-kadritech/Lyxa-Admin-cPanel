@@ -23,6 +23,12 @@ import {
   validateShopFeatures,
 } from './helper';
 
+const getTabMax = (isEditShop, shopReceivePaymentBy) => {
+  if (isEditShop && shopReceivePaymentBy === 'cash') return 0;
+  if (isEditShop || shopReceivePaymentBy === 'cash') return 1;
+  return 2;
+};
+
 export default function AddShop({ onClose, editShop, seller: customSeller, refetch = () => {} }) {
   console.log('shop', editShop);
 
@@ -36,7 +42,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
 
   const [loading, setLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
-  const tabMax = editShop?._id ? 1 : 2;
+
+  const tabMax = getTabMax(editShop?._id, shop?.shopReceivePaymentBy);
 
   const onChangeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -138,6 +145,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     setCurrentTab((prev) => prev + 1);
   };
 
+  console.log({ shop });
+
   return (
     <SidebarContainer title={`${editShop?._id ? 'Edit' : 'Add'} Shop`} onClose={onClose}>
       <Box
@@ -175,12 +184,18 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
               }}
             />
           )}
-          <Tab label="Banking" />
+          {shop?.shopReceivePaymentBy !== 'cash' && <Tab label="Banking" />}
         </Tabs>
       </Box>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
-          <ShopDetails setShop={setShop} shop={shop} onChange={onChangeHandler} onDrop={onDrop} />
+          <ShopDetails
+            setShop={setShop}
+            shop={shop}
+            onChange={onChangeHandler}
+            onDrop={onDrop}
+            isEditShop={editShop?._id}
+          />
         </TabPanel>
         {!editShop?._id && (
           <TabPanel index={1} value={currentTab} noPadding>
@@ -193,9 +208,11 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
             />
           </TabPanel>
         )}
-        <TabPanel index={tabMax} value={currentTab} noPadding>
-          <ShopBanking shop={shop} onChange={onChangeHandler} />
-        </TabPanel>
+        {shop?.shopReceivePaymentBy !== 'cash' && (
+          <TabPanel index={tabMax} value={currentTab} noPadding>
+            <ShopBanking shop={shop} onChange={onChangeHandler} />
+          </TabPanel>
+        )}
       </Box>
       <Box sx={{ pt: 7, pb: 5 }}>
         <Button

@@ -299,7 +299,7 @@ function SellerList2() {
           setLoading={setLoading}
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
           sellerData={isEdit ? currentSeller : {}}
-          sellerType={currentTab}
+          sellerType={currentTab === 'all' ? '' : currentTab}
         />
       </Drawer>
 

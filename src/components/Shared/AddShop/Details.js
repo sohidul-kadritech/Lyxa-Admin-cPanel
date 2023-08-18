@@ -8,7 +8,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledInput from '../../Styled/StyledInput';
-import { getZoneDataFromLatLng, statusOptions } from './helper';
+import { getZoneDataFromLatLng, receivePaymentByOptions, statusOptions } from './helper';
 
 const addressInit = {
   address: '',
@@ -23,7 +23,7 @@ const addressInit = {
   note: '',
 };
 
-export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
+export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditShop }) {
   const [render, setRender] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
 
@@ -53,14 +53,11 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
-  console.log('data.getZoneFromAddress', getZoneFromAddress?.data?.data);
 
   const { currentUser } = useGlobalContext();
   const { adminType } = currentUser;
-
-  console.log({ selectedAddress });
 
   const generateShopAddress = async (address = {}, placeId = '') => {
     const { address_components, formatted_address } = address;
@@ -119,6 +116,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           onChange,
         }}
       />
+
       {/* shop name */}
       <StyledFormField
         label="Shop Manager Name *"
@@ -130,6 +128,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           onChange,
         }}
       />
+
       {/* email */}
       <StyledFormField
         label="E-mail *"
@@ -147,6 +146,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           autoComplete: 'off',
         }}
       />
+
       {/* password */}
       <StyledFormField
         label="Password *"
@@ -158,6 +158,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           onChange,
         }}
       />
+
       {/* phone  */}
       <StyledFormField
         label="Phone Number *"
@@ -255,6 +256,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           }}
         />
       )}
+
       {/* zip code */}
       <StyledFormField
         label="Zip Code *"
@@ -300,6 +302,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
           helperText2: 'Pixels: Minimum 320 for width and height',
         }}
       />
+
       {adminType === 'admin' && (
         <StyledFormField
           label="Status *"
@@ -308,6 +311,18 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop }) {
             name: 'shopStatus',
             value: shop?.shopStatus,
             items: statusOptions,
+            onChange,
+          }}
+        />
+      )}
+      {(adminType === 'admin' || !isEditShop) && (
+        <StyledFormField
+          label="Receive Payment By*"
+          intputType="select"
+          inputProps={{
+            name: 'shopReceivePaymentBy',
+            value: shop?.shopReceivePaymentBy,
+            items: receivePaymentByOptions,
             onChange,
           }}
         />

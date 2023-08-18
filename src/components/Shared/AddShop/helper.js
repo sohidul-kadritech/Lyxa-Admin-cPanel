@@ -32,6 +32,11 @@ export const statusOptions = [
   },
 ];
 
+export const receivePaymentByOptions = [
+  { label: 'Bank', value: 'bank' },
+  { label: 'Cash', value: 'cash' },
+];
+
 export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
   return {
@@ -239,13 +244,10 @@ export const createEditShopData = async (shopData) => {
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
     shopAddress: shopData?.shopAddress,
-    // shopAddress: {
-    //   ...shopData?.address,
-    // },
     shopZone: shopData?.shopZone,
     shopLogo,
     shopBanner,
-    liveStatus: 'offline',
+    shopReceivePaymentBy: shopData?.shopReceivePaymentBy,
   };
 };
 
@@ -419,6 +421,7 @@ export const shopInit = (sellerId) => ({
     note: '',
   },
   normalHours: shopNormalHours,
+  shopReceivePaymentBy: 'bank',
   bank_name: '',
   account_name: '',
   account_number: '',

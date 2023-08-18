@@ -4,10 +4,15 @@ import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import Overview from '../../components/Shared/FinancialsOverview';
 import Invoices from '../../components/Shared/Invoices';
+import { useGlobalContext } from '../../context';
 import Banking from './Banking';
 
 export default function ShopFinancials() {
   const [currentTab, setCurrentTab] = useState(0);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
+
+  console.log('shopReceivePaymentBy', shop?.shopReceivePaymentBy);
 
   return (
     <Box pb={10}>
@@ -20,8 +25,9 @@ export default function ShopFinancials() {
       >
         <Tab label="Overview" />
         <Tab label="Invoices" />
-        <Tab label="Banking" />
+        {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
       </Tabs>
+
       <TabPanel
         index={0}
         value={currentTab}
@@ -31,6 +37,7 @@ export default function ShopFinancials() {
       >
         <Overview viewUserType="shop" />
       </TabPanel>
+
       <TabPanel
         index={1}
         value={currentTab}
@@ -40,15 +47,18 @@ export default function ShopFinancials() {
       >
         <Invoices />
       </TabPanel>
-      <TabPanel
-        index={2}
-        value={currentTab}
-        sx={{
-          paddingTop: 7.5,
-        }}
-      >
-        <Banking />
-      </TabPanel>
+
+      {shop?.shopReceivePaymentBy === 'bank' && (
+        <TabPanel
+          index={2}
+          value={currentTab}
+          sx={{
+            paddingTop: 7.5,
+          }}
+        >
+          <Banking />
+        </TabPanel>
+      )}
     </Box>
   );
 }
