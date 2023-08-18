@@ -1,9 +1,9 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/no-named-as-default */
 // project import
 import { Edit } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
@@ -19,7 +19,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { couponShopTypeOptions } from '../AddCoupon/helpers';
-import { getFormatedDuration } from '../helpers';
+import { getFormatedDuration, isCouponIsExpired } from '../helpers';
 
 export default function CouponTable({ rows = [], onEdit, couponType, loading }) {
   const queryClient = useQueryClient();
@@ -43,7 +43,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       onSuccess: (data) => {
         console.log(data);
       },
-    }
+    },
   );
 
   const couponDeleteMutation = useMutation(
@@ -61,7 +61,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
           queryClient.invalidateQueries([Api.GET_COUPON]);
         }
       },
-    }
+    },
   );
 
   const columns = [
@@ -111,15 +111,16 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       headerAlign: 'left',
       minWidth: 180,
       renderCell: ({ row }) => {
-        const timeLeft = getFormatedDuration(moment(), row?.couponDuration?.end);
+        const isExpired = isCouponIsExpired(row);
+        // getFormatedDuration(moment(), row?.couponDuration?.end);
 
         return (
           <Stack gap={1.5}>
             <Typography variant="body4">
               {getFormatedDuration(row?.couponDuration?.start, row?.couponDuration?.end)}
             </Typography>
-            <Typography variant="body4" color={timeLeft ? '#737373' : theme.palette.error.main}>
-              {timeLeft ? `${timeLeft} left` : 'expired'}
+            <Typography variant="body4" color={isExpired ? '#737373' : theme.palette.error.main}>
+              {isExpired ? `${isExpired} left` : 'expired'}
             </Typography>
           </Stack>
         );
@@ -156,7 +157,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ value, row }) => (
-        <Typography variant="body4">{value ? `${row?.couponTotalUsageAmountOfBaseCurrency}/${value}` : '_'}</Typography>
+        <Typography variant="body4">{value ? `${row?.couponTotalUsageAmount || 0}/${value}` : '_'}</Typography>
       ),
     },
     {

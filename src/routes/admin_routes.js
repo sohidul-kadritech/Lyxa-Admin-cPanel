@@ -26,7 +26,6 @@ import AdBanner from '../pages/Banner2';
 import CancelReason2 from '../pages/CancelReason2';
 import CategoryList2 from '../pages/CategoryList';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
-import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
 import CouponSettings from '../pages/CouponSettings';
 import Dashboard from '../pages/Dashboard/index';
@@ -132,7 +131,7 @@ export const admin_routes = [
   },
 
   // chat
-  { path: '/customer-support', component: Chats },
+  // { path: '/customer-support', component: Chats },
   {
     path: '/customer-support/chats-by-single-order/:id',
     component: ChatsListByOrder,
