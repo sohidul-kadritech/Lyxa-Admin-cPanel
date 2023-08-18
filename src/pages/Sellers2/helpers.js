@@ -230,11 +230,11 @@ export const tabsOptions = [
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
 
-export const getEditSellerData = (data, globalChargeType, isEdit) => {
+export const getEditSellerData = (data, globalChargeType, sellerType, isEdit) => {
   if (!isEdit) {
     return {
       sellerStatus: '',
-      sellerType: '',
+      sellerType,
       sellerChargeType: 'global',
       dropPercentageType: globalChargeType,
     };

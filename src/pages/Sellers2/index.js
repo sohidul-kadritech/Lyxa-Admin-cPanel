@@ -99,7 +99,7 @@ function SellerList2() {
             if (updatedCurrentSeller) {
               setCurrentSeller(
                 // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
+                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {}
               );
             } else {
               setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
@@ -108,7 +108,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const getSingleSellersQuery = useQuery(
@@ -129,7 +129,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -299,6 +299,7 @@ function SellerList2() {
           setLoading={setLoading}
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
           sellerData={isEdit ? currentSeller : {}}
+          sellerType={currentTab}
         />
       </Drawer>
 

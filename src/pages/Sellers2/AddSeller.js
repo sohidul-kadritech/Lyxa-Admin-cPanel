@@ -41,7 +41,9 @@ function AddSeller({
   loading,
   setLoading,
   name = '',
+  sellerType = '',
 }) {
+  console.log({ sellerType });
   const { currentUser, general } = useGlobalContext();
   const { adminType } = currentUser;
   const currency = general?.currency?.symbol;
@@ -56,7 +58,7 @@ function AddSeller({
   const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
 
   useEffect(() => {
-    if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, isEdit));
+    if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, sellerType, isEdit));
   }, [globalDropChargeQuery?.data]);
 
   const changeHandler = (e) => {
@@ -155,8 +157,6 @@ function AddSeller({
       </SidebarContainer>
     );
   }
-
-  console.log(newSellerData);
 
   return (
     <SidebarContainer
