@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -31,6 +32,9 @@ function SellerList2() {
   const [status, setStatus] = useState('all');
 
   // eslint-disable-next-line no-unused-vars
+
+  // eslint-disable-next-line no-unused-vars
+  const [isAppliedSingleSellerLink, setIsAppliedSingleSellerLink] = useState(false);
 
   const [searchKey, setSearchKey] = useState('');
 
@@ -99,16 +103,22 @@ function SellerList2() {
             if (updatedCurrentSeller) {
               setCurrentSeller(
                 // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {}
+                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
               );
             } else {
-              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
+              setCurrentSeller(
+                Object?.keys(currentSeller)?.length > 0 && currentSeller?.sellerType === currentTab
+                  ? currentSeller
+                  : {},
+              );
             }
+          } else if (Object?.keys(currentSeller)?.length > 0 && routeMatch?.params?.sellerId) {
+            setCurrentSeller(currentSeller?.sellerType === currentTab ? currentSeller : {});
           }
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const getSingleSellersQuery = useQuery(
@@ -129,7 +139,7 @@ function SellerList2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
