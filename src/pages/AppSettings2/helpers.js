@@ -1,3 +1,6 @@
+import { isNumber } from 'lodash';
+import { successMsg } from '../../helpers/successMsg';
+
 export const separatesUpdatedData = (oldUnits, NewUnits) => {
   console.log('oldUnits', oldUnits, ' newunits ', NewUnits);
   const data = NewUnits?.filter((unit) => !oldUnits?.includes(unit));
@@ -115,3 +118,109 @@ export const appSettingsValidateData = (oldData, newData) => {
     adminExchangeRate,
   };
 };
+
+// bundle list validation
+export const validateList = (newValue, oldList, type) => {
+  if (Number(newValue) < 1 && type === 'number') {
+    successMsg('Bundle cannot be smaller than 1');
+    return false;
+  }
+
+  if (Number.isNaN(Number(newValue)) && type === 'number') {
+    successMsg('Please enter a valid value');
+    return false;
+  }
+  if (oldList.includes(Number(newValue)) && type === 'number') {
+    console.log('into if');
+    successMsg('Bundle item already exists');
+    return false;
+  }
+  console.log('after if');
+  if (Number(newValue) < 1 && type === 'number') {
+    successMsg('Bundle cannot be smaller than 1');
+    return false;
+  }
+
+  // for text type
+
+  if (!newValue && type === 'text') {
+    successMsg('Bundle cannot be smaller than 1 character');
+    return false;
+  }
+
+  if (oldList.includes(newValue) && type === 'text') {
+    successMsg('Bundle item already exists');
+    return false;
+  }
+
+  return true;
+};
+
+// Handle Incremented by one
+export const incrementByOneHandler = (setValue, key, setHasChanged) => {
+  setHasChanged(true);
+  setValue((prev) => {
+    if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) + 1 };
+    if (prev[key] === '') return { ...prev, [key]: 1 };
+    return { ...prev };
+  });
+};
+
+// Handle decremented by one
+export const decrementByOneHandler = (setValue, key, setHasChanged) => {
+  setHasChanged(true);
+  setValue((prev) => {
+    if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) - 1 };
+    if (prev[key] === '' || prev[key] <= 0) return { ...prev, [key]: 0 };
+    return { ...prev };
+  });
+};
+
+// Handle Incremented by five
+export const incrementByFiveHandler = (setValue, key, setHasChanged) => {
+  setHasChanged(true);
+  setValue((prev) => {
+    if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) + 5 };
+    if (prev[key] === '') return { ...prev, [key]: 5 };
+    return { ...prev };
+  });
+};
+
+// Handle decremented by five
+export const decrementByFiveHandler = (setValue, key, setHasChanged) => {
+  setHasChanged(true);
+  setValue((prev) => {
+    if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '' && parseInt(prev[key], 10) - 5 > 0)
+      return { ...prev, [key]: parseInt(prev[key], 10) - 5 };
+    if (prev[key] === '' || prev[key] <= 0) return { ...prev, [key]: 5 };
+    return { ...prev };
+  });
+};
+
+// secondary currency is enable or disabled
+export const getSecondaryCurrencyOptions = [
+  {
+    label: 'Disable',
+    value: 'disable',
+  },
+  {
+    label: 'Enable',
+    value: 'enable',
+  },
+];
+
+// which currecny lyxa accept.
+export const getAcceptedCurrencyOptions = (base, secondary) => [
+  {
+    label: 'Both',
+    value: 'both',
+  },
+  {
+    label: `${base?.code} Only`,
+    value: base?.code,
+  },
+  {
+    label: `${secondary?.code} Only`,
+    value: secondary?.code,
+  },
+];

@@ -24,31 +24,53 @@ export const refundDataInit = {
 
 export const getRefundMaxAmounts = (order) => {
   let shop = order?.baseCurrency_shopEarnings + order?.vatAmount?.baseCurrency_vatForShop;
+  let shopSecondary = order?.secondaryCurrency_shopEarnings + order?.vatAmount?.secondaryCurrency_vatForShop;
 
   // if negative it will be deducted from shop earnings
   if (order?.adminCharge?.baseCurrency_adminChargeFromOrder < 0) {
     shop -= Math.abs(order?.adminCharge?.baseCurrency_adminChargeFromOrder);
+    shopSecondary -= Math.abs(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder);
   }
 
   return {
     shop,
+    shopSecondary,
+
     adminOrderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
+    adminOrderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder, 0),
+
     adminRiderProfit: order?.adminCharge?.baseCurrency_adminChargeFromDelivery + order?.baseCurrency_riderFee,
+    adminRiderProfitSecondary:
+      order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery + order?.secondaryCurrency_riderFee,
+
     adminVat: order?.vatAmount?.baseCurrency_vatForAdmin,
+    adminVatSecondary: order?.vatAmount?.secondaryCurrency_vatForAdmin,
   };
 };
 
-export const getTotalRefundAmount = ({ refundData, maxAmounts }) => {
+export const getTotalRefundAmount = ({ refundData, maxAmounts, secondaryValues }) => {
+  let base = 0;
+  let secondary = 0;
+
   if (refundData?.refundType === 'full') {
-    return maxAmounts.shop + maxAmounts.adminRiderProfit + maxAmounts.adminOrderProfit + maxAmounts.adminVat;
+    Object.entries(maxAmounts).forEach(([key, value]) => {
+      if (key.search('Secondary') > -1) {
+        secondary += Number(value);
+      } else {
+        base += Number(value);
+      }
+    });
+
+    return { base, secondary };
   }
 
-  return (
-    Number(refundData.partialPayment.shop) +
-    Number(refundData.partialPayment.adminRiderProfit) +
-    Number(refundData.partialPayment.adminOrderProfit) +
-    Number(refundData.partialPayment.adminVat)
-  );
+  if (refundData?.refundType === 'partial') {
+    base = Object.values(refundData.partialPayment).reduce((a, b) => a + Number(b), 0);
+    secondary = Object.values(secondaryValues).reduce((a, b) => a + Number(b), 0);
+    return { base, secondary };
+  }
+
+  return { base, secondary };
 };
 
 export const validateRefundData = (refundData, maxAmounts) => {

@@ -86,7 +86,28 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
     }
   };
 
-  const totalRefundAmount = getTotalRefundAmount({ maxAmounts, cancelData, vatPercentage });
+  // secondary currency
+  const shopExchangeRate = order?.shopExchangeRate;
+  const secondaryCurrency = order?.secondaryCurrency?.code;
+  const baseCurrency = order?.baseCurrency?.code;
+  const adminExchangeRate = order?.adminExchangeRate;
+  const isSecondaryCurrencyEnabled = order?.shopExchangeRate > 0;
+
+  // data will update every time react re-renders
+  const secondaryValues = {
+    shop: Number(cancelData?.partialPayment?.shop) * shopExchangeRate,
+    adminOrderProfit: Number(cancelData?.partialPayment?.adminOrderProfit) * shopExchangeRate,
+    adminRiderProfit: Number(cancelData?.partialPayment?.adminRiderProfit) * adminExchangeRate,
+    deliveryBoy: Number(cancelData?.partialPayment?.deliveryBoy) * adminExchangeRate,
+    adminVat: Number(cancelData?.partialPayment?.adminVat) * shopExchangeRate,
+  };
+
+  const { base: totalRefundBase, secondary: totalRefundSecondary } = getTotalRefundAmount({
+    maxAmounts,
+    secondaryValues,
+    cancelData,
+    vatPercentage,
+  });
 
   const submitCancel = () => {
     const validity = validateCancelData({ maxAmounts, cancelData, isOtherReason });
@@ -105,6 +126,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
     }
   };
 
+  // calculate vat
   useEffect(() => {
     const adminVat = getRefundedVatForAdmin(
       maxAmounts?.adminVat,
@@ -229,85 +251,140 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
         )}
 
         {cancelData?.refundType === 'partial' && (
-          <Box>
+          <Stack gap={7} pt={2} pb={2}>
             {maxAmounts?.adminOrderProfit > 0 && (
-              <StyledFormField
-                labelComponent={
-                  <TitleWithToolTip
-                    title={`Lyxa Order Refund: ${maxAmounts?.adminOrderProfit}`}
-                    tooltip="Lyxa Order Earning"
-                  />
-                }
-                intputType="text"
-                inputProps={{
-                  value: cancelData?.partialPayment?.adminOrderProfit,
-                  type: 'number',
-                  name: 'adminOrderProfit',
-                  placeholder: 'Enter Amount',
-                  onChange: updateRefundAmount,
-                }}
-              />
+              <Box>
+                <StyledFormField
+                  labelComponent={
+                    <TitleWithToolTip
+                      title={`Lyxa Order Refund: ${maxAmounts?.adminOrderProfit}`}
+                      tooltip="Lyxa Order Earning"
+                    />
+                  }
+                  intputType="text"
+                  containerProps={{
+                    sx: {
+                      padding: 0,
+                    },
+                  }}
+                  inputProps={{
+                    value: cancelData?.partialPayment?.adminOrderProfit,
+                    type: 'number',
+                    name: 'adminOrderProfit',
+                    placeholder: 'Enter Amount',
+                    onChange: updateRefundAmount,
+                  }}
+                />
+                {isSecondaryCurrencyEnabled && (
+                  <Typography variant="body3" display="block" pt={1}>
+                    Equivalent Price: {secondaryCurrency} {secondaryValues.adminOrderProfit}
+                  </Typography>
+                )}
+              </Box>
             )}
 
             {maxAmounts?.adminRiderProfit > 0 && (
-              <StyledFormField
-                labelComponent={
-                  <TitleWithToolTip
-                    title={`Lyxa Rider Refund: ${maxAmounts?.adminRiderProfit}`}
-                    tooltip="Lyxa Rider Earning"
-                  />
-                }
-                intputType="text"
-                inputProps={{
-                  value: cancelData?.partialPayment?.adminRiderProfit,
-                  type: 'number',
-                  name: 'adminRiderProfit',
-                  placeholder: 'Enter Amount',
-                  onChange: updateRefundAmount,
-                }}
-              />
+              <Box>
+                <StyledFormField
+                  labelComponent={
+                    <TitleWithToolTip
+                      title={`Lyxa Rider Refund: ${maxAmounts?.adminRiderProfit}`}
+                      tooltip="Lyxa Rider Earning"
+                    />
+                  }
+                  intputType="text"
+                  inputProps={{
+                    value: cancelData?.partialPayment?.adminRiderProfit,
+                    type: 'number',
+                    name: 'adminRiderProfit',
+                    placeholder: 'Enter Amount',
+                    onChange: updateRefundAmount,
+                  }}
+                  containerProps={{
+                    sx: {
+                      padding: 0,
+                    },
+                  }}
+                />
+                {isSecondaryCurrencyEnabled && (
+                  <Typography variant="body3" display="block" pt={1}>
+                    Equivalent Price: {secondaryCurrency} {secondaryValues.adminRiderProfit}
+                  </Typography>
+                )}
+              </Box>
             )}
 
             {!order?.isButler && (
-              <StyledFormField
-                labelComponent={
-                  <TitleWithToolTip title={`Shop Refund: ${maxAmounts?.shop}`} tooltip="Shop Earning + Shop VAT" />
-                }
-                intputType="text"
-                inputProps={{
-                  value: cancelData?.partialPayment?.shop,
-                  type: 'number',
-                  name: 'shop',
-                  placeholder: 'Enter Amount',
-                  onChange: updateRefundAmount,
-                }}
-              />
+              <Box>
+                <StyledFormField
+                  labelComponent={
+                    <TitleWithToolTip title={`Shop Refund: ${maxAmounts?.shop}`} tooltip="Shop Earning + Shop VAT" />
+                  }
+                  intputType="text"
+                  inputProps={{
+                    value: cancelData?.partialPayment?.shop,
+                    type: 'number',
+                    name: 'shop',
+                    placeholder: 'Enter Amount',
+                    onChange: updateRefundAmount,
+                  }}
+                  containerProps={{
+                    sx: {
+                      padding: 0,
+                    },
+                  }}
+                />
+                {isSecondaryCurrencyEnabled && (
+                  <Typography variant="body3" display="block" pt={1}>
+                    Equivalent Price: {secondaryCurrency} {secondaryValues.shop}
+                  </Typography>
+                )}
+              </Box>
             )}
 
             {order?.orderFor === 'global' && maxAmounts?.deliveryBoy > 0 && (
-              <StyledFormField
-                labelComponent={
-                  <TitleWithToolTip title={`Rider Earning: ${maxAmounts?.deliveryBoy}`} tooltip="Rider Profit" />
-                }
-                intputType="text"
-                inputProps={{
-                  value: cancelData?.partialPayment?.deliveryBoy,
-                  type: 'number',
-                  name: 'deliveryBoy',
-                  placeholder: 'Enter Amount',
-                  onChange: updateRefundAmount,
-                }}
-              />
+              <Box>
+                <StyledFormField
+                  labelComponent={
+                    <TitleWithToolTip title={`Rider Earning: ${maxAmounts?.deliveryBoy}`} tooltip="Rider Profit" />
+                  }
+                  intputType="text"
+                  inputProps={{
+                    value: cancelData?.partialPayment?.deliveryBoy,
+                    type: 'number',
+                    name: 'deliveryBoy',
+                    placeholder: 'Enter Amount',
+                    onChange: updateRefundAmount,
+                  }}
+                  containerProps={{
+                    sx: {
+                      padding: 0,
+                    },
+                  }}
+                />
+
+                {isSecondaryCurrencyEnabled && (
+                  <Typography variant="body3" display="block" pt={1}>
+                    Equivalent Price: {secondaryCurrency} {secondaryValues.deliveryBoy}
+                  </Typography>
+                )}
+              </Box>
             )}
-          </Box>
+          </Stack>
         )}
 
         {cancelData?.refundType === 'partial' && (
-          <TitleWithToolTip title={`Total Admin Vat: ${(cancelData?.partialPayment?.adminVat || 0)?.toFixed(2)}`} />
+          <TitleWithToolTip
+            title={`Total Admin Vat: ${baseCurrency} ${(cancelData?.partialPayment?.adminVat || 0)?.toFixed(2)} 
+          ${isSecondaryCurrencyEnabled ? ` ~ ${secondaryCurrency} ${Math.round(secondaryValues.adminVat)}` : ''}
+          `}
+          />
         )}
 
         <TitleWithToolTip
-          title={`Total Refund Amount: ${totalRefundAmount?.toFixed(2)}`}
+          title={`Total Refund Amount: ${baseCurrency} ${totalRefundBase?.toFixed(2)}
+          ${isSecondaryCurrencyEnabled ? ` ~ ${secondaryCurrency} ${Math.round(totalRefundSecondary)}` : ''}
+          `}
           tooltip="Lyxa Earning + Lyxa Vat + Shop Earning + Shop VAT + Delivery Boy Earning"
         />
 

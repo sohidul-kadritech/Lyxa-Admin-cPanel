@@ -13,6 +13,7 @@ import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
+import { useGlobalContext } from '../../context';
 import useAccessAsUser from '../../helpers/useAccessAsUser';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -24,7 +25,7 @@ import ShopList from './ShopList';
 import ViewSellerInfo from './ViewSellerInfo';
 import { generateDataForSellerDocuments, getThreedotMenuOptions, sellerShopTabType } from './helpers';
 
-function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
+function SellersProfileInfo({ data = {}, theme, threeDotHandler, adminType }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
@@ -66,7 +67,7 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler }) {
                   handleMenuClick={(menu) => {
                     threeDotHandler(menu);
                   }}
-                  menuItems={getThreedotMenuOptions}
+                  menuItems={getThreedotMenuOptions(adminType)}
                 />
               </Box>
             </Stack>
@@ -117,6 +118,7 @@ function SellersProfile({
     page: 1,
     pageSize: 10,
   });
+
   const [currentTab, setCurrentTab] = useState(0);
   const [tabName, setTabName] = useState('Shop List');
 
@@ -128,6 +130,10 @@ function SellersProfile({
   const [selectedMenu, setSelectedMenu] = useState('');
 
   const accessAsUser = useAccessAsUser();
+
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
 
   const history = useHistory();
 
@@ -151,7 +157,7 @@ function SellersProfile({
     if (menu === 'go_to_financials') {
       history.push(
         // eslint-disable-next-line prettier/prettier
-        `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`
+        `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`,
       );
     }
     if (menu === 'add_shop') {
@@ -178,7 +184,8 @@ function SellersProfile({
           setQueryParams((prev) => ({ ...prev, totalPage }));
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
@@ -192,7 +199,12 @@ function SellersProfile({
     >
       {Object?.keys(currentSeller)?.length > 0 ? (
         <Stack>
-          <SellersProfileInfo threeDotHandler={threeDotHandler} data={currentSeller} theme={theme} />
+          <SellersProfileInfo
+            threeDotHandler={threeDotHandler}
+            data={currentSeller}
+            adminType={admin?.adminType}
+            theme={theme}
+          />
           <Box marginTop="30px" marginBottom="23px">
             <Tabs
               value={currentTab}
@@ -214,7 +226,7 @@ function SellersProfile({
                   setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
                 },
                 // eslint-disable-next-line prettier/prettier
-                300
+                300,
               )}
             />
             <StyledFormField
@@ -247,6 +259,7 @@ function SellersProfile({
             />
           </Stack>
           <ShopList
+            adminType={admin?.adminType}
             setSelectedShop={setSelectedShop}
             currentSeller={currentSeller}
             editSellerQuery={editSellerQuery}

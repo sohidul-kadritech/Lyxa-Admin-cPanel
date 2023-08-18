@@ -227,8 +227,8 @@ export default function ProfitDetails({ order = {} }) {
           {/* for no refund orders */}
           <SummaryItem
             label="Total Lyxa Profit"
-            value={total_base}
-            valueSecondary={total_secondary}
+            value={total_base - order?.summary?.baseCurrency_vat}
+            valueSecondary={total_secondary - order?.summary?.secondaryCurrency_vat}
             hide={!noRefund}
             showIfZero
             isTotal

@@ -12,8 +12,13 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams, onAdd, onMapView }) {
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
   const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
@@ -90,9 +95,11 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           onChange: (e) => setQueryParams((prev) => ({ ...prev, zoneId: e.target.value, page: 1 })),
         }}
       />
-      <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
-        Add
-      </Button>
+      {admin?.adminType !== 'customerService' && (
+        <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
+          Add
+        </Button>
+      )}
       <Button size="small" variant="contained" onClick={onMapView} startIcon={<LocationIcon />}>
         Map View
       </Button>

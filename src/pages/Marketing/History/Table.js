@@ -1,12 +1,37 @@
-/* eslint-disable import/no-named-as-default */
 // project import
 import { Chip, Stack, Typography } from '@mui/material';
+import moment from 'moment';
 import TableDateTime from '../../../components/Common/TableDateTime';
+import TablePagination from '../../../components/Common/TablePagination';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { getHistoryMarketingStatus } from '../helpers';
 
-export default function MarketingHistoryTable({ rows = [], loading }) {
+const dealTypeToLabelMap = {
+  free_delivery: '$0 Delivery fee',
+  percentage: 'Discounted Items',
+  double_menu: 'Buy 1, Get 1 Free',
+  featured: 'Featured',
+  reward: 'Loyalty Points',
+};
+
+const colorMap = {
+  ongoing: {
+    color: '#5E97A9',
+    background: '#F6F8FA',
+  },
+  scheduled: {
+    color: '#5E97A9',
+    background: '#F6F8FA',
+  },
+  paused: {
+    color: '#DD5B63',
+    background: '#FEE2E2',
+  },
+};
+
+export default function MarketingHistoryTable({ rows = [], loading, page, setPage, totalPage }) {
   const columns = [
     {
       id: 1,
@@ -16,7 +41,7 @@ export default function MarketingHistoryTable({ rows = [], loading }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{dealTypeToLabelMap[value]}</Typography>,
     },
     {
       id: 2,
@@ -26,17 +51,21 @@ export default function MarketingHistoryTable({ rows = [], loading }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">
+          {Math.ceil(moment(value?.end).endOf('day').diff(moment(value?.start).startOf('day'), 'days', true))}
+        </Typography>
+      ),
     },
     {
       id: 3,
       headerName: `SPENDING LIMIT`,
       sortable: false,
-      field: 'spentLimit',
+      field: 'spendLimit',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value ? value?.toFixed(2) : '_'}</Typography>,
     },
     {
       id: 4,
@@ -46,13 +75,13 @@ export default function MarketingHistoryTable({ rows = [], loading }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{(value || 0)?.toFixed(2)}</Typography>,
     },
     {
       id: 5,
       headerName: `DATE`,
       sortable: false,
-      field: 'date',
+      field: 'createdAt',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
@@ -66,52 +95,60 @@ export default function MarketingHistoryTable({ rows = [], loading }) {
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      renderCell: () => (
-        <Chip
-          label="Expired"
-          sx={{
-            height: 'auto',
-            padding: '12px 23px',
-            borderRadius: '40px',
-          }}
-          variant="contained"
-        />
-      ),
+      renderCell: ({ row }) => {
+        const status = getHistoryMarketingStatus(row);
+        return (
+          <Chip
+            label={status}
+            sx={{
+              height: 'auto',
+              padding: '12px 23px',
+              borderRadius: '40px',
+              textTransform: 'capitalize',
+              ...colorMap[status],
+            }}
+            variant="contained"
+          />
+        );
+      },
     },
   ];
 
   if (loading) return <TableSkeleton rows={6} columns={['text', 'text', 'text', 'text', 'text', 'text']} />;
 
   return (
-    <StyledBox
-      padding
-      sx={{
-        paddingTop: '3px',
-        paddingBottom: '10px',
-        overflowX: 'auto',
-        scrollbarWidth: 'thin',
-        scrollbarHeight: 'thin',
+    <>
+      <StyledBox
+        padding
+        sx={{
+          paddingTop: '3px',
+          paddingBottom: '10px',
+          overflowX: 'auto',
+          scrollbarWidth: 'thin',
+          scrollbarHeight: 'thin',
 
-        '&::-webkit-scrollbar': {
-          width: '6px',
-          height: '6px',
-        },
-      }}
-    >
-      <StyledTable
-        autoHeight
-        columns={columns}
-        getRowId={(row) => row?._id}
-        rows={rows?.filter((row) => !row?.hidden)}
-        rowHeight={71}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No history
-            </Stack>
-          ),
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px',
+          },
         }}
-      />
-    </StyledBox>
+      >
+        <StyledTable
+          autoHeight
+          columns={columns}
+          getRowId={(row) => row?._id}
+          rows={rows?.filter((row) => !row?.hidden)}
+          rowHeight={71}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No history
+              </Stack>
+            ),
+          }}
+        />
+      </StyledBox>
+      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+    </>
   );
 }

@@ -4,25 +4,26 @@ import { useEffect, useState } from 'react';
 import StyledTabs2 from '../../../../Styled/StyledTab2';
 import { StyledProfileBox } from '../helpers';
 import CouponItem from './CouponItem';
-import { filterCoupons } from './helpers';
 
 export const marketingSpentTypeOptions = [
-  { label: 'All', value: 'all' },
   { label: 'Active', value: 'active' },
   { label: 'Used', value: 'used' },
   { label: 'Expired', value: 'expired' },
 ];
 
-export default function Coupons({ coupons = [] }) {
+export default function Coupons({ user }) {
   const [open, setOpen] = useState(false);
-  const [currentTab, setCurrentTab] = useState('all');
-  const [filteredCoupons, setFilteredCoupons] = useState(coupons);
-
-  console.log(currentTab);
+  const [currentTab, setCurrentTab] = useState('active');
+  const [filteredCoupons, setFilteredCoupons] = useState([]);
 
   useEffect(() => {
-    setFilteredCoupons(filterCoupons(coupons, currentTab));
-    console.log('data', filterCoupons(coupons, currentTab));
+    if (currentTab === 'active') {
+      setFilteredCoupons(user?.validCoupons);
+    } else if (currentTab === 'used') {
+      setFilteredCoupons(user?.usedCouponOrders?.map((order) => order?.couponDetails));
+    } else {
+      setFilteredCoupons(user?.expiredCoupons);
+    }
   }, [currentTab]);
 
   return (
@@ -43,7 +44,9 @@ export default function Coupons({ coupons = [] }) {
         </Stack>
       }
     >
-      <Typography variant="inherit">Total - {coupons?.length} coupons</Typography>
+      <Typography variant="inherit" textTransform="capitalize">
+        {currentTab} - {filteredCoupons?.length} coupons
+      </Typography>
       {/* collapsed */}
       <Accordion
         expanded={open}

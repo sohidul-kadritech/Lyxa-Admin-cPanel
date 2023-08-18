@@ -215,12 +215,11 @@ export const getDurationLeft = (date) => {
 
 export const getDateRange = (mData) => {
   if (mData?.status === 'inactive') {
-    // console.log('here');
     const d = Math.ceil(
       moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true)
     );
     return d < 0 ? 0 : d;
   }
-  // console.log('there');
+
   return Math.ceil(moment(mData?.duration?.end).endOf('day').diff(moment().startOf('day'), 'days', true));
 };

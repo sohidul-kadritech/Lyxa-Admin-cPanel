@@ -5,6 +5,7 @@ import { useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.mi
 import PageTop from '../../components/Common/PageTop';
 import EditUser from '../../components/Shared/EditUser/index ';
 import ProfileSkeleton from '../../components/Skeleton/ProfileSkeleton';
+import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import TopInfo from './TopInfo';
@@ -35,6 +36,10 @@ export default function UserProfile() {
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const [user, setUser] = useState(location?.state?.user);
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
   const [open, setOpen] = useState(false);
   const params = useParams();
 
@@ -51,7 +56,8 @@ export default function UserProfile() {
           setUser(data?.data?.user);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   console.log({ user });
@@ -84,20 +90,22 @@ export default function UserProfile() {
           >
             <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
               <TopInfo user={user} />
-              <Button
-                disableRipple
-                variant="text"
-                color="primary"
-                onClick={() => {
-                  setOpen(true);
-                }}
-                sx={{
-                  textDecoration: 'underline',
-                  marginTop: '4px',
-                }}
-              >
-                Edit Account
-              </Button>
+              {admin?.adminType !== 'customerService' && (
+                <Button
+                  disableRipple
+                  variant="text"
+                  color="primary"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                  sx={{
+                    textDecoration: 'underline',
+                    marginTop: '4px',
+                  }}
+                >
+                  Edit Account
+                </Button>
+              )}
             </Stack>
             <UserTabs user={user} />
           </Box>

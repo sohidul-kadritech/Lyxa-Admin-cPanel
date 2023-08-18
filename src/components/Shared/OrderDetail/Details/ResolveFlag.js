@@ -42,9 +42,6 @@ export default function ResolveOrderFlag({ order, setRender }) {
     });
   };
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!order?.flag?.length) return <></>;
-
   return (
     <Stack direction="column" gap="15px" pt="30px">
       <Button variant="contained" color="primary" fullWidth onClick={() => setButtonsOpen(!buttonsOpen)}>

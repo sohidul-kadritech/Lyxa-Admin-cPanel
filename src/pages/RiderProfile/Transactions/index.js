@@ -11,7 +11,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { CardTitle } from '../Timestamp/helper';
-import MakePayment from './MakPayment';
+import MakePayment from './MakePayment';
 import SearchBar from './Searchbar';
 
 export const queryParamsInit = {

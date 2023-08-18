@@ -15,7 +15,7 @@ import PaymentSummary from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
 import OrderScheduleTimer from './ScheduleTimer';
 
-export default function Detail({ order, hideIssues, userType }) {
+export default function Detail({ order, hideIssues, userType, hideMoreOptions }) {
   const [, setRender] = useState(false);
 
   return (
@@ -33,7 +33,7 @@ export default function Detail({ order, hideIssues, userType }) {
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
       <PaymentSummary order={order} />
-      <ResolveOrderFlag order={order} setRender={setRender} />
+      {order?.flag?.length && !hideMoreOptions ? <ResolveOrderFlag order={order} setRender={setRender} /> : null}
     </Stack>
   );
 }

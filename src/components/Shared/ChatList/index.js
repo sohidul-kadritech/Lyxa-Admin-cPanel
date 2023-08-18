@@ -16,7 +16,17 @@ import ChatListSkeleton from './Skeleton';
 
 const modalsStateInit = { flag: false, updateStatus: false, cancelOrder: false };
 
-export default function ChatList({ onViewDetails, chats, loading, refetching, onAction, page, setPage, totalPage }) {
+export default function ChatList({
+  onViewDetails,
+  chats,
+  loading,
+  refetching,
+  onAction,
+  page,
+  setPage,
+  totalPage,
+  hidePagination,
+}) {
   const queryClient = useQueryClient();
   const { socket } = useSelector((store) => store.socketReducer);
   const [temporarySelectedChat, setTemporarySelectedChat] = useState({});
@@ -67,15 +77,17 @@ export default function ChatList({ onViewDetails, chats, loading, refetching, on
             <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} handleMenuClick={handleMenuClick} />
           ))}
         </Stack>
-        <Stack alignItems="center" pt={5}>
-          <TablePagination
-            currentPage={page}
-            lisener={(page) => {
-              setPage(page);
-            }}
-            totalPage={totalPage}
-          />
-        </Stack>
+        {!hidePagination && (
+          <Stack alignItems="center" pt={5}>
+            <TablePagination
+              currentPage={page}
+              lisener={(page) => {
+                setPage(page);
+              }}
+              totalPage={totalPage}
+            />
+          </Stack>
+        )}
       </Box>
       <Modal open={modals.updateStatus} onClose={() => setModals((prev) => ({ ...prev, updateStatus: false }))}>
         <UpdateOrderStatus
