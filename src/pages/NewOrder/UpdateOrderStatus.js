@@ -85,6 +85,12 @@ const updateOrderStatusOptions = (currentOrder) => {
   return list;
 };
 
+const getNextStatus = (order) => {
+  const items = updateOrderStatusOptions(order);
+  const currIdx = items?.findIndex((obj) => obj.value === order?.orderStatus);
+  return items[currIdx + 1]?.value;
+};
+
 export default function UpdateOrderStatus({
   onClose,
   currentOrder: order,
@@ -95,7 +101,7 @@ export default function UpdateOrderStatus({
   const { socket } = useSelector((state) => state.socketReducer);
   const queryClient = useQueryClient();
 
-  const [currentStatus, setCurrentStatus] = useState(order?.orderStatus);
+  const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || {});
   const [currentOrder, setCurrentOrder] = useState(order);
   const [open, setOpen] = useState(false);
@@ -129,16 +135,12 @@ export default function UpdateOrderStatus({
   );
 
   const onSuccess = (response, payload) => {
-    console.log('response', response);
-    console.log(socket);
     // notification
     successMsg(response?.message, response?.status ? 'success' : undefined);
 
     if (response.status) {
       queryClient.invalidateQueries(refetchApiKey);
       if (onUpdateSuccess) onUpdateSuccess(response);
-
-      console.log('payload', payload);
 
       // emit socket
       if (payload.service === 'regular') {
@@ -155,10 +157,8 @@ export default function UpdateOrderStatus({
       if (response?.data?.order?.orderStatus === 'delivered') {
         onClose();
       } else {
-        const items = updateOrderStatusOptions(currentOrder);
-        const currIdx = items?.findIndex((obj) => obj.value === response?.data?.order?.orderStatus);
         setCurrentOrder(response?.data?.order);
-        setCurrentStatus(items[currIdx + 1]?.value);
+        setCurrentStatus(getNextStatus(response?.data?.order));
       }
     }
   };

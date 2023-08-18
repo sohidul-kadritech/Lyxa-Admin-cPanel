@@ -1,7 +1,7 @@
 import socketServices from '../../common/socketService';
 import getCookiesAsObject from '../../helpers/cookies/getCookiesAsObject';
 
-export const socketConnect = () => async () => {
+export const socketConnect = () => {
   let accessToken;
 
   if (document.cookie.length) {

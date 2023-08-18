@@ -8,8 +8,10 @@ import { ShopAction2 } from '../ShopAction/ShopAction2';
 export function ShopSettingsSection2({
   title,
   title2,
+  accessType = 'SUPERADMIN',
   isButton,
   buttonType,
+  adminType,
   isMethod,
   options,
   isInput,
@@ -40,7 +42,7 @@ export function ShopSettingsSection2({
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center' }}>
               <SupremeIcon />
             </Box>
-            <Typography sx={{ fontSize: '16px', fontWeight: 600 }}>SUPERADMIN</Typography>
+            <Typography sx={{ fontSize: '16px', fontWeight: 600 }}>{accessType}</Typography>
           </Box>
         </Box>
       )}

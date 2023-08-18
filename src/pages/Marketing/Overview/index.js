@@ -74,6 +74,8 @@ export default function MarketingOverview({ viewUserType }) {
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
   const routeMatch = useRouteMatch();
 
+  console.log('params', params);
+
   const shopQuery = useQuery(
     [
       Api.SINGLE_SHOP,

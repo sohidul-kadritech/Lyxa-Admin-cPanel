@@ -4,6 +4,7 @@ import { Button, Stack } from '@mui/material';
 import React from 'react';
 import FilterSelect from '../../components/Filter/FilterSelect';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import { useGlobalContext } from '../../context';
 
 const listFilterOptions = [
   {
@@ -16,7 +17,12 @@ const listFilterOptions = [
   },
 ];
 
+// user?._id === credentialUserId
+
 export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder, onAdd }) {
+  const { currentUser } = useGlobalContext();
+  const { userType, seller } = currentUser;
+
   return (
     <Stack direction="row" alignItems="center" gap="20px">
       <StyledSearchBar
@@ -27,19 +33,6 @@ export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder,
           setFilters((prev) => ({ ...prev, searchKey: e.target.value }));
         }}
       />
-      {/* <FilterSelect
-        items={listFilterOptions}
-        value={filters.sort}
-        placeholder="Sort"
-        tooltip="Sort"
-        size="sm"
-        sx={{
-          minWidth: 'auto',
-        }}
-        onChange={(e) => {
-          setFilters((prev) => ({ ...prev, sort: e.target.value }));
-        }}
-      /> */}
       <FilterSelect
         items={listFilterOptions}
         value={filters.status}
@@ -53,9 +46,12 @@ export default function SearchBar({ filters = {}, setFilters, searchPlaceHolder,
           setFilters((prev) => ({ ...prev, status: e.target.value }));
         }}
       />
-      <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
-        Add
-      </Button>
+      {/* hidden for seller credential user */}
+      {(userType === 'admin' || (userType === 'seller' && seller?._id === seller?.credentialUserId)) && (
+        <Button size="small" variant="contained" onClick={onAdd} startIcon={<Add />}>
+          Add
+        </Button>
+      )}
     </Stack>
   );
 }

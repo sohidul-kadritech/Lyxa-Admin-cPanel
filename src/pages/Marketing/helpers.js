@@ -21,3 +21,21 @@ export const getPromotionStatus = (mQuery, type, activeDeals) => {
 
   return '';
 };
+
+export const getHistoryMarketingStatus = (marketing) => {
+  if (typeof marketing?.deletedAt === 'string') return 'expired';
+
+  if (marketing?.isActive && marketing?.status === 'active') {
+    return 'ongoing';
+  }
+
+  if (!marketing?.isActive && marketing?.status === 'active') {
+    return 'scheduled';
+  }
+
+  if (!marketing?.isActive && marketing?.status === 'inactive') {
+    return 'paused';
+  }
+
+  return '';
+};

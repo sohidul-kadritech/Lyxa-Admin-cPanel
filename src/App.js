@@ -16,7 +16,6 @@ import CircularLoader from './components/CircularLoader';
 // Import scss
 import './assets/scss/theme.scss';
 import getCookiesAsObject from './helpers/cookies/getCookiesAsObject';
-import { socketConnect } from './store/socket/socketAction';
 
 import { Box } from '@mui/material';
 import { useQuery, useQueryClient } from 'react-query';
@@ -24,15 +23,15 @@ import Router from './Router';
 import { getUserData, removeAuthCookies } from './appHelpers';
 import socketServices from './common/socketService';
 import { useGlobalContext } from './context';
-import { successMsg } from './helpers/successMsg';
 import * as Api from './network/Api';
 import AXIOS from './network/axios';
+import { socketConnect } from './store/socket/socketAction';
 
 export default function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
-  const { userType } = currentUser;
+  const { userType, adminType } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
 
@@ -81,17 +80,13 @@ export default function App() {
     settingsQuery.refetch();
   }, []);
 
+  // retries when user comes logs in
   useEffect(() => {
-    dispatch(socketConnect());
-    if (userType) {
-      socketServices?.on('user_send_chat_request', (data) => {
-        successMsg(`New chat request from ${data?.user?.name}`, 'success');
-        queryClient.invalidateQueries(Api.ONGOING_CHATS);
-      });
-    }
+    // initialize socket connection
+    socketConnect();
 
     return () => {
-      socketServices?.removeListener(`user_send_chat_request`);
+      socketServices?.close();
     };
   }, [userType]);
 

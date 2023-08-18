@@ -34,9 +34,6 @@ export const statusOptions = [
 
 export const getShopEditData = (shop) => {
   const clone = deepClone(shop);
-
-  console.log('clone', clone);
-
   return {
     ...clone,
     phone_number: parsePhoneNumber(shop?.phone_number) ? shop?.phone_number : `+961${shop?.phone_number}`,

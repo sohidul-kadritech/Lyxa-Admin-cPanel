@@ -10,7 +10,7 @@ import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import MakePayment from '../../RiderProfile/Transactions/MakPayment';
+import MakePayment from '../../RiderProfile/Transactions/MakePayment';
 import AddRemoveCredit from './AddRemoveCredit';
 import SearchBar from './Searchbar';
 

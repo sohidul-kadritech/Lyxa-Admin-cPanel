@@ -5,7 +5,7 @@ import { parsePhoneNumber } from 'react-phone-number-input';
 import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import { statusTypeOptions } from '../Faq2/helpers';
-import { generateData, varifyUserData } from './helpers';
+import { generateData, getTeamPermissionText, varifyUserData } from './helpers';
 
 const intialData = {
   status: 'active',
@@ -151,8 +151,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
 
         <Stack gap="32px">
           <Typography variant="body4" sx={{ fontWeight: '500 !important', color: theme.palette.text.secondary2 }}>
-            *Access to almost all pages, except for those related to payments, tax, user management, marking, and
-            settings.
+            {getTeamPermissionText(adminType)}
           </Typography>
           <Button
             disableElevation

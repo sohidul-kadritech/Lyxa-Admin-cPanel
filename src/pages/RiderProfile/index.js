@@ -38,7 +38,7 @@ export default function RiderProfile() {
   const routeMatch = useRouteMatch();
 
   const { currentUser } = useGlobalContext();
-  const { shop } = currentUser;
+  const { shop, admin } = currentUser;
 
   const backRoute = useMemo(() => {
     const routeArr = routeMatch?.url?.split('/');
@@ -69,7 +69,8 @@ export default function RiderProfile() {
           setRider(data?.data?.delivery);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   return (
@@ -110,20 +111,22 @@ export default function RiderProfile() {
           >
             <Stack direction="row" alignItems="flex-start" justifyContent="space-between" pb={12}>
               <TopInfo rider={rider} />
-              <Button
-                disableRipple
-                variant="text"
-                color="primary"
-                onClick={() => {
-                  setOpen(true);
-                }}
-                sx={{
-                  textDecoration: 'underline',
-                  marginTop: '4px',
-                }}
-              >
-                Edit Account
-              </Button>
+              {admin?.adminType !== 'customerService' && (
+                <Button
+                  disableRipple
+                  variant="text"
+                  color="primary"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                  sx={{
+                    textDecoration: 'underline',
+                    marginTop: '4px',
+                  }}
+                >
+                  Edit Account
+                </Button>
+              )}
             </Stack>
             <RiderTabs isFinancials={searchParams.get('financials') === 'riders'} rider={rider} />
           </Box>

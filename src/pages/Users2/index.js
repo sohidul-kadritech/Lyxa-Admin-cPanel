@@ -16,8 +16,6 @@ import EditUser from './EditUser';
 import Table from './Table';
 
 const createCurrentUesrItem = (allCredentials = [], currentUser, userType) => {
-  console.log(allCredentials);
-
   const user = currentUser[userType];
   const credentialUserId = currentUser?.credentialUserId;
 
@@ -123,8 +121,6 @@ export default function Users({ userType }) {
           Add user
         </Button>
       </Stack>
-      {/* {isLoading && <UserTablePageSkeleton />} */}
-      {/* {!isLoading && ( */}
       <Table
         rows={allUsers.filter((user) => user.hidden !== true)}
         loading={isLoading}
@@ -137,7 +133,6 @@ export default function Users({ userType }) {
           setIsConfirm(true);
         }}
       />
-      {/* )} */}
       <Drawer open={Boolean(open)} anchor="right">
         {open === 'add' && <AddUser onClose={() => setOpen(null)} userType={userType} refetch={refetch} />}
         {open === 'edit' && (

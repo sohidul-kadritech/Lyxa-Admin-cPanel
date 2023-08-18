@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Drawer, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
