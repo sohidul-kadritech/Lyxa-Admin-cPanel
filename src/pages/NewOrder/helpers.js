@@ -8,7 +8,14 @@ import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 export function TitleWithToolTip({ title, tooltip, sx }) {
   return (
     <Stack direction="row" alignItems="center" justifyContent="flex-start" gap={2} sx={sx}>
-      <Typography variant="body1" fontWeight={600}>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: '600',
+          fontSize: '15px',
+          lineHeight: '18px',
+        }}
+      >
         {title}
       </Typography>
       {tooltip && (

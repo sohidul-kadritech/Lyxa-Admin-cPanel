@@ -7,9 +7,14 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../context';
 import { getRiderStatus, riderStatusColorVariants } from './helper';
 
 export default function RidersTable({ rows = [], onEdit, onLocationView, onProfileView }) {
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
   const columns = [
     {
       id: 1,
@@ -123,14 +128,16 @@ export default function RidersTable({ rows = [], onEdit, onLocationView, onProfi
           >
             <LocationIcon />
           </StyledIconButton>
-          <StyledIconButton
-            onClick={() => {
-              onEdit(row);
-            }}
-            color="primary"
-          >
-            <Edit />
-          </StyledIconButton>
+          {admin?.adminType !== 'customerService' && (
+            <StyledIconButton
+              onClick={() => {
+                onEdit(row);
+              }}
+              color="primary"
+            >
+              <Edit />
+            </StyledIconButton>
+          )}
           <StyledIconButton
             color="primary"
             onClick={() => {

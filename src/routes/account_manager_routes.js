@@ -8,6 +8,7 @@ import ShopProfile from '../pages/ShopProfile';
 
 export const account_manager_routes = [
   { path: '/', component: AccountManagerDashBoard },
+  { path: '/seller/list', component: SellerList2 },
   { path: '/seller/list/:sellerId', component: SellerList2 },
   { path: '/seller/dashboard/:sellerId', component: AdminToSellerLayout, exact: false },
   { path: '/shops/:id/marketing/', component: Marketing, componentProps: { viewUserType: 'admin' } },

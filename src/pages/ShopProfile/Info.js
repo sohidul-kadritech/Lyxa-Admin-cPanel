@@ -12,6 +12,7 @@ import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { ShopDeals } from '../../helpers/ShopDeals';
 import AccountManagerInfo from './AccountManagerInfo';
+import OrderToggle from './OrderStatusToggle';
 import { TagsAndCuisines, menuOtions } from './helper';
 
 export const statusColor = {
@@ -43,8 +44,11 @@ export const getShopStatusColor = (shop) => {
 export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
+  const { admin } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
+
+  console.log('currentUser?.userType', currentUser?.userType, admin?.adminType);
 
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
@@ -89,13 +93,16 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             {shop?.shopName}
           </Typography>
           {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
-            <Box />
-            <ThreeDotsMenu
-              menuItems={menuOtions(currentUser?.userType, routeMatch?.path)}
-              handleMenuClick={menuHandler}
-            />
-          </Box>
+          {routeMatch?.path === '/seller/dashboard/:sellerId/shop/dashboard/:shopId/profile' &&
+          admin?.adminType === 'customerService' ? null : (
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
+              <Box />
+              <ThreeDotsMenu
+                menuItems={menuOtions(currentUser?.userType, routeMatch?.path, admin?.adminType)}
+                handleMenuClick={menuHandler}
+              />
+            </Box>
+          )}
         </Box>
         <Box sx={{ marginLeft: '20px', marginTop: '9px' }}>
           <Stack direction="row" alignItems="center">
@@ -133,6 +140,24 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
                 alignItems: 'center',
                 alignContents: 'center',
                 gap: '6px',
+                backgroundColor: '#FCF9F0',
+                color: '#F78C3F',
+                padding: '10px 16px',
+                borderRadius: '7px',
+              }}
+            >
+              <CartIcon style={{ width: '17px', height: '17px' }} />
+              <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
+                Min. {currency?.symbol}
+                {shop?.minOrderAmount}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                alignContents: 'center',
+                gap: '6px',
                 backgroundColor: '#F7F9FA',
                 color: '#3F3D56',
                 padding: '10px 16px',
@@ -141,11 +166,6 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             >
               <AccessTime sx={{ width: '17px', height: '17px' }} />
               <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
-                {/* ETA{' '}
-                  {shop?.avgOrderDeliveryTime < 30
-                    ? '30-40'
-                    : `${Math.ceil(shop?.avgOrderDeliveryTime)}-${Math.ceil(shop?.avgOrderDeliveryTime) + 10}`}
-                  min */}
                 ETA {Math.round(shop?.avgOrderDeliveryTime)} min
               </Typography>
             </Box>
@@ -183,24 +203,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
                 <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>Free</Typography>
               </Box>
             )}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                alignContents: 'center',
-                gap: '6px',
-                backgroundColor: '#FCF9F0',
-                color: '#F78C3F',
-                padding: '10px 16px',
-                borderRadius: '7px',
-              }}
-            >
-              <CartIcon style={{ width: '17px', height: '17px' }} />
-              <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
-                Min. {currency?.symbol}
-                {shop?.minOrderAmount}
-              </Typography>
-            </Box>
+            <OrderToggle shop={shop} />
           </Stack>
         </Box>
       </Box>

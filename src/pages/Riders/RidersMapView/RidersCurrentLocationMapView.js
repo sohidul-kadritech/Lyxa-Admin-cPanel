@@ -81,13 +81,14 @@ function RidersCurrentLocationMapView({ riders = [] }) {
 
         // Add a click event listener to open the info window when marker is clicked
         infowindow.open(map, marker);
+
         marker.addListener('click', () => {
           redirectWithId(rider?._id);
         });
         bounds.extend(marker.getPosition());
       });
     } else {
-      successMsg('No riders found!');
+      successMsg('No available riders found!');
     }
 
     map.fitBounds(bounds);

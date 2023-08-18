@@ -30,8 +30,6 @@ export default function PaymentSummary({ order = {} }) {
   const cancelBase = order?.userCancelTnx?.reduce((a, b) => a + b?.amount, 0);
   const cancelSecondary = order?.userCancelTnx?.reduce((a, b) => a + b?.secondaryCurrency_amount, 0);
 
-  console.log({ summary });
-
   return (
     <StyledOrderDetailBox title="Payment Summary">
       <Box pt={2.5}>
@@ -154,6 +152,18 @@ export default function PaymentSummary({ order = {} }) {
             label="Total Refunded"
             value={refundBase}
             valueSecondary={refundSecondary}
+            showIfZero
+            isTotal
+            pb={0}
+          />
+        ) : null}
+
+        {/* normal order user cancel */}
+        {!order?.isButler && order?.userCancelTnx?.length ? (
+          <SummaryItem
+            label="Total Refunded"
+            value={cancelBase}
+            valueSecondary={cancelSecondary}
             showIfZero
             isTotal
             pb={0}

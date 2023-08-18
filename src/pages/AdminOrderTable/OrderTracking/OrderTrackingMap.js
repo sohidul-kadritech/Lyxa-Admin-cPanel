@@ -64,29 +64,6 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     });
   };
 
-  // useEffect(() => {
-  //   if (order?._id && socket) {
-  //     console.log('socket emmitting');
-
-  //     socket.emit('join_room', { room: order?._id, data: { access_token } });
-
-  //     socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
-  //       console.log('socket data', data);
-  //       setRiderLoc(() => {
-  //         console.log('data', data);
-  //         return data;
-  //       });
-  //     });
-  //   } else {
-  //     console.log('socket for deliveryboy else', socket);
-  //   }
-  //   return () => {
-  //     socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
-  //   };
-  // }, [order?._id, socket]);
-
-  // console.log('riderLoc', riderLoc);
-
   useEffect(() => {
     let isMounted = true;
     const directionsRenderer_ = new google.maps.DirectionsRenderer({ suppressMarkers: true });
@@ -142,6 +119,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
         icon: RiderIcon,
         map,
       });
+
       // Rider Title
 
       let infowindowForRider = new google.maps.InfoWindow({
@@ -153,6 +131,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       riderLocation.addListener('click', () => {
         redirectWithId(order?.deliveryBoy?._id, 'rider');
       });
+
       bounds.extend(riderLocation.getPosition());
     }
     bounds.extend(userLocation.getPosition());

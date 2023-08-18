@@ -23,7 +23,7 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import PageSkeleton from './PageSkeleton';
-import { dateRangeItit, marketingDurationTime } from './helpers';
+import { dateRangeItit, getMarketingTypeTitle, isVisibleOngoingPromotionItem, marketingDurationTime } from './helpers';
 
 const mTypeMap = {
   double_menu: 'Buy 1, Get 1 Free',
@@ -38,8 +38,9 @@ export default function MarketingDashboard({ viewUserType }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
+  const { currency } = general;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
@@ -60,7 +61,7 @@ export default function MarketingDashboard({ viewUserType }) {
           setCurrentShop(data?.data?.shop);
         }
       },
-    }
+    },
   );
 
   const marketingQuery = useQuery(
@@ -85,12 +86,12 @@ export default function MarketingDashboard({ viewUserType }) {
         console.log(error);
         history?.goForward();
       },
-    }
+    },
   );
 
   const marketingDuration = marketingDurationTime(
     marketingQuery?.data?.data?.marketing?.duration?.start,
-    marketingQuery?.data?.data?.marketing?.duration?.end
+    marketingQuery?.data?.data?.marketing?.duration?.end,
   );
 
   const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
@@ -98,7 +99,7 @@ export default function MarketingDashboard({ viewUserType }) {
       params: {
         marketingId: params?.id,
       },
-    })
+    }),
   );
 
   // orders graph
@@ -114,14 +115,14 @@ export default function MarketingDashboard({ viewUserType }) {
           endDate: moment(orderRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   const oData = generateGraphData(
     ordersGraphQuery?.data?.data?.info || [],
     (item) => item.order,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const oGraphData = {
@@ -150,21 +151,21 @@ export default function MarketingDashboard({ viewUserType }) {
           startDate: moment(customerRange.start).format('YYYY-MM-DD'),
           endDate: moment(customerRange.end).format('YYYY-MM-DD'),
         },
-      })
+      }),
   );
 
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
     // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const cGraphData = {
     labels: cData.labels,
     datasets: [
       {
-        label: 'Amount',
+        label: 'Customer',
         data: cData.data,
         backgroundColor: '#15BFCA',
       },
@@ -174,70 +175,61 @@ export default function MarketingDashboard({ viewUserType }) {
   // amount spent
   const [amountRange, setAmountRange] = useState({ ...dateRangeItit });
 
+  const amountGraphApi =
+    params?.type === 'reward'
+      ? Api.GET_MARKETING_DASHBOARD_LOYALTY_POINTS_AMOUNT_SPENT_GRAPH
+      : Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH;
+
   const amountGraphQuery = useQuery(
     [`marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`],
     () =>
-      AXIOS.get(Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH, {
+      AXIOS.get(amountGraphApi, {
         params: {
           marketingId: params?.id,
           startDate: moment(amountRange.start).format('YYYY-MM-DD'),
           endDate: moment(amountRange.end).format('YYYY-MM-DD'),
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   const aData = generateGraphData(
     amountGraphQuery?.data?.data?.info || [],
-    (item) => item.amountSpent,
-    // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
+    params?.type === 'reward'
+      ? (item) => ({ shopAmountSpent: item.shopAmountSpent, adminAmountSpent: item.adminAmountSpent })
+      : (item) => item.amountSpent,
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const aGraphData = {
     labels: aData.labels,
-    datasets: [
-      {
-        label: 'Amount',
-        data: aData.data,
-        borderColor: 'rgba(21, 191, 202, 1)',
-        backgroundColor: 'rgba(21, 191, 202, 0)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // loyalty points
-  const [loyalityRange, setLoyalityRange] = useState({ ...dateRangeItit });
-
-  const loyalityGraphQuery = useQuery(
-    [`marketing-graph-amount-${params?.id}-${loyalityRange.start}-${loyalityRange.end}`],
-    () =>
-      AXIOS.get(Api.GET_MARKETING_DASHBOARD_LOYALTY_POINTS_GRAPH, {
-        params: {
-          marketingId: params?.id,
-          startDate: moment(loyalityRange.start).format('YYYY-MM-DD'),
-          endDate: moment(loyalityRange.end).format('YYYY-MM-DD'),
-        },
-      })
-  );
-
-  const pData = generateGraphData(
-    loyalityGraphQuery?.data?.data?.info || [],
-    (item) => item.amountSpent,
-    // eslint-disable-next-line prettier/prettier
-    (item) => moment(item?.date).format('MMMM DD')
-  );
-
-  const pGraphData = {
-    labels: pData.labels,
-    datasets: [
-      {
-        label: 'Amount',
-        data: pData.data,
-        backgroundColor: '#15BFCA',
-      },
-    ],
+    datasets:
+      params?.type === 'reward'
+        ? [
+            {
+              label: 'Amount(Shop)',
+              data: aData?.data.map((amount) => amount?.shopAmountSpent),
+              borderColor: 'rgba(221, 91, 99, 1)',
+              backgroundColor: 'rgba(21, 191, 202, 0)',
+              borderWidth: 1,
+            },
+            {
+              label: 'Amount(Lxya)',
+              data: aData?.data.map((amount) => amount?.adminAmountSpent),
+              borderColor: 'rgba(21, 11, 202, 1)',
+              backgroundColor: 'rgba(21, 191, 202, 0)',
+              borderWidth: 1,
+            },
+          ]
+        : [
+            {
+              label: 'Amount',
+              data: aData.data,
+              borderColor: 'rgba(21, 191, 202, 1)',
+              backgroundColor: 'rgba(21, 191, 202, 0)',
+              borderWidth: 1,
+            },
+          ],
   };
 
   const breadCrumbItems = [
@@ -246,14 +238,14 @@ export default function MarketingDashboard({ viewUserType }) {
       to: params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing',
     },
     {
-      label: `${mTypeMap[params?.type]}`,
+      label: `${getMarketingTypeTitle(params?.type)}`,
       to: '#',
     },
   ];
 
   // loading
   const __loading =
-    loyalityGraphQuery.isLoading ||
+    // loyalityGraphQuery.isLoading ||
     amountGraphQuery.isLoading ||
     customerGraphQuery.isLoading ||
     ordersGraphQuery.isLoading ||
@@ -291,15 +283,21 @@ export default function MarketingDashboard({ viewUserType }) {
         <PageSkeleton />
       ) : (
         <Grid container spacing={6.5} pb={3}>
+          {isVisibleOngoingPromotionItem(params?.type) && (
+            <InfoCard
+              title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
+              value={
+                params?.type === 'featured'
+                  ? `${10}/${25}${currency?.symbol}`
+                  : marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0
+              }
+              sm={6}
+              md={4}
+              lg={4}
+            />
+          )}
           <InfoCard
-            title="Ongoing Promotions on Items"
-            value={marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0}
-            sm={6}
-            md={4}
-            lg={4}
-          />
-          <InfoCard
-            title="Order Increase with Discounts"
+            title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
             value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
             Tag={
               <IncreaseDecreaseTag
@@ -312,16 +310,16 @@ export default function MarketingDashboard({ viewUserType }) {
                 }
                 amount={`${Math.round(
                   marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0
+                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
                 )}% in ${marketingDuration}`}
               />
             }
-            sm={6}
-            md={4}
-            lg={4}
+            sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+            md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+            lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
           />
           <InfoCard
-            title="Customer Increase with Discounts"
+            title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
             value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
             Tag={
               <IncreaseDecreaseTag
@@ -334,13 +332,13 @@ export default function MarketingDashboard({ viewUserType }) {
                 }
                 amount={`${Math.round(
                   marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0
+                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
                 )}% in ${marketingDuration}`}
               />
             }
-            sm={6}
-            md={4}
-            lg={4}
+            sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+            md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+            lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
           />
           <ChartBox
             chartHeight={245}
@@ -360,22 +358,24 @@ export default function MarketingDashboard({ viewUserType }) {
             title="Customers"
             sm={12}
             md={12}
-            lg={6}
+            lg={params?.type !== 'featured' ? 6 : 12}
           >
             <StyledBarChart data={cGraphData} />
           </ChartBox>
-          <ChartBox
-            chartHeight={325}
-            dateRange={amountRange}
-            setDateRange={setAmountRange}
-            loading={amountGraphQuery.isLoading}
-            title="Amount spent"
-            sm={12}
-            md={12}
-            lg={6}
-          >
-            <StyledAreaChartfrom data={aGraphData} />
-          </ChartBox>
+          {params?.type !== 'featured' && (
+            <ChartBox
+              chartHeight={325}
+              dateRange={amountRange}
+              setDateRange={setAmountRange}
+              loading={amountGraphQuery.isLoading}
+              title="Amount spent"
+              sm={12}
+              md={12}
+              lg={6}
+            >
+              <StyledAreaChartfrom data={aGraphData} />
+            </ChartBox>
+          )}
         </Grid>
       )}
       <MSettingsModal open={Boolean(isModalOpen)}>

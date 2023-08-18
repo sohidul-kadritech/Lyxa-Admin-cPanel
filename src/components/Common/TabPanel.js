@@ -14,7 +14,7 @@ const noPaddingSx = {
 
 export default function TabPanel({ value, index, noPadding, children, ...props }) {
   if (value !== index) {
-    return <></>;
+    return null;
   }
 
   return (
