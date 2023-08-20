@@ -50,6 +50,8 @@ function SellerList2() {
 
   const [loading, setLoading] = useState(false);
 
+  const [isSelected, setIsSelected] = useState(false);
+
   const [currentSeller, setCurrentSeller] = useState({});
 
   const [zoneId, setZoneId] = useState('all');
@@ -98,48 +100,21 @@ function SellerList2() {
     {
       onSuccess: (data) => {
         if (data.status) {
-          if (!routeMatch?.params?.sellerId) {
-            const updatedCurrentSeller = data?.data?.sellers.find((seller) => currentSeller?._id === seller?._id);
-            if (updatedCurrentSeller) {
-              setCurrentSeller(
-                // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
-              );
-            } else {
-              setCurrentSeller(
-                Object?.keys(currentSeller)?.length > 0 && currentSeller?.sellerType === currentTab
-                  ? currentSeller
-                  : {},
-              );
-            }
-          } else if (Object?.keys(currentSeller)?.length > 0 && routeMatch?.params?.sellerId) {
-            setCurrentSeller(currentSeller?.sellerType === currentTab ? currentSeller : {});
+          if (!isSelected) {
+            setIsSelected((prev) => {
+              const seller = routeMatch?.params?.sellerId
+                ? data?.data?.sellers.find((seller) => seller?._id === routeMatch?.params?.sellerId)
+                : data?.data?.sellers[0];
+              setCurrentSeller(seller);
+              return !prev;
+            });
+          } else {
+            setCurrentSeller((prev) => (currentSeller?.sellerType === currentTab ? prev : {}));
           }
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
-  );
-
-  const getSingleSellersQuery = useQuery(
-    [API_URL.SINGLE_SELLER, { id: routeMatch?.params?.sellerId }],
-    () =>
-      AXIOS.get(API_URL.SINGLE_SELLER, {
-        params: {
-          id: routeMatch?.params?.sellerId,
-        },
-      }),
-    {
-      enabled: Boolean(routeMatch?.params?.sellerId),
-      onSuccess: (data) => {
-        if (data.status) {
-          if (routeMatch?.params?.sellerId) {
-            setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.seller);
-          }
-        }
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
@@ -249,7 +224,7 @@ function SellerList2() {
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
-      {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
+      {getAllSellersQuery?.isLoading ? (
         <SellerPageSkeleton />
       ) : (
         <Box marginTop="42px" pb={12}>
@@ -269,7 +244,7 @@ function SellerList2() {
               {/* Sellers List --> left */}
               <Box>
                 <SellerList
-                  loading={getAllSellersQuery.isLoading || getSingleSellersQuery.isLoading}
+                  loading={getAllSellersQuery.isLoading}
                   data={getAllSellersQuery?.data?.data?.sellers}
                   currentSeller={currentSeller}
                   setCurrentSeller={setCurrentSeller}

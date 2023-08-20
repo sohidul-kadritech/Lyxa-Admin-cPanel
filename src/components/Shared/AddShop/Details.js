@@ -8,7 +8,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledInput from '../../Styled/StyledInput';
-import { getZoneDataFromLatLng, receivePaymentByOptions, statusOptions } from './helper';
+import { getShopZoneData, getZoneDataFromLatLng, receivePaymentByOptions, statusOptions } from './helper';
 
 const addressInit = {
   address: '',
@@ -43,7 +43,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log(data);
+          console.log('data zones', data?.data?.zones);
 
           setZones(() => {
             const zones = getZoneDataFromLatLng(data?.data?.zones);
@@ -244,18 +244,18 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
       </Stack>
 
       {/* select zone */}
-      {!getZoneFromAddress?.isLoading && (
-        <StyledFormField
-          label="Select a Zone *"
-          intputType="select"
-          inputProps={{
-            name: 'shopZone',
-            value: shop?.shopZone?._id || shop?.shopZone || '',
-            items: zones,
-            onChange,
-          }}
-        />
-      )}
+
+      <StyledFormField
+        label="Select a Zone *"
+        intputType="select"
+        inputProps={{
+          name: 'shopZone',
+          placeholder: 'Select a zone',
+          value: getShopZoneData(shop?.shopZone, zones),
+          items: zones,
+          onChange,
+        }}
+      />
 
       {/* zip code */}
       <StyledFormField
