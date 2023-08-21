@@ -24,7 +24,7 @@ export default function ShopFinancials() {
         }}
       >
         <Tab label="Overview" />
-        <Tab label="Invoices" />
+        <Tab label="Payouts" />
         {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
       </Tabs>
 
