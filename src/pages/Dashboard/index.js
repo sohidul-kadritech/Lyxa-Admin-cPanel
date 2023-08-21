@@ -49,8 +49,10 @@ function Dashboard() {
     if (startDate || endDate) {
       dispatch(
         getDashboardSummary(
-          userType === 'admin' && adminType !== 'customerService' ? 'admin' : userType === 'seller' ? 'seller' : 'shop'
-        )
+          // eslint-disable-next-line prettier/prettier
+          userType === 'admin' && adminType !== 'customerService' ? 'admin' : userType === 'seller' ? 'seller' : 'shop',
+          // eslint-disable-next-line prettier/prettier
+        ),
       );
     }
   }, [startDate, endDate]);
@@ -182,7 +184,7 @@ function SellerInfo() {
   //     company_name,
   //     status,
   //     sellerType,
-  //     addressSeller: { address, latitude, longitude },
+  //     sellerAddress: { address, latitude, longitude },
   //     phone_number,
   //     email,
   //   },
@@ -215,9 +217,9 @@ function SellerInfo() {
           <InfoTwoWrapper>
             <InfoTwo value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} name="Manager" />
             <InfoTwo
-              value={`${seller?.addressSeller?.address}`}
+              value={`${seller?.sellerAddress?.address}`}
               // eslint-disable-next-line max-len
-              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
+              mapLink={`${MAP_URL}?z=10&t=m&q=loc:${seller?.sellerAddress?.latitude}+${seller?.sellerAddress?.longitude}`}
               Icon={RoomOutlinedIcon}
               name="Location"
             />

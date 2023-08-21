@@ -233,6 +233,7 @@ export const createEditShopData = async (shopData) => {
   return {
     id: shopData?._id,
     shopName: shopData?.shopName,
+    shopBrand: shopData?.shopBrand,
     name: shopData?.name,
     email: shopData?.email,
     password: shopData?.password,

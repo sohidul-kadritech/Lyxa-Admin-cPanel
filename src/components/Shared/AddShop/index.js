@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { ArrowDownward, ArrowForward } from '@mui/icons-material';
 import { Box, Button, Tab, Tabs } from '@mui/material';
@@ -35,12 +36,15 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
   const queryClient = useQueryClient();
 
   const { currentUser } = useGlobalContext();
+
   const { seller: currentSeller, adminType } = currentUser;
 
   const [seller] = useState(customSeller?._id ? customSeller : currentSeller);
+
   const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
 
   const [loading, setLoading] = useState(false);
+
   const [currentTab, setCurrentTab] = useState(0);
 
   const tabMax = getTabMax(editShop?._id, shop?.shopReceivePaymentBy);
@@ -59,7 +63,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+      }),
     );
     setShop((prev) => ({
       ...prev,
@@ -80,6 +84,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
           if (editShop?._id) updateShopData(editShop, data?.data?.shop);
           else queryClient.invalidateQueries([Api.ALL_SHOP]);
 
+          queryClient.invalidateQueries([Api.SHOP_BRANDS]);
+
           onClose();
           refetch();
         }
@@ -89,7 +95,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         console.log(error);
         setLoading(false);
       },
-    }
+    },
   );
 
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES], () =>
@@ -100,7 +106,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         shopType: seller?.sellerType,
         status: 'active',
       },
-    })
+    }),
   );
 
   const onSubmitShop = async () => {

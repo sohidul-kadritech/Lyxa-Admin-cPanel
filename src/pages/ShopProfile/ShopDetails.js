@@ -1,4 +1,4 @@
-import { AccessTimeFilled, Email } from '@mui/icons-material';
+import { AccessTimeFilled, Email, Loyalty } from '@mui/icons-material';
 import HashIcon from '@mui/icons-material/Tag';
 import { Box, Stack } from '@mui/material';
 import { ReactComponent as AreaCovered } from '../../assets/icons/areaCovered.svg';
@@ -27,6 +27,7 @@ export default function ShopDetails({ shop }) {
         }}
       />
       <ProfileSidebarInfo label="Shop Type" value={shop?.shopType} icon={CalenderIcon} />
+      {shop?.shopBrand && <ProfileSidebarInfo label="Shop Brand" value={shop?.shopBrand} icon={Loyalty} />}
       <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Location} />
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />
       <ProfileSidebarInfo label="Phone number" value={shop?.phone_number} icon={Phone} />

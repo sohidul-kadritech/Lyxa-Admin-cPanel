@@ -102,10 +102,10 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
             <Typography variant="body4">{selectedSeller?.phone_number}</Typography>
           </ShopInfo>
           <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.addressSeller?.address}</Typography>
+            <Typography variant="body4">{selectedSeller?.sellerAddress?.address}</Typography>
           </ShopInfo>
           <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.addressSeller?.pin || '1233'}</Typography>
+            <Typography variant="body4">{selectedSeller?.sellerAddress?.pin || '1233'}</Typography>
           </ShopInfo>
           <ShopInfo title="Total Order" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.totalOrder || 0}</Typography>

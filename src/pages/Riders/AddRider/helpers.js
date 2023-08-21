@@ -30,7 +30,7 @@ export const getRiderInit = (riderFor, riderShop) => ({
   password: '',
   confirm_password: '',
   number: '',
-  deliveryBoyAddress: '',
+  address: '',
   deliveryBoyNationality: '',
   image: [],
   vehicleNumber: '',
@@ -93,7 +93,7 @@ export const validateRider = (rider, isEditRider) => {
     return status;
   }
 
-  if (!rider?.deliveryBoyAddress?.trim()) {
+  if (!rider?.address?.trim()) {
     status.msg = 'Rider address cannot be empty!';
     return status;
   }
@@ -176,7 +176,7 @@ export const createRiderData = async (rider) => {
     email: rider?.email?.trim(),
     password: rider?.password || undefined,
     number: rider?.number?.trim(),
-    deliveryBoyAddress: rider?.deliveryBoyAddress?.trim(),
+    address: rider?.address?.trim(),
     deliveryBoyNationality: rider?.deliveryBoyNationality?.trim(),
     image,
     vehicleNumber: rider?.vehicleNumber?.trim(),
@@ -200,7 +200,7 @@ export const convertEditRiderData = (rider, riderFor, riderShop) => ({
   contractImage: [{ preview: rider?.contractImage }],
   nationalIdDocument: [{ preview: rider?.nationalIdDocument }],
   vehicleRegistrationDocument: [{ preview: rider?.vehicleRegistrationDocument }],
-  deliveryBoyAddress: rider?.address,
+  address: rider?.address,
   zoneId: rider?.zone?._id,
   shopId: riderFor === 'shop' ? riderShop : null,
   password: '',

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Delete } from '@mui/icons-material';
 import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
 import { useMemo, useState } from 'react';
@@ -26,7 +27,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
   const queryClient = useQueryClient();
 
   const [rider, setRider] = useState(
-    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop)
+    editRider?._id ? convertEditRiderData(editRider, riderFor, riderShop) : getRiderInit(riderFor, riderShop),
   );
 
   const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+      }),
     );
 
     if (newFiles?.length) {
@@ -75,7 +76,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         successMsg(error?.message);
         setLoading(false);
       },
-    }
+    },
   );
 
   //  upload data
@@ -136,7 +137,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
           return data?.data?.shops?.length > 0 ? data?.data?.shops : prev;
         });
       },
-    }
+    },
   );
 
   const getShops = useMemo(
@@ -146,7 +147,7 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   return (
@@ -275,8 +276,8 @@ export default function AddRider({ onClose, editRider, onUpdateSuccess, hideDele
               intputType="text"
               inputProps={{
                 type: 'text',
-                name: 'deliveryBoyAddress',
-                value: rider.deliveryBoyAddress,
+                name: 'address',
+                value: rider.address,
                 onChange: commonChangeHandler,
               }}
             />

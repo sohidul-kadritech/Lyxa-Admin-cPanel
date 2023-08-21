@@ -23,7 +23,8 @@ const queryParamsInit = (type) => ({
   sortByAvgTime: '',
   sortByRating: '',
   sortByProfit: '',
-  zoneId: 'all',
+  zoneId: '',
+  shopBrand: '',
 });
 
 const tabValueToTypeMap = { 0: 'food', 1: 'grocery', 2: 'pharmacy' };
@@ -49,14 +50,16 @@ export default function ShopList() {
     [Api.ALL_SHOP, queryParams],
     () =>
       AXIOS.get(Api.ALL_SHOP, {
-        params: { ...queryParams, zoneId: queryParams?.zoneId === 'all' ? null : queryParams?.zoneId },
+        params: {
+          ...queryParams,
+        },
       }),
     {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const handleMenuClick = (menu, shop) => {

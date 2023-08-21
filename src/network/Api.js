@@ -142,6 +142,7 @@ export const ADD_SHOP_MAX_DISCOUNT = `${ADMIN_ENDPOINT}/shop/add-maxDiscount`;
 export const EDIT_SHOP_BEST_SELLER = `${ADMIN_ENDPOINT}/shop/add-best-seller`;
 export const EDIT_SHOP_FAVOVRITES = `${ADMIN_ENDPOINT}/shop/add-shop-favourites`;
 export const EDIT_SHOP_OPENING_HOURS = `${ADMIN_ENDPOINT}/shop/edit-shop-opening-hours`;
+export const SHOP_BRANDS = `${ADMIN_ENDPOINT}/shop/brands`;
 
 // PRODUCT
 export const ADD_PRODUCT = `${ADMIN_ENDPOINT}/product/add`;

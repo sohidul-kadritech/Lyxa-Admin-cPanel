@@ -100,21 +100,51 @@ function SellerList2() {
     {
       onSuccess: (data) => {
         if (data.status) {
+          // @check current seller is selected or not when this page is loaded first time.
           if (!isSelected) {
+            // @if selected pass this block
             setIsSelected((prev) => {
+              // @check here we have selller id or not, which get from route params as sellerId.
+              // @If we have selller Id, then we find the this specific seller from all seller data as currentSeller.
+              // @If we have not seller Id, then we stored the first seller data as current seller
+              // @Stored current seller for both cases we stored current seller in seller variable.
               const seller = routeMatch?.params?.sellerId
                 ? data?.data?.sellers.find((seller) => seller?._id === routeMatch?.params?.sellerId)
                 : data?.data?.sellers[0];
+
+              // @Set current seller here
               setCurrentSeller(seller);
+              /*  @When we stored current seller in first loaded page, we set isSelected state as true.
+              so next time it will not pass this block
+              */
               return !prev;
             });
           } else {
-            setCurrentSeller((prev) => (currentSeller?.sellerType === currentTab ? prev : {}));
+            // @if not selected pass this block
+            setCurrentSeller((prev) => {
+              /*
+              @For each query validation it will stored the updated seller data and stored them as current seller.
+              As a result we can get updated data, when we try to update seller information.
+              */
+
+              const updatedCurrentSeller = data?.data?.sellers.find((seller) => seller?._id === prev?._id);
+
+              // @Check current tab is 'all' or not, if it is all it stored current seller the udpated one.
+              if (currentTab === 'all') {
+                return updatedCurrentSeller;
+              }
+
+              /*
+              @Check current tab is matched with current seller type or not.
+              if it is matched then we stored udpated seller data otherwise we stored empty current seller data.
+              */
+              return currentSeller?.sellerType === currentTab ? updatedCurrentSeller : {};
+            });
           }
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const addSellerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_SELLER, data), {
