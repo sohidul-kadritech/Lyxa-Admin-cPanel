@@ -12,8 +12,6 @@ export default function ShopFinancials() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
-  console.log('shopReceivePaymentBy', shop?.shopReceivePaymentBy);
-
   return (
     <Box pb={10}>
       <PageTop title="Financials" />

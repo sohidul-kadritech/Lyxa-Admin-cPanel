@@ -15,10 +15,9 @@ import DateRange from '../../StyledCharts/DateRange';
 import StyledTabs2 from '../../Styled/StyledTab2';
 import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../StyledCharts/InfoCard';
-import MarketingSpentChart from './MarketingSpentChart';
 import PayoutDetails from './PayoutDetails';
+import PayoutDetailsTable from './PayoutDetailsTable';
 import PriceItem from './PriceItem';
-import ProfitChart from './ProfitChart';
 import { calculateDateDifference, dateRangeItit, getMarketingTypeValues, marketingSpentTypeOptions } from './helpers';
 
 export default function Overview({ viewUserType }) {
@@ -68,7 +67,6 @@ export default function Overview({ viewUserType }) {
 
   return (
     <Grid container spacing={7.5} pb={3} pt={7.5}>
-      {/* <OrderAmountChart viewUserType={viewUserType} /> */}
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
           <Button
@@ -168,8 +166,9 @@ export default function Overview({ viewUserType }) {
         </Stack>
       </InfoCard>
       <PayoutDetails paymentDetails={query?.data?.data?.summary} />
-      <ProfitChart viewUserType={viewUserType} />
-      <MarketingSpentChart viewUserType={viewUserType} />
+      <Grid xs={12}>
+        <PayoutDetailsTable rows={[]} />
+      </Grid>
     </Grid>
   );
 }

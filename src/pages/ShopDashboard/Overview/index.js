@@ -1,6 +1,8 @@
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
+import MarketingSpentChart from '../../../components/Shared/FinancialsOverview/MarketingSpentChart';
 import OrderAmountChart from '../../../components/Shared/FinancialsOverview/OrderAmontChat';
+import ProfitChart from '../../../components/Shared/FinancialsOverview/ProfitChart';
 import CommonAreaChart from '../../../components/StyledCharts/CommonAreaChart';
 import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
@@ -34,6 +36,8 @@ export default function Overview() {
       />
       <OrderAmountChart viewUserType="shop" />
       <OrderByHours />
+      <ProfitChart viewUserType="shop" />
+      <MarketingSpentChart viewUserType="shop" />
       <ItemRanking xs={12} sm={12} md={12} lg={6} />
       <CommonAreaChart
         title="Orders with issues"
