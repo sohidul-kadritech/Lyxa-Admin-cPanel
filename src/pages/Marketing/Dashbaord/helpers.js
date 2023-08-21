@@ -62,3 +62,13 @@ export const getDataForOngoingPromotionItem = (type, data, currency) => {
 
   return data?.totalPromotionItems;
 };
+
+export const getDurationFromMarketingHistory = (data) => {
+  const duration = moment(data?.end).endOf('day').diff(moment(data?.start).startOf('day'), 'days', true);
+  const ceiledDuration = Math.ceil(duration);
+  if (ceiledDuration < 2) {
+    return `${ceiledDuration} day`;
+  }
+
+  return `${ceiledDuration} days`;
+};

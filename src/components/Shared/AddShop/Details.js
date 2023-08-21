@@ -53,7 +53,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const { currentUser } = useGlobalContext();
@@ -116,7 +116,21 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
           onChange,
         }}
       />
-
+      {/* Brand name */}
+      <StyledFormField
+        label="Shop Brand *"
+        intputType="text"
+        inputProps={{
+          value: shop?.shopBrand,
+          type: 'text',
+          name: 'shopBrand',
+          onChange: (e) => {
+            const shopBrand = e.target?.value;
+            const uppercaseBrand = shopBrand.toUpperCase();
+            setShop((prev) => ({ ...prev, shopBrand: uppercaseBrand }));
+          },
+        }}
+      />
       {/* shop name */}
       <StyledFormField
         label="Shop Manager Name *"

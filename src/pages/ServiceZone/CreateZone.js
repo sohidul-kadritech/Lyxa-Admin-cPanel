@@ -97,12 +97,11 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
         height: '96vh',
         margin: '2vh 2vw',
         padding: '36px',
-        overflow: 'auto',
         backgroundColor: theme.palette.primary.contrastText,
         borderRadius: '10px',
       }}
     >
-      <Box>
+      <Stack>
         <Stack flexDirection="row" gap="36px" alignItems="center">
           {/* Zone name */}
           <StyledFormField
@@ -226,7 +225,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
           </Stack>
         </Stack>
 
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', flex: 1 }}>
           <ZoneMap
             setIsDisable={setIsDisable}
             setPolygonArea={setPolygonArea}
@@ -253,6 +252,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
             </Stack>
           )}
         </Box>
+
         <Box>
           <Stack flexDirection="row" sx={{ marginTop: '40px' }}>
             <Box flex={1}>
@@ -295,7 +295,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
             </Stack>
           </Stack>
         </Box>
-      </Box>
+      </Stack>
     </ModalContainer>
   );
 }

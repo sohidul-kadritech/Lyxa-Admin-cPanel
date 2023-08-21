@@ -99,6 +99,15 @@ function ShopList({
     {
       id: 2,
       showFor: ['Shop List'],
+      headerName: 'BRAND',
+      field: 'shopBrand',
+      flex: 1.5,
+      sortable: false,
+      renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
+    },
+    {
+      id: 3,
+      showFor: ['Shop List'],
       headerName: `CUSTOMERS`,
       field: 'customers',
       sortable: false,

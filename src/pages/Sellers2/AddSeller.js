@@ -49,7 +49,7 @@ function AddSeller({
   const currency = general?.currency?.symbol;
 
   const [newSellerData, setNewSellerData] = useState({});
-  const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
+  const [selectedAddress, setSelectedAddress] = useState(sellerData?.sellerAddress?.address);
   const [render, setRender] = useState(false);
 
   // drop charge
@@ -76,7 +76,8 @@ function AddSeller({
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     setNewSellerData((prev) => ({

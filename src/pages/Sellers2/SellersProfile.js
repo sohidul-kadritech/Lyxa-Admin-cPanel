@@ -79,11 +79,11 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler, adminType }) {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                 }}
-                title={data?.addressSeller?.address}
+                title={data?.sellerAddress?.address}
                 linkOpenBlank
                 icon={LocationIcon}
                 isFirst
-                link={`https://maps.google.com/?q=${data?.addressSeller?.latitude},${data?.addressSeller?.longitude}`}
+                link={`https://maps.google.com/?q=${data?.sellerAddress?.latitude},${data?.sellerAddress?.longitude}`}
               />
               <InfoListItem title={data?.phone_number} icon={PhoneIcon} link={`tel:${data?.phone_number}`} />
               <InfoListItem title={data?.email} icon={MailIcon} link={`mailto:${data?.email}`} />

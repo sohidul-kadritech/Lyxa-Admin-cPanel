@@ -14,7 +14,7 @@ export default function ProfileSidebarInfo({ label, value, icon: Icon, valueSx, 
           variant="inherit"
           sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500', ...valueSx }}
         >
-          {value}
+          {value || 'Not added yet'}
         </Typography>
       )}
       {valueComponent && valueComponent}

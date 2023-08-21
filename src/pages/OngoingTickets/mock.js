@@ -562,7 +562,7 @@ export const order = {
     registerType: 'mail',
     company_name: 'Muin.co',
     email: 'muin@seller.com',
-    addressSeller: {
+    sellerAddress: {
       location: {
         type: 'Point',
         coordinates: [90.4160527, 23.7820624],
