@@ -1,37 +1,13 @@
 import { Box } from '@mui/material';
-import moment from 'moment';
-import { useEffect, useState } from 'react';
+// import moment from 'moment';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
+// import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
-
-const getQueryParamsInit = (type, state) => {
-  const obj = state || {};
-
-  const params = {
-    page: 1,
-    pageSize: 20,
-    sortBy: 'DESC',
-    type,
-    startDate: moment().startOf('month'),
-    endDate: moment(),
-    searchKey: '',
-    orderType: 'all',
-    model: '',
-  };
-
-  Object.keys(obj).forEach((key) => {
-    if (key === 'startDate' || key === 'endDate') params[key] = moment(state[key], 'YYYY/MM/DD');
-    else params[key] = state[key];
-  });
-
-  return params;
-};
 
 const getTabOptions = (type) => {
   const tabsOptions = [
@@ -47,14 +23,15 @@ const getTabOptions = (type) => {
   return tabsOptions;
 };
 
-export default function Orders({ type }) {
-  const location = useLocation();
-  const history = useHistory();
-  console.log('type', type);
+const getCurrentTab = (queryParams) => {
+  if (queryParams?.model === 'butler') return 'butler';
+  if (queryParams?.model === '') return 'all';
+  return queryParams?.orderType;
+};
 
+export default function Orders({ queryParams, setQueryParams }) {
   const [totalPage, setTotalPage] = useState(1);
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit(type, location?.state));
-  const [currentTab, setCurrentTab] = useState('all');
+  const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
 
   const ordersQuery = useQuery(
     [Api.ORDER_LIST, queryParams],
@@ -69,15 +46,11 @@ export default function Orders({ type }) {
     }
   );
 
-  useEffect(() => {
-    history.replace();
-  }, []);
-
   return (
     <Box pt={7.5}>
       <StyledTabs2
         value={currentTab}
-        options={getTabOptions(type)}
+        options={getTabOptions(queryParams?.type)}
         onChange={(value) => {
           setCurrentTab(value);
           if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
@@ -101,7 +74,7 @@ export default function Orders({ type }) {
       <Table
         loading={ordersQuery?.isLoading}
         refetching={ordersQuery?.isFetching}
-        orderType={type}
+        orderType={queryParams?.type}
         shopType={currentTab}
         orders={ordersQuery?.data?.data?.orders}
         queryParams={queryParams}
