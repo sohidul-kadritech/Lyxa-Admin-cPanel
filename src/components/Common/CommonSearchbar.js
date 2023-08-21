@@ -53,8 +53,6 @@ export default function SearchBar({
     []
   );
 
-  console.log(searchDebounceTime);
-
   return (
     <Stack direction="row" alignItems="center" gap="20px">
       {showFilters?.search && (
@@ -69,14 +67,14 @@ export default function SearchBar({
       )}
       {showFilters?.date && (
         <StyledDateRangePicker
-          startDate={queryParams.startDate}
-          endDate={queryParams.endDate}
+          startDate={queryParams.startDate === 'null' ? null : moment(queryParams.startDate)}
+          endDate={queryParams.endDate === 'null' ? null : moment(queryParams.endDate)}
           onChange={({ startDate, endDate }) => {
             console.log({ startDate, moment: moment(startDate) });
             setQueryParams((prev) => ({
               ...prev,
-              startDate,
-              endDate,
+              startDate: startDate?.format('YYYY-MM-DD'),
+              endDate: endDate?.format('YYYY-MM-DD'),
               page: 1,
             }));
           }}

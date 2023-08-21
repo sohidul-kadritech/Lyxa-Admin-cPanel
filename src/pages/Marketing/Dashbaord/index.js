@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -23,7 +24,13 @@ import AXIOS from '../../../network/axios';
 import MSettingsModal from '../MSettingsModal';
 import MarketingSettings from '../Settings';
 import PageSkeleton from './PageSkeleton';
-import { dateRangeItit, getMarketingTypeTitle, isVisibleOngoingPromotionItem, marketingDurationTime } from './helpers';
+import {
+  dateRangeItit,
+  getDataForOngoingPromotionItem,
+  getMarketingTypeTitle,
+  isVisibleOngoingPromotionItem,
+  marketingDurationTime,
+} from './helpers';
 
 const mTypeMap = {
   double_menu: 'Buy 1, Get 1 Free',
@@ -235,7 +242,7 @@ export default function MarketingDashboard({ viewUserType }) {
   const breadCrumbItems = [
     {
       label: 'Marketings',
-      to: params?.shopId ? `/shops/marketing/${params?.shopId}` : '/marketing',
+      to: params?.shopId ? `/shop/dashboard/${params?.shopId}/marketing` : '/marketing',
     },
     {
       label: `${getMarketingTypeTitle(params?.type)}`,
@@ -286,11 +293,7 @@ export default function MarketingDashboard({ viewUserType }) {
           {isVisibleOngoingPromotionItem(params?.type) && (
             <InfoCard
               title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
-              value={
-                params?.type === 'featured'
-                  ? `${10}/${25}${currency?.symbol}`
-                  : marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0
-              }
+              value={getDataForOngoingPromotionItem(params?.type, marketingInfoQuery?.data?.data?.summary, currency)}
               sm={6}
               md={4}
               lg={4}

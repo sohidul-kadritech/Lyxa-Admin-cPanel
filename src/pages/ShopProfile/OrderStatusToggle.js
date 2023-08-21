@@ -2,6 +2,7 @@
 import { Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
+import socketServices from '../../common/socketService';
 import { createEditShopData, getShopEditData } from '../../components/Shared/AddShop/helper';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import { successMsg } from '../../helpers/successMsg';
@@ -10,17 +11,23 @@ import AXIOS from '../../network/axios';
 
 export default function OrderToggle({ shop }) {
   const [, setRender] = useState(false);
-  const [value, setValue] = useState(shop?.liveStatus === 'online');
 
   const mutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
         shop.liveStatus = data?.data?.shop?.liveStatus ?? shop.liveStatus;
+        socketServices.emit('socketServices', { liveStatus: shop.liveStatus });
         setRender((prev) => !prev);
       }
     },
   });
+
+  socketServices.on('socketServices', (data) => {
+    console.log({ data });
+  });
+
+  const value = shop?.liveStatus === 'online';
 
   return (
     <Stack
@@ -40,14 +47,13 @@ export default function OrderToggle({ shop }) {
       <StyledSwitch
         checked={value}
         onChange={() => {
-          setValue((prev) => !prev);
           const shopData = getShopEditData(shop);
-
           createEditShopData(shopData)?.then((data) => {
             if (data?.status === false) {
               successMsg(data?.msg);
               return;
             }
+            successMsg('Updating status....', 'success');
             mutation.mutate({ ...data, liveStatus: value ? 'offline' : 'online' });
           });
         }}

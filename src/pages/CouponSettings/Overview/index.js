@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -7,6 +8,8 @@ import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+
+import { CardTitle } from '../../../components/Shared/Operations';
 import { createCouponOverviewRows } from '../helpers';
 import CouponOverviewTable from './Table';
 
@@ -36,7 +39,7 @@ export default function CouponOverview() {
           setRows(createCouponOverviewRows(data?.data));
         }
       },
-    }
+    },
   );
 
   useEffect(() => {
@@ -58,21 +61,36 @@ export default function CouponOverview() {
         />
       </Box>
       <Grid container spacing={5} pb={7.5}>
-        <InfoCard title="Amount Spent" value={`${currency}${overView?.totalCouponsAmountSpent || 0}`} sm={6} md={2.4} />
         <InfoCard
-          title="Ongoing"
+          title={<CardTitle title="Amount Spent" tooltip="How much was spent using coupons?" />}
+          value={`${currency}${overView?.totalCouponsAmountSpent || 0}`}
+          sm={6}
+          md={2.4}
+        />
+        <InfoCard
+          title={<CardTitle title="Ongoing" tooltip="How many active coupons are there?" />}
           value={`${overView?.totalValidCoupons || 0}/${overView?.totalCoupons || 0}`}
           sm={6}
           md={2.4}
         />
         <InfoCard
-          title="Total Orders"
+          title={<CardTitle title="Total Orders" tooltip="How many orders were made using the ongoing coupon?" />}
           value={`${overView?.totalCouponsUsageOrders || 0}/${overView?.totalCouponsOrders || 0}`}
           sm={6}
           md={2.4}
         />
-        <InfoCard title="Order Increase" value={`${overView?.orderIncreasePercentage || 0}%`} sm={6} md={2.4} />
-        <InfoCard title="Usage" value={`${overView?.totalCouponsUsagePercentage || 0}%`} sm={6} md={2.4} />
+        <InfoCard
+          title={<CardTitle title="Order Increase" tooltip="How many orders are increased on coupon?" />}
+          value={`${overView?.orderIncreasePercentage || 0}%`}
+          sm={6}
+          md={2.4}
+        />
+        <InfoCard
+          title={<CardTitle title="Usage" tooltip="Percentage of total orders on total order limits" />}
+          value={`${overView?.totalCouponsUsagePercentage || 0}%`}
+          sm={6}
+          md={2.4}
+        />
       </Grid>
       <CouponOverviewTable rows={rows} loading={query?.isLoading} />
     </Box>

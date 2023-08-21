@@ -165,6 +165,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             Generate
           </Button>
         </Box>
+
         {/* user */}
         {couponType === 'individual_user' && (
           <StyledFormField
@@ -188,6 +189,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             }}
           />
         )}
+
         {/* cupon influencer */}
         {couponType === 'custom_coupon' && (
           <StyledFormField
@@ -212,6 +214,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             }}
           />
         )}
+
         {/* type */}
         <StyledFormField
           label="Type"
@@ -223,6 +226,27 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             onChange: commonChangeHandler,
           }}
         />
+
+        {/* max discount  */}
+        {coupon.couponDiscountType === 'percentage' && (
+          <StyledFormField
+            label="Maximum discount amount"
+            intputType="text-toggle"
+            inputProps={{
+              type: 'number',
+              name: 'couponMaximumDiscountLimit',
+              value: coupon.couponMaximumDiscountLimit,
+              onChange: commonChangeHandler,
+              disabled: !checked.couponMaximumDiscountLimit,
+              checked: checked.couponMaximumDiscountLimit,
+              onToggle: () => {
+                checked.couponMaximumDiscountLimit = !checked.couponMaximumDiscountLimit;
+                setRender(!render);
+              },
+            }}
+          />
+        )}
+
         {/* value */}
         <StyledFormField
           label="Value"
@@ -234,6 +258,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             onChange: commonChangeHandler,
           }}
         />
+
         {/* start date */}
         <StyledFormField
           label="Duration start"
@@ -254,6 +279,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             },
           }}
         />
+
         {/* start date */}
         <StyledFormField
           label="Duration end"
@@ -274,6 +300,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             },
           }}
         />
+
         {/* amount limit */}
         <StyledFormField
           label="Amount limit"
@@ -291,6 +318,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             },
           }}
         />
+
         {/* user limit */}
         <StyledFormField
           label="Order Limit Per User"
@@ -308,6 +336,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             },
           }}
         />
+
         {/* order limit */}
         {couponType !== 'individual_user' && (
           <StyledFormField
@@ -327,6 +356,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             }}
           />
         )}
+
         {/* min order */}
         <StyledFormField
           label="Min. Order"
@@ -344,6 +374,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             },
           }}
         />
+
         {/* type */}
         {couponType !== 'global' && (
           <StyledFormField

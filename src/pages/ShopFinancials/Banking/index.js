@@ -13,7 +13,6 @@ const inputSx = {
 export default function Banking() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
-  console.log(shop);
 
   return (
     <StyledBox
@@ -68,7 +67,6 @@ export default function Banking() {
             }}
           />
         </Grid>
-
         <Grid xs={12} md={6}>
           {/* postal code */}
           <StyledFormField

@@ -259,16 +259,16 @@ export const admin_menu_items = [
         icon: DisplayIcon,
       },
       {
-        label: 'Chat New',
+        label: 'Chat',
         to: '/tickets',
         icon: ChatIcon,
       },
-      {
-        label: 'Chat',
-        to: '/customer-support',
-        icon: ChatIcon,
-        badgeId: 'sidebar-item-chat-badges',
-      },
+      // {
+      //   label: 'Chat',
+      //   to: '/customer-support',
+      //   icon: ChatIcon,
+      //   badgeId: 'sidebar-item-chat-badges',
+      // },
     ],
   },
 ];

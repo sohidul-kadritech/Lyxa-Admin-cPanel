@@ -73,6 +73,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           status: 'active',
           shop: shop?._id,
           inStock: true,
+          hideAddons: marketingType === 'double_menu',
         },
       }),
     {
@@ -94,15 +95,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setEntireMenu(false);
         }
       },
-    },
+    }
   );
 
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing?.type === marketingType,
+        (p) => p.marketing === undefined || p?.marketing?.type === marketingType
       ),
-    [productsQuery?.data],
+    [productsQuery?.data]
   );
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       }),
     {
       enabled: marketingType === 'percentage',
-    },
+    }
   );
 
   // featured settinsg
@@ -129,7 +130,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       params: {
         featuredType: shop?.shopType,
       },
-    }),
+    })
   );
 
   const featuredSettingsOptions = useMemo(() => {
@@ -239,12 +240,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
           window.alert(
-            'Looks like something has changed in marketing since you came here. We will just reload the page',
+            'Looks like something has changed in marketing since you came here. We will just reload the page'
           );
           window.location.reload();
         }
       },
-    },
+    }
   );
 
   const selectionChangeConfirm = (value) => {
@@ -299,10 +300,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     setLocalData(newData);
     setHasGlobalChange(false);
-
     setIsPageDisabled(true);
-    // setPageMode(1);
-    setPageMode(2);
+
+    // if marketing is paused
+    if (marketingQuery?.data?.data?.marketing?.status === 'inactive') {
+      setPageMode(1);
+    } else {
+      setPageMode(2);
+    }
   };
 
   // update loyalty settings
@@ -402,7 +407,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           onDelete();
         }
       },
-    },
+    }
   );
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
@@ -885,7 +890,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     sx={{
                       borderRadius: 6,
                     }}
-                    // rounded
                     onClick={() => {
                       updateLoyaltySettings();
                     }}
@@ -895,6 +899,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 </Stack>
               </>
             )}
+
             {pageMode === 1 && (
               <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={3}>
                 <Button
@@ -941,6 +946,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 </Button>
               </Stack>
             )}
+
             {pageMode === 2 && (
               <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Stack alignItems="flex-start">
@@ -1015,6 +1021,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 )}
               </Stack>
             )}
+
             {pageMode === 3 && (
               <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
                 <Button

@@ -135,7 +135,7 @@ function ShopSettings() {
       shopAcceptedCurrency,
       shopExchangeRate,
       // eslint-disable-next-line prettier/prettier
-      newCusines,
+      newCusines
     );
 
     if (rateofShop?.shopExchangeRate < rateofShop?.baseExchangeRate) {
@@ -248,13 +248,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data],
+    [tagsQuery?.data]
   );
 
   return (
@@ -292,7 +292,7 @@ function ShopSettings() {
               disabled={admin?.adminType === 'admin' ? false : admin?.adminType !== 'accountManager'}
               title="Price Range"
               title2="Method"
-              accessType="SUPERADMIN/ACCOUNTMANAGER"
+              accessType="SUPERADMIN / ACCOUNTMANAGER"
               value={newPriceRange}
               action={handlePriceRange}
               options={PriceRange}

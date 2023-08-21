@@ -34,7 +34,7 @@ export default function ShopProfileTabs({ shop }) {
             <Tab label="Flagged" />
             <Tab label="Financials" />
             <Tab label="Invoices" />
-            <Tab label="Banking" />
+            {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
           </Tabs>
           <Box pt={6}>
             <TabPanel index={0} noPadding value={currentTab}>
@@ -52,9 +52,11 @@ export default function ShopProfileTabs({ shop }) {
             <TabPanel index={4} noPadding value={currentTab}>
               <Invoices />
             </TabPanel>
-            <TabPanel index={5} noPadding value={currentTab}>
-              <Banking shop={shop} />
-            </TabPanel>
+            {shop?.shopReceivePaymentBy === 'bank' && (
+              <TabPanel index={5} noPadding value={currentTab}>
+                <Banking shop={shop} />
+              </TabPanel>
+            )}
           </Box>
         </Box>
       </Box>

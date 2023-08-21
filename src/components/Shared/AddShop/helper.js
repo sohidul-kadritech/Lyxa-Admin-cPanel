@@ -1,6 +1,7 @@
 import { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 import { deepClone } from '../../../helpers/deepClone';
 import { getImageUrl } from '../../../helpers/images';
+import { successMsg } from '../../../helpers/successMsg';
 
 export const priceRangeOptions = [
   { label: '$', value: 1 },
@@ -30,6 +31,11 @@ export const statusOptions = [
     label: 'Inactive',
     value: 'inactive',
   },
+];
+
+export const receivePaymentByOptions = [
+  { label: 'Bank', value: 'bank' },
+  { label: 'Cash', value: 'cash' },
 ];
 
 export const getShopEditData = (shop) => {
@@ -98,11 +104,6 @@ export const validateShopDetails = (shopData, isEditShop, adminType) => {
     return status;
   }
 
-  if (!shopData?.shopZone) {
-    status.msg = 'Please assigned a zone for this shop';
-    return status;
-  }
-
   if (!shopData?.shopAddress?.pin) {
     status.msg = 'Please provide shop Zip Code';
     return status;
@@ -121,6 +122,11 @@ export const validateShopDetails = (shopData, isEditShop, adminType) => {
   if (!shopData?.shopStatus && adminType === 'admin') {
     status.msg = 'Please Select shop Shop Status';
     return status;
+  }
+
+  if (!shopData?.shopZone) {
+    successMsg("You don't have a zone assigned to this shop.");
+    return { ...status, status: true };
   }
 
   return { status: true };
@@ -227,6 +233,7 @@ export const createEditShopData = async (shopData) => {
   return {
     id: shopData?._id,
     shopName: shopData?.shopName,
+    shopBrand: shopData?.shopBrand,
     name: shopData?.name,
     email: shopData?.email,
     password: shopData?.password,
@@ -239,13 +246,10 @@ export const createEditShopData = async (shopData) => {
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
     shopAddress: shopData?.shopAddress,
-    // shopAddress: {
-    //   ...shopData?.address,
-    // },
     shopZone: shopData?.shopZone,
     shopLogo,
     shopBanner,
-    liveStatus: 'offline',
+    shopReceivePaymentBy: shopData?.shopReceivePaymentBy,
   };
 };
 
@@ -419,6 +423,7 @@ export const shopInit = (sellerId) => ({
     note: '',
   },
   normalHours: shopNormalHours,
+  shopReceivePaymentBy: 'bank',
   bank_name: '',
   account_name: '',
   account_number: '',
@@ -429,8 +434,24 @@ export const shopInit = (sellerId) => ({
 
 export const getZoneDataFromLatLng = (zones = []) => {
   if (zones.length) {
+    successMsg(`${zones.length} zones found in this area`, 'success');
     return zones.map((zone) => ({ label: zone?.zoneName, value: zone?._id }));
   }
 
-  return [{ label: 'No zone found', value: '' }];
+  successMsg('No zone found in this area!');
+
+  return [{ label: 'No zone found', value: null }];
+};
+
+export const getShopZoneData = (data, zones) => {
+  if (zones[0]?.label === 'No zone found' && zones[0].value === null) {
+    return undefined;
+  }
+
+  if (data?._id) return data?._id;
+
+  if (data) {
+    return data;
+  }
+  return '';
 };

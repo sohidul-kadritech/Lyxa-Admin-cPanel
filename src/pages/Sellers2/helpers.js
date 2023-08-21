@@ -230,11 +230,11 @@ export const tabsOptions = [
   { value: 'pharmacy', label: 'Pharmacy' },
 ];
 
-export const getEditSellerData = (data, globalChargeType, isEdit) => {
+export const getEditSellerData = (data, globalChargeType, sellerType, isEdit) => {
   if (!isEdit) {
     return {
       sellerStatus: '',
-      sellerType: '',
+      sellerType,
       sellerChargeType: 'global',
       dropPercentageType: globalChargeType,
     };
@@ -244,7 +244,7 @@ export const getEditSellerData = (data, globalChargeType, isEdit) => {
     ...data,
     password: '',
     phone_number: parsePhoneNumber(data?.phone_number) ? data?.phone_number : `+961${data?.phone_number}`,
-    sellerAddress: data?.addressSeller,
+    sellerAddress: data?.sellerAddress,
     sellerStatus: data?.status,
     profile_photo: previewGenerator(data?.profile_photo),
     certificate_of_incorporation: previewGenerator(data?.certificate_of_incorporation),

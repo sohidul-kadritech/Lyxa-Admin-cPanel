@@ -41,13 +41,15 @@ function AddSeller({
   loading,
   setLoading,
   name = '',
+  sellerType = '',
 }) {
+  console.log({ sellerType });
   const { currentUser, general } = useGlobalContext();
   const { adminType } = currentUser;
   const currency = general?.currency?.symbol;
 
   const [newSellerData, setNewSellerData] = useState({});
-  const [selectedAddress, setSelectedAddress] = useState(sellerData?.addressSeller?.address);
+  const [selectedAddress, setSelectedAddress] = useState(sellerData?.sellerAddress?.address);
   const [render, setRender] = useState(false);
 
   // drop charge
@@ -56,7 +58,7 @@ function AddSeller({
   const globalChargeType = globalDropChargeQuery?.data?.data?.charge?.dropPercentageType;
 
   useEffect(() => {
-    if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, isEdit));
+    if (globalChargeType) setNewSellerData(getEditSellerData(sellerData, globalChargeType, sellerType, isEdit));
   }, [globalDropChargeQuery?.data]);
 
   const changeHandler = (e) => {
@@ -74,7 +76,8 @@ function AddSeller({
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+        // eslint-disable-next-line prettier/prettier
+      }),
     );
 
     setNewSellerData((prev) => ({
@@ -155,8 +158,6 @@ function AddSeller({
       </SidebarContainer>
     );
   }
-
-  console.log(newSellerData);
 
   return (
     <SidebarContainer
