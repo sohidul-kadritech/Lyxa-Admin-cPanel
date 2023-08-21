@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -32,6 +33,9 @@ function SellerList2() {
 
   // eslint-disable-next-line no-unused-vars
 
+  // eslint-disable-next-line no-unused-vars
+  const [isAppliedSingleSellerLink, setIsAppliedSingleSellerLink] = useState(false);
+
   const [searchKey, setSearchKey] = useState('');
 
   const [open, setOpen] = useState(false);
@@ -45,6 +49,8 @@ function SellerList2() {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const [isSelected, setIsSelected] = useState(false);
 
   const [currentSeller, setCurrentSeller] = useState({});
 
@@ -94,37 +100,46 @@ function SellerList2() {
     {
       onSuccess: (data) => {
         if (data.status) {
-          if (!routeMatch?.params?.sellerId) {
-            const updatedCurrentSeller = data?.data?.sellers.find((seller) => currentSeller?._id === seller?._id);
-            if (updatedCurrentSeller) {
-              setCurrentSeller(
-                // eslint-disable-next-line prettier/prettier
-                Object?.keys(currentSeller)?.length > 0 ? updatedCurrentSeller : data?.data?.sellers[0] || {},
-              );
-            } else {
-              setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.sellers[0] || {});
-            }
-          }
-        }
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
+          // @check current seller is selected or not when this page is loaded first time.
+          if (!isSelected) {
+            // @if selected pass this block
+            setIsSelected((prev) => {
+              // @check here we have selller id or not, which get from route params as sellerId.
+              // @If we have selller Id, then we find the this specific seller from all seller data as currentSeller.
+              // @If we have not seller Id, then we stored the first seller data as current seller
+              // @Stored current seller for both cases we stored current seller in seller variable.
+              const seller = routeMatch?.params?.sellerId
+                ? data?.data?.sellers.find((seller) => seller?._id === routeMatch?.params?.sellerId)
+                : data?.data?.sellers[0];
 
-  const getSingleSellersQuery = useQuery(
-    [API_URL.SINGLE_SELLER, { id: routeMatch?.params?.sellerId }],
-    () =>
-      AXIOS.get(API_URL.SINGLE_SELLER, {
-        params: {
-          id: routeMatch?.params?.sellerId,
-        },
-      }),
-    {
-      enabled: Boolean(routeMatch?.params?.sellerId),
-      onSuccess: (data) => {
-        if (data.status) {
-          if (routeMatch?.params?.sellerId) {
-            setCurrentSeller(Object?.keys(currentSeller)?.length > 0 ? currentSeller : data?.data?.seller);
+              // @Set current seller here
+              setCurrentSeller(seller);
+              /*  @When we stored current seller in first loaded page, we set isSelected state as true.
+              so next time it will not pass this block
+              */
+              return !prev;
+            });
+          } else {
+            // @if not selected pass this block
+            setCurrentSeller((prev) => {
+              /*
+              @For each query validation it will stored the updated seller data and stored them as current seller.
+              As a result we can get updated data, when we try to update seller information.
+              */
+
+              const updatedCurrentSeller = data?.data?.sellers.find((seller) => seller?._id === prev?._id);
+
+              // @Check current tab is 'all' or not, if it is all it stored current seller the udpated one.
+              if (currentTab === 'all') {
+                return updatedCurrentSeller;
+              }
+
+              /*
+              @Check current tab is matched with current seller type or not.
+              if it is matched then we stored udpated seller data otherwise we stored empty current seller data.
+              */
+              return currentSeller?.sellerType === currentTab ? updatedCurrentSeller : {};
+            });
           }
         }
       },
@@ -239,7 +254,7 @@ function SellerList2() {
       </Stack>
       <StyledTabs2 value={currentTab} options={tabsOptions} onChange={setCurrentTab} />
       {/* Sellers Main Section */}
-      {getAllSellersQuery?.isLoading || getSingleSellersQuery?.isLoading ? (
+      {getAllSellersQuery?.isLoading ? (
         <SellerPageSkeleton />
       ) : (
         <Box marginTop="42px" pb={12}>
@@ -259,7 +274,7 @@ function SellerList2() {
               {/* Sellers List --> left */}
               <Box>
                 <SellerList
-                  loading={getAllSellersQuery.isLoading || getSingleSellersQuery.isLoading}
+                  loading={getAllSellersQuery.isLoading}
                   data={getAllSellersQuery?.data?.data?.sellers}
                   currentSeller={currentSeller}
                   setCurrentSeller={setCurrentSeller}
@@ -299,6 +314,7 @@ function SellerList2() {
           setLoading={setLoading}
           addSellerQuery={isEdit ? editSellerQuery : addSellerQuery}
           sellerData={isEdit ? currentSeller : {}}
+          sellerType={currentTab === 'all' ? '' : currentTab}
         />
       </Drawer>
 

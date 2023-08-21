@@ -97,6 +97,14 @@ export default function ShopListTable({
       ),
     },
     {
+      id: 3,
+      headerName: 'BRAND',
+      field: 'shopBrand',
+      flex: 1.5,
+      sortable: false,
+      renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
+    },
+    {
       id: 4,
       sortable: false,
       headerName: 'ORDERS',

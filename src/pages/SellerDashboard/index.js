@@ -24,9 +24,9 @@ export default function SellerDashboard() {
           phone: seller?.phone_number,
           email: seller?.email,
           profile: seller?.profile_photo,
-          address: seller?.addressSeller?.address,
+          address: seller?.sellerAddress?.address,
           // eslint-disable-next-line max-len
-          addressLink: `https://maps.google.com/?q=${seller?.addressSeller?.latitude},${seller?.addressSeller?.longitude}`,
+          addressLink: `https://maps.google.com/?q=${seller?.sellerAddress?.latitude},${seller?.sellerAddress?.longitude}`,
           statusColor: seller?.status === 'active' ? statusColor.green : statusColor.yellow,
           statusTooltip: seller?.status,
         }}

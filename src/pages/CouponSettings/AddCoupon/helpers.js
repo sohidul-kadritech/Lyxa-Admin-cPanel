@@ -22,6 +22,7 @@ export const getCouponInit = (couponType) => ({
   couponUserLimit: 0,
   couponOrderLimit: 0,
   couponMinimumOrderValue: 0,
+  couponMaximumDiscountLimit: 0,
   couponInfluencer: couponType === 'custom_coupon' ? '' : undefined,
   couponUsers: [],
   couponShops: [],
@@ -44,6 +45,7 @@ export const checkedInit = {
   couponUserLimit: false,
   couponOrderLimit: false,
   couponMinimumOrderValue: false,
+  couponMaximumDiscountLimit: false,
 };
 
 export const validateCoupon = (coupon, couponType) => {
@@ -128,5 +130,6 @@ export const getEditCouponChecked = (editCoupon) => {
   if (editCoupon?.couponUserLimit > 0) checked.couponUserLimit = true;
   if (editCoupon?.couponOrderLimit > 0) checked.couponOrderLimit = true;
   if (editCoupon?.couponMinimumOrderValue > 0) checked.couponMinimumOrderValue = true;
+  if (editCoupon?.couponMaximumDiscountLimit > 0) checked.couponMaximumDiscountLimit = true;
   return checked;
 };

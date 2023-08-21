@@ -48,8 +48,6 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const Deals = useMemo(() => new ShopDeals(shop || {}), []);
   const routeMatch = useRouteMatch();
 
-  console.log('currentUser?.userType', currentUser?.userType, admin?.adminType);
-
   return (
     <Stack direction="row" gap="21px" pt={4.5}>
       <Box sx={{ position: 'relative' }}>

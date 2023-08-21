@@ -117,10 +117,10 @@ function SellerDetails() {
                       <InfoTwo name="Company" value={`${seller?.company_name}`} Icon={ApartmentOutlinedIcon} />
                       <InfoTwo name="Manager" value={`${seller?.name}`} Icon={PersonOutlineOutlinedIcon} />
                       <InfoTwo
-                        value={`${seller?.addressSeller?.address}`}
+                        value={`${seller?.sellerAddress?.address}`}
                         Icon={RoomOutlinedIcon}
                         mapLink={`
-                      ${MAP_URL}?z=10&t=m&q=loc:${seller?.addressSeller?.latitude}+${seller?.addressSeller?.longitude}`}
+                      ${MAP_URL}?z=10&t=m&q=loc:${seller?.sellerAddress?.latitude}+${seller?.sellerAddress?.longitude}`}
                         name="Location"
                       />
                       <InfoTwo name="Phone" value={seller?.phone_number} Icon={LocalPhoneOutlinedIcon} />

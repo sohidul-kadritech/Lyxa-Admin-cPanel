@@ -101,6 +101,15 @@ export const getFormatedDuration = (start, end) => {
   return durationArr.join(' ');
 };
 
+export const isCouponIsExpired = (coupon) => {
+  if (!coupon?.isCouponValid) {
+    return null;
+  }
+  const timeLeft = getFormatedDuration(moment(), coupon?.couponDuration?.end);
+
+  return timeLeft;
+};
+
 export const createCouponOverviewRows = (data = {}) => {
   const map = {
     customCouponsInfo: 'Custom Coupon',

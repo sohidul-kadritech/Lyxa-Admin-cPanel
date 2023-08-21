@@ -52,7 +52,7 @@ export default function RiderTransactions({ riderId, showFor }) {
     [
       Api.DELIVERY_TRX,
       {
-        deliveryBoyId: queryParams.deliveryBoyId,
+        deliveryBoyId: queryParams.deliveryBoyId || riderId,
         startDate: queryParams.startDate,
         endDate: queryParams.endDate,
       },
@@ -60,7 +60,7 @@ export default function RiderTransactions({ riderId, showFor }) {
     () =>
       AXIOS.get(Api.DELIVERY_TRX, {
         params: {
-          deliveryBoyId: queryParams.deliveryBoyId,
+          deliveryBoyId: queryParams.deliveryBoyId || riderId,
           startDate: queryParams.startDate,
           endDate: queryParams.endDate,
         },
@@ -71,7 +71,8 @@ export default function RiderTransactions({ riderId, showFor }) {
           setSummary(data?.data?.deliveryBoy[0]?.summary);
         }
       },
-    }
+      // eslint-disable-next-line prettier/prettier
+    },
   );
 
   useEffect(() => {
@@ -80,14 +81,17 @@ export default function RiderTransactions({ riderId, showFor }) {
   }, []);
 
   const query = useQuery(
-    [showForToApiMap[showFor]?.get, queryParams],
-    () => AXIOS.get(showForToApiMap[showFor]?.get, { params: queryParams }),
+    [showForToApiMap[showFor]?.get, { ...queryParams, deliveryBoyId: queryParams?.deliveryBoyId || riderId }],
+    () =>
+      AXIOS.get(showForToApiMap[showFor]?.get, {
+        params: { ...queryParams, deliveryBoyId: queryParams?.deliveryBoyId || riderId },
+      }),
     {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // on receive cash

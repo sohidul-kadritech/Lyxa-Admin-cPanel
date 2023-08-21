@@ -46,3 +46,29 @@ export const isVisibleOngoingPromotionItem = (type) => {
 
   return types[type];
 };
+
+// params?.type === 'featured'
+//                   ? `${marketingInfoQuery?.data?.data?.summary?.featuredSpentAmount || 0}/${
+//                       marketingInfoQuery?.data?.data?.summary?.featuredAmount || 0
+//                     }${currency?.symbol}`
+//                   : marketingInfoQuery?.data?.data?.summary?.totalPromotionItems || 0
+export const getDataForOngoingPromotionItem = (type, data, currency) => {
+  const totalSpentFeaturedAmount = data?.featuredSpentAmount;
+  const totalFeaturedAmount = data?.featuredAmount;
+
+  if (type === 'featured') {
+    return `${totalSpentFeaturedAmount || 0}/${totalFeaturedAmount || 0}${currency?.symbol}`;
+  }
+
+  return data?.totalPromotionItems;
+};
+
+export const getDurationFromMarketingHistory = (data) => {
+  const duration = moment(data?.end).endOf('day').diff(moment(data?.start).startOf('day'), 'days', true);
+  const ceiledDuration = Math.ceil(duration);
+  if (ceiledDuration < 2) {
+    return `${ceiledDuration} day`;
+  }
+
+  return `${ceiledDuration} days`;
+};

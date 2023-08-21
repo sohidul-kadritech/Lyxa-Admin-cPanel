@@ -2,10 +2,10 @@
 import { Box, Tab, Tabs } from '@mui/material';
 
 // project import
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import moment from 'moment';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import useQueryParams from '../../helpers/useQueryParams';
 import Flags from './Flags';
 import Orders from './Orders';
 
@@ -25,17 +25,28 @@ const orderFilterToTabValueMap = {
   scheduled: 5,
 };
 
+const defaultSearchParams = {
+  page: 1,
+  pageSize: 20,
+  sortBy: 'DESC',
+  startDate: moment().startOf('month').format('YYYY/MM/DD'),
+  endDate: moment().format('YYYY/MM/DD'),
+  searchKey: '',
+  orderType: 'all',
+  model: '',
+  type: 'ongoing',
+};
+
 export default function AdminOrders() {
-  const location = useLocation();
-  const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[location?.state?.type] || 0);
+  const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
 
   return (
     <Box pb={9}>
       <PageTop title="Orders" />
       <Tabs
-        value={currentTab}
+        value={orderFilterToTabValueMap[queryParams?.type]}
         onChange={(event, newValue) => {
-          setCurrentTab(newValue);
+          setQueryParams({ type: orderFilterToTabValueMap[newValue], page: 1 });
         }}
         sx={{
           '& .MuiTab-root': {
@@ -52,23 +63,23 @@ export default function AdminOrders() {
         <Tab label="Scheduled" />
       </Tabs>
       <Box>
-        <TabPanel index={0} value={currentTab} noPadding>
-          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        <TabPanel panelKey="ongoing" value={queryParams?.type} noPadding>
+          <Orders type="ongoing" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
-        <TabPanel index={1} value={currentTab} noPadding>
-          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        <TabPanel panelKey="delivered" value={queryParams?.type} noPadding>
+          <Orders type="delivered" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
-        <TabPanel index={2} value={currentTab} noPadding>
-          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        <TabPanel panelKey="cancelled" value={queryParams?.type} noPadding>
+          <Orders type="cancelled" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
-        <TabPanel index={3} value={currentTab} noPadding>
+        <TabPanel index="flags" value={queryParams?.type} noPadding>
           <Flags />
         </TabPanel>
-        <TabPanel index={4} value={currentTab} noPadding>
-          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        <TabPanel index="low-rating" value={queryParams?.type} noPadding>
+          <Orders type="low-rating" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
-        <TabPanel index={5} value={currentTab} noPadding>
-          <Orders type={orderFilterToTabValueMap[currentTab]} />
+        <TabPanel index="scheduled" value={queryParams?.type} noPadding>
+          <Orders type="scheduled" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
       </Box>
     </Box>
