@@ -1,11 +1,12 @@
 // project import
 import { Chip, Stack, Typography } from '@mui/material';
-import moment from 'moment';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import TablePagination from '../../../components/Common/TablePagination';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context';
+import { getDurationFromMarketingHistory } from '../Dashbaord/helpers';
 import { getHistoryMarketingStatus } from '../helpers';
 
 const dealTypeToLabelMap = {
@@ -32,6 +33,12 @@ const colorMap = {
 };
 
 export default function MarketingHistoryTable({ rows = [], loading, page, setPage, totalPage }) {
+  const { general } = useGlobalContext();
+
+  const { currency } = general;
+
+  console.log('currency', currency);
+
   const columns = [
     {
       id: 1,
@@ -45,41 +52,44 @@ export default function MarketingHistoryTable({ rows = [], loading, page, setPag
     },
     {
       id: 2,
-      headerName: `DURATION`,
+      headerName: `DURATION (Days)`,
       sortable: false,
       field: 'duration',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => (
-        <Typography variant="body4">
-          {Math.ceil(moment(value?.end).endOf('day').diff(moment(value?.start).startOf('day'), 'days', true))}
-        </Typography>
-      ),
+      renderCell: ({ value }) => <Typography variant="body4">{getDurationFromMarketingHistory(value)}</Typography>,
     },
     {
       id: 3,
-      headerName: `SPENDING LIMIT`,
+      headerName: `SPENDING LIMIT (${currency?.symbol})`,
       sortable: false,
       field: 'spendLimit',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value ? value?.toFixed(2) : '_'}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">{value ? `${currency?.symbol}${value?.toFixed(2)}` : '_'}</Typography>
+      ),
     },
     {
       id: 4,
-      headerName: `AMOUNT SPENT`,
+      headerName: `AMOUNT SPENT (${currency?.symbol})`,
       sortable: false,
       field: 'amountSpent',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{(value || 0)?.toFixed(2)}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">
+          {currency?.symbol}
+          {(value || 0)?.toFixed(2)}
+        </Typography>
+      ),
     },
     {
       id: 5,
-      headerName: `DATE`,
+      headerName: `CREATED DATE`,
       sortable: false,
       field: 'createdAt',
       flex: 1,

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { ArrowDownward, ArrowForward } from '@mui/icons-material';
 import { Box, Button, Tab, Tabs } from '@mui/material';
@@ -23,20 +24,30 @@ import {
   validateShopFeatures,
 } from './helper';
 
+const getTabMax = (isEditShop, shopReceivePaymentBy) => {
+  if (isEditShop && shopReceivePaymentBy === 'cash') return 0;
+  if (isEditShop || shopReceivePaymentBy === 'cash') return 1;
+  return 2;
+};
+
 export default function AddShop({ onClose, editShop, seller: customSeller, refetch = () => {} }) {
   console.log('shop', editShop);
 
   const queryClient = useQueryClient();
 
   const { currentUser } = useGlobalContext();
+
   const { seller: currentSeller, adminType } = currentUser;
 
   const [seller] = useState(customSeller?._id ? customSeller : currentSeller);
+
   const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
 
   const [loading, setLoading] = useState(false);
+
   const [currentTab, setCurrentTab] = useState(0);
-  const tabMax = editShop?._id ? 1 : 2;
+
+  const tabMax = getTabMax(editShop?._id, shop?.shopReceivePaymentBy);
 
   const onChangeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -52,7 +63,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+      }),
     );
     setShop((prev) => ({
       ...prev,
@@ -73,6 +84,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
           if (editShop?._id) updateShopData(editShop, data?.data?.shop);
           else queryClient.invalidateQueries([Api.ALL_SHOP]);
 
+          queryClient.invalidateQueries([Api.SHOP_BRANDS]);
+
           onClose();
           refetch();
         }
@@ -82,7 +95,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         console.log(error);
         setLoading(false);
       },
-    }
+    },
   );
 
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES], () =>
@@ -93,7 +106,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
         shopType: seller?.sellerType,
         status: 'active',
       },
-    })
+    }),
   );
 
   const onSubmitShop = async () => {
@@ -138,6 +151,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     setCurrentTab((prev) => prev + 1);
   };
 
+  console.log({ shop });
+
   return (
     <SidebarContainer title={`${editShop?._id ? 'Edit' : 'Add'} Shop`} onClose={onClose}>
       <Box
@@ -175,12 +190,18 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
               }}
             />
           )}
-          <Tab label="Banking" />
+          {shop?.shopReceivePaymentBy !== 'cash' && <Tab label="Banking" />}
         </Tabs>
       </Box>
       <Box>
         <TabPanel index={0} value={currentTab} noPadding>
-          <ShopDetails setShop={setShop} shop={shop} onChange={onChangeHandler} onDrop={onDrop} />
+          <ShopDetails
+            setShop={setShop}
+            shop={shop}
+            onChange={onChangeHandler}
+            onDrop={onDrop}
+            isEditShop={editShop?._id}
+          />
         </TabPanel>
         {!editShop?._id && (
           <TabPanel index={1} value={currentTab} noPadding>
@@ -193,9 +214,11 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
             />
           </TabPanel>
         )}
-        <TabPanel index={tabMax} value={currentTab} noPadding>
-          <ShopBanking shop={shop} onChange={onChangeHandler} />
-        </TabPanel>
+        {shop?.shopReceivePaymentBy !== 'cash' && (
+          <TabPanel index={tabMax} value={currentTab} noPadding>
+            <ShopBanking shop={shop} onChange={onChangeHandler} />
+          </TabPanel>
+        )}
       </Box>
       <Box sx={{ pt: 7, pb: 5 }}>
         <Button

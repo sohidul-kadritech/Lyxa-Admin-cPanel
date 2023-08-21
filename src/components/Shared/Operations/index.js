@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 // third party
@@ -28,7 +29,7 @@ function ListItem({ label, value }) {
   );
 }
 
-function CardTitle({ title, tooltip }) {
+export function CardTitle({ title, tooltip }) {
   return (
     <Stack direction="row" alignItems="center" gap={2}>
       <Typography variant="body1" fontWeight={600}>
@@ -58,7 +59,7 @@ export default function Operations({ viewUserType = 'shop' }) {
   const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
       params: queryParams,
-    })
+    }),
   );
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -41,6 +42,11 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const onSubmit = () => {
     if (payment?.amount > amount) {
       successMsg('Amount is greater than remaining amount', 'error');
+      return;
+    }
+
+    if (type === 'rider' && payment?.amount <= 0) {
+      successMsg('Amount should be greater than zero!', 'error');
       return;
     }
 
@@ -125,7 +131,7 @@ function ListItem({ label, value, isTotal }) {
         {isSecondaryCurrencyEnabled
           ? // with secondary currency
             `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
-              value * adminExchangeRate
+              value * adminExchangeRate,
             )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
           : // without secondary currency
             `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}

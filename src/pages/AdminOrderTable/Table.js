@@ -16,7 +16,6 @@ import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
-// import OrderCancel from '../NewOrder/OrderCancel';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
 import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
 import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
@@ -338,7 +337,7 @@ export default function Table({
         />
       </Box>
       <TablePagination
-        currentPage={queryParams?.page}
+        currentPage={Number(queryParams?.page)}
         lisener={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
@@ -397,12 +396,6 @@ export default function Table({
       >
         <Box>
           <OrderCancel order={currentOrder} onClose={() => setOpenCancelModal(false)} />
-          {/* <OrderCancel
-            currentOrder={currentOrder}
-            setOpenCancelModal={() => setOpenCancelModal(false)}
-            order={currentOrder}
-            onClose={() => setOpenCancelModal(false)}
-          /> */}
         </Box>
       </Modal>
       {/* rerfund order */}

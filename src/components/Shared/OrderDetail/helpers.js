@@ -116,16 +116,25 @@ export function SummaryItem({
           },
         }}
       >
+        {/* string value */}
         {typeof value === 'string' && value}
 
+        {/* not base value */}
         {typeof value !== 'string' &&
           showBaseOnly &&
           `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value || 0).toFixed(decimalPrecision)}`}
 
+        {/* base and secondary both */}
         {typeof value !== 'string' &&
           !showBaseOnly &&
           `
-          ${hideSecondary ? '' : `${isNegative ? '-' : ''}${secondaryCurrency} ${Math.round(valueSecondary)} ~ `}
+          ${
+            hideSecondary
+              ? ''
+              : `${isNegative || valueSecondary < 0 ? '-' : ''}${secondaryCurrency} ${Math.round(
+                  Math.abs(valueSecondary)
+                )} ~ `
+          }
           ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
       </Typography>
     </Stack>

@@ -52,6 +52,7 @@ export default function RiderProfile() {
   const params = useParams();
 
   const queryClient = useQueryClient();
+
   const [rider, setRider] = useState(location?.state?.rider);
 
   const query = useQuery(
@@ -63,9 +64,9 @@ export default function RiderProfile() {
         },
       }),
     {
-      enabled: params?.riderId !== location?.state?.rider?._id,
       onSuccess: (data) => {
         if (data?.status) {
+          console.log('rider data on success', data?.data?.delivery);
           setRider(data?.data?.delivery);
         }
       },
@@ -155,6 +156,7 @@ export default function RiderProfile() {
           editRider={rider}
           onClose={() => setOpen(false)}
           onUpdateSuccess={(data) => {
+            console.log('rider data on update', data);
             setRider(data?.data?.delivery);
             queryClient.invalidateQueries(Api.SINGLE_DELIVERY_MAN);
           }}

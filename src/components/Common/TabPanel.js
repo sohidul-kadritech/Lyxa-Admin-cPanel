@@ -12,8 +12,11 @@ const noPaddingSx = {
   paddingBottom: 0,
 };
 
-export default function TabPanel({ value, index, noPadding, children, ...props }) {
-  if (value !== index) {
+export default function TabPanel({ value, panelKey, index, noPadding, children, ...props }) {
+  const key = panelKey || index;
+
+  // key / index are same
+  if (key !== value) {
     return null;
   }
 

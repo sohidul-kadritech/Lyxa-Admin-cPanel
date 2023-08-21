@@ -9,7 +9,7 @@ const getDeliveryFee = (selectedShop) => {
     selectedShop?.marketings?.length > 0
       ? selectedShop?.marketings?.find(
           // eslint-disable-next-line prettier/prettier
-          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive
+          (marketing) => marketing.type === 'free_delivery' && marketing.status === 'active' && marketing.isActive,
         )
       : null;
   if (selectedShop.haveOwnDeliveryBoy && !isFreeDelivery) {
@@ -110,6 +110,13 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
               {selectedShop?.shopName}
             </Typography>
           </ShopInfo>
+          {selectedShop?.shopBrand && (
+            <ShopInfo title="Shop Brand" sx={{ textTransform: 'capitalize' }} theme={theme}>
+              <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                {selectedShop?.shopBrand}
+              </Typography>
+            </ShopInfo>
+          )}
           <ShopInfo title="Shop Manager" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
               {selectedShop?.name}
@@ -221,50 +228,54 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
           <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <OpeningHours normalHours={selectedShop?.normalHours} />
           </ShopInfo>
-          <Box sx={{ marginBottom: '16px' }}>
-            <Typography variant="h4" sx={{ textTransform: 'capitalize', fontSize: '16px', fontWeight: '600' }}>
-              Banking
-            </Typography>
-          </Box>
-          <ShopInfo title="Bank Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.bank_name}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo
-            title="Account holder's full name/name of the enterprise"
-            sx={{ textTransform: 'capitalize' }}
-            theme={theme}
-          >
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.account_name}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.bank_address}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.bank_postal_code}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="IBAN" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.account_number}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="SWIFT" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.account_swift}
-            </Typography>
-          </ShopInfo>
-          <ShopInfo title="Payout Frequency" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {selectedShop?.payout_frequency}
-            </Typography>
-          </ShopInfo>
+          {selectedShop?.shopReceivePaymentBy === 'bank' && (
+            <Box>
+              <Box sx={{ marginBottom: '16px' }}>
+                <Typography variant="h4" sx={{ textTransform: 'capitalize', fontSize: '16px', fontWeight: '600' }}>
+                  Banking
+                </Typography>
+              </Box>
+              <ShopInfo title="Bank Name" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.bank_name}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo
+                title="Account holder's full name/name of the enterprise"
+                sx={{ textTransform: 'capitalize' }}
+                theme={theme}
+              >
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.account_name}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.bank_address}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo title="Postal Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.bank_postal_code}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo title="IBAN" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.account_number}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo title="SWIFT" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.account_swift}
+                </Typography>
+              </ShopInfo>
+              <ShopInfo title="Payout Frequency" sx={{ textTransform: 'capitalize' }} theme={theme}>
+                <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
+                  {selectedShop?.payout_frequency}
+                </Typography>
+              </ShopInfo>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

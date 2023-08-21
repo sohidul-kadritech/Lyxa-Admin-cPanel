@@ -1,4 +1,4 @@
-import { Email } from '@mui/icons-material';
+import { Email, Public } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -56,6 +56,7 @@ export default function RiderDetails({ rider }) {
       />
       <ProfileSidebarInfo label="Mobile Number" value={rider?.number} icon={Phone} />
       <ProfileSidebarInfo label="Location" value={rider?.address} icon={Loacation} />
+      <ProfileSidebarInfo label="Nationality" value={rider?.deliveryBoyNationality} icon={Public} />
       <ProfileSidebarInfo label="Vehicle Type" value={rider?.vehicleType} icon={VehicleType} />
       <ProfileSidebarInfo label="Vehicle Number" value={rider?.vehicleNumber} icon={VehicleNumber} />
       <ProfileSidebarInfo label="Area Covered" value={rider?.zone?.zoneName} icon={AreaCovered} />

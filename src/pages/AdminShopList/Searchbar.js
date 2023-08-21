@@ -71,7 +71,10 @@ const profitSortOptions = [
 const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
-  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: 'all' }]);
+  const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: '' }]);
+  console.log('queryParams?.shopBrand', queryParams?.shopBrand);
+  // eslint-disable-next-line no-unused-vars
+  const [shopBrands, setShopBrands] = useState([{ brandName: 'All', shopBrand: '' }]);
   // eslint-disable-next-line no-unused-vars
   const zonesQuery = useQuery([Api.GET_ALL_ZONE], () => AXIOS.get(Api.GET_ALL_ZONE), {
     onSuccess: (data) => {
@@ -82,6 +85,18 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       }
     },
   });
+
+  // eslint-disable-next-line no-unused-vars
+  const shopBrandsQuery = useQuery([Api.SHOP_BRANDS], () => AXIOS.get(Api.SHOP_BRANDS), {
+    onSuccess: (data) => {
+      if (data.status) {
+        const brands = data?.data?.shopBrands.map((brand) => ({ brandName: brand, shopBrand: brand }));
+
+        setShopBrands([{ brandName: 'All', shopBrand: '' }, ...brands]);
+      }
+    },
+  });
+
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
@@ -176,13 +191,29 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         inputProps={{
           name: 'zoneId',
           size: 'sm',
-          placeholder: 'Select Zone',
+          placeholder: 'Sort by Zone',
           value: queryParams.zoneId,
           items: zoneItems || [],
           getLabel: (option) => option?.zoneName,
           getValue: (option) => option?._id,
           getDisplayValue: (currentValue) => zoneItems?.find((zone) => zone?._id === currentValue)?.zoneName,
           onChange: (e) => commonChangeHandler('zoneId', e.target.value),
+        }}
+      />
+
+      <StyledFormField
+        intputType="select"
+        tooltip="Sort by Brand"
+        inputProps={{
+          name: 'shopBrand',
+          size: 'sm',
+          placeholder: 'Sort by Brand',
+          value: queryParams?.shopBrand,
+          items: shopBrands || [],
+          getLabel: (option) => option?.brandName,
+          getValue: (option) => option?.shopBrand,
+          getDisplayValue: (currentValue) => shopBrands?.find((brand) => brand?.shopBrand === currentValue)?.brandName,
+          onChange: (e) => commonChangeHandler('shopBrand', e.target.value),
         }}
       />
     </Stack>
