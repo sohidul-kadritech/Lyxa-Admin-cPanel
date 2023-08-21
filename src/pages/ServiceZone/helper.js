@@ -166,7 +166,7 @@ export const createDataForTable = async (data) => {
         zoneGeometry,
       };
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
   return col;
 };
@@ -201,4 +201,17 @@ export const getMarkerLabel = (data) => {
   if (data?.shopName) return data?.shopName;
 
   return data.name;
+};
+
+export const addressInit = {
+  address: '',
+  latitude: '',
+  longitude: '',
+  city: '',
+  state: '',
+  country: '',
+  placeId: '',
+  pin: '',
+  primary: true,
+  note: '',
 };
