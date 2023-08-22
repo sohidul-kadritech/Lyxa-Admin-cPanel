@@ -167,7 +167,7 @@ export default function Overview({ viewUserType }) {
       </InfoCard>
       <PayoutDetails paymentDetails={query?.data?.data?.summary} />
       <Grid xs={12}>
-        <PayoutDetailsTable rows={[]} />
+        <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
       </Grid>
     </Grid>
   );

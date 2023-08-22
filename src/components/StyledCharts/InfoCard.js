@@ -8,7 +8,6 @@ import {
   Unstable_Grid2 as Grid,
   Stack,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import StyledBox from './StyledBox';
@@ -24,8 +23,6 @@ const dropdownProps = {
 
 export default function InfoCard({ value, title, Tag, isDropdown, children, valueSx, ...props }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const theme = useTheme();
   return (
     <Grid {...props}>
       <Box
