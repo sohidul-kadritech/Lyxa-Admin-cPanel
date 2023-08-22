@@ -136,7 +136,7 @@ function ShopSettings() {
       shopAcceptedCurrency,
       shopExchangeRate,
       // eslint-disable-next-line prettier/prettier
-      newCusines,
+      newCusines
     );
 
     if (rateofShop?.shopExchangeRate < rateofShop?.baseExchangeRate) {
@@ -249,13 +249,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data],
+    [tagsQuery?.data]
   );
 
   return (
@@ -450,14 +450,14 @@ function ShopSettings() {
                 paddingTop: '21px',
               }}
             >
-              <Typography sx={TypoSx}>Max Discount Per Item </Typography>
+              <Typography sx={TypoSx}>Max Discount Per Item (Marketing) </Typography>
               <Box
                 sx={{
                   marginTop: '15px',
                 }}
               >
                 <IncrementDecrementInput
-                  endAdornment="%"
+                  endAdornment={currency?.symbol}
                   min={0}
                   // max={100}
                   step={5}

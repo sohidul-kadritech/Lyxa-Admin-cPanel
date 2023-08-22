@@ -154,7 +154,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   // reset data
   const populateData = () => {
@@ -183,7 +183,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type,
+        type
       ) &&
       type === 'text'
     ) {
@@ -223,7 +223,7 @@ function Appsettings2() {
     const updatedUnits = separatesUpdatedData(
       oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name),
+      units?.map((unit) => unit.name)
     );
 
     console.log('', updatedUnits);
@@ -338,7 +338,7 @@ function Appsettings2() {
             {/* Settings for maximum discount for lyxa */}
             <SettingsWithIncrementDecrementButton
               endAdornment={newAppSettings?.baseCurrency?.symbol}
-              title={`Maximum Discount Per Item for Lyxa (${newAppSettings?.baseCurrency?.symbol})`}
+              title="Maximum Discount Per Item for Lyxa (Marketing)"
               objectKey="maxDiscount"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}

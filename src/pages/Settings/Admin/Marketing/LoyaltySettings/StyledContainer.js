@@ -26,8 +26,8 @@ export default function StyledBox({ title, children, placement, ...props }) {
           fontWeight={600}
           pb={1.5}
           sx={{
-            maxWidth: '370px',
-            width: '370px',
+            maxWidth: '380px',
+            width: '380px',
             minHeight: '34px',
           }}
         >
