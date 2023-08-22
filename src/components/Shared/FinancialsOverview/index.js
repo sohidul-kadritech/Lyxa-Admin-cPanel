@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
@@ -57,12 +58,12 @@ export default function Overview({ viewUserType }) {
           endDate: paymentDetailsRange.end,
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-      })
+      }),
   );
 
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
-    [query?.data, marketingSpentType]
+    [query?.data, marketingSpentType],
   );
 
   return (

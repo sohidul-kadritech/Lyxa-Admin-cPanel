@@ -49,9 +49,9 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
     setFilteredReviews(searchReviews(reviews, queryParams));
   }, [queryParams]);
 
-  useEffect(() => {
-    setQueryParams(getQueryParamsInit());
-  }, [reviews]);
+  // useEffect(() => {
+  //   setQueryParams(getQueryParamsInit());
+  // }, [reviews]);
 
   return (
     <Box>

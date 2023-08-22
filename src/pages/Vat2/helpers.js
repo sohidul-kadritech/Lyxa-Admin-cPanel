@@ -1,6 +1,10 @@
 import moment from 'moment';
 
-export const calculatePaidVat = (total, unpaid) => total - unpaid;
+export const calculatePaidVat = (total, unpaid) => {
+  const paidVat = total - unpaid;
+  const result = (paidVat || 0).toFixed(2);
+  return result;
+};
 
 // eslint-disable-next-line prettier/prettier
 export const getAllAdminOptions = (admin) => {
