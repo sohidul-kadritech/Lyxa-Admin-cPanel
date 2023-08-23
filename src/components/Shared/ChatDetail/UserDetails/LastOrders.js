@@ -1,5 +1,4 @@
 import { Stack } from '@mui/material';
-import moment from 'moment';
 import { React, useState } from 'react';
 import { useQuery } from 'react-query';
 import * as Api from '../../../../network/Api';
@@ -11,8 +10,6 @@ const queryParamsInit = (userId) => ({
   page: 1,
   pageSize: 5,
   sortBy: 'DESC',
-  startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  endDate: moment().format('YYYY-MM-DD'),
   orderType: 'all',
   model: '',
   user: userId,

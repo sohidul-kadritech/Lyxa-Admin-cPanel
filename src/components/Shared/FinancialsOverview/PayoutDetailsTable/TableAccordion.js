@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import StyledAccordion from '../../../Styled/StyledAccordion';
 
-export default function TableAccordion({ title, children }) {
+export default function TableAccordion({ title, titleComponent, children }) {
   return (
     <StyledAccordion
       sx={{
@@ -17,11 +17,13 @@ export default function TableAccordion({ title, children }) {
 
         '&.Mui-expanded': {
           border: '1px solid #e8e7e7',
+          zIndex: 9,
         },
 
         '& .MuiAccordionDetails-root': {
           position: 'relative',
           zIndex: 999,
+          padding: 0,
         },
 
         '& .MuiAccordionSummary-root': {
@@ -33,7 +35,7 @@ export default function TableAccordion({ title, children }) {
           height: '100%',
         },
       }}
-      Title={<Typography variant="body4">{(title || 0)?.toFixed(2)}</Typography>}
+      Title={titleComponent || <Typography variant="body4">{(title || 0)?.toFixed(2)}</Typography>}
     >
       {children}
     </StyledAccordion>

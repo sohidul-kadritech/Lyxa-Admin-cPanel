@@ -13,6 +13,13 @@ export default function PayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
+
+  const totalProfit = paymentDetails?.secondaryCurrency_Profit
+    ? `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)} 
+      (${currency} ${(paymentDetails?.baseCurrency_Profit || 0).toFixed(2)} + 
+      ${secondaryCurrency} ${Math.round(paymentDetails?.secondaryCurrency_Profit || 0)})`
+    : `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`;
 
   return (
     <Grid xs={12}>
@@ -226,7 +233,7 @@ export default function PayoutDetails({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={`${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`}
+            titleAmount={totalProfit}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%.
             VAT inclusive"
