@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
@@ -15,21 +16,21 @@ const generateData = (data, marketingSpentType = '') => {
     all: {
       discount: 'totalDiscount',
       points: 'totalRewardAmount',
-      doubleDeal: 'totalDoubleMenuItemPrice',
+      doubleDeal: 'totalDoubleMenuCut',
       freeDelivery: 'totalFreeDelivery',
       featureAmount: 'totalFeaturedAmount',
     },
     shop: {
       discount: 'totalShopDiscount',
       points: 'totalShopRewardAmount',
-      doubleDeal: 'totalShopDoubleMenuItemPrice',
+      doubleDeal: 'totalShopDoubleMenuCut',
       freeDelivery: 'freeDeliveryShopCut',
       featureAmount: 'totalFeaturedAmount',
     },
     admin: {
       discount: 'totalAdminDiscount',
       points: 'totalAdminRewardAmount',
-      doubleDeal: 'totalAdminDoubleMenuItemPrice',
+      doubleDeal: 'totalAdminDoubleMenuCut',
       freeDelivery: 'freeDeliveryDropCut',
     },
   };
@@ -40,6 +41,8 @@ const generateData = (data, marketingSpentType = '') => {
   const freeDelivery = [];
   const featureAmount = [];
   const date = [];
+
+  console.log('marketing data', data);
 
   data?.forEach((node) => {
     const dprop = typeNameMap[marketingSpentType]?.discount;
@@ -74,12 +77,12 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   const marketingSpentQuery = useQuery([Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
       params: queryParams,
-    })
+    }),
   );
 
   const chartdata = useMemo(
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
-    [marketingSpentType, marketingSpentQuery?.data]
+    [marketingSpentType, marketingSpentQuery?.data],
   );
 
   console.log('chartdata', marketingSpentQuery?.data);

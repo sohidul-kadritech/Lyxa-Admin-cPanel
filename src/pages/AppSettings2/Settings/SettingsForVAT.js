@@ -3,10 +3,11 @@ import StyledBox from '../../Settings/Admin/Marketing/LoyaltySettings/StyledCont
 import IncrementDecrementButton from '../IncrementDecrementButton';
 import { decrementByOneHandler, incrementByOneHandler } from '../helpers';
 
-function SettingsForVAT({ newAppSettings, setNewAppSettings, setHasChanged }) {
+function SettingsForVAT({ newAppSettings, setNewAppSettings, setHasChanged, endAdornment }) {
   return (
     <StyledBox title="VAT (Percentage)">
       <IncrementDecrementButton
+        endAdornment={endAdornment}
         isChangeOthers
         changeOthers={() => {
           setHasChanged(true);

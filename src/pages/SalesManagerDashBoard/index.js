@@ -59,7 +59,7 @@ function SalesManagerDashBoard() {
           <Orders />
         </Grid>
         <Grid item xs={12} md={6}>
-          <SellersChart viewUserType="sales" />
+          <SellersChart viewUserType="normal" />
         </Grid>
       </Grid>
       <Box pt={7.5}>

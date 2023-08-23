@@ -3,23 +3,16 @@ import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 
+import DetailsAccordion from '../../../components/Shared/FinancialsOverview/DetailsAccordion';
+import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import { CommonOrderAmountTooltipText } from '../../../components/Shared/FinancialsOverview/helpers';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
-import StyledBox from '../../StyledCharts/StyledBox';
-import DetailsAccordion from './DetailsAccordion';
-import PriceItem from './PriceItem';
-import { CommonOrderAmountTooltipText } from './helpers';
 
 export default function PayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
-
-  const totalProfit = paymentDetails?.secondaryCurrency_Profit
-    ? `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)} 
-      (${currency} ${(paymentDetails?.baseCurrency_Profit || 0).toFixed(2)} + 
-      ${secondaryCurrency} ${Math.round(paymentDetails?.secondaryCurrency_Profit || 0)})`
-    : `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`;
 
   return (
     <Grid xs={12}>
@@ -39,7 +32,7 @@ export default function PayoutDetails({ paymentDetails }) {
         <Box pt={2.5}>
           {/* order amount */}
           <DetailsAccordion
-            title="Order Amount"
+            title="Delivery Fee"
             tooltip="The fees you earn depend on how your customer order and receive their order. 
             VAT inclusivea"
             titleAmount={
@@ -206,11 +199,7 @@ export default function PayoutDetails({ paymentDetails }) {
               )}
 
               {paymentDetails?.orderValue?.riderTipOnline > 0 && (
-                <PriceItem
-                  title="Rider tip"
-                  amount={paymentDetails?.orderValue?.riderTipOnline}
-                  amountStatus="secondary"
-                />
+                <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.riderTipOnline} />
               )}
             </DetailsAccordion>
           )}
@@ -233,7 +222,7 @@ export default function PayoutDetails({ paymentDetails }) {
           {/* total payout */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={totalProfit}
+            titleAmount={`${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%.
             VAT inclusive"

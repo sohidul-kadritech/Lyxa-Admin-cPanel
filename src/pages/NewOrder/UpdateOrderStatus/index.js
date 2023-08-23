@@ -4,92 +4,14 @@ import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
-import CloseButton from '../../components/Common/CloseButton';
-import LoadingOverlay from '../../components/Common/LoadingOverlay';
-import { StyledSelect } from '../../components/Filter/FilterSelect';
-import StyledFormField from '../../components/Form/StyledFormField';
-import { successMsg } from '../../helpers/successMsg';
-import * as Api from '../../network/Api';
-import AXIOS from '../../network/axios';
-
-const options = {
-  placed: {
-    label: 'Placed',
-    position: 1,
-  },
-  accepted_delivery_boy: {
-    label: 'Assign rider',
-    position: 2,
-    isChangeDelivery: true,
-  },
-  preparing: {
-    label: 'Preparing',
-    position: 3,
-  },
-  ready_to_pickup: {
-    label: 'Ready to pickup',
-    position: 4,
-  },
-  order_on_the_way: {
-    label: 'On the way',
-    position: 5,
-  },
-  delivered: {
-    label: 'Delivered',
-    position: 6,
-  },
-};
-
-const validate = (currentStatus, currentOrderDelivery, currentOrder) => {
-  if (currentStatus === '') {
-    successMsg('Please select status');
-    return false;
-  }
-
-  if (currentStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
-    successMsg('Please select rider');
-    return false;
-  }
-
-  if (
-    (currentStatus === 'delivered' || currentStatus === 'preparing') &&
-    !currentOrderDelivery?._id &&
-    !currentOrder?.shop?.haveOwnDeliveryBoy
-  ) {
-    successMsg(`Assign rider first`);
-    return false;
-  }
-
-  return true;
-};
-
-const updateOrderStatusOptions = (currentOrder) => {
-  let list = [];
-
-  Object.entries(options)?.forEach((opt) => {
-    list.push({
-      label: opt[1]?.label,
-      value: opt[0],
-      position: opt[1]?.position,
-    });
-  });
-
-  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
-    list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
-  }
-
-  if (currentOrder?.isButler) {
-    list = list.filter((opt) => opt.value !== 'preparing' && opt.value !== 'ready_to_pickup');
-  }
-
-  return list;
-};
-
-const getNextStatus = (order) => {
-  const items = updateOrderStatusOptions(order);
-  const currIdx = items?.findIndex((obj) => obj.value === order?.orderStatus);
-  return items[currIdx + 1]?.value;
-};
+import CloseButton from '../../../components/Common/CloseButton';
+import LoadingOverlay from '../../../components/Common/LoadingOverlay';
+import { StyledSelect } from '../../../components/Filter/FilterSelect';
+import StyledFormField from '../../../components/Form/StyledFormField';
+import { successMsg } from '../../../helpers/successMsg';
+import * as Api from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
 
 export default function UpdateOrderStatus({
   onClose,
@@ -104,9 +26,13 @@ export default function UpdateOrderStatus({
   const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || {});
   const [currentOrder, setCurrentOrder] = useState(order);
+  const [paidCurrency, setPaidCurrency] = useState('');
+  const [deliveryBoyList, setDeliveryBoyList] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [showDelivery, setShowDelivery] = useState(false);
 
+  // delivery boy
   const getNearByDeliveryBoys = () => {
     const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
     return AXIOS.get(API, {
@@ -116,20 +42,39 @@ export default function UpdateOrderStatus({
     });
   };
 
-  const nearByDeliveryBoysQuery = useQuery(
-    ['single-order-nearby-delivery-boys', { orderId: currentOrder?._id }],
-    getNearByDeliveryBoys,
+  console.log(order?.shop);
+
+  useQuery(['single-order-nearby-delivery-boys', { orderId: currentOrder?._id }], getNearByDeliveryBoys, {
+    cacheTime: 0,
+    staleTime: 0,
+    enabled: !order?.shop?.haveOwnDeliveryBoy,
+    onSuccess: (data) => {
+      if (!data?.status) {
+        successMsg(data?.message || 'Could not get delivery boys');
+      } else {
+        setDeliveryBoyList(data?.data?.nearByDeliveryBoys);
+      }
+    },
+    onError: (error) => {
+      console.log('api error: ', error);
+      successMsg(error?.message || 'Could not get delivery boys', 'error');
+    },
+  });
+
+  useQuery(
+    [Api.SHOP_ACTIVE_DELIVERY_BOYS],
+    () =>
+      AXIOS.get(Api.SHOP_ACTIVE_DELIVERY_BOYS, {
+        params: {
+          shopId: order?.shop?._id,
+        },
+      }),
     {
-      cacheTime: 0,
-      staleTime: 0,
+      enabled: order?.shop?.haveOwnDeliveryBoy,
       onSuccess: (data) => {
-        if (!data?.status) {
-          successMsg(data?.message || 'Could not get delivery boys');
+        if (data?.status) {
+          setDeliveryBoyList(data?.data?.deliveryBoys);
         }
-      },
-      onError: (error) => {
-        console.log('api error: ', error);
-        successMsg(error?.message || 'Could not get delivery boys', 'error');
       },
     }
   );
@@ -140,6 +85,7 @@ export default function UpdateOrderStatus({
 
     if (response.status) {
       queryClient.invalidateQueries(refetchApiKey);
+
       if (onUpdateSuccess) onUpdateSuccess(response);
 
       // emit socket
@@ -147,7 +93,6 @@ export default function UpdateOrderStatus({
         if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
           socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
         } else {
-          console.log('socket emited');
           socket?.emit('updateOrder', {
             orderId: payload.data?.orderId,
           });
@@ -177,12 +122,16 @@ export default function UpdateOrderStatus({
   );
 
   const updateStatus = () => {
-    if (!validate(currentStatus, currentOrderDelivery, currentOrder)) return;
+    if (!validate(currentStatus, currentOrderDelivery, currentOrder, paidCurrency)) return;
+
     const data = {};
     data.orderId = currentOrder?._id;
     data.orderStatus = currentStatus;
     data.deliveryBoy = currentOrderDelivery?._id;
     data.shop = currentOrder?.shop?._id;
+
+    // if not selected will be undefined
+    data.paidCurrency = paidCurrency || undefined;
 
     updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
@@ -204,8 +153,8 @@ export default function UpdateOrderStatus({
         </Typography>
         <CloseButton onClick={onClose} size="sm" />
       </Stack>
-      <Stack>
-        <Box flex={1} pb={3}>
+      <Stack gap={5}>
+        <Box flex={1}>
           <Typography
             pb={2}
             variant="h5"
@@ -266,9 +215,9 @@ export default function UpdateOrderStatus({
           >
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
-                console={console.log(item?.position, options[currentOrder?.orderStatus]?.position)}
-                disabled={item?.position <= options[currentOrder?.orderStatus]?.position}
-                className={item?.position === options[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
+                console={console.log(item?.position, statusOptions[currentOrder?.orderStatus]?.position)}
+                disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
+                className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
                 sx={{
@@ -294,7 +243,7 @@ export default function UpdateOrderStatus({
                         {index + 1}. {item?.label}{' '}
                         {currentOrderDelivery?._id ? `- (${currentOrderDelivery?.name})` : ''}
                       </span>
-                      {item?.position <= options[currentOrder?.orderStatus]?.position &&
+                      {item?.position <= statusOptions[currentOrder?.orderStatus]?.position &&
                         currentStatus !== 'accepted_delivery_boy' && (
                           <span
                             onClick={(e) => {
@@ -321,6 +270,8 @@ export default function UpdateOrderStatus({
             ))}
           </StyledSelect>
         </Box>
+
+        {/* delivery boy */}
         {(currentStatus === 'accepted_delivery_boy' || showDelivery) && (
           <Box flex={1}>
             <StyledFormField
@@ -336,7 +287,7 @@ export default function UpdateOrderStatus({
                   flex: 1,
                 },
                 maxHeight: '300px',
-                options: nearByDeliveryBoysQuery.data?.data?.nearByDeliveryBoys || [],
+                options: deliveryBoyList,
                 value: currentOrderDelivery,
                 isOptionEqualToValue: (option, value) => option?._id === value?._id,
                 onChange: (e, v) => {
@@ -354,13 +305,30 @@ export default function UpdateOrderStatus({
                     key={option._id}
                   >
                     <span> {option.name}</span>
-                    <span>{(option.shopDistance || 0).toFixed(3)} km</span>
+                    {/* not for self riders */}
+                    {!order?.shop?.haveOwnDeliveryBoy && <span>{(option.shopDistance || 0).toFixed(3)} km</span>}
                   </Stack>
                 ),
               }}
             />
           </Box>
         )}
+
+        {/* paid currency */}
+        {currentStatus === 'delivered' && (
+          <Box>
+            <StyledFormField
+              label="Paid Currency *"
+              intputType="select"
+              inputProps={{
+                value: paidCurrency,
+                items: paidCurrencyOptions,
+                onChange: (e) => setPaidCurrency(e.target.value),
+              }}
+            />
+          </Box>
+        )}
+
         <Box pt={5} textAlign="right">
           <Button
             color="primary"

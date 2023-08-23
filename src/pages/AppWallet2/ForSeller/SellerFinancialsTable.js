@@ -2,11 +2,12 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import TablePagination from '../../../components/Common/TablePagination';
+import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
 import { HeaderWithToolTips } from './helpers';
 
-function SellerFinancialsTable({ data = [], loading, currentPage, setPage, totalPage }) {
+function SellerFinancialsTable({ data = [], currentPage, setPage, totalPage, loading }) {
   const { general } = useGlobalContext();
   const routeMatch = useRouteMatch();
   const theme = useTheme();
@@ -21,6 +22,11 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
       search: `?sellerId=${sellerId}&companyName=${companyName}`,
     });
   };
+
+  if (loading) {
+    return <TableSkeleton rows={7} columns={['text', 'text', 'text', 'text', 'text', 'text', 'text']} />;
+  }
+
   const allColumns = [
     {
       id: 1,
@@ -213,7 +219,7 @@ function SellerFinancialsTable({ data = [], loading, currentPage, setPage, total
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
-                {loading ? 'Loading...' : 'No Transaction Found'}
+                No Transaction Found
               </Stack>
             ),
           }}

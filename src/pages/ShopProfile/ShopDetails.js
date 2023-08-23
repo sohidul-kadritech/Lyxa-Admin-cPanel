@@ -1,4 +1,4 @@
-import { AccessTimeFilled, Email, Loyalty } from '@mui/icons-material';
+import { AccessTimeFilled, Email, Loyalty, Star } from '@mui/icons-material';
 import HashIcon from '@mui/icons-material/Tag';
 import { Box, Stack } from '@mui/material';
 import { ReactComponent as AreaCovered } from '../../assets/icons/areaCovered.svg';
@@ -12,7 +12,7 @@ import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as TagIcon } from '../../assets/icons/tag2.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
-import { AverageOrderValue, OpeningHours, TagsAndCuisines } from './helper';
+import { AverageOrderValue, OpeningHours, ShopReviewDetails, TagsAndCuisines } from './helper';
 
 export default function ShopDetails({ shop }) {
   return (
@@ -61,12 +61,15 @@ export default function ShopDetails({ shop }) {
         icon={AverageIcon}
       />
       <ProfileSidebarInfo label="Status" value={shop?.shopStatus} icon={Warning} />
-      <Box sx={{ paddingBottom: '40px' }}>
+      <Box>
         <ProfileSidebarInfo
           label="Opening Hours"
           icon={AccessTimeFilled}
           valueComponent={<OpeningHours normalHours={shop?.normalHours} />}
         />
+      </Box>
+      <Box sx={{ paddingBottom: '40px' }}>
+        <ProfileSidebarInfo label="Reviews" icon={Star} valueComponent={<ShopReviewDetails shop={shop} />} />
       </Box>
     </Stack>
   );

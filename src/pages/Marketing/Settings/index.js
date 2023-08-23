@@ -33,6 +33,7 @@ import {
   getCurrentFeaturedWeekOption,
   getDateRange,
   getDurationLeft,
+  getRemainingSpendingLimit,
   itemSelectOptions,
 } from './helpers';
 
@@ -73,7 +74,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           status: 'active',
           shop: shop?._id,
           inStock: true,
-          hideAddons: marketingType === 'double_menu',
+          hideAddons: marketingType === 'double_menu' ? true : undefined,
         },
       }),
     {
@@ -95,15 +96,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setEntireMenu(false);
         }
       },
-    }
+    },
   );
 
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing?.type === marketingType
+        (p) => p.marketing === undefined || p?.marketing?.type === marketingType,
       ),
-    [productsQuery?.data]
+    [productsQuery?.data],
   );
 
   useEffect(() => {
@@ -121,7 +122,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       }),
     {
       enabled: marketingType === 'percentage',
-    }
+    },
   );
 
   // featured settinsg
@@ -130,7 +131,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       params: {
         featuredType: shop?.shopType,
       },
-    })
+    }),
   );
 
   const featuredSettingsOptions = useMemo(() => {
@@ -152,6 +153,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   const [dateRange, setDateRange] = useState(1);
   const [spendLimit, setSpendLimit] = useState('');
+  const [amountSpent, setAmountSpent] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
@@ -160,6 +162,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setProducts(data?.products);
     setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
+    setAmountSpent(data?.amountSpent);
     setItemSelectType(data?.itemSelectionType);
     setFeaturedDuration(data?.featuredAmount);
 
@@ -240,12 +243,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
           window.alert(
-            'Looks like something has changed in marketing since you came here. We will just reload the page'
+            'Looks like something has changed in marketing since you came here. We will just reload the page',
           );
           window.location.reload();
         }
       },
-    }
+    },
   );
 
   const selectionChangeConfirm = (value) => {
@@ -396,6 +399,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         marketingId: serverState?._id,
         shopId: shop?._id,
         creatorType,
+        marketingDeletedType: dateRange > 0 ? 'before_expired' : 'after_expired',
       }),
     {
       onSuccess: (data) => {
@@ -407,7 +411,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           onDelete();
         }
       },
-    }
+    },
   );
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
@@ -495,7 +499,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               {marketingType === 'percentage' &&
                 'Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes.'}
               {marketingType === 'double_menu' &&
-                "Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost"}
+                "Offer a 'buy one, get one free' promotion giving customers a chance to try new items without extra cost"}
               {marketingType === 'free_delivery' &&
                 'Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales.'}
               {marketingType === 'featured' &&
@@ -677,7 +681,16 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 Title={
                   <CommonTitle
                     title="Spend Limit"
-                    subTitle={currentExpanedTab === 2 ? 'Set your spending limit' : 'Pay per order'}
+                    subTitle={
+                      currentExpanedTab === 2
+                        ? 'Set your spending limit'
+                        : spendLimitChecked
+                        ? `Remaining spending limits: ${currency}${getRemainingSpendingLimit(
+                            spendLimit,
+                            amountSpent,
+                          )} /total orders`
+                        : 'Pay for total order'
+                    }
                   />
                 }
                 disabled={isPageDisabled}
@@ -750,7 +763,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     }}
                     InputProps={{
                       startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                      endAdornment: <InputAdornment position="end">/total</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">/total orders</InputAdornment>,
                     }}
                   />
                 </Stack>

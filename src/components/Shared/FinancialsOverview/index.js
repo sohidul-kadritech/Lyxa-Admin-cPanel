@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Button, Unstable_Grid2 as Grid, Stack } from '@mui/material';
+import { Button, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -27,7 +28,8 @@ export default function Overview({ viewUserType }) {
   const [marketingSpentType, setMarketingSpentType] = useState('all');
 
   const { shop, seller } = currentUser;
-  const currency = general?.currency;
+  const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
 
   const viewUserTypeToApiMap = {
     shop: {
@@ -65,8 +67,10 @@ export default function Overview({ viewUserType }) {
     [query?.data, marketingSpentType]
   );
 
+  const summary = query?.data?.data?.summary;
+
   return (
-    <Grid container spacing={7.5} pb={3} pt={7.5}>
+    <Grid container spacing={7.5} pb={7.5} pt={7.5}>
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
           <Button
@@ -93,7 +97,32 @@ export default function Overview({ viewUserType }) {
       </Grid>
       <InfoCard
         title="Total Profit"
-        value={`${currency?.symbol} ${(query?.data?.data?.summary?.totalProfit || 0).toFixed(2)}`}
+        valueComponent={
+          <Stack direction="row" alignItems="baseline" gap={2}>
+            <Typography
+              variant="h2"
+              sx={{
+                lineHeight: '24px',
+                fontSize: '40px',
+              }}
+            >
+              {currency} {(summary?.totalProfit || 0).toFixed(2)}
+            </Typography>
+
+            {summary?.secondaryCurrency_Profit ? (
+              <Typography
+                variant="inherit"
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                ({currency} {(summary?.baseCurrency_Profit || 0).toFixed(2)} + {secondaryCurrency}
+                {Math.round(summary?.secondaryCurrency_Profit || 0)})
+              </Typography>
+            ) : null}
+          </Stack>
+        }
         Tag={
           <IncreaseDecreaseTag
             status={`${
@@ -140,7 +169,7 @@ export default function Overview({ viewUserType }) {
           </Stack>
         }
         isDropdown
-        value={`${currency?.symbol} ${(marketingSpentValues?.sum || 0).toFixed(2)}`}
+        value={`${currency} ${(marketingSpentValues?.sum || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
             status={
@@ -167,7 +196,7 @@ export default function Overview({ viewUserType }) {
       </InfoCard>
       <PayoutDetails paymentDetails={query?.data?.data?.summary} />
       <Grid xs={12}>
-        <PayoutDetailsTable rows={[]} />
+        <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
       </Grid>
     </Grid>
   );

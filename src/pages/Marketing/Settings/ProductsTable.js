@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography } from '@mui/material';
@@ -42,7 +43,7 @@ export default function MarketingProductsTable({
 
   const groupedProductList = useMemo(
     () => Object.values(_.groupBy(productOptions || [], (product) => product?.category?.name)).flat(),
-    [productOptions]
+    [productOptions],
   );
 
   const allColumns = [
@@ -79,7 +80,7 @@ export default function MarketingProductsTable({
             disabled={isLoading || itemSelectType === 'multiple'}
             readOnly={isLoading || itemSelectType === 'multiple'}
             options={groupedProductList.filter(
-              (item) => !params?.row?.category?.name || item?.category?.name === params?.row?.category?.name
+              (item) => !params?.row?.category?.name || item?.category?.name === params?.row?.category?.name,
             )}
             isOptionEqualToValue={(option, value) => option?._id === value?._id}
             onChange={(event, newValue) => {
@@ -118,7 +119,7 @@ export default function MarketingProductsTable({
     },
     {
       id: 2,
-      headerName: `Point Percentage`,
+      headerName: `${marketingType === 'percentage' ? 'Discount' : 'Point'} Percentage`,
       showFor: ['reward', 'percentage'],
       sortable: false,
       field: 'rewardBundle',

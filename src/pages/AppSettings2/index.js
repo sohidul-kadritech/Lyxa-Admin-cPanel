@@ -154,7 +154,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
   // reset data
   const populateData = () => {
@@ -183,7 +183,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type,
+        type
       ) &&
       type === 'text'
     ) {
@@ -223,7 +223,7 @@ function Appsettings2() {
     const updatedUnits = separatesUpdatedData(
       oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name),
+      units?.map((unit) => unit.name)
     );
 
     console.log('', updatedUnits);
@@ -279,6 +279,7 @@ function Appsettings2() {
             {/* Settings for lyxa pay limit (customer service) */}
             <SettingsWithIncrementDecrementButton
               title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.baseCurrency?.symbol})`}
+              endAdornment={newAppSettings?.baseCurrency?.symbol}
               objectKey="maxCustomerServiceValue"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
@@ -292,6 +293,7 @@ function Appsettings2() {
             {/* Settings for VAT Percentage */}
 
             <SettingsForVAT
+              endAdornment="%"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}
@@ -308,6 +310,7 @@ function Appsettings2() {
             {/* Settings for Shop distance */}
             <SettingsWithIncrementDecrementButton
               title="Shop Distance (KM)"
+              endAdornment="KM"
               objectKey="nearByShopKm"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
@@ -321,6 +324,7 @@ function Appsettings2() {
             {/* settings for near shop distance in home screens */}
             <SettingsWithIncrementDecrementButton
               title="Near Shop Distance in Home Screen (KM)"
+              endAdornment="KM"
               objectKey="nearByShopKmForUserHomeScreen"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
@@ -333,7 +337,8 @@ function Appsettings2() {
 
             {/* Settings for maximum discount for lyxa */}
             <SettingsWithIncrementDecrementButton
-              title={`Maximum Discount for Lyxa (${newAppSettings?.baseCurrency?.symbol})`}
+              endAdornment={newAppSettings?.baseCurrency?.symbol}
+              title="Maximum Discount Per Item for Lyxa (Marketing)"
               objectKey="maxDiscount"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
