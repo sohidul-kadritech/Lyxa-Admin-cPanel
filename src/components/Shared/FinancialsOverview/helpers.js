@@ -19,6 +19,7 @@ export function calculateDateDifference(date1, date2, unit) {
 }
 
 export const getMarketingTypeValues = (marketingType, summary = {}) => {
+  console.log('summary', summary);
   const marketingSpentValues = {
     totalDiscount: 0,
     totalDoubleMenuItemPrice: 0,
@@ -28,9 +29,12 @@ export const getMarketingTypeValues = (marketingType, summary = {}) => {
     sum: 0,
   };
 
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const totalDoubleMenuCut = summary?.orderValue?.totalShopDoubleMenuCut + summary?.orderValue?.totalAdminDoubleMenuCut;
+
   if (marketingType === 'all') {
     marketingSpentValues.totalDiscount = summary?.orderValue?.totalDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalDoubleMenuItemPrice;
+    marketingSpentValues.totalDoubleMenuItemPrice = totalDoubleMenuCut;
     marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalRewardAmount;
     marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryCut;
     marketingSpentValues.totalFeaturedAmount = summary?.totalFeaturedAmount;
@@ -38,7 +42,7 @@ export const getMarketingTypeValues = (marketingType, summary = {}) => {
 
   if (marketingType === 'shop') {
     marketingSpentValues.totalDiscount = summary?.orderValue?.totalShopDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalShopDoubleMenuItemPrice;
+    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalShopDoubleMenuCut;
     marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalShopRewardAmount;
     marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryShopCut;
     marketingSpentValues.totalFeaturedAmount = summary?.totalFeaturedAmount;
@@ -46,7 +50,7 @@ export const getMarketingTypeValues = (marketingType, summary = {}) => {
 
   if (marketingType === 'admin') {
     marketingSpentValues.totalDiscount = summary?.orderValue?.totalAdminDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalAdminDoubleMenuItemPrice;
+    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalAdminDoubleMenuCut;
     marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalAdminRewardAmount;
     marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryDropCut;
   }

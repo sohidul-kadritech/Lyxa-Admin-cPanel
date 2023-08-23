@@ -2,6 +2,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { DateRangePicker } from 'react-dates';
+import DatePresets from './Presets';
 
 // eslint-disable-next-line no-unused-vars
 export default function StyledDateRangePicker({ startDate, endDate, onChange }) {
@@ -19,6 +20,7 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
       focusedInput={focusedInput}
       onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
       noBorder
+      date
       customArrowIcon="-"
       showDefaultInputIcon
       inputIconPosition="after"
@@ -26,6 +28,7 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
       hideKeyboardShortcutsPanel
       keepOpenOnDateSelect
       isOutsideRange={() => false}
+      renderCalendarInfo={() => <DatePresets endDate={endDate} startDate={startDate} onChange={onChange} />}
     />
   );
 }

@@ -3,11 +3,11 @@ import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 
+import DetailsAccordion from '../../../components/Shared/FinancialsOverview/DetailsAccordion';
+import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import { CommonOrderAmountTooltipText } from '../../../components/Shared/FinancialsOverview/helpers';
+import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
-import StyledBox from '../../StyledCharts/StyledBox';
-import DetailsAccordion from './DetailsAccordion';
-import PriceItem from './PriceItem';
-import { CommonOrderAmountTooltipText } from './helpers';
 
 export default function PayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
@@ -32,7 +32,7 @@ export default function PayoutDetails({ paymentDetails }) {
         <Box pt={2.5}>
           {/* order amount */}
           <DetailsAccordion
-            title="Order Amount"
+            title="Delivery Fee"
             tooltip="The fees you earn depend on how your customer order and receive their order. 
             VAT inclusivea"
             titleAmount={
@@ -199,11 +199,7 @@ export default function PayoutDetails({ paymentDetails }) {
               )}
 
               {paymentDetails?.orderValue?.riderTipOnline > 0 && (
-                <PriceItem
-                  title="Rider tip"
-                  amount={paymentDetails?.orderValue?.riderTipOnline}
-                  amountStatus="secondary"
-                />
+                <PriceItem title="Rider tip" amount={paymentDetails?.orderValue?.riderTipOnline} />
               )}
             </DetailsAccordion>
           )}

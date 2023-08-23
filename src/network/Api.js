@@ -85,6 +85,7 @@ export const USER_ORDERS = `${ADMIN_ENDPOINT}/order/user`;
 export const USER_STATUS = `${ADMIN_ENDPOINT}/USER/update-status`;
 export const USER_UPDATE = `${ADMIN_ENDPOINT}/user/update`;
 export const USER_REVIEWS = `${ADMIN_ENDPOINT}/user/reviews`;
+export const DELETE_USER_REVIEW = `${ADMIN_ENDPOINT}/review/delete`;
 
 // CATEGORY
 export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;

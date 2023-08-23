@@ -51,7 +51,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Stack direction="row" alignItems="center" gap={3}>
                 <Avatar alt="user-image" src={order?.user?.profile_photo} sx={{ width: 36, height: 36 }}>
-                  {order?.user?.name?.length && order?.user?.name[0]}
+                  {order?.user?.name?.length && order?.user?.name?.[0]}
                 </Avatar>
                 <Stack gap={0.5}>
                   <Typography variant="body4">{order?.user?.name}</Typography>

@@ -73,7 +73,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           status: 'active',
           shop: shop?._id,
           inStock: true,
-          hideAddons: marketingType === 'double_menu',
+          hideAddons: marketingType === 'double_menu' ? true : undefined,
         },
       }),
     {
@@ -95,15 +95,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           setEntireMenu(false);
         }
       },
-    }
+    },
   );
 
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing?.type === marketingType
+        (p) => p.marketing === undefined || p?.marketing?.type === marketingType,
       ),
-    [productsQuery?.data]
+    [productsQuery?.data],
   );
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       }),
     {
       enabled: marketingType === 'percentage',
-    }
+    },
   );
 
   // featured settinsg
@@ -130,7 +130,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       params: {
         featuredType: shop?.shopType,
       },
-    })
+    }),
   );
 
   const featuredSettingsOptions = useMemo(() => {
@@ -240,12 +240,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
           window.alert(
-            'Looks like something has changed in marketing since you came here. We will just reload the page'
+            'Looks like something has changed in marketing since you came here. We will just reload the page',
           );
           window.location.reload();
         }
       },
-    }
+    },
   );
 
   const selectionChangeConfirm = (value) => {
@@ -407,7 +407,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           onDelete();
         }
       },
-    }
+    },
   );
 
   const shopPercentageDeals = dealSettingsQuery?.data?.data?.dealSetting?.length
@@ -677,7 +677,13 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                 Title={
                   <CommonTitle
                     title="Spend Limit"
-                    subTitle={currentExpanedTab === 2 ? 'Set your spending limit' : 'Pay per order'}
+                    subTitle={
+                      currentExpanedTab === 2
+                        ? 'Set your spending limit'
+                        : spendLimitChecked
+                        ? `Remaining spending limits: ${currency}${spendLimit || 0}`
+                        : 'Pay for total order'
+                    }
                   />
                 }
                 disabled={isPageDisabled}
