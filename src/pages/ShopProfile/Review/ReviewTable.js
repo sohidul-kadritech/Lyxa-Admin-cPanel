@@ -19,12 +19,14 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-export default function ReviewTable({ reviews, onViewDetail }) {
+export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [currentReview, setCurrentReview] = useState({});
 
   const [open, setOpen] = useState(false);
+
+  const [actionType, setActionType] = useState('');
 
   const { currentUser } = useGlobalContext();
 
@@ -38,7 +40,29 @@ export default function ReviewTable({ reviews, onViewDetail }) {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Review deleted succesfully', 'success');
-        queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        setFilteredReviews((prev) => {
+          const updatedReview = prev.filter((review) => review._id !== currentReview?._id);
+
+          return updatedReview;
+        });
+        // queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        setOpen(false);
+      } else {
+        successMsg(data?.message, 'error');
+      }
+    },
+  });
+
+  const updateVisibilityReviewsQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_VISIBILITY_USER_REVIEW, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Review updated succesfully', 'success');
+        setFilteredReviews((prev) => {
+          const index = prev.findIndex((item) => item?._id === currentReview?._id);
+          if (index >= 0) prev[index].reviewVisibility = !prev[index].reviewVisibility;
+          return [...prev];
+        });
+        // queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
         setOpen(false);
       } else {
         successMsg(data?.message, 'error');
@@ -117,10 +141,12 @@ export default function ReviewTable({ reviews, onViewDetail }) {
       renderCell: ({ row }) => (
         <Stack direction="row" gap={3}>
           <StyledSwitch
-          // checked={row?.status === 'active'}
-          // onClick={() => {
-          //   updateStatusQuery.mutate({ id: row._id, status: row?.status === 'active' ? 'inactive' : 'active' });
-          // }}
+            checked={row?.reviewVisibility}
+            onClick={() => {
+              setActionType(`${row?.reviewVisibility ? 'hide' : 'show'}`);
+              setOpen(true);
+              setCurrentReview(row);
+            }}
           />
           <StyledIconButton
             sx={{
@@ -131,6 +157,7 @@ export default function ReviewTable({ reviews, onViewDetail }) {
             }}
             color="primary"
             onClick={() => {
+              setActionType('delete');
               setOpen(true);
               setCurrentReview(row);
             }}
@@ -183,13 +210,19 @@ export default function ReviewTable({ reviews, onViewDetail }) {
 
       <ConfirmModal
         isOpen={open}
-        message="Do you want to remove this review?"
-        loading={deleteReviewsQuery?.isLoading}
+        message={`Do you want to ${
+          actionType === 'delete' ? 'delete this review' : `${actionType} this review from mobile apps`
+        } ?`}
+        loading={deleteReviewsQuery?.isLoading || updateVisibilityReviewsQuery?.isLoading}
         onCancel={() => {
           setOpen(false);
         }}
         onConfirm={() => {
-          deleteReviewsQuery.mutate({ reviewId: currentReview?._id });
+          if (actionType === 'delete') {
+            deleteReviewsQuery.mutate({ reviewId: currentReview?._id });
+            return;
+          }
+          updateVisibilityReviewsQuery.mutate({ reviewId: currentReview?._id });
         }}
       />
     </>
