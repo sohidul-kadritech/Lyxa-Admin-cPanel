@@ -54,7 +54,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         },
       }),
     {
-      // enabled: false,
+      enabled: false,
       onSuccess: (data) => {
         setShop(data?.data?.shop);
       },

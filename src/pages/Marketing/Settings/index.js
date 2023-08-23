@@ -33,6 +33,7 @@ import {
   getCurrentFeaturedWeekOption,
   getDateRange,
   getDurationLeft,
+  getRemainingSpendingLimit,
   itemSelectOptions,
 } from './helpers';
 
@@ -152,6 +153,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
   const [dateRange, setDateRange] = useState(1);
   const [spendLimit, setSpendLimit] = useState('');
+  const [amountSpent, setAmountSpent] = useState('');
   const [products, setProducts] = useState([]);
   const [spendLimitChecked, setSpendLimitChecked] = useState(false);
   const [featuredAmount, setFeaturedDuration] = useState('');
@@ -160,6 +162,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setProducts(data?.products);
     setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
+    setAmountSpent(data?.amountSpent);
     setItemSelectType(data?.itemSelectionType);
     setFeaturedDuration(data?.featuredAmount);
 
@@ -396,6 +399,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         marketingId: serverState?._id,
         shopId: shop?._id,
         creatorType,
+        marketingDeletedType: dateRange > 0 ? 'before_expired' : 'after_expired',
       }),
     {
       onSuccess: (data) => {
@@ -495,7 +499,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
               {marketingType === 'percentage' &&
                 'Provide a percentage discount for specific menu items or categories, allowing customers to save money while ordering their favorite dishes.'}
               {marketingType === 'double_menu' &&
-                "Offer a 'buy one, get one free' promotion for up to 10 items, giving customers a chance to try new items without extra cost"}
+                "Offer a 'buy one, get one free' promotion giving customers a chance to try new items without extra cost"}
               {marketingType === 'free_delivery' &&
                 'Cover the entire delivery fee charged to the customer as a way to encourage customers to order from your business, and drive sales.'}
               {marketingType === 'featured' &&
@@ -681,7 +685,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       currentExpanedTab === 2
                         ? 'Set your spending limit'
                         : spendLimitChecked
-                        ? `Remaining spending limits: ${currency}${spendLimit || 0}`
+                        ? `Remaining spending limits: ${currency}${getRemainingSpendingLimit(
+                            spendLimit,
+                            amountSpent,
+                          )} /total orders`
                         : 'Pay for total order'
                     }
                   />
@@ -756,7 +763,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     }}
                     InputProps={{
                       startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                      endAdornment: <InputAdornment position="end">/total</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">/total orders</InputAdornment>,
                     }}
                   />
                 </Stack>

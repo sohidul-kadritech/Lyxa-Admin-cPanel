@@ -3,52 +3,19 @@ import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import Product from './Product';
 
-const findProduct = (cartProducts, productsDetails) => {
-  const products = [];
-
-  cartProducts?.forEach((cartProduct) => {
-    let addProduct = null;
-
-    productsDetails?.forEach((productDetailProduct) => {
-      const cartProductId = typeof cartProduct?.product === 'string' ? cartProduct?.product : cartProduct?.product?._id;
-
-      if (productDetailProduct?.productId !== cartProductId) return;
-      if (productDetailProduct?.productQuantity !== cartProduct?.quantity) return;
-
-      let include = true;
-
-      cartProduct?.selectedAttributes?.forEach((attrItemId) => {
-        let found = false;
-
-        productDetailProduct?.selectedAttributes?.forEach((productAttribute) => {
-          if (productAttribute?.attributeItems?.find((item) => item?.id === attrItemId)) {
-            found = true;
-          }
-        });
-
-        if (found === false) include = false;
-      });
-
-      if (include) addProduct = productDetailProduct;
-    });
-
-    if (addProduct) products?.push(addProduct);
-  });
-
-  return products;
-};
-
 const groupProductsByUser = (order) => {
-  const groups = [];
-
-  order?.cart?.cartItems?.forEach((cart) => {
-    const data = {};
-    data.user = cart?.user;
-    data.products = findProduct(cart?.products, order?.productsDetails);
-    groups.push(data);
+  const data = {};
+  order?.productsDetails?.forEach((product) => {
+    if (data[product?.owner?._id] !== undefined) {
+      data[product?.owner?._id]?.products?.push(product);
+    } else {
+      data[product?.owner?._id] = {};
+      data[product?.owner?._id].user = product?.owner;
+      data[product?.owner?._id].products = [product];
+    }
   });
 
-  return groups;
+  return Object.values(data);
 };
 
 export default function GroupOrder({ order }) {

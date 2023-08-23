@@ -56,7 +56,6 @@ export default function DetailsAccordion({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef();
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
 
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -75,7 +74,6 @@ export default function DetailsAccordion({
         sx={{
           cursor: children?.length ? undefined : 'initial !important',
         }}
-        // className={`${containerRef.current?.childNodes?.length === 0 ? 'icon-hidden' : ''}`}
         expandIcon={
           <Icon
             sx={{

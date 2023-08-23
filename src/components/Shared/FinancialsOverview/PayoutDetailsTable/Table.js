@@ -1,6 +1,4 @@
-/* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
-import { useGlobalContext } from '../../../../context';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
 import StyledTable from '../../../Styled/StyledTable3';
 import StyledBox from '../../../StyledCharts/StyledBox';
@@ -8,16 +6,6 @@ import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
 
 export default function Table({ currencyType, loading, rows = [] }) {
-  const { general } = useGlobalContext();
-
-  const baseCurrency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
-
-  const isBase = currencyType === 'baseCurrency';
-  const currency = currencyType === 'baseCurrency' ? baseCurrency : secondaryCurrency;
-
-  console.log({ rows });
-
   const columns = [
     {
       id: 1,
@@ -31,7 +19,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
-      id: 1,
+      id: 2,
       headerName: `ORDER AMOUNT`,
       sortable: false,
       field: 'orderAmount',
@@ -40,60 +28,53 @@ export default function Table({ currencyType, loading, rows = [] }) {
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.financialBreakdown;
-        const value = isBase
-          ? financialBreakdown?.baseCurrency_orderAmount
-          : financialBreakdown?.secondaryCurrency_orderAmount;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
-            <TableAccordion title={value}>
+            <TableAccordion
+              titleComponent={
+                <SummaryItem
+                  title
+                  pb={0}
+                  currencyType={currencyType}
+                  value={financialBreakdown?.baseCurrency_orderAmount}
+                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
+                />
+              }
+            >
               <SummaryItem
-                currency={currency}
+                currencyType={currencyType}
                 label="Cash"
-                value={
-                  isBase
-                    ? financialBreakdown?.baseCurrency_orderAmount_cash
-                    : financialBreakdown?.secondaryCurrency_orderAmount_cash
-                }
+                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
+                value={financialBreakdown?.baseCurrency_orderAmount_cash}
               />
               <SummaryItem
-                currency={currency}
+                console={console.log({ financialBreakdown })}
                 label="Online"
-                value={
-                  isBase
-                    ? financialBreakdown?.baseCurrency_orderAmount_online
-                    : financialBreakdown?.secondaryCurrency_deliveryFee_online
-                }
+                currencyType={currencyType}
+                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
+                value={financialBreakdown?.baseCurrency_orderAmount_online}
               />
               <SummaryItem
-                currency={currency}
                 label="Discount"
+                currencyType={currencyType}
                 isNegative
-                value={
-                  isBase
-                    ? financialBreakdown?.baseCurrency_orderAmount_discount
-                    : financialBreakdown?.secondaryCurrency_orderAmount_discount
-                }
+                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
+                value={financialBreakdown?.baseCurrency_orderAmount_discount}
               />
               <SummaryItem
-                currency={currency}
                 label="Buy 1 Get 1"
                 isNegative
-                value={
-                  isBase
-                    ? financialBreakdown?.baseCurrency_orderAmount_buy1Get1
-                    : financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1
-                }
+                currencyType={currencyType}
+                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
+                value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
               />
               <SummaryItem
-                currency={currency}
                 label="Loyalty points"
                 isNegative
-                value={
-                  isBase
-                    ? financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints
-                    : financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints
-                }
+                currencyType={currencyType}
+                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
+                value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
               />
             </TableAccordion>
           </Box>
@@ -101,7 +82,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
       },
     },
     {
-      id: 2,
+      id: 3,
       headerName: `LYXA FEES`,
       sortable: false,
       field: 'lyxaFess',
@@ -110,12 +91,14 @@ export default function Table({ currencyType, loading, rows = [] }) {
       headerAlign: 'left',
       minWidth: 180,
       renderCell: ({ row }) => (
-        <Typography variant="body4">
-          {currency}{' '}
-          {isBase
-            ? `${row?.adminCharge?.baseCurrency_adminChargeFromOrder}`
-            : `${row?.adminCharge?.secondaryCurrency_adminChargeFromOrder}`}
-        </Typography>
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
+          valueSecondary={Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
+          isNegative={row?.financialBreakdown?.baseCurrency_lyxaFees > 0}
+        />
       ),
     },
     {
@@ -127,10 +110,13 @@ export default function Table({ currencyType, loading, rows = [] }) {
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => (
-        <Typography variant="body4">
-          {currency}{' '}
-          {isBase ? `${row?.vatAmount?.baseCurrency_vatForShop}` : `${row?.vatAmount?.secondaryCurrency_vatForShop}`}
-        </Typography>
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.financialBreakdown?.baseCurrency_totalVat}
+          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalVat}
+        />
       ),
     },
     {
@@ -141,14 +127,113 @@ export default function Table({ currencyType, loading, rows = [] }) {
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: () => (
-        <Typography variant="body4">
-          {currency} {0}
-        </Typography>
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.financialBreakdown;
+
+        return (
+          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
+            <TableAccordion
+              titleComponent={
+                <SummaryItem
+                  title
+                  pb={0}
+                  currencyType={currencyType}
+                  value={financialBreakdown?.baseCurrency_otherPayments}
+                  valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments}
+                  isNegative={financialBreakdown?.baseCurrency_otherPayments > 0}
+                  showIfZero
+                />
+              }
+            >
+              <SummaryItem
+                currencyType={currencyType}
+                label="Free delivery"
+                value={financialBreakdown?.baseCurrency_otherPayments_freeDelivery}
+                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
+                isNegative
+              />
+              <SummaryItem
+                label="Refunded Amount"
+                currencyType={currencyType}
+                isNegative
+                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
+                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
+              />
+            </TableAccordion>
+          </Box>
+        );
+      },
+    },
+    {
+      id: 7,
+      headerName: `DELIVERY FEE`,
+      sortable: false,
+      field: 'deliveryFee',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.financialBreakdown;
+
+        return (
+          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
+            <TableAccordion
+              titleComponent={
+                <SummaryItem
+                  title
+                  pb={0}
+                  currencyType={currencyType}
+                  value={financialBreakdown?.baseCurrency_deliveryFee}
+                  valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee}
+                  showIfZero
+                />
+              }
+            >
+              <SummaryItem
+                currencyType={currencyType}
+                label="Cash"
+                value={financialBreakdown?.baseCurrency_deliveryFee_cash}
+                valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_cash}
+              />
+              <SummaryItem
+                label="Online"
+                currencyType={currencyType}
+                value={financialBreakdown?.baseCurrency_deliveryFee_online}
+                valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_online}
+              />
+              <SummaryItem
+                label="Rider tip"
+                currencyType={currencyType}
+                value={financialBreakdown?.baseCurrency_riderTip}
+                valueSecondary={financialBreakdown?.secondaryCurrency_riderTip}
+                isRejected
+              />
+            </TableAccordion>
+          </Box>
+        );
+      },
+    },
+    {
+      id: 7,
+      headerName: `POINTS CASHBACK`,
+      sortable: false,
+      field: 'pointsCashback',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.baseCurrency_pointsCashback}
+          valueSecondary={row?.secondaryCurrency_pointsCashback}
+          showIfZero
+        />
       ),
     },
     {
-      id: 6,
+      id: 8,
       headerName: `TOTAL PROFIT`,
       sortable: false,
       field: 'totalProfit',
@@ -156,12 +241,14 @@ export default function Table({ currencyType, loading, rows = [] }) {
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => (
-        <Typography variant="body4">
-          {currency}{' '}
-          {isBase
-            ? `${row?.baseCurrency_shopEarnings - row?.vatAmount?.baseCurrency_vatForShop}`
-            : `${row?.secondaryCurrency_shopEarnings - row?.vatAmount?.secondaryCurrency_vatForShop}`}
-        </Typography>
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.financialBreakdown?.baseCurrency_totalProfit}
+          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
+          showIfZero
+        />
       ),
     },
   ];
@@ -175,7 +262,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
         marginTop: '20px',
         paddingTop: '3px',
         paddingBottom: '10px',
-        overflowX: 'auto',
+        overflow: 'visible',
         scrollbarWidth: 'thin',
         scrollbarHeight: 'thin',
 
@@ -197,6 +284,14 @@ export default function Table({ currencyType, loading, rows = [] }) {
           sx={{
             '& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell': {
               overflow: 'visible',
+            },
+
+            '& .MuiDataGrid-virtualScroller': {
+              overflow: 'visible !important',
+            },
+
+            '& .MuiDataGrid-main': {
+              overflow: 'visible !important',
             },
           }}
           rows={rows}
