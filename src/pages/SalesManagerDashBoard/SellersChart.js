@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -31,13 +32,13 @@ export default function SellersChart({ viewUserType = 'shop' }) {
           endDate: moment(range.end).format('YYYY-MM-DD'),
           type: viewUserType,
         },
-      })
+      }),
   );
 
   const sellersData = generateGraphData(
     salesGraphQuery?.data?.data?.info || [],
-    (item) => item.payout,
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => item.seller,
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const profitChartData = {

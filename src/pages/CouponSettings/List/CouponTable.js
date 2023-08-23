@@ -128,24 +128,24 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
     },
     {
       id: 4,
-      headerName: `MIN ORDER`,
+      headerName: `MIN ORDER (${currency})`,
       sortable: false,
       field: 'couponMinimumOrderValue',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value ? `$${value}` : '_'}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{value ? `${currency}${value}` : '_'}</Typography>,
     },
     {
       id: 5,
-      headerName: `ORDER LIMIT`,
+      headerName: `ORDER LIMIT (Orders)`,
       sortable: false,
       field: 'couponOrderLimit',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ value, row }) => (
-        <Typography variant="body4">{value ? `${row?.couponTotalUsageOrders}/${value}` : '_'}</Typography>
+        <Typography variant="body4">{value ? `${row?.couponTotalUsageOrders}/${value} Orders` : '_'}</Typography>
       ),
     },
     {
@@ -157,7 +157,9 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ value, row }) => (
-        <Typography variant="body4">{value ? `${row?.couponTotalUsageAmount || 0}/${value}` : '_'}</Typography>
+        <Typography variant="body4">
+          {value ? `${row?.couponTotalUsageAmount || 0}/${value}${currency}` : '_'}
+        </Typography>
       ),
     },
     {
@@ -168,7 +170,7 @@ export default function CouponTable({ rows = [], onEdit, couponType, loading }) 
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value || '_'}</Typography>,
+      renderCell: ({ value }) => <Typography variant="body4">{`${value ? `${value} Orders` : '_'}`}</Typography>,
     },
     {
       id: 7,

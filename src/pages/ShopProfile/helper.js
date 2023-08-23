@@ -1,6 +1,9 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
+import { Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
+import Rating from '../../components/Common/Rating';
 import { getImageUrl } from '../../helpers/images';
 
 export const getQueryParamsInit = (params) => ({
@@ -185,6 +188,80 @@ export function OpeningHours({ normalHours }) {
           </Stack>
         </Box>
       ))}
+    </Stack>
+  );
+}
+
+export const calculatePercantagesOfRating = (reviews) => {
+  const ratingCounts = {};
+  const totalReviews = reviews.length;
+
+  // Count the occurrences of each rating
+  for (const review of reviews) {
+    const rating = review?.rating;
+    if (ratingCounts[rating]) {
+      ratingCounts[rating]++;
+    } else {
+      ratingCounts[rating] = 1;
+    }
+  }
+
+  // Calculate and return the percentages
+  const percentages = {};
+  for (const rating in ratingCounts) {
+    percentages[`${rating}`] = ((ratingCounts[rating] / totalReviews) * 100 || 0).toFixed(2);
+  }
+
+  return percentages;
+};
+
+// eslint-disable-next-line no-unused-vars
+function PercentageOfRate({ rate, percentage, color }) {
+  return (
+    <Stack direction="row" alignItems="center" gap={4}>
+      <Rating amount={rate} titleSx={{ fontSize: '14px', fontWeight: 600 }} />
+      <Box flex={1} sx={{ background: '#f5f5f5', position: 'relative', height: '3px', left: 0, borderRadius: '3px' }}>
+        <Box
+          sx={{
+            background: color,
+            position: 'absolute',
+            width: `${percentage}%`,
+            height: '100%',
+            left: 0,
+            top: 0,
+            borderRadius: '3px',
+          }}
+        />
+      </Box>
+      <Typography variant="body">{percentage}%</Typography>
+    </Stack>
+  );
+}
+
+export function ShopReviewDetails({ shop }) {
+  console.log('shoprating: ', shop, calculatePercantagesOfRating(shop?.reviews));
+
+  const ratings = calculatePercantagesOfRating(shop?.reviews);
+  return (
+    <Stack gap={4}>
+      <Stack direction="row" gap={2} alignItems="center">
+        <Avatar src={shop?.shopLogo} sx={{ width: '50px', height: '50px' }}>
+          {shop?.shopName[0]}
+        </Avatar>
+        <Stack>
+          <Rating amount={shop?.rating} titleSx={{ fontSize: '18px', fontWeight: 600 }} />
+          <Typography variant="body" sx={{ color: '#737373' }}>
+            Based on feedback from {shop?.reviews?.length || 0} reviews
+          </Typography>
+        </Stack>
+      </Stack>
+      <Stack gap={2}>
+        <PercentageOfRate rate={1} percentage={ratings['1']} color="#CD6366" />
+        <PercentageOfRate rate={2} percentage={ratings['2']} color="#CD6366" />
+        <PercentageOfRate rate={3} percentage={ratings['3']} color="#F2C14B" />
+        <PercentageOfRate rate={4} percentage={ratings['4']} color="#507B4B" />
+        <PercentageOfRate rate={5} percentage={ratings['5']} color="#507B4B" />
+      </Stack>
     </Stack>
   );
 }
