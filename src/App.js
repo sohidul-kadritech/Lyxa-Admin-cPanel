@@ -91,11 +91,11 @@ export default function App() {
   }, [userType]);
 
   useEffect(() => {
-    if (userType === 'shop') {
+    if (userType === 'shop' || userType === 'admin') {
       socketServices.on(`shopLiveStatusUpdated-${shop?._id}`, (data) => {
         if (shop?._id === data?.shopId) {
           console.log('socketdata', data);
-          currentUser.liveStatus = data?.liveStatus;
+          currentUser.shop.liveStatus = data?.liveStatus;
           setRender((prev) => !prev);
         }
       });
@@ -104,7 +104,7 @@ export default function App() {
     return () => {
       socketServices.removeListener(`shopLiveStatusUpdated-${shop?._id}`);
     };
-  }, [userType]);
+  }, [userType, shop]);
 
   return (
     <Box>
