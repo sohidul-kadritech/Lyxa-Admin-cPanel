@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -24,7 +25,7 @@ const getTrxQueryParams = (shopId) => ({
   shopId,
   sortBy: 'DESC',
   tnxFilter: {
-    startDate: moment().subtract(7, 'day'),
+    startDate: getFirstMonday('week'),
     endDate: moment(),
     type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
     searchKey: '',

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 
 export const marketingSpentTypeOptions = [
   { label: 'All', value: 'all' },
@@ -8,7 +9,7 @@ export const marketingSpentTypeOptions = [
 
 export const dateRangeItit = {
   end: moment(),
-  start: moment().subtract(7, 'd'),
+  start: getFirstMonday('week'),
 };
 
 export function calculateDateDifference(date1, date2, unit) {

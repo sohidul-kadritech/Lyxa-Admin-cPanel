@@ -10,6 +10,7 @@ import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import DateRange from '../../StyledCharts/DateRange';
 import InfoCard from '../../StyledCharts/InfoCard';
 
@@ -44,7 +45,7 @@ export function CardTitle({ title, tooltip }) {
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });
@@ -59,7 +60,7 @@ export default function Operations({ viewUserType = 'shop' }) {
   const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
       params: queryParams,
-    }),
+    })
   );
 
   return (

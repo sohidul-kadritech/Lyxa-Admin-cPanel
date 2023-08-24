@@ -4,11 +4,12 @@ import { Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material'
 import moment from 'moment';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import Rating from '../../components/Common/Rating';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import { getImageUrl } from '../../helpers/images';
 
 export const getQueryParamsInit = (params) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'days'),
+  startDate: getFirstMonday('week'),
   searchKey: '',
   sortBy: 'DESC',
   ...params,

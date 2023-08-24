@@ -3,12 +3,13 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import AXIOS from '../../network/axios';
+import { getFirstMonday } from '../Styled/StyledDateRangePicker/Presets';
 import ChartBox from './ChartBox';
 import StyledAreaChart from './StyledAreaChart';
 
 const dateRangeItit = {
   end: moment(),
-  start: moment().subtract(7, 'd'),
+  start: getFirstMonday('week'),
 };
 
 export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps }) {

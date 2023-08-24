@@ -6,6 +6,7 @@ import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import CommonAreaChart from '../../StyledCharts/CommonAreaChart';
 import DateRange from '../../StyledCharts/DateRange';
 import CustomerBreakdown from './CustomerBreakdown';
@@ -35,7 +36,7 @@ const tabValueToPropsMap = {
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });

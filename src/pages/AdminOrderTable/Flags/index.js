@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledTabs2 from '../../../components/Styled/StyledTab2';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -21,7 +22,7 @@ const queryParamsInit = {
   page: 1,
   pageSize: 25,
   sortBy: '',
-  startDate: moment().subtract(7, 'days'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
 };

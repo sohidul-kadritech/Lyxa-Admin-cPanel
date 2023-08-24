@@ -5,6 +5,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import useQueryParams from '../../helpers/useQueryParams';
 import Flags from './Flags';
 import Orders from './Orders';
@@ -29,7 +30,7 @@ const defaultSearchParams = {
   page: 1,
   pageSize: 20,
   sortBy: 'DESC',
-  startDate: moment().startOf('month').format('YYYY/MM/DD'),
+  startDate: getFirstMonday('week').format('YYYY/MM/DD'),
   endDate: moment().format('YYYY/MM/DD'),
   searchKey: '',
   orderType: 'all',

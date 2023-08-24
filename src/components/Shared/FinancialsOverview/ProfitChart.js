@@ -8,11 +8,12 @@ import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import StyledBarChart from '../../StyledCharts/StyledBarChart';
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });

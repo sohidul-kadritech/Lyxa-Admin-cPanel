@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 
 // third party
 export const breadCrumbItems = [
@@ -14,7 +15,7 @@ export const breadCrumbItems = [
 
 export const dateRangeItit = {
   end: moment(),
-  start: moment().subtract(7, 'd'),
+  start: getFirstMonday('week'),
 };
 
 export const marketingDurationTime = (start, end) => {

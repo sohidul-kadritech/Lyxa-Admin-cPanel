@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import SearchBar from '../../../components/Common/CommonSearchbar';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -13,7 +14,7 @@ export const queryParamsInit = (props) => ({
   page: 1,
   pageSize: 10,
   sortBy: 'DESC',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   status: '',
