@@ -1,6 +1,7 @@
 import { Stack, Tooltip, Typography } from '@mui/material';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 
 export const calcActiveTime = (min) => {
   const str = [];
@@ -30,7 +31,7 @@ export function CardTitle({ title, tooltip }) {
 export const queryParamsInit = {
   page: 1,
   pageSize: 10,
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   sortBy: 'desc',

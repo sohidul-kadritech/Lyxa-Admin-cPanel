@@ -4,6 +4,7 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
 export function TitleWithToolTip({ title, tooltip, sx }) {
   return (
@@ -122,7 +123,7 @@ const queryParamsInit = {
   pageSize: 20,
   sortBy: 'DESC',
   type: 'ongoing',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   shop: '',

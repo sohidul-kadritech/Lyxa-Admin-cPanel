@@ -360,6 +360,18 @@ export default function Table({
           }}
         />
       </Drawer>
+
+      {/* flag add */}
+      <Modal
+        open={flagModal}
+        onClose={() => {
+          setFlagModal(false);
+        }}
+      >
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
+      </Modal>
       {/* update status */}
       <Modal
         open={updateStatusModal}
@@ -375,17 +387,7 @@ export default function Table({
           />
         </Box>
       </Modal>
-      {/* flag add */}
-      <Modal
-        open={flagModal}
-        onClose={() => {
-          setFlagModal(false);
-        }}
-      >
-        <Box>
-          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
-        </Box>
-      </Modal>
+
       {/*  cancel order */}
       <Modal
         open={openCancelModal}

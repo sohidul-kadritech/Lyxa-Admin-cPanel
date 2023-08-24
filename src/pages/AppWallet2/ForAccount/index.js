@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
 import PageTop from '../../../components/Common/PageTop';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../../context';
@@ -31,7 +32,7 @@ const queryParamsInit = {
   page: 1,
   pageSize: 15,
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   searchKey: '',
   sortBy: 'desc',
 };

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
-// import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';

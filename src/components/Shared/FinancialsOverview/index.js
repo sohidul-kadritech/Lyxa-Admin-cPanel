@@ -2,8 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
-import { Button, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
-import moment from 'moment';
+import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -73,7 +72,7 @@ export default function Overview({ viewUserType }) {
     <Grid container spacing={7.5} pb={7.5} pt={7.5}>
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-          <Button
+          {/* <Button
             variant="outlined"
             sx={{
               color: '#404040',
@@ -91,7 +90,7 @@ export default function Overview({ viewUserType }) {
             }}
           >
             Daily Profit
-          </Button>
+          </Button> */}
           <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
       </Grid>

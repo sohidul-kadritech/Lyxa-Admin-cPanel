@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -19,9 +20,7 @@ export const queryParamsInit = {
   pageSize: 10,
   sortBy: 'DESC',
   type: 'all',
-  // startDate: moment().startOf('month').format('YYYY-MM-DD'),
-  // endDate: moment().format('YYYY-MM-DD'),
-  startDate: moment().subtract(1, 'days'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
 };
@@ -72,7 +71,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // on receive cash

@@ -28,8 +28,3 @@ export function HeaderWithToolTips({ title, tooltip }) {
 }
 
 export const convertDate = (originalDate) => moment(originalDate).format('YYYY-MM-DD');
-
-export const dateRangeInitFinancial = {
-  end: moment().format('YYYY-MM-DD'),
-  start: moment().subtract(1, 'd').format('YYYY-MM-DD'),
-};

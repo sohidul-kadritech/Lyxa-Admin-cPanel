@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import StyledTabs2 from '../../Styled/StyledTab2';
 import ChartBox from '../../StyledCharts/ChartBox';
 import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
@@ -64,7 +65,7 @@ const generateData = (data, marketingSpentType = '') => {
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });
@@ -77,12 +78,12 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   const marketingSpentQuery = useQuery([Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
       params: queryParams,
-    }),
+    })
   );
 
   const chartdata = useMemo(
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
-    [marketingSpentType, marketingSpentQuery?.data],
+    [marketingSpentType, marketingSpentQuery?.data]
   );
 
   console.log('chartdata', marketingSpentQuery?.data);

@@ -59,7 +59,12 @@ export const validate = (currentStatus, currentOrderDelivery, currentOrder, paid
     return false;
   }
 
-  if (currentStatus === 'delivered' && !paidCurrency) {
+  if (currentStatus === 'preparing' && !currentOrderDelivery) {
+    successMsg(`Assign rider first`);
+    return false;
+  }
+
+  if (currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !paidCurrency) {
     successMsg(`Choose paid currency first`);
     return false;
   }
@@ -78,9 +83,9 @@ export const updateOrderStatusOptions = (currentOrder) => {
     });
   });
 
-  // if (currentOrder?.shop?.haveOwnDeliveryBoy) {
-  //   list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
-  // }
+  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+    list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  }
 
   if (currentOrder?.isButler) {
     list = list.filter((opt) => opt.value !== 'preparing' && opt.value !== 'ready_to_pickup');
