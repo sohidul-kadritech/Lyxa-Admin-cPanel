@@ -1,11 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material';
+import TablePagination from '../../../Common/TablePagination';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
 import StyledTable from '../../../Styled/StyledTable3';
 import StyledBox from '../../../StyledCharts/StyledBox';
 import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
 
-export default function Table({ currencyType, loading, rows = [] }) {
+export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage }) {
   const columns = [
     {
       id: 1,
@@ -256,55 +257,58 @@ export default function Table({ currencyType, loading, rows = [] }) {
   if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
 
   return (
-    <StyledBox
-      padding
-      sx={{
-        marginTop: '20px',
-        paddingTop: '3px',
-        paddingBottom: '10px',
-        overflow: 'visible',
-        scrollbarWidth: 'thin',
-        scrollbarHeight: 'thin',
-
-        '&::-webkit-scrollbar': {
-          width: '6px',
-          height: '6px',
-        },
-      }}
-    >
-      <Box
+    <>
+      <StyledBox
+        padding
         sx={{
-          minWidth: '1070px',
+          marginTop: '20px',
+          paddingTop: '3px',
+          paddingBottom: '10px',
+          overflow: 'visible',
+          scrollbarWidth: 'thin',
+          scrollbarHeight: 'thin',
+
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px',
+          },
         }}
       >
-        <StyledTable
-          autoHeight
-          columns={columns}
-          getRowId={(row) => row?._id}
+        <Box
           sx={{
-            '& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell': {
-              overflow: 'visible',
-            },
-
-            '& .MuiDataGrid-virtualScroller': {
-              overflow: 'visible !important',
-            },
-
-            '& .MuiDataGrid-main': {
-              overflow: 'visible !important',
-            },
+            minWidth: '1070px',
           }}
-          rows={rows}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No data found
-              </Stack>
-            ),
-          }}
-        />
-      </Box>
-    </StyledBox>
+        >
+          <StyledTable
+            autoHeight
+            columns={columns}
+            getRowId={(row) => row?._id}
+            sx={{
+              '& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell': {
+                overflow: 'visible',
+              },
+
+              '& .MuiDataGrid-virtualScroller': {
+                overflow: 'visible !important',
+              },
+
+              '& .MuiDataGrid-main': {
+                overflow: 'visible !important',
+              },
+            }}
+            rows={rows}
+            rowHeight={71}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No data found
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
+      </StyledBox>
+      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+    </>
   );
 }

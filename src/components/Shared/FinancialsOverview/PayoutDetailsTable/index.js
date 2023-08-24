@@ -15,7 +15,7 @@ export const typeOptions = [
 
 const queryParamsInit = (props) => ({
   page: 1,
-  pageSize: 20,
+  pageSize: 15,
   sortBy: 'DESC',
   orderType: 'all',
   model: 'order',
@@ -43,7 +43,16 @@ export default function PayoutDetailsTable({ startDate, endDate }) {
           setQueryParams((prev) => ({ ...prev, paidCurrency: value }));
         }}
       />
-      <Table currencyType={queryParams?.paidCurrency} rows={query?.data?.data?.orders} loading={query?.isLoading} />
+      <Table
+        currencyType={queryParams?.paidCurrency}
+        rows={query?.data?.data?.orders}
+        loading={query?.isLoading}
+        page={queryParams?.page}
+        setPage={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
+        }}
+        totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
+      />
     </Box>
   );
 }
