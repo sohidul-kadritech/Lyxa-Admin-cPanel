@@ -36,6 +36,8 @@ import FilterContainers from '../pages/Display/FilterContainer';
 import ListContainers from '../pages/Display/ListContainer';
 import TagsAndCusines from '../pages/Display/Tags';
 import Faq2 from '../pages/Faq2';
+import LyxaFinancials from '../pages/LyxaFinancials';
+import RestaurantProfitOverview from '../pages/LyxaFinancials/Food';
 import Marketing from '../pages/Marketing';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import Notification from '../pages/Notification2';
@@ -58,6 +60,7 @@ import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSet
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
 import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
+import TestChat from '../pages/TestChat';
 import Tickets from '../pages/Tickets';
 import UserProfile from '../pages/UsersProfile';
 import Vat2 from '../pages/Vat2';
@@ -65,6 +68,12 @@ import Vat2 from '../pages/Vat2';
 export const admin_routes = [
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
+  { path: '/financials/lyxa', component: LyxaFinancials },
+  { path: '/financials/lyxa/food', component: RestaurantProfitOverview },
+  { path: '/financials/lyxa/grocery', component: RestaurantProfitOverview },
+  { path: '/financials/lyxa/butler', component: RestaurantProfitOverview },
+  { path: '/financials/lyxa/pharmacy', component: RestaurantProfitOverview },
+  { path: '/test-chat', component: TestChat },
 
   { path: '/orders', component: AdminOrders },
 

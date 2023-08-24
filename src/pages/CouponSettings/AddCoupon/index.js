@@ -227,26 +227,6 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           }}
         />
 
-        {/* max discount  */}
-        {coupon.couponDiscountType === 'percentage' && (
-          <StyledFormField
-            label="Maximum discount amount"
-            intputType="text-toggle"
-            inputProps={{
-              type: 'number',
-              name: 'couponMaximumDiscountLimit',
-              value: coupon.couponMaximumDiscountLimit,
-              onChange: commonChangeHandler,
-              disabled: !checked.couponMaximumDiscountLimit,
-              checked: checked.couponMaximumDiscountLimit,
-              onToggle: () => {
-                checked.couponMaximumDiscountLimit = !checked.couponMaximumDiscountLimit;
-                setRender(!render);
-              },
-            }}
-          />
-        )}
-
         {/* value */}
         <StyledFormField
           label="Value"
@@ -357,9 +337,29 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           />
         )}
 
+        {/* max discount */}
+        {coupon.couponDiscountType === 'percentage' && (
+          <StyledFormField
+            label="Max. Discount amount"
+            intputType="text-toggle"
+            inputProps={{
+              type: 'number',
+              name: 'couponMaximumDiscountLimit',
+              value: coupon.couponMaximumDiscountLimit,
+              onChange: commonChangeHandler,
+              disabled: !checked.couponMaximumDiscountLimit,
+              checked: checked.couponMaximumDiscountLimit,
+              onToggle: () => {
+                checked.couponMaximumDiscountLimit = !checked.couponMaximumDiscountLimit;
+                setRender(!render);
+              },
+            }}
+          />
+        )}
+
         {/* min order */}
         <StyledFormField
-          label="Min. Order"
+          label="Min. Order Amount"
           intputType="text-toggle"
           inputProps={{
             type: 'number',

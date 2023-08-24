@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable max-len */
-/* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
@@ -72,25 +69,6 @@ export default function Overview({ viewUserType }) {
     <Grid container spacing={7.5} pb={7.5} pt={7.5}>
       <Grid xs={12}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-          {/* <Button
-            variant="outlined"
-            sx={{
-              color: '#404040',
-              padding: '7px 15px',
-              fontSize: '13px',
-              lineHeight: '20px',
-              fontWeight: 500,
-              background: '#F6F8FA',
-            }}
-            onClick={() => {
-              setPaymentDetailsRange({
-                end: moment(),
-                start: moment().subtract(1, 'd'),
-              });
-            }}
-          >
-            Daily Profit
-          </Button> */}
           <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
       </Grid>
