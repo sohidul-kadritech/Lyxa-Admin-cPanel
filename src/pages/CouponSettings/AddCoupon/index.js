@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // thrid party
 import { Box, Button } from '@mui/material';
 import { debounce } from '@mui/material/utils';
@@ -56,7 +57,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       onSuccess: (data) => {
         setShopOptions((prev) => data?.data?.shops || prev);
       },
-    }
+    },
   );
 
   const getShops = useMemo(
@@ -65,7 +66,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setShopSearchKey(value);
         shopsQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   const usersQuery = useMutation(
@@ -84,7 +85,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         console.log(data?.data?.users);
         setUserOptions((prev) => data?.data?.users || prev);
       },
-    }
+    },
   );
 
   const getUsers = useMemo(
@@ -93,7 +94,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setUserSearchKey(value);
         usersQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   // coupon add
@@ -114,7 +115,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           queryClient.invalidateQueries([Api.GET_COUPON]);
         }
       },
-    }
+    },
   );
 
   const submitCoupon = () => {
@@ -149,7 +150,10 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               name: 'couponName',
               value: coupon.couponName,
               disabled: autoGenCodeQuery.isFetching,
-              onChange: commonChangeHandler,
+              onChange: (e) => {
+                if (e?.target?.value?.length > 6) return;
+                commonChangeHandler(e);
+              },
               sx: {
                 textTransform: 'uppercase',
                 paddingRight: '105px',
