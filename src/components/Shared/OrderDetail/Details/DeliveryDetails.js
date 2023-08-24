@@ -42,8 +42,7 @@ export default function DeliveryDetails({ order = {} }) {
         </Stack>
       }
     >
-      {/* hidden for self type shops */}
-      {(order?.orderFor === 'global' || order?.isButler) && order?.deliveryBoy && (
+      {order?.deliveryBoy?._id && (
         <Box pt={3} pb={4}>
           <CallUser
             disableContainerStyle
