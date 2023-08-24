@@ -12,7 +12,7 @@ const dateRangeItit = {
   start: getFirstMonday('week'),
 };
 
-export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps }) {
+export default function CommonAreaChart({ title, generateData, api, params, sx, gridProps, valueLabel = 'Orders' }) {
   const [range, setRange] = useState({ ...dateRangeItit });
 
   const query = useQuery(
@@ -36,7 +36,7 @@ export default function CommonAreaChart({ title, generateData, api, params, sx, 
           ...params,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   const data = generateData(query?.data);
@@ -46,7 +46,7 @@ export default function CommonAreaChart({ title, generateData, api, params, sx, 
     datasets: [
       {
         fill: true,
-        label: 'Orders',
+        label: valueLabel,
         data: data.data,
         borderColor: 'rgba(126, 130, 153, 1)',
         borderWidth: 1,
