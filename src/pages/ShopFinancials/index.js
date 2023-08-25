@@ -15,6 +15,7 @@ export default function ShopFinancials() {
   return (
     <Box pb={10}>
       <PageTop title="Financials" />
+
       <Tabs
         value={currentTab}
         onChange={(event, newValue) => {

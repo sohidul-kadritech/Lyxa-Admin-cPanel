@@ -6,13 +6,14 @@ import { useState } from 'react';
 import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
 
-import PayoutDetails from '../../components/Shared/FinancialsOverview/PayoutDetails';
-import PayoutDetailsTable from '../../components/Shared/FinancialsOverview/PayoutDetailsTable';
+import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
 import IncreaseDecreaseTag from '../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../components/StyledCharts/InfoCard';
+import OrderPayoutDetails from './OrderPayoutDetails';
+import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
 
-export default function RestaurantProfitOverview() {
+export default function LyxaOrderFinancials() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -33,7 +34,7 @@ export default function RestaurantProfitOverview() {
         lg={4}
       />
       <InfoCard
-        title="Orders"
+        title="Total Orders"
         value="0"
         Tag={<IncreaseDecreaseTag status="increase" amount="0" />}
         sm={6}
@@ -41,16 +42,24 @@ export default function RestaurantProfitOverview() {
         lg={4}
       />
       <InfoCard
-        title="Orders"
-        value={`${currency} ${0}`}
-        Tag={<IncreaseDecreaseTag status="increase" amount="0" />}
+        title="Lyxa Marketing Spent"
+        isDropdown
+        value={`${currency} ${(0).toFixed(2)}`}
+        Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
         sm={6}
         md={4}
         lg={4}
-      />
-      <PayoutDetails paymentDetails={{}} />
+      >
+        <Stack gap={3}>
+          <PriceItem title="Discount" amount={0} showIfZero />
+          <PriceItem title="Buy 1 Get 1" amount={0} showIfZero />
+          <PriceItem title="Loyalty points" amount={0} showIfZero />
+          <PriceItem title="Free delivery" amount={0} showIfZero />
+        </Stack>
+      </InfoCard>
+      <OrderPayoutDetails />
       <Grid xs={12}>
-        <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
+        <OrderPayoutDetailsTable />
       </Grid>
     </Grid>
   );
