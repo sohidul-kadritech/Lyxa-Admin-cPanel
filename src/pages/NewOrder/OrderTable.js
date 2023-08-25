@@ -13,6 +13,7 @@ import { useGlobalContext } from '../../context';
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
+import OrderTrackingModal from '../AdminOrderTable/OrderTracking';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
@@ -22,11 +23,13 @@ import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVari
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
-
+  console.log('adminType', adminType);
   const currency = general?.currency?.symbol;
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
+
+  const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
 
   const [flagModal, setFlagModal] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
@@ -49,6 +52,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     }
     if (menu === 'update_status') {
       setUpdateStatusModal(true);
+      setCurrentOrder(order);
+    }
+    if (menu === 'track_order') {
+      setOpenOrderTrackingModal(true);
       setCurrentOrder(order);
     }
   };
@@ -308,7 +315,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     ),
   };
 
-  if (adminType === 'admin') {
+  if (adminType === 'admin' || adminType === 'shop') {
     columns.push(newColumn);
   }
 
@@ -404,6 +411,12 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
               setOpenRefundModal(false);
             }}
           />
+        </Box>
+      </Modal>
+
+      <Modal open={openOrderTrackingModal} centered>
+        <Box>
+          <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
         </Box>
       </Modal>
     </Box>

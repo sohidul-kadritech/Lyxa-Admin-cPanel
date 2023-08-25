@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 
@@ -7,6 +8,7 @@ import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import TablePagination from '../../components/Common/TablePagination';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import StyledTabs2 from '../../components/Styled/StyledTab2';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -21,6 +23,19 @@ const orderFilterToTabValueMap = {
   3: 'scheduled',
 };
 
+const getTabOptions = (type) => {
+  const tabsOptions = [
+    { value: 'new', label: 'New' },
+    { value: 'preparing', label: 'Preparing' },
+    { value: 'ready', label: 'Ready' },
+    { value: 'on-the-way', label: 'On the way' },
+  ];
+
+  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
+
+  return tabsOptions;
+};
+
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
   const [totalPage, setTotalPage] = useState(1);
@@ -29,6 +44,7 @@ export default function NewOrders({ showFor }) {
   const [currentOrder, setCurrentOrder] = useState({});
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
   const [currentTab, setCurrentTab] = useState(0);
+  const [tabForOngoing, setTabForOngoing] = useState('new');
 
   const ordersQuery = useQuery(
     [Api.ORDER_LIST, queryParams],
@@ -41,8 +57,31 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
+
+  // eslint-disable-next-line no-unused-vars
+  const threeDotHandler = (menu) => {
+    if (menu === 'flag') {
+      console.log('flag 1');
+    }
+
+    if (menu === 'cancel_order') {
+      console.log('flag 1');
+    }
+
+    if (menu === 'track_order') {
+      console.log('flag 1');
+    }
+
+    if (menu === 'refund_order') {
+      console.log('flag 1');
+    }
+
+    if (menu === 'update_status') {
+      console.log('flag 1');
+    }
+  };
 
   return (
     <Box pb={9}>
@@ -66,6 +105,18 @@ export default function NewOrders({ showFor }) {
         <Tab label="Incomplete" />
         <Tab label="Scheduled" />
       </Tabs>
+
+      {currentTab === 0 && showFor === 'shop' && (
+        <Box pb={7.5}>
+          <StyledTabs2
+            value={tabForOngoing}
+            options={getTabOptions(queryParams?.type)}
+            onChange={(value) => {
+              setTabForOngoing(value);
+            }}
+          />
+        </Box>
+      )}
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
       <OrderTable
         loading={ordersQuery.isLoading}

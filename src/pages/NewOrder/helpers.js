@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
 import { Stack, Tooltip, Typography } from '@mui/material';
@@ -185,7 +186,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
-  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
+  if ((hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') || userType === 'shop') {
     options.push({ label: 'Update Status', value: 'update_status' });
     options.push({ label: 'Track Order', value: 'track_order' });
   }
@@ -374,7 +375,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       adminVat: getRefundedVatForAdmin(
         orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
-        appVat
+        appVat,
       ),
     },
   };
