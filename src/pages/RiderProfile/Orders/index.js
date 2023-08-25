@@ -9,6 +9,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import SearchBar from './SearchBar';
 // import OrderTable from './Table';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import OrderTable from '../../NewOrder/OrderTable';
 
 export const queryParamsInit = {
@@ -16,7 +17,7 @@ export const queryParamsInit = {
   pageSize: 10,
   sortBy: 'DESC',
   type: 'all',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   shop: '',

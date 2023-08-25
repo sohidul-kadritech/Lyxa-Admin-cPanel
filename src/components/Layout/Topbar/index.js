@@ -37,7 +37,6 @@ const getConsoleName = (userType, adminType) => {
 
 export default function Topbar({ setSidebar, sidebar }) {
   const { currentUser } = useGlobalContext();
-
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

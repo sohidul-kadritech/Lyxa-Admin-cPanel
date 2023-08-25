@@ -27,8 +27,6 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
     []
   );
 
-  console.log('order', order);
-
   return (
     <OrderContextProvider value={value}>
       <Box

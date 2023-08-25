@@ -159,7 +159,7 @@ export default function PaymentSummary({ order = {} }) {
         ) : null}
 
         {/* normal order user cancel */}
-        {!order?.isButler && order?.userCancelTnx?.length ? (
+        {/* {!order?.isButler && order?.userCancelTnx?.length ? (
           <SummaryItem
             label="Total Refunded"
             value={cancelBase}
@@ -168,7 +168,7 @@ export default function PaymentSummary({ order = {} }) {
             isTotal
             pb={0}
           />
-        ) : null}
+        ) : null} */}
 
         {/* normal order user cancel */}
         {!order?.isButler && order?.userCancelTnx?.length ? (

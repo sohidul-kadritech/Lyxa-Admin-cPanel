@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
@@ -34,7 +35,7 @@ const queryParamsInit = {
   pageSize: 15,
   searchKey: '',
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   sort: '',
   adminId: '',
   amountRange: '',
@@ -68,7 +69,7 @@ function Vat2() {
         endDate: moment(queryParams?.endDate).format('YYYY-MM-DD'),
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   // pay vat
@@ -254,7 +255,7 @@ function Vat2() {
               <Typography variant="h2">
                 {`${getCurrentCurrency?.symbol} ${calculatePaidVat(
                   getAllTransaction?.data?.data?.summary?.totalVat,
-                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
+                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat
                 )}`}
               </Typography>
             </Box>

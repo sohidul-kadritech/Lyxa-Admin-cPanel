@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
 import TablePagination from '../../../components/Common/TablePagination';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import AddRemoveCredit from './AddRemoveCredit';
@@ -15,7 +16,7 @@ const queryParamsInit = (userId) => ({
   pageSize: 10,
   sortBy: 'DESC',
   type: 'all',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   userId,

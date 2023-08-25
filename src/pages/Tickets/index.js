@@ -6,6 +6,7 @@ import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import ChatDetails from '../../components/Shared/ChatDetail';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { createChatFromOrder } from '../PastTickets/helper';
@@ -15,7 +16,7 @@ export const queryParamsInit = {
   page: 1,
   pageSize: 15,
   sortBy: 'DESC',
-  startDate: moment().subtract(7, 'days'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   status: '',

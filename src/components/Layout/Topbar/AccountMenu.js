@@ -1,5 +1,6 @@
 import { Menu, MenuItem, Modal, Paper, styled, Typography } from '@mui/material';
 import { useState } from 'react';
+import socketServices from '../../../common/socketService';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
 import ChangePassword from '../../CommonForBoth/ChangePassword';
@@ -23,6 +24,7 @@ export default function AccountMenu({ anchorEl, handleClose }) {
     const authCookies = getCookiesAsObject();
     setCookiesAsObject(authCookies, 0);
     window.location.reload(true);
+    socketServices.close();
   };
 
   return (
