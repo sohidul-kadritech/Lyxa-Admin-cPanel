@@ -64,6 +64,7 @@ export default function OrderPayoutDetails() {
 
             <PriceItem
               title="Loyalty points"
+              isNegative
               amount={0}
               amountStatus="minus"
               tooltip={<CommonOrderAmountTooltipText byShop={0} byAdmin={0} currency={currency} />}
@@ -88,7 +89,7 @@ export default function OrderPayoutDetails() {
           >
             <PriceItem title="Cash" amount={0} showIfZero />
             <PriceItem title="Online" amount={0} showIfZero />
-            <PriceItem title="Total Rider Fee" amount={0} showIfZero />
+            <PriceItem title="Rider Cut" amount={0} showIfZero isNegative />
           </DetailsAccordion>
 
           {/* featured */}
@@ -118,10 +119,10 @@ export default function OrderPayoutDetails() {
             }}
           >
             <PriceItem title="Refund" amount={0} isNegative showIfZero />
-            <PriceItem title="Refused Order" amount={0} isNegative showIfZero />
+            <PriceItem title="Refused Orders" amount={0} isNegative showIfZero />
             <PriceItem title="Free Delivery" amount={0} isNegative showIfZero />
-            <PriceItem title="Points Paid" amount={0} isNegative showIfZero />
-            <PriceItem title="Coupon" amount={0} isNegative showIfZero />
+            <PriceItem title="Points Paid to the Shop" amount={0} isNegative showIfZero />
+            <PriceItem title="Coupons" amount={0} isNegative showIfZero />
             <PriceItem title="Shop Add/Remove Credit" amount={0} isNegative showIfZero />
           </DetailsAccordion>
 

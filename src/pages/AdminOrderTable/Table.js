@@ -9,7 +9,7 @@ import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
-import OrderCancel from '../../components/Shared/CancelOrder';
+import CancelOrder from '../../components/Shared/CancelOrder';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
@@ -391,13 +391,14 @@ export default function Table({
       {/*  cancel order */}
       <Modal
         open={openCancelModal}
+        sx={{ zIndex: '10 !important' }}
         onClose={() => {
           setOpenCancelModal(!openCancelModal);
         }}
-        sx={{ zIndex: '10 !important' }}
       >
         <Box>
-          <OrderCancel order={currentOrder} onClose={() => setOpenCancelModal(false)} />
+          \
+          <CancelOrder order={currentOrder} onClose={() => setOpenCancelModal(false)} />
         </Box>
       </Modal>
       {/* rerfund order */}

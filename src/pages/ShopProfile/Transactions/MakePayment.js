@@ -15,27 +15,24 @@ const getMakePaymentInit = (type, id, amount) => ({
   amount: amount || '0',
 });
 
-const typeToApiMap = { shop: Api.SHOP_MAKE_PAYMENT, rider: Api.RIDER_MAKE_PAYMENT };
-
-export default function MakePayment({ onClose, type, id, amount = 0 }) {
+export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
   const { general } = useGlobalContext();
   const appSetting = general?.appSetting;
 
-  // const secondaryCurrency = appSetting?.secondaryCurrency;
   const adminExchangeRate = appSetting?.adminExchangeRate;
   const secondaryEnabled = adminExchangeRate > 0;
 
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
-  const paymentMutation = useMutation(() => AXIOS.post(typeToApiMap[type], payment), {
+  const paymentMutation = useMutation(() => AXIOS.post(Api.SHOP_MAKE_PAYMENT, payment), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
         queryClient.invalidateQueries([Api.SHOP_TRX]);
-        queryClient.invalidateQueries([Api.DELIVERY_TRX]);
-        queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
-        queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
+        // queryClient.invalidateQueries([Api.DELIVERY_TRX]);
+        // queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
+        // queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
         onClose();
       }
     },

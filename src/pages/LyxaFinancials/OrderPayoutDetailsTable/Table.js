@@ -148,7 +148,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 value={financialBreakdown?.baseCurrency_orderAmount_online}
               />
               <SummaryItem
-                label="Total Rider Fee"
+                label="Rider Cut"
                 currencyType={currencyType}
                 showIfZero
                 isNegative
@@ -233,7 +233,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
-                label="Points Paid"
+                label="Points Paid to the Shop"
                 currencyType={currencyType}
                 isNegative
                 value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
@@ -242,7 +242,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
-                label="Coupon"
+                label="Coupons"
                 currencyType={currencyType}
                 isNegative
                 value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}

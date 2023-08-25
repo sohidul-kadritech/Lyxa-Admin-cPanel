@@ -49,6 +49,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
                 value={financialBreakdown?.baseCurrency_orderAmount_cash}
               />
+
               <SummaryItem
                 console={console.log({ financialBreakdown })}
                 label="Online"
@@ -56,6 +57,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
                 value={financialBreakdown?.baseCurrency_orderAmount_online}
               />
+
               <SummaryItem
                 label="Discount"
                 currencyType={currencyType}
@@ -63,6 +65,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
                 value={financialBreakdown?.baseCurrency_orderAmount_discount}
               />
+
               <SummaryItem
                 label="Buy 1 Get 1"
                 isNegative
@@ -70,6 +73,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
                 value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
               />
+
               <SummaryItem
                 label="Loyalty points"
                 isNegative
@@ -153,10 +157,11 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
                 isNegative
               />
+
               <SummaryItem
                 label="Refunded Amount"
                 currencyType={currencyType}
-                isNegative
+                isNegative={financialBreakdown?.baseCurrency_otherPayments_refundAmount > 0}
                 value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
                 valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
               />
@@ -196,12 +201,14 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 value={financialBreakdown?.baseCurrency_deliveryFee_cash}
                 valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_cash}
               />
+
               <SummaryItem
                 label="Online"
                 currencyType={currencyType}
                 value={financialBreakdown?.baseCurrency_deliveryFee_online}
                 valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_online}
               />
+
               <SummaryItem
                 label="Rider tip"
                 currencyType={currencyType}

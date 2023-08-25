@@ -70,10 +70,10 @@ export const admin_routes = [
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
   { path: '/financials/lyxa', component: LyxaFinancials },
-  { path: '/financials/lyxa/food', component: LyxaOrderFinancials },
-  { path: '/financials/lyxa/grocery', component: LyxaOrderFinancials },
+  { path: '/financials/lyxa/food', component: LyxaOrderFinancials, componentProps: { shopType: 'food' } },
+  { path: '/financials/lyxa/grocery', component: LyxaOrderFinancials, componentProps: { shopType: 'grocery' } },
   { path: '/financials/lyxa/butler', component: LyxaButlerOrderFinancials },
-  { path: '/financials/lyxa/pharmacy', component: LyxaOrderFinancials },
+  { path: '/financials/lyxa/pharmacy', component: LyxaOrderFinancials, componentProps: { shopType: 'pharmacy' } },
   { path: '/test-chat', component: TestChat },
 
   { path: '/orders', component: AdminOrders },

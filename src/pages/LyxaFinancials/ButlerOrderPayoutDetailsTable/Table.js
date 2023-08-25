@@ -59,7 +59,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 value={financialBreakdown?.baseCurrency_orderAmount_online}
               />
               <SummaryItem
-                label="Total Rider Fee"
+                label="Rider Cut"
                 currencyType={currencyType}
                 showIfZero
                 isNegative

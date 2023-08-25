@@ -24,7 +24,7 @@ const pagesList = [
 export default function LyxaFinancials() {
   return (
     <Box pb={10}>
-      <PageTop title="Financials" />
+      <PageTop title="Lyxa Financials" />
       <PageList items={pagesList} />
     </Box>
   );

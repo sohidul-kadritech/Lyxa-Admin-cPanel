@@ -4,7 +4,6 @@
 import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
-
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import StyledBox from '../../components/StyledCharts/StyledBox';
@@ -42,7 +41,7 @@ export default function ButlerOrderPayoutDetails() {
           >
             <PriceItem title="Cash" amount={0} showIfZero />
             <PriceItem title="Online" amount={0} showIfZero />
-            <PriceItem title="Total Rider Fee" amount={0} showIfZero />
+            <PriceItem title="Rider Cut" amount={0} showIfZero isNegative />
           </DetailsAccordion>
 
           {/* profit */}

@@ -22,7 +22,6 @@ import {
 
 export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST, order }) {
   const queryClient = useQueryClient();
-
   const { general } = useGlobalContext();
   const vatPercentage = general?.appSetting?.vat;
 
@@ -34,11 +33,8 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
   const butlerMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
     onSuccess: (data) => {
-      console.log('data response: ', data);
       if (data.status) {
         if (onSuccess) onSuccess(data);
-        successMsg(data.message, 'success');
-        console.log('data status true');
         onClose(false);
         queryClient.invalidateQueries(refetchApiKey);
       } else {
@@ -49,11 +45,15 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
   const normalMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
     onSuccess: (data) => {
-      if (data.success) {
-        if (onSuccess) onSuccess(data);
+      console.log({ data });
+
+      if (data.status) {
         successMsg(data.message, 'success');
-        onClose(false);
+
+        if (onSuccess) onSuccess(data);
         queryClient.invalidateQueries(refetchApiKey);
+
+        onClose();
       } else {
         successMsg(data.message, 'error');
       }
