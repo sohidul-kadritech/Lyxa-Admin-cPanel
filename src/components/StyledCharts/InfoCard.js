@@ -8,7 +8,6 @@ import {
   Unstable_Grid2 as Grid,
   Stack,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import StyledBox from './StyledBox';
@@ -22,10 +21,19 @@ const dropdownProps = {
   zIndex: 99,
 };
 
-export default function InfoCard({ value, title, Tag, isDropdown, children, valueSx, ...props }) {
+export default function InfoCard({
+  value,
+  title,
+  Tag,
+  isDropdown,
+  children,
+  valueSx,
+  titleSx,
+  valueContainerSx,
+  valueComponent,
+  ...props
+}) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const theme = useTheme();
   return (
     <Grid {...props}>
       <Box
@@ -57,23 +65,29 @@ export default function InfoCard({ value, title, Tag, isDropdown, children, valu
                   lineHeight: '24px',
                   fontWeight: '600',
                   flex: 1,
+                  ...titleSx,
                 }}
               >
                 {title}
               </Typography>
               {isDropdown ? dropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon /> : null}
             </Stack>
-            <Stack direction="row" alignItems="flex-end">
-              <Typography
-                variant="h2"
-                sx={{
-                  lineHeight: '24px',
-                  fontSize: '40px !important',
-                  ...valueSx,
-                }}
-              >
-                {value}
-              </Typography>
+            <Stack direction="row" alignItems="flex-end" sx={valueContainerSx}>
+              {valueComponent && valueComponent}
+
+              {value !== undefined && (
+                <Typography
+                  variant="h2"
+                  sx={{
+                    lineHeight: '24px',
+                    fontSize: '40px !important',
+                    ...valueSx,
+                  }}
+                >
+                  {value}
+                </Typography>
+              )}
+
               {/* tag component */}
               {Tag}
             </Stack>

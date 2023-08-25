@@ -10,7 +10,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-const getDataInit = (userId) => ({ userId, amount: 0, adminNote: '', userNote: '' });
+const getDataInit = (userId) => ({ userId, amount: 0, secondaryCurrency_amount: 0, adminNote: '', userNote: '' });
 
 const typeOptions = [
   { label: 'Remove', value: 'remove' },
@@ -49,12 +49,22 @@ export default function AddRemoveCredit({ userId, onClose }) {
 
   const addRemoveCredit = () => {
     if (data?.amount < 0) {
-      successMsg("Amount can't be negative", 'error');
+      successMsg("Base currency amount can't be negative", 'error');
       return;
     }
 
     if (data?.amount > max) {
-      successMsg(`Amount can't be more than ${max}`, 'error');
+      successMsg(`Base currency amount can't be more than ${max}`, 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount < 0) {
+      successMsg("Secondary currency amount can't be negative", 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount > max * adminExchangeRate) {
+      successMsg(`Secondary currency amount can't be more than ${max * adminExchangeRate}`, 'error');
       return;
     }
 
@@ -104,11 +114,21 @@ export default function AddRemoveCredit({ userId, onClose }) {
             },
           }}
         />
+
         {isSecondaryCurrencyEnabled && (
-          <Typography mt="-8px" variant="body3" display="block">
-            Equivalent Price: {secondaryCurrency?.code} {data.amount * appSetting?.adminExchangeRate}
-          </Typography>
+          <StyledFormField
+            label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
+            intputType="text"
+            inputProps={{
+              type: 'number',
+              value: data?.secondaryCurrency_amount,
+              onChange: (e) => {
+                setData({ ...data, secondaryCurrency_amount: e.target.value });
+              },
+            }}
+          />
         )}
+
         <StyledFormField
           label="Admin note"
           intputType="textarea"

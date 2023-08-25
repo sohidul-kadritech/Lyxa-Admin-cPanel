@@ -1,26 +1,20 @@
-// thrid pary
 import { Box } from '@mui/material';
 import PageList from '../../components/Common/PageList';
 import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
-  // {
-  //   label: 'For Sellers',
-  //   to: '/add-wallet/seller-transactions',
-  // },
+  {
+    label: 'For Lyxa',
+    to: '/financials/lyxa',
+  },
   {
     label: 'For Sellers',
     to: '/add-wallet/seller-transactions',
   },
-  // {
-  //   label: 'For Account (Lyxa Pay)',
-  //   to: '/lyxa-pay',
-  // },
   {
     label: 'For Account (Lyxa Pay)',
     to: '/lyxa-pay',
   },
-
   {
     label: 'For Riders',
     to: '/add-wallet/delivery-transactions',

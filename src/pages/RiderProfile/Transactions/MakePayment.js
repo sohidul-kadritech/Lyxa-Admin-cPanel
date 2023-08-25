@@ -20,9 +20,11 @@ const typeToApiMap = { shop: Api.SHOP_MAKE_PAYMENT, rider: Api.RIDER_MAKE_PAYMEN
 export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
   const { general } = useGlobalContext();
-  const { appSetting } = general;
-  const { secondaryCurrency, adminExchangeRate } = appSetting;
-  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
+  const appSetting = general?.appSetting;
+
+  // const secondaryCurrency = appSetting?.secondaryCurrency;
+  const adminExchangeRate = appSetting?.adminExchangeRate;
+  const secondaryEnabled = adminExchangeRate > 0;
 
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
@@ -80,11 +82,26 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
               onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
             }}
           />
-          {isSecondaryCurrencyEnabled && (
+
+          {secondaryEnabled && (
+            <StyledFormField
+              label="Secondary Amount *"
+              intputType="text"
+              inputProps={{
+                type: 'number',
+                // value: data.secondaryCurrency_amount,
+                onChange: () => {
+                  // if (e.target.value > 0) setData({ ...data, secondaryCurrency_amount: e.target.value });
+                  // else setData({ ...data, secondaryCurrency_amount: 1 });
+                },
+              }}
+            />
+          )}
+          {/* {isSecondaryCurrencyEnabled && (
             <Typography mt="-8px" variant="body3" display="block">
               Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}
             </Typography>
-          )}
+          )} */}
           <Stack pt={5}>
             <ListItem label="Total Unsettled Amount" value={amount} />
             <ListItem label="Settle Amount" value={payment.amount} />
@@ -131,7 +148,7 @@ function ListItem({ label, value, isTotal }) {
         {isSecondaryCurrencyEnabled
           ? // with secondary currency
             `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
-              value * adminExchangeRate,
+              value * adminExchangeRate
             )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
           : // without secondary currency
             `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}

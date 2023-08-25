@@ -6,7 +6,7 @@ const disabledSx = {
   opacity: '.6',
 };
 
-export default function StyledAccordion({ isOpen, onChange, children, disabled, Title, ...props }) {
+export default function StyledAccordion({ isOpen, onChange, children, disabled, Title, sx, ...props }) {
   const theme = useTheme();
   return (
     <Accordion
@@ -16,12 +16,12 @@ export default function StyledAccordion({ isOpen, onChange, children, disabled, 
         '&:before': {
           display: 'none',
         },
-
+        ...sx,
         ...(disabled && disabledSx),
       }}
       expanded={isOpen}
       onChange={(e, closed) => {
-        onChange(closed);
+        if (onChange) onChange(closed);
       }}
       {...props}
     >

@@ -1,14 +1,74 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable no-unused-vars */
+import { Delete } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import Rating from '../../../components/Common/Rating';
 import TableDateTime from '../../../components/Common/TableDateTime';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
-import StyledTable from '../../../components/Styled/StyledTable3';
-import localDatePagination from '../../../helpers/localDataPaginations';
 
-export default function ReviewTable({ reviews, onViewDetail }) {
+import ConfirmModal from '../../../components/Common/ConfirmModal';
+import StyledIconButton from '../../../components/Styled/StyledIconButton';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
+import StyledTable from '../../../components/Styled/StyledTable3';
+import { useGlobalContext } from '../../../context';
+import localDatePagination from '../../../helpers/localDataPaginations';
+import { successMsg } from '../../../helpers/successMsg';
+import * as API_URL from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+
+export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews }) {
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [currentReview, setCurrentReview] = useState({});
+
+  const [open, setOpen] = useState(false);
+
+  const [actionType, setActionType] = useState('');
+
+  const { currentUser } = useGlobalContext();
+
+  const { admin } = currentUser;
+
+  const { adminType } = admin;
+
+  const queryClient = useQueryClient();
+
+  const deleteReviewsQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_USER_REVIEW, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Review deleted succesfully', 'success');
+        setFilteredReviews((prev) => {
+          const updatedReview = prev.filter((review) => review._id !== currentReview?._id);
+
+          return updatedReview;
+        });
+        // queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        setOpen(false);
+      } else {
+        successMsg(data?.message, 'error');
+      }
+    },
+  });
+
+  const updateVisibilityReviewsQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_VISIBILITY_USER_REVIEW, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg('Review updated succesfully', 'success');
+        setFilteredReviews((prev) => {
+          const index = prev.findIndex((item) => item?._id === currentReview?._id);
+          if (index >= 0) prev[index].reviewVisibility = !prev[index].reviewVisibility;
+          return [...prev];
+        });
+        // queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        setOpen(false);
+      } else {
+        successMsg(data?.message, 'error');
+      }
+    },
+  });
 
   const columns = [
     {
@@ -69,6 +129,48 @@ export default function ReviewTable({ reviews, onViewDetail }) {
     },
   ];
 
+  if (adminType === 'admin') {
+    const newColumn = {
+      id: 5,
+      headerName: 'ACTION',
+      align: 'right',
+      flex: 1,
+      headerAlign: 'right',
+      field: 'action',
+      sortable: false,
+      renderCell: ({ row }) => (
+        <Stack direction="row" gap={3}>
+          <StyledSwitch
+            checked={row?.reviewVisibility}
+            onClick={() => {
+              setActionType(`${row?.reviewVisibility ? 'hide' : 'show'}`);
+              setOpen(true);
+              setCurrentReview(row);
+            }}
+          />
+          <StyledIconButton
+            sx={{
+              '&.Mui-disabled': {
+                color: '#c1c1c1',
+                backgroundColor: '#F3F6F9',
+              },
+            }}
+            color="primary"
+            onClick={() => {
+              setActionType('delete');
+              setOpen(true);
+              setCurrentReview(row);
+            }}
+          >
+            <Delete />
+          </StyledIconButton>
+        </Stack>
+      ),
+    };
+
+    columns.push(newColumn);
+  }
+
   return (
     <>
       <Box
@@ -104,6 +206,24 @@ export default function ReviewTable({ reviews, onViewDetail }) {
           setCurrentPage(page);
         }}
         totalPage={Math.ceil(reviews.length / 5)}
+      />
+
+      <ConfirmModal
+        isOpen={open}
+        message={`Do you want to ${
+          actionType === 'delete' ? 'delete this review' : `${actionType} this review from mobile apps`
+        } ?`}
+        loading={deleteReviewsQuery?.isLoading || updateVisibilityReviewsQuery?.isLoading}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        onConfirm={() => {
+          if (actionType === 'delete') {
+            deleteReviewsQuery.mutate({ reviewId: currentReview?._id });
+            return;
+          }
+          updateVisibilityReviewsQuery.mutate({ reviewId: currentReview?._id });
+        }}
       />
     </>
   );

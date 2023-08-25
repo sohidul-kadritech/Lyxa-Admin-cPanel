@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
@@ -5,6 +6,7 @@ import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import StyledTabs2 from '../../Styled/StyledTab2';
 import ChartBox from '../../StyledCharts/ChartBox';
 import StyledAreaChart from '../../StyledCharts/StyledAreaChart';
@@ -15,21 +17,21 @@ const generateData = (data, marketingSpentType = '') => {
     all: {
       discount: 'totalDiscount',
       points: 'totalRewardAmount',
-      doubleDeal: 'totalDoubleMenuItemPrice',
+      doubleDeal: 'totalDoubleMenuCut',
       freeDelivery: 'totalFreeDelivery',
       featureAmount: 'totalFeaturedAmount',
     },
     shop: {
       discount: 'totalShopDiscount',
       points: 'totalShopRewardAmount',
-      doubleDeal: 'totalShopDoubleMenuItemPrice',
+      doubleDeal: 'totalShopDoubleMenuCut',
       freeDelivery: 'freeDeliveryShopCut',
       featureAmount: 'totalFeaturedAmount',
     },
     admin: {
       discount: 'totalAdminDiscount',
       points: 'totalAdminRewardAmount',
-      doubleDeal: 'totalAdminDoubleMenuItemPrice',
+      doubleDeal: 'totalAdminDoubleMenuCut',
       freeDelivery: 'freeDeliveryDropCut',
     },
   };
@@ -40,6 +42,8 @@ const generateData = (data, marketingSpentType = '') => {
   const freeDelivery = [];
   const featureAmount = [];
   const date = [];
+
+  console.log('marketing data', data);
 
   data?.forEach((node) => {
     const dprop = typeNameMap[marketingSpentType]?.discount;
@@ -61,7 +65,7 @@ const generateData = (data, marketingSpentType = '') => {
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });

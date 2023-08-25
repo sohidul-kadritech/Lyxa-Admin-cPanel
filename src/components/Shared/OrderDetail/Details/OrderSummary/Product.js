@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
 
 const productDeal = (product) => {
-  if (product?.isDoubleDeal) return 'double_menu';
+  if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
   if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
 

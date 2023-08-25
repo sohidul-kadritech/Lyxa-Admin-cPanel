@@ -5,6 +5,7 @@ import IncrementDecrementButton from '../../ReferFriend/IncrementDecrementButton
 
 export default function MinimumOrder({
   TypoSx,
+  endAdornment,
   incrementOrder,
   decrementOrder,
   setHasChanged,
@@ -20,25 +21,14 @@ export default function MinimumOrder({
 
   return (
     <Box sx={props.boxSx}>
-      <Typography sx={TypoSx}>Minimum Order ({currency})</Typography>
+      <Typography sx={TypoSx}>Minimum Order</Typography>
       <Box
         sx={{
           marginTop: '15px',
         }}
       >
-        {/* <Stack direction="row" justifyContent="center" spacing={3} alignItems="center">
-          <Button disableRipple sx={{ fontSize: '32px', fontWeight: 600 }} onClick={decrementOrder}>
-            -
-          </Button>
-          <Typography sx={{ fontSize: { lg: '18px', md: '16px', xs: '16px' }, fontWeight: 400, color: '#363636' }}>
-            {current}
-          </Typography>
-          <Button disableRipple sx={{ fontSize: '32px' }} onClick={incrementOrder}>
-            +
-          </Button>
-        </Stack> */}
-
         <IncrementDecrementButton
+          endAdornment={currency}
           currentValue={current}
           setValue={setValue}
           incrementHandler={incrementOrder}

@@ -137,7 +137,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
         chat.status = 'accepted';
         setRender((prev) => !prev);
 
-        console.log('accepted data', data);
+        // console.log('accepted data', data);
 
         messages?.push({
           type: 'admin',

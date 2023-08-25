@@ -9,6 +9,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 // import SearchBar from '../Flags/Searchbar';
 import SearchBar from '../../../components/Common/CommonSearchbar';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import CustomerRatingTable from './CustomerRating';
 import ShopRatingTable from './ShopRating';
 
@@ -16,7 +17,7 @@ export const queryParamsInit = {
   page: 1,
   pageSize: 5,
   sortBy: 'DESC',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   deliveryBoyId: '',

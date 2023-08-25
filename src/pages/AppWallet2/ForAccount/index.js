@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
 import PageTop from '../../../components/Common/PageTop';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../../context';
@@ -13,7 +14,6 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { sortOptions } from '../../Faq2/helpers';
-import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 import AddRemoveCredit from './AddRemoveCredit';
 import AccountTable from './Table';
 
@@ -32,7 +32,7 @@ const queryParamsInit = {
   page: 1,
   pageSize: 15,
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   searchKey: '',
   sortBy: 'desc',
 };
@@ -109,80 +109,68 @@ function AccountFinancials() {
         breadcrumbItems={breadcrumbItems}
         backTo="/financials"
         sx={{
-          position: 'sticky',
-          top: '-2px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
           fontWeight: 700,
         }}
       />
-      <Stack direction="row" justifyContent="end" gap="17px" flexWrap="wrap" sx={{ marginBottom: '30px' }}>
+      <Stack direction="row" justifyContent="end" gap="17px" flexWrap="wrap" pb={7.5}>
         <Typography variant="h6" sx={{ fontSize: '15px', fontWeight: '600', color: 'text.secondary2' }}>
           Balance Amount: {currency}
           {getDashboardSummary?.data?.data?.summary?.totalDropEarning || 0}
         </Typography>
       </Stack>
-      <Box>
-        <Stack direction="row" justifyContent="start" gap="17px" flexWrap="wrap" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar
-            sx={{ flex: '1' }}
-            placeholder="Search"
-            onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
-          />
-          <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sortBy',
-              placeholder: 'sortBy',
-              value: queryParams?.sortBy,
-              items: sortOptions,
-              size: 'sm2',
-              onChange: (e) => setQueryParams((prev) => ({ ...prev, sortBy: e.target.value })),
-            }}
-          />
-          <Box flexShrink={0}>
-            <Button
-              variant="outlined"
-              size="small"
-              color="primary"
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              Add/Remove Credit
-            </Button>
-          </Box>
-          <AddMenuButton
-            sx={{
-              flexShrink: 0,
-            }}
-            title="Download"
-            icon={<DownloadIcon />}
+      <Stack direction="row" justifyContent="start" gap="17px" flexWrap="wrap" sx={{ marginBottom: '30px' }}>
+        <StyledSearchBar
+          sx={{ flex: '1' }}
+          placeholder="Search"
+          onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
+        />
+        <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
+        <StyledFormField
+          intputType="select"
+          containerProps={{
+            sx: { padding: '0px 0px' },
+          }}
+          inputProps={{
+            name: 'sortBy',
+            placeholder: 'sortBy',
+            value: queryParams?.sortBy,
+            items: sortOptions,
+            size: 'sm2',
+            onChange: (e) => setQueryParams((prev) => ({ ...prev, sortBy: e.target.value })),
+          }}
+        />
+        <Box flexShrink={0}>
+          <Button
+            variant="outlined"
+            size="small"
+            color="primary"
             onClick={() => {
-              downloadPdf();
+              setOpen(true);
             }}
-          />
-        </Stack>
-      </Box>
-      <Box sx={{ marginBottom: '35px' }}>
-        {getDropPayList?.isLoading ? (
-          <TablePageSkeleton row={8} column={5} />
-        ) : (
-          <AccountTable
-            loading={getDropPayList?.isLoading}
-            data={getDropPayList?.data?.data?.transactionList}
-            currentPage={queryParams?.page}
-            setCurrentPage={(page) => {
-              setQueryParams((prev) => ({ ...prev, page }));
-            }}
-            totalPage={getDropPayList?.data?.data?.paginate?.metadata?.page?.totalPage}
-          />
-        )}
-      </Box>
+          >
+            Add/Remove Credit
+          </Button>
+        </Box>
+        <AddMenuButton
+          sx={{
+            flexShrink: 0,
+          }}
+          title="Download"
+          icon={<DownloadIcon />}
+          onClick={() => {
+            downloadPdf();
+          }}
+        />
+      </Stack>
+      <AccountTable
+        loading={getDropPayList?.isLoading}
+        data={getDropPayList?.data?.data?.transactionList}
+        currentPage={queryParams?.page}
+        setCurrentPage={(page) => {
+          setQueryParams((prev) => ({ ...prev, page }));
+        }}
+        totalPage={getDropPayList?.data?.data?.paginate?.metadata?.page?.totalPage}
+      />
       <Drawer open={open} anchor="right">
         <AddRemoveCredit storeAppSettings={storeAppSettings} onClose={() => setOpen(false)} />
       </Drawer>

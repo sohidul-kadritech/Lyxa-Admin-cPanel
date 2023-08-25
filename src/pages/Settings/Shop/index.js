@@ -71,8 +71,9 @@ const getHasFreeDelivery = (shop) => {
 };
 
 function ShopSettings() {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { shop, adminType, admin } = currentUser;
+  const { currency } = general;
   console.log('adminType', admin?.adminType);
   const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
 
@@ -370,6 +371,7 @@ function ShopSettings() {
                 >
                   <IncrementDecrementButton
                     currentValue={newDeliveryFee}
+                    endAdornment={currency?.symbol}
                     setValue={(value) => {
                       set_has_unsaved_change(true);
                       if (typeof value === 'function') {
@@ -426,6 +428,7 @@ function ShopSettings() {
                 >
                   <IncrementDecrementButton
                     currentValue={newOrderCapacity}
+                    endAdornment="orders"
                     setValue={(value) => {
                       if (typeof value === 'function') {
                         setNewOrderCapacity(value);
@@ -447,14 +450,16 @@ function ShopSettings() {
                 paddingTop: '21px',
               }}
             >
-              <Typography sx={TypoSx}>Max Discount</Typography>
+              <Typography sx={TypoSx}>Max Discount Per Item (Marketing) </Typography>
               <Box
                 sx={{
                   marginTop: '15px',
                 }}
               >
                 <IncrementDecrementInput
+                  endAdornment={currency?.symbol}
                   min={0}
+                  // max={100}
                   step={5}
                   dynamicWidth
                   value={newMaxDiscount}

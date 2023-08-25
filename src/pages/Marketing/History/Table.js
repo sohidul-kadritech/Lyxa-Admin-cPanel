@@ -8,6 +8,7 @@ import StyledBox from '../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../context';
 import { getDurationFromMarketingHistory } from '../Dashbaord/helpers';
 import { getHistoryMarketingStatus } from '../helpers';
+import { getMarketingStatusWithDate } from './helpers';
 
 const dealTypeToLabelMap = {
   free_delivery: '$0 Delivery fee',
@@ -27,6 +28,10 @@ const colorMap = {
     background: '#F6F8FA',
   },
   paused: {
+    color: '#DD5B63',
+    background: '#FEE2E2',
+  },
+  deleted: {
     color: '#DD5B63',
     background: '#FEE2E2',
   },
@@ -105,11 +110,11 @@ export default function MarketingHistoryTable({ rows = [], loading, page, setPag
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      renderCell: ({ row }) => {
-        const status = getHistoryMarketingStatus(row);
+      renderCell: (params) => {
+        const status = getHistoryMarketingStatus(params?.row);
         return (
           <Chip
-            label={status}
+            label={getMarketingStatusWithDate(status, params?.row)}
             sx={{
               height: 'auto',
               padding: '12px 23px',
@@ -136,7 +141,6 @@ export default function MarketingHistoryTable({ rows = [], loading, page, setPag
           overflowX: 'auto',
           scrollbarWidth: 'thin',
           scrollbarHeight: 'thin',
-
           '&::-webkit-scrollbar': {
             width: '6px',
             height: '6px',
@@ -148,7 +152,7 @@ export default function MarketingHistoryTable({ rows = [], loading, page, setPag
           columns={columns}
           getRowId={(row) => row?._id}
           rows={rows?.filter((row) => !row?.hidden)}
-          rowHeight={71}
+          rowHeight={81}
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">

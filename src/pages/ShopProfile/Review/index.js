@@ -50,7 +50,8 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
   }, [queryParams]);
 
   useEffect(() => {
-    setQueryParams(getQueryParamsInit());
+    setQueryParams({ ...queryParams });
+    // setQueryParams(getQueryParamsInit());
   }, [reviews]);
 
   return (
@@ -61,7 +62,7 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
         searchPlaceHolder="Search Reviews"
         showFilters={{ search: true, date: true, sort: true }}
       />
-      <ReviewTable reviews={filteredReviews} onViewDetail={onViewDetail} />
+      <ReviewTable reviews={filteredReviews} setFilteredReviews={setFilteredReviews} onViewDetail={onViewDetail} />
     </Box>
   );
 }

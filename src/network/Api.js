@@ -83,6 +83,8 @@ export const USER_ORDERS = `${ADMIN_ENDPOINT}/order/user`;
 export const USER_STATUS = `${ADMIN_ENDPOINT}/USER/update-status`;
 export const USER_UPDATE = `${ADMIN_ENDPOINT}/user/update`;
 export const USER_REVIEWS = `${ADMIN_ENDPOINT}/user/reviews`;
+export const DELETE_USER_REVIEW = `${ADMIN_ENDPOINT}/review/delete`;
+export const UPDATE_VISIBILITY_USER_REVIEW = `${ADMIN_ENDPOINT}/review/update-visibility`;
 
 // CATEGORY
 export const ADD_CATEGORY = `${ADMIN_ENDPOINT}/category/add-category`;
@@ -270,6 +272,8 @@ export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
+export const SHOP_ACTIVE_DELIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-shop-delivery-boy-order`;
+
 // BUTLER
 export const BUTLER_ORDER_LIST = `${ADMIN_ENDPOINT}/butler`;
 export const BUTLER_SINGLE_ORDER = `${ADMIN_ENDPOINT}/butler/single-details`;

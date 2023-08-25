@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
@@ -57,7 +56,7 @@ function Product() {
           endDate: range.end,
         },
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -114,8 +113,6 @@ function Product() {
       <Box marginBottom="30px">
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
-
           <StyledFormField
             intputType="select"
             containerProps={{

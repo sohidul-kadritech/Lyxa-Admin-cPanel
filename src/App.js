@@ -31,9 +31,10 @@ export default function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
-  const { userType, adminType } = currentUser;
+  const { userType, adminType, shop } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
+  const [, setRender] = useState(false);
 
   const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     enabled: false,
@@ -82,13 +83,24 @@ export default function App() {
 
   // retries when user comes logs in
   useEffect(() => {
-    // initialize socket connection
-    socketConnect();
+    if (userType) socketConnect();
+  }, [userType]);
+
+  useEffect(() => {
+    if (userType === 'shop' || userType === 'admin') {
+      socketServices.on(`shopLiveStatusUpdated-${shop?._id}`, (data) => {
+        if (shop?._id === data?.shopId) {
+          console.log('socketdata', data);
+          currentUser.shop.liveStatus = data?.liveStatus;
+          setRender((prev) => !prev);
+        }
+      });
+    }
 
     return () => {
-      socketServices?.close();
+      shop?._id && socketServices?.removeListener(`shopLiveStatusUpdated-${shop?._id}`);
     };
-  }, [userType]);
+  }, [userType, shop]);
 
   return (
     <Box>

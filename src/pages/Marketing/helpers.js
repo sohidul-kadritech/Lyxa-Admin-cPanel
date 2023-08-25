@@ -23,6 +23,9 @@ export const getPromotionStatus = (mQuery, type, activeDeals) => {
 };
 
 export const getHistoryMarketingStatus = (marketing) => {
+  if (marketing?.marketingDeletedType === 'before_expired') {
+    return 'deleted';
+  }
   if (typeof marketing?.deletedAt === 'string') return 'expired';
 
   if (marketing?.isActive && marketing?.status === 'active') {

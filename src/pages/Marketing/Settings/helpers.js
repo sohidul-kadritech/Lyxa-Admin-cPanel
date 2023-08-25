@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography, styled, useTheme } from '@mui/material';
 import moment from 'moment';
@@ -6,11 +7,6 @@ export const itemSelectOptions = [
   { label: 'Selected Items', value: 'single' },
   { label: 'Entire Menu', value: 'multiple' },
 ];
-
-export const durationInit = {
-  start: moment().format('YYYY-MM-DD'),
-  end: moment().endOf('month').format('YYYY-MM-DD'),
-};
 
 export const confirmActionInit = {
   message: '',
@@ -222,4 +218,31 @@ export const getDateRange = (mData) => {
   }
 
   return Math.ceil(moment(mData?.duration?.end).endOf('day').diff(moment().startOf('day'), 'days', true));
+};
+
+export const getRemainingSpendingLimit = (spendLimit, amountSpent) => {
+  const remainingSpentLimit = spendLimit - amountSpent;
+
+  /*
+  @For example we have no spending limit
+  spending limit: 0,
+  amount spending: 1800,
+  Now remaining spentLimit will be -1800, that means it exceed its limit or there are no spending limits 
+  (In our case spending limit is 0 that means there are no spending limit).
+  here we check if our remaining spend limit is negative or zero it returns zero otherwise it returns actual one.
+  in this example it return 0
+
+
+  For example we have some spending limit
+  spending limit: 200,
+  amount spending: 120,
+  Now remaining spentLimit will be 80
+  in this example it return 80 not zero. because it greater than 0.
+  */
+
+  if (remainingSpentLimit > 0) {
+    return remainingSpentLimit;
+  }
+
+  return 0;
 };

@@ -10,11 +10,12 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 import { CardTitle } from '../../../components/Shared/Operations';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { createCouponOverviewRows } from '../helpers';
 import CouponOverviewTable from './Table';
 
 const queryParamsInit = {
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
 };
 
@@ -39,7 +40,7 @@ export default function CouponOverview() {
           setRows(createCouponOverviewRows(data?.data));
         }
       },
-    },
+    }
   );
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function CouponOverview() {
       </Box>
       <Grid container spacing={5} pb={7.5}>
         <InfoCard
-          title={<CardTitle title="Amount Spent" tooltip="How much was spent using coupons?" />}
+          title={<CardTitle title="Amount Spent" tooltip="How much was spent using the ongoing coupons?" />}
           value={`${currency}${overView?.totalCouponsAmountSpent || 0}`}
           sm={6}
           md={2.4}
@@ -74,19 +75,26 @@ export default function CouponOverview() {
           md={2.4}
         />
         <InfoCard
-          title={<CardTitle title="Total Orders" tooltip="How many orders were made using the ongoing coupon?" />}
+          title={<CardTitle title="Total Orders" tooltip="How many orders were made using the ongoing coupons?" />}
           value={`${overView?.totalCouponsUsageOrders || 0}/${overView?.totalCouponsOrders || 0}`}
           sm={6}
           md={2.4}
         />
         <InfoCard
-          title={<CardTitle title="Order Increase" tooltip="How many orders are increased on coupon?" />}
+          title={
+            <CardTitle title="Order Increase" tooltip="How many orders have been made during the ongoing coupons?" />
+          }
           value={`${overView?.orderIncreasePercentage || 0}%`}
           sm={6}
           md={2.4}
         />
         <InfoCard
-          title={<CardTitle title="Usage" tooltip="Percentage of total orders on total order limits" />}
+          title={
+            <CardTitle
+              title="Usage"
+              tooltip="Percentage of total orders on total order limits on the ongoing coupons"
+            />
+          }
           value={`${overView?.totalCouponsUsagePercentage || 0}%`}
           sm={6}
           md={2.4}

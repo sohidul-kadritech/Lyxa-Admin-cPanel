@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Modal, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import DateRange from '../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../context';
@@ -33,7 +35,7 @@ const queryParamsInit = {
   pageSize: 15,
   searchKey: '',
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   sort: '',
   adminId: '',
   amountRange: '',
@@ -46,10 +48,17 @@ function Vat2() {
 
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const { general } = useGlobalContext();
+
   const [settleAmount, setSettleAmount] = useState(0);
+
   const [open, setOpen] = useState(false);
+
   const getCurrentCurrency = general?.currency;
+
+  console.log('getCurrentCurrency', getCurrentCurrency);
+
   const theme = useTheme();
+
   const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN], () => AXIOS.get(API_URL.GET_ALL_ADMIN));
 
   const getAllTransaction = useQuery([API_URL.GET_ALL_ADMIN_VAT, queryParams], () =>
@@ -59,6 +68,7 @@ function Vat2() {
         startDate: moment(queryParams?.startDate).format('YYYY-MM-DD'),
         endDate: moment(queryParams?.endDate).format('YYYY-MM-DD'),
       },
+      // eslint-disable-next-line prettier/prettier
     })
   );
 
@@ -225,7 +235,9 @@ function Vat2() {
             <Box>
               <Typography variant="h5">Unpaid VAT</Typography>
               <Typography variant="h2">
-                {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2) || 0}
+                {`${getCurrentCurrency?.symbol} ${(
+                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat || 0
+                ).toFixed(2)}`}
               </Typography>
             </Box>
           </Box>
@@ -241,11 +253,10 @@ function Vat2() {
             <Box>
               <Typography variant="h5">Paid VAT</Typography>
               <Typography variant="h2">
-                {calculatePaidVat(
+                {`${getCurrentCurrency?.symbol} ${calculatePaidVat(
                   getAllTransaction?.data?.data?.summary?.totalVat,
-                  // eslint-disable-next-line prettier/prettier
                   getAllTransaction?.data?.data?.summary?.totalUnsettleVat
-                ) || 0}
+                )}`}
               </Typography>
             </Box>
           </Box>
@@ -260,7 +271,9 @@ function Vat2() {
           >
             <Box>
               <Typography variant="h5">Target VAT</Typography>
-              <Typography variant="h2">{getAllTransaction?.data?.data?.summary?.totalVat}</Typography>
+              <Typography variant="h2">
+                {`${getCurrentCurrency?.symbol} ${(getAllTransaction?.data?.data?.summary?.totalVat || 0).toFixed(2)}`}
+              </Typography>
             </Box>
           </Box>
         </Stack>
@@ -341,7 +354,7 @@ function Vat2() {
             <Stack gap="10px" flexDirection="row" justifyContent="space-between">
               <Typography>Unpaid VAT</Typography>{' '}
               <Typography>
-                {calculatePaidVat(getAllTransaction?.data?.data?.summary?.totalUnsettleVat, settleAmount).toFixed(2)}
+                {calculatePaidVat(getAllTransaction?.data?.data?.summary?.totalUnsettleVat, settleAmount)}
                 {getCurrentCurrency?.symbol}
               </Typography>
             </Stack>

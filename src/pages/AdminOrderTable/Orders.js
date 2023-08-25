@@ -1,10 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Box } from '@mui/material';
 // import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
-// import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
@@ -43,7 +43,7 @@ export default function Orders({ queryParams, setQueryParams }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   return (

@@ -9,11 +9,13 @@ function SettingsWithIncrementDecrementButton({
   setNewAppSettings,
   setHasChanged,
   action,
+  endAdornment,
 }) {
   const { incrementHandler, decrementHandler } = action;
   return (
     <StyledBox title={title}>
       <IncrementDecrementButton
+        endAdornment={endAdornment}
         dynamicWidth
         isChangeOthers
         changeOthers={() => {

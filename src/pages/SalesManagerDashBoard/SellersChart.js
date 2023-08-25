@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import ChartBox from '../../components/StyledCharts/ChartBox';
 import StyledBarChart from '../../components/StyledCharts/StyledBarChart';
 import { generateGraphData } from '../../helpers/generateGraphData';
@@ -9,7 +11,7 @@ import AXIOS from '../../network/axios';
 
 const dateRangeItit = {
   end: moment(),
-  start: moment().subtract(7, 'd'),
+  start: getFirstMonday('week'),
 };
 
 export default function SellersChart({ viewUserType = 'shop' }) {
@@ -36,7 +38,7 @@ export default function SellersChart({ viewUserType = 'shop' }) {
 
   const sellersData = generateGraphData(
     salesGraphQuery?.data?.data?.info || [],
-    (item) => item.payout,
+    (item) => item.seller,
     (item) => moment(item?.date).format('MMMM DD')
   );
 

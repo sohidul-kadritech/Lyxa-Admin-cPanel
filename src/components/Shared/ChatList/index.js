@@ -7,10 +7,11 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import OrderCancel from '../../../pages/NewOrder/OrderCancel';
 import { UpdateFlag } from '../../../pages/NewOrder/UpdateFlag';
-import UpdateOrderStatus from '../../../pages/NewOrder/UpdateOrderStatus';
+
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import TablePagination from '../../Common/TablePagination';
 import { getChatRequestId } from '../ChatDetail/Chat';
+import UpdateOrderStatus from '../UpdateOrderStatus';
 import ChatItem from './ChatItem';
 import ChatListSkeleton from './Skeleton';
 
