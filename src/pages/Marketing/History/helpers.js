@@ -8,15 +8,13 @@ export const getMarketingStatusWithDate = (status, row) => {
   const expiredDate = row?.duration;
   const duration = getDateRange(row);
 
-  console.log(expiredDate, duration);
-
   if (status === 'paused')
     return (
       <Stack alignItems="center" gap={0}>
-        <Typography variant="body" sx={{ fontSize: '12px' }}>
+        <Typography variant="body" sx={{ fontSize: '14px' }}>
           {status}
         </Typography>
-        <Typography variant="body" sx={{ fontSize: '10px !important', color: '#525252' }}>
+        <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
           {moment(marketingPausedAt).format('MMMM DD, YYYY')}
         </Typography>
       </Stack>
@@ -24,10 +22,10 @@ export const getMarketingStatusWithDate = (status, row) => {
   if (status === 'deleted')
     return (
       <Stack alignItems="center" gap={0}>
-        <Typography variant="body" sx={{ fontSize: '12px' }}>
+        <Typography variant="body" sx={{ fontSize: '14px' }}>
           {status}
         </Typography>
-        <Typography variant="body" sx={{ fontSize: '10px !important', color: '#525252' }}>
+        <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
           {moment(marketingDeleteAt).format('MMMM DD, YYYY')}
         </Typography>
       </Stack>
@@ -36,10 +34,10 @@ export const getMarketingStatusWithDate = (status, row) => {
   if (status === 'expired')
     return (
       <Stack alignItems="center" gap={0}>
-        <Typography variant="body" sx={{ fontSize: '12px' }}>
+        <Typography variant="body" sx={{ fontSize: '14px' }}>
           {status}
         </Typography>
-        <Typography variant="body" sx={{ fontSize: '10px !important', color: '#525252' }}>
+        <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
           {moment(expiredDate?.end).format('MMMM DD, YYYY')}
         </Typography>
       </Stack>
@@ -48,10 +46,10 @@ export const getMarketingStatusWithDate = (status, row) => {
   if (status === 'ongoing')
     return (
       <Stack alignItems="center" gap={0}>
-        <Typography variant="body" sx={{ fontSize: '12px' }}>
+        <Typography variant="body" sx={{ fontSize: '14px' }}>
           {status}
         </Typography>
-        <Typography variant="body" sx={{ fontSize: '10px !important', color: '#525252' }}>
+        <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
           {duration} days left
         </Typography>
       </Stack>
