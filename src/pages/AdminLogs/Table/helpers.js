@@ -60,15 +60,8 @@ export const getValue = (type, value, currency) => {
       </Stack>
     );
   } else if (type === 'maxDiscount') {
-    newValue = (
-      <Stack gap="4px" padding="16px 0px">
-        {value.map((item) => (
-          <Typography variant="body4" key={item}>
-            {item}%
-          </Typography>
-        ))}
-      </Stack>
-    );
+    console.log('maxDiscount', value);
+    newValue = <Typography variant="body4">{value}</Typography>;
   } else if (type === 'searchDeliveryBoyKm') {
     newValue = (
       <Stack gap="4px" padding="16px 0px">

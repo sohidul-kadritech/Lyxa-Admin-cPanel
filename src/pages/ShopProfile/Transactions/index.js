@@ -1,5 +1,4 @@
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -7,7 +6,9 @@ import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MakePayment from '../../RiderProfile/Transactions/MakePayment';
@@ -24,7 +25,7 @@ const getTrxQueryParams = (shopId) => ({
   shopId,
   sortBy: 'DESC',
   tnxFilter: {
-    startDate: moment().subtract(7, 'day'),
+    startDate: getFirstMonday('week'),
     endDate: moment(),
     type: ['adminAddBalanceShop', 'adminRemoveBalanceShop', 'adminSettlebalanceShop'],
     searchKey: '',
@@ -38,8 +39,9 @@ export default function ShopTransactions({ shop }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [makePayment, setMakePayment] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
-  const [storeAppSettings, setStoreAppSettings] = useState({});
 
+  const { general } = useGlobalContext();
+  const storeAppSettings = general?.appSetting;
   const queryClient = useQueryClient();
 
   const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
@@ -48,15 +50,9 @@ export default function ShopTransactions({ shop }) {
     },
   });
 
-  const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      if (data.status) {
-        setStoreAppSettings({ ...getAppSettingsData?.data?.data?.appSetting });
-      }
-    },
-  });
-
   const summary = query?.data?.data?.summary || {};
+
+  console.log({ summary });
 
   // calculating total product amount
   const totalProductAmount = summary?.totalProductAmount || 0;
@@ -143,7 +139,7 @@ export default function ShopTransactions({ shop }) {
             shopId={shop?._id}
             storeAppSettings={storeAppSettings}
             dropAmount={summary?.totalDropGet}
-            shopAmount={summary?.toalShopProfile}
+            shopAmount={summary?.totalProfit}
             onClose={() => {
               setModalOpen(false);
             }}

@@ -39,6 +39,11 @@ export const getUserData = async (accountType, accountId, credentialUserId) => {
       return { status: false, invalidUser: true, user: null };
     }
 
+    // if user has been deactivated - will be logged out
+    if (userData?.data[accountType]?.status === 'inactive') {
+      return { status: false, invalidUser: true, user: null };
+    }
+
     // valid user
     return { status: true, user: { ...userData?.data[accountType], credentialUserId } };
 

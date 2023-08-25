@@ -9,15 +9,15 @@ import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
-import OrderCancel from '../../components/Shared/CancelOrder';
+import CancelOrder from '../../components/Shared/CancelOrder';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
+import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
-import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
 import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 import OrderTrackingModal from './OrderTracking';
 
@@ -360,6 +360,18 @@ export default function Table({
           }}
         />
       </Drawer>
+
+      {/* flag add */}
+      <Modal
+        open={flagModal}
+        onClose={() => {
+          setFlagModal(false);
+        }}
+      >
+        <Box>
+          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
+        </Box>
+      </Modal>
       {/* update status */}
       <Modal
         open={updateStatusModal}
@@ -375,27 +387,18 @@ export default function Table({
           />
         </Box>
       </Modal>
-      {/* flag add */}
-      <Modal
-        open={flagModal}
-        onClose={() => {
-          setFlagModal(false);
-        }}
-      >
-        <Box>
-          <UpdateFlag currentOrder={currentOrder} onClose={() => setFlagModal(false)} />
-        </Box>
-      </Modal>
+
       {/*  cancel order */}
       <Modal
         open={openCancelModal}
+        sx={{ zIndex: '10 !important' }}
         onClose={() => {
           setOpenCancelModal(!openCancelModal);
         }}
-        sx={{ zIndex: '10 !important' }}
       >
         <Box>
-          <OrderCancel order={currentOrder} onClose={() => setOpenCancelModal(false)} />
+          \
+          <CancelOrder order={currentOrder} onClose={() => setOpenCancelModal(false)} />
         </Box>
       </Modal>
       {/* rerfund order */}

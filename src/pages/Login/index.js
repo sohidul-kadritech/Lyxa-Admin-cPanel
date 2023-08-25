@@ -23,6 +23,8 @@ export default function Login({ loginFor }) {
   const [modal, setModal] = useState(false);
 
   const onLoginSuccess = async (data) => {
+    // socketConnect();
+
     if (!data?.status) {
       setLoginError(data?.message);
       return;

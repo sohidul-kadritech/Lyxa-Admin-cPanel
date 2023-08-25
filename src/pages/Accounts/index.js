@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import UsersTable from './Table';
@@ -14,7 +15,7 @@ const queryParamsInit = {
   pageSize: 20,
   sortBy: 'DESC',
   type: 'ongoing',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
   status: '',

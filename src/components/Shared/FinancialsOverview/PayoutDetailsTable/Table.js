@@ -1,11 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material';
+import TablePagination from '../../../Common/TablePagination';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
 import StyledTable from '../../../Styled/StyledTable3';
 import StyledBox from '../../../StyledCharts/StyledBox';
 import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
 
-export default function Table({ currencyType, loading, rows = [] }) {
+export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage }) {
   const columns = [
     {
       id: 1,
@@ -48,6 +49,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
                 value={financialBreakdown?.baseCurrency_orderAmount_cash}
               />
+
               <SummaryItem
                 console={console.log({ financialBreakdown })}
                 label="Online"
@@ -55,6 +57,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
                 value={financialBreakdown?.baseCurrency_orderAmount_online}
               />
+
               <SummaryItem
                 label="Discount"
                 currencyType={currencyType}
@@ -62,6 +65,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
                 value={financialBreakdown?.baseCurrency_orderAmount_discount}
               />
+
               <SummaryItem
                 label="Buy 1 Get 1"
                 isNegative
@@ -69,6 +73,7 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
                 value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
               />
+
               <SummaryItem
                 label="Loyalty points"
                 isNegative
@@ -152,10 +157,11 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
                 isNegative
               />
+
               <SummaryItem
                 label="Refunded Amount"
                 currencyType={currencyType}
-                isNegative
+                isNegative={financialBreakdown?.baseCurrency_otherPayments_refundAmount > 0}
                 value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
                 valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
               />
@@ -195,12 +201,14 @@ export default function Table({ currencyType, loading, rows = [] }) {
                 value={financialBreakdown?.baseCurrency_deliveryFee_cash}
                 valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_cash}
               />
+
               <SummaryItem
                 label="Online"
                 currencyType={currencyType}
                 value={financialBreakdown?.baseCurrency_deliveryFee_online}
                 valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_online}
               />
+
               <SummaryItem
                 label="Rider tip"
                 currencyType={currencyType}
@@ -256,55 +264,58 @@ export default function Table({ currencyType, loading, rows = [] }) {
   if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
 
   return (
-    <StyledBox
-      padding
-      sx={{
-        marginTop: '20px',
-        paddingTop: '3px',
-        paddingBottom: '10px',
-        overflow: 'visible',
-        scrollbarWidth: 'thin',
-        scrollbarHeight: 'thin',
-
-        '&::-webkit-scrollbar': {
-          width: '6px',
-          height: '6px',
-        },
-      }}
-    >
-      <Box
+    <>
+      <StyledBox
+        padding
         sx={{
-          minWidth: '1070px',
+          marginTop: '20px',
+          paddingTop: '3px',
+          paddingBottom: '10px',
+          overflow: 'visible',
+          scrollbarWidth: 'thin',
+          scrollbarHeight: 'thin',
+
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px',
+          },
         }}
       >
-        <StyledTable
-          autoHeight
-          columns={columns}
-          getRowId={(row) => row?._id}
+        <Box
           sx={{
-            '& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell': {
-              overflow: 'visible',
-            },
-
-            '& .MuiDataGrid-virtualScroller': {
-              overflow: 'visible !important',
-            },
-
-            '& .MuiDataGrid-main': {
-              overflow: 'visible !important',
-            },
+            minWidth: '1070px',
           }}
-          rows={rows}
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No data found
-              </Stack>
-            ),
-          }}
-        />
-      </Box>
-    </StyledBox>
+        >
+          <StyledTable
+            autoHeight
+            columns={columns}
+            getRowId={(row) => row?._id}
+            sx={{
+              '& .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell': {
+                overflow: 'visible',
+              },
+
+              '& .MuiDataGrid-virtualScroller': {
+                overflow: 'visible !important',
+              },
+
+              '& .MuiDataGrid-main': {
+                overflow: 'visible !important',
+              },
+            }}
+            rows={rows}
+            rowHeight={71}
+            components={{
+              NoRowsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  No data found
+                </Stack>
+              ),
+            }}
+          />
+        </Box>
+      </StyledBox>
+      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+    </>
   );
 }

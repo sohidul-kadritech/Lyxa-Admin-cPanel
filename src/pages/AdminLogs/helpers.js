@@ -1,7 +1,8 @@
 import moment from 'moment';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
 const dateRangeInit = {
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
 };
 export const getQueryParamsInit = {

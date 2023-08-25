@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
 export const calculatePaidVat = (total, unpaid) => {
   const paidVat = total - unpaid;
@@ -24,5 +25,5 @@ export const vatTrxsAmountFilterOptions = [
 
 export const dateRangeInit = {
   end: moment(),
-  start: moment().subtract(30, 'd'),
+  start: getFirstMonday('week'),
 };

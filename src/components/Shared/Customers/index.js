@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
@@ -6,6 +7,7 @@ import { useGlobalContext } from '../../../context';
 import { generateGraphData } from '../../../helpers/generateGraphData';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import CommonAreaChart from '../../StyledCharts/CommonAreaChart';
 import DateRange from '../../StyledCharts/DateRange';
 import CustomerBreakdown from './CustomerBreakdown';
@@ -35,7 +37,7 @@ const tabValueToPropsMap = {
 
 const getQueryParamsInit = (type, id) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'd'),
+  startDate: getFirstMonday('week'),
   type,
   id,
 });
@@ -52,7 +54,7 @@ export default function Customers({ viewUserType }) {
   const query = useQuery([Api.SHOP_DASHBOARD_CUSTOMER_INFO, queryParams], () =>
     AXIOS.get(Api.SHOP_DASHBOARD_CUSTOMER_INFO, {
       params: queryParams,
-    })
+    }),
   );
 
   return (
@@ -116,8 +118,9 @@ export default function Customers({ viewUserType }) {
         </Grid>
         {currentTab !== 'lapsed' && (
           <CommonAreaChart
+            valueLabel="Sales"
             api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
-            title={tabValueToPropsMap[currentTab].title}
+            title={`${tabValueToPropsMap[currentTab].title} sales`}
             params={{
               type: viewUserType,
               id: currentUser[viewUserType]?._id,
@@ -126,7 +129,7 @@ export default function Customers({ viewUserType }) {
               generateGraphData(
                 data?.data?.info || [],
                 (item) => item[tabValueToPropsMap[currentTab].graphValueProp],
-                (item) => moment(item?.date).format('MMMM DD')
+                (item) => moment(item?.date).format('MMMM DD'),
               )
             }
           />

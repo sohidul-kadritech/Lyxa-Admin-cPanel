@@ -10,11 +10,12 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 import { CardTitle } from '../../../components/Shared/Operations';
+import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { createCouponOverviewRows } from '../helpers';
 import CouponOverviewTable from './Table';
 
 const queryParamsInit = {
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
 };
 
@@ -39,7 +40,7 @@ export default function CouponOverview() {
           setRows(createCouponOverviewRows(data?.data));
         }
       },
-    },
+    }
   );
 
   useEffect(() => {

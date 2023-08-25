@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { React, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -8,7 +9,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-const getDataInit = (shopId) => ({ shopId, amount: 0, type: 'remove', desc: '' });
+const getDataInit = (shopId) => ({ shopId, amount: 0, type: 'remove', desc: '', secondaryCurrency_amount: 0 });
 
 const typeOptions = [
   { label: 'Remove', value: 'remove' },
@@ -16,8 +17,10 @@ const typeOptions = [
 ];
 
 export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount, storeAppSettings }) {
-  const { exchangeRate, secondaryCurrency } = storeAppSettings;
-  console.log('exchangeRate', secondaryCurrency);
+  const adminExchangeRate = storeAppSettings?.adminExchangeRate;
+  const secondaryCurrency = storeAppSettings?.secondaryCurrency;
+  // const secondaryEnabled = adminExchangeRate > 0;
+
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(shopId));
 
@@ -33,10 +36,15 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
   });
 
   const addRemoveCredit = () => {
-    if (data?.amount < 0) {
-      successMsg("Amount can't be negative", 'error');
+    if (data?.amount <= 0) {
+      successMsg("Base amount can't be negative", 'error');
       return;
     }
+
+    // if (data?.secondaryCurrency_amount <= 0 && secondaryEnabled) {
+    //   successMsg("Secondary amount can't be negative", 'error');
+    //   return;
+    // }
 
     if (data.type === 'add' && data.amount > dropAmount) {
       successMsg("You don't have enough credit", 'error');
@@ -78,8 +86,9 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
             onChange={(e) => setData({ ...data, type: e.target.value })}
           />
         </Box>
+
         <StyledFormField
-          label="Amount *"
+          label="Base Amount *"
           intputType="text"
           inputProps={{
             type: 'number',
@@ -90,11 +99,22 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
             },
           }}
         />
-        {secondaryCurrency?.symbol && (
-          <Typography mt="-8px" variant="body3" display="block">
-            Equivalent Price: {secondaryCurrency?.code} {data.amount * parseInt(exchangeRate, 10)}
-          </Typography>
-        )}
+
+        {/* {secondaryEnabled && (
+          <StyledFormField
+            label="Secondary Amount *"
+            intputType="text"
+            inputProps={{
+              type: 'number',
+              value: data.secondaryCurrency_amount,
+              onChange: (e) => {
+                if (e.target.value > 0) setData({ ...data, secondaryCurrency_amount: e.target.value });
+                else setData({ ...data, secondaryCurrency_amount: 1 });
+              },
+            }}
+          />
+        )} */}
+
         <StyledFormField
           label="Description"
           intputType="textarea"

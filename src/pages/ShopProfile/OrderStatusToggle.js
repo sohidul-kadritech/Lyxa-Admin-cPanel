@@ -42,6 +42,7 @@ export default function OrderToggle({ shop }) {
       </Typography>
       <StyledSwitch
         checked={value}
+        disabled={shop?.liveStatus === 'busy'}
         onChange={() => {
           const shopData = getShopEditData(shop);
           createEditShopData(shopData)?.then((data) => {

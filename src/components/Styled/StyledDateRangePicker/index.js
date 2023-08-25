@@ -10,8 +10,6 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
 
   return (
     <DateRangePicker
-      // startDate={moment(startDate)}
-      // endDate={moment(endDate)}
       startDate={startDate}
       endDate={endDate}
       startDateId={_.uniqueId('start_date_id')}

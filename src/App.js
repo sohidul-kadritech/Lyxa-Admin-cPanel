@@ -83,11 +83,7 @@ export default function App() {
 
   // retries when user comes logs in
   useEffect(() => {
-    socketConnect();
-
-    return () => {
-      socketServices?.close();
-    };
+    if (userType) socketConnect();
   }, [userType]);
 
   useEffect(() => {
@@ -102,7 +98,7 @@ export default function App() {
     }
 
     return () => {
-      socketServices.removeListener(`shopLiveStatusUpdated-${shop?._id}`);
+      shop?._id && socketServices?.removeListener(`shopLiveStatusUpdated-${shop?._id}`);
     };
   }, [userType, shop]);
 

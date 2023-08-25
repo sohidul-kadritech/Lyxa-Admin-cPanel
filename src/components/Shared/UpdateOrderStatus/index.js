@@ -4,13 +4,13 @@ import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
-import CloseButton from '../../../components/Common/CloseButton';
-import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import { StyledSelect } from '../../../components/Filter/FilterSelect';
-import StyledFormField from '../../../components/Form/StyledFormField';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import CloseButton from '../../Common/CloseButton';
+import LoadingOverlay from '../../Common/LoadingOverlay';
+import { StyledSelect } from '../../Filter/FilterSelect';
+import StyledFormField from '../../Form/StyledFormField';
 import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
 
 export default function UpdateOrderStatus({
@@ -24,7 +24,8 @@ export default function UpdateOrderStatus({
   const queryClient = useQueryClient();
 
   const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
-  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || {});
+  const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
+
   const [currentOrder, setCurrentOrder] = useState(order);
   const [paidCurrency, setPaidCurrency] = useState('');
   const [deliveryBoyList, setDeliveryBoyList] = useState([]);
@@ -32,7 +33,9 @@ export default function UpdateOrderStatus({
   const [open, setOpen] = useState(false);
   const [showDelivery, setShowDelivery] = useState(false);
 
-  // delivery boy
+  const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
+
+  // global riders
   const getNearByDeliveryBoys = () => {
     const API = currentOrder?.isButler ? Api.NEAR_BY_BUTLERS_FOR_ORDER : Api.ACTIVE_DEIVERY_BOYS;
     return AXIOS.get(API, {
@@ -42,38 +45,41 @@ export default function UpdateOrderStatus({
     });
   };
 
-  console.log(order?.shop);
+  const globalRidersQuery = useQuery(
+    ['single-order-nearby-delivery-boys', { orderId: currentOrder?._id }],
+    getNearByDeliveryBoys,
+    {
+      cacheTime: 0,
+      staleTime: 0,
+      enabled: !isSelfShop,
+      onSuccess: (data) => {
+        if (!data?.status) {
+          successMsg(data?.message || 'Could not get delivery boys');
+        } else {
+          setDeliveryBoyList(data?.data?.nearByDeliveryBoys);
+        }
+      },
+      onError: (error) => {
+        console.log('api error: ', error);
+        successMsg(error?.message || 'Could not get delivery boys', 'error');
+      },
+    }
+  );
 
-  useQuery(['single-order-nearby-delivery-boys', { orderId: currentOrder?._id }], getNearByDeliveryBoys, {
-    cacheTime: 0,
-    staleTime: 0,
-    enabled: !order?.shop?.haveOwnDeliveryBoy,
-    onSuccess: (data) => {
-      if (!data?.status) {
-        successMsg(data?.message || 'Could not get delivery boys');
-      } else {
-        setDeliveryBoyList(data?.data?.nearByDeliveryBoys);
-      }
-    },
-    onError: (error) => {
-      console.log('api error: ', error);
-      successMsg(error?.message || 'Could not get delivery boys', 'error');
-    },
-  });
-
-  useQuery(
+  // shop riders
+  const shopRiderQuery = useQuery(
     [Api.SHOP_ACTIVE_DELIVERY_BOYS],
     () =>
       AXIOS.get(Api.SHOP_ACTIVE_DELIVERY_BOYS, {
         params: {
-          shopId: order?.shop?._id,
+          shopId: currentOrder?.shop?._id,
         },
       }),
     {
-      enabled: order?.shop?.haveOwnDeliveryBoy,
+      enabled: isSelfShop,
       onSuccess: (data) => {
         if (data?.status) {
-          setDeliveryBoyList(data?.data?.deliveryBoys);
+          setDeliveryBoyList([{ _id: 'no-rider', name: 'No Rider' }, ...(data?.data?.deliveryBoys || [])]);
         }
       },
     }
@@ -127,14 +133,16 @@ export default function UpdateOrderStatus({
     const data = {};
     data.orderId = currentOrder?._id;
     data.orderStatus = currentStatus;
-    data.deliveryBoy = currentOrderDelivery?._id;
     data.shop = currentOrder?.shop?._id;
-
+    data.deliveryBoy = currentOrderDelivery?._id === 'no-rider' ? undefined : currentOrderDelivery?._id;
     // if not selected will be undefined
     data.paidCurrency = paidCurrency || undefined;
 
     updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
+
+  console.log({ currentStatus });
+  console.log({ isSelfShop });
 
   return (
     <Box
@@ -149,7 +157,7 @@ export default function UpdateOrderStatus({
       {updateStatusMutation?.isLoading && <LoadingOverlay spinner />}
       <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
         <Typography fontSize="18px" variant="h4">
-          Update Status
+          Update
         </Typography>
         <CloseButton onClick={onClose} size="sm" />
       </Stack>
@@ -215,7 +223,6 @@ export default function UpdateOrderStatus({
           >
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
-                console={console.log(item?.position, statusOptions[currentOrder?.orderStatus]?.position)}
                 disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
                 className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
@@ -243,6 +250,7 @@ export default function UpdateOrderStatus({
                         {index + 1}. {item?.label}{' '}
                         {currentOrderDelivery?._id ? `- (${currentOrderDelivery?.name})` : ''}
                       </span>
+
                       {item?.position <= statusOptions[currentOrder?.orderStatus]?.position &&
                         currentStatus !== 'accepted_delivery_boy' && (
                           <span
@@ -270,11 +278,12 @@ export default function UpdateOrderStatus({
             ))}
           </StyledSelect>
         </Box>
-
         {/* delivery boy */}
-        {(currentStatus === 'accepted_delivery_boy' || showDelivery) && (
+        {(((currentStatus === 'accepted_delivery_boy' || showDelivery) && !isSelfShop) ||
+          (currentStatus === 'preparing' && isSelfShop)) && (
           <Box flex={1}>
             <StyledFormField
+              disabled={globalRidersQuery?.isLoading || shopRiderQuery?.isLoading}
               label="Select Rider *"
               intputType="autocomplete"
               inputProps={{
@@ -306,7 +315,7 @@ export default function UpdateOrderStatus({
                   >
                     <span> {option.name}</span>
                     {/* not for self riders */}
-                    {!order?.shop?.haveOwnDeliveryBoy && <span>{(option.shopDistance || 0).toFixed(3)} km</span>}
+                    {!isSelfShop && <span>{(option.shopDistance || 0).toFixed(3)} km</span>}
                   </Stack>
                 ),
               }}
@@ -315,7 +324,7 @@ export default function UpdateOrderStatus({
         )}
 
         {/* paid currency */}
-        {currentStatus === 'delivered' && (
+        {currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && (
           <Box>
             <StyledFormField
               label="Paid Currency *"

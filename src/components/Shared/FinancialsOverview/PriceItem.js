@@ -2,9 +2,23 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { useGlobalContext } from '../../../context';
 
-export default function PriceItem({ title, amount, amountStatus, fontSize, titleSx, amountSx, tooltip }) {
+export default function PriceItem({
+  title,
+  amount,
+  fontSize,
+  titleSx,
+  amountSx,
+  tooltip,
+  hide,
+  showIfZero,
+  isNegative,
+  isRefused,
+}) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+
+  if (hide) return null;
+  if (Number((amount || 0).toFixed(2)) === 0 && !showIfZero) return null;
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -25,13 +39,23 @@ export default function PriceItem({ title, amount, amountStatus, fontSize, title
         )}
       </Typography>
       <Typography
-        sx={amountSx}
+        className={`${isNegative ? 'negative' : ''} ${isRefused ? 'refused' : ''}`}
+        sx={{
+          '&.negative': {
+            color: 'error.main',
+          },
+
+          '&.refused': {
+            color: '#b9b9b9',
+          },
+
+          ...amountSx,
+        }}
         variant="body1"
         fontWeight={600}
         fontSize={fontSize}
-        color={amountStatus === 'minus' ? 'error' : amountStatus === 'secondary' ? '#b9b9b9' : undefined}
       >
-        {amountStatus === 'minus' ? '-' : ''} {currency} {(amount || 0).toFixed(2)}
+        {isNegative ? '-' : ''} {currency} {(amount || 0).toFixed(2)}
       </Typography>
     </Stack>
   );

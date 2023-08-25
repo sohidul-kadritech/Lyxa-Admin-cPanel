@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import localDatePagination from '../../../helpers/localDataPaginations';
 import SearchBar from '../../Common/CommonSearchbar';
 import TablePagination from '../../Common/TablePagination';
+import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 import OrderDetail from '../OrderDetail';
 import FlagsTable from './Table';
 
@@ -12,7 +13,7 @@ export const queryParamsInit = {
   page: 1,
   pageSize: 5,
   sortBy: 'DESC',
-  startDate: moment().startOf('month'),
+  startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
 };

@@ -4,11 +4,12 @@ import { Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material'
 import moment from 'moment';
 import { ReactComponent as CameraIcon } from '../../assets/icons/camera.svg';
 import Rating from '../../components/Common/Rating';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import { getImageUrl } from '../../helpers/images';
 
 export const getQueryParamsInit = (params) => ({
   endDate: moment(),
-  startDate: moment().subtract(7, 'days'),
+  startDate: getFirstMonday('week'),
   searchKey: '',
   sortBy: 'DESC',
   ...params,
@@ -256,11 +257,11 @@ export function ShopReviewDetails({ shop }) {
         </Stack>
       </Stack>
       <Stack gap={2}>
-        <PercentageOfRate rate={1} percentage={ratings['1']} color="#CD6366" />
-        <PercentageOfRate rate={2} percentage={ratings['2']} color="#CD6366" />
-        <PercentageOfRate rate={3} percentage={ratings['3']} color="#F2C14B" />
-        <PercentageOfRate rate={4} percentage={ratings['4']} color="#507B4B" />
-        <PercentageOfRate rate={5} percentage={ratings['5']} color="#507B4B" />
+        <PercentageOfRate rate={1} percentage={ratings['1'] || 0} color="#CD6366" />
+        <PercentageOfRate rate={2} percentage={ratings['2'] || 0} color="#CD6366" />
+        <PercentageOfRate rate={3} percentage={ratings['3'] || 0} color="#F2C14B" />
+        <PercentageOfRate rate={4} percentage={ratings['4'] || 0} color="#507B4B" />
+        <PercentageOfRate rate={5} percentage={ratings['5'] || 0} color="#507B4B" />
       </Stack>
     </Stack>
   );
