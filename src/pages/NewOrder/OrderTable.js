@@ -12,11 +12,11 @@ import { useGlobalContext } from '../../context';
 
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
+import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
-import UpdateOrderStatus from './UpdateOrderStatus';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {

@@ -12,12 +12,12 @@ import UserAvatar from '../../components/Common/UserAvatar';
 import OrderCancel from '../../components/Shared/CancelOrder';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
+import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
-import UpdateOrderStatus from '../NewOrder/UpdateOrderStatus';
 import { getThreedotMenuOptions, orderStatusMap, statusColorVariants } from '../NewOrder/helpers';
 import OrderTrackingModal from './OrderTracking';
 

@@ -4,13 +4,13 @@ import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
-import CloseButton from '../../../components/Common/CloseButton';
-import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import { StyledSelect } from '../../../components/Filter/FilterSelect';
-import StyledFormField from '../../../components/Form/StyledFormField';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import CloseButton from '../../Common/CloseButton';
+import LoadingOverlay from '../../Common/LoadingOverlay';
+import { StyledSelect } from '../../Filter/FilterSelect';
+import StyledFormField from '../../Form/StyledFormField';
 import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
 
 export default function UpdateOrderStatus({
@@ -141,6 +141,9 @@ export default function UpdateOrderStatus({
     updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
   };
 
+  console.log({ currentStatus });
+  console.log({ isSelfShop });
+
   return (
     <Box
       sx={{
@@ -154,7 +157,7 @@ export default function UpdateOrderStatus({
       {updateStatusMutation?.isLoading && <LoadingOverlay spinner />}
       <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
         <Typography fontSize="18px" variant="h4">
-          Update Status
+          Update
         </Typography>
         <CloseButton onClick={onClose} size="sm" />
       </Stack>
@@ -275,7 +278,6 @@ export default function UpdateOrderStatus({
             ))}
           </StyledSelect>
         </Box>
-
         {/* delivery boy */}
         {(((currentStatus === 'accepted_delivery_boy' || showDelivery) && !isSelfShop) ||
           (currentStatus === 'preparing' && isSelfShop)) && (
