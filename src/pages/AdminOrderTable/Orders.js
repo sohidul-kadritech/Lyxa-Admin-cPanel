@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box } from '@mui/material';
 // import moment from 'moment';
 import { useState } from 'react';
@@ -42,7 +43,7 @@ export default function Orders({ queryParams, setQueryParams }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   return (
