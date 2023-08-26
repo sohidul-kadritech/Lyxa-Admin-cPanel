@@ -23,7 +23,7 @@ const orderFilterToTabValueMap = {
   3: 'scheduled',
 };
 
-const getTabOptions = (type) => {
+const getTabOptions = () => {
   const tabsOptions = [
     { value: 'new', label: 'New' },
     { value: 'preparing', label: 'Preparing' },
@@ -31,13 +31,14 @@ const getTabOptions = (type) => {
     { value: 'on-the-way', label: 'On the way' },
   ];
 
-  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
-
   return tabsOptions;
 };
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
+
+  console.log('currentUser', currentUser);
+
   const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -110,7 +111,7 @@ export default function NewOrders({ showFor }) {
         <Box pb={7.5}>
           <StyledTabs2
             value={tabForOngoing}
-            options={getTabOptions(queryParams?.type)}
+            options={getTabOptions()}
             onChange={(value) => {
               setTabForOngoing(value);
             }}

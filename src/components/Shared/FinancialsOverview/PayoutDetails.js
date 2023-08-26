@@ -23,6 +23,7 @@ export default function PayoutDetails({ paymentDetails }) {
       ${secondaryCurrency} ${Math.round(paymentDetails?.secondaryCurrency_Profit || 0)})`
     : `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`;
 
+  const orderValue = paymentDetails?.orderValue;
   return (
     <Grid xs={12}>
       <StyledBox
@@ -44,10 +45,12 @@ export default function PayoutDetails({ paymentDetails }) {
             title="Order Amount"
             tooltip="The fees you earn depend on how your customer order and receive their order. 
             VAT inclusivea"
-            titleAmount={
-              paymentDetails?.orderValue?.productAmount -
-              (paymentDetails?.orderValue?.totalDiscount + paymentDetails?.orderValue?.totalRewardAmount)
-            }
+            titleAmount={orderValue?.productAmount}
+            // titleAmount={
+            //   paymentDetails?.orderValue?.productAmount +
+            //   paymentDetails?.orderValue?.totalDoubleMenuItemPrice -
+            //   (paymentDetails?.orderValue?.totalDiscount + paymentDetails?.orderValue?.totalRewardAmount)
+            // }
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 0 : -1);
@@ -55,57 +58,128 @@ export default function PayoutDetails({ paymentDetails }) {
           >
             <PriceItem
               title="Cash"
-              amount={
-                paymentDetails?.orderValue?.productAmountCash + paymentDetails?.orderValue?.doubleMenuItemPriceCash
-              }
+              // amount={
+              //   paymentDetails?.orderValue?.productAmountCash + paymentDetails?.orderValue?.doubleMenuItemPriceCash
+              // }
+
+              amount={paymentDetails?.orderValue?.productAmountCash}
             />
 
             <PriceItem
               title="Online"
-              amount={
-                paymentDetails?.orderValue?.productAmountOnline + paymentDetails?.orderValue?.doubleMenuItemPriceOnline
-              }
+              amount={paymentDetails?.orderValue?.productAmountOnline}
+
+              // amount={
+              //   paymentDetails?.orderValue?.productAmountOnline + paymentDetails?.orderValue?.doubleMenuItemPriceOnline
+              // }
             />
 
-            {/* shop */}
-            <PriceItem
-              title="Discount"
-              amount={paymentDetails?.orderValue?.totalDiscount}
-              isNegative
-              tooltip={
-                <CommonOrderAmountTooltipText
-                  byAdmin={paymentDetails?.orderValue?.totalAdminDiscount}
-                  byShop={paymentDetails?.orderValue?.totalShopDiscount}
-                  currency={currency}
-                />
+            <DetailsAccordion
+              title="Original Order Amount"
+              //   tooltip="The fees you earn depend on how your customer order and receive their order.
+              // VAT inclusive"
+              titleAmount={
+                orderValue?.productAmount +
+                orderValue?.totalDiscount +
+                orderValue?.totalDoubleMenuItemPrice +
+                orderValue?.totalRewardAmount
               }
-            />
+              // titleAmount={
+              //   paymentDetails?.orderValue?.productAmount -
+              //   (paymentDetails?.orderValue?.totalDiscount + paymentDetails?.orderValue?.totalRewardAmount)
+              // }
+              isOpen={currentExpanedTab === 0}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 0 : -1);
+              }}
+            >
+              {/* shop */}
+              <PriceItem
+                title="Discount"
+                amount={paymentDetails?.orderValue?.totalDiscount}
+                isNegative
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDiscount}
+                    byShop={paymentDetails?.orderValue?.totalShopDiscount}
+                    currency={currency}
+                  />
+                }
+              />
 
-            <PriceItem
-              title="Buy 1 Get 1"
-              amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
-              isNegative
-              tooltip={
-                <CommonOrderAmountTooltipText
-                  byShop={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
-                  byAdmin={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
-                  currency={currency}
-                />
-              }
-            />
+              <PriceItem
+                title="Buy 1 Get 1"
+                amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
+                isNegative
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byShop={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
+                    currency={currency}
+                  />
+                }
+              />
 
-            <PriceItem
-              title="Loyalty points"
-              amount={paymentDetails?.orderValue?.totalRewardAmount}
-              isNegative
-              tooltip={
-                <CommonOrderAmountTooltipText
-                  byShop={paymentDetails?.orderValue?.totalShopRewardAmount}
-                  byAdmin={paymentDetails?.orderValue?.totalAdminRewardAmount}
-                  currency={currency}
-                />
+              <PriceItem
+                title="Loyalty points"
+                amount={paymentDetails?.orderValue?.totalRewardAmount}
+                isNegative
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byShop={paymentDetails?.orderValue?.totalShopRewardAmount}
+                    byAdmin={paymentDetails?.orderValue?.totalAdminRewardAmount}
+                    currency={currency}
+                  />
+                }
+              />
+            </DetailsAccordion>
+
+            <DetailsAccordion
+              title="Marketing Lyxa Cashback"
+              //   tooltip="The fees you earn depend on how your customer order and receive their order.
+              // VAT inclusive"
+              titleAmount={
+                orderValue?.productAmount +
+                orderValue?.totalDiscount +
+                orderValue?.totalDoubleMenuItemPrice +
+                orderValue?.totalRewardAmount
               }
-            />
+              // titleAmount={
+              //   paymentDetails?.orderValue?.productAmount -
+              //   (paymentDetails?.orderValue?.totalDiscount + paymentDetails?.orderValue?.totalRewardAmount)
+              // }
+              isOpen={currentExpanedTab === 0}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 0 : -1);
+              }}
+            >
+              {/* shop */}
+              <PriceItem
+                title="Discount"
+                amount={paymentDetails?.orderValue?.totalDiscount}
+                isNegative
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDiscount}
+                    byShop={paymentDetails?.orderValue?.totalShopDiscount}
+                    currency={currency}
+                  />
+                }
+              />
+
+              <PriceItem
+                title="Buy 1 Get 1"
+                amount={paymentDetails?.orderValue?.totalDoubleMenuItemPrice}
+                isNegative
+                tooltip={
+                  <CommonOrderAmountTooltipText
+                    byShop={paymentDetails?.orderValue?.totalShopDoubleMenuItemPrice}
+                    byAdmin={paymentDetails?.orderValue?.totalAdminDoubleMenuItemPrice}
+                    currency={currency}
+                  />
+                }
+              />
+            </DetailsAccordion>
           </DetailsAccordion>
 
           {/* lyxa fees */}
@@ -138,7 +212,7 @@ export default function PayoutDetails({ paymentDetails }) {
               titleAmount={Math.abs(
                 paymentDetails?.freeDeliveryShopCut +
                   paymentDetails?.totalFeaturedAmount +
-                  paymentDetails?.totalRefundAmount
+                  paymentDetails?.totalRefundAmount,
               )}
               titleAmountStatus={`${
                 paymentDetails?.freeDeliveryShopCut +

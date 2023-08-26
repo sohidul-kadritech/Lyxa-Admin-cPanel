@@ -101,7 +101,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
         borderRadius: '10px',
       }}
     >
-      <Stack>
+      <Stack direction="column" sx={{ height: '100%' }}>
         <Stack flexDirection="row" gap="36px" alignItems="center">
           {/* Zone name */}
           <StyledFormField
@@ -225,7 +225,7 @@ function CreateZone({ onClose, addNewZone, allZones, ...props }) {
           </Stack>
         </Stack>
 
-        <Box sx={{ position: 'relative', flex: 1 }}>
+        <Box sx={{ position: 'relative', flex: 1, height: '100%' }}>
           <ZoneMap
             setIsDisable={setIsDisable}
             setPolygonArea={setPolygonArea}
