@@ -57,7 +57,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -117,7 +117,9 @@ export default function NewOrders({ showFor }) {
           />
         </Box>
       )}
+
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
+
       <OrderTable
         loading={ordersQuery.isLoading}
         orders={ordersQuery?.data?.data.orders}
@@ -128,6 +130,7 @@ export default function NewOrders({ showFor }) {
         }}
         adminType={showFor}
       />
+
       {!ordersQuery.isLoading && (
         <TablePagination
           currentPage={queryParams?.page}
@@ -137,6 +140,7 @@ export default function NewOrders({ showFor }) {
           totalPage={totalPage}
         />
       )}
+
       <Drawer open={Boolean(sidebarOpen)} anchor="right">
         <OrderDetail
           order={currentOrder}
