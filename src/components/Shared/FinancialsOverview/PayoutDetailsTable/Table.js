@@ -29,6 +29,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.financialBreakdown;
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -38,8 +39,9 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
+                  value={isPartialRefund ? 0 : financialBreakdown?.baseCurrency_orderAmount}
+                  valueSecondary={isPartialRefund ? 0 : financialBreakdown?.secondaryCurrency_orderAmount}
+                  showIfZero
                 />
               }
             >
@@ -48,6 +50,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 label="Cash"
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
                 value={financialBreakdown?.baseCurrency_orderAmount_cash}
+                hide={isPartialRefund}
               />
 
               <SummaryItem
@@ -56,6 +59,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 currencyType={currencyType}
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
                 value={financialBreakdown?.baseCurrency_orderAmount_online}
+                hide={isPartialRefund}
               />
 
               <SummaryItem
@@ -64,6 +68,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 isNegative
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
                 value={financialBreakdown?.baseCurrency_orderAmount_discount}
+                hide={isPartialRefund}
               />
 
               <SummaryItem
@@ -72,6 +77,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 currencyType={currencyType}
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
                 value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
+                hide={isPartialRefund}
               />
 
               <SummaryItem
@@ -80,6 +86,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 currencyType={currencyType}
                 valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
                 value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
+                hide={isPartialRefund}
               />
             </TableAccordion>
           </Box>
@@ -95,16 +102,21 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
-          valueSecondary={Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
-          isNegative={row?.financialBreakdown?.baseCurrency_lyxaFees > 0}
-        />
-      ),
+      renderCell: ({ row }) => {
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={isPartialRefund ? 0 : Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
+            valueSecondary={isPartialRefund ? 0 : Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
+            isNegative={row?.financialBreakdown?.baseCurrency_lyxaFees > 0}
+            showIfZero
+          />
+        );
+      },
     },
     {
       id: 4,
@@ -114,15 +126,20 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalVat}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalVat}
-        />
-      ),
+      renderCell: ({ row }) => {
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={isPartialRefund ? 0 : row?.financialBreakdown?.baseCurrency_totalVat}
+            valueSecondary={isPartialRefund ? 0 : row?.financialBreakdown?.secondaryCurrency_totalVat}
+            showIfZero
+          />
+        );
+      },
     },
     {
       id: 5,
@@ -134,6 +151,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.financialBreakdown;
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -143,8 +161,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_otherPayments}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments}
+                  value={Math.abs(financialBreakdown?.baseCurrency_otherPayments)}
+                  valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_otherPayments)}
                   isNegative={financialBreakdown?.baseCurrency_otherPayments > 0}
                   showIfZero
                 />
@@ -153,17 +171,18 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 currencyType={currencyType}
                 label="Free delivery"
-                value={financialBreakdown?.baseCurrency_otherPayments_freeDelivery}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
+                value={isPartialRefund ? 0 : financialBreakdown?.baseCurrency_otherPayments_freeDelivery}
+                valueSecondary={isPartialRefund ? 0 : financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
                 isNegative
+                hide={isPartialRefund}
               />
 
               <SummaryItem
                 label="Refunded Amount"
                 currencyType={currencyType}
                 isNegative={financialBreakdown?.baseCurrency_otherPayments_refundAmount > 0}
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
+                value={Math.abs(financialBreakdown?.baseCurrency_otherPayments_refundAmount)}
+                valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_otherPayments_refundAmount)}
               />
             </TableAccordion>
           </Box>
@@ -229,16 +248,21 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={row?.baseCurrency_pointsCashback}
-          valueSecondary={row?.secondaryCurrency_pointsCashback}
-          showIfZero
-        />
-      ),
+
+      renderCell: ({ row }) => {
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={isPartialRefund ? 0 : row?.baseCurrency_pointsCashback}
+            valueSecondary={isPartialRefund ? 0 : row?.secondaryCurrency_pointsCashback}
+            showIfZero
+          />
+        );
+      },
     },
     {
       id: 8,
@@ -248,16 +272,29 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       flex: 1,
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
-          showIfZero
-        />
-      ),
+      renderCell: ({ row }) => {
+        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.financialBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={
+              isPartialRefund
+                ? Math.abs(financialBreakdown?.baseCurrency_otherPayments_refundAmount)
+                : financialBreakdown?.baseCurrency_totalProfit
+            }
+            valueSecondary={
+              isPartialRefund
+                ? Math.abs(financialBreakdown?.secondaryCurrency_otherPayments_refundAmount)
+                : financialBreakdown?.secondaryCurrency_totalProfit
+            }
+            showIfZero
+          />
+        );
+      },
     },
   ];
 

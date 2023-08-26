@@ -23,7 +23,7 @@ const orderFilterToTabValueMap = {
   3: 'scheduled',
 };
 
-const getTabOptions = (type) => {
+const getTabOptions = () => {
   const tabsOptions = [
     { value: 'new', label: 'New' },
     { value: 'preparing', label: 'Preparing' },
@@ -31,13 +31,14 @@ const getTabOptions = (type) => {
     { value: 'on-the-way', label: 'On the way' },
   ];
 
-  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
-
   return tabsOptions;
 };
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
+
+  console.log('currentUser', currentUser);
+
   const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -57,7 +58,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -110,14 +111,16 @@ export default function NewOrders({ showFor }) {
         <Box pb={7.5}>
           <StyledTabs2
             value={tabForOngoing}
-            options={getTabOptions(queryParams?.type)}
+            options={getTabOptions()}
             onChange={(value) => {
               setTabForOngoing(value);
             }}
           />
         </Box>
       )}
+
       <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
+
       <OrderTable
         loading={ordersQuery.isLoading}
         orders={ordersQuery?.data?.data.orders}
@@ -128,6 +131,7 @@ export default function NewOrders({ showFor }) {
         }}
         adminType={showFor}
       />
+
       {!ordersQuery.isLoading && (
         <TablePagination
           currentPage={queryParams?.page}
@@ -137,6 +141,7 @@ export default function NewOrders({ showFor }) {
           totalPage={totalPage}
         />
       )}
+
       <Drawer open={Boolean(sidebarOpen)} anchor="right">
         <OrderDetail
           order={currentOrder}

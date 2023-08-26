@@ -3,7 +3,7 @@
 import { Box, Button } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ReactComponent as DropIcon } from '../../../assets/icons/down.svg';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
@@ -57,7 +57,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       onSuccess: (data) => {
         setShopOptions((prev) => data?.data?.shops || prev);
       },
-    },
+    }
   );
 
   const getShops = useMemo(
@@ -66,7 +66,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setShopSearchKey(value);
         shopsQuery.mutate();
       }, 300),
-    [],
+    []
   );
 
   const usersQuery = useMutation(
@@ -85,7 +85,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         console.log(data?.data?.users);
         setUserOptions((prev) => data?.data?.users || prev);
       },
-    },
+    }
   );
 
   const getUsers = useMemo(
@@ -94,7 +94,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setUserSearchKey(value);
         usersQuery.mutate();
       }, 300),
-    [],
+    []
   );
 
   // coupon add
@@ -115,7 +115,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           queryClient.invalidateQueries([Api.GET_COUPON]);
         }
       },
-    },
+    }
   );
 
   const submitCoupon = () => {
@@ -136,6 +136,11 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       setCoupon((prev) => ({ ...prev, couponName: data?.data?.couponName || prev?.couponName }));
     },
   });
+
+  useEffect(() => {
+    getShops();
+    getUsers();
+  }, []);
 
   return (
     <SidebarContainer title={`Generate Coupon: ${couponTypeToTitleMap[couponType]}`} onClose={onClose}>
@@ -204,7 +209,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
               options: userOptions,
               value: coupon?.couponInfluencer || null,
               isOptionEqualToValue: (option, value) => option?._id === value?._id,
-              noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'Type influencer name',
+              noOptionsText: usersQuery?.isLoading ? 'Loading...' : 'No influencer found',
               getOptionLabel: (option) => option?.name,
               sx: {
                 flex: 1,

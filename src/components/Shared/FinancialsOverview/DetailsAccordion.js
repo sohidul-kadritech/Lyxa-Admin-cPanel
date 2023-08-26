@@ -52,6 +52,7 @@ export default function DetailsAccordion({
   titleAmount,
   titleAmountStatus,
   tooltip,
+  sx,
   ...props
 }) {
   const [open, setOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function DetailsAccordion({
   return (
     <StyledAccordion
       expanded={open}
+      sx={{ ...(sx || {}) }}
       onChange={() => {
         setOpen((prev) => (containerRef.current?.childNodes?.length === 0 ? false : !prev));
       }}
