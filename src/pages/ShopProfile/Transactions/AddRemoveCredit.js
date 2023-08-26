@@ -9,7 +9,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-const getDataInit = (shopId) => ({ shopId, amount: 0, type: 'remove', desc: '', secondaryCurrency_amount: 0 });
+const getDataInit = (shopId) => ({ shopId, amount: '', type: 'remove', desc: '', secondaryCurrency_amount: '' });
 
 const typeOptions = [
   { label: 'Remove', value: 'remove' },
@@ -19,7 +19,6 @@ const typeOptions = [
 export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount, storeAppSettings }) {
   const adminExchangeRate = storeAppSettings?.adminExchangeRate;
   const secondaryCurrency = storeAppSettings?.secondaryCurrency;
-  // const secondaryEnabled = adminExchangeRate > 0;
 
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(shopId));
@@ -36,22 +35,22 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
   });
 
   const addRemoveCredit = () => {
-    if (data?.amount <= 0) {
+    if (Number.isNaN(Number(data?.amount))) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (Number(data?.amount) <= 0) {
       successMsg("Base amount can't be negative", 'error');
       return;
     }
 
-    // if (data?.secondaryCurrency_amount <= 0 && secondaryEnabled) {
-    //   successMsg("Secondary amount can't be negative", 'error');
-    //   return;
-    // }
-
-    if (data.type === 'add' && data.amount > dropAmount) {
+    if (data.type === 'add' && Number(data.amount) > dropAmount) {
       successMsg("You don't have enough credit", 'error');
       return;
     }
 
-    if (data.type === 'remove' && data.amount > shopAmount) {
+    if (data.type === 'remove' && Number(data.amount) > shopAmount) {
       successMsg("Shop doesn't have enough credit", 'error');
       return;
     }
@@ -94,8 +93,7 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
             type: 'number',
             value: data.amount,
             onChange: (e) => {
-              if (e.target.value > 0) setData({ ...data, amount: e.target.value });
-              else setData({ ...data, amount: 1 });
+              setData({ ...data, amount: e.target.value });
             },
           }}
         />

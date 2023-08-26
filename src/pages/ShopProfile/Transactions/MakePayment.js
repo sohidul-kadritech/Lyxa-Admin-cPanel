@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -12,16 +11,16 @@ import AXIOS from '../../../network/axios';
 const getMakePaymentInit = (type, id, amount) => ({
   shopId: type === 'shop' ? id : undefined,
   deliveryBoyId: type === 'rider' ? id : undefined,
-  amount: amount || '0',
+  amount: amount || '',
 });
 
 export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
-  const { general } = useGlobalContext();
-  const appSetting = general?.appSetting;
+  // const { general } = useGlobalContext();
+  // const appSetting = general?.appSetting;
 
-  const adminExchangeRate = appSetting?.adminExchangeRate;
-  const secondaryEnabled = adminExchangeRate > 0;
+  // const adminExchangeRate = appSetting?.adminExchangeRate;
+  // const secondaryEnabled = adminExchangeRate > 0;
 
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
@@ -39,6 +38,11 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
   });
 
   const onSubmit = () => {
+    if (Number.NaN(payment?.amount)) {
+      successMsg('Invalid amount', 'error');
+      return;
+    }
+
     if (payment?.amount > amount) {
       successMsg('Amount is greater than remaining amount', 'error');
       return;
@@ -80,7 +84,7 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
             }}
           />
 
-          {secondaryEnabled && (
+          {/* {secondaryEnabled && (
             <StyledFormField
               label="Secondary Amount *"
               intputType="text"
@@ -93,7 +97,8 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
                 },
               }}
             />
-          )}
+          )} */}
+
           {/* {isSecondaryCurrencyEnabled && (
             <Typography mt="-8px" variant="body3" display="block">
               Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}

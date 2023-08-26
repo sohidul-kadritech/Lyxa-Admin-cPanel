@@ -250,7 +250,7 @@ function ZoneMap({
   }, [selectedLocation, currentLocation]);
 
   return (
-    <Box sx={{ width: '100%', height: '60vh', zIndex: '-1' }}>
+    <Box sx={{ width: '100%', height: '100%', zIndex: '-1' }}>
       {/* When all store is loading it will show a circular loader */}
       {getAllStore?.isLoading ? (
         <Stack
@@ -327,7 +327,6 @@ function ZoneMap({
                   textOverflow: 'ellipsis',
                 }}
               >
-                {' '}
                 {currentLocation?.loaded && currentLocation?.isCurrent !== null
                   ? currentLocation?.isCurrent === false
                     ? `Please give permission to get your current location`

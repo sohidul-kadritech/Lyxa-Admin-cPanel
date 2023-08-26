@@ -10,7 +10,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-const getDataInit = (userId) => ({ userId, amount: 0, secondaryCurrency_amount: 0, adminNote: '', userNote: '' });
+const getDataInit = (userId) => ({ userId, amount: '', secondaryCurrency_amount: '', adminNote: '', userNote: '' });
 
 const typeOptions = [
   { label: 'Remove', value: 'remove' },
@@ -48,18 +48,28 @@ export default function AddRemoveCredit({ userId, onClose }) {
   );
 
   const addRemoveCredit = () => {
-    if (data?.amount < 0) {
-      successMsg("Base currency amount can't be negative", 'error');
+    if (Number.isNaN(Number(data?.amount))) {
+      successMsg('Please enter valid amount', 'error');
       return;
     }
 
-    if (data?.amount > max) {
+    if (data?.amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (data?.amount >= max) {
       successMsg(`Base currency amount can't be more than ${max}`, 'error');
       return;
     }
 
-    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount < 0) {
-      successMsg("Secondary currency amount can't be negative", 'error');
+    if (Number.isNaN(Number(data?.secondaryCurrency_amount))) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
       return;
     }
 
