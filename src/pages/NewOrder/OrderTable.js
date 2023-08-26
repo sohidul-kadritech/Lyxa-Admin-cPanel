@@ -297,6 +297,10 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     },
   ];
 
+  /*
+  This column is only for admin console
+  */
+
   const newColumn = {
     showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'userProfile'],
     id: 6,
@@ -315,8 +319,34 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     ),
   };
 
-  if (adminType === 'admin' || adminType === 'shop') {
+  /*
+  This column is only for shop console
+  */
+
+  const newColumnForShop = {
+    showFor: ['ongoing'],
+    id: 6,
+    headerName: `ACTION`,
+    sortable: false,
+    align: 'right',
+    headerAlign: 'right',
+    flex: 1,
+    renderCell: (params) => (
+      <ThreeDotsMenu
+        handleMenuClick={(menu) => {
+          threeDotHandler(menu, params?.row);
+        }}
+        menuItems={getThreedotMenuOptions(params?.row, adminType)}
+      />
+    ),
+  };
+
+  if (adminType === 'admin') {
     columns.push(newColumn);
+  }
+
+  if (userType === 'shop') {
+    columns.push(newColumnForShop);
   }
 
   if (loading) {

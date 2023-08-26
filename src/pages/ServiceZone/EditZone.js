@@ -40,7 +40,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
       [0, 0],
       [0, 0],
       // eslint-disable-next-line prettier/prettier
-    ]
+    ],
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -56,7 +56,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
   // eslint-disable-next-line no-unused-vars
   const [polygonArea, setPolygonArea] = useState(
     // eslint-disable-next-line prettier/prettier
-    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0
+    calculateCurrentPolygonArea(rowData?.zoneGeometry?.coordinates[0]) || 0,
   );
 
   const updateZone = () => {
@@ -110,7 +110,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
         [0, 0],
         [0, 0],
         // eslint-disable-next-line prettier/prettier
-      ]
+      ],
     );
     setCreatedZoneName(rowData?.zoneName || '');
     setCreatedZoneArea(rowData?.zoneArea || '');
@@ -130,7 +130,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
         borderRadius: '10px',
       }}
     >
-      <Box>
+      <Stack direction="column" sx={{ height: '100%' }}>
         <Stack flexDirection="row" gap="36px">
           <StyledFormField
             label={
@@ -255,7 +255,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
           </Stack>
         </Stack>
 
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', flex: 1 }}>
           <ZoneMap
             isEditZone
             currentZone={rowData || ''}
@@ -266,7 +266,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
             selectedLocation={selectedLocation}
             currentLocation={currentLocation}
             setCreatedZoneArea={setCreatedZoneArea}
-          ></ZoneMap>
+          />
           {editZone?.isLoading && (
             <Stack
               sx={{ position: 'absolute', top: '0', left: '0', zIndex: '9999', backdropFilter: 'blur(10px)' }}
@@ -303,7 +303,7 @@ function EditZone({ onClose, editZone, allZones, rowData, currentLocation }) {
             </Stack>
           </Stack>
         </Box>
-      </Box>
+      </Stack>
     </ModalContainer>
   );
 }

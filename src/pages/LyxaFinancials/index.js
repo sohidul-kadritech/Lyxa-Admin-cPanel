@@ -4,19 +4,23 @@ import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
   {
-    label: 'For Resturant',
+    label: 'Summery',
     to: '/financials/lyxa/food',
   },
   {
-    label: 'For Grocery',
+    label: 'Resturant',
+    to: '/financials/lyxa/food',
+  },
+  {
+    label: 'Grocery',
     to: '/financials/lyxa/grocery',
   },
   {
-    label: 'For Pharmacy',
+    label: 'Pharmacy',
     to: '/financials/lyxa/pharmacy',
   },
   {
-    label: 'For Butler',
+    label: 'Butler',
     to: '/financials/lyxa/butler',
   },
 ];

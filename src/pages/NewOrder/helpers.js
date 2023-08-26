@@ -186,9 +186,19 @@ export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
-  if ((hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') || userType === 'shop') {
-    options.push({ label: 'Update Status', value: 'update_status' });
-    options.push({ label: 'Track Order', value: 'track_order' });
+  const updateStatus = { label: 'Update Status', value: 'update_status' };
+  const trackOrder = { label: 'Track Order', value: 'track_order' };
+
+  const makePushOptions = (items) => {
+    items.forEach((item) => {
+      console.log('items', item);
+      options.push(item);
+    });
+  };
+
+  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
+    if (userType === 'admin') makePushOptions([updateStatus, trackOrder]);
+    else if (userType === 'shop') makePushOptions([updateStatus]);
   }
 
   if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
