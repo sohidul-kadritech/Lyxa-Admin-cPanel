@@ -277,6 +277,7 @@ function ZoneMap({
           style={{ zIndex: '9999' }}
           center={[center?.lat, center?.lon]}
           zoom={zoom_level}
+          maxZoom={50}
           ref={mapRef}
           scrollWheelZoom
         >
@@ -331,7 +332,7 @@ function ZoneMap({
                   ? currentLocation?.isCurrent === false
                     ? `Please give permission to get your current location`
                     : `${currentLocationName} (Your Location)`
-                  : `${currentZone?.zoneName} (Current Zone)`}
+                  : `${currentLocationName}`}
               </Typography>
             </Tooltip>
             {/* <Popup>{JSON.stringify(center)}</Popup> */}
