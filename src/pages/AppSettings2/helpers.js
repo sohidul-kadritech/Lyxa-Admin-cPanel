@@ -224,3 +224,14 @@ export const getAcceptedCurrencyOptions = (base, secondary) => [
     value: secondary?.code,
   },
 ];
+
+export const enabledCurrencyOptions = [
+  {
+    value: 'base',
+    label: 'Base Only',
+  },
+  {
+    value: 'both',
+    label: 'Both Currencies',
+  },
+];
