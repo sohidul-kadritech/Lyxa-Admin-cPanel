@@ -87,3 +87,35 @@ export function CommonOrderAmountTooltipText({ byAdmin, byShop, currency }) {
     </ul>
   );
 }
+export function CommonOrderMarketingCashbackTooltipText({ discount, doubleMenu, rewards, currency }) {
+  return (
+    <div>
+      {/* <p
+        style={{
+          padding: '4px 16px',
+          marginBottom: '0',
+          minWidth: '180px',
+        }}
+      >
+        How many amount lyxa should gave back to the shop:
+      </p> */}
+      <ul
+        style={{
+          padding: '4px 16px',
+          marginBottom: '0',
+          minWidth: '180px',
+        }}
+      >
+        <li>
+          Buy 1 Get 1 {currency} {discount}
+        </li>
+        <li>
+          Discount {currency} {doubleMenu}
+        </li>
+        <li>
+          Loyality Points {currency} {rewards}
+        </li>
+      </ul>
+    </div>
+  );
+}
