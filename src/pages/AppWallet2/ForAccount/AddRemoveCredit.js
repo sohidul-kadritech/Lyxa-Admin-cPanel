@@ -1,45 +1,39 @@
-import { Box, Button, Stack, Typography, createFilterOptions, debounce } from '@mui/material';
-import { isNumber } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
+import React, { useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 
+import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import IncrementDecrementButton from '../../AppSettings2/IncrementDecrementButton';
+import { currencyTypeOptions } from '../../UsersProfile/Transactions/AddRemoveCredit';
 
-function AddRemoveCredit({ onClose, storeAppSettings }) {
-  const { general } = useGlobalContext();
-  const { adminExchangeRate, secondaryCurrency } = storeAppSettings;
-  const currency = general?.currency?.symbol;
-  const [searchedUserOptions, setSearchedUserOptions] = useState([]);
-  const [user, setUser] = useState({});
+const getDataInit = () => ({
+  userId: null,
+  amount: '',
+  secondaryCurrency_amount: '',
+  adminNote: '',
+  userNote: '',
+  paidCurrency: 'baseCurrency',
+});
 
-  const [searchKeyUser, setSearchKeyUser] = useState('');
-  const [amount, setAmount] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
-  const [adminNote, setAdminNote] = useState('');
-  const [userNote, setUserNote] = useState('');
-
+function AddRemoveCredit({ onClose }) {
   const queryClient = useQueryClient();
-  const incrementByOneHandler = (setValue) => {
-    setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) + 1;
-      if (prev === '') return 1;
-      return prev;
-    });
-  };
-  // Handle decremented by one
-  const decrementByOneHandler = (setValue) => {
-    setValue((prev) => {
-      if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
-      if (prev === '' || prev <= 0) return 0;
-      return prev;
-    });
-  };
+
+  const { general } = useGlobalContext();
+  const { appSetting } = general;
+  const { secondaryCurrency, adminExchangeRate, baseCurrency } = appSetting;
+  const max = appSetting?.maxCustomerServiceValue;
+  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
+
+  const [data, setData] = useState(getDataInit());
+
+  const [searchedUserOptions, setSearchedUserOptions] = useState([]);
+  const [searchKeyUser, setSearchKeyUser] = useState('');
+
   const shopsQuery = useMutation(
     () =>
       AXIOS.get(Api.ALL_USERS, {
@@ -58,11 +52,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
       },
     }
   );
-  const settingsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
-    onSuccess: (data) => {
-      setMaxValue(data?.data?.appSetting?.maxCustomerServiceValue);
-    },
-  });
 
   const creditMutation = useMutation((data) => AXIOS.post(data?.api, data?.data), {
     onSuccess: (data) => {
@@ -76,34 +65,50 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
   });
 
   const addRemoveCredit = (type) => {
-    if (!user?.id) {
-      successMsg('Select an user', 'error');
-      return;
-    }
-    if (amount < 0) {
-      successMsg("Amount can't be negative", 'error');
+    if (!data?.userId) {
+      successMsg('Plese select user first!');
       return;
     }
 
-    if (amount > maxValue) {
-      successMsg(`Amount can't be more than ${maxValue}`, 'error');
+    if (Number.isNaN(Number(data?.amount))) {
+      successMsg('Please enter valid amount', 'error');
       return;
     }
 
-    if (!userNote) {
+    if (data?.amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (data?.amount >= max) {
+      successMsg(`Amount can't be more than maximum`, 'error');
+      return;
+    }
+
+    if (Number.isNaN(Number(data?.secondaryCurrency_amount))) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount > max * adminExchangeRate) {
+      successMsg(`Asount can't be more than maximum`, 'error');
+      return;
+    }
+
+    if (!data?.userNote) {
       successMsg('Must add user note', 'error');
       return;
     }
+
     const api = type === 'add' ? Api.ADD_USER_BALANCE : Api.REMOVE_USER_BALANCE;
-
-    const data = { api, data: { userId: user?.id, amount, adminNote, userNote } };
-    console.log(data);
-    creditMutation.mutate(data);
+    const payload = { api, data: { ...data, userId: data?.userId?._id } };
+    creditMutation.mutate(payload);
   };
-
-  useEffect(() => {
-    setMaxValue(settingsQuery?.data?.data?.appSetting?.maxCustomerServiceValue || null);
-  }, []);
 
   const getShops = useMemo(
     () =>
@@ -112,7 +117,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
         setSearchKeyUser(value);
         shopsQuery.mutate();
       }, 300),
-    // eslint-disable-next-line prettier/prettier
     []
   );
 
@@ -121,15 +125,27 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
   });
 
   const clearData = () => {
-    setUser({});
-    setAmount(0);
-    setAdminNote('');
-    setUserNote('');
+    setData(getDataInit());
   };
 
   return (
     <SidebarContainer title="Add/Remove credit" onClose={onClose}>
-      <Box position="relative">
+      <Box position="relative" pt={7.5}>
+        {isSecondaryCurrencyEnabled && (
+          <StyledRadioGroup
+            sx={{
+              flexDirection: 'row',
+              gap: '25px',
+              pb: 5,
+            }}
+            items={currencyTypeOptions}
+            value={data?.paidCurrency}
+            onChange={(e) =>
+              setData({ ...data, paidCurrency: e.target.value, amount: '', secondaryCurrency_amount: '' })
+            }
+          />
+        )}
+
         <StyledFormField
           label="Select User"
           intputType="autocomplete"
@@ -137,7 +153,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
             multiple: false,
             maxHeight: '110px',
             options: searchedUserOptions,
-            value: user.id,
+            value: data?.userId,
             placeholder: 'Choose user',
             noOptionsText: shopsQuery?.isLoading ? 'Loading...' : 'No users',
             filterOptions,
@@ -145,12 +161,11 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
             isOptionEqualToValue: (option, value) => option?._id === value?._id,
             onChange: (e, v) => {
               console.log('value: ', v);
-              setUser((prev) => ({ ...prev, id: v?._id }));
+              setData((prev) => ({ ...prev, userId: v }));
             },
             onInputChange: (e) => {
               getShops(e?.target?.value);
             },
-
             sx: {
               '& .MuiFormControl-root': {
                 minWidth: '300px',
@@ -159,46 +174,61 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
           }}
         />
       </Box>
-      <Box sx={{ marginTop: '20px' }}>
-        <Typography variant="h6" sx={{ fontWeight: '600', fontSize: '15px' }}>
-          Amount (max {currency}
-          {maxValue || 0})
-        </Typography>
-        <IncrementDecrementButton
-          incrementHandler={incrementByOneHandler}
-          decrementHandler={decrementByOneHandler}
-          setValue={setAmount}
-          isValidateType={false}
-          currentValue={amount}
+
+      {data?.paidCurrency === 'baseCurrency' ? (
+        <StyledFormField
+          label={`Amount * (max ${baseCurrency?.code} ${max} )`}
+          intputType="text"
+          inputProps={{
+            type: 'number',
+            value: data?.amount,
+            onChange: (e) => {
+              setData({
+                ...data,
+                amount: e.target.value,
+                secondaryCurrency_amount: Number(e.target.value) * adminExchangeRate,
+              });
+            },
+          }}
         />
-      </Box>
-      {secondaryCurrency?.symbol && (
-        <Typography pt={2} variant="body3" display="block">
-          Equivalent Price: {secondaryCurrency?.code} {Math.round(amount * parseInt(adminExchangeRate, 10))}
-        </Typography>
+      ) : (
+        <>
+          <StyledFormField
+            label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
+            intputType="text"
+            inputProps={{
+              type: 'number',
+              value: data?.amsecondaryCurrency_amountount,
+              onChange: (e) => {
+                setData({
+                  ...data,
+                  secondaryCurrency_amount: e.target.value,
+                  amount: Number((Number(e.target.value) / adminExchangeRate)?.toFixed(2) || 0),
+                });
+              },
+            }}
+          />
+          <span></span>
+        </>
       )}
-      <Box sx={{ marginTop: '20px' }}>
-        <StyledFormField
-          label="Admin Note (Visible to you)"
-          intputType="textarea"
-          inputProps={{
-            multiline: true,
-            value: adminNote,
-            onChange: (e) => setAdminNote(e.target.value),
-          }}
-        />
-      </Box>
-      <Box sx={{ marginTop: '20px' }}>
-        <StyledFormField
-          label="User Note (Visible to User) *"
-          intputType="textarea"
-          inputProps={{
-            multiline: true,
-            value: userNote,
-            onChange: (e) => setUserNote(e.target.value),
-          }}
-        />
-      </Box>
+      <StyledFormField
+        label="Admin note"
+        intputType="textarea"
+        inputProps={{
+          multiline: true,
+          value: data.desc,
+          onChange: (e) => setData({ ...data, adminNote: e.target.value }),
+        }}
+      />
+      <StyledFormField
+        label="User note *"
+        intputType="textarea"
+        inputProps={{
+          multiline: true,
+          value: data.desc,
+          onChange: (e) => setData({ ...data, userNote: e.target.value }),
+        }}
+      />
       <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="16px" pt={6.5}>
         <Button
           color="primary"
@@ -207,7 +237,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
           onClick={() => {
             addRemoveCredit('remove');
           }}
-          disabled={creditMutation.isLoading || maxValue === null}
+          disabled={creditMutation.isLoading || max === null}
         >
           Remove
         </Button>
@@ -218,7 +248,7 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
           onClick={() => {
             addRemoveCredit('add');
           }}
-          disabled={creditMutation.isLoading || maxValue === null}
+          disabled={creditMutation.isLoading || max === null}
         >
           Add
         </Button>
@@ -228,7 +258,6 @@ function AddRemoveCredit({ onClose, storeAppSettings }) {
           variant="text"
           disableRipple
           color="error"
-          //   disabled={update.isLoading}
           onClick={() => {
             clearData();
           }}
