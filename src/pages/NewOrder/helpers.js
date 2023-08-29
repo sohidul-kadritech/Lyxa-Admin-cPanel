@@ -38,7 +38,7 @@ export function TitleWithToolTip({ title, tooltip, sx }) {
 }
 
 export const orderStatusMap = {
-  placed: 'Pending',
+  placed: 'Placed',
   accepted_delivery_boy: 'Rider Accepted',
   preparing: 'Restaurant Accepted',
   ready_to_pickup: 'Ready to pickup',
@@ -134,7 +134,7 @@ const queryParamsInit = {
 
 export const getQueryParamsInit = (showFor, currentUser) => {
   if (showFor === 'shop') {
-    return { ...queryParamsInit, shop: currentUser?.shop?._id };
+    return { ...queryParamsInit, type: 'requested', shop: currentUser?.shop?._id };
   }
 
   if (showFor === 'seller') {
@@ -185,9 +185,14 @@ export const getOrderProfit = (order, adminType = 'shop') => {
 export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+  const hideUpdateAndCanelOptionForShop = ['preparing', 'ready_to_pickup', 'order_on_the_way'];
 
   const updateStatus = { label: 'Update Status', value: 'update_status' };
   const trackOrder = { label: 'Track Order', value: 'track_order' };
+  const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
+  const rejectedOrder = { label: 'Reject Order', value: 'cancel_order' };
+  const refundOrder = { label: 'Refund Order', value: 'refund_order' };
+  const flagOrder = { label: 'Flag', value: 'flag' };
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
@@ -196,14 +201,20 @@ export const getThreedotMenuOptions = (order, userType) => {
     });
   };
 
-  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
-    if (userType === 'admin') makePushOptions([updateStatus, trackOrder]);
-    else if (userType === 'shop') makePushOptions([updateStatus]);
+  // console.log('order?.orderStatus', order?.orderStatus);
+
+  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
+    makePushOptions([updateStatus, trackOrder, cancelOrder]);
   }
 
-  if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
-    options.push({ label: 'Cancel Order', value: 'cancel_order' });
+  if (userType === 'shop') {
+    if (hideUpdateAndCanelOptionForShop.indexOf(order?.orderStatus) < 0) makePushOptions([updateStatus, rejectedOrder]);
+    else makePushOptions([updateStatus]);
   }
+
+  // if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
+  //   options.push(cancelOrder);
+  // }
 
   if (
     userType === 'admin' &&
@@ -211,11 +222,11 @@ export const getThreedotMenuOptions = (order, userType) => {
     !order?.isRefundedAfterDelivered &&
     !order?.isButler
   ) {
-    options.push({ label: 'Refund Order', value: 'refund_order' });
+    options.push(refundOrder);
   }
 
   if (userType === 'admin') {
-    options.push({ label: 'Flag', value: 'flag' });
+    options.push(flagOrder);
   }
 
   return options;

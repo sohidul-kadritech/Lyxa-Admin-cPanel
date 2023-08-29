@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import moment from 'moment';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 
@@ -30,8 +31,10 @@ export const getMarketingTypeValues = (marketingType, summary = {}) => {
     sum: 0,
   };
 
-  // eslint-disable-next-line no-unsafe-optional-chaining
-  const totalDoubleMenuCut = summary?.orderValue?.totalShopDoubleMenuCut + summary?.orderValue?.totalAdminDoubleMenuCut;
+  const totalDoubleMenuCut =
+    summary?.orderValue?.totalShopDoubleMenuItemPrice + summary?.orderValue?.totalAdminDoubleMenuCut;
+
+  // console.log('summary?.orderValue', summary?.orderValue);
 
   if (marketingType === 'all') {
     marketingSpentValues.totalDiscount = summary?.orderValue?.totalDiscount;
@@ -43,7 +46,7 @@ export const getMarketingTypeValues = (marketingType, summary = {}) => {
 
   if (marketingType === 'shop') {
     marketingSpentValues.totalDiscount = summary?.orderValue?.totalShopDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalShopDoubleMenuCut;
+    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalShopDoubleMenuItemPrice;
     marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalShopRewardAmount;
     marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryShopCut;
     marketingSpentValues.totalFeaturedAmount = summary?.totalFeaturedAmount;

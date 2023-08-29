@@ -106,7 +106,7 @@ export const appSettingsValidateData = (oldData, newData) => {
     : '0';
   const nearByShopKm = parseInt(newData?.nearByShopKm, 10) > 0 ? parseInt(newData?.nearByShopKm, 10) : '0';
   const vat = parseInt(newData?.vat, 10) > 0 ? parseInt(newData?.vat, 10) : '0';
-  const adminExchangeRate = parseInt(newData?.adminExchangeRate, 10);
+  const adminExchangeRate = Number(newData?.adminExchangeRate);
 
   return {
     ...newData,

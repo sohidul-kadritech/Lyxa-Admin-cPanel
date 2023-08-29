@@ -1,9 +1,12 @@
-import { Avatar, Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+import { Avatar, Box, Button, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
+import { getNextStatus, statusOptions } from '../UpdateOrderStatus/helpers';
 import ChatRequests from './ChatReqests';
 import Details from './Details';
 import Earnings from './Earnings';
@@ -11,7 +14,7 @@ import OrderContextProvider from './OrderContext';
 import Review from './Reviews';
 import RiderChat from './RiderChat';
 
-export default function OrderDetail({ order, onClose, hideIssues }) {
+export default function OrderDetail({ order, onClose, hideIssues, onClickAccept, onClickReject, showFor = 'admin' }) {
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
@@ -24,7 +27,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    []
+    [],
   );
 
   return (
@@ -129,6 +132,23 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           <TabPanel index={4} value={currentTab} noPadding>
             <RiderChat chats={order?.chats} />
           </TabPanel>
+
+          {showFor === 'shop' && (
+            <Box my={7.2}>
+              <Stack direction="row" justifyContent="space-between">
+                {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
+                  <Button onClick={onClickReject} variant="contained" color="danger">
+                    Reject
+                  </Button>
+                )}
+                <Button onClick={onClickAccept} variant="contained" color="primary">
+                  {statusOptions[getNextStatus(order)]?.label === 'Preparing'
+                    ? 'Accept'
+                    : statusOptions[getNextStatus(order)]?.label}
+                </Button>
+              </Stack>
+            </Box>
+          )}
         </Box>
       </Box>
     </OrderContextProvider>

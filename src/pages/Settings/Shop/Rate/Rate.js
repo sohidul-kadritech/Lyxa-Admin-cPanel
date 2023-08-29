@@ -35,7 +35,8 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
 
   console.log(
     appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10,
-    appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10
+    // eslint-disable-next-line prettier/prettier
+    appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10,
   );
 
   return (

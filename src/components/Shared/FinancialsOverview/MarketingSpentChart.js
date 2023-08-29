@@ -24,7 +24,7 @@ const generateData = (data, marketingSpentType = '') => {
     shop: {
       discount: 'totalShopDiscount',
       points: 'totalShopRewardAmount',
-      doubleDeal: 'totalShopDoubleMenuCut',
+      doubleDeal: 'totalShopDoubleMenuItemPrice',
       freeDelivery: 'freeDeliveryShopCut',
       featureAmount: 'totalFeaturedAmount',
     },
@@ -78,12 +78,12 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
   const marketingSpentQuery = useQuery([Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_MARKETING_SPENT_GRAPH, {
       params: queryParams,
-    })
+    }),
   );
 
   const chartdata = useMemo(
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
-    [marketingSpentType, marketingSpentQuery?.data]
+    [marketingSpentType, marketingSpentQuery?.data],
   );
 
   console.log('chartdata', marketingSpentQuery?.data);

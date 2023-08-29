@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-/* eslint-disable no-restricted-syntax */
 import { Avatar, Box, CircularProgress, Stack, Typography } from '@mui/material';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
@@ -40,7 +38,7 @@ function isThisPolygonHasAnyStore(polygon, stores) {
 
   const allStore = stores.map((store) => ({ shopZone: store?.shopZone, markerPosition: store?.location?.coordinates }));
 
-  allStore.forEach(({ shopZone, markerPosition }, i) => {
+  allStore.forEach(({ shopZone, markerPosition }) => {
     const markerPoint = turf.point([markerPosition[1], markerPosition[0]]);
 
     if (turf.booleanPointInPolygon(markerPoint, polygonFeature) && shopZone) {
@@ -57,15 +55,10 @@ function checkPolygonIntersections(newPolygons, existingPolygons) {
 
   const allZones = existingPolygons.map((loc) => convertedLatLonToLonLat(loc?.zoneGeometry?.coordinates[0]));
 
-  console.log('allZones', allZones);
-
-  console.log('newPolygons', newPolygons);
-
   const poly1 = turf.polygon(getTurfPolygonData(newPolygons));
 
-  allZones.forEach((item, i) => {
+  allZones.forEach((item) => {
     const poly2 = turf.polygon(getTurfPolygonData(item));
-    // console.log(newPolygon.getBounds().intersects(existingPolygon.getBounds()));
 
     const intersection = turf.intersect(poly1, poly2);
 
@@ -92,30 +85,11 @@ function ZoneMap({
   isLoading = false,
   setIsDisable,
 }) {
-  // eslint-disable-next-line no-unused-vars
-  const existingPolygons = [
-    [
-      [90.27836217031873, 23.80625533896962],
-      [90.30204893256419, 23.809398698822793],
-      [90.30204893256419, 23.8026403810798],
-      [90.28591447132455, 23.793523953586853],
-      [90.27836217031873, 23.80625533896962],
-      [90.27836217031873, 23.80625533896962],
-    ],
-    // Add more polygons if needed...
-  ];
-
-  // console.log('getBounds(existingPolygons);', checkPolygonIntersections(existingPolygons));
-
   const [currentLocationName, setCurrentLocationName] = useState(currentZone?.zoneName || '');
 
   const [center, setCenter] = useState(
-    // eslint-disable-next-line prettier/prettier
     currentLocation?.loaded && currentLocation?.coordinates ? currentLocation?.coordinates : defaultCenter,
   );
-
-  // eslint-disable-next-line no-unused-vars
-  const [selectedMarker, setSelectedMarker] = useState({ lat: 23.1, lon: 80.0 });
 
   // Map Pin Icon URL
   delete L.Icon.Default.prototype._getIconUrl;
@@ -203,10 +177,7 @@ function ZoneMap({
 
   // Map view handler
   const handleSetView = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
-    const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
-      // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error),
-    );
+    const location = getLocationFromLatLng(newLatitude, newLongitude).catch((error) => console.log(error));
     location.then((res) => {
       setCurrentLocationName(res?.data?.results[0]?.formatted_address || 'Please relocate it');
     });
@@ -219,10 +190,7 @@ function ZoneMap({
 
   // Map view handler
   const handleFlyTo = (newLatitude, newLongitude, newZoomLevel = zoom_level) => {
-    const location = getLocationFromLatLng(newLatitude, newLongitude).catch(
-      // eslint-disable-next-line prettier/prettier
-      (error) => console.log(error),
-    );
+    const location = getLocationFromLatLng(newLatitude, newLongitude).catch((error) => console.log(error));
     location.then((res) => {
       setCurrentLocationName(res?.data?.results[0]?.formatted_address || 'Please relocate it');
     });
@@ -248,6 +216,10 @@ function ZoneMap({
       return currentLocation?.loaded ? currentLocation?.coordinates : { lat: 0, lon: 0 };
     });
   }, [selectedLocation, currentLocation]);
+
+  useEffect(() => {
+    getAllStore?.refetch();
+  }, [getAllStore?.refetch(), isLoading]);
 
   return (
     <Box sx={{ width: '100%', height: '100%', zIndex: '-1' }}>
@@ -343,12 +315,10 @@ function ZoneMap({
               {/* <Popup>{store?.shopName}</Popup> */}
               <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
                 <Stack direction="row" gap="5.2px" alignItems="center">
-                  {' '}
                   <Avatar src={store?.shopLogo} width="36px" height="36px"></Avatar>
                   <Typography sx={{ textTransform: 'capitalize' }}>{store?.shopName}</Typography>
                 </Stack>
               </Tooltip>
-              {/* <Typography sx={{ position: 'absolute', top: '0', left: '0' }}>{store?.shopName}</Typography> */}
             </Marker>
           ))}
         </MapContainer>
