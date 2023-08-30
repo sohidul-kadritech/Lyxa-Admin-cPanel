@@ -21,26 +21,37 @@ import AXIOS from '../../network/axios';
 const initialData = {
   refundType: 'full',
   orderId: '',
-  cancelReasonId: '',
+  cancelReasonId: null,
   otherReason: '',
 };
 
-function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refetchApiKey }) {
+function OrderRejectForShop({ currentOrder, setCurrentOrder, onClose, onSuccess, refetchApiKey }) {
   const queryClient = useQueryClient();
 
   const [rejectionData, setRejectionData] = useState({ ...initialData, orderId: currentOrder?._id });
   const [isOtherReason, setIsOtherReason] = useState(false);
   const [searchKey, setSearchKey] = useState('');
 
-  const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () =>
-    AXIOS.get(Api.ALL_ORDER_CANCEL_REASON, {
-      params: {
-        type: 'shop',
+  const getCancelReasonsQuery = useQuery(
+    [Api.ALL_ORDER_CANCEL_REASON],
+    () =>
+      AXIOS.get(Api.ALL_ORDER_CANCEL_REASON, {
+        params: {
+          type: 'shopCancel',
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          console.log('data?.data?.cancelReason', data?.data?.cancelReason);
+          const holdingFirstReason = data?.data?.cancelReason?.length > 0 ? data?.data?.cancelReason[0] : null;
+          setRejectionData((prev) => ({ ...prev, cancelReasonId: holdingFirstReason }));
+        }
       },
-    }),
+    },
   );
 
-  const cancelOrderByAdminMutation = useMutation(
+  const cancelOrderByShopAdminMutation = useMutation(
     (data) =>
       AXIOS.post(Api.CANCEL_ORDER, data, {
         params: {
@@ -54,7 +65,7 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
           if (onSuccess) onSuccess(data);
           successMsg(data.message, 'success');
           console.log('data status true');
-          setOpenCancelModal(false);
+          onClose();
           queryClient.invalidateQueries(refetchApiKey);
         } else {
           successMsg(data.message, 'error');
@@ -65,9 +76,20 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
 
   const onRejectOrder = () => {
     console.log('rejectionData', rejectionData);
-    // cancelOrderByAdminMutation.mutate({
-    //   ...rejectionData,
-    // });
+
+    if (!rejectionData?.orderId) {
+      successMsg('Order not found!');
+      return;
+    }
+
+    if (!rejectionData?.cancelReasonId && !rejectionData?.otherReason) {
+      successMsg('Provide your reason!');
+    }
+
+    cancelOrderByShopAdminMutation.mutate({
+      ...rejectionData,
+      cancelReasonId: rejectionData?.cancelReasonId?._id,
+    });
   };
 
   return (
@@ -85,7 +107,7 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
           <Typography variant="h3">Reject Order</Typography>
           <CloseButton
             onClick={() => {
-              setOpenCancelModal(false);
+              onClose();
             }}
           />
         </Stack>
@@ -137,7 +159,7 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
                       name="otherReason"
                     />
                   }
-                  label="Send other reason"
+                  label="Other reason"
                 />
               </Box>
               {isOtherReason && (
@@ -146,10 +168,10 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
                     type="text"
                     multiline
                     className="form-control"
-                    placeholder="Type other reason"
+                    placeholder="Type your other reaoson..."
                     maxRows={4}
                     required={isOtherReason}
-                    label="Other reason"
+                    label="Anything else to add?"
                     value={rejectionData.otherReason}
                     onChange={(e) =>
                       setRejectionData({
@@ -165,10 +187,15 @@ function OrderRejectForShop({ currentOrder, setOpenCancelModal, onSuccess, refet
           </Box>
 
           <Stack direction="row" gap={4} justifyContent="flex-end" mt={4}>
-            <Button variant="outlined" color="danger">
+            <Button variant="outlined" color="danger" onClick={onClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="danger" onClick={onRejectOrder}>
+            <Button
+              variant="contained"
+              color="danger"
+              disabled={cancelOrderByShopAdminMutation?.isLoading}
+              onClick={onRejectOrder}
+            >
               Reject Order
             </Button>
           </Stack>

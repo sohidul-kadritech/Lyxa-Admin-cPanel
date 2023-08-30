@@ -5,7 +5,9 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import { successMsg } from '../../helpers/successMsg';
 
 export function TitleWithToolTip({ title, tooltip, sx }) {
   return (
@@ -185,12 +187,10 @@ export const getOrderProfit = (order, adminType = 'shop') => {
 export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
-  const hideUpdateAndCanelOptionForShop = ['preparing', 'ready_to_pickup', 'order_on_the_way'];
 
   const updateStatus = { label: 'Update Status', value: 'update_status' };
   const trackOrder = { label: 'Track Order', value: 'track_order' };
   const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
-  const rejectedOrder = { label: 'Reject Order', value: 'cancel_order' };
   const refundOrder = { label: 'Refund Order', value: 'refund_order' };
   const flagOrder = { label: 'Flag', value: 'flag' };
 
@@ -206,15 +206,6 @@ export const getThreedotMenuOptions = (order, userType) => {
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
     makePushOptions([updateStatus, trackOrder, cancelOrder]);
   }
-
-  if (userType === 'shop') {
-    if (hideUpdateAndCanelOptionForShop.indexOf(order?.orderStatus) < 0) makePushOptions([updateStatus, rejectedOrder]);
-    else makePushOptions([updateStatus]);
-  }
-
-  // if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
-  //   options.push(cancelOrder);
-  // }
 
   if (
     userType === 'admin' &&
@@ -400,4 +391,71 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       ),
     },
   };
+};
+export const getCurrentStatus = (currentOrder) => {
+  const haveOwnDeliveryBoy = currentOrder?.shop?.haveOwnDeliveryBoy;
+  const currentStatus = getNextStatus(currentOrder);
+
+  const currentOrderDelivery = currentOrder?.deliveryBoy;
+
+  const shouldConvertStatusOnTheWay =
+    currentStatus === 'ready_to_pickup' && haveOwnDeliveryBoy && !currentOrderDelivery;
+
+  console.log('shouldConvertStatusOnTheWay', shouldConvertStatusOnTheWay);
+  if (shouldConvertStatusOnTheWay) {
+    return 'order_on_the_way';
+  }
+
+  return currentStatus;
+};
+
+export const validateAndGenerateStatusData = (currentOrder, paidCurrency) => {
+  const currentStatus = getNextStatus(currentOrder);
+  // const currentStatus = getCurrentStatus(currentOrder);
+
+  const currentOrderDelivery = currentOrder?.deliveryBoy;
+
+  const status = {
+    status: false,
+    msg: '',
+  };
+
+  if (!currentStatus) {
+    successMsg('Please select status');
+    return status;
+  }
+
+  if (currentStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
+    successMsg('Please select rider');
+    return status;
+  }
+
+  // if (
+  //   (currentStatus === 'delivered' || currentStatus === 'preparing') &&
+  //   !currentOrderDelivery?._id &&
+  //   !currentOrder?.shop?.haveOwnDeliveryBoy
+  // ) {
+  //   successMsg(`Assign rider first`);
+  //   return status;
+  // }
+
+  if (currentStatus === 'preparing' && !currentOrderDelivery) {
+    successMsg(`Assign rider first`);
+    return status;
+  }
+
+  if (currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !paidCurrency) {
+    successMsg(`Choose paid currency first`);
+    return status;
+  }
+
+  const data = {};
+  data.orderId = currentOrder?._id;
+  data.orderStatus = currentStatus;
+  data.shop = currentOrder?.shop?._id;
+  data.deliveryBoy = currentOrderDelivery?._id === 'no-rider' ? undefined : currentOrderDelivery?._id;
+  // if not selected will be undefined
+  data.paidCurrency = paidCurrency || undefined;
+
+  return { status: true, data };
 };

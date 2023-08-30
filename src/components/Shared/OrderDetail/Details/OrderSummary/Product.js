@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
@@ -16,12 +17,36 @@ const dealTypeToLabelMap = {
   reward: 'Reward',
 };
 
-export default function Product({ product, isFirst, isLast }) {
+// eslint-disable-next-line no-unused-vars
+const getPriceWithCurrency = (
+  baseCurrency,
+  secondaryCurrency,
+  price,
+  secondaryCurrencyPrice = undefined,
+  exchangeRate = { shouldCalculate: false, rate: null },
+) => {
+  if (exchangeRate?.shouldCalculate) {
+    if (exchangeRate?.rate > 0) return `${secondaryCurrency} ${Math.round(price * exchangeRate?.rate || 0)}`;
+    return `${baseCurrency} ${(price || 0)?.toFixed(2)}`;
+  }
+
+  return `${secondaryCurrency} ${Math.round(secondaryCurrencyPrice || 0)} ~ ${baseCurrency}
+  ${(price || 0)?.toFixed(2)}`;
+};
+
+// eslint-disable-next-line no-unused-vars
+export default function Product({ product, isFirst, isLast, shopExchangeRate }) {
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
   const deal = productDeal(product);
-  const finalPrice = product?.baseCurrency_finalPrice;
+  const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
+  // eslint-disable-next-line no-unused-vars
+  const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
+
+  console.log('product', product);
 
   return (
     <Box
@@ -54,7 +79,7 @@ export default function Product({ product, isFirst, isLast }) {
               textDecoration: deal !== null ? 'line-through' : undefined,
             }}
           >
-            {currency} {(finalPrice || 0)?.toFixed(2)}
+            {getPriceWithCurrency(currency, secondaryCurrency, baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
           </Typography>
         </Stack>
         {/* deal info */}
@@ -70,14 +95,14 @@ export default function Product({ product, isFirst, isLast }) {
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity
+                  product?.finalReward?.points / product?.productQuantity,
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
               {/* percentage */}
               {deal === 'percentage' &&
                 `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
-                  2
+                  2,
                 )}`}
 
               {/* reward */}
@@ -87,7 +112,7 @@ export default function Product({ product, isFirst, isLast }) {
               {/* double menu */}
               {deal === 'double_menu' &&
                 `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
-                  2
+                  2,
                 )}`}
             </Typography>
           </Stack>
@@ -102,19 +127,17 @@ export default function Product({ product, isFirst, isLast }) {
               </Typography>
               <Stack>
                 {attr?.selectedItems?.map((item, index) => (
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    key={index}
-                    gap={5}
-                    flex={1}
-                  >
+                  <Stack direction="row" alignItems="center" justifyContent="flex-start" key={index} gap={2} flex={1}>
                     <Typography variant="inherit" fontSize="14px" lineHeight="22px" fontWeight={500}>
                       {item?.name}
                     </Typography>
                     <Typography variant="inherit" fontSize="14px" lineHeight="22px" fontWeight={500}>
-                      {currency} {item?.extraPrice}
+                      (
+                      {getPriceWithCurrency(currency, secondaryCurrency, item?.extraPrice, undefined, {
+                        shouldCalculate: true,
+                        rate: shopExchangeRate,
+                      })}
+                      )
                     </Typography>
                   </Stack>
                 ))}

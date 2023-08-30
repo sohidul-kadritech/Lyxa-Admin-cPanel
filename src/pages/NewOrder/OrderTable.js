@@ -29,7 +29,6 @@ export default function OrderTable({
 
   onViewDetail,
   loading,
-  updateQueryParams,
 }) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
@@ -338,34 +337,8 @@ export default function OrderTable({
     ),
   };
 
-  /*
-  This column is only for shop console
-  */
-
-  const newColumnForShop = {
-    showFor: ['ongoing', 'requested'],
-    id: 6,
-    headerName: `ACTION`,
-    sortable: false,
-    align: 'right',
-    headerAlign: 'right',
-    flex: 1,
-    renderCell: (params) => (
-      <ThreeDotsMenu
-        handleMenuClick={(menu) => {
-          threeDotHandler(menu, params?.row);
-        }}
-        menuItems={getThreedotMenuOptions(params?.row, adminType)}
-      />
-    ),
-  };
-
   if (adminType === 'admin') {
     columns.push(newColumn);
-  }
-
-  if (userType === 'shop') {
-    columns.push(newColumnForShop);
   }
 
   if (loading) {
@@ -416,11 +389,6 @@ export default function OrderTable({
             onClose={() => setUpdateStatusModal(false)}
             setCurrentOrder={setCurrentOrder}
             currentOrder={currentOrder}
-            onSuccess={(data) => {
-              if (adminType === 'shop' && updateQueryParams) {
-                updateQueryParams(data?.data?.order?.orderStatus);
-              }
-            }}
           />
         </Box>
       </Modal>

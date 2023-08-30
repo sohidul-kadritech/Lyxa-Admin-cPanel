@@ -1,22 +1,27 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 // third party
 import { Box, Drawer, Modal, Tab, Tabs } from '@mui/material';
 
 // project import
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
 import TablePagination from '../../components/Common/TablePagination';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import { useGlobalContext } from '../../context';
+import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+
 import AssignRiderForShop from './AssignRiderForShop';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
-import { getQueryParamsInit } from './helpers';
+import { getQueryParamsInit, validateAndGenerateStatusData } from './helpers';
 
 const orderFilterToTabValueMap = {
   0: 'requested',
@@ -38,12 +43,15 @@ const getTabOptions = () => {
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
+  const { socket } = useSelector((state) => state.socketReducer);
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
 
   const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const [currentOrder, setCurrentOrder] = useState({});
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
@@ -52,6 +60,45 @@ export default function NewOrders({ showFor }) {
   // by defualt we assign ongoing tab as requested where we can only see the requested order here.
   const [tabForOngoing, setTabForOngoing] = useState('requested');
 
+  // @when we are getting success to update any order status this method will call.
+  const onSuccess = (response, payload) => {
+    // notification
+    successMsg(response?.message, response?.status ? 'success' : undefined);
+
+    if (response.status) {
+      queryClient.invalidateQueries(Api.ORDER_LIST);
+
+      // if (onUpdateSuccess) onUpdateSuccess(response);
+
+      setOpenAcceptModal(false);
+
+      const type = response?.data?.order?.orderStatus;
+
+      if (getTabOptions().findIndex((option) => option?.value === type) > -1) {
+        setQueryParams((prev) => ({ ...prev, type }));
+        setTabForOngoing(type);
+      }
+
+      // emit socket
+      if (payload.service === 'regular') {
+        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
+          socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+        } else {
+          socket?.emit('updateOrder', {
+            orderId: payload.data?.orderId,
+          });
+        }
+      }
+
+      if (response?.data?.order?.orderStatus === 'delivered') {
+        setSidebarOpen(false);
+      } else {
+        setCurrentOrder(response?.data?.order);
+      }
+    }
+  };
+
+  // @Get all order list from this query
   const ordersQuery = useQuery(
     [Api.ORDER_LIST, queryParams],
     () =>
@@ -66,13 +113,85 @@ export default function NewOrders({ showFor }) {
     },
   );
 
+  // @update order status from this query
+  const updateStatusMutation = useMutation(
+    (payload) => {
+      const API = payload.service === 'butler' ? Api.BUTLER_ORDER_UPDATE_STATUS : Api.ORDRE_UPDATE_STATUS;
+      return AXIOS.post(API, payload.data);
+    },
+    {
+      onSuccess,
+      onError: (error) => {
+        console.log('api error: ', error);
+      },
+    },
+  );
+
+  const updateStatusHandler = async () => {
+    const validated = validateAndGenerateStatusData(currentOrder, '');
+    const currentOrderDelivery = currentOrder?.deliveryBoy;
+    const haveOwnDeliveryBoy = currentOrder?.shop?.haveOwnDeliveryBoy;
+
+    /*
+    @When we choose no-rider that means there are no riders to delivered this order.
+    so in that case shop should delivered this order.
+    so here we check,
+    - next step is ready_to_pickup or not
+    - shop have their own delivery boy or not.
+    - shop select any rider or not or there are no rider to delivered their order.
+
+    if all the cases comes true then shouldConvertStatusOnTheWay will assigned with true.
+    */
+    const shouldConvertStatusOnTheWay =
+      getNextStatus(currentOrder) === 'ready_to_pickup' && haveOwnDeliveryBoy && !currentOrderDelivery;
+
+    if (validated?.status === false) return;
+
+    const payload = validated?.data;
+
+    /*
+    if shouldConvertStatusOnTheWay true that means there are no rider to delivered this order.
+    shop sould delivered it. so here we update one step forward within order status sequences. 
+    */
+
+    if (shouldConvertStatusOnTheWay) {
+      await updateStatusMutation.mutateAsync({ data: { ...payload, orderStatus: 'ready_to_pickup' } });
+      await updateStatusMutation.mutateAsync({ data: { ...payload, orderStatus: 'order_on_the_way' } });
+      return;
+    }
+
+    updateStatusMutation.mutate({ data: payload });
+  };
+
   const onAcceptHandler = () => {
     const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
 
-    if (isSelfShop) {
+    /* @Here we check whether the next status is preparing or not */
+    const shouldOpenAcceptedModal = getNextStatus(currentOrder) === 'preparing';
+
+    /* @ if delivery method is self
+    and next status is preparing then it update the openAcceptModal state as true to open the modal
+    */
+    if (isSelfShop && shouldOpenAcceptedModal) {
       setOpenAcceptModal(true);
+      return;
     }
+
+    /*
+    @when next status is delivered it will execute and open the accept modal. 
+    Here we used accept modal for both assigning riders and select currency
+    */
+    if (getNextStatus(currentOrder) === 'delivered') {
+      setOpenAcceptModal(true);
+      return;
+    }
+
+    updateStatusHandler();
   };
+
+  /*
+  @When we will click on reject button from order details it will triggered
+  */
   const onRejectHandler = () => {
     setOpenCancelModal(true);
   };
@@ -85,6 +204,7 @@ export default function NewOrders({ showFor }) {
         onChange={(event, newValue) => {
           setCurrentTab(newValue);
           setQueryParams((prev) => ({ ...prev, type: orderFilterToTabValueMap[newValue], page: 1 }));
+          setTabForOngoing(orderFilterToTabValueMap[newValue]);
         }}
         sx={{
           paddingBottom: '30px',
@@ -119,12 +239,6 @@ export default function NewOrders({ showFor }) {
         loading={ordersQuery?.isLoading}
         orders={ordersQuery?.data?.data.orders}
         orderType={orderFilterToTabValueMap[currentTab]}
-        updateQueryParams={(type) => {
-          if (getTabOptions().findIndex((option) => option?.value === type) > -1) {
-            setQueryParams((prev) => ({ ...prev, type }));
-            setTabForOngoing(type);
-          }
-        }}
         onRowClick={({ row }) => {
           setCurrentOrder(row);
           setSidebarOpen(true);
@@ -148,12 +262,18 @@ export default function NewOrders({ showFor }) {
           showFor="shop"
           onClickAccept={onAcceptHandler}
           onClickReject={onRejectHandler}
+          onLoadingUpdateStatus={updateStatusMutation?.isLoading}
           order={currentOrder}
           onClose={() => {
             setSidebarOpen(false);
           }}
         />
       </Drawer>
+
+      {/* If shop want to reject order before preparing/ if the order is new or requested order
+      in that case shop can reject the order 
+      otherwise the reject button will not visible 
+      and this modal not working */}
 
       <Modal
         open={openCancelModal}
@@ -162,10 +282,25 @@ export default function NewOrders({ showFor }) {
         }}
         sx={{ zIndex: '1250 !important' }}
       >
-        <OrderRejectForShop setOpenCancelModal={setOpenCancelModal} currentOrder={currentOrder} />
+        <OrderRejectForShop
+          onClose={() => {
+            setOpenCancelModal(false);
+            // setSidebarOpen(false);
+          }}
+          onSuccess={(data) => {
+            // when rejection is successfull it will update the currentOrder state
+            setCurrentOrder(data?.data?.order);
+          }}
+          currentOrder={currentOrder}
+        />
       </Modal>
 
+      {/* If delivery method is shop and next step is preparing and 
+      next step delivered in that case this modal will visible otherwise not visible 
+      in delivered status it will open for choose currency options
+      */}
       <Modal
+        // open
         open={openAcceptModal}
         onClose={() => {
           setOpenAcceptModal(!openAcceptModal);
@@ -175,7 +310,9 @@ export default function NewOrders({ showFor }) {
         <AssignRiderForShop
           onClose={() => {
             setOpenAcceptModal(false);
+            // setSidebarOpen(false);
           }}
+          updateStatusMutation={updateStatusMutation}
           currentOrder={currentOrder}
         />
       </Modal>
