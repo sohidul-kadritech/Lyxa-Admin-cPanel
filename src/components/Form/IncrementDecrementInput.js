@@ -35,7 +35,7 @@ export default function IncrementDecrementInput({
           disabled={Number(value) === min}
           disableRipple
           onClick={(e) => {
-            if (Number(value) - step >= min) {
+            if (Number(value) - step >= min && Number(value) - step <= max) {
               onChange(Number(value) - step, e);
             } else {
               onChange(min, e);

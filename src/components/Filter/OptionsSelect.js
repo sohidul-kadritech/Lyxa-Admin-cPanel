@@ -37,6 +37,10 @@ export default function OptionsSelect({
   multiple,
   onChange,
   sx,
+  gapSx = {
+    xl: 3,
+    lg: 2,
+  },
   disabled,
   hideOnDisabled,
   disableMultiple,
@@ -64,10 +68,7 @@ export default function OptionsSelect({
       sx={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: {
-          xl: 3,
-          lg: 2,
-        },
+        gap: gapSx,
       }}
     >
       {items.map((item) => {

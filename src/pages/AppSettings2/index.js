@@ -76,6 +76,10 @@ function Appsettings2() {
   const [oldAppSettings, setOldAppSettings] = useState({});
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
   const { general, dispatchGeneral } = useGlobalContext();
+  const [disableCurrency, setDisableCurrency] = useState({
+    base: false,
+    secondary: false,
+  });
 
   // Get all app settings data
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
@@ -83,15 +87,19 @@ function Appsettings2() {
       if (data.status) {
         setOldAppSettings(data?.data?.appSetting);
         setNewAppSettings(data?.data?.appSetting);
-
+        // console.log({ data });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
+        setDisableCurrency({
+          base: Object?.keys(data?.data?.appSetting.baseCurrency || {})?.length > 1,
+          secondary: Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1,
+        });
 
         // check wheater secondary currency is  enable or disable.
-        setIsUsedSecondaryCurrency(() => {
-          const currency =
-            Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable';
-          return currency;
-        });
+        // setIsUsedSecondaryCurrency(() => {
+        //   const currency =
+        //     Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable';
+        //   return currency;
+        // });
       }
     },
   });
@@ -156,6 +164,7 @@ function Appsettings2() {
       // eslint-disable-next-line prettier/prettier
     }
   );
+
   // reset data
   const populateData = () => {
     setNewAppSettings(getAppSettingsData?.data?.data?.appSetting);
@@ -201,6 +210,7 @@ function Appsettings2() {
     }
     return false;
   };
+
   // on update handler
   const updateData = () => {
     console.log({ newAppSettings });
@@ -365,6 +375,7 @@ function Appsettings2() {
               setHasChanged={setHasChanged}
               setIsUsedSecondaryCurrency={setIsUsedSecondaryCurrency}
               isUsedSecondaryCurrency={isUsedSecondaryCurrency}
+              disableCurrency={disableCurrency}
             />
           </>
         )}

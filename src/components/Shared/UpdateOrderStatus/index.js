@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from '@mui/material';
 
@@ -63,7 +64,7 @@ export default function UpdateOrderStatus({
         console.log('api error: ', error);
         successMsg(error?.message || 'Could not get delivery boys', 'error');
       },
-    }
+    },
   );
 
   // shop riders
@@ -73,16 +74,23 @@ export default function UpdateOrderStatus({
       AXIOS.get(Api.SHOP_ACTIVE_DELIVERY_BOYS, {
         params: {
           shopId: currentOrder?.shop?._id,
+          liveStatus: 'online',
         },
       }),
     {
       enabled: isSelfShop,
       onSuccess: (data) => {
         if (data?.status) {
-          setDeliveryBoyList([{ _id: 'no-rider', name: 'No Rider' }, ...(data?.data?.deliveryBoys || [])]);
+          const riders = data?.data?.deliveryBoys;
+
+          if (riders.length > 0) {
+            setDeliveryBoyList([...(data?.data?.deliveryBoys || [])]);
+          } else {
+            setDeliveryBoyList([{ _id: 'no-rider', name: 'No Rider' }]);
+          }
         }
       },
-    }
+    },
   );
 
   const onSuccess = (response, payload) => {
@@ -124,7 +132,7 @@ export default function UpdateOrderStatus({
       onError: (error) => {
         console.log('api error: ', error);
       },
-    }
+    },
   );
 
   const updateStatus = () => {

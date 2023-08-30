@@ -16,11 +16,6 @@ const getMakePaymentInit = (type, id, amount) => ({
 
 export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
   const queryClient = useQueryClient();
-  // const { general } = useGlobalContext();
-  // const appSetting = general?.appSetting;
-
-  // const adminExchangeRate = appSetting?.adminExchangeRate;
-  // const secondaryEnabled = adminExchangeRate > 0;
 
   const [payment, setPayment] = useState(getMakePaymentInit(type, id, Math.abs(amount)));
 
@@ -29,9 +24,6 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
         queryClient.invalidateQueries([Api.SHOP_TRX]);
-        // queryClient.invalidateQueries([Api.DELIVERY_TRX]);
-        // queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
-        // queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
         onClose();
       }
     },
@@ -83,27 +75,6 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
               onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
             }}
           />
-
-          {/* {secondaryEnabled && (
-            <StyledFormField
-              label="Secondary Amount *"
-              intputType="text"
-              inputProps={{
-                type: 'number',
-                // value: data.secondaryCurrency_amount,
-                onChange: () => {
-                  // if (e.target.value > 0) setData({ ...data, secondaryCurrency_amount: e.target.value });
-                  // else setData({ ...data, secondaryCurrency_amount: 1 });
-                },
-              }}
-            />
-          )} */}
-
-          {/* {isSecondaryCurrencyEnabled && (
-            <Typography mt="-8px" variant="body3" display="block">
-              Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}
-            </Typography>
-          )} */}
           <Stack pt={5}>
             <ListItem label="Total Unsettled Amount" value={amount} />
             <ListItem label="Settle Amount" value={payment.amount} />

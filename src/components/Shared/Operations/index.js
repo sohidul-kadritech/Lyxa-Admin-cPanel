@@ -60,7 +60,7 @@ export default function Operations({ viewUserType = 'shop' }) {
   const query = useQuery([Api.GET_SHOP_DASHBOARD_OPERATIONS, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_OPERATIONS, {
       params: queryParams,
-    })
+    }),
   );
 
   return (
@@ -102,7 +102,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           md={4}
           lg={3}
         />
-        <InfoCard
+        {/* <InfoCard
           title={
             <CardTitle
               title="Store cancelled"
@@ -113,7 +113,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           sm={6}
           md={4}
           lg={3}
-        />
+        /> */}
         <InfoCard
           title={<CardTitle title="Downtime" tooltip="How much time was your store unavailable during menu hours?" />}
           value={`${Math.floor(query?.data?.data?.totalDownTime?.totalMinutes / 60) || 0}h ${

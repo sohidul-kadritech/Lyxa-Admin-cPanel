@@ -397,7 +397,6 @@ export default function Table({
         }}
       >
         <Box>
-          \
           <CancelOrder order={currentOrder} onClose={() => setOpenCancelModal(false)} />
         </Box>
       </Modal>

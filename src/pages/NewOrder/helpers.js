@@ -5,7 +5,9 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import moment from 'moment';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import { successMsg } from '../../helpers/successMsg';
 
 export function TitleWithToolTip({ title, tooltip, sx }) {
   return (
@@ -38,7 +40,7 @@ export function TitleWithToolTip({ title, tooltip, sx }) {
 }
 
 export const orderStatusMap = {
-  placed: 'Pending',
+  placed: 'Placed',
   accepted_delivery_boy: 'Rider Accepted',
   preparing: 'Restaurant Accepted',
   ready_to_pickup: 'Ready to pickup',
@@ -134,7 +136,7 @@ const queryParamsInit = {
 
 export const getQueryParamsInit = (showFor, currentUser) => {
   if (showFor === 'shop') {
-    return { ...queryParamsInit, shop: currentUser?.shop?._id };
+    return { ...queryParamsInit, type: 'requested', shop: currentUser?.shop?._id };
   }
 
   if (showFor === 'seller') {
@@ -188,6 +190,9 @@ export const getThreedotMenuOptions = (order, userType) => {
 
   const updateStatus = { label: 'Update Status', value: 'update_status' };
   const trackOrder = { label: 'Track Order', value: 'track_order' };
+  const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
+  const refundOrder = { label: 'Refund Order', value: 'refund_order' };
+  const flagOrder = { label: 'Flag', value: 'flag' };
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
@@ -196,13 +201,10 @@ export const getThreedotMenuOptions = (order, userType) => {
     });
   };
 
-  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
-    if (userType === 'admin') makePushOptions([updateStatus, trackOrder]);
-    else if (userType === 'shop') makePushOptions([updateStatus]);
-  }
+  // console.log('order?.orderStatus', order?.orderStatus);
 
-  if (userType === 'admin' && hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0) {
-    options.push({ label: 'Cancel Order', value: 'cancel_order' });
+  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
+    makePushOptions([updateStatus, trackOrder, cancelOrder]);
   }
 
   if (
@@ -211,11 +213,11 @@ export const getThreedotMenuOptions = (order, userType) => {
     !order?.isRefundedAfterDelivered &&
     !order?.isButler
   ) {
-    options.push({ label: 'Refund Order', value: 'refund_order' });
+    options.push(refundOrder);
   }
 
   if (userType === 'admin') {
-    options.push({ label: 'Flag', value: 'flag' });
+    options.push(flagOrder);
   }
 
   return options;
@@ -389,4 +391,71 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       ),
     },
   };
+};
+export const getCurrentStatus = (currentOrder) => {
+  const haveOwnDeliveryBoy = currentOrder?.shop?.haveOwnDeliveryBoy;
+  const currentStatus = getNextStatus(currentOrder);
+
+  const currentOrderDelivery = currentOrder?.deliveryBoy;
+
+  const shouldConvertStatusOnTheWay =
+    currentStatus === 'ready_to_pickup' && haveOwnDeliveryBoy && !currentOrderDelivery;
+
+  console.log('shouldConvertStatusOnTheWay', shouldConvertStatusOnTheWay);
+  if (shouldConvertStatusOnTheWay) {
+    return 'order_on_the_way';
+  }
+
+  return currentStatus;
+};
+
+export const validateAndGenerateStatusData = (currentOrder, paidCurrency) => {
+  const currentStatus = getNextStatus(currentOrder);
+  // const currentStatus = getCurrentStatus(currentOrder);
+
+  const currentOrderDelivery = currentOrder?.deliveryBoy;
+
+  const status = {
+    status: false,
+    msg: '',
+  };
+
+  if (!currentStatus) {
+    successMsg('Please select status');
+    return status;
+  }
+
+  if (currentStatus === 'accepted_delivery_boy' && !currentOrderDelivery?._id) {
+    successMsg('Please select rider');
+    return status;
+  }
+
+  // if (
+  //   (currentStatus === 'delivered' || currentStatus === 'preparing') &&
+  //   !currentOrderDelivery?._id &&
+  //   !currentOrder?.shop?.haveOwnDeliveryBoy
+  // ) {
+  //   successMsg(`Assign rider first`);
+  //   return status;
+  // }
+
+  if (currentStatus === 'preparing' && !currentOrderDelivery) {
+    successMsg(`Assign rider first`);
+    return status;
+  }
+
+  if (currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !paidCurrency) {
+    successMsg(`Choose paid currency first`);
+    return status;
+  }
+
+  const data = {};
+  data.orderId = currentOrder?._id;
+  data.orderStatus = currentStatus;
+  data.shop = currentOrder?.shop?._id;
+  data.deliveryBoy = currentOrderDelivery?._id === 'no-rider' ? undefined : currentOrderDelivery?._id;
+  // if not selected will be undefined
+  data.paidCurrency = paidCurrency || undefined;
+
+  return { status: true, data };
 };
