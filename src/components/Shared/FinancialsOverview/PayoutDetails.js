@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -17,13 +18,19 @@ export default function PayoutDetails({ paymentDetails }) {
   const currency = general?.currency?.symbol;
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
 
-  const totalProfit = paymentDetails?.secondaryCurrency_Profit
-    ? `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)} 
-      (${currency} ${(paymentDetails?.baseCurrency_Profit || 0).toFixed(2)} + 
-      ${secondaryCurrency || ''} ${Math.round(paymentDetails?.secondaryCurrency_Profit || 0)})`
-    : `${currency} ${(Math.abs(paymentDetails?.totalProfit) || 0)?.toFixed(2)}`;
+  const totalProfit = paymentDetails?.secondaryCurrency_payout
+    ? `${currency} ${(Math.abs(paymentDetails?.totalPayout) || 0)?.toFixed(2)} 
+      (${currency} ${(paymentDetails?.baseCurrency_payout || 0).toFixed(2)} + 
+      ${secondaryCurrency || ''} ${Math.round(paymentDetails?.secondaryCurrency_payout || 0)})`
+    : `${currency} ${(Math.abs(paymentDetails?.totalPayout) || 0)?.toFixed(2)}`;
 
-  const orderValue = paymentDetails?.orderValue;
+  const cash = paymentDetails?.cash;
+  const online = paymentDetails?.online;
+  const lyxaMarketingCashback = paymentDetails?.AdminMarketingCashback;
+  const otherPayments = paymentDetails?.otherPayments;
+  const deliveryFee = paymentDetails?.deliveryFee;
+
+  const orderValue = {};
 
   return (
     <Grid xs={12}>
@@ -51,7 +58,7 @@ export default function PayoutDetails({ paymentDetails }) {
           - discount added by shop
           - loyalty points added boy shop
           - coupon added by lyxa (it only applicable by lyxa)
-          = cash/online
+          = cash/online (when we expand it will show the above list items)
           + marketing lyxa cashback
           = order amount
           ---------------
@@ -61,7 +68,7 @@ export default function PayoutDetails({ paymentDetails }) {
             title="Order Amount"
             tooltip="The fees you earn depend on how your customer order and receive their order. 
             VAT inclusivea"
-            titleAmount={orderValue?.productAmount}
+            titleAmount={paymentDetails?.orderAmount}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 0 : -1);
@@ -70,7 +77,7 @@ export default function PayoutDetails({ paymentDetails }) {
             <DetailsAccordion
               title="Cash"
               tooltip="How many amount user paid by cash?"
-              titleAmount={orderValue?.productAmountCash}
+              titleAmount={cash?.totalCash}
               isOpen={currentExpanedTab === 0}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 0 : -1);
@@ -78,70 +85,55 @@ export default function PayoutDetails({ paymentDetails }) {
             >
               <PriceItem
                 title="Original Order Amount"
-                amount={
-                  orderValue?.productAmount +
-                  orderValue?.totalDiscount +
-                  orderValue?.totalDoubleMenuItemPrice +
-                  orderValue?.totalRewardAmount
-                }
+                amount={cash?.originalOrderAmount_cash}
                 tooltip={
                   <CommonOrderMarketingCashbackTooltipText
-                    discount={orderValue?.totalDiscount || 0}
-                    doubleMenu={orderValue?.totalDoubleMenuItemPrice || 0}
-                    rewards={orderValue?.totalRewardAmount || 0}
+                    value={[
+                      {
+                        label: 'Discount',
+                        value: `${currency}${cash?.discount_cash}`,
+                      },
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${currency}${cash?.buy1Get1_cash}`,
+                      },
+
+                      {
+                        label: 'Loyalyt Points',
+                        value: `${currency}${cash?.loyaltyPoints_cash}`,
+                      },
+                    ]}
                   />
                 }
               />
 
               <PriceItem
                 title="Discount"
-                amount={orderValue?.totalDiscount}
+                amount={cash?.discount_cash}
                 isNegative
-                tooltip={
-                  <CommonOrderAmountTooltipText
-                    byAdmin={orderValue?.totalAdminDiscount}
-                    byShop={orderValue?.totalShopDiscount}
-                    currency={currency}
-                  />
-                }
+                // tooltip={
+                //   <CommonOrderAmountTooltipText
+                //     byAdmin={cash?.totalAdminDiscount}
+                //     byShop={cash?.totalShopDiscount}
+                //     currency={currency}
+                //   />
+                // }
               />
 
               <PriceItem
                 title="Buy 1 Get 1"
-                amount={orderValue?.totalDoubleMenuItemPrice}
+                amount={cash?.buy1Get1_cash}
                 isNegative
-                tooltip={
-                  <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
-                    currency={currency}
-                  />
-                }
+                // tooltip={
+                //   <CommonOrderAmountTooltipText
+                //     byShop={orderValue?.totalShopDoubleMenuItemPrice}
+                //     byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
+                //     currency={currency}
+                //   />
+                // }
               />
-              <PriceItem
-                title="Loyalty Points"
-                amount={orderValue?.totalRewardAmount || 0}
-                isNegative
-                tooltip={
-                  <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
-                    currency={currency}
-                  />
-                }
-              />
-              <PriceItem
-                title="Coupons"
-                amount={orderValue?.totalRewardAmount || 0}
-                isNegative
-                tooltip={
-                  <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
-                    currency={currency}
-                  />
-                }
-              />
+              <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
+              <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
             </DetailsAccordion>
 
             {/* Online */}
@@ -149,7 +141,7 @@ export default function PayoutDetails({ paymentDetails }) {
               // sx={{ borderBottom: 'none' }}
               title="Online"
               tooltip="How many amount user paid by online?"
-              titleAmount={orderValue?.productAmountOnline}
+              titleAmount={online?.totalOnline}
               isOpen={currentExpanedTab === 0}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 0 : -1);
@@ -157,29 +149,35 @@ export default function PayoutDetails({ paymentDetails }) {
             >
               <PriceItem
                 title="Original Order Amount"
-                amount={
-                  orderValue?.productAmount +
-                  orderValue?.totalDiscount +
-                  orderValue?.totalDoubleMenuItemPrice +
-                  orderValue?.totalRewardAmount
-                }
+                amount={online?.originalOrderAmount_online}
                 tooltip={
                   <CommonOrderMarketingCashbackTooltipText
-                    discount={orderValue?.totalDiscount}
-                    doubleMenu={orderValue?.totalDoubleMenuItemPrice}
-                    rewards={orderValue?.totalDoubleMenuItemPrice}
+                    value={[
+                      {
+                        label: 'Discount',
+                        value: `${currency}${online?.discount_online}`,
+                      },
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${currency}${online?.buy1Get1_online}`,
+                      },
+                      {
+                        label: 'Loyalyt Points',
+                        value: `${currency}${online?.loyaltyPoints_online}`,
+                      },
+                    ]}
                   />
                 }
               />
 
               <PriceItem
                 title="Discount"
-                amount={orderValue?.totalDiscount || 0}
+                amount={online?.discount_online || 0}
                 isNegative
                 tooltip={
                   <CommonOrderAmountTooltipText
-                    byAdmin={orderValue?.totalAdminDiscount}
-                    byShop={orderValue?.totalShopDiscount}
+                    byAdmin={online?.discount_online}
+                    byShop={online?.discount_online}
                     currency={currency}
                   />
                 }
@@ -187,12 +185,12 @@ export default function PayoutDetails({ paymentDetails }) {
 
               <PriceItem
                 title="Buy 1 Get 1"
-                amount={orderValue?.totalDoubleMenuItemPrice || 0}
+                amount={online?.buy1Get1_online || 0}
                 isNegative
                 tooltip={
                   <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
+                    byShop={online?.buy1Get1_online}
+                    byAdmin={online?.buy1Get1_online}
                     currency={currency}
                   />
                 }
@@ -200,12 +198,12 @@ export default function PayoutDetails({ paymentDetails }) {
 
               <PriceItem
                 title="Loyalty Points"
-                amount={orderValue?.totalRewardAmount || 0}
+                amount={online?.loyaltyPoints_online || 0}
                 isNegative
                 tooltip={
                   <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
+                    byShop={online?.loyaltyPoints_online}
+                    byAdmin={online?.loyaltyPoints_online}
                     currency={currency}
                   />
                 }
@@ -213,12 +211,12 @@ export default function PayoutDetails({ paymentDetails }) {
 
               <PriceItem
                 title="Coupons"
-                amount={orderValue?.totalRewardAmount || 0}
+                amount={online?.couponDiscount_online || 0}
                 isNegative
                 tooltip={
                   <CommonOrderAmountTooltipText
-                    byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                    byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
+                    byShop={online?.couponDiscount_online}
+                    byAdmin={online?.couponDiscount_online}
                     currency={currency}
                   />
                 }
@@ -227,18 +225,25 @@ export default function PayoutDetails({ paymentDetails }) {
 
             <Box pt={3.5}>
               <PriceItem
-                title="Marketing Lyxa Cashback"
-                amount={
-                  orderValue?.productAmount +
-                  orderValue?.totalDiscount +
-                  orderValue?.totalDoubleMenuItemPrice +
-                  orderValue?.totalRewardAmount
-                }
+                sx={{ paddingLeft: 8 }}
+                title="Lyxa Marketing Cashback"
+                amount={lyxaMarketingCashback?.adminMarketingCashback}
                 tooltip={
                   <CommonOrderMarketingCashbackTooltipText
-                    discount={orderValue?.totalDiscount}
-                    doubleMenu={orderValue?.totalDoubleMenuItemPrice}
-                    rewards={orderValue?.totalDoubleMenuItemPrice}
+                    value={[
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${currency}${lyxaMarketingCashback?.buy1Get1_amc}`,
+                      },
+                      {
+                        label: 'Discount',
+                        value: `${currency}${lyxaMarketingCashback?.discount_amc}`,
+                      },
+                      {
+                        label: 'Coupon',
+                        value: `${currency}${lyxaMarketingCashback?.couponDiscount_amc}`,
+                      },
+                    ]}
                   />
                 }
               />
@@ -257,65 +262,86 @@ export default function PayoutDetails({ paymentDetails }) {
             
           */}
 
-          <DetailsAccordion
+          <PriceItem
+            sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
             title="Lyxa fees"
-            titleAmount={Math.abs(paymentDetails?.totalDropGet + orderValue?.pointsCashback)}
-            titleAmountStatus={paymentDetails?.totalDropGet + orderValue?.pointsCashback > 0 ? 'minus' : ''}
+            amount={Math.abs(paymentDetails?.adminFees)}
+            isNegative={paymentDetails?.adminFees > 0}
           />
 
-          {/* total vat */}
-          <DetailsAccordion
-            title="Total VAT"
+          <PriceItem
+            sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
+            title="Lyxa Points cashback"
+            // amount={1}
+            amount={paymentDetails?.pointsCashback}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%. 
             VAT inclusive"
-            titleAmount={Math.abs(orderValue?.totalVat)}
+          />
+
+          {/* total vat */}
+
+          <PriceItem
+            sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
+            title="Total VAT"
+            amount={Math.abs(paymentDetails?.totalVat)}
+            // tooltip="Fee for Lyxa-powered deliveries: 20%
+            // Shop-powered deliveries: 10%.
+            // VAT inclusive"
           />
 
           {/* Other payments */}
-          {(paymentDetails?.freeDeliveryShopCut > 0 ||
-            paymentDetails?.totalFeaturedAmount > 0 ||
-            paymentDetails?.totalRefundAmount !== 0) && (
+          {otherPayments?.totalOtherPayments > 0 && (
             <DetailsAccordion
               title="Other Payments"
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-              titleAmount={Math.abs(
-                paymentDetails?.freeDeliveryShopCut +
-                  paymentDetails?.totalFeaturedAmount +
-                  paymentDetails?.totalRefundAmount,
-              )}
-              titleAmountStatus={`${
-                paymentDetails?.freeDeliveryShopCut +
-                  paymentDetails?.totalFeaturedAmount +
-                  paymentDetails?.totalRefundAmount <
-                0
-                  ? ''
-                  : 'minus'
-              }`}
+              titleAmount={Math.abs(otherPayments?.totalOtherPayments)}
+              titleAmountStatus={`${otherPayments?.totalOtherPaymentst < 0 ? '' : 'minus'}`}
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <PriceItem title="Promotion: free delivery" amount={paymentDetails?.freeDeliveryShopCut} isNegative />
+              <PriceItem
+                title="Promotion: Free delivery"
+                tooltip="If Lxya rider"
+                amount={otherPayments?.freeDeliveryByShop}
+                // amount={paymentDetails?.freeDeliveryShopCut}
+                isNegative
+              />
 
-              <PriceItem title="Promotion: featured" amount={paymentDetails?.totalFeaturedAmount} isNegative />
+              <PriceItem
+                title="Promotion: Featured"
+                amount={otherPayments?.featuredAmount}
+                // amount={paymentDetails?.totalFeaturedAmount}
+                isNegative
+              />
+
+              {/* <PriceItem
+                title="Error Charge"
+                amount={otherPayments?.featuredAmount}
+                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
+                isNegative
+                // isNegative={paymentDetails?.totalRefundAmount > 0}
+              /> */}
 
               <PriceItem
                 title="Refunded Amount"
-                amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative={paymentDetails?.totalRefundAmount > 0}
+                amount={otherPayments?.customerRefund}
+                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
+                isNegative
+                // isNegative={paymentDetails?.totalRefundAmount > 0}
               />
             </DetailsAccordion>
           )}
 
           {/* delivery */}
-          {orderValue?.deliveryFee > 0 && (
+          {deliveryFee?.deliveryFee > 0 && (
             <DetailsAccordion
               title="Delivery fee"
-              titleAmount={orderValue?.deliveryFee}
+              titleAmount={deliveryFee?.deliveryFee}
               tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
@@ -324,16 +350,40 @@ export default function PayoutDetails({ paymentDetails }) {
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <PriceItem title="Cash" amount={orderValue?.deliveryFeeCash} />
+              <PriceItem title="Cash" amount={deliveryFee?.cash} />
 
-              <PriceItem title="Online" amount={orderValue?.deliveryFeeOnline} />
+              {deliveryFee?.online > 0 && (
+                <DetailsAccordion
+                  title="Online"
+                  titleAmount={deliveryFee?.online}
+                  //       tooltip="Fee for Lyxa-powered deliveries: 20%
+                  // Shop-powered deliveries: 10%.
+                  // VAT inclusive"
+                  isOpen={currentExpanedTab === 4}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 4 : -1);
+                  }}
+                >
+                  <PriceItem
+                    title="Delivery fee"
+                    amount={deliveryFee?.online}
+                    // amount={orderValue?.deliveryFeeOnline}
+                  />
 
-              <PriceItem title="Rider tip" amount={orderValue?.riderTipOnline} isRefused />
+                  <PriceItem
+                    title="Rider tip"
+                    amount={deliveryFee?.riderTip_online}
+                    // amount={orderValue?.riderTipOnline}
+                    isRefused
+                  />
+                </DetailsAccordion>
+              )}
             </DetailsAccordion>
           )}
 
           {/* points cashback */}
-          {orderValue?.pointsCashback > 0 && (
+
+          {/* {orderValue?.pointsCashback > 0 && (
             <DetailsAccordion
               title="Points cashback"
               titleAmount={orderValue?.pointsCashback}
@@ -345,7 +395,7 @@ export default function PayoutDetails({ paymentDetails }) {
                 seCurrentExpanedTab(closed ? 3 : -1);
               }}
             />
-          )}
+          )} */}
 
           {/* total payout */}
           <DetailsAccordion
@@ -365,15 +415,15 @@ export default function PayoutDetails({ paymentDetails }) {
           >
             <PriceItem
               title="Paid"
-              amount={Math.abs(paymentDetails?.totalProfit - paymentDetails?.totalUnsettle)}
-              isNegative={paymentDetails?.totalProfit - paymentDetails?.totalUnsettle < 0}
+              amount={Math.abs(paymentDetails?.totalPaid)}
+              isNegative={paymentDetails?.totalPaid < 0}
             />
 
             <PriceItem
               title="Unpaid"
-              console={console.log('totalUnsettle', paymentDetails?.totalUnsettle)}
-              amount={Math.abs(paymentDetails?.totalUnsettle)}
-              isNegative={paymentDetails?.totalUnsettle < 0}
+              console={console.log('totalUnsettle', paymentDetails?.totalUnpaid)}
+              amount={Math.abs(paymentDetails?.totalUnpaid)}
+              isNegative={paymentDetails?.totalUnpaid < 0}
             />
           </DetailsAccordion>
         </Box>

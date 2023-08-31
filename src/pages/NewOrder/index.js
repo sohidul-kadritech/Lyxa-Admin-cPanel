@@ -300,7 +300,6 @@ export default function NewOrders({ showFor }) {
       in delivered status it will open for choose currency options
       */}
       <Modal
-        // open
         open={openAcceptModal}
         onClose={() => {
           setOpenAcceptModal(!openAcceptModal);

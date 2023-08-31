@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
@@ -29,7 +30,7 @@ export default function Overview({ viewUserType }) {
 
   const viewUserTypeToApiMap = {
     shop: {
-      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY2,
       params: { shopId: shop?._id },
     },
     seller: {
@@ -55,15 +56,24 @@ export default function Overview({ viewUserType }) {
           endDate: paymentDetailsRange.end,
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-      })
+      }),
   );
+
+  //
+  console.log('query', query?.data?.data);
+
+  // eslint-disable-next-line no-unused-vars
+  const summary = query?.data?.data;
+  const profitBreakdown = summary?.profitBreakdown;
+  const marketingSpent = summary?.marketingSpent;
+
+  console.log('profitBreakdown', profitBreakdown);
+  console.log('marketingSpent', marketingSpent);
 
   const marketingSpentValues = useMemo(
-    () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
-    [query?.data, marketingSpentType]
+    () => getMarketingTypeValues(marketingSpentType, marketingSpent),
+    [query?.data, marketingSpentType],
   );
-
-  const summary = query?.data?.data?.summary;
 
   return (
     <Grid container spacing={7.5} pb={7.5} pt={7.5}>
@@ -83,10 +93,10 @@ export default function Overview({ viewUserType }) {
                 fontSize: '40px',
               }}
             >
-              {currency} {(summary?.totalProfit || 0).toFixed(2)}
+              {currency} {(profitBreakdown?.totalPayout || 0).toFixed(2)}
             </Typography>
 
-            {summary?.secondaryCurrency_Profit ? (
+            {profitBreakdown?.secondaryCurrency_totalPayout ? (
               <Typography
                 variant="inherit"
                 sx={{
@@ -94,19 +104,17 @@ export default function Overview({ viewUserType }) {
                   fontWeight: '500',
                 }}
               >
-                ({currency} {(summary?.baseCurrency_Profit || 0).toFixed(2)} + {secondaryCurrency}
-                {Math.round(summary?.secondaryCurrency_Profit || 0)})
+                ({currency} {(profitBreakdown?.baseCurrency_payout || 0).toFixed(2)} + {secondaryCurrency}
+                {Math.round(profitBreakdown?.secondaryCurrency_payout || 0)})
               </Typography>
             ) : null}
           </Stack>
         }
         Tag={
           <IncreaseDecreaseTag
-            status={`${
-              Math.round(query?.data?.data?.summary?.totalProfitAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }`}
+            status={`${Math.round(profitBreakdown?.totalPayout) >= 0 ? 'increase' : 'decrement'}`}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalProfitAvgInPercentage)) || 0
+              Math.round(Math.abs(profitBreakdown?.totalPayoutAvgInPercentage)) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
@@ -116,14 +124,12 @@ export default function Overview({ viewUserType }) {
       />
       <InfoCard
         title="Orders"
-        value={`${query?.data?.data?.summary?.totalExpectedOrder || 0}`}
+        value={`${summary?.totalDeliveredOrder || 0}`}
         Tag={
           <IncreaseDecreaseTag
-            status={
-              Math.round(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }
+            status={Math.round(summary?.totalDeliveredOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage)) || 0
+              Math.round(Math.abs(summary?.totalDeliveredOrderAvgInPercentage)) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
@@ -149,11 +155,9 @@ export default function Overview({ viewUserType }) {
         value={`${currency} ${(marketingSpentValues?.sum || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
-            status={
-              Math.round(query?.data?.data?.summary?.totalMarketingSpentAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }
+            status={Math.round(marketingSpent?.totalMarketingSpentAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalMarketingSpentAvgInPercentage)) || 0
+              Math.round(Math.abs(marketingSpent?.totalMarketingSpentAvgInPercentage)) || 0
             }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
           />
         }
@@ -171,7 +175,7 @@ export default function Overview({ viewUserType }) {
           )}
         </Stack>
       </InfoCard>
-      <PayoutDetails paymentDetails={query?.data?.data?.summary} />
+      <PayoutDetails paymentDetails={profitBreakdown} />
       <Grid xs={12}>
         <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
       </Grid>

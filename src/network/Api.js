@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
-// export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
 
-export const API_URL = 'http://34.110.175.209/';
+export const API_URL = 'https://request-dev.lyxa.delivery/';
 
-export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
+export const SOCKET_CONNECTION = 'https://request-dev.lyxa.delivery';
 
 // export const API_URL = 'http://34.160.17.75/';
 
@@ -26,6 +25,7 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
+export const GET_SHOP_DASHBOARD_SUMMARY2 = `${ADMIN_ENDPOINT}/financial/shop`;
 export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
 export const GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/account-manager`;
 export const GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/revenue`;

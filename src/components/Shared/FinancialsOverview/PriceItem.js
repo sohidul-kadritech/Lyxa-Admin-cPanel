@@ -13,6 +13,7 @@ export default function PriceItem({
   showIfZero,
   isNegative,
   isRefused,
+  sx,
 }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -21,7 +22,7 @@ export default function PriceItem({
   if (Number((amount || 0).toFixed(2)) === 0 && !showIfZero) return null;
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
+    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ...(sx || {}) }}>
       <Typography
         variant="body1"
         fontWeight={600}
