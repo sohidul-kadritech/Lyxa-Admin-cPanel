@@ -1,13 +1,9 @@
 /* eslint-disable max-len */
 // export const API_URL = 'https://apiv2.drop-deliveryapp.com/';
 
-export const API_URL = 'http://34.110.175.209/';
+export const API_URL = 'https://request-dev.lyxa.delivery/';
 
-export const SOCKET_CONNECTION = 'https://apiv2.drop-deliveryapp.com';
-
-// export const API_URL = 'http://34.160.17.75/';
-
-// export const SOCKET_CONNECTION = 'http://34.160.17.75';
+export const SOCKET_CONNECTION = 'https://request-dev.lyxa.delivery';
 
 export const MAP_URL = 'https://maps.google.com/maps';
 
