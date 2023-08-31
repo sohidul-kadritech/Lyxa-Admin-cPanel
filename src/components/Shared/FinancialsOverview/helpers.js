@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import moment from 'moment';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
@@ -22,51 +23,39 @@ export function calculateDateDifference(date1, date2, unit) {
 
 export const getMarketingTypeValues = (marketingType, summary = {}) => {
   console.log('summary', summary);
+
+  const all = summary;
+  const admin = all?.admin;
+  const shop = all?.shop;
+
   const marketingSpentValues = {
-    totalDiscount: 0,
-    totalDoubleMenuItemPrice: 0,
-    totalRewardAmount: 0,
-    freeDeliveryShopCut: 0,
-    totalFeaturedAmount: 0,
-    sum: 0,
+    all: {
+      totalDiscount: all?.discount_all,
+      totalDoubleMenuItemPrice: all?.buy1Get1_all,
+      totalRewardAmount: all?.loyaltyPoints_all,
+      freeDeliveryShopCut: all?.freeDelivery_all,
+      totalFeaturedAmount: all?.featuredAmount_all,
+      sum: all?.marketingSpent_all,
+    },
+    shop: {
+      totalDiscount: shop?.discount_shop,
+      totalDoubleMenuItemPrice: shop?.buy1Get1_shop,
+      totalRewardAmount: shop?.loyaltyPoints_shop,
+      freeDeliveryShopCut: shop?.freeDelivery_shop,
+      totalFeaturedAmount: shop?.featuredAmount_shop,
+      sum: shop?.marketingSpent_shop,
+    },
+    admin: {
+      totalDiscount: admin?.discount_admin,
+      totalDoubleMenuItemPrice: admin?.buy1Get1_admin,
+      totalRewardAmount: admin?.loyaltyPoints_admin,
+      freeDeliveryShopCut: admin?.freeDelivery_admin,
+      totalFeaturedAmount: admin?.featuredAmount_admin,
+      sum: admin?.marketingSpent_admin,
+    },
   };
 
-  const totalDoubleMenuCut =
-    summary?.orderValue?.totalShopDoubleMenuItemPrice + summary?.orderValue?.totalAdminDoubleMenuCut;
-
-  // console.log('summary?.orderValue', summary?.orderValue);
-
-  if (marketingType === 'all') {
-    marketingSpentValues.totalDiscount = summary?.orderValue?.totalDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = totalDoubleMenuCut;
-    marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalRewardAmount;
-    marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryCut;
-    marketingSpentValues.totalFeaturedAmount = summary?.totalFeaturedAmount;
-  }
-
-  if (marketingType === 'shop') {
-    marketingSpentValues.totalDiscount = summary?.orderValue?.totalShopDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalShopDoubleMenuItemPrice;
-    marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalShopRewardAmount;
-    marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryShopCut;
-    marketingSpentValues.totalFeaturedAmount = summary?.totalFeaturedAmount;
-  }
-
-  if (marketingType === 'admin') {
-    marketingSpentValues.totalDiscount = summary?.orderValue?.totalAdminDiscount;
-    marketingSpentValues.totalDoubleMenuItemPrice = summary?.orderValue?.totalAdminDoubleMenuCut;
-    marketingSpentValues.totalRewardAmount = summary?.orderValue?.totalAdminRewardAmount;
-    marketingSpentValues.freeDeliveryShopCut = summary?.freeDeliveryDropCut;
-  }
-
-  marketingSpentValues.sum =
-    marketingSpentValues.totalDiscount +
-    marketingSpentValues.totalDoubleMenuItemPrice +
-    marketingSpentValues.totalRewardAmount +
-    marketingSpentValues.freeDeliveryShopCut +
-    marketingSpentValues.totalFeaturedAmount;
-
-  return marketingSpentValues;
+  return marketingSpentValues[marketingType];
 };
 
 export function CommonOrderAmountTooltipText({ byAdmin, byShop, currency }) {
@@ -90,7 +79,7 @@ export function CommonOrderAmountTooltipText({ byAdmin, byShop, currency }) {
     </ul>
   );
 }
-export function CommonOrderMarketingCashbackTooltipText({ discount, doubleMenu, rewards, currency }) {
+export function CommonOrderMarketingCashbackTooltipText({ value = [] }) {
   return (
     <div>
       {/* <p
@@ -109,15 +98,11 @@ export function CommonOrderMarketingCashbackTooltipText({ discount, doubleMenu, 
           minWidth: '180px',
         }}
       >
-        <li>
-          Buy 1 Get 1 {currency} {discount}
-        </li>
-        <li>
-          Discount {currency} {doubleMenu}
-        </li>
-        <li>
-          Loyality Points {currency} {rewards}
-        </li>
+        {value.map((data, i) => (
+          <li key={i}>
+            {data.label} {data?.value}
+          </li>
+        ))}
       </ul>
     </div>
   );

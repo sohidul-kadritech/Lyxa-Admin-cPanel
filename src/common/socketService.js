@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'https://apiv2.drop-deliveryapp.com';
+const SOCKET_URL = 'http://request-dev.lyxa.delivery/';
 
 class WSService {
   initializeSocket = async () => {

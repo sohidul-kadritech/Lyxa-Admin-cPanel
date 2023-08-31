@@ -17,6 +17,42 @@ import RiderChat from './RiderChat';
 
 const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
+function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
+  return (
+    <Box>
+      {/* This component only visible for shop */}
+      {userType === 'shop' && (
+        <Box my={7.2}>
+          <Stack
+            direction="row"
+            justifyContent={statusOptions[getNextStatus(order)]?.label === 'Preparing' ? 'space-between' : 'flex-end'}
+          >
+            {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
+            {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
+              <Button onClick={onClickReject} variant="contained" color="danger">
+                Reject
+              </Button>
+            )}
+            <Stack direction="row" gap={4}>
+              <Button variant="text" startIcon={<Print />} disableRipple color="primary">
+                Print
+              </Button>
+              {/* @If there has next step it will visible otherWise not (Next Status Button) */}
+              {hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && (
+                <Button onClick={onClickAccept} variant="contained" color="primary" disabled={onLoadingUpdateStatus}>
+                  {statusOptions[getNextStatus(order)]?.label === 'Preparing'
+                    ? 'Accept'
+                    : statusOptions[getNextStatus(order)]?.label}
+                </Button>
+              )}
+            </Stack>
+          </Stack>
+        </Box>
+      )}
+    </Box>
+  );
+}
+
 export default function OrderDetail({
   order,
   onClose,
@@ -128,7 +164,16 @@ export default function OrderDetail({
           </Box>
           {/* order detail */}
           <TabPanel index={0} value={currentTab} noPadding>
-            <Details hideIssues={hideIssues} order={order} userType={userType} />
+            <Box>
+              <Details hideIssues={hideIssues} order={order} userType={userType} />
+              <OrderUpdateForShop
+                order={order}
+                userType={userType}
+                onClickAccept={onClickAccept}
+                onClickReject={onClickReject}
+                onLoadingUpdateStatus={onLoadingUpdateStatus}
+              />
+            </Box>
           </TabPanel>
           {/* review */}
           <TabPanel index={1} value={currentTab} noPadding>
@@ -146,43 +191,6 @@ export default function OrderDetail({
           <TabPanel index={4} value={currentTab} noPadding>
             <RiderChat chats={order?.chats} />
           </TabPanel>
-
-          {/* This component only visible for shop */}
-          {showFor === 'shop' && (
-            <Box my={7.2}>
-              <Stack
-                direction="row"
-                justifyContent={
-                  statusOptions[getNextStatus(order)]?.label === 'Preparing' ? 'space-between' : 'flex-end'
-                }
-              >
-                {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
-                {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
-                  <Button onClick={onClickReject} variant="contained" color="danger">
-                    Reject
-                  </Button>
-                )}
-                <Stack direction="row" gap={4}>
-                  <Button variant="text" startIcon={<Print />} disableRipple color="primary">
-                    Print
-                  </Button>
-                  {/* @If there has next step it will visible otherWise not (Next Status Button) */}
-                  {hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && (
-                    <Button
-                      onClick={onClickAccept}
-                      variant="contained"
-                      color="primary"
-                      disabled={onLoadingUpdateStatus}
-                    >
-                      {statusOptions[getNextStatus(order)]?.label === 'Preparing'
-                        ? 'Accept'
-                        : statusOptions[getNextStatus(order)]?.label}
-                    </Button>
-                  )}
-                </Stack>
-              </Stack>
-            </Box>
-          )}
         </Box>
       </Box>
     </OrderContextProvider>

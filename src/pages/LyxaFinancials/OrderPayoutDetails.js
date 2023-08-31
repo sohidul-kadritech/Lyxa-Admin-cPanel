@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -7,15 +8,24 @@ import { useState } from 'react';
 
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
-import { CommonOrderAmountTooltipText } from '../../components/Shared/FinancialsOverview/helpers';
+import {
+  CommonOrderAmountTooltipText,
+  CommonOrderMarketingCashbackTooltipText,
+} from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../context';
 import { isDeliveryProfitIsVisible } from './helpers';
 
-export default function OrderPayoutDetails({ showFor }) {
+export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+
+  const cash = paymentDetails?.cash;
+  const online = paymentDetails?.online;
+  const lyxaMarketingCashback = paymentDetails?.AdminMarketingCashback;
+  const otherPayments = paymentDetails?.otherPayments;
+  const deliveryFee = paymentDetails?.deliveryFee;
 
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
@@ -85,92 +95,200 @@ export default function OrderPayoutDetails({ showFor }) {
             <DetailsAccordion
               title="Order Amount"
               tooltip="The fees you earn depend on how your customer order and receive their order. 
-            VAT inclusivea"
-              titleAmount={10}
+          VAT inclusivea"
+              titleAmount={paymentDetails?.orderAmount || 10}
               isOpen={currentExpanedTab === 0}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 0 : -1);
               }}
             >
-              <PriceItem title="Cash" amount={10} showIfZero />
-              <PriceItem title="Online" amount={0} showIfZero />
-
               <DetailsAccordion
-                title="Original Order Amount"
-                // VAT inclusive"
-                titleAmount={10}
-                isOpen={currentExpanedTab === 3}
+                title="Cash"
+                tooltip="How many amount user paid by cash?"
+                titleAmount={cash?.totalCash || 10}
+                isOpen={currentExpanedTab === 0}
                 onChange={(closed) => {
-                  seCurrentExpanedTab(closed ? 3 : -1);
+                  seCurrentExpanedTab(closed ? 0 : -1);
                 }}
               >
                 <PriceItem
+                  title="Original Order Amount"
+                  amount={cash?.originalOrderAmount_cash || 10}
+                  tooltip={
+                    <CommonOrderMarketingCashbackTooltipText
+                      value={[
+                        {
+                          label: 'Discount',
+                          value: `${currency}${cash?.discount_cash}`,
+                        },
+                        {
+                          label: 'Buy 1 Get 1',
+                          value: `${currency}${cash?.buy1Get1_cash}`,
+                        },
+
+                        {
+                          label: 'Loyalyt Points',
+                          value: `${currency}${cash?.loyaltyPoints_cash}`,
+                        },
+                      ]}
+                    />
+                  }
+                />
+
+                <PriceItem
                   title="Discount"
-                  amount={2}
+                  amount={cash?.discount_cash || 10}
                   isNegative
-                  tooltip={<CommonOrderAmountTooltipText byAdmin={0} byShop={0} currency={currency} />}
-                  showIfZero
+                  // tooltip={
+                  //   <CommonOrderAmountTooltipText
+                  //     byAdmin={cash?.totalAdminDiscount}
+                  //     byShop={cash?.totalShopDiscount}
+                  //     currency={currency}
+                  //   />
+                  // }
                 />
 
                 <PriceItem
                   title="Buy 1 Get 1"
-                  amount={0}
+                  amount={cash?.buy1Get1_cash || 10}
                   isNegative
-                  tooltip={<CommonOrderAmountTooltipText byShop={0} byAdmin={0} currency={currency} />}
-                  showIfZero
+                  // tooltip={
+                  //   <CommonOrderAmountTooltipText
+                  //     byShop={orderValue?.totalShopDoubleMenuItemPrice}
+                  //     byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
+                  //     currency={currency}
+                  //   />
+                  // }
                 />
-
-                <PriceItem
-                  title="Loyalty points"
-                  isNegative
-                  amount={0}
-                  amountStatus="minus"
-                  tooltip={<CommonOrderAmountTooltipText byShop={0} byAdmin={0} currency={currency} />}
-                  showIfZero
-                />
+                <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 10} isNegative />
+                <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 10} isNegative />
               </DetailsAccordion>
+
+              {/* Online */}
               <DetailsAccordion
-                title="Marketing Lyxa Cashback"
-                // VAT inclusive"
-                sx={{ borderBottom: 'none' }}
-                titleAmount={2}
-                isOpen={currentExpanedTab === 4}
+                // sx={{ borderBottom: 'none' }}
+                title="Online"
+                tooltip="How many amount user paid by online?"
+                titleAmount={online?.totalOnline || 10}
+                isOpen={currentExpanedTab === 0}
                 onChange={(closed) => {
-                  seCurrentExpanedTab(closed ? 4 : -1);
+                  seCurrentExpanedTab(closed ? 0 : -1);
                 }}
               >
                 <PriceItem
+                  title="Original Order Amount"
+                  amount={online?.originalOrderAmount_online || 10}
+                  tooltip={
+                    <CommonOrderMarketingCashbackTooltipText
+                      value={[
+                        {
+                          label: 'Discount',
+                          value: `${currency}${online?.discount_online}`,
+                        },
+                        {
+                          label: 'Buy 1 Get 1',
+                          value: `${currency}${online?.buy1Get1_online}`,
+                        },
+                        {
+                          label: 'Loyalyt Points',
+                          value: `${currency}${online?.loyaltyPoints_online}`,
+                        },
+                      ]}
+                    />
+                  }
+                />
+
+                <PriceItem
                   title="Discount"
-                  amount={2}
-                  // isNegative
-                  tooltip={<CommonOrderAmountTooltipText byAdmin={0} byShop={0} currency={currency} />}
-                  showIfZero
+                  amount={online?.discount_online || 10}
+                  isNegative
+                  tooltip={
+                    <CommonOrderAmountTooltipText
+                      byAdmin={online?.discount_online}
+                      byShop={online?.discount_online}
+                      currency={currency}
+                    />
+                  }
                 />
 
                 <PriceItem
                   title="Buy 1 Get 1"
-                  amount={0}
-                  // isNegative
-                  tooltip={<CommonOrderAmountTooltipText byShop={0} byAdmin={0} currency={currency} />}
-                  showIfZero
+                  amount={online?.buy1Get1_online || 10}
+                  isNegative
+                  tooltip={
+                    <CommonOrderAmountTooltipText
+                      byShop={online?.buy1Get1_online}
+                      byAdmin={online?.buy1Get1_online}
+                      currency={currency}
+                    />
+                  }
                 />
 
                 <PriceItem
-                  title="Loyalty points"
-                  // isNegative
-                  amount={0}
-                  amountStatus="minus"
-                  tooltip={<CommonOrderAmountTooltipText byShop={0} byAdmin={0} currency={currency} />}
-                  showIfZero
+                  title="Loyalty Points"
+                  amount={online?.loyaltyPoints_online || 10}
+                  isNegative
+                  tooltip={
+                    <CommonOrderAmountTooltipText
+                      byShop={online?.loyaltyPoints_online}
+                      byAdmin={online?.loyaltyPoints_online}
+                      currency={currency}
+                    />
+                  }
+                />
+
+                <PriceItem
+                  title="Coupons"
+                  amount={online?.couponDiscount_online || 10}
+                  isNegative
+                  tooltip={
+                    <CommonOrderAmountTooltipText
+                      byShop={online?.couponDiscount_online}
+                      byAdmin={online?.couponDiscount_online}
+                      currency={currency}
+                    />
+                  }
                 />
               </DetailsAccordion>
+
+              <Box pt={3.5}>
+                <PriceItem
+                  sx={{ paddingLeft: 8 }}
+                  title="Lyxa Marketing Compensation"
+                  amount={lyxaMarketingCashback?.adminMarketingCashback || 10}
+                  tooltip={
+                    <CommonOrderMarketingCashbackTooltipText
+                      value={[
+                        {
+                          label: 'Buy 1 Get 1',
+                          value: `${currency}${lyxaMarketingCashback?.buy1Get1_amc}`,
+                        },
+                        {
+                          label: 'Discount',
+                          value: `${currency}${lyxaMarketingCashback?.discount_amc}`,
+                        },
+                        {
+                          label: 'Coupon',
+                          value: `${currency}${lyxaMarketingCashback?.couponDiscount_amc}`,
+                        },
+                      ]}
+                    />
+                  }
+                />
+              </Box>
             </DetailsAccordion>
           )}
 
           {/* shop cut */}
 
           {showFor !== 'delivery' && (
-            <DetailsAccordion title="Shop Payouts" titleAmount={9} titleAmountStatus="minus" />
+            <DetailsAccordion title="Total Payouts" titleAmount={9} titleAmountStatus="minus">
+              <PriceItem title="Free delivery by shop" amount={online?.loyaltyPoints_online || 10} isNegative />
+              <PriceItem title="Shop error charge" amount={online?.loyaltyPoints_online || 10} />
+              <PriceItem title="Shop customer refund" amount={online?.loyaltyPoints_online || 10} />
+              <PriceItem title="Shop point cashback" amount={online?.loyaltyPoints_online || 10} isNegative />
+              <PriceItem title="Payout" amount={online?.loyaltyPoints_online || 10} isNegative />
+            </DetailsAccordion>
           )}
 
           {showFor === 'delivery' && (
@@ -226,15 +344,15 @@ VAT inclusive"
                 seCurrentExpanedTab(closed ? 2 : -1);
               }}
             >
-              <PriceItem title="Refund" amount={0} isNegative showIfZero />
-              <PriceItem title="Refused Orders" amount={0} isNegative showIfZero />
-              <PriceItem title="Free Delivery" amount={0} isNegative showIfZero />
-              <PriceItem title="Discount by lyxa" amount={0} isNegative showIfZero />
-              <PriceItem title="Buy 1 Get 1 by lyxa" amount={0} isNegative showIfZero />
-              <PriceItem title="Points Paid to the Shop" amount={0} isNegative showIfZero />
-              <PriceItem title="Replacement Orders by Lyxa" amount={0} isNegative showIfZero />
+              <PriceItem title="Lyxa Marketing cashback" amount={0} isNegative showIfZero />
+              <PriceItem title="Error charge" amount={0} isNegative showIfZero />
+              <PriceItem title="Customer refund" amount={0} isNegative showIfZero />
+              <PriceItem title="Replacement orders by Lyxa" amount={0} isNegative showIfZero />
+              <PriceItem title="Error order by Lyxa ( endure loss )" amount={0} isNegative showIfZero />
+              <PriceItem title="Free delivery by shop (Lyxa riders)" amount={0} isNegative showIfZero />
+              {/* <PriceItem title="Replacement Orders by Lyxa" amount={0} isNegative showIfZero />
               <PriceItem title="Error Order by Lyxa (Endure Loss)" amount={0} isNegative showIfZero />
-              <PriceItem title="Coupons" amount={0} isNegative showIfZero />
+              <PriceItem title="Coupons" amount={0} isNegative showIfZero /> */}
               {/* <PriceItem title="Shop Add/Remove Credit" amount={0} isNegative showIfZero /> */}
             </DetailsAccordion>
           )}
@@ -243,7 +361,7 @@ VAT inclusive"
 
           <DetailsAccordion
             title="Total Lyxa Delivery Profit"
-            titleAmount={-1}
+            titleAmount={10}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%.
             VAT inclusive"

@@ -53,6 +53,7 @@ export default function DetailsAccordion({
   titleAmountStatus,
   tooltip,
   sx,
+  expandIconGap = 1,
   ...props
 }) {
   const [open, setOpen] = useState(false);
@@ -75,6 +76,7 @@ export default function DetailsAccordion({
       <StyledAccordionSummary
         sx={{
           cursor: children?.length ? undefined : 'initial !important',
+          gap: expandIconGap,
         }}
         expandIcon={
           <Icon

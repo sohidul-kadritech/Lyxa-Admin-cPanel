@@ -955,7 +955,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     });
                   }}
                 >
-                  Delete Promotion
+                  End Promotion
                 </Button>
               </Stack>
             )}
@@ -983,11 +983,11 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       });
                     }}
                   >
-                    Delete Promotion
+                    End Promotion
                   </Button>
                   {marketingType === 'featured' && (
                     <Typography variant="body3" sx={{ fontSize: 12 }}>
-                      *In case of delete promotion, the remaining amount is non refundable
+                      *In case of end promotion, the remaining amount is non refundable
                     </Typography>
                   )}
                 </Stack>

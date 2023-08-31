@@ -42,6 +42,8 @@ export default function ShopTransactions({ shop }) {
 
   const { general } = useGlobalContext();
   const storeAppSettings = general?.appSetting;
+  const currency = storeAppSettings?.baseCurrency?.symbol;
+  console.log('storeAppSettings', storeAppSettings);
   const queryClient = useQueryClient();
 
   const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
@@ -85,10 +87,17 @@ export default function ShopTransactions({ shop }) {
         }}
       />
       <Grid container spacing={5} pt={7.5} pb={7.5}>
-        <InfoCard title="Lyxa Profit" value={(lyxaProfit || 0)?.toFixed(2)} sm={6} md={4} lg={3} valueSx={amountSx} />
+        <InfoCard
+          title="Lyxa Profit"
+          value={`${currency}${(lyxaProfit || 0)?.toFixed(2)}`}
+          sm={6}
+          md={4}
+          lg={3}
+          valueSx={amountSx}
+        />
         <InfoCard
           title="Shop Profit"
-          value={(summary?.toalShopProfile || 0)?.toFixed(2)}
+          value={`${currency}${(summary?.toalShopProfile || 0)?.toFixed(2)}`}
           sm={6}
           md={4}
           lg={3}
@@ -112,7 +121,7 @@ export default function ShopTransactions({ shop }) {
         <InfoCard title="Orders No" value={summary?.totalExpectedOrder || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
         <InfoCard
           title="Order Amount"
-          value={(totalOrderAmount || 0).toFixed(2)}
+          value={`${currency}${(totalOrderAmount || 0).toFixed(2)}`}
           sm={6}
           md={4}
           lg={3}

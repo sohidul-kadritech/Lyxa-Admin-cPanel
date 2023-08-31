@@ -45,7 +45,7 @@ function VatList({ data, getCurrentCurrency, loading, currentPage, setCurrentPag
       renderCell: ({ row }) => (
         <Typography variant="body1">
           {getCurrentCurrency?.symbol}
-          {row?.amount}
+          {(row?.amount || 0).toFixed(2)}
         </Typography>
       ),
     },

@@ -8,6 +8,7 @@ import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { calculateSecondaryCurrency } from './helpers';
 
 const getMakePaymentInit = (type, id, amount) => ({
   shopId: type === 'shop' ? id : undefined,
@@ -97,11 +98,7 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
               }}
             />
           )}
-          {/* {isSecondaryCurrencyEnabled && (
-            <Typography mt="-8px" variant="body3" display="block">
-              Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}
-            </Typography>
-          )} */}
+
           <Stack pt={5}>
             <ListItem label="Total Unsettled Amount" value={amount} />
             <ListItem label="Settle Amount" value={payment.amount} />
@@ -128,7 +125,6 @@ function ListItem({ label, value, isTotal }) {
   const { general } = useGlobalContext();
   const { appSetting } = general;
   const { baseCurrency, secondaryCurrency, adminExchangeRate } = appSetting;
-  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
 
   return (
     <Stack
@@ -145,13 +141,7 @@ function ListItem({ label, value, isTotal }) {
         {label}
       </Typography>
       <Typography variant="body4" color="initial">
-        {isSecondaryCurrencyEnabled
-          ? // with secondary currency
-            `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
-              value * adminExchangeRate
-            )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
-          : // without secondary currency
-            `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}
+        {calculateSecondaryCurrency(baseCurrency, secondaryCurrency, value, adminExchangeRate).print}
       </Typography>
     </Stack>
   );
