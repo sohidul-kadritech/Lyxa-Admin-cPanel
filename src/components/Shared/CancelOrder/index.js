@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -43,7 +44,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
     },
   });
 
-  const normalMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
+  const normalMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data, { params: { userType: 'admin' } }), {
     onSuccess: (data) => {
       console.log({ data });
 
@@ -133,7 +134,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
       Number(cancelData?.partialPayment?.adminOrderProfit) +
         Number(cancelData?.partialPayment?.adminRiderProfit) +
         Number(cancelData?.partialPayment?.deliveryBoy),
-      vatPercentage
+      vatPercentage,
     );
 
     setCancelData((prev) => ({

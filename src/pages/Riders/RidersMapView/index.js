@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line no-unused-vars
@@ -50,13 +51,18 @@ function RidersMapView({ onClose, currentOrder }) {
       <Box
         sx={{
           height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
         }}
       >
-        {getAllRiders?.isLoading ? (
-          <MapSkeleton />
-        ) : (
-          <RidersCurrentLocationMapView riders={getAllRiders?.data?.data?.deliveryBoys} />
-        )}
+        <Box flex={1}>
+          {getAllRiders?.isLoading ? (
+            <MapSkeleton />
+          ) : (
+            <RidersCurrentLocationMapView riders={getAllRiders?.data?.data?.deliveryBoys} />
+          )}
+        </Box>
       </Box>
     </ModalContainer>
   );

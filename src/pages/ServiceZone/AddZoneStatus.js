@@ -80,7 +80,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
         borderRadius: '10px',
       }}
     >
-      <Box>
+      <Stack sx={{ height: '100%' }}>
         <Stack flexDirection="row" gap="36px">
           <StyledFormField
             label={
@@ -144,7 +144,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
             }}
           />
         </Stack>
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', flex: 1 }}>
           <ZoneMap
             currentZone={rowData?.zoneName || ''}
             setPolygonArea={setPolygonArea}
@@ -153,20 +153,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
             setCreatedZoneGeometry={setCreatedZoneGeometry}
             selectedLocation={selectedLocation}
             isEditable={false}
-          ></ZoneMap>
-          {/* {addNewZone?.isLoading && (
-            <Stack
-              sx={{ position: 'absolute', top: '0', left: '0', zIndex: '9999', backdropFilter: 'blur(10px)' }}
-              justifyContent="center"
-              alignContent="center"
-              alignItems="center"
-              width="100%"
-              height="100%"
-            >
-              <CircularProgress color="primary" sx={{ width: '100px !important', height: '100px !important' }} />
-              <Typography>Please Wait...</Typography>
-            </Stack>
-          )} */}
+          />
         </Box>
         <Box>
           <Stack flexDirection="row" sx={{ marginTop: '40px' }}>
@@ -190,7 +177,7 @@ function AddZoneStatus({ onClose, updateAZoneQuery, allZones, currentLocation, r
             </Box>
           </Stack>
         </Box>
-      </Box>
+      </Stack>
     </ModalContainer>
   );
 }

@@ -106,7 +106,7 @@ export const appSettingsValidateData = (oldData, newData) => {
     : '0';
   const nearByShopKm = parseInt(newData?.nearByShopKm, 10) > 0 ? parseInt(newData?.nearByShopKm, 10) : '0';
   const vat = parseInt(newData?.vat, 10) > 0 ? parseInt(newData?.vat, 10) : '0';
-  const adminExchangeRate = parseInt(newData?.adminExchangeRate, 10);
+  const adminExchangeRate = Number(newData?.adminExchangeRate);
 
   return {
     ...newData,
@@ -222,5 +222,16 @@ export const getAcceptedCurrencyOptions = (base, secondary) => [
   {
     label: `${secondary?.code} Only`,
     value: secondary?.code,
+  },
+];
+
+export const enabledCurrencyOptions = [
+  {
+    value: 'base',
+    label: 'Base Only',
+  },
+  {
+    value: 'both',
+    label: 'Both Currencies',
   },
 ];
