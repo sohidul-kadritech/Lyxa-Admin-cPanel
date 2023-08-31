@@ -1,15 +1,17 @@
-export const API_URL = 'https://api.drop-deliveryapp.com/';
-export const SOCKET_CONNECTION = 'https://api.drop-deliveryapp.com/';
+/* eslint-disable max-len */
 
-// export const API_URL = 'https://lyxa-backend-release-ohmsggm7uq-ew.a.run.app/';
-// export const SOCKET_CONNECTION = 'https://lyxa-backend-release-ohmsggm7uq-ew.a.run.app';
+export const API_URL = 'https://request.lyxa.delivery/';
 
-export const MAP_URL = 'http://maps.google.com/maps';
+export const SOCKET_CONNECTION = 'https://request.lyxa.delivery';
+
+export const MAP_URL = 'https://maps.google.com/maps';
+
 export const GET_LOCATION_FROM_LATLNG = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 const ADMIN_ENDPOINT = 'admin';
 
 export const LOGIN = `${ADMIN_ENDPOINT}/auth/login`;
+
 export const FORGET_PASS = `${API_URL}forget`;
 
 // GET IMAGE

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // project import
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -20,7 +21,15 @@ import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
 import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
 
-export default function OrderTable({ orders = [], onRowClick, orderType, adminType, onViewDetail, loading }) {
+export default function OrderTable({
+  orders = [],
+  onRowClick,
+  orderType,
+  adminType,
+
+  onViewDetail,
+  loading,
+}) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
   console.log('adminType', adminType);
@@ -62,7 +71,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
 
   const columns = [
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'scheduled'],
+      showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'scheduled'],
       id: 1,
       headerName: 'ACCOUNT',
       field: 'orders',
@@ -144,7 +153,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'userProfile', 'scheduled'],
+      showFor: ['ongoing', 'requested', 'userProfile', 'scheduled'],
       id: 2,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
@@ -157,7 +166,16 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'userProfile', 'riderProfile', 'scheduled'],
+      showFor: [
+        'ongoing',
+        'requested',
+        'delivered',
+        'cancelled',
+        'shopProfile',
+        'userProfile',
+        'riderProfile',
+        'scheduled',
+      ],
       id: 3,
       headerName: 'DATE',
       field: 'createdAt',
@@ -238,7 +256,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       },
     },
     {
-      showFor: ['ongoing', 'cancelled', 'shopProfile', 'userProfile'],
+      showFor: ['ongoing', 'requested', 'cancelled', 'shopProfile', 'userProfile'],
       id: 4,
       headerName: 'STATUS',
       field: 'orderStatus',
@@ -259,7 +277,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       ),
     },
     {
-      showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile'],
+      showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile'],
       id: 5,
       headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PROFIT'}`,
       field: 'profit',
@@ -297,8 +315,12 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     },
   ];
 
+  /*
+  This column is only for admin console
+  */
+
   const newColumn = {
-    showFor: ['ongoing', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'userProfile'],
+    showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'userProfile'],
     id: 6,
     headerName: `ACTION`,
     sortable: false,
@@ -315,7 +337,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
     ),
   };
 
-  if (adminType === 'admin' || adminType === 'shop') {
+  if (adminType === 'admin') {
     columns.push(newColumn);
   }
 

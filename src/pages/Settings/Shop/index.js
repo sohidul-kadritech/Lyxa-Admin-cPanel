@@ -92,11 +92,11 @@ function ShopSettings() {
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
-  const [rateofShop, setRateofShop] = useState({
+  const [reateOfShop, setRateofShop] = useState({
     shopExchangeRate: newShop?.shopExchangeRate,
   });
 
-  console.log({ rateofShop });
+  console.log({ rateofShop: reateOfShop });
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
@@ -119,7 +119,7 @@ function ShopSettings() {
   });
 
   const updateShopSettings = () => {
-    const { shopAcceptedCurrency, shopExchangeRate } = rateofShop;
+    const { shopAcceptedCurrency, shopExchangeRate } = reateOfShop;
     const data = createShopSettingsData(
       shop,
       newMaxDiscount,
@@ -136,10 +136,10 @@ function ShopSettings() {
       shopAcceptedCurrency,
       shopExchangeRate,
       // eslint-disable-next-line prettier/prettier
-      newCusines
+      newCusines,
     );
 
-    if (rateofShop?.shopExchangeRate < rateofShop?.baseExchangeRate) {
+    if (reateOfShop?.shopExchangeRate < reateOfShop?.baseExchangeRate) {
       successMsg(`The rate is too low!`);
       return;
     }
@@ -249,13 +249,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data]
+    [tagsQuery?.data],
   );
 
   return (
@@ -471,14 +471,14 @@ function ShopSettings() {
               </Box>
             </Box>
           </Box>
-          {Number(rateofShop?.shopExchangeRate) ? (
+          {Number(reateOfShop?.shopExchangeRate) ? (
             <Box sx={boxSx2}>
               <RateContainer
                 boxSx={{
                   paddingBottom: '29px',
                 }}
                 title="Rate"
-                rateofShop={rateofShop}
+                rateofShop={reateOfShop}
                 setRateofShop={setRateofShop}
                 setHasChanged={set_has_unsaved_change}
               />

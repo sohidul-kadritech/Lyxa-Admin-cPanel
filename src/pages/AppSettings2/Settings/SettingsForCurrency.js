@@ -10,10 +10,12 @@ function SettingsForCurrency({
   setHasChanged,
   isUsedSecondaryCurrency,
   setIsUsedSecondaryCurrency,
+  disableCurrency,
 }) {
   return (
     <Box>
       <AppCurrency
+        disableCurrency={disableCurrency}
         newAppSettings={newAppSettings}
         setNewAppSettings={setNewAppSettings}
         setHasChanged={setHasChanged}

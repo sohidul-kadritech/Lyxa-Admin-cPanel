@@ -23,7 +23,7 @@ const dummyData = (rows) => {
   const data = [];
   for (let i = 0; i < rows; i++) {
     data.push({
-      orderId: 'YJE240823000010',
+      shopName: 'KFC',
       _id: i,
     });
   }
@@ -31,7 +31,7 @@ const dummyData = (rows) => {
   return data;
 };
 
-export default function OrderPayoutDetailsTable() {
+export default function OrderPayoutDetailsTable({ showFor }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const [queryParams, setQueryParams] = useState(queryParamsInit({ shop: shop?._id }));
@@ -46,6 +46,7 @@ export default function OrderPayoutDetailsTable() {
         }}
       />
       <Table
+        type={showFor}
         currencyType={queryParams?.paidCurrency}
         rows={dummyData(5)}
         page={queryParams?.page}

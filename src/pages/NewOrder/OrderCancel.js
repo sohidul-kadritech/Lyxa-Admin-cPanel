@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import {
   Autocomplete,
@@ -18,6 +19,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Form } from 'reactstrap';
 import CloseButton from '../../components/Common/CloseButton';
 import StyledFormField from '../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -49,7 +51,6 @@ const getOrderPayment = (currentOrder) => {
     };
   }
 
-  console.log('admin charge', currentOrder?.adminCharge);
   return {
     shop: currentOrder?.baseCurrency_shopEarnings,
     deliveryBoy: currentOrder?.baseCurrency_riderFee,
@@ -59,18 +60,23 @@ const getOrderPayment = (currentOrder) => {
 };
 
 function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKey = Api.ORDER_LIST }) {
+  const { currentUser } = useGlobalContext();
+  const { userType } = currentUser;
+
   const [orderCancel, setOrderCancel] = useState(
-    // eslint-disable-next-line prettier/prettier
-    orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit)
+    orderCancelDataFormation('cancel_order', currentOrder, cancelOrderInit),
   );
   const [deliverySearchKey, setDeliverySearchKey] = useState(null);
+
   const [appVat, setAppVat] = useState(0);
 
   // eslint-disable-next-line no-unused-vars
   const [orderPayment, setOrderPayment] = useState(getOrderPayment(currentOrder));
 
   const [isOtherReason, setIsOtherReason] = useState(false);
+
   const queryClient = useQueryClient();
+
   // eslint-disable-next-line no-unused-vars
   const getAppSettingsData = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS), {
     onSuccess: (data) => {
@@ -80,7 +86,14 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
       }
     },
   });
-  const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () => AXIOS.get(Api.ALL_ORDER_CANCEL_REASON));
+
+  const getCancelReasonsQuery = useQuery([Api.ALL_ORDER_CANCEL_REASON], () =>
+    AXIOS.get(Api.ALL_ORDER_CANCEL_REASON, {
+      params: {
+        type: userType === 'shop' ? 'shopCancel' : '',
+      },
+    }),
+  );
 
   const cancelOrderForButlarMutation = useMutation((data) => AXIOS.post(Api.BUTLER_CANCEL_ORDER, data), {
     onSuccess: (data) => {
@@ -97,20 +110,28 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
     },
   });
 
-  const cancelOrderByAdminMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data), {
-    onSuccess: (data) => {
-      console.log('data response: ', data);
-      if (data.success) {
-        if (onSuccess) onSuccess(data);
-        successMsg(data.message, 'success');
-        console.log('data status true');
-        setOpenCancelModal(false);
-        queryClient.invalidateQueries(refetchApiKey);
-      } else {
-        successMsg(data.message, 'error');
-      }
+  const cancelOrderByAdminMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.CANCEL_ORDER, data, {
+        params: {
+          userType: userType === 'shop' ? 'shop' : 'admin',
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        console.log('data response: ', data);
+        if (data.status) {
+          if (onSuccess) onSuccess(data);
+          successMsg(data.message, 'success');
+          console.log('data status true');
+          setOpenCancelModal(false);
+          queryClient.invalidateQueries(refetchApiKey);
+        } else {
+          successMsg(data.message, 'error');
+        }
+      },
     },
-  });
+  );
 
   const updateRefundType = (type) => {
     setOrderCancel({
@@ -228,7 +249,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
             orderCancel?.partialPayment?.adminRiderProfit +
               orderCancel?.partialPayment?.adminOrderProfit +
               orderCancel?.partialPayment?.deliveryBoy,
-            appVat
+            appVat,
             // eslint-disable-next-line prettier/prettier
           ),
         },
@@ -264,12 +285,24 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
                   orderCancel?.partialPayment?.adminRiderProfit +
                     orderCancel?.partialPayment?.adminOrderProfit +
                     orderCancel?.partialPayment?.deliveryBoy,
-                  appVat
+                  appVat,
                 ),
               }
             : {},
         cancelReasonId: orderCancel?.cancelReasonId?._id ?? '',
       };
+      /*
+      @When user type is shop we only payload orderId , cancelReasonId and otherReason not sent refund type/cancelType
+      */
+      if (userType === 'shop') {
+        cancelOrderByAdminMutation.mutate({
+          refundType: 'full',
+          orderId: data?.orderId,
+          cancelReasonId: data?.cancelReasonId,
+          otherReason: data?.otherReason,
+        });
+        return;
+      }
       cancelOrderByAdminMutation.mutate(data);
     }
   };
@@ -295,7 +328,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
     >
       <Box padding={5}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={8}>
-          <Typography variant="h3">Cancel Order</Typography>
+          <Typography variant="h3">Reject Order</Typography>
           <CloseButton
             onClick={() => {
               setOpenCancelModal(false);
@@ -326,7 +359,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Select a cancel reason"
+                label="Select a reject reason"
                 value={orderCancel.cancelReasonId}
                 required={!isOtherReason}
               />
@@ -527,8 +560,8 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
                   orderCancel?.partialPayment?.adminOrderProfit +
                     orderCancel?.partialPayment?.adminRiderProfit +
                     orderCancel?.partialPayment?.deliveryBoy,
-                  appVat
-                )
+                  appVat,
+                ),
               ) || 0
         }`}
               tooltip="Lyxa Earning+Lyxa Vat+Shop Earning+Shop VAT+Delivery Boy Earning"
@@ -540,7 +573,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
             orderCancel?.partialPayment?.adminOrderProfit +
               orderCancel?.partialPayment?.adminRiderProfit +
               orderCancel?.partialPayment?.deliveryBoy,
-            appVat
+            appVat,
           ) > 0 &&
             orderCancel.refundType !== 'full' &&
             orderPayment?.adminRiderProfit + orderPayment?.adminOrderProfit > 0 && (
@@ -551,7 +584,7 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
                   orderCancel?.partialPayment?.adminOrderProfit +
                     orderCancel?.partialPayment?.adminRiderProfit +
                     orderCancel?.partialPayment?.deliveryBoy,
-                  appVat
+                  appVat,
                 )}
               </Typography>
             )}

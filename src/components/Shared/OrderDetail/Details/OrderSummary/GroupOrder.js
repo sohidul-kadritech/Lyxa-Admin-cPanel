@@ -41,7 +41,13 @@ export default function GroupOrder({ order }) {
           </Stack>
           <Box>
             {grp?.products?.map((product, i, { length: l }) => (
-              <Product product={product} key={product._id} isFirst={i === 0} isLast={i === l - 1} />
+              <Product
+                product={product}
+                key={product._id}
+                isFirst={i === 0}
+                isLast={i === l - 1}
+                shopExchangeRate={order?.shop?.shopExchangeRate}
+              />
             ))}
           </Box>
         </Box>

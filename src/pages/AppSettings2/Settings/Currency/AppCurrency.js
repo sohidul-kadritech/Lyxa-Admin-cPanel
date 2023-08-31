@@ -4,10 +4,10 @@ import currenciesList from '../../../../common/data/currencyList';
 import StyledFormField from '../../../../components/Form/StyledFormField';
 import InputBox from '../../../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
-import { getSecondaryCurrencyOptions } from '../../helpers';
+import { enabledCurrencyOptions } from '../../helpers';
 
 // eslint-disable-next-line no-unused-vars
-function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
+function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged, disable }) {
   return (
     <InputBox
       title="Base Currency"
@@ -28,6 +28,8 @@ function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
         inputProps={{
           placeholder: 'currency',
           value: newAppSettings?.baseCurrency?.code || '',
+          disabled: disable,
+          readOnly: disable,
           items: currenciesList.map((currency) => {
             const label = currency?.name_plural;
             const value = currency?.code;
@@ -44,15 +46,9 @@ function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
     </InputBox>
   );
 }
-// eslint-disable-next-line no-unused-vars
-function SecondaryCurrency({
-  newAppSettings,
-  setNewAppSettings,
-  setHasChanged,
-  isUsedSecondaryCurrency,
-  setIsUsedSecondaryCurrency,
-}) {
-  console.log('isUsedSecondaryCurrency', isUsedSecondaryCurrency);
+
+function SecondaryCurrency({ newAppSettings, setNewAppSettings, setHasChanged, setIsUsedSecondaryCurrency, disable }) {
+  console.log('isUsedSecondaryCurrency', newAppSettings?.secondaryCurrency?.code);
   return (
     <InputBox
       title="Secondary Currency"
@@ -72,19 +68,12 @@ function SecondaryCurrency({
         }}
         inputProps={{
           placeholder: 'Secondary currency',
-          value: isUsedSecondaryCurrency !== 'disable' ? newAppSettings?.secondaryCurrency?.code || '' : 'disable',
-          items:
-            isUsedSecondaryCurrency !== 'disable'
-              ? [
-                  getSecondaryCurrencyOptions[0],
-                  ...currenciesList.map((currency) => {
-                    const label = currency?.name_plural;
-                    const value = currency?.code;
-                    return { label, value };
-                  }),
-                ]
-              : [...getSecondaryCurrencyOptions],
-          //   items: categories,
+          value: newAppSettings?.secondaryCurrency?.code,
+          items: currenciesList.map((currency) => {
+            const label = currency?.name_plural;
+            const value = currency?.code;
+            return { label, value };
+          }),
           onChange: (e) => {
             setHasChanged(true);
             if (e.target.value === 'disable') {
@@ -110,6 +99,39 @@ function SecondaryCurrency({
             const selectedCurrency = currenciesList.find((currency) => e.target.value === currency?.code);
             setNewAppSettings((prev) => ({ ...prev, secondaryCurrency: selectedCurrency }));
           },
+          disabled: disable,
+          readOnly: disable,
+        }}
+      />
+    </InputBox>
+  );
+}
+
+function EnabledCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
+  return (
+    <InputBox
+      title="Enabled Currencies"
+      inputType="number"
+      sxLeft={{ width: '200px' }}
+      sxRight={{ width: '140px' }}
+      sxContainer={{ flex: 2 }}
+      isRenderedChild
+    >
+      <StyledFormField
+        intputType="select"
+        containerProps={{
+          sx: {
+            width: '125px',
+          },
+        }}
+        inputProps={{
+          placeholder: 'Enabled Currency',
+          value: newAppSettings?.enabledCurrency,
+          items: enabledCurrencyOptions,
+          onChange: (e) => {
+            setHasChanged(true);
+            setNewAppSettings((prev) => ({ ...prev, enabledCurrecy: e.target.value }));
+          },
         }}
       />
     </InputBox>
@@ -122,6 +144,7 @@ function AppCurrency({
   setHasChanged,
   isUsedSecondaryCurrency,
   setIsUsedSecondaryCurrency,
+  disableCurrency,
 }) {
   return (
     <StyledBox title="App Currency">
@@ -130,15 +153,26 @@ function AppCurrency({
           newAppSettings={newAppSettings}
           setNewAppSettings={setNewAppSettings}
           setHasChanged={setHasChanged}
+          disable={disableCurrency?.base}
         />
-        <SecondaryCurrency
+        <EnabledCurrency
           newAppSettings={newAppSettings}
           setNewAppSettings={setNewAppSettings}
           setHasChanged={setHasChanged}
-          isUsedSecondaryCurrency={isUsedSecondaryCurrency}
-          setIsUsedSecondaryCurrency={setIsUsedSecondaryCurrency}
         />
       </Stack>
+      {newAppSettings.enabledCurrecy === 'both' && (
+        <Stack direction="row" alignItems="center" flexWrap="wrap" pt={4}>
+          <SecondaryCurrency
+            newAppSettings={newAppSettings}
+            setNewAppSettings={setNewAppSettings}
+            setHasChanged={setHasChanged}
+            isUsedSecondaryCurrency={isUsedSecondaryCurrency}
+            setIsUsedSecondaryCurrency={setIsUsedSecondaryCurrency}
+            disable={disableCurrency?.secondary}
+          />
+        </Stack>
+      )}
     </StyledBox>
   );
 }

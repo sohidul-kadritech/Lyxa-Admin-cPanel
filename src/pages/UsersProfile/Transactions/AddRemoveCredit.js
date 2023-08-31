@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { React, useState } from 'react';
@@ -10,11 +11,23 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-const getDataInit = (userId) => ({ userId, amount: 0, secondaryCurrency_amount: 0, adminNote: '', userNote: '' });
+const getDataInit = (userId) => ({
+  userId,
+  amount: '',
+  secondaryCurrency_amount: '',
+  adminNote: '',
+  userNote: '',
+  paidCurrency: 'baseCurrency',
+});
 
 const typeOptions = [
-  { label: 'Remove', value: 'remove' },
   { label: 'Add', value: 'add' },
+  { label: 'Remove', value: 'remove' },
+];
+
+export const currencyTypeOptions = [
+  { label: 'Base Currency', value: 'baseCurrency' },
+  { label: 'Secondary Currency', value: 'secondaryCurrency' },
 ];
 
 export default function AddRemoveCredit({ userId, onClose }) {
@@ -48,18 +61,28 @@ export default function AddRemoveCredit({ userId, onClose }) {
   );
 
   const addRemoveCredit = () => {
-    if (data?.amount < 0) {
-      successMsg("Base currency amount can't be negative", 'error');
+    if (Number.isNaN(Number(data?.amount))) {
+      successMsg('Please enter valid amount', 'error');
       return;
     }
 
-    if (data?.amount > max) {
+    if (data?.amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (data?.amount >= max) {
       successMsg(`Base currency amount can't be more than ${max}`, 'error');
       return;
     }
 
-    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount < 0) {
-      successMsg("Secondary currency amount can't be negative", 'error');
+    if (Number.isNaN(Number(data?.secondaryCurrency_amount))) {
+      successMsg('Please enter valid amount', 'error');
+      return;
+    }
+
+    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount <= 0) {
+      successMsg('Please enter valid amount', 'error');
       return;
     }
 
@@ -75,6 +98,8 @@ export default function AddRemoveCredit({ userId, onClose }) {
 
     creditMutation.mutate(data);
   };
+
+  console.log(data);
 
   return (
     <Box
@@ -92,7 +117,10 @@ export default function AddRemoveCredit({ userId, onClose }) {
         <CloseButton onClick={onClose} size="sm" />
       </Stack>
       <Box>
-        <Box pb={3}>
+        <Stack direction="row" pb={5} alignItems="center" gap="12px">
+          <Typography variant="body2" fontSize={16}>
+            Type
+          </Typography>
           <StyledRadioGroup
             sx={{
               flexDirection: 'row',
@@ -102,33 +130,61 @@ export default function AddRemoveCredit({ userId, onClose }) {
             value={type}
             onChange={(e) => setType(e.target.value)}
           />
-        </Box>
-        <StyledFormField
-          label={`Amount * (max ${baseCurrency?.code} ${max} )`}
-          intputType="text"
-          inputProps={{
-            type: 'number',
-            value: data?.amount,
-            onChange: (e) => {
-              setData({ ...data, amount: e.target.value });
-            },
-          }}
-        />
-
+        </Stack>
         {isSecondaryCurrencyEnabled && (
+          <Stack direction="row" pb={3} alignItems="center" gap="12px">
+            <Typography variant="body2" fontSize={16}>
+              Currency
+            </Typography>
+            <StyledRadioGroup
+              sx={{
+                flexDirection: 'row',
+                gap: '25px',
+              }}
+              items={currencyTypeOptions}
+              value={data?.paidCurrency}
+              onChange={(e) =>
+                setData({ ...data, paidCurrency: e.target.value, amount: '', secondaryCurrency_amount: '' })
+              }
+            />
+          </Stack>
+        )}
+        {data?.paidCurrency === 'baseCurrency' ? (
           <StyledFormField
-            label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
+            label={`Amount * (max ${baseCurrency?.code} ${max} )`}
             intputType="text"
             inputProps={{
               type: 'number',
-              value: data?.secondaryCurrency_amount,
+              value: data?.amount,
               onChange: (e) => {
-                setData({ ...data, secondaryCurrency_amount: e.target.value });
+                setData({
+                  ...data,
+                  amount: e.target.value,
+                  secondaryCurrency_amount: Number(e.target.value) * adminExchangeRate,
+                });
               },
             }}
           />
+        ) : (
+          <>
+            <StyledFormField
+              label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
+              intputType="text"
+              inputProps={{
+                type: 'number',
+                value: data?.amsecondaryCurrency_amountount,
+                onChange: (e) => {
+                  setData({
+                    ...data,
+                    secondaryCurrency_amount: e.target.value,
+                    amount: Number((Number(e.target.value) / adminExchangeRate)?.toFixed(2) || 0),
+                  });
+                },
+              }}
+            />
+            <span></span>
+          </>
         )}
-
         <StyledFormField
           label="Admin note"
           intputType="textarea"

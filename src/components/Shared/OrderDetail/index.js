@@ -1,9 +1,13 @@
-import { Avatar, Box, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+import { Print } from '@mui/icons-material';
+import { Avatar, Box, Button, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { useGlobalContext } from '../../../context';
 import CloseButton from '../../Common/CloseButton';
 import TabPanel from '../../Common/TabPanel';
+import { getNextStatus, statusOptions } from '../UpdateOrderStatus/helpers';
 import ChatRequests from './ChatReqests';
 import Details from './Details';
 import Earnings from './Earnings';
@@ -11,7 +15,20 @@ import OrderContextProvider from './OrderContext';
 import Review from './Reviews';
 import RiderChat from './RiderChat';
 
-export default function OrderDetail({ order, onClose, hideIssues }) {
+const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+
+export default function OrderDetail({
+  order,
+  onClose,
+  hideIssues,
+  onClickAccept,
+  onClickReject,
+  onLoadingUpdateStatus,
+  showFor = 'admin',
+}) {
+  console.log('order status', order?.orderStatus);
+  console.log('order next order', getNextStatus(order));
+  console.log('order label', statusOptions[getNextStatus(order)]?.label);
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
@@ -24,7 +41,7 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    []
+    [],
   );
 
   return (
@@ -129,6 +146,43 @@ export default function OrderDetail({ order, onClose, hideIssues }) {
           <TabPanel index={4} value={currentTab} noPadding>
             <RiderChat chats={order?.chats} />
           </TabPanel>
+
+          {/* This component only visible for shop */}
+          {showFor === 'shop' && (
+            <Box my={7.2}>
+              <Stack
+                direction="row"
+                justifyContent={
+                  statusOptions[getNextStatus(order)]?.label === 'Preparing' ? 'space-between' : 'flex-end'
+                }
+              >
+                {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
+                {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
+                  <Button onClick={onClickReject} variant="contained" color="danger">
+                    Reject
+                  </Button>
+                )}
+                <Stack direction="row" gap={4}>
+                  <Button variant="text" startIcon={<Print />} disableRipple color="primary">
+                    Print
+                  </Button>
+                  {/* @If there has next step it will visible otherWise not (Next Status Button) */}
+                  {hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && (
+                    <Button
+                      onClick={onClickAccept}
+                      variant="contained"
+                      color="primary"
+                      disabled={onLoadingUpdateStatus}
+                    >
+                      {statusOptions[getNextStatus(order)]?.label === 'Preparing'
+                        ? 'Accept'
+                        : statusOptions[getNextStatus(order)]?.label}
+                    </Button>
+                  )}
+                </Stack>
+              </Stack>
+            </Box>
+          )}
         </Box>
       </Box>
     </OrderContextProvider>
