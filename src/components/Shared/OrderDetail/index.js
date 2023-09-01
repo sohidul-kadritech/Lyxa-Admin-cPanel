@@ -15,7 +15,23 @@ import OrderContextProvider from './OrderContext';
 import Review from './Reviews';
 import RiderChat from './RiderChat';
 
-const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
+const hideUpdateAndCancelOption = (order) => {
+  const orderStatus = ['cancelled', 'delivered', 'refused'];
+
+  const nextStatus = ['order_on_the_way', 'delivered'];
+
+  const isMatchedNextStatus = nextStatus.indexOf(getNextStatus(order)) >= 0;
+
+  const deliveryBoy = order?.deliveryBoy;
+
+  const assignDeliveryBoyOrNot = isMatchedNextStatus ? !!deliveryBoy : false;
+
+  const areMissedAboveOptions = orderStatus.indexOf(order?.orderStatus) < 0;
+
+  const shouldHideUpdateAndCancelOption = areMissedAboveOptions ? !assignDeliveryBoyOrNot : false;
+
+  return shouldHideUpdateAndCancelOption;
+};
 
 function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
   return (
@@ -38,7 +54,7 @@ function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onL
                 Print
               </Button>
               {/* @If there has next step it will visible otherWise not (Next Status Button) */}
-              {hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && (
+              {hideUpdateAndCancelOption(order) && (
                 <Button onClick={onClickAccept} variant="contained" color="primary" disabled={onLoadingUpdateStatus}>
                   {statusOptions[getNextStatus(order)]?.label === 'Preparing'
                     ? 'Accept'

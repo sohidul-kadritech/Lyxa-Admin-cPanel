@@ -24,6 +24,8 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 // dasboard
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
+export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
+export const GET_ADMIN_DELIVERY_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/delivery`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
 export const GET_SHOP_DASHBOARD_SUMMARY2 = `${ADMIN_ENDPOINT}/financial/shop`;
 export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;

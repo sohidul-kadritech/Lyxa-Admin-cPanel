@@ -2,6 +2,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
+import { calculateSecondaryCurrency } from '../../../../../pages/RiderProfile/Transactions/helpers';
 
 const productDeal = (product) => {
   if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
@@ -133,10 +134,27 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
                     </Typography>
                     <Typography variant="inherit" fontSize="14px" lineHeight="22px" fontWeight={500}>
                       (
-                      {getPriceWithCurrency(currency, secondaryCurrency, item?.extraPrice, undefined, {
-                        shouldCalculate: true,
-                        rate: shopExchangeRate,
-                      })}
+                      {calculateSecondaryCurrency(
+                        general?.appSetting?.baseCurrency,
+                        general?.appSetting?.secondaryCurrency,
+                        item?.extraPrice,
+                        shopExchangeRate,
+                        quantity,
+                      ).enabled
+                        ? calculateSecondaryCurrency(
+                            general?.appSetting?.baseCurrency,
+                            general?.appSetting?.secondaryCurrency,
+                            item?.extraPrice,
+                            shopExchangeRate,
+                            quantity,
+                          ).withOutbaseCurrency
+                        : calculateSecondaryCurrency(
+                            general?.appSetting?.baseCurrency,
+                            general?.appSetting?.secondaryCurrency,
+                            item?.extraPrice,
+                            shopExchangeRate,
+                            quantity,
+                          ).withOutSecondaryCurrency}
                       )
                     </Typography>
                   </Stack>

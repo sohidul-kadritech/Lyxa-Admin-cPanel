@@ -39,6 +39,7 @@ import Faq2 from '../pages/Faq2';
 import LyxaFinancials from '../pages/LyxaFinancials';
 import LyxaButlerOrderFinancials from '../pages/LyxaFinancials/ButlerOrderFinancials';
 import LyxaOrderFinancials from '../pages/LyxaFinancials/OrderFinancials';
+import OrderFinancialsSummary from '../pages/LyxaFinancials/OrderFinancialsSummery';
 import Marketing from '../pages/Marketing';
 import MarketingDashboard from '../pages/Marketing/Dashbaord';
 import Notification from '../pages/Notification2';
@@ -70,6 +71,7 @@ export const admin_routes = [
   { path: '/', component: Dashboard },
   { path: '/financials', component: AdminFinancials },
   { path: '/financials/lyxa', component: LyxaFinancials },
+  { path: '/financials/lyxa/summary', component: OrderFinancialsSummary, componentProps: { shopType: 'food' } },
   { path: '/financials/lyxa/food', component: LyxaOrderFinancials, componentProps: { shopType: 'food' } },
   { path: '/financials/lyxa/grocery', component: LyxaOrderFinancials, componentProps: { shopType: 'grocery' } },
   { path: '/financials/lyxa/butler', component: LyxaButlerOrderFinancials },

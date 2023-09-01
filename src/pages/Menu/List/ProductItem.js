@@ -287,7 +287,7 @@ export default function ProductItem({
         <StyledInput
           type="number"
           min={1}
-          value={product?.price}
+          value={Number(product?.price).toFixed(2)}
           readOnly
           InputProps={{
             startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
