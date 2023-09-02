@@ -1,6 +1,7 @@
 import { Box, Grid, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
+import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
 import DateRange from '../../components/StyledCharts/DateRange';
@@ -21,6 +22,8 @@ const breadcrumbItems = () => [
 function OrderFinancialsSummary() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
+  // eslint-disable-next-line no-unused-vars
+  const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const currency = general?.currency?.symbol;
   return (
     <Box>
@@ -57,7 +60,7 @@ function OrderFinancialsSummary() {
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               title="Total Orders profit"
               isDropdown
-              value={0}
+              value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
               lg={4}
@@ -117,11 +120,63 @@ function OrderFinancialsSummary() {
               md={4}
               lg={4}
             >
-              <Stack gap={3}>
-                <PriceItem title="Marketing spent from Restaurant" amount={0} showIfZero />
-                <PriceItem title="Marketing spent from Grocery" amount={0} showIfZero />
-                <PriceItem title="Marketing spent from Pharmacy" amount={0} showIfZero />
-                <PriceItem title="Marketing spent from Butler" amount={0} showIfZero />
+              <Stack gap={0}>
+                <DetailsAccordion
+                  title="Marketing spent from Restaurant"
+                  // VAT inclusive"
+                  sx={{ borderBottom: 'none' }}
+                  titleAmount={10}
+                  isOpen={currentExpanedTab === 1}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 1 : -1);
+                  }}
+                >
+                  <PriceItem title="discount" amount={2} isNegative showIfZero />
+                  <PriceItem title="loyality" amount={0} showIfZero />
+                  <PriceItem title="buy 1, get 1" amount={0} showIfZero />
+                  <PriceItem title="coupon" amount={0} showIfZero />
+                </DetailsAccordion>
+                <DetailsAccordion
+                  title="Marketing spent from Grocery"
+                  // VAT inclusive"
+                  sx={{ borderBottom: 'none' }}
+                  titleAmount={10}
+                  isOpen={currentExpanedTab === 1}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 1 : -1);
+                  }}
+                >
+                  <PriceItem title="discount" amount={2} isNegative showIfZero />
+                  <PriceItem title="loyality" amount={0} showIfZero />
+                  <PriceItem title="buy 1, get 1" amount={0} showIfZero />
+                  <PriceItem title="coupon" amount={0} showIfZero />
+                </DetailsAccordion>
+                <DetailsAccordion
+                  title="Marketing spent from Pharmacy"
+                  // VAT inclusive"
+                  sx={{ borderBottom: 'none' }}
+                  titleAmount={10}
+                  isOpen={currentExpanedTab === 1}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 1 : -1);
+                  }}
+                >
+                  <PriceItem title="discount" amount={2} isNegative showIfZero />
+                  <PriceItem title="loyality" amount={0} showIfZero />
+                  <PriceItem title="buy 1, get 1" amount={0} showIfZero />
+                  <PriceItem title="coupon" amount={0} showIfZero />
+                </DetailsAccordion>
+                <DetailsAccordion
+                  title="Marketing spent from Delivery"
+                  sx={{ borderBottom: 'none' }}
+                  titleAmount={10}
+                  isOpen={currentExpanedTab === 1}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 1 : -1);
+                  }}
+                >
+                  <PriceItem title="Free Delivery" amount={2} isNegative showIfZero />
+                </DetailsAccordion>
               </Stack>
             </InfoCard>
           </Grid>
