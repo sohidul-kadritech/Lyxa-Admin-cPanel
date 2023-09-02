@@ -10,6 +10,7 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import DateRange from '../../StyledCharts/DateRange';
 
+import { convertDate } from '../../../pages/LyxaFinancials/OrderFinancials';
 import StyledTabs2 from '../../Styled/StyledTab2';
 import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../StyledCharts/InfoCard';
@@ -52,8 +53,8 @@ export default function Overview({ viewUserType }) {
     () =>
       AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
         params: {
-          startDate: paymentDetailsRange.start,
-          endDate: paymentDetailsRange.end,
+          startDate: convertDate(paymentDetailsRange?.start),
+          endDate: convertDate(paymentDetailsRange?.end),
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
       }),

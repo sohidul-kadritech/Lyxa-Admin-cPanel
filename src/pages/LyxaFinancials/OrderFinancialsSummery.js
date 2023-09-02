@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { Box, Grid, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
@@ -124,6 +125,7 @@ function OrderFinancialsSummary() {
                 <DetailsAccordion
                   title="Marketing spent from Restaurant"
                   // VAT inclusive"
+                  summarySx={{ padding: '8px 0px' }}
                   sx={{ borderBottom: 'none' }}
                   titleAmount={10}
                   isOpen={currentExpanedTab === 1}
@@ -140,6 +142,7 @@ function OrderFinancialsSummary() {
                   title="Marketing spent from Grocery"
                   // VAT inclusive"
                   sx={{ borderBottom: 'none' }}
+                  summarySx={{ padding: '8px 0px' }}
                   titleAmount={10}
                   isOpen={currentExpanedTab === 1}
                   onChange={(closed) => {
@@ -154,6 +157,7 @@ function OrderFinancialsSummary() {
                 <DetailsAccordion
                   title="Marketing spent from Pharmacy"
                   // VAT inclusive"
+                  summarySx={{ padding: '8px 0px' }}
                   sx={{ borderBottom: 'none' }}
                   titleAmount={10}
                   isOpen={currentExpanedTab === 1}
@@ -167,6 +171,7 @@ function OrderFinancialsSummary() {
                   <PriceItem title="coupon" amount={0} showIfZero />
                 </DetailsAccordion>
                 <DetailsAccordion
+                  summarySx={{ padding: '8px 0px' }}
                   title="Marketing spent from Delivery"
                   sx={{ borderBottom: 'none' }}
                   titleAmount={10}
@@ -175,6 +180,7 @@ function OrderFinancialsSummary() {
                     seCurrentExpanedTab(closed ? 1 : -1);
                   }}
                 >
+                  <></>
                   <PriceItem title="Free Delivery" amount={2} isNegative showIfZero />
                 </DetailsAccordion>
               </Stack>

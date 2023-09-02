@@ -11,13 +11,16 @@ import InfoCard from '../../components/StyledCharts/InfoCard';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-import OrderPayoutDetails from './OrderPayoutDetails';
+import { useGlobalContext } from '../../context';
+import DeliveryPayoutDetails from './DeliveryPayoutDetails';
 import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
 
 const convertDate = (date) => moment(date).format('YYYY-MM-DD');
 
 function DeliveryFinancials({ shopType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
 
   const getFinancialsDashBoardDelivery = useQuery(
     [
@@ -49,8 +52,13 @@ function DeliveryFinancials({ shopType }) {
         <Grid item xs={6} md={4}>
           <InfoCard
             title="Total Delivery Profit"
-            value={0}
-            Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
+            value={`${currency} ${(deliveryProfitBreakDown?.adminDeliveryProfit || 0).toFixed(2)}`}
+            Tag={
+              <IncreaseDecreaseTag
+                status="increase"
+                amount={`${summary?.adminDeliveryProfitAvgInPercentage}% last ${0}`}
+              />
+            }
             sm={6}
             md={4}
             lg={4}
@@ -59,8 +67,13 @@ function DeliveryFinancials({ shopType }) {
         <Grid item xs={6} md={4}>
           <InfoCard
             title="Total Orders"
-            value="0"
-            Tag={<IncreaseDecreaseTag status="increase" amount="0" />}
+            value={summary?.totalDeliveredOrder || 0}
+            Tag={
+              <IncreaseDecreaseTag
+                status="increase"
+                amount={`${summary?.totalDeliveredOrderAvgInPercentage}% last ${0}`}
+              />
+            }
             sm={6}
             md={4}
             lg={4}
@@ -70,9 +83,8 @@ function DeliveryFinancials({ shopType }) {
         <Grid item xs={6} md={4}>
           <InfoCard
             title="Total Riders Payouts"
-            // isDropdown
-            // value={`${currency} ${(0).toFixed(2)}`}
-            Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
+            Tag={<IncreaseDecreaseTag status="increase" amount={`${summary?.riderPayoutAvgInPercentage}% last ${0}`} />}
+            value={`${currency} ${(deliveryProfitBreakDown?.riderPayout || 0).toFixed(2)}`}
             sm={6}
             md={4}
             lg={4}
@@ -87,7 +99,7 @@ function DeliveryFinancials({ shopType }) {
         </Grid>
 
         <Grid item xs={12} mb={7.5}>
-          <OrderPayoutDetails deliveryProfitBreakDown={deliveryProfitBreakDown} showFor="delivery" />
+          <DeliveryPayoutDetails deliveryProfitBreakDown={deliveryProfitBreakDown} />
         </Grid>
         <Grid item xs={12}>
           <OrderPayoutDetailsTable showFor="delivery" />

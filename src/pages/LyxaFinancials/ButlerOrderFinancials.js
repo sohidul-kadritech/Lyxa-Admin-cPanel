@@ -1,16 +1,21 @@
+/* eslint-disable no-unused-vars */
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import { useState } from 'react';
 
 // local
+import { useQuery } from 'react-query';
 import DateRange from '../../components/StyledCharts/DateRange';
 
 import PageTop from '../../components/Common/PageTop';
 import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
 import IncreaseDecreaseTag from '../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../components/StyledCharts/InfoCard';
+import * as API_URL from '../../network/Api';
+import AXIOS from '../../network/axios';
 import ButlerOrderPayoutDetails from './ButlerOrderPayoutDetails';
 import ButlerOrderPayoutDetailsTable from './ButlerOrderPayoutDetailsTable';
+import { convertDate } from './OrderFinancials';
 
 const breadcrumbItems = [
   {
@@ -25,6 +30,29 @@ const breadcrumbItems = [
 
 export default function LyxaButlerOrderFinancials() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
+
+  const getFinancialsDashBoard = useQuery(
+    [
+      API_URL.GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD,
+      { startDate: paymentDetailsRange?.start, endDate: paymentDetailsRange?.end },
+    ],
+    () =>
+      AXIOS.get(API_URL.GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD, {
+        params: {
+          startDate: convertDate(paymentDetailsRange?.start),
+          endDate: convertDate(paymentDetailsRange?.end),
+        },
+        // eslint-disable-next-line prettier/prettier
+      }),
+  );
+
+  // admin/financial/butler
+
+  console.log('getFinancialsDashBoard for butler', getFinancialsDashBoard?.data?.data);
+
+  const summary = getFinancialsDashBoard?.data?.data;
+
+  const profitBreakdown = summary?.profitBreakdown;
 
   return (
     <Box>
@@ -42,21 +70,31 @@ export default function LyxaButlerOrderFinancials() {
         </Grid>
         <InfoCard
           title="Total Lyxa Profit"
-          value={0}
-          Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
+          value={profitBreakdown?.adminButlerProfit || 0}
+          Tag={
+            <IncreaseDecreaseTag
+              status="increase"
+              amount={`${summary?.adminButlerProfitAvgInPercentage || 0}% last ${0}`}
+            />
+          }
           sm={6}
           md={6}
           lg={6}
         />
         <InfoCard
           title="Total Orders"
-          value="0"
-          Tag={<IncreaseDecreaseTag status="increase" amount="0" />}
+          value={summary?.totalDeliveredOrder || 0}
+          Tag={
+            <IncreaseDecreaseTag
+              status="increase"
+              amount={`${summary?.totalDeliveredOrderAvgInPercentage || 0}% last ${0}`}
+            />
+          }
           sm={6}
           md={6}
           lg={6}
         />
-        <ButlerOrderPayoutDetails />
+        <ButlerOrderPayoutDetails paymentDetails={profitBreakdown} />
         <Grid xs={12}>
           <ButlerOrderPayoutDetailsTable />
         </Grid>
