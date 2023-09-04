@@ -23,9 +23,15 @@ const breadcrumbItems = () => [
 function OrderFinancialsSummary() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
-  // eslint-disable-next-line no-unused-vars
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
+
+  // eslint-disable-next-line no-unused-vars
+  const [expandedIndex, setExpandedIndex] = useState(-1);
+
   const currency = general?.currency?.symbol;
+
+  // eslint-disable-next-line no-unused-vars
+  const [currentInfoExpanded, setCurrentInfoExpanded] = useState(-1);
   return (
     <Box>
       <PageTop backTo="/financials" backButtonLabel="Back to Lyxa Financials" breadcrumbItems={breadcrumbItems()} />
@@ -41,6 +47,9 @@ function OrderFinancialsSummary() {
               title="Total Profit"
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               isDropdown
+              index={1}
+              expandedIndex={expandedIndex === 1}
+              setExpandedIndex={setExpandedIndex}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -61,6 +70,9 @@ function OrderFinancialsSummary() {
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               title="Total Orders profit"
               isDropdown
+              index={2}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 2}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -80,6 +92,9 @@ function OrderFinancialsSummary() {
               title="Total Delivery Profit"
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               isDropdown
+              index={3}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 3}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -98,6 +113,9 @@ function OrderFinancialsSummary() {
               title="Total Refund"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
+              index={4}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 4}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -116,6 +134,9 @@ function OrderFinancialsSummary() {
               title="Total Marketing Spent"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
+              index={5}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 5}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -192,6 +213,9 @@ function OrderFinancialsSummary() {
               title="Marketing cashback"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
+              index={6}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 6}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}
@@ -221,6 +245,9 @@ function OrderFinancialsSummary() {
               title="Other Amount"
               sx={{ position: 'relative', left: 0 }}
               isDropdown
+              index={7}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 7}
               value={`${currency} ${(0).toFixed(2)}`}
               sm={6}
               md={4}

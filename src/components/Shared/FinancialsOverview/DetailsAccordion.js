@@ -105,8 +105,10 @@ export default function DetailsAccordion({
             color={titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined}
           >
             {typeof titleAmount !== 'string' &&
+              typeof titleAmount !== 'object' &&
               `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
             {typeof titleAmount === 'string' && titleAmount}
+            {typeof titleAmount === 'object' && titleAmount}
           </Typography>
         </Stack>
       </StyledAccordionSummary>

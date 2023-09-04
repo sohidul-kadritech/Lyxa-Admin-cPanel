@@ -27,11 +27,11 @@ export default function Overview({ viewUserType }) {
 
   const { shop, seller } = currentUser;
   const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const viewUserTypeToApiMap = {
     shop: {
-      api: Api.GET_SHOP_DASHBOARD_SUMMARY2,
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
       params: { shopId: shop?._id },
     },
     seller: {
@@ -86,7 +86,7 @@ export default function Overview({ viewUserType }) {
       <InfoCard
         title="Total Profit"
         valueComponent={
-          <Stack direction="row" alignItems="baseline" gap={2}>
+          <Stack direction="column" alignItems="baseline" gap={2}>
             <Typography
               variant="h2"
               sx={{
@@ -105,7 +105,7 @@ export default function Overview({ viewUserType }) {
                   fontWeight: '500',
                 }}
               >
-                ({currency} {(profitBreakdown?.baseCurrency_payout || 0).toFixed(2)} + {secondaryCurrency}
+                ({currency} {(profitBreakdown?.baseCurrency_payout || 0).toFixed(2)} + {secondaryCurrency}{' '}
                 {Math.round(profitBreakdown?.secondaryCurrency_payout || 0)})
               </Typography>
             ) : null}

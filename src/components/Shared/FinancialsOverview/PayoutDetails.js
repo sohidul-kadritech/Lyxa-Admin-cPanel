@@ -10,19 +10,17 @@ import { useGlobalContext } from '../../../context';
 import StyledBox from '../../StyledCharts/StyledBox';
 import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
-import { CommonOrderAmountTooltipText, CommonOrderMarketingCashbackTooltipText } from './helpers';
+import { CommonOrderAmountTooltipText, CommonOrderMarketingCashbackTooltipText, getTotalProfit } from './helpers';
 
 export default function PayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
-  const totalProfit = paymentDetails?.secondaryCurrency_payout
-    ? `${currency} ${(Math.abs(paymentDetails?.totalPayout) || 0)?.toFixed(2)} 
-      (${currency} ${(paymentDetails?.baseCurrency_payout || 0).toFixed(2)} + 
-      ${secondaryCurrency || ''} ${Math.round(paymentDetails?.secondaryCurrency_payout || 0)})`
-    : `${currency} ${(Math.abs(paymentDetails?.totalPayout) || 0)?.toFixed(2)}`;
+  const totalProfit = getTotalProfit(currency, secondaryCurrency, paymentDetails);
+
+  // const totalPayout = getTotalProfit(currency,secondaryCurrency,paymentDetails)
 
   const cash = paymentDetails?.cash;
   const online = paymentDetails?.online;
@@ -155,15 +153,15 @@ export default function PayoutDetails({ paymentDetails }) {
                     value={[
                       {
                         label: 'Discount',
-                        value: `${currency}${online?.discount_online}`,
+                        value: `${currency} ${online?.discount_online}`,
                       },
                       {
                         label: 'Buy 1 Get 1',
-                        value: `${currency}${online?.buy1Get1_online}`,
+                        value: `${currency} ${online?.buy1Get1_online}`,
                       },
                       {
                         label: 'Loyalyt Points',
-                        value: `${currency}${online?.loyaltyPoints_online}`,
+                        value: `${currency} ${online?.loyaltyPoints_online}`,
                       },
                     ]}
                   />
