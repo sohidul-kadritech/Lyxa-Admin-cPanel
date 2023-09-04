@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
+import { Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 
@@ -111,3 +112,29 @@ export function CommonOrderMarketingCashbackTooltipText({ title, listSx, titleSx
     </div>
   );
 }
+
+export const getTotalProfit = (currency, secondaryCurrency, paymentDetails) => {
+  const secondaryCurrencyPayout = paymentDetails?.secondaryCurrency_payout;
+  const baseCurrencyPayout = paymentDetails?.baseCurrency_payout;
+  const totalPayout = paymentDetails?.totalPayout;
+
+  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
+  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+
+  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+
+  if (secondaryCurrencyPayout) {
+    return (
+      <Stack direction="row" gap={2} alignItems="center">
+        <Typography variant="body3" fontSize="12px">
+          {joinBaseAndSecondaryCurrency}
+        </Typography>
+        <Typography variant="body1" fontWeight={600}>
+          {onlyBaseCurrency}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return 0;
+};

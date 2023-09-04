@@ -66,7 +66,7 @@ export default function LyxaOrderFinancials({ shopType }) {
   return (
     <Box>
       <PageTop
-        backTo="/financials"
+        backTo="/financials/lyxa"
         backButtonLabel="Back to Lyxa Financials"
         breadcrumbItems={breadcrumbItems(shopType)}
       />

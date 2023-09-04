@@ -12,6 +12,15 @@ import {
 import { useState } from 'react';
 import StyledBox from './StyledBox';
 
+const checkIsExpandedOrNot = (expandedIndex, dropdownOpen) => {
+  console.log(
+    'true or not',
+    // eslint-disable-next-line prettier/prettier
+    expandedIndex !== undefined ? expandedIndex : dropdownOpen,
+  );
+  return expandedIndex !== undefined ? expandedIndex : dropdownOpen;
+};
+
 const dropdownProps = {
   position: 'absolute',
   top: '0',
@@ -31,10 +40,16 @@ export default function InfoCard({
   titleSx,
   valueContainerSx,
   valueComponent,
+  index = -1,
+  expandedIndex,
+  setExpandedIndex,
   sx,
   ...props
 }) {
+  // eslint-disable-next-line no-unused-vars
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // console.log('expandedIndex', expandedIndex, title, index);
   return (
     <Grid {...props}>
       <Box
@@ -54,7 +69,15 @@ export default function InfoCard({
               justifyContent="space-between"
               pb={4.5}
               onClick={() => {
-                setDropdownOpen((prev) => !prev);
+                setDropdownOpen((prev) => {
+                  if (setExpandedIndex) {
+                    setExpandedIndex(() => {
+                      console.log('prev', prev, index);
+                      return !prev ? index : -1;
+                    });
+                  }
+                  return !prev;
+                });
               }}
               sx={{
                 cursor: isDropdown ? 'pointer' : 'default',
@@ -71,7 +94,13 @@ export default function InfoCard({
               >
                 {title}
               </Typography>
-              {isDropdown ? dropdownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon /> : null}
+              {isDropdown ? (
+                checkIsExpandedOrNot(expandedIndex, dropdownOpen) ? (
+                  <ExpandLessIcon />
+                ) : (
+                  <ExpandMoreIcon />
+                )
+              ) : null}
             </Stack>
             <Stack direction="row" alignItems="flex-end" sx={valueContainerSx}>
               {valueComponent && valueComponent}
@@ -95,9 +124,14 @@ export default function InfoCard({
           </Box>
           {isDropdown && (
             <Accordion
-              expanded={dropdownOpen}
+              expanded={checkIsExpandedOrNot(expandedIndex, dropdownOpen)}
               onChange={() => {
-                setDropdownOpen((prev) => !prev);
+                setDropdownOpen((prev) => {
+                  if (setExpandedIndex) {
+                    setExpandedIndex(() => (!prev ? index : -1));
+                  }
+                  return !prev;
+                });
               }}
               sx={{
                 '&::before': {

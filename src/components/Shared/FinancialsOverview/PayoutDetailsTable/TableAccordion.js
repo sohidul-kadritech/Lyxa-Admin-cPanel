@@ -1,7 +1,10 @@
 import { Typography } from '@mui/material';
+import { useState } from 'react';
 import StyledAccordion from '../../../Styled/StyledAccordion';
 
 export default function TableAccordion({ title, titleComponent, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <StyledAccordion
       sx={{
@@ -36,6 +39,19 @@ export default function TableAccordion({ title, titleComponent, children }) {
         },
       }}
       Title={titleComponent || <Typography variant="body4">{(title || 0)?.toFixed(2)}</Typography>}
+      isOpen={isOpen}
+      onChange={(closed) => {
+        console.log('closed', closed);
+        setIsOpen(() => !!closed);
+      }}
+      // onMouseEnter={() => {
+      //   setIsOpen(true);
+      // }}
+      onMouseLeave={() => {
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 300);
+      }}
     >
       {children}
     </StyledAccordion>

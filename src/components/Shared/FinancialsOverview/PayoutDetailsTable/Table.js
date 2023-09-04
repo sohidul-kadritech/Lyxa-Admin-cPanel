@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import { useGlobalContext } from '../../../../context';
 import TablePagination from '../../../Common/TablePagination';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
@@ -8,6 +10,16 @@ import StyledBox from '../../../StyledCharts/StyledBox';
 import { CommonOrderMarketingCashbackTooltipText } from '../helpers';
 import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
+
+export const getCurrencyValue = (currencyType, value) => {
+  const numberValue = isNumber(Number(value)) ? Number(value) : 0;
+
+  if (currencyType === 'baseCurrency') {
+    return (numberValue || 0).toFixed(2);
+  }
+
+  return Math.round(numberValue || 0);
+};
 
 export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage }) {
   const { general } = useGlobalContext();
@@ -65,34 +77,34 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                     value={[
                       {
                         label: 'Original Order Amount',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
-                          financialBreakdown?.cash?.originalOrderAmount_cash
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.originalOrderAmount_cash)}`,
                       },
                       {
                         label: 'Discount',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.cash?.discount_cash
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.discount_cash)}`,
                       },
 
                       {
                         label: 'Buy 1 Get 1',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.cash?.buy1Get1_cash
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.buy1Get1_cash)}`,
                       },
                       {
                         label: 'Loyalty Points',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.cash?.loyaltyPoints_cash
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.loyaltyPoints_cash)}`,
                       },
                       {
                         label: 'Coupons',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.cash?.couponDiscount_cash
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.couponDiscount_cash)}`,
                       },
                     ]}
                   />
@@ -111,32 +123,32 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                     value={[
                       {
                         label: 'Original Order Amount',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.online?.originalOrderAmount_online
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.originalOrderAmount_online)}`,
                       },
                       {
                         label: 'Discount',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.online?.discount_online
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.discount_online)}`,
                       },
 
                       {
                         label: 'Buy 1 Get 1',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.online?.buy1Get1_online
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.buy1Get1_online)}`,
                       },
                       {
                         label: 'Loyalty Points',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
-                          financialBreakdown?.online?.loyaltyPoints_online
-                        }`,
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.loyaltyPoints_online)}`,
                       },
                       {
                         label: 'Coupons',
-                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
                           financialBreakdown?.online?.couponDiscount_online
                         }`,
                       },
@@ -160,28 +172,34 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                     value={[
                       {
                         label: 'Discount',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
-                          financialBreakdown?.AdminMarketingCashback?.discount_amc
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.AdminMarketingCashback?.discount_amc)}`,
                       },
 
                       {
                         label: 'Buy 1 Get 1',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
-                          financialBreakdown?.AdminMarketingCashback?.buy1Get1_amc
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.AdminMarketingCashback?.buy1Get1_amc)}`,
                       },
                       {
                         label: 'Loyalty Points',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(
+                          currencyType,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                        )}`,
                       },
                       {
                         label: 'Coupons',
-                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
-                        }`,
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(
+                          currencyType,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                        )}`,
                       },
                     ]}
                   />
