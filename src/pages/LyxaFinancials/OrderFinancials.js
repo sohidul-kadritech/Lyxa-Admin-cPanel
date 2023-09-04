@@ -19,6 +19,7 @@ import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
 
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { calculateDateDifference } from '../ShopDashboard/helper';
 import DeliveryFinancials from './DeliveryFinancials';
 
 const shopTypeToLabelMap = { food: 'Resturant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
@@ -87,7 +88,14 @@ export default function LyxaOrderFinancials({ shopType }) {
             <InfoCard
               title="Total Lyxa Profit"
               value={profitBreakdown?.totalAdminProfit || 0}
-              Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
+              Tag={
+                <IncreaseDecreaseTag
+                  status={summary?.totalAdminProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                  amount={`${Math.round(
+                    Math.abs(summary?.totalAdminProfitAvgInPercentage) || 0,
+                  )}% last  ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
+                />
+              }
               sm={6}
               md={4}
               lg={4}
@@ -97,8 +105,10 @@ export default function LyxaOrderFinancials({ shopType }) {
               value={summary?.totalDeliveredOrder || 0}
               Tag={
                 <IncreaseDecreaseTag
-                  status="increase"
-                  amount={`${summary?.totalDeliveredOrderAvgInPercentage}% last ${0}`}
+                  status={summary?.totalDeliveredOrderAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                  amount={`${
+                    Math.round(Math.abs(summary?.totalDeliveredOrderAvgInPercentage)) || 0
+                  }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
                 />
               }
               sm={6}
@@ -109,7 +119,14 @@ export default function LyxaOrderFinancials({ shopType }) {
               title="Total Payouts"
               // isDropdown
               value={`${currency} ${(profitBreakdown?.payout?.totalPayout || 0).toFixed(2)}`}
-              Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
+              Tag={
+                <IncreaseDecreaseTag
+                  status={summary?.totalPayoutAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                  amount={`${Math.round(
+                    Math.abs(summary?.totalPayoutAvgInPercentage) || 0,
+                  )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
+                />
+              }
               sm={6}
               md={4}
               lg={4}
@@ -123,7 +140,7 @@ export default function LyxaOrderFinancials({ shopType }) {
             </InfoCard>
             <OrderPayoutDetails paymentDetails={profitBreakdown} showFor="adminFinancials" />
             <Grid xs={12}>
-              <OrderPayoutDetailsTable showFor="order" />
+              <OrderPayoutDetailsTable showFor="order" shopType={shopType} paymentDetailsRange={paymentDetailsRange} />
             </Grid>
           </Grid>
         </Box>

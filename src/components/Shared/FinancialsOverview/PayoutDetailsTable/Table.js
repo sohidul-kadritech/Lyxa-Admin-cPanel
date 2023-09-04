@@ -55,6 +55,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={financialBreakdown?.orderAmount === 0}
               titleComponent={
                 <SummaryItem
                   title
@@ -73,7 +74,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 tooltip={
                   <CommonOrderMarketingCashbackTooltipText
                     typoSx={{ fontSize: '10px' }}
-                    containerSx={{ minWidth: '100px', padding: '0px 10px', margin: '0px 0px' }}
+                    containerSx={{ minWidth: '180px', padding: '0px 10px', margin: '0px 0px' }}
                     value={[
                       {
                         label: 'Original Order Amount',
@@ -119,7 +120,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 tooltip={
                   <CommonOrderMarketingCashbackTooltipText
                     typoSx={{ fontSize: '10px' }}
-                    containerSx={{ minWidth: '100px', padding: '0px 10px', margin: '0px 0px' }}
+                    containerSx={{ minWidth: '180px', padding: '0px 10px', margin: '0px 0px' }}
                     value={[
                       {
                         label: 'Original Order Amount',
@@ -274,6 +275,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={financialBreakdown?.otherPayments?.totalOtherPayments === 0}
               titleComponent={
                 <SummaryItem
                   title
@@ -321,6 +323,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={deliveryFee?.deliveryFee === 0}
               titleComponent={
                 <SummaryItem
                   title

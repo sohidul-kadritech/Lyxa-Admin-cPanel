@@ -12,7 +12,7 @@ import CloseButton from '../../Common/CloseButton';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import { StyledSelect } from '../../Filter/FilterSelect';
 import StyledFormField from '../../Form/StyledFormField';
-import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
+import { paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
 
 export default function UpdateOrderStatus({
   onClose,
@@ -24,7 +24,11 @@ export default function UpdateOrderStatus({
   const { socket } = useSelector((state) => state.socketReducer);
   const queryClient = useQueryClient();
 
-  const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
+  // new one
+  const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
+
+  // old one
+  // const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
 
   const [currentOrder, setCurrentOrder] = useState(order);
@@ -117,7 +121,8 @@ export default function UpdateOrderStatus({
         onClose();
       } else {
         setCurrentOrder(response?.data?.order);
-        setCurrentStatus(getNextStatus(response?.data?.order));
+        setCurrentStatus(response?.data?.order?.orderStatus);
+        // setCurrentStatus(getNextStatus(response?.data?.order));
       }
     }
   };

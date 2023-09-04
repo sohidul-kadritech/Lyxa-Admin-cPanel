@@ -17,7 +17,13 @@ import InfoCard from '../../StyledCharts/InfoCard';
 import PayoutDetails from './PayoutDetails';
 import PayoutDetailsTable from './PayoutDetailsTable';
 import PriceItem from './PriceItem';
-import { calculateDateDifference, dateRangeItit, getMarketingTypeValues, marketingSpentTypeOptions } from './helpers';
+import {
+  calculateDateDifference,
+  dateRangeItit,
+  getMarketingTypeValues,
+  getTotalProfit,
+  marketingSpentTypeOptions,
+} from './helpers';
 
 export default function Overview({ viewUserType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
@@ -105,8 +111,7 @@ export default function Overview({ viewUserType }) {
                   fontWeight: '500',
                 }}
               >
-                ({currency} {(profitBreakdown?.baseCurrency_payout || 0).toFixed(2)} + {secondaryCurrency}{' '}
-                {Math.round(profitBreakdown?.secondaryCurrency_payout || 0)})
+                {getTotalProfit(currency, secondaryCurrency, profitBreakdown, true).printConditionally}
               </Typography>
             ) : null}
           </Stack>
@@ -116,7 +121,7 @@ export default function Overview({ viewUserType }) {
             status={`${Math.round(profitBreakdown?.totalPayout) >= 0 ? 'increase' : 'decrement'}`}
             amount={`${
               Math.round(Math.abs(profitBreakdown?.totalPayoutAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}
@@ -131,7 +136,7 @@ export default function Overview({ viewUserType }) {
             status={Math.round(summary?.totalDeliveredOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
               Math.round(Math.abs(summary?.totalDeliveredOrderAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}
@@ -159,7 +164,7 @@ export default function Overview({ viewUserType }) {
             status={Math.round(marketingSpent?.totalMarketingSpentAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
               Math.round(Math.abs(marketingSpent?.totalMarketingSpentAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import moment from 'moment';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 
@@ -19,6 +20,8 @@ export function calculateDateDifference(date1, date2, unit) {
   const momentDate1 = moment(date1);
   const momentDate2 = moment(date2);
   const difference = momentDate2.diff(momentDate1, unit);
+
+  if (isNaN(difference)) return 0;
   return difference;
 }
 
@@ -113,7 +116,8 @@ export function CommonOrderMarketingCashbackTooltipText({ title, listSx, titleSx
   );
 }
 
-export const getTotalProfit = (currency, secondaryCurrency, paymentDetails) => {
+export const getTotalProfit = (currency, secondaryCurrency, paymentDetails, showObject = false) => {
+  const profitOutput = {};
   const secondaryCurrencyPayout = paymentDetails?.secondaryCurrency_payout;
   const baseCurrencyPayout = paymentDetails?.baseCurrency_payout;
   const totalPayout = paymentDetails?.totalPayout;
@@ -122,6 +126,27 @@ export const getTotalProfit = (currency, secondaryCurrency, paymentDetails) => {
   ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
 
   const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+
+  profitOutput.onlyBaseCurrency = onlyBaseCurrency;
+  profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
+  profitOutput.onlyBaseCurrencyComponent = (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+
+  profitOutput.joinBaseAndSecondaryCurrencyComponent = (
+    <Typography variant="body3" fontSize="12px">
+      {joinBaseAndSecondaryCurrency}
+    </Typography>
+  );
+
+  profitOutput.print = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : onlyBaseCurrency;
+  profitOutput.printConditionally = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : '';
+
+  if (showObject) {
+    return profitOutput;
+  }
 
   if (secondaryCurrencyPayout) {
     return (
@@ -136,5 +161,9 @@ export const getTotalProfit = (currency, secondaryCurrency, paymentDetails) => {
     );
   }
 
-  return 0;
+  return (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
 };

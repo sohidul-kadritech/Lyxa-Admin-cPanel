@@ -28,7 +28,7 @@ const pagesList = [
 export default function LyxaFinancials() {
   return (
     <Box pb={10}>
-      <PageTop title="Lyxa Financials" />
+      <PageTop title="Lyxa Financials" backButtonLabel="Back to Financials" backTo="/financials" />
       <PageList items={pagesList} />
     </Box>
   );

@@ -56,12 +56,7 @@ export default function LyxaButlerOrderFinancials() {
 
   return (
     <Box>
-      <PageTop
-        // title="Lyxa Butler Financials"
-        backTo="/financials"
-        backButtonLabel="Back to Lyxa Financials"
-        breadcrumbItems={breadcrumbItems}
-      />
+      <PageTop backTo="/financials/lyxa" backButtonLabel="Back to Lyxa Financials" breadcrumbItems={breadcrumbItems} />
       <Grid container spacing={7.5} pb={7.5}>
         <Grid xs={12}>
           <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>

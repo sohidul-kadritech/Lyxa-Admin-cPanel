@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Grid, Stack } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -12,6 +13,7 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
 import { useGlobalContext } from '../../context';
+import { calculateDateDifference } from '../ShopDashboard/helper';
 import DeliveryPayoutDetails from './DeliveryPayoutDetails';
 import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
 
@@ -42,7 +44,7 @@ function DeliveryFinancials({ shopType }) {
   const summary = getFinancialsDashBoardDelivery?.data?.data;
   const deliveryProfitBreakDown = summary?.profitBreakdown;
   return (
-    <Box>
+    <Box mt={7.5}>
       <Grid container spacing={7.5}>
         <Grid xs={12}>
           <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
@@ -55,8 +57,10 @@ function DeliveryFinancials({ shopType }) {
             value={`${currency} ${(deliveryProfitBreakDown?.adminDeliveryProfit || 0).toFixed(2)}`}
             Tag={
               <IncreaseDecreaseTag
-                status="increase"
-                amount={`${summary?.adminDeliveryProfitAvgInPercentage}% last ${0}`}
+                status={summary?.adminDeliveryProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                amount={`${Math.round(
+                  Math.abs(summary?.adminDeliveryProfitAvgInPercentage) || 0,
+                )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
               />
             }
             sm={6}
@@ -70,8 +74,10 @@ function DeliveryFinancials({ shopType }) {
             value={summary?.totalDeliveredOrder || 0}
             Tag={
               <IncreaseDecreaseTag
-                status="increase"
-                amount={`${summary?.totalDeliveredOrderAvgInPercentage}% last ${0}`}
+                status={summary?.totalDeliveredOrderAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                amount={`${Math.round(
+                  Math.abs(summary?.totalDeliveredOrderAvgInPercentage) || 0,
+                )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
               />
             }
             sm={6}
@@ -83,7 +89,14 @@ function DeliveryFinancials({ shopType }) {
         <Grid item xs={6} md={4}>
           <InfoCard
             title="Total Riders Payouts"
-            Tag={<IncreaseDecreaseTag status="increase" amount={`${summary?.riderPayoutAvgInPercentage}% last ${0}`} />}
+            Tag={
+              <IncreaseDecreaseTag
+                status={summary?.riderPayoutAvgInPercentage >= 0 ? 'increase' : 'minus'}
+                amount={`${Math.round(
+                  Math.abs(summary?.riderPayoutAvgInPercentage) || 0,
+                )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
+              />
+            }
             value={`${currency} ${(deliveryProfitBreakDown?.riderPayout || 0).toFixed(2)}`}
             sm={6}
             md={4}
