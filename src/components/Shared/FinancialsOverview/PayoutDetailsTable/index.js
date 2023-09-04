@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box } from '@mui/material';
 import { useState } from 'react';
@@ -5,6 +6,7 @@ import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../../context';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
+import { convertDate } from '../../../../pages/LyxaFinancials/OrderFinancials';
 import StyledTabs2 from '../../../Styled/StyledTab2';
 import Table from './Table';
 
@@ -28,10 +30,10 @@ export default function PayoutDetailsTable({ startDate, endDate }) {
   const { shop } = currentUser;
   const [queryParams, setQueryParams] = useState(queryParamsInit({ shop: shop?._id }));
 
-  const query = useQuery([Api.ORDER_LIST, { ...queryParams, startDate, endDate }], () =>
-    AXIOS.get(Api.ORDER_LIST, {
-      params: { ...queryParams, startDate, endDate },
-    })
+  const query = useQuery([Api.GET_ORDER_LIST_PROFIT_BREAKDOWN, { ...queryParams, startDate, endDate }], () =>
+    AXIOS.get(Api.GET_ORDER_LIST_PROFIT_BREAKDOWN, {
+      params: { ...queryParams, startDate: convertDate(startDate), endDate: convertDate(endDate) },
+    }),
   );
 
   return (

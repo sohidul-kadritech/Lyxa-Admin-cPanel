@@ -12,6 +12,7 @@ const StyledContainer = styled(Stack)(({ theme }) => ({
 
 export default function IncrementDecrementInput({
   onChange,
+  allowDecimal = true,
   endAdornment,
   dynamicWidth,
   min = Number.MIN_SAFE_INTEGER,
@@ -57,12 +58,13 @@ export default function IncrementDecrementInput({
           type="number"
           value={value}
           onChange={(e) => {
-            if (Number(e.target.value) < min) {
+            const value = allowDecimal ? e.target.value : Math.round(Number(e.target.value));
+            if (Number(value) < min) {
               onChange(min, e);
-            } else if (Number(e.target.value) > max) {
+            } else if (Number(value) > max) {
               onChange(max, e);
             } else {
-              onChange(Number(e.target.value), e);
+              onChange(Number(value), e);
             }
           }}
         />

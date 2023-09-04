@@ -79,27 +79,31 @@ export function CommonOrderAmountTooltipText({ byAdmin, byShop, currency }) {
     </ul>
   );
 }
-export function CommonOrderMarketingCashbackTooltipText({ value = [] }) {
+export function CommonOrderMarketingCashbackTooltipText({ title, listSx, titleSx, value = [], containerSx, typoSx }) {
   return (
-    <div>
-      {/* <p
-        style={{
-          padding: '4px 16px',
-          marginBottom: '0',
-          minWidth: '180px',
-        }}
-      >
-        How many amount lyxa should gave back to the shop:
-      </p> */}
+    <div style={{ ...(containerSx || {}) }}>
+      {title && (
+        <p
+          style={{
+            padding: '4px 16px',
+            marginBottom: '0',
+            minWidth: '180px',
+            ...(titleSx || {}),
+          }}
+        >
+          {title}
+        </p>
+      )}
       <ul
         style={{
           padding: '4px 16px',
           marginBottom: '0',
           minWidth: '180px',
+          ...(listSx || {}),
         }}
       >
         {value.map((data, i) => (
-          <li key={i}>
+          <li key={i} style={{ ...(typoSx || {}) }}>
             {data.label} {data?.value}
           </li>
         ))}

@@ -1,9 +1,9 @@
-export const calculateSecondaryCurrency = (baseCurrency, secondaryCurrency, value, exchangeRate) => {
+export const calculateSecondaryCurrency = (baseCurrency, secondaryCurrency, value, exchangeRate, multiplyWith = 1) => {
   const isSecondaryCurrencyEnabled = Number(exchangeRate) > 0;
   const baseAmount = Number(value);
   const secondaryAmount = baseAmount * Number(exchangeRate);
-  const resultendBaseAmount = Math.abs(baseAmount || 0);
-  let resultendSecondaryAmount = Math.round(secondaryAmount);
+  const resultendBaseAmount = Math.abs(baseAmount * multiplyWith || 0);
+  let resultendSecondaryAmount = Math.round(secondaryAmount * multiplyWith);
   resultendSecondaryAmount = Math.abs(resultendSecondaryAmount);
 
   const withSecondaryCurrency = `${secondaryAmount < 0 ? '-' : ''} ${

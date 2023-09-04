@@ -37,6 +37,7 @@ function ExchangeRate({ newAppSettings, setNewAppSettings, setHasChanged, isUsed
             isRenderedChild
           >
             <IncrementDecrementButton
+              allowDecimal={false}
               isChangeOthers
               isReadOnly={isUsedSecondaryCurrency === 'disable'}
               changeOthers={() => {

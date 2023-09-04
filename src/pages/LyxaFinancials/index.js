@@ -4,8 +4,8 @@ import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
   {
-    label: 'Summery',
-    to: '/financials/lyxa/food',
+    label: 'Summary',
+    to: '/financials/lyxa/summary',
   },
   {
     label: 'Resturant',

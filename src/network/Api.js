@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 export const API_URL = 'https://request-dev.lyxa.delivery/';
+// export const API_URL = 'https://request-dev.lyxa.delivery/';
 
 export const SOCKET_CONNECTION = 'https://request-dev.lyxa.delivery';
 
@@ -20,6 +21,10 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 // dasboard
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
+export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
+export const GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/butler`;
+export const GET_ORDER_LIST_PROFIT_BREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/order-profit-breakdown`;
+export const GET_ADMIN_DELIVERY_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/delivery`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/shop`;
 export const GET_SHOP_DASHBOARD_SUMMARY2 = `${ADMIN_ENDPOINT}/financial/shop`;
 export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
@@ -268,6 +273,7 @@ export const RIDER_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/current-lo
 
 // ORDERS
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
+
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
 

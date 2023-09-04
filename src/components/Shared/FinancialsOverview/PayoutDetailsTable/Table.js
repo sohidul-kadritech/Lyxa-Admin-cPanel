@@ -1,12 +1,22 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
+import { useGlobalContext } from '../../../../context';
 import TablePagination from '../../../Common/TablePagination';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
 import StyledTable from '../../../Styled/StyledTable3';
 import StyledBox from '../../../StyledCharts/StyledBox';
+import { CommonOrderMarketingCashbackTooltipText } from '../helpers';
 import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
 
 export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage }) {
+  const { general } = useGlobalContext();
+  const appSetting = general?.appSetting;
+  const baseCurrency = appSetting?.baseCurrency;
+  const secondaryCurrency = appSetting?.secondaryCurrency;
+
+  console.log('rows', rows);
+
   const columns = [
     {
       id: 1,
@@ -24,12 +34,11 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerName: `ORDER AMOUNT`,
       sortable: false,
       field: 'orderAmount',
-      flex: 1,
+      flex: 1.4,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -39,8 +48,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={isPartialRefund ? 0 : financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={isPartialRefund ? 0 : financialBreakdown?.secondaryCurrency_orderAmount}
+                  value={financialBreakdown?.orderAmount}
+                  valueSecondary={financialBreakdown?.orderAmount}
                   showIfZero
                 />
               }
@@ -48,45 +57,137 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 currencyType={currencyType}
                 label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
-                hide={isPartialRefund}
-              />
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '100px', padding: '0px 10px', margin: '0px 0px' }}
+                    value={[
+                      {
+                        label: 'Original Order Amount',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.cash?.originalOrderAmount_cash
+                        }`,
+                      },
+                      {
+                        label: 'Discount',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.cash?.discount_cash
+                        }`,
+                      },
 
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.cash?.buy1Get1_cash
+                        }`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.cash?.loyaltyPoints_cash
+                        }`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.cash?.couponDiscount_cash
+                        }`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.cash?.totalCash}
+                value={financialBreakdown?.cash?.totalCash}
+              />
               <SummaryItem
-                console={console.log({ financialBreakdown })}
+                currencyType={currencyType}
                 label="Online"
-                currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-                hide={isPartialRefund}
-              />
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '100px', padding: '0px 10px', margin: '0px 0px' }}
+                    value={[
+                      {
+                        label: 'Original Order Amount',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.online?.originalOrderAmount_online
+                        }`,
+                      },
+                      {
+                        label: 'Discount',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.online?.discount_online
+                        }`,
+                      },
 
-              <SummaryItem
-                label="Discount"
-                currencyType={currencyType}
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
-                hide={isPartialRefund}
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.online?.buy1Get1_online
+                        }`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.online?.loyaltyPoints_online
+                        }`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code}${
+                          financialBreakdown?.online?.couponDiscount_online
+                        }`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.online?.totalOnline}
+                value={financialBreakdown?.online?.totalOnline}
               />
-
               <SummaryItem
-                label="Buy 1 Get 1"
-                isNegative
                 currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
-                value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
-                hide={isPartialRefund}
-              />
+                label="Lyxa Marketing Cashback"
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    title="Lyxa Marketing Cashback"
+                    titleSx={{ padding: '0px 10px', marginBottom: '0', minWidth: '100px' }}
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '150px', padding: '0px 10px', margin: '0px 0px' }}
+                    // listSx={{ listStyle: 'none' }}
+                    value={[
+                      {
+                        label: 'Discount',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.AdminMarketingCashback?.discount_amc
+                        }`,
+                      },
 
-              <SummaryItem
-                label="Loyalty points"
-                isNegative
-                currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
-                value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
-                hide={isPartialRefund}
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.AdminMarketingCashback?.buy1Get1_amc
+                        }`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                        }`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                        }`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.AdminMarketingCashback?.adminMarketingCashback}
+                value={financialBreakdown?.AdminMarketingCashback?.adminMarketingCashback}
               />
             </TableAccordion>
           </Box>
@@ -103,16 +204,16 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       minWidth: 180,
       renderCell: ({ row }) => {
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <SummaryItem
             title
             pb={0}
             currencyType={currencyType}
-            value={isPartialRefund ? 0 : Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
-            valueSecondary={isPartialRefund ? 0 : Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
-            isNegative={row?.financialBreakdown?.baseCurrency_lyxaFees > 0}
+            value={Math.abs(financialBreakdown?.adminFees)}
+            valueSecondary={Math.abs(financialBreakdown?.adminFees)}
+            isNegative={financialBreakdown?.adminFees > 0}
             showIfZero
           />
         );
@@ -127,15 +228,15 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <SummaryItem
             title
             pb={0}
             currencyType={currencyType}
-            value={isPartialRefund ? 0 : row?.financialBreakdown?.baseCurrency_totalVat}
-            valueSecondary={isPartialRefund ? 0 : row?.financialBreakdown?.secondaryCurrency_totalVat}
+            value={financialBreakdown?.totalVat}
+            valueSecondary={financialBreakdown?.totalVat}
             showIfZero
           />
         );
@@ -146,12 +247,11 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerName: `OTHER PAYMENTS`,
       sortable: false,
       field: 'otherPayments',
-      flex: 1,
+      flex: 1.5,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -161,28 +261,27 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={Math.abs(financialBreakdown?.baseCurrency_otherPayments)}
-                  valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_otherPayments)}
-                  isNegative={financialBreakdown?.baseCurrency_otherPayments > 0}
+                  value={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
+                  valueSecondary={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
+                  isNegative={financialBreakdown?.otherPayments?.totalOtherPayments > 0}
                   showIfZero
                 />
               }
             >
               <SummaryItem
                 currencyType={currencyType}
-                label="Free delivery"
-                value={isPartialRefund ? 0 : financialBreakdown?.baseCurrency_otherPayments_freeDelivery}
-                valueSecondary={isPartialRefund ? 0 : financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
+                label="Promotion: Free delivery"
+                value={financialBreakdown?.otherPayments?.freeDeliveryByShop}
+                valueSecondary={financialBreakdown?.otherPayments?.freeDeliveryByShop}
                 isNegative
-                hide={isPartialRefund}
               />
 
               <SummaryItem
                 label="Refunded Amount"
                 currencyType={currencyType}
-                isNegative={financialBreakdown?.baseCurrency_otherPayments_refundAmount > 0}
-                value={Math.abs(financialBreakdown?.baseCurrency_otherPayments_refundAmount)}
-                valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_otherPayments_refundAmount)}
+                isNegative={financialBreakdown?.otherPayments?.customerRefund > 0}
+                value={financialBreakdown?.otherPayments?.customerRefund}
+                valueSecondary={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
               />
             </TableAccordion>
           </Box>
@@ -198,7 +297,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
+        const deliveryFee = financialBreakdown?.deliveryFee;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -208,8 +308,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_deliveryFee}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee}
+                  value={deliveryFee?.deliveryFee}
+                  valueSecondary={deliveryFee?.deliveryFee}
                   showIfZero
                 />
               }
@@ -217,22 +317,22 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 currencyType={currencyType}
                 label="Cash"
-                value={financialBreakdown?.baseCurrency_deliveryFee_cash}
-                valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_cash}
+                value={deliveryFee?.cash}
+                valueSecondary={deliveryFee?.cash}
               />
 
               <SummaryItem
                 label="Online"
                 currencyType={currencyType}
-                value={financialBreakdown?.baseCurrency_deliveryFee_online}
-                valueSecondary={financialBreakdown?.secondaryCurrency_deliveryFee_online}
+                value={deliveryFee?.online}
+                valueSecondary={deliveryFee?.online}
               />
 
               <SummaryItem
                 label="Rider tip"
                 currencyType={currencyType}
-                value={financialBreakdown?.baseCurrency_riderTip}
-                valueSecondary={financialBreakdown?.secondaryCurrency_riderTip}
+                value={deliveryFee?.riderTip_online}
+                valueSecondary={deliveryFee?.riderTip_online}
                 isRejected
               />
             </TableAccordion>
@@ -250,15 +350,15 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
 
       renderCell: ({ row }) => {
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <SummaryItem
             title
             pb={0}
             currencyType={currencyType}
-            value={isPartialRefund ? 0 : row?.baseCurrency_pointsCashback}
-            valueSecondary={isPartialRefund ? 0 : row?.secondaryCurrency_pointsCashback}
+            value={financialBreakdown?.pointsCashback}
+            valueSecondary={financialBreakdown?.pointsCashback}
             showIfZero
           />
         );
@@ -273,24 +373,15 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const isPartialRefund = row?.userCancelTnx?.[0]?.isPartialRefund || row?.userRefundTnx?.[0]?.isPartialRefund;
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <SummaryItem
             title
             pb={0}
             currencyType={currencyType}
-            value={
-              isPartialRefund
-                ? Math.abs(financialBreakdown?.baseCurrency_otherPayments_refundAmount)
-                : financialBreakdown?.baseCurrency_totalProfit
-            }
-            valueSecondary={
-              isPartialRefund
-                ? Math.abs(financialBreakdown?.secondaryCurrency_otherPayments_refundAmount)
-                : financialBreakdown?.secondaryCurrency_totalProfit
-            }
+            value={financialBreakdown?.totalPayout}
+            valueSecondary={financialBreakdown?.totalPayout}
             showIfZero
           />
         );

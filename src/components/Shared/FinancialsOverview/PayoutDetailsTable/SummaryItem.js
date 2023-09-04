@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { useGlobalContext } from '../../../../context';
 import { CustomInfoIcon } from '../../OrderDetail/helpers';
@@ -6,6 +7,8 @@ export default function SummaryItem({
   pt,
   pb,
   hide,
+  typoSx,
+  tooltipIconStyle = {},
   tooltip,
   label,
   value,
@@ -29,7 +32,7 @@ export default function SummaryItem({
   const currency =
     currencyType === 'baseCurrency'
       ? general?.appSetting?.baseCurrency?.symbol
-      : general?.appSetting?.secondaryCurrency?.symbol;
+      : general?.appSetting?.secondaryCurrency?.code;
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" pb={pb ?? 3.5} pt={pt}>
@@ -41,6 +44,7 @@ export default function SummaryItem({
           sx={{
             color: '#363636',
             fontSize: title ? '15px' : '11px',
+            paddingRight: '4px',
 
             '&.rejected': {
               color: '#b9b9b9',
@@ -49,12 +53,16 @@ export default function SummaryItem({
             '&.total': {
               fontWeight: '700',
             },
+            display: 'flex',
+            gap: '4px',
+            alignItems: 'center',
+            ...(typoSx || {}),
           }}
         >
-          {label}{' '}
+          {label}
           {tooltip && (
             <Tooltip title={tooltip}>
-              <CustomInfoIcon />
+              <CustomInfoIcon style={{ ...(tooltipIconStyle || {}) }} />
             </Tooltip>
           )}
         </Typography>
@@ -94,12 +102,12 @@ export default function SummaryItem({
         {/*  base value */}
         {typeof value !== 'string' &&
           currencyType === 'baseCurrency' &&
-          `${isNegative || value < 0 ? '-' : ''}${currency}${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          `${isNegative || value < 0 ? '-' : ''}${currency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
 
         {/* secondary value */}
         {typeof value !== 'string' &&
           currencyType === 'secondaryCurrency' &&
-          `${isNegative || value < 0 ? '-' : ''}${currency}${Math.round(Math.abs(valueSecondary || 0))}`}
+          `${isNegative || value < 0 ? '-' : ''}${currency} ${Math.round(Math.abs(valueSecondary || 0))}`}
       </Typography>
     </Stack>
   );

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 // third party
-import { Box, Drawer, Modal, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Modal, Stack, Tab, Tabs, Typography } from '@mui/material';
 
 // project import
 import { useState } from 'react';
@@ -17,6 +17,7 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import AssignRiderForShop from './AssignRiderForShop';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
@@ -48,6 +49,8 @@ export default function NewOrders({ showFor }) {
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
 
+  const [openConfirm, setOpenConfirm] = useState(false);
+
   const [totalPage, setTotalPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -71,6 +74,7 @@ export default function NewOrders({ showFor }) {
       // if (onUpdateSuccess) onUpdateSuccess(response);
 
       setOpenAcceptModal(false);
+      setOpenConfirm(false);
 
       const type = response?.data?.order?.orderStatus;
 
@@ -183,6 +187,11 @@ export default function NewOrders({ showFor }) {
     */
     if (getNextStatus(currentOrder) === 'delivered') {
       setOpenAcceptModal(true);
+      return;
+    }
+
+    if (getNextStatus(currentOrder) === 'ready_to_pickup' && currentOrder?.deliveryBoy) {
+      setOpenConfirm(true);
       return;
     }
 
@@ -299,6 +308,7 @@ export default function NewOrders({ showFor }) {
       next step delivered in that case this modal will visible otherwise not visible 
       in delivered status it will open for choose currency options
       */}
+
       <Modal
         open={openAcceptModal}
         onClose={() => {
@@ -315,6 +325,22 @@ export default function NewOrders({ showFor }) {
           currentOrder={currentOrder}
         />
       </Modal>
+
+      <ConfirmModal
+        isOpen={openConfirm}
+        loading={updateStatusMutation?.isLoading}
+        onConfirm={updateStatusHandler}
+        onCancel={() => setOpenConfirm(false)}
+        message={
+          <Stack gap={4} sx={{ maxWidth: '450px' }}>
+            <Typography variant="h4">Notify Rider?</Typography>
+            <Typography variant="body2" sx={{ fontSize: '16px', lineHeight: '20px', letterSpacing: '0.2px' }}>
+              By clicking "Rider for pickup". you will notify the rider that the order is ready to be picked up. Please
+              make sure the order is complete and ready before notifiying the rider
+            </Typography>
+          </Stack>
+        }
+      />
     </Box>
   );
 }

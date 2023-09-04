@@ -22,6 +22,7 @@ function IncrementDecrementButton({
   changeOthers,
   sx,
   objectKey,
+  allowDecimal = true,
   isReadOnly = false,
 }) {
   const theme = useTheme();
@@ -80,15 +81,16 @@ function IncrementDecrementButton({
                   // background: 'red',
                 },
                 onChange: (e) => {
+                  const value = allowDecimal ? e.target.value : Math.round(Number(e?.target?.value));
+                  console.log('allowDecimal', allowDecimal, value);
                   if (objectKey) {
-                    if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0)
-                      setValue((prev) => ({ ...prev, [objectKey]: 0 }));
-                    else setValue((prev) => ({ ...prev, [objectKey]: e.target.value }));
+                    if (isNumber(parseInt(value, 10)) && value < 0) setValue((prev) => ({ ...prev, [objectKey]: 0 }));
+                    else setValue((prev) => ({ ...prev, [objectKey]: value }));
                   }
 
                   if (!objectKey) {
-                    if (isNumber(parseInt(e.target.value, 10)) && e.target.value < 0) setValue(0);
-                    else setValue(e.target.value);
+                    if (isNumber(parseInt(value, 10)) && value < 0) setValue(0);
+                    else setValue(value);
                   }
 
                   if (isValidateType) setTypeValidation(types, setType, type);

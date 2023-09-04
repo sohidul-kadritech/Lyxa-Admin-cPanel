@@ -31,6 +31,7 @@ export default function InfoCard({
   titleSx,
   valueContainerSx,
   valueComponent,
+  sx,
   ...props
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -41,7 +42,7 @@ export default function InfoCard({
           position: 'relative',
         }}
       >
-        <StyledBox sx={isDropdown ? dropdownProps : undefined}>
+        <StyledBox sx={isDropdown ? { ...dropdownProps, ...(sx || {}) } : undefined}>
           <Box
             sx={{
               padding: '14px 10px 10px 20px',

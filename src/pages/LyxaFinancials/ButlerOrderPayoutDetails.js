@@ -5,11 +5,13 @@ import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
-import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
+// import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 
-export default function ButlerOrderPayoutDetails() {
+export default function ButlerOrderPayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
+
+  console.log('paymentDetails', paymentDetails);
 
   return (
     <Grid xs={12}>
@@ -29,28 +31,36 @@ export default function ButlerOrderPayoutDetails() {
         <Box pt={2.5}>
           {/* delivery */}
           <DetailsAccordion
-            title="Delivery Profit"
-            titleAmount={0}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
+            title="Total Order Amount"
+            titleAmount={paymentDetails?.totalOrderAmount || 0}
             isOpen={currentExpanedTab === 2}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 2 : -1);
             }}
           >
-            <PriceItem title="Cash" amount={0} showIfZero />
+            {/* <PriceItem title="Cash" amount={0} showIfZero />
             <PriceItem title="Online" amount={0} showIfZero />
-            <PriceItem title="Rider Cut" amount={0} showIfZero isNegative />
+            <PriceItem title="Rider Cut" amount={0} showIfZero isNegative /> */}
+          </DetailsAccordion>
+
+          <DetailsAccordion
+            title="Rider Payout"
+            titleAmount={paymentDetails?.riderPayout || 0}
+            isOpen={currentExpanedTab === 2}
+            onChange={(closed) => {
+              seCurrentExpanedTab(closed ? 2 : -1);
+            }}
+            titleAmountStatus="minus"
+          >
+            {/* <PriceItem title="Cash" amount={0} showIfZero />
+            <PriceItem title="Online" amount={0} showIfZero />
+            <PriceItem title="Rider Cut" amount={0} showIfZero isNegative /> */}
           </DetailsAccordion>
 
           {/* profit */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={0}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%.
-            VAT inclusive"
+            titleAmount={paymentDetails?.adminButlerProfit || 0}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
@@ -58,10 +68,7 @@ export default function ButlerOrderPayoutDetails() {
             sx={{
               borderBottom: '0',
             }}
-          >
-            <PriceItem title="Paid" amount={0} showIfZero />
-            <PriceItem title="Unpaid" amount={0} showIfZero />
-          </DetailsAccordion>
+          ></DetailsAccordion>
         </Box>
       </StyledBox>
     </Grid>

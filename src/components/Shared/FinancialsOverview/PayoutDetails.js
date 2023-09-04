@@ -291,7 +291,7 @@ export default function PayoutDetails({ paymentDetails }) {
           />
 
           {/* Other payments */}
-          {otherPayments?.totalOtherPayments > 0 && (
+          {otherPayments?.totalOtherPayments >= 0 && (
             <DetailsAccordion
               title="Other Payments"
               tooltip="Fee for Lyxa-powered deliveries: 20%
@@ -309,6 +309,7 @@ export default function PayoutDetails({ paymentDetails }) {
                 tooltip="If Lxya rider"
                 amount={otherPayments?.freeDeliveryByShop}
                 // amount={paymentDetails?.freeDeliveryShopCut}
+                showIfZero
                 isNegative
               />
 
@@ -316,6 +317,7 @@ export default function PayoutDetails({ paymentDetails }) {
                 title="Promotion: Featured"
                 amount={otherPayments?.featuredAmount}
                 // amount={paymentDetails?.totalFeaturedAmount}
+                showIfZero
                 isNegative
               />
 
@@ -332,6 +334,7 @@ export default function PayoutDetails({ paymentDetails }) {
                 amount={otherPayments?.customerRefund}
                 // amount={Math.abs(paymentDetails?.totalRefundAmount)}
                 isNegative
+                showIfZero
                 // isNegative={paymentDetails?.totalRefundAmount > 0}
               />
             </DetailsAccordion>
