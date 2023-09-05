@@ -26,7 +26,7 @@ export function StyledOrderDetailBox({ title, children }) {
   );
 }
 
-export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
+export const CustomInfoIcon = React.forwardRef(({ style, ...props }, ref) => (
   <span
     {...props}
     ref={ref}
@@ -41,6 +41,8 @@ export const CustomInfoIcon = React.forwardRef(({ ...props }, ref) => (
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'default',
+
+      ...(style || {}),
     }}
   >
     i
@@ -132,7 +134,7 @@ export function SummaryItem({
             hideSecondary
               ? ''
               : `${isNegative || valueSecondary < 0 ? '-' : ''}${secondaryCurrency} ${Math.round(
-                  Math.abs(valueSecondary)
+                  Math.abs(valueSecondary),
                 )} ~ `
           }
           ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}

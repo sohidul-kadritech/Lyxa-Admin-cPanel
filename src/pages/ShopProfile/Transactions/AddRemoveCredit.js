@@ -3,6 +3,7 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { React, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { successMsg } from '../../../helpers/successMsg';
@@ -16,9 +17,30 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
 ];
 
+export const currencyOptions = (baseCurrency, secondaryCurrency, secondaryEnabled) => {
+  const baseCode = baseCurrency?.code;
+  const secondaryode = secondaryCurrency?.code;
+
+  if (secondaryEnabled) {
+    return [
+      { label: baseCode, value: 'baseCurrency' },
+      { label: secondaryode, value: 'secondaryCurrency' },
+    ];
+  }
+
+  return [{ label: baseCode, value: 'baseCurrency' }];
+};
+
 export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmount, storeAppSettings }) {
   const adminExchangeRate = storeAppSettings?.adminExchangeRate;
+
+  const secondaryEnabled = adminExchangeRate > 0;
+
   const secondaryCurrency = storeAppSettings?.secondaryCurrency;
+
+  const baseCurrency = storeAppSettings?.baseCurrency;
+
+  const [selectedCurrency, setSelectedCurrency] = useState('baseCurrency');
 
   const queryClient = useQueryClient();
   const [data, setData] = useState(getDataInit(shopId));
@@ -73,6 +95,7 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
         </Typography>
         <CloseButton onClick={onClose} size="sm" />
       </Stack>
+
       <Box>
         <Box pb={3}>
           <StyledRadioGroup
@@ -85,20 +108,31 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
             onChange={(e) => setData({ ...data, type: e.target.value })}
           />
         </Box>
+        <Box py={3}>
+          <OptionsSelect
+            value={selectedCurrency}
+            sx={{ padding: '8px 10px' }}
+            gapSx={3}
+            items={currencyOptions(baseCurrency, secondaryCurrency, secondaryEnabled)}
+            onChange={(value) => setSelectedCurrency(value)}
+          />
+        </Box>
 
-        <StyledFormField
-          label="Base Amount *"
-          intputType="text"
-          inputProps={{
-            type: 'number',
-            value: data.amount,
-            onChange: (e) => {
-              setData({ ...data, amount: e.target.value });
-            },
-          }}
-        />
+        {selectedCurrency === 'baseCurrency' && (
+          <StyledFormField
+            label="Base Amount *"
+            intputType="text"
+            inputProps={{
+              type: 'number',
+              value: data.amount,
+              onChange: (e) => {
+                setData({ ...data, amount: e.target.value });
+              },
+            }}
+          />
+        )}
 
-        {/* {secondaryEnabled && (
+        {selectedCurrency === 'secondaryCurrency' && (
           <StyledFormField
             label="Secondary Amount *"
             intputType="text"
@@ -111,7 +145,7 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
               },
             }}
           />
-        )} */}
+        )}
 
         <StyledFormField
           label="Description"

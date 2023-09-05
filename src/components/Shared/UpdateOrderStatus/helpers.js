@@ -15,7 +15,7 @@ export const statusOptions = {
     position: 3,
   },
   ready_to_pickup: {
-    label: 'Ready to pickup',
+    label: 'Ready for pickup',
     position: 4,
   },
   order_on_the_way: {

@@ -1,10 +1,14 @@
+import { isNaN } from 'lodash';
 import moment from 'moment';
 
 export function calculateDateDifference(date1, date2, unit) {
   const momentDate1 = moment(date1);
   const momentDate2 = moment(date2);
   const difference = momentDate2.diff(momentDate1, unit);
-  return difference;
+  if (isNaN(difference)) {
+    return 0;
+  }
+  return difference + 1;
 }
 
 export const getGreeting = () => {

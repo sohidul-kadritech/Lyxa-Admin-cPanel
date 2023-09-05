@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 
@@ -17,20 +18,20 @@ const getBreadCrumbItems = (searchUrl, viewUserType) => {
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions',
+      to: '/app-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
       to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'companyName'
+        'companyName',
       )}`,
     },
     {
       label: searchUrl.get('shopName'),
-      to: `/add-wallet/shop-transactions?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
+      to: `/app-wallet/shop-transactions?shopId=${searchUrl.get('shopId')}&shopName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'shopName'
+        'shopName',
       )}&sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get('companyName')}`,
     },
   ];
@@ -49,7 +50,8 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
   // eslint-disable-next-line no-unused-vars
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  // eslint-disable-next-line no-unused-vars
+  const [currentTab, setCurrentTab] = useState(0);
+
   const [searchKey, setSearchKey] = useState('');
 
   const getSellerShopsTnx = useQuery([API_URL.SHOP_TRX, { id: searchParams.get('shopId') }], () =>
@@ -69,7 +71,7 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
         //   adminBy: shopTrxBy?._id,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   console.log(getSellerShopsTnx?.data?.data?.transections);
@@ -90,7 +92,17 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
         }}
       />
 
+      {/* <Box marginBottom={7.5}>
+        <Tabs value={currentTab}>
+          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
+          <Tab onClick={() => setCurrentTab(1)} label="Order" />
+        </Tabs>
+      </Box> */}
+
       <ShopTransactions shop={{ _id: searchParams.get('shopId') }} />
+      {/* {currentTab === 1 && (
+        <Overview viewUserType="adminShop" adminParams={{ id: searchParams.get('shopId'), type: 'shop' }} />
+      )} */}
     </Box>
   );
 }

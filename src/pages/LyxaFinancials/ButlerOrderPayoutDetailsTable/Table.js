@@ -1,73 +1,122 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import TablePagination from '../../../components/Common/TablePagination';
 import SummaryItem from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/SummaryItem';
-import TableAccordion from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/TableAccordion';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
 
 export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage }) {
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
   const columns = [
+    // {
+    //   id: 1,
+    //   headerName: 'ORDERS',
+    //   field: 'orders',
+    //   flex: 1.5,
+    //   sortable: false,
+    //   minWidth: 240,
+    //   renderCell: ({ row }) => {
+    //     console.log('user?._id', row);
+
+    //     return (
+    //       <UserAvatar
+    //         imgAlt="user-image"
+    //         imgUrl={row?.user?.profile_photo}
+    //         imgFallbackCharacter={(row?.user?.name || 'USER')?.charAt(0)}
+    //         name={
+    //           <span>
+    //             {row?.user?.name || 'Sohidul Islam'}
+    //             {row?.chats?.length || row?.admin_chat_request?.length ? (
+    //               <>
+    //                 &nbsp;&nbsp;
+    //                 <MessageIcon color="#5BBD4E" />
+    //               </>
+    //             ) : null}
+    //             {row?.flag?.length ? (
+    //               <>
+    //                 &nbsp;&nbsp;
+    //                 <FlagIcon color="#DD5B63" />
+    //               </>
+    //             ) : null}
+    //           </span>
+    //         }
+    //         subTitle={row?.orderId || 'USD7987979797'}
+    //         subTitleProps={{
+    //           sx: { color: 'primary.main', cursor: 'pointer' },
+    //           // onClick: () => {
+    //           //   setCurrentOrder(row);
+    //           //   setDetailOpen(true);
+    //           // },
+    //         }}
+    //         titleProps={{
+    //           sx: { color: 'primary.main', cursor: 'pointer' },
+    //           onClick: () => {
+    //             history.push({
+    //               pathname: `/users/${row?.user?._id}`,
+    //               state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+    //             });
+    //           },
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       id: 1,
-      headerName: `ORDER ID`,
+      headerName: 'ORDER ID',
+      field: 'orders',
+      flex: 1.5,
       sortable: false,
-      field: 'orderId',
-      flex: 1,
-
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      minWidth: 240,
+      renderCell: ({ row }) => <Typography variant="body4">{row?.orderId}</Typography>,
     },
     {
       id: 2,
-      headerName: `DELIVERY PROFIT`,
+      headerName: `Total Order Amount`,
       sortable: false,
-      field: 'totalVat',
+      field: 'totalOrderAmount',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
-          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
-            <TableAccordion
-              titleComponent={
-                <SummaryItem
-                  title
-                  pb={0}
-                  currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
-                  showIfZero
-                />
-              }
-            >
-              <SummaryItem
-                currencyType={currencyType}
-                showIfZero
-                label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
-              />
-              <SummaryItem
-                label="Online"
-                currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              <SummaryItem
-                label="Rider Cut"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
-              />
-            </TableAccordion>
-          </Box>
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.totalOrderAmount}
+            valueSecondary={financialBreakdown?.totalOrderAmount}
+            showIfZero
+          />
+        );
+      },
+    },
+    {
+      id: 2,
+      headerName: `Rider Payout`,
+      sortable: false,
+      field: 'riderPayout',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.riderPayout}
+            valueSecondary={financialBreakdown?.riderPayout}
+            isNegative
+            showIfZero
+          />
         );
       },
     },
@@ -79,20 +128,23 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       flex: 1,
       align: 'right',
       headerAlign: 'right',
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
-          showIfZero
-        />
-      ),
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.adminButlerProfit}
+            valueSecondary={financialBreakdown?.adminButlerProfit}
+            showIfZero
+          />
+        );
+      },
     },
   ];
 
-  if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
+  if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text']} rows={5} />;
 
   return (
     <>

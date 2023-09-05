@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import SearchBar from '../../../components/Common/CommonSearchbar';
@@ -52,7 +53,7 @@ const getPageList = () => [
   },
   {
     label: 'Admin Log',
-    to: '/add-wallet/admin-log-history',
+    to: '/app-wallet/admin-log-history',
   },
   {
     label: 'Database Collection',
@@ -90,7 +91,7 @@ const filterPages = (searchKey, pages) => {
   return pages.filter((page) =>
     page?.label
       ?.toLowerCase()
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase()))
+      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
   );
 };
 

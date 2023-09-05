@@ -104,7 +104,7 @@ export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
     //     },
     //     {
     //       label: 'App Wallet',
-    //       to: `${prefix}/add-wallet/shop-transactions`,
+    //       to: `${prefix}/app-wallet/shop-transactions`,
     //     },
     //     {
     //       label: 'Credentials',

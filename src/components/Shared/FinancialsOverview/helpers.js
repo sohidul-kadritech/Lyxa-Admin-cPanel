@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
+import { Stack, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import moment from 'moment';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
 
@@ -18,6 +20,8 @@ export function calculateDateDifference(date1, date2, unit) {
   const momentDate1 = moment(date1);
   const momentDate2 = moment(date2);
   const difference = momentDate2.diff(momentDate1, unit);
+
+  if (isNaN(difference)) return 0;
   return difference;
 }
 
@@ -79,27 +83,31 @@ export function CommonOrderAmountTooltipText({ byAdmin, byShop, currency }) {
     </ul>
   );
 }
-export function CommonOrderMarketingCashbackTooltipText({ value = [] }) {
+export function CommonOrderMarketingCashbackTooltipText({ title, listSx, titleSx, value = [], containerSx, typoSx }) {
   return (
-    <div>
-      {/* <p
-        style={{
-          padding: '4px 16px',
-          marginBottom: '0',
-          minWidth: '180px',
-        }}
-      >
-        How many amount lyxa should gave back to the shop:
-      </p> */}
+    <div style={{ ...(containerSx || {}) }}>
+      {title && (
+        <p
+          style={{
+            padding: '4px 16px',
+            marginBottom: '0',
+            minWidth: '180px',
+            ...(titleSx || {}),
+          }}
+        >
+          {title}
+        </p>
+      )}
       <ul
         style={{
           padding: '4px 16px',
           marginBottom: '0',
           minWidth: '180px',
+          ...(listSx || {}),
         }}
       >
         {value.map((data, i) => (
-          <li key={i}>
+          <li key={i} style={{ ...(typoSx || {}) }}>
             {data.label} {data?.value}
           </li>
         ))}
@@ -107,3 +115,109 @@ export function CommonOrderMarketingCashbackTooltipText({ value = [] }) {
     </div>
   );
 }
+
+export const getTotalProfit = (currency, secondaryCurrency, paymentDetails, showObject = false) => {
+  const profitOutput = {};
+  const secondaryCurrencyPayout = paymentDetails?.secondaryCurrency_payout;
+  const baseCurrencyPayout = paymentDetails?.baseCurrency_payout;
+  const totalPayout = paymentDetails?.totalPayout;
+
+  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
+  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+
+  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+
+  profitOutput.onlyBaseCurrency = onlyBaseCurrency;
+  profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
+  profitOutput.onlyBaseCurrencyComponent = (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+
+  profitOutput.joinBaseAndSecondaryCurrencyComponent = (
+    <Typography variant="body3" fontSize="12px">
+      {joinBaseAndSecondaryCurrency}
+    </Typography>
+  );
+
+  profitOutput.print = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : onlyBaseCurrency;
+  profitOutput.printConditionally = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : '';
+
+  if (showObject) {
+    return profitOutput;
+  }
+
+  if (secondaryCurrencyPayout) {
+    return (
+      <Stack direction="row" gap={2} alignItems="center">
+        <Typography variant="body3" fontSize="12px">
+          {joinBaseAndSecondaryCurrency}
+        </Typography>
+        <Typography variant="body1" fontWeight={600}>
+          {onlyBaseCurrency}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+};
+
+export const getTotalProfitForLyxa = (currency, secondaryCurrency, paymentDetails = {}, showObject = false) => {
+  const profitOutput = {};
+  const secondaryCurrencyPayout = paymentDetails?.secondaryCurrency_adminProfit;
+  const baseCurrencyPayout = paymentDetails?.baseCurrency_adminProfit;
+  const totalPayout = paymentDetails?.totalAdminProfit;
+
+  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
+  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+
+  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+
+  profitOutput.onlyBaseCurrency = onlyBaseCurrency;
+  profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
+  profitOutput.onlyBaseCurrencyComponent = (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+
+  profitOutput.joinBaseAndSecondaryCurrencyComponent = (
+    <Typography variant="body3" fontSize="12px">
+      {joinBaseAndSecondaryCurrency}
+    </Typography>
+  );
+
+  profitOutput.print = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : onlyBaseCurrency;
+  profitOutput.printConditionally = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : '';
+
+  console.log('profitOutput', profitOutput);
+
+  if (showObject) {
+    return profitOutput;
+  }
+
+  if (secondaryCurrencyPayout) {
+    return (
+      <Stack direction="row" gap={2} alignItems="center">
+        <Typography variant="body3" fontSize="12px">
+          {joinBaseAndSecondaryCurrency}
+        </Typography>
+        <Typography variant="body1" fontWeight={600}>
+          {onlyBaseCurrency}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+};

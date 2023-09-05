@@ -1,5 +1,7 @@
 import { io } from 'socket.io-client';
 
+// const SOCKET_URL = 'https://efe3-103-86-201-146.ngrok-free.app/';
+// const SOCKET_URL = 'https://2d82-103-86-201-151.ngrok-free.app';
 const SOCKET_URL = 'http://request-dev.lyxa.delivery/';
 
 class WSService {

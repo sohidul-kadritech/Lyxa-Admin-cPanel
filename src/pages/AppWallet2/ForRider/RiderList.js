@@ -1,19 +1,19 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import jsPDF from 'jspdf';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
-import PayoutDetails from '../../../components/Shared/FinancialsOverview/PayoutDetails';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
-import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
+import RiderPayoutBreakDown from './RiderPayoutBreakDown';
 import RiderFinancialsTable from './Table';
 
 const queryParamsInit = {
@@ -30,7 +30,7 @@ export default function RiderList() {
   const query = useQuery([Api.DELIVERY_TRX, queryParams], () =>
     AXIOS.get(Api.DELIVERY_TRX, {
       params: queryParams,
-    })
+    }),
   );
 
   // GENERATE PDF
@@ -92,7 +92,9 @@ export default function RiderList() {
           <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
         </Stack>
       </Grid>
-      <InfoCard
+
+      <RiderPayoutBreakDown />
+      {/* <InfoCard
         title="Total Riders Profit"
         value={`${currency} ${(0).toFixed(2)}`}
         Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
@@ -116,7 +118,7 @@ export default function RiderList() {
         md={4}
         lg={4}
       />
-      <PayoutDetails paymentDetails={{}} />
+      <PayoutDetails paymentDetails={{}} /> */}
       <Grid sm={12}>
         <Box>
           <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
