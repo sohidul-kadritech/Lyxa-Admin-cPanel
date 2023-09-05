@@ -54,6 +54,7 @@ export const SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH = `${ADMIN_ENDPOINT}/dashboa
 export const SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/customers-sales`;
 export const SHOP_DASHBOARD_CUSTOMER_INFO = `${ADMIN_ENDPOINT}/dashboard/shop/customers`;
 export const SHOP_DASHBOARD_ITEM_RANKING = `${ADMIN_ENDPOINT}/dashboard/shop/item-ranking`;
+export const GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/order/shop-profit-breakdown`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;

@@ -34,7 +34,11 @@ function OrderFinancialsSummary() {
   const [currentInfoExpanded, setCurrentInfoExpanded] = useState(-1);
   return (
     <Box>
-      <PageTop backTo="/financials" backButtonLabel="Back to Lyxa Financials" breadcrumbItems={breadcrumbItems()} />
+      <PageTop
+        backTo="/financials/lyxa"
+        backButtonLabel="Back to Lyxa Financials"
+        breadcrumbItems={breadcrumbItems()}
+      />
 
       <Box>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4} mb={7.5}>

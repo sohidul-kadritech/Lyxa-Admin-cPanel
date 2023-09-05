@@ -6,7 +6,25 @@ const disabledSx = {
   opacity: '.6',
 };
 
-export default function StyledAccordion({ isOpen, onMouseLeave, onChange, children, disabled, Title, sx, ...props }) {
+const getExpandIcon = (hideExpandIcon, icon) => {
+  if (hideExpandIcon !== undefined) {
+    return !hideExpandIcon ? icon : null;
+  }
+
+  return icon;
+};
+
+export default function StyledAccordion({
+  isOpen,
+  hideIcon,
+  onMouseLeave,
+  onChange,
+  children,
+  disabled,
+  Title,
+  sx,
+  ...props
+}) {
   const theme = useTheme();
   return (
     <Accordion
@@ -31,7 +49,7 @@ export default function StyledAccordion({ isOpen, onMouseLeave, onChange, childr
       {...props}
     >
       <AccordionSummary
-        expandIcon={<ExpandMore />}
+        expandIcon={getExpandIcon(hideIcon, <ExpandMore />)}
         sx={{
           padding: '0',
 

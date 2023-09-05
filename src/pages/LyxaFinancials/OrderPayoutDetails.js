@@ -69,29 +69,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
                 seCurrentExpanedTab(closed ? 0 : -1);
               }}
             >
-              <PriceItem
-                title="Original Order Amount"
-                amount={cash?.originalOrderAmount_cash || 0}
-                tooltip={
-                  <CommonOrderMarketingCashbackTooltipText
-                    value={[
-                      {
-                        label: 'Discount',
-                        value: `${currency}${cash?.discount_cash}`,
-                      },
-                      {
-                        label: 'Buy 1 Get 1',
-                        value: `${currency}${cash?.buy1Get1_cash}`,
-                      },
-
-                      {
-                        label: 'Loyalyt Points',
-                        value: `${currency}${cash?.loyaltyPoints_cash}`,
-                      },
-                    ]}
-                  />
-                }
-              />
+              <PriceItem title="Original Order Amount" amount={cash?.originalOrderAmount_cash || 0} />
 
               <PriceItem
                 title="Discount"
