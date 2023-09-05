@@ -53,6 +53,8 @@ export default function DetailsAccordion({
   titleAmountStatus,
   tooltip,
   sx,
+  summarySx,
+  expandIconGap = 1,
   ...props
 }) {
   const [open, setOpen] = useState(false);
@@ -75,6 +77,8 @@ export default function DetailsAccordion({
       <StyledAccordionSummary
         sx={{
           cursor: children?.length ? undefined : 'initial !important',
+          gap: expandIconGap,
+          ...(summarySx || {}),
         }}
         expandIcon={
           <Icon
@@ -101,8 +105,10 @@ export default function DetailsAccordion({
             color={titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined}
           >
             {typeof titleAmount !== 'string' &&
+              typeof titleAmount !== 'object' &&
               `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
             {typeof titleAmount === 'string' && titleAmount}
+            {typeof titleAmount === 'object' && titleAmount}
           </Typography>
         </Stack>
       </StyledAccordionSummary>

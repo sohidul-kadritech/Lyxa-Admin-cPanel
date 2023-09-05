@@ -54,7 +54,7 @@ export default function ProductItem({
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // stock update
@@ -79,7 +79,7 @@ export default function ProductItem({
         console.log(data);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const handleFavouriteChange = (product) => {
@@ -253,7 +253,7 @@ export default function ProductItem({
             <StyledInput
               type="number"
               min={1}
-              value={exchangeCurrency?.price}
+              value={Math.round(exchangeCurrency?.price)}
               readOnly
               InputProps={{
                 startAdornment: <InputAdornment position="end">{exchangeCurrency?.currency?.code}</InputAdornment>,
@@ -261,8 +261,8 @@ export default function ProductItem({
               sx={{
                 '& .MuiInputBase-root': {
                   width: `${
-                    exchangeCurrency?.price?.toString().length > 0
-                      ? ((exchangeCurrency.price.toString().length || 1) + 7) * 10
+                    Math.round(exchangeCurrency?.price)?.toString().length > 0
+                      ? ((Math.round(exchangeCurrency?.price).toString().length || 1) + 7) * 10
                       : '100'
                   }px`,
                   padding: '9px 14px 9px 12px',
@@ -287,7 +287,7 @@ export default function ProductItem({
         <StyledInput
           type="number"
           min={1}
-          value={product?.price}
+          value={Number(product?.price).toFixed(2)}
           readOnly
           InputProps={{
             startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,

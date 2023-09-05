@@ -220,7 +220,7 @@ function DeliveryTransactions() {
                             history.push(`/riders/${item._id}?tabId=1`, {
                               rider: item,
                             })
-                          // history.push(`/add-wallet/single-delivery-transactions/${item._id}`)
+                          // history.push(`/app-wallet/single-delivery-transactions/${item._id}`)
                         }
                       >
                         <Th title="Click to see details">

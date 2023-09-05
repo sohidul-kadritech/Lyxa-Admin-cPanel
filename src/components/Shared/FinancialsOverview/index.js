@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
@@ -9,73 +10,101 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import DateRange from '../../StyledCharts/DateRange';
 
+import { convertDate } from '../../../pages/LyxaFinancials/OrderFinancials';
 import StyledTabs2 from '../../Styled/StyledTab2';
 import IncreaseDecreaseTag from '../../StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../StyledCharts/InfoCard';
 import PayoutDetails from './PayoutDetails';
 import PayoutDetailsTable from './PayoutDetailsTable';
 import PriceItem from './PriceItem';
-import { calculateDateDifference, dateRangeItit, getMarketingTypeValues, marketingSpentTypeOptions } from './helpers';
+import {
+  calculateDateDifference,
+  dateRangeItit,
+  getMarketingTypeValues,
+  getTotalProfit,
+  marketingSpentTypeOptions,
+} from './helpers';
 
-export default function Overview({ viewUserType }) {
+export default function Overview({ viewUserType, adminParams = {}, adminPaymentDetailsRange }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { currentUser, general } = useGlobalContext();
 
   const [marketingSpentType, setMarketingSpentType] = useState('all');
 
   const { shop, seller } = currentUser;
+
   const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.symbol;
+
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const viewUserTypeToApiMap = {
     shop: {
       api: Api.GET_SHOP_DASHBOARD_SUMMARY,
-      params: { shopId: shop?._id },
+      params: { id: shop?._id, type: 'shop' },
     },
     seller: {
-      api: Api.GET_SELLER_DASHBOARD_SUMMARY,
-      params: { sellerId: seller?._id },
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { id: seller?._id, type: 'seller' },
+    },
+    admin: {
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { ...adminParams },
+    },
+    adminShop: {
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { ...adminParams },
     },
   };
 
+  console.log('adminParams', adminParams);
   // summary
   const query = useQuery(
     [
       viewUserTypeToApiMap[viewUserType]?.api,
       {
-        startDate: paymentDetailsRange.start,
-        endDate: paymentDetailsRange.end,
+        startDate: viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange.start,
+        endDate: viewUserType === 'admin' ? adminPaymentDetailsRange?.end : paymentDetailsRange.end,
         ...viewUserTypeToApiMap[viewUserType]?.params,
       },
     ],
     () =>
       AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
         params: {
-          startDate: paymentDetailsRange.start,
-          endDate: paymentDetailsRange.end,
+          startDate: convertDate(
+            viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange?.start,
+          ),
+          endDate: convertDate(viewUserType === 'admin' ? adminPaymentDetailsRange?.end : paymentDetailsRange?.end),
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-      })
+      }),
   );
+
+  //
+  console.log('query', query?.data?.data);
+
+  // eslint-disable-next-line no-unused-vars
+  const summary = query?.data?.data;
+  const profitBreakdown = summary?.profitBreakdown;
+  const marketingSpent = summary?.marketingSpent;
 
   const marketingSpentValues = useMemo(
-    () => getMarketingTypeValues(marketingSpentType, query.data?.data?.summary),
-    [query?.data, marketingSpentType]
+    () => getMarketingTypeValues(marketingSpentType, marketingSpent),
+    [query?.data, marketingSpentType],
   );
-
-  const summary = query?.data?.data?.summary;
 
   return (
     <Grid container spacing={7.5} pb={7.5} pt={7.5}>
-      <Grid xs={12}>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-          <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
-        </Stack>
-      </Grid>
+      {viewUserType !== 'admin' && (
+        <Grid xs={12}>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+            <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
+          </Stack>
+        </Grid>
+      )}
       <InfoCard
-        title="Total Profit"
+        title="Total Payouts"
         valueComponent={
-          <Stack direction="row" alignItems="baseline" gap={2}>
+          <Stack direction="column" alignItems="baseline" gap={2}>
             <Typography
               variant="h2"
               sx={{
@@ -83,10 +112,10 @@ export default function Overview({ viewUserType }) {
                 fontSize: '40px',
               }}
             >
-              {currency} {(summary?.totalProfit || 0).toFixed(2)}
+              {currency} {(profitBreakdown?.totalPayout || 0).toFixed(2)}
             </Typography>
 
-            {summary?.secondaryCurrency_Profit ? (
+            {profitBreakdown?.secondaryCurrency_totalPayout ? (
               <Typography
                 variant="inherit"
                 sx={{
@@ -94,20 +123,17 @@ export default function Overview({ viewUserType }) {
                   fontWeight: '500',
                 }}
               >
-                ({currency} {(summary?.baseCurrency_Profit || 0).toFixed(2)} + {secondaryCurrency}
-                {Math.round(summary?.secondaryCurrency_Profit || 0)})
+                {getTotalProfit(currency, secondaryCurrency, profitBreakdown, true).printConditionally}
               </Typography>
             ) : null}
           </Stack>
         }
         Tag={
           <IncreaseDecreaseTag
-            status={`${
-              Math.round(query?.data?.data?.summary?.totalProfitAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }`}
+            status={`${Math.round(profitBreakdown?.totalPayout) >= 0 ? 'increase' : 'decrement'}`}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalProfitAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+              Math.round(Math.abs(profitBreakdown?.totalPayoutAvgInPercentage)) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}
@@ -116,15 +142,13 @@ export default function Overview({ viewUserType }) {
       />
       <InfoCard
         title="Orders"
-        value={`${query?.data?.data?.summary?.totalExpectedOrder || 0}`}
+        value={`${summary?.totalDeliveredOrder || 0}`}
         Tag={
           <IncreaseDecreaseTag
-            status={
-              Math.round(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }
+            status={Math.round(summary?.totalDeliveredOrderAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalExpectedOrderAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+              Math.round(Math.abs(summary?.totalDeliveredOrderAvgInPercentage)) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}
@@ -149,12 +173,10 @@ export default function Overview({ viewUserType }) {
         value={`${currency} ${(marketingSpentValues?.sum || 0).toFixed(2)}`}
         Tag={
           <IncreaseDecreaseTag
-            status={
-              Math.round(query?.data?.data?.summary?.totalMarketingSpentAvgInPercentage) >= 0 ? 'increase' : 'decrement'
-            }
+            status={Math.round(marketingSpent?.totalMarketingSpentAvgInPercentage) >= 0 ? 'increase' : 'decrement'}
             amount={`${
-              Math.round(Math.abs(query?.data?.data?.summary?.totalMarketingSpentAvgInPercentage)) || 0
-            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')}`}
+              Math.round(Math.abs(marketingSpent?.totalMarketingSpentAvgInPercentage)) || 0
+            }% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
           />
         }
         sm={6}
@@ -171,10 +193,12 @@ export default function Overview({ viewUserType }) {
           )}
         </Stack>
       </InfoCard>
-      <PayoutDetails paymentDetails={query?.data?.data?.summary} />
-      <Grid xs={12}>
-        <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
-      </Grid>
+      <PayoutDetails paymentDetails={profitBreakdown} />
+      {viewUserType !== 'admin' && (
+        <Grid xs={12}>
+          <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
+        </Grid>
+      )}
     </Grid>
   );
 }

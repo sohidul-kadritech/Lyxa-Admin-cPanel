@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -16,6 +17,7 @@ import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { calculateSecondaryCurrency } from '../../RiderProfile/Transactions/helpers';
 import {
   AttributesTitle,
   attributeOptions,
@@ -55,7 +57,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const { shop } = currentUser;
 
   const secondaryCurrency = general?.appSetting?.secondaryCurrency;
-  const exchangeRate = general?.appSetting?.exchangeRate;
+  const baseCurrency = general?.appSetting?.baseCurrency;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [render, setRender] = useState(false);
@@ -64,7 +66,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
 
   const [hasAttribute, setHasAttribute] = useState('no');
   const [product, setProduct] = useState(
-    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory)
+    editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
   );
 
   // addons
@@ -94,7 +96,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           shop: shop?._id,
           status: 'active',
         },
-      })
+      }),
   );
 
   console.log('products', productsQuery?.data?.data?.products);
@@ -102,9 +104,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const addons = useMemo(
     () =>
       productsQuery?.data?.data?.products?.filter(
-        (p) => !p?.attributes?.length && p?.marketing?.type !== 'double_menu'
+        (p) => !p?.attributes?.length && p?.marketing?.type !== 'double_menu',
       ),
-    [productsQuery?.data?.data?.products]
+    [productsQuery?.data?.data?.products],
   );
 
   // units
@@ -133,7 +135,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       onSuccess: (data) => {
         setConvertCategories(data);
       },
-    }
+    },
   );
 
   const isCategoryIsDisabled = useMemo(() => {
@@ -156,7 +158,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         params: {
           categoryId: product?.category,
         },
-      })
+      }),
   );
 
   const isSubCategoryIsDisabled = useMemo(() => {
@@ -197,7 +199,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       }),
     {
       enabled: Boolean(editProduct?._id),
-    }
+    },
   );
 
   // loading
@@ -220,7 +222,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+      }),
     );
 
     setProduct((prev) => ({
@@ -244,7 +246,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           onClose();
         }
       },
-    }
+    },
   );
 
   const uploadProduct = async () => {
@@ -441,9 +443,13 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           readOnly: productReadonly,
         }}
       />
-      {secondaryCurrency?.symbol && exchangeRate !== 1 && (
+      {calculateSecondaryCurrency(baseCurrency, secondaryCurrency, product?.price, shop?.shopExchangeRate).enabled && (
         <Typography pt={2} variant="body3" display="block">
-          Equivalent Price: {secondaryCurrency?.code} {Number(product.price) * Number(shop?.shopExchangeRate)}
+          Equivalent Price:
+          {
+            calculateSecondaryCurrency(baseCurrency, secondaryCurrency, product?.price, shop?.shopExchangeRate)
+              .withOutbaseCurrency
+          }
         </Typography>
       )}
       {/* attributes */}

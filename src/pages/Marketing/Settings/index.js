@@ -955,7 +955,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     });
                   }}
                 >
-                  Delete Promotion
+                  End Promotion
                 </Button>
               </Stack>
             )}
@@ -983,11 +983,11 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       });
                     }}
                   >
-                    Delete Promotion
+                    End Promotion
                   </Button>
                   {marketingType === 'featured' && (
                     <Typography variant="body3" sx={{ fontSize: 12 }}>
-                      *In case of delete promotion, the remaining amount is non refundable
+                      *In case of end promotion, the remaining amount is non refundable
                     </Typography>
                   )}
                 </Stack>
@@ -1018,7 +1018,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         onClick={() => {
                           setConfirmModal(true);
                           setConfirmAction({
-                            message: 'Are you sure?. Your campaign will be deactivaed.',
+                            message: (
+                              <Stack gap={2}>
+                                <Typography variant="h3">Are you sure?. Your campaign will be deactivaed.</Typography>
+                                <Typography variant="body3" sx={{ fontSize: '14px' }}>
+                                  (The promotion will be paused up to 24h.)
+                                </Typography>
+                              </Stack>
+                            ),
                             onCancel: () => setConfirmModal(false),
                             onConfirm: () => {
                               updateLoyaltySettings('inactive');

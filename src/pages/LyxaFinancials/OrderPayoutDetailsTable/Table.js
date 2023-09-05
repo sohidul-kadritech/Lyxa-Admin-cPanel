@@ -1,17 +1,28 @@
+/* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import SummaryItem from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/SummaryItem';
+import { getCurrencyValue } from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/Table';
 import TableAccordion from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/TableAccordion';
+import { CommonOrderMarketingCashbackTooltipText } from '../../../components/Shared/FinancialsOverview/helpers';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import StyledBox from '../../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../../context';
 
 export default function Table({ currencyType, loading, rows = [], page, setPage, totalPage, type = 'order' }) {
+  const { general } = useGlobalContext();
+  const appSetting = general?.appSetting;
+  const baseCurrency = appSetting?.baseCurrency;
+  const secondaryCurrency = appSetting?.secondaryCurrency;
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
   const columns = [
     {
       id: 1,
-      type: ['order'],
+      type: ['order', 'delivery'],
       headerName: `SHOP`,
       sortable: false,
       field: 'shopName',
@@ -19,50 +30,21 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
 
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="shop-image"
-          imgUrl="https://storage.googleapis.com/dropnode/download-lyxa-07062394509-72.png"
-          imgFallbackCharacter={value?.charAt(0)}
-          name={value}
-          subTitle="#5465465"
+          imgUrl={row?.shopLogo}
+          imgFallbackCharacter={row?.shopName?.charAt(0)}
+          name={row?.shopName}
+          subTitle={row?.autoGenId}
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
-            // onClick: () => {
-            //   history.push({
-            //     pathname: `/shop/profile/${row?.shop?._id}`,
-            //     state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
-            //   });
-            // },
-          }}
-        />
-      ),
-    },
-    {
-      id: 1,
-      type: ['delivery'],
-      headerName: `RIDERS`,
-      sortable: false,
-      field: 'shopName',
-      flex: 1,
-
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ value }) => (
-        <UserAvatar
-          imgAlt="shop-image"
-          imgUrl="https://storage.googleapis.com/dropnode/download-lyxa-07062394509-72.png"
-          imgFallbackCharacter={value?.charAt(0)}
-          name={value}
-          subTitle="#5465465"
-          titleProps={{
-            sx: { color: 'primary.main', cursor: 'pointer' },
-            // onClick: () => {
-            //   history.push({
-            //     pathname: `/shop/profile/${row?.shop?._id}`,
-            //     state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
-            //   });
-            // },
+            onClick: () => {
+              history.push({
+                pathname: `/shop/profile/${row?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+              });
+            },
           }}
         />
       ),
@@ -70,67 +52,48 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 2,
       type: ['delivery'],
-      headerName: `ORDER DELIVERY AMOUNT`,
+      headerName: `TOTAL DELIVERY FEE`,
       sortable: false,
       field: 'orderAmount',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={financialBreakdown?.totalDeliveryFee === 0}
               titleComponent={
                 <SummaryItem
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
+                  value={financialBreakdown?.totalDeliveryFee}
+                  valueSecondary={financialBreakdown?.totalDeliveryFee}
                   showIfZero
                 />
               }
             >
               <SummaryItem
                 currencyType={currencyType}
-                showIfZero
-                label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
+                label="Users"
+                valueSecondary={financialBreakdown?.users}
+                value={financialBreakdown?.users}
               />
               <SummaryItem
-                label="Online"
+                label="Free Delivery By shop"
                 currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              {/* <SummaryItem
-                label="Discount"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
+                valueSecondary={financialBreakdown?.freeDeliveryByShop}
+                value={financialBreakdown?.freeDeliveryByShop}
               />
               <SummaryItem
-                label="Buy 1 Get 1"
-                showIfZero
-                isNegative
+                label="Free Delivery By Lyxa"
                 currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
-                value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
+                valueSecondary={financialBreakdown?.freeDeliveryByAdmin}
+                value={financialBreakdown?.freeDeliveryByAdmin}
               />
-              <SummaryItem
-                label="Loyalty points"
-                isNegative
-                showIfZero
-                currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
-                value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
-              /> */}
             </TableAccordion>
           </Box>
         );
@@ -142,64 +105,168 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerName: `ORDER AMOUNT`,
       sortable: false,
       field: 'orderAmount',
-      flex: 1,
+      flex: 1.5,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={financialBreakdown?.orderAmount === 0}
               titleComponent={
                 <SummaryItem
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
+                  value={financialBreakdown?.orderAmount}
+                  valueSecondary={financialBreakdown?.orderAmount}
                   showIfZero
                 />
               }
             >
               <SummaryItem
                 currencyType={currencyType}
-                showIfZero
                 label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '180px', padding: '0px 10px', margin: '0px 0px' }}
+                    value={[
+                      {
+                        label: 'Original Order Amount',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.originalOrderAmount_cash)}`,
+                      },
+                      {
+                        label: 'Discount',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.discount_cash)}`,
+                      },
+
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.buy1Get1_cash)}`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.loyaltyPoints_cash)}`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.couponDiscount_cash)}`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.cash?.totalCash}
+                value={financialBreakdown?.cash?.totalCash}
               />
               <SummaryItem
+                currencyType={currencyType}
                 label="Online"
-                currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              {/* <SummaryItem
-                label="Discount"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '180px', padding: '0px 10px', margin: '0px 0px' }}
+                    value={[
+                      {
+                        label: 'Original Order Amount',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.originalOrderAmount_online)}`,
+                      },
+                      {
+                        label: 'Discount',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.discount_online)}`,
+                      },
+
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.buy1Get1_online)}`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.loyaltyPoints_online)}`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${
+                          financialBreakdown?.online?.couponDiscount_online
+                        }`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.online?.totalOnline}
+                value={financialBreakdown?.online?.totalOnline}
               />
               <SummaryItem
-                label="Buy 1 Get 1"
-                showIfZero
-                isNegative
                 currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
-                value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
+                label="Lyxa Marketing Cashback"
+                tooltipIconStyle={{ width: '14px', height: '14px', fontSize: '10px' }}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    title="Lyxa Marketing Cashback"
+                    titleSx={{ padding: '0px 10px', marginBottom: '0', minWidth: '100px' }}
+                    typoSx={{ fontSize: '10px' }}
+                    containerSx={{ minWidth: '150px', padding: '0px 10px', margin: '0px 0px' }}
+                    // listSx={{ listStyle: 'none' }}
+                    value={[
+                      {
+                        label: 'Discount',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.AdminMarketingCashback?.discount_amc)}`,
+                      },
+
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.AdminMarketingCashback?.buy1Get1_amc)}`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(
+                          currencyType,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                        )}`,
+                      },
+                      {
+                        label: 'Coupons',
+                        value: `${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(
+                          currencyType,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                        )}`,
+                      },
+                    ]}
+                  />
+                }
+                valueSecondary={financialBreakdown?.AdminMarketingCashback?.adminMarketingCashback}
+                value={financialBreakdown?.AdminMarketingCashback?.adminMarketingCashback}
               />
-              <SummaryItem
-                label="Loyalty points"
-                isNegative
-                showIfZero
-                currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
-                value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
-              /> */}
             </TableAccordion>
           </Box>
         );
@@ -208,29 +275,32 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 3,
       type: ['order'],
-      headerName: `SHOP CUT`,
+      headerName: `PAYOUTS`,
       sortable: false,
-      field: 'shopCut',
+      field: 'totalPayouts',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
-          valueSecondary={Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
-          isNegative
-          showIfZero
-        />
-      ),
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={Math.abs(financialBreakdown?.payout?.totalPayout)}
+            valueSecondary={Math.abs(financialBreakdown?.payout?.totalPayout)}
+            isNegative={financialBreakdown?.payout?.totalPayout > 0}
+            showIfZero
+          />
+        );
+      },
     },
     {
       id: 3,
       type: ['delivery'],
-      headerName: `RIDERS PAYOUTS`,
+      headerName: `RIDERS CUTS`,
       sortable: false,
       field: 'shopCut',
       flex: 1,
@@ -242,65 +312,12 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
-          valueSecondary={Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
+          value={Math.abs(row?.profitBreakdown?.riderPayout)}
+          valueSecondary={Math.abs(row?.profitBreakdown?.riderPayout)}
           isNegative
           showIfZero
         />
       ),
-    },
-    {
-      id: 4,
-      type: ['order'],
-      headerName: `DELIVERY PROFIT`,
-      sortable: false,
-      field: 'totalVat',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
-
-        return (
-          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
-            <TableAccordion
-              titleComponent={
-                <SummaryItem
-                  title
-                  pb={0}
-                  currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
-                  showIfZero
-                />
-              }
-            >
-              <SummaryItem
-                currencyType={currencyType}
-                showIfZero
-                label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
-              />
-              <SummaryItem
-                label="Online"
-                currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              <SummaryItem
-                label="Rider Cut"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
-              />
-            </TableAccordion>
-          </Box>
-        );
-      },
     },
     {
       id: 5,
@@ -316,8 +333,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
+          value={row?.profitBreakdown?.featuredAmont}
+          valueSecondary={row?.profitBreakdown?.featuredAmont}
           showIfZero
         />
       ),
@@ -328,22 +345,23 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerName: `OTHER PAYMENTS`,
       sortable: false,
       field: 'otherPayments',
-      flex: 1,
+      flex: 1.3,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const otherPayments = row?.profitBreakdown?.otherPayments;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={otherPayments?.totalOtherPayments === 0}
               titleComponent={
                 <SummaryItem
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_otherPayments}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments}
+                  value={otherPayments?.totalOtherPayments}
+                  valueSecondary={otherPayments?.totalOtherPayments}
                   isNegative
                   showIfZero
                 />
@@ -351,89 +369,27 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             >
               <SummaryItem
                 currencyType={currencyType}
-                label="Refund"
-                value={financialBreakdown?.baseCurrency_otherPayments_freeDelivery}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_freeDelivery}
+                label="Lyxa Marketing cashback"
+                value={otherPayments?.adminMarketingCashback}
+                valueSecondary={otherPayments?.adminMarketingCashback}
                 isNegative
-                showIfZero
               />
 
               <SummaryItem
-                label="Refused Order"
+                label="Customer refund"
                 currencyType={currencyType}
                 isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
+                value={otherPayments?.customerRefund}
+                valueSecondary={otherPayments?.customerRefund}
               />
 
               <SummaryItem
-                label="Free Delivery"
+                label="Free delivery by shop (Lyxa riders)"
                 currencyType={currencyType}
                 isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
+                value={otherPayments?.freeDeliveryByShop}
+                valueSecondary={otherPayments?.freeDeliveryByShop}
               />
-
-              <SummaryItem
-                label="Discount by lyxa"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-              <SummaryItem
-                label="Buy 1 Get 1 by lyxa"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-              <SummaryItem
-                label="Points Paid to the Shop"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-              <SummaryItem
-                label="Replacement Orders by Lyxa"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-              <SummaryItem
-                label="Error Order by Lyxa (Endure Loss)"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-
-              <SummaryItem
-                label="Coupons"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              />
-
-              {/* <SummaryItem
-                label="Shop Add/Remove Credit"
-                currencyType={currencyType}
-                isNegative
-                value={financialBreakdown?.baseCurrency_otherPayments_refundAmount}
-                valueSecondary={financialBreakdown?.secondaryCurrency_otherPayments_refundAmount}
-                showIfZero
-              /> */}
             </TableAccordion>
           </Box>
         );
@@ -446,15 +402,15 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       sortable: false,
       field: 'totalProfit',
       flex: 1,
-      align: 'left',
-      headerAlign: 'left',
+      align: 'right',
+      headerAlign: 'right',
       renderCell: ({ row }) => (
         <SummaryItem
           title
           pb={0}
           currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
+          value={row?.profitBreakdown?.totalAdminProfit}
+          valueSecondary={row?.profitBreakdown?.totalAdminProfit}
           showIfZero
         />
       ),
@@ -462,9 +418,9 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 8,
       type: ['delivery'],
-      headerName: `TOTAL LYXA DELIVERY PROFIT`,
+      headerName: `FREE DELIVERY BY LYXA`,
       sortable: false,
-      field: 'totalProfit',
+      field: 'freeDeliveryByLyxa',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
@@ -473,24 +429,46 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
+          value={row?.profitBreakdown?.freeDeliveryByAdmin}
+          valueSecondary={row?.profitBreakdown?.freeDeliveryByAdmin}
+          isNegative
+          showIfZero
+        />
+      ),
+    },
+    {
+      id: 8,
+      type: ['delivery'],
+      headerName: `LYXA DELIVERY PROFIT`,
+      sortable: false,
+      field: 'totalProfit',
+      flex: 1,
+      align: 'right',
+      headerAlign: 'right',
+      renderCell: ({ row }) => (
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.profitBreakdown?.adminDeliveryProfit}
+          valueSecondary={row?.profitBreakdown?.adminDeliveryProfit}
           showIfZero
         />
       ),
     },
   ];
 
-  if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
+  if (loading) return <TableSkeleton columns={['avatar', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
 
   return (
-    <>
+    <Box sx={{ marginBottom: '60px' }}>
       <StyledBox
         padding
         sx={{
           marginTop: '20px',
           paddingTop: '3px',
           paddingBottom: '10px',
+
           overflow: 'visible',
           scrollbarWidth: 'thin',
           scrollbarHeight: 'thin',
@@ -536,6 +514,6 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         </Box>
       </StyledBox>
       <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
-    </>
+    </Box>
   );
 }

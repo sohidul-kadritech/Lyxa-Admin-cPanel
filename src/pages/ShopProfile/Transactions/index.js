@@ -1,13 +1,14 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
+import { Box, Modal, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
-import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import Overview from '../../../components/Shared/FinancialsOverview';
+import PayoutDetailsTable from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -39,9 +40,12 @@ export default function ShopTransactions({ shop }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [makePayment, setMakePayment] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState(0);
 
   const { general } = useGlobalContext();
   const storeAppSettings = general?.appSetting;
+  const currency = storeAppSettings?.baseCurrency?.symbol;
+  console.log('storeAppSettings', storeAppSettings);
   const queryClient = useQueryClient();
 
   const query = useQuery([Api.SHOP_TRX, queryParams], () => AXIOS.post(Api.SHOP_TRX, queryParams), {
@@ -84,11 +88,18 @@ export default function ShopTransactions({ shop }) {
           setModalOpen(true);
         }}
       />
-      <Grid container spacing={5} pt={7.5} pb={7.5}>
-        <InfoCard title="Lyxa Profit" value={(lyxaProfit || 0)?.toFixed(2)} sm={6} md={4} lg={3} valueSx={amountSx} />
+      {/* <Grid container spacing={5} pt={7.5} pb={7.5}>
+        <InfoCard
+          title="Lyxa Profit"
+          value={`${currency}${(lyxaProfit || 0)?.toFixed(2)}`}
+          sm={6}
+          md={4}
+          lg={3}
+          valueSx={amountSx}
+        />
         <InfoCard
           title="Shop Profit"
-          value={(summary?.toalShopProfile || 0)?.toFixed(2)}
+          value={`${currency}${(summary?.toalShopProfile || 0)?.toFixed(2)}`}
           sm={6}
           md={4}
           lg={3}
@@ -112,21 +123,51 @@ export default function ShopTransactions({ shop }) {
         <InfoCard title="Orders No" value={summary?.totalExpectedOrder || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
         <InfoCard
           title="Order Amount"
-          value={(totalOrderAmount || 0).toFixed(2)}
+          value={`${currency}${(totalOrderAmount || 0).toFixed(2)}`}
           sm={6}
           md={4}
           lg={3}
           valueSx={amountSx}
         />
-      </Grid>
-      <TransactionsTable rows={query?.data?.data?.transections} type="transactions" loading={query?.isLoading} />
-      <TablePagination
-        currentPage={queryParams?.page}
-        lisener={(page) => {
-          setQueryParams((prev) => ({ ...prev, page }));
-        }}
-        totalPage={totalPage}
+      </Grid> */}
+
+      <Overview
+        viewUserType="admin"
+        adminPaymentDetailsRange={{ start: queryParams?.tnxFilter?.startDate, end: queryParams?.tnxFilter?.endDate }}
+        adminParams={{ id: shop?._id, type: 'shop' }}
       />
+
+      <Box mb={7.5}>
+        <Tabs value={currentTab}>
+          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
+          <Tab onClick={() => setCurrentTab(1)} label="Order" />
+        </Tabs>
+      </Box>
+
+      <Box mb={8}>
+        {currentTab === 0 && (
+          <Box>
+            <TransactionsTable rows={query?.data?.data?.transections} type="transactions" loading={query?.isLoading} />
+            <TablePagination
+              currentPage={queryParams?.page}
+              lisener={(page) => {
+                setQueryParams((prev) => ({ ...prev, page }));
+              }}
+              totalPage={totalPage}
+            />
+          </Box>
+        )}
+
+        {currentTab === 1 && (
+          <Box>
+            <PayoutDetailsTable
+              startDate={queryParams?.tnxFilter?.startDate}
+              endDate={queryParams?.tnxFilter?.endDate}
+              shopParams={{ id: shop?._id, type: 'shop' }}
+            />
+          </Box>
+        )}
+      </Box>
       {/* add/remove credit */}
       <Modal
         open={modalOpen}

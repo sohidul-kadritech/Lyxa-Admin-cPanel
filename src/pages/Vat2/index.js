@@ -19,6 +19,11 @@ import VatSummerySkeleton from './VatSummerySkeleton';
 import { calculatePaidVat, getAllAdminOptions, vatTrxsAmountFilterOptions } from './helpers';
 import VatList from './vatList';
 
+const getTowdecimalValue = (value) => {
+  const number = Number(value);
+
+  return number;
+};
 const breadcrumbItems = [
   {
     label: 'Financials',
@@ -69,7 +74,7 @@ function Vat2() {
         endDate: moment(queryParams?.endDate).format('YYYY-MM-DD'),
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   // pay vat
@@ -255,7 +260,7 @@ function Vat2() {
               <Typography variant="h2">
                 {`${getCurrentCurrency?.symbol} ${calculatePaidVat(
                   getAllTransaction?.data?.data?.summary?.totalVat,
-                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat
+                  getAllTransaction?.data?.data?.summary?.totalUnsettleVat,
                 )}`}
               </Typography>
             </Box>
@@ -301,14 +306,14 @@ function Vat2() {
             borderRadius: '10px',
           }}
         >
-          <Box marginTop="30px">
+          {/* <Box marginTop="30px">
             <Stack gap="10px">
               <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px' }} variant="h4">
                 Date
               </Typography>
-              {/* <DateRange size="md" range={range2} setRange={setRange2} /> */}
+              <DateRang size="md" />
             </Stack>
-          </Box>
+          </Box> */}
           <Box marginTop="10px">
             <Stack gap="10px">
               <StyledFormField
@@ -328,7 +333,11 @@ function Vat2() {
                   defaultValue: settleAmount,
                   type: 'number',
                   name: 'zoneName',
-                  onChange: (e) => setSettleAmount(e.target.value),
+                  onChange: (e) =>
+                    setSettleAmount(() => {
+                      const number = Number(e.target.value);
+                      return number.toFixed(2);
+                    }),
                 }}
               />
             </Stack>
@@ -340,13 +349,15 @@ function Vat2() {
             <Stack gap="10px" flexDirection="row" justifyContent="space-between">
               <Typography>Unpaid VAT</Typography>{' '}
               <Typography>
-                {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2)} {getCurrentCurrency?.symbol}
+                {getCurrentCurrency?.symbol}
+                {getAllTransaction?.data?.data?.summary?.totalUnsettleVat.toFixed(2)}
               </Typography>
             </Stack>
             <Stack gap="10px" flexDirection="row" justifyContent="space-between">
-              <Typography>Amount to pay</Typography>{' '}
+              <Typography>Amount to pay</Typography>
               <Typography>
-                {-settleAmount} {getCurrentCurrency?.symbol}
+                -{getCurrentCurrency?.symbol}
+                {getTowdecimalValue(settleAmount).toFixed(2)}
               </Typography>
             </Stack>
           </Box>
@@ -354,8 +365,8 @@ function Vat2() {
             <Stack gap="10px" flexDirection="row" justifyContent="space-between">
               <Typography>Unpaid VAT</Typography>{' '}
               <Typography>
-                {calculatePaidVat(getAllTransaction?.data?.data?.summary?.totalUnsettleVat, settleAmount)}
                 {getCurrentCurrency?.symbol}
+                {calculatePaidVat(getAllTransaction?.data?.data?.summary?.totalUnsettleVat, settleAmount)}
               </Typography>
             </Stack>
           </Box>

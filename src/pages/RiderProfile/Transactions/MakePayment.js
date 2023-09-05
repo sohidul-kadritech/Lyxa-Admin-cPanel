@@ -3,11 +3,14 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { currencyOptions } from '../../ShopProfile/Transactions/AddRemoveCredit';
+import { calculateSecondaryCurrency } from './helpers';
 
 const getMakePaymentInit = (type, id, amount) => ({
   shopId: type === 'shop' ? id : undefined,
@@ -22,7 +25,10 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
   const { general } = useGlobalContext();
   const appSetting = general?.appSetting;
 
-  // const secondaryCurrency = appSetting?.secondaryCurrency;
+  const [selectedCurrency, setSelectedCurrency] = useState('baseCurrency');
+
+  const secondaryCurrency = appSetting?.secondaryCurrency;
+  const baseCurrency = appSetting?.baseCurrency;
   const adminExchangeRate = appSetting?.adminExchangeRate;
   const secondaryEnabled = adminExchangeRate > 0;
 
@@ -72,18 +78,30 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
           <CloseButton onClick={onClose} size="sm" />
         </Stack>
         <Box>
-          <StyledFormField
-            label="Settle Amount *"
-            intputType="text"
-            inputProps={{
-              type: 'number',
-              name: 'name',
-              value: payment.amount,
-              onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
-            }}
-          />
+          <Box py={3}>
+            <OptionsSelect
+              value={selectedCurrency}
+              gapSx={3}
+              sx={{ padding: '8px 10px' }}
+              items={currencyOptions(baseCurrency, secondaryCurrency, secondaryEnabled)}
+              onChange={(value) => setSelectedCurrency(value)}
+            />
+          </Box>
 
-          {secondaryEnabled && (
+          {selectedCurrency === 'baseCurrency' && (
+            <StyledFormField
+              label="Settle Amount *"
+              intputType="text"
+              inputProps={{
+                type: 'number',
+                name: 'name',
+                value: payment.amount,
+                onChange: (e) => setPayment({ ...payment, amount: e.target.value }),
+              }}
+            />
+          )}
+
+          {selectedCurrency === 'secondaryCurrency' && (
             <StyledFormField
               label="Secondary Amount *"
               intputType="text"
@@ -97,11 +115,7 @@ export default function MakePayment({ onClose, type, id, amount = 0 }) {
               }}
             />
           )}
-          {/* {isSecondaryCurrencyEnabled && (
-            <Typography mt="-8px" variant="body3" display="block">
-              Equivalent Price: {secondaryCurrency?.code} {payment.amount * parseInt(adminExchangeRate, 10)}
-            </Typography>
-          )} */}
+
           <Stack pt={5}>
             <ListItem label="Total Unsettled Amount" value={amount} />
             <ListItem label="Settle Amount" value={payment.amount} />
@@ -128,7 +142,6 @@ function ListItem({ label, value, isTotal }) {
   const { general } = useGlobalContext();
   const { appSetting } = general;
   const { baseCurrency, secondaryCurrency, adminExchangeRate } = appSetting;
-  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
 
   return (
     <Stack
@@ -145,13 +158,7 @@ function ListItem({ label, value, isTotal }) {
         {label}
       </Typography>
       <Typography variant="body4" color="initial">
-        {isSecondaryCurrencyEnabled
-          ? // with secondary currency
-            `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
-              value * adminExchangeRate
-            )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
-          : // without secondary currency
-            `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}
+        {calculateSecondaryCurrency(baseCurrency, secondaryCurrency, value, adminExchangeRate).print}
       </Typography>
     </Stack>
   );

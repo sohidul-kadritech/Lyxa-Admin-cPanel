@@ -29,14 +29,16 @@ function FinancialsForSeller() {
             setCurrentTab(newValue);
           }}
         >
-          <Tab label="Seller LIst"></Tab>
+          <Tab label="Seller List"></Tab>
           <Tab label="Invoices"></Tab>
         </Tabs>
       </Box>
       <Box sx={{ marginBottom: '35px' }}>
+        {/* seller list */}
         <TabPanel index={0} value={currentTab} noPadding>
           <SellerFinancialList />
         </TabPanel>
+        {/* Seller invocie */}
         <TabPanel index={1} value={currentTab} noPadding>
           <SellerInvoice />
         </TabPanel>

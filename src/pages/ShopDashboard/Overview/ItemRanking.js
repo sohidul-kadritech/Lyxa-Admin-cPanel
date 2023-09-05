@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -26,7 +27,7 @@ export default function ItemRanking({ ...props }) {
   const query = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
     AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING, {
       params: queryParams,
-    })
+    }),
   );
 
   const column = [
@@ -84,7 +85,11 @@ export default function ItemRanking({ ...props }) {
       align: 'right',
       headerAlign: 'right',
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{value || 'none'}</Typography>,
+      renderCell: ({ value }) => (
+        <Typography variant="body4">
+          {currency} {value || 0}
+        </Typography>
+      ),
     },
   ];
 

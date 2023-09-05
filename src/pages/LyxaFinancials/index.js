@@ -4,8 +4,8 @@ import PageTop from '../../components/Common/PageTop';
 
 const pagesList = [
   {
-    label: 'Summery',
-    to: '/financials/lyxa/food',
+    label: 'Summary',
+    to: '/financials/lyxa/summary',
   },
   {
     label: 'Resturant',
@@ -28,7 +28,7 @@ const pagesList = [
 export default function LyxaFinancials() {
   return (
     <Box pb={10}>
-      <PageTop title="Lyxa Financials" />
+      <PageTop title="Lyxa Financials" backButtonLabel="Back to Financials" backTo="/financials" />
       <PageList items={pagesList} />
     </Box>
   );

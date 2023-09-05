@@ -17,7 +17,7 @@ import Users from '../pages/Users2';
 export const shop_routes = (prefix = '', shopDeliveryType) => {
   const routes = [
     { path: `${prefix}/`, component: ShopDashboard },
-    { path: `${prefix}/add-wallet/shop-transactions`, component: SingleShopTransactions },
+    { path: `${prefix}/app-wallet/shop-transactions`, component: SingleShopTransactions },
     { path: `${prefix}/users`, component: Users, componentProps: { userType: 'shop' } },
     { path: `${prefix}/hours`, component: ShopHourSettings },
     { path: `${prefix}/profile`, component: ShopProfile },

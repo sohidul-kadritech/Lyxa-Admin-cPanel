@@ -19,7 +19,7 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
-      pathname: `/add-wallet/shop-transactions`,
+      pathname: `/app-wallet/shop-transactions`,
       search: `?shopId=${shopId}&shopName=${shopName}&sellerId=${searchParams.get(
         // eslint-disable-next-line prettier/prettier
         'sellerId',
@@ -184,8 +184,9 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
     <Box
       sx={{
         padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
+        // maxHeight: '480px',
+        // overflow: 'auto',
+        marginBottom: '40px',
         border: `1px solid ${theme.palette.custom.border}`,
         borderRadius: '7px',
       }}

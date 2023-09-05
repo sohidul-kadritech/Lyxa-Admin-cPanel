@@ -63,19 +63,8 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
         sxContainer={{ flex: 2 }}
         isRenderedChild
       >
-        {/* <IncrementDecrementButton
-          isChangeOthers
-          changeOthers={() => {
-            setHasChanged(true);
-          }}
-          isValidateType={false}
-          incrementHandler={incrementHandler}
-          decrementHandler={decrementHandler}
-          objectKey="shopExchangeRate"
-          setValue={setShopSettings}
-          currentValue={shopSettings?.shopExchangeRate}
-        /> */}
         <IncrementDecrementInput
+          allowDecimal={false}
           value={shopSettings?.shopExchangeRate}
           min={Number(appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10)}
           max={Number(appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10)}
