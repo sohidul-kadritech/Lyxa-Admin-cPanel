@@ -39,7 +39,7 @@ export default function PayoutDetails({ paymentDetails }) {
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Profit Breakdown
+          Payout Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
           Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business
@@ -400,7 +400,7 @@ export default function PayoutDetails({ paymentDetails }) {
 
           {/* total payout */}
           <DetailsAccordion
-            title="Total Profit"
+            title="Total Payouts"
             titleAmount={totalProfit}
             tooltip="Fee for Lyxa-powered deliveries: 20%
             Shop-powered deliveries: 10%.

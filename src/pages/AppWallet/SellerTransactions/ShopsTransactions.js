@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { jsPDF } from 'jspdf';
@@ -119,7 +120,7 @@ function ShopsTransactions() {
 
   const gotToShopTrxs = (shopId, shopName) => {
     history.push({
-      pathname: `/add-wallet/shop-transactions`,
+      pathname: `/app-wallet/shop-transactions`,
       search: `?shopId=${shopId}&shopName=${shopName}`,
     });
   };
@@ -175,7 +176,7 @@ function ShopsTransactions() {
           : item.summary[value] >= fromNum) &&
         (value === 'productAmount' || value === 'deliveryFee'
           ? item.summary.orderValue[value] <= toNum
-          : item.summary[value] <= toNum)
+          : item.summary[value] <= toNum),
     );
 
     setFilteredTrxs(newList);

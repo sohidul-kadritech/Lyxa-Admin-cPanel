@@ -112,9 +112,9 @@ export const admin_routes = [
   { path: '/lyxa-pay', component: AccountFinancials },
 
   // app wallet
-  { path: '/add-wallet/admin-log-history', component: AdminLogs },
+  { path: '/app-wallet/admin-log-history', component: AdminLogs },
 
-  { path: '/add-wallet/seller-transactions', component: FinancialsForSeller },
+  { path: '/app-wallet/seller-transactions', component: FinancialsForSeller },
 
   {
     path: '/app-wallet/seller/shops-transactions',
@@ -122,23 +122,23 @@ export const admin_routes = [
   },
 
   {
-    path: '/add-wallet/shop-transactions',
+    path: '/app-wallet/shop-transactions',
     component: ShopFinancialsTransaction,
   },
 
   // for rider
   {
-    path: '/add-wallet/delivery-transactions',
+    path: '/app-wallet/delivery-transactions',
     component: RidersTransactions,
   },
   {
-    path: '/add-wallet/single-delivery-transactions/:id',
+    path: '/app-wallet/single-delivery-transactions/:id',
     component: SingleDeliveryTransactions,
   },
-  { path: '/add-wallet/payments-history', component: PaymentHistory },
-  { path: '/add-wallet/drop-transactions', component: DropTransactions },
+  { path: '/app-wallet/payments-history', component: PaymentHistory },
+  { path: '/app-wallet/drop-transactions', component: DropTransactions },
   {
-    path: '/add-wallet/drop-transactions/details/:id',
+    path: '/app-wallet/drop-transactions/details/:id',
     component: DropTransactionsDetails,
   },
 

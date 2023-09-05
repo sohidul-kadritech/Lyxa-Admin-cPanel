@@ -25,42 +25,55 @@ import {
   marketingSpentTypeOptions,
 } from './helpers';
 
-export default function Overview({ viewUserType }) {
+export default function Overview({ viewUserType, adminParams = {}, adminPaymentDetailsRange }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { currentUser, general } = useGlobalContext();
 
   const [marketingSpentType, setMarketingSpentType] = useState('all');
 
   const { shop, seller } = currentUser;
+
   const currency = general?.currency?.symbol;
+
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const viewUserTypeToApiMap = {
     shop: {
       api: Api.GET_SHOP_DASHBOARD_SUMMARY,
-      params: { shopId: shop?._id },
+      params: { id: shop?._id, type: 'shop' },
     },
     seller: {
-      api: Api.GET_SELLER_DASHBOARD_SUMMARY,
-      params: { sellerId: seller?._id },
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { id: seller?._id, type: 'seller' },
+    },
+    admin: {
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { ...adminParams },
+    },
+    adminShop: {
+      api: Api.GET_SHOP_DASHBOARD_SUMMARY,
+      params: { ...adminParams },
     },
   };
 
+  console.log('adminParams', adminParams);
   // summary
   const query = useQuery(
     [
       viewUserTypeToApiMap[viewUserType]?.api,
       {
-        startDate: paymentDetailsRange.start,
-        endDate: paymentDetailsRange.end,
+        startDate: viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange.start,
+        endDate: viewUserType === 'admin' ? adminPaymentDetailsRange?.end : paymentDetailsRange.end,
         ...viewUserTypeToApiMap[viewUserType]?.params,
       },
     ],
     () =>
       AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
         params: {
-          startDate: convertDate(paymentDetailsRange?.start),
-          endDate: convertDate(paymentDetailsRange?.end),
+          startDate: convertDate(
+            viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange?.start,
+          ),
+          endDate: convertDate(viewUserType === 'admin' ? adminPaymentDetailsRange?.end : paymentDetailsRange?.end),
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
       }),
@@ -74,9 +87,6 @@ export default function Overview({ viewUserType }) {
   const profitBreakdown = summary?.profitBreakdown;
   const marketingSpent = summary?.marketingSpent;
 
-  console.log('profitBreakdown', profitBreakdown);
-  console.log('marketingSpent', marketingSpent);
-
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, marketingSpent),
     [query?.data, marketingSpentType],
@@ -84,13 +94,15 @@ export default function Overview({ viewUserType }) {
 
   return (
     <Grid container spacing={7.5} pb={7.5} pt={7.5}>
-      <Grid xs={12}>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
-          <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
-        </Stack>
-      </Grid>
+      {viewUserType !== 'admin' && (
+        <Grid xs={12}>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4}>
+            <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
+          </Stack>
+        </Grid>
+      )}
       <InfoCard
-        title="Total Profit"
+        title="Total Payouts"
         valueComponent={
           <Stack direction="column" alignItems="baseline" gap={2}>
             <Typography
@@ -182,9 +194,11 @@ export default function Overview({ viewUserType }) {
         </Stack>
       </InfoCard>
       <PayoutDetails paymentDetails={profitBreakdown} />
-      <Grid xs={12}>
-        <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
-      </Grid>
+      {viewUserType !== 'admin' && (
+        <Grid xs={12}>
+          <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
+        </Grid>
+      )}
     </Grid>
   );
 }

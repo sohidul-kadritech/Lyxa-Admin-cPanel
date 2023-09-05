@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 // third party
-import { Box, Unstable_Grid2 as Grid, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 
 // local
@@ -11,7 +11,7 @@ import { useGlobalContext } from '../../context';
 
 import PageTop from '../../components/Common/PageTop';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
-import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
+import { dateRangeItit, getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import IncreaseDecreaseTag from '../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../components/StyledCharts/InfoCard';
 import OrderPayoutDetails from './OrderPayoutDetails';
@@ -41,10 +41,10 @@ export default function LyxaOrderFinancials({ shopType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const [currentTab, setCurrentTab] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
   const getFinancialsDashBoard = useQuery(
     [
       API_URL.GET_ADMIN_ORDER_FINANCIALS_DASHBOARD,
@@ -61,8 +61,8 @@ export default function LyxaOrderFinancials({ shopType }) {
   );
 
   const summary = getFinancialsDashBoard?.data?.data;
+
   const profitBreakdown = summary?.profitBreakdown;
-  console.log('getFinancialsDashBoard', summary);
 
   return (
     <Box>
@@ -87,7 +87,32 @@ export default function LyxaOrderFinancials({ shopType }) {
             </Grid>
             <InfoCard
               title="Total Lyxa Profit"
-              value={profitBreakdown?.totalAdminProfit || 0}
+              // value={`${currency} ${(profitBreakdown?.totalAdminProfit || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(profitBreakdown?.totalAdminProfit || 0).toFixed(2)}
+                  </Typography>
+
+                  {profitBreakdown?.secondaryCurrency_totalAdminProfit ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {getTotalProfitForLyxa(currency, secondaryCurrency, profitBreakdown, true).printConditionally}
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               Tag={
                 <IncreaseDecreaseTag
                   status={summary?.totalAdminProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}

@@ -24,7 +24,7 @@ function DropTransactionsDetails() {
         console.log('call api-------');
       }
     } else {
-      history.push('/add-wallet/drop-transactions', { replace: true });
+      history.push('/app-wallet/drop-transactions', { replace: true });
     }
   }, [id]);
 

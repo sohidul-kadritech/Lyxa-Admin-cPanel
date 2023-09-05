@@ -6,12 +6,26 @@ import moment from 'moment';
 import { useState } from 'react';
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 // import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
+import { getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
+import { useGlobalContext } from '../../context';
+import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
 
 export default function ButlerOrderPayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
 
+  const { general } = useGlobalContext();
+  const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+
   console.log('paymentDetails', paymentDetails);
+
+  const totalProfit = getTotalProfitForLyxa(
+    currency,
+    secondaryCurrency,
+    modifiedProfitBreakDownDataForSecondaryCurrency(paymentDetails, 'butler'),
+    false,
+  );
 
   return (
     <Grid xs={12}>
@@ -22,7 +36,7 @@ export default function ButlerOrderPayoutDetails({ paymentDetails }) {
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Profit Breakdown
+          Payout Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
           Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business
@@ -60,7 +74,7 @@ export default function ButlerOrderPayoutDetails({ paymentDetails }) {
           {/* profit */}
           <DetailsAccordion
             title="Total Profit"
-            titleAmount={paymentDetails?.adminButlerProfit || 0}
+            titleAmount={totalProfit}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);

@@ -25,10 +25,7 @@ export const GET_GALLERY_LIST = `${ADMIN_ENDPOINT}/image`;
 // dasboard
 export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
-export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
-export const GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/butler`;
-export const GET_ORDER_LIST_PROFIT_BREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/order-profit-breakdown`;
-export const GET_ADMIN_DELIVERY_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/delivery`;
+
 export const GET_SHOP_DASHBOARD_SUMMARY2 = `${ADMIN_ENDPOINT}/dashboard/shop`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/financial/shop`;
 export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
@@ -58,7 +55,16 @@ export const SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH = `${ADMIN_ENDPOINT}/dashboa
 export const SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH = `${ADMIN_ENDPOINT}/dashboard/shop/graph/customers-sales`;
 export const SHOP_DASHBOARD_CUSTOMER_INFO = `${ADMIN_ENDPOINT}/dashboard/shop/customers`;
 export const SHOP_DASHBOARD_ITEM_RANKING = `${ADMIN_ENDPOINT}/dashboard/shop/item-ranking`;
+
+// Lxya financials
+export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
+export const GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/butler`;
+export const GET_ORDER_LIST_PROFIT_BREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/order-profit-breakdown`;
+export const GET_ADMIN_DELIVERY_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/delivery`;
 export const GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/order/shop-profit-breakdown`;
+export const GET_SHOP_ADMIN_DELIVERY_SHOP_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/delivery/shop-profit-breakdown`;
+export const GET_BUTLER_ADMIN_DELIVERY_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/butler/order-profit-breakdown`;
+export const GET_FINANCIALS_PROFITBREAKDOWN_SUMMARY = `${ADMIN_ENDPOINT}/financial`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
