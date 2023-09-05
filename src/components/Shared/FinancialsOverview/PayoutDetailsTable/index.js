@@ -25,10 +25,10 @@ const queryParamsInit = (props) => ({
   ...props,
 });
 
-export default function PayoutDetailsTable({ startDate, endDate }) {
+export default function PayoutDetailsTable({ startDate, endDate, shopParams }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
-  const [queryParams, setQueryParams] = useState(queryParamsInit({ shop: shop?._id }));
+  const [queryParams, setQueryParams] = useState(queryParamsInit({ shop: shopParams ? shopParams?._id : shop?._id }));
 
   const query = useQuery([Api.GET_ORDER_LIST_PROFIT_BREAKDOWN, { ...queryParams, startDate, endDate }], () =>
     AXIOS.get(Api.GET_ORDER_LIST_PROFIT_BREAKDOWN, {

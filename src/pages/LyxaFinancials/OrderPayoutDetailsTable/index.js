@@ -25,17 +25,12 @@ const queryParamsInit = (props) => ({
   ...props,
 });
 
-// eslint-disable-next-line no-unused-vars
-const dummyData = (rows) => {
-  const data = [];
-  for (let i = 0; i < rows; i++) {
-    data.push({
-      shopName: 'KFC',
-      _id: i,
-    });
+const getParamsQuery = (showFor, queryParams) => {
+  if (showFor === 'delivery') {
+    return { ...queryParams, orderType: queryParams?.shoptype };
   }
 
-  return data;
+  return { ...queryParams };
 };
 
 export default function OrderPayoutDetailsTable({ showFor, shopType, paymentDetailsRange }) {
@@ -43,24 +38,31 @@ export default function OrderPayoutDetailsTable({ showFor, shopType, paymentDeta
   const { shop } = currentUser;
   const [queryParams, setQueryParams] = useState(queryParamsInit({ shop: shop?._id }));
 
-  const getShopAdminFinancialsProfitbreakdown = useQuery(
+  const api =
+    showFor === 'delivery'
+      ? API_URL.GET_SHOP_ADMIN_DELIVERY_SHOP_FINANCIALS_PROFITBREAKDOWN
+      : API_URL.GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN;
+
+  const getAdminFinancialsProfitBreakdown = useQuery(
     [
-      API_URL.GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN,
+      api,
       { ...queryParams, startDate: paymentDetailsRange?.start, endDate: paymentDetailsRange?.end, orderType: shopType },
     ],
     () =>
-      AXIOS.get(API_URL.GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN, {
+      AXIOS.get(api, {
         params: {
-          ...queryParams,
+          ...getParamsQuery(showFor, {
+            ...queryParams,
+            shopType,
+            pageSize: 20,
+          }),
           startDate: convertDate(paymentDetailsRange?.start),
           endDate: convertDate(paymentDetailsRange?.end),
-          shopType,
-          pageSize: 20,
         },
       }),
   );
 
-  // console.log('getShopAdminFinancialsProfitbreakdown', getShopAdminFinancialsProfitbreakdown?.data?.data);
+  console.log('getShopAdminFinancialsProfitbreakdown', getAdminFinancialsProfitBreakdown?.data?.data);
 
   return (
     <Box>
@@ -72,15 +74,15 @@ export default function OrderPayoutDetailsTable({ showFor, shopType, paymentDeta
         }}
       />
       <Table
-        loading={getShopAdminFinancialsProfitbreakdown?.isLoading}
+        loading={getAdminFinancialsProfitBreakdown?.isLoading}
         type={showFor}
         currencyType={queryParams?.paidCurrency}
-        rows={getShopAdminFinancialsProfitbreakdown?.data?.data?.shops}
+        rows={getAdminFinancialsProfitBreakdown?.data?.data?.shops}
         page={queryParams?.page}
         setPage={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
-        totalPage={getShopAdminFinancialsProfitbreakdown?.data?.data?.paginate?.metadata?.page?.totalPage}
+        totalPage={getAdminFinancialsProfitBreakdown?.data?.data?.paginate?.metadata?.page?.totalPage}
       />
     </Box>
   );

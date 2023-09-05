@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Tabs } from '@material-ui/core';
 import { Box, Tab, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -122,10 +123,10 @@ function SingleDeliveryTransactions() {
         }));
         setCashOrders(list);
       } else {
-        // history.push('/add-wallet/delivery-transactions', { replace: true });
+        // history.push('/app-wallet/delivery-transactions', { replace: true });
       }
     } catch (error) {
-      // history.push('/add-wallet/delivery-transactions', { replace: true });
+      // history.push('/app-wallet/delivery-transactions', { replace: true });
     }
   };
 
@@ -136,7 +137,7 @@ function SingleDeliveryTransactions() {
       }
       setRiderId(id);
     } else {
-      history.push('/add-wallet/delivery-transactions', { replace: true });
+      history.push('/app-wallet/delivery-transactions', { replace: true });
     }
   }, [id, riderTrxEndDate, riderTrxStartDate, riderCashTrxStartDate, riderCashTrxEndDate]);
 
@@ -219,7 +220,7 @@ function SingleDeliveryTransactions() {
       riderReceivedPayment({
         deliveryBoyId: trxs?.deliveryBoy?._id,
         idList: trxIds,
-      })
+      }),
     );
   };
 

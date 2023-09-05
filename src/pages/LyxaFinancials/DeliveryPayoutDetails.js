@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
@@ -8,17 +9,27 @@ import { useGlobalContext } from '../../context';
 
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
+import { getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
+import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
 
 function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   console.log('deliveryProfitBreakDown', deliveryProfitBreakDown);
 
   const totalFreeDelivery =
     deliveryProfitBreakDown?.freeDeliveryByShop || 0 + deliveryProfitBreakDown?.freeDeliveryByAdmin;
+
+  const totalProfit = getTotalProfitForLyxa(
+    currency,
+    secondaryCurrency,
+    modifiedProfitBreakDownDataForSecondaryCurrency(deliveryProfitBreakDown, 'delivery'),
+    false,
+  );
 
   return (
     <Grid xs={12}>
@@ -29,7 +40,7 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Profit Breakdown
+          Payout Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
           Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business
@@ -76,7 +87,7 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
           {/* shop cut */}
 
           <DetailsAccordion
-            title="Riders Payouts"
+            title="Riders Cuts"
             titleAmount={deliveryProfitBreakDown?.riderPayout}
             titleAmountStatus="minus"
           />
@@ -88,7 +99,8 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
 
           <DetailsAccordion
             title="Lyxa Delivery Profit"
-            titleAmount={deliveryProfitBreakDown?.adminDeliveryProfit}
+            titleAmount={totalProfit}
+            // titleAmount={deliveryProfitBreakDown?.adminDeliveryProfit}
             //             tooltip="Fee for Lyxa-powered deliveries: 20%
             // Shop-powered deliveries: 10%.
             // VAT inclusive"

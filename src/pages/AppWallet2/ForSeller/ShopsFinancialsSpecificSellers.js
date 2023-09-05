@@ -1,11 +1,13 @@
+/* eslint-disable prettier/prettier */
 import React, { useMemo, useState } from 'react';
 
-import { Box, Stack } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
 import jsPDF from 'jspdf';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
 import PageTop from '../../../components/Common/PageTop';
+import Overview from '../../../components/Shared/FinancialsOverview';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import * as API_URL from '../../../network/Api';
@@ -23,13 +25,13 @@ const getBreadCrumbItems = (searchUrl) => {
     },
     {
       label: 'Sellers List',
-      to: '/add-wallet/seller-transactions',
+      to: '/app-wallet/seller-transactions',
     },
     {
       label: 'Shops List',
       to: `/app-wallet/seller/shops-transactions?sellerId=${searchUrl.get('sellerId')}&companyName=${searchUrl.get(
         // eslint-disable-next-line prettier/prettier
-        'companyName'
+        'companyName',
       )}`,
     },
   ];
@@ -53,7 +55,7 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
     () =>
       AXIOS.get(API_URL.SELLER_TRX, {
         params: { sellerId, searchKey, startDate: range.start, endDate: range.end },
-      })
+      }),
   );
 
   // console.log('sellerId', sellerId);
@@ -113,10 +115,23 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
           }}
         />
       )}
+
+      <Grid sm={12}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end">
+          <DateRange range={range} setRange={setRange} />
+        </Stack>
+        {/* from shop console */}
+
+        <Overview
+          viewUserType="admin"
+          adminParams={{ id: sellerId, type: 'seller' }}
+          adminPaymentDetailsRange={{ start: range?.start, end: range?.end }}
+        />
+      </Grid>
+
       <Box>
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
           <AddMenuButton
             title="Download"
             icon={<DownloadIcon />}

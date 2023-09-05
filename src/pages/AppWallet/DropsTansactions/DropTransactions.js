@@ -140,7 +140,7 @@ function DropTransactions() {
                           <button
                             type="button"
                             className="btn btn-info button"
-                            onClick={() => history.push(`/add-wallet/drop-transactions/details/${item._id}`)}
+                            onClick={() => history.push(`/app-wallet/drop-transactions/details/${item._id}`)}
                           >
                             <i className="fa fa-eye" />
                           </button>

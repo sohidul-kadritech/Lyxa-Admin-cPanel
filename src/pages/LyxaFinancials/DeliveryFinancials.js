@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import DateRange from '../../components/StyledCharts/DateRange';
 
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
-import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
+import { dateRangeItit, getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import IncreaseDecreaseTag from '../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../components/StyledCharts/InfoCard';
 import * as API_URL from '../../network/Api';
@@ -16,6 +16,7 @@ import { useGlobalContext } from '../../context';
 import { calculateDateDifference } from '../ShopDashboard/helper';
 import DeliveryPayoutDetails from './DeliveryPayoutDetails';
 import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
+import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
 
 const convertDate = (date) => moment(date).format('YYYY-MM-DD');
 
@@ -23,6 +24,7 @@ function DeliveryFinancials({ shopType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const getFinancialsDashBoardDelivery = useQuery(
     [
@@ -36,11 +38,9 @@ function DeliveryFinancials({ shopType }) {
           endDate: convertDate(paymentDetailsRange?.end),
           orderType: shopType,
         },
-        // eslint-disable-next-line prettier/prettier
       }),
   );
 
-  console.log('getFinancialsDashBoard for delivery', getFinancialsDashBoardDelivery?.data?.data);
   const summary = getFinancialsDashBoardDelivery?.data?.data;
   const deliveryProfitBreakDown = summary?.profitBreakdown;
   return (
@@ -54,7 +54,39 @@ function DeliveryFinancials({ shopType }) {
         <Grid item xs={6} md={4}>
           <InfoCard
             title="Total Delivery Profit"
-            value={`${currency} ${(deliveryProfitBreakDown?.adminDeliveryProfit || 0).toFixed(2)}`}
+            // value={`${currency} ${(deliveryProfitBreakDown?.adminDeliveryProfit || 0).toFixed(2)}`}
+            valueComponent={
+              <Stack direction="column" alignItems="baseline" gap={2}>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    lineHeight: '24px',
+                    fontSize: '40px',
+                  }}
+                >
+                  {currency} {(deliveryProfitBreakDown?.totalAdminProfit || 0).toFixed(2)}
+                </Typography>
+
+                {deliveryProfitBreakDown?.secondaryCurrency_adminDeliveryProfit ? (
+                  <Typography
+                    variant="inherit"
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: '500',
+                    }}
+                  >
+                    {
+                      getTotalProfitForLyxa(
+                        currency,
+                        secondaryCurrency,
+                        modifiedProfitBreakDownDataForSecondaryCurrency(deliveryProfitBreakDown, 'delivery'),
+                        true,
+                      ).printConditionally
+                    }
+                  </Typography>
+                ) : null}
+              </Stack>
+            }
             Tag={
               <IncreaseDecreaseTag
                 status={summary?.adminDeliveryProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}
@@ -88,7 +120,7 @@ function DeliveryFinancials({ shopType }) {
 
         <Grid item xs={6} md={4}>
           <InfoCard
-            title="Total Riders Payouts"
+            title="Total Riders Cuts"
             Tag={
               <IncreaseDecreaseTag
                 status={summary?.riderPayoutAvgInPercentage >= 0 ? 'increase' : 'minus'}
@@ -115,7 +147,7 @@ function DeliveryFinancials({ shopType }) {
           <DeliveryPayoutDetails deliveryProfitBreakDown={deliveryProfitBreakDown} />
         </Grid>
         <Grid item xs={12}>
-          <OrderPayoutDetailsTable showFor="delivery" />
+          <OrderPayoutDetailsTable showFor="delivery" shopType={shopType} paymentDetailsRange={paymentDetailsRange} />
         </Grid>
       </Grid>
     </Box>

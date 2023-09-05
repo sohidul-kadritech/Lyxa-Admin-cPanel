@@ -7,12 +7,14 @@ export default function ButlerProfitDetails({ order = {} }) {
   const totalPayment =
     order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet + order?.summary?.baseCurrency_card || 0;
 
+  console.log('order', order);
+
   const total_secondary =
     order?.summary?.secondaryCurrency_cash +
       order?.summary?.secondaryCurrency_wallet +
       order?.summary?.secondaryCurrency_card || 0;
 
-  const isOrderCanceled = Boolean(order?.orderCancel || order?.userCancelTnx);
+  const isOrderCanceled = Boolean(order?.orderCancel || order?.userCancelTnx?.length);
 
   return (
     <StyledOrderDetailBox title="Order Profit Details">

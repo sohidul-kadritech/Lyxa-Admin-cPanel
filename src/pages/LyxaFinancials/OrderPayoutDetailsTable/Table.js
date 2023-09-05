@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import TablePagination from '../../../components/Common/TablePagination';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import SummaryItem from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable/SummaryItem';
@@ -16,10 +17,12 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
   const appSetting = general?.appSetting;
   const baseCurrency = appSetting?.baseCurrency;
   const secondaryCurrency = appSetting?.secondaryCurrency;
+  const history = useHistory();
+  const routeMatch = useRouteMatch();
   const columns = [
     {
       id: 1,
-      type: ['order'],
+      type: ['order', 'delivery'],
       headerName: `SHOP`,
       sortable: false,
       field: 'shopName',
@@ -36,41 +39,12 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           subTitle={row?.autoGenId}
           titleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
-            // onClick: () => {
-            //   history.push({
-            //     pathname: `/shop/profile/${row?.shop?._id}`,
-            //     state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
-            //   });
-            // },
-          }}
-        />
-      ),
-    },
-    {
-      id: 1,
-      type: ['delivery'],
-      headerName: `RIDERS`,
-      sortable: false,
-      field: 'shopName',
-      flex: 1,
-
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ value }) => (
-        <UserAvatar
-          imgAlt="shop-image"
-          imgUrl="https://storage.googleapis.com/dropnode/download-lyxa-07062394509-72.png"
-          imgFallbackCharacter={value?.charAt(0)}
-          name={value}
-          subTitle="#5465465"
-          titleProps={{
-            sx: { color: 'primary.main', cursor: 'pointer' },
-            // onClick: () => {
-            //   history.push({
-            //     pathname: `/shop/profile/${row?.shop?._id}`,
-            //     state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
-            //   });
-            // },
+            onClick: () => {
+              history.push({
+                pathname: `/shop/profile/${row?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+              });
+            },
           }}
         />
       ),
@@ -78,67 +52,48 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 2,
       type: ['delivery'],
-      headerName: `ORDER DELIVERY AMOUNT`,
+      headerName: `TOTAL DELIVERY FEE`,
       sortable: false,
       field: 'orderAmount',
       flex: 1,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
+        const financialBreakdown = row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
+              hideIcon={financialBreakdown?.totalDeliveryFee === 0}
               titleComponent={
                 <SummaryItem
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
+                  value={financialBreakdown?.totalDeliveryFee}
+                  valueSecondary={financialBreakdown?.totalDeliveryFee}
                   showIfZero
                 />
               }
             >
               <SummaryItem
                 currencyType={currencyType}
-                showIfZero
-                label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
+                label="Users"
+                valueSecondary={financialBreakdown?.users}
+                value={financialBreakdown?.users}
               />
               <SummaryItem
-                label="Online"
+                label="Free Delivery By shop"
                 currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              {/* <SummaryItem
-                label="Discount"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
+                valueSecondary={financialBreakdown?.freeDeliveryByShop}
+                value={financialBreakdown?.freeDeliveryByShop}
               />
               <SummaryItem
-                label="Buy 1 Get 1"
-                showIfZero
-                isNegative
+                label="Free Delivery By Lyxa"
                 currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_buy1Get1}
-                value={financialBreakdown?.baseCurrency_orderAmount_buy1Get1}
+                valueSecondary={financialBreakdown?.freeDeliveryByAdmin}
+                value={financialBreakdown?.freeDeliveryByAdmin}
               />
-              <SummaryItem
-                label="Loyalty points"
-                isNegative
-                showIfZero
-                currencyType={currencyType}
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_loyaltyPoints}
-                value={financialBreakdown?.baseCurrency_orderAmount_loyaltyPoints}
-              /> */}
             </TableAccordion>
           </Box>
         );
@@ -320,7 +275,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 3,
       type: ['order'],
-      headerName: `TOTAL PAYOUTS`,
+      headerName: `PAYOUTS`,
       sortable: false,
       field: 'totalPayouts',
       flex: 1,
@@ -330,61 +285,25 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       renderCell: ({ row }) => {
         const financialBreakdown = row?.profitBreakdown;
         return (
-          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
-            <TableAccordion
-              hideIcon={financialBreakdown?.payout?.totalPayout === 0}
-              titleComponent={
-                <SummaryItem
-                  title
-                  pb={0}
-                  currencyType={currencyType}
-                  value={Math.abs(financialBreakdown?.payout?.totalPayout)}
-                  valueSecondary={Math.abs(financialBreakdown?.payout?.totalPayout)}
-                  isNegative={financialBreakdown?.payout?.totalPayout > 0}
-                  showIfZero
-                />
-              }
-            >
-              <SummaryItem
-                currencyType={currencyType}
-                label="Free delivery by shop"
-                value={financialBreakdown?.payout?.freeDeliveryByShop}
-                valueSecondary={financialBreakdown?.payout?.freeDeliveryByShop}
-                isNegative
-              />
-              <SummaryItem
-                currencyType={currencyType}
-                label="Shop customer refund"
-                value={financialBreakdown?.payout?.shopCustomerRefund}
-                valueSecondary={financialBreakdown?.payout?.shopCustomerRefund}
-                isNegative
-              />
-              <SummaryItem
-                currencyType={currencyType}
-                label="Shop point cashback"
-                value={financialBreakdown?.payout?.pointsCashback}
-                valueSecondary={financialBreakdown?.payout?.pointsCashback}
-                isNegative
-              />
-              <SummaryItem
-                currencyType={currencyType}
-                label="Payout"
-                value={financialBreakdown?.payout?.payout}
-                valueSecondary={financialBreakdown?.payout?.payout}
-                isNegative
-              />
-            </TableAccordion>
-          </Box>
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={Math.abs(financialBreakdown?.payout?.totalPayout)}
+            valueSecondary={Math.abs(financialBreakdown?.payout?.totalPayout)}
+            isNegative={financialBreakdown?.payout?.totalPayout > 0}
+            showIfZero
+          />
         );
       },
     },
     {
       id: 3,
       type: ['delivery'],
-      headerName: `RIDERS PAYOUTS`,
+      headerName: `RIDERS CUTS`,
       sortable: false,
       field: 'shopCut',
-      flex: 1.5,
+      flex: 1,
       align: 'left',
       headerAlign: 'left',
       minWidth: 180,
@@ -393,65 +312,12 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={Math.abs(row?.financialBreakdown?.baseCurrency_lyxaFees)}
-          valueSecondary={Math.abs(row?.financialBreakdown?.secondaryCurrency_lyxaFees)}
+          value={Math.abs(row?.profitBreakdown?.riderPayout)}
+          valueSecondary={Math.abs(row?.profitBreakdown?.riderPayout)}
           isNegative
           showIfZero
         />
       ),
-    },
-    {
-      id: 4,
-      type: ['delivery'],
-      headerName: `DELIVERY PROFIT`,
-      sortable: false,
-      field: 'totalVat',
-      flex: 1.5,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.financialBreakdown;
-
-        return (
-          <Box position="relative" sx={{ width: '100%', height: '100%' }}>
-            <TableAccordion
-              titleComponent={
-                <SummaryItem
-                  title
-                  pb={0}
-                  currencyType={currencyType}
-                  value={financialBreakdown?.baseCurrency_orderAmount}
-                  valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount}
-                  showIfZero
-                />
-              }
-            >
-              <SummaryItem
-                currencyType={currencyType}
-                showIfZero
-                label="Cash"
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_cash}
-                value={financialBreakdown?.baseCurrency_orderAmount_cash}
-              />
-              <SummaryItem
-                label="Online"
-                currencyType={currencyType}
-                showIfZero
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_online}
-                value={financialBreakdown?.baseCurrency_orderAmount_online}
-              />
-              <SummaryItem
-                label="Rider Cut"
-                currencyType={currencyType}
-                showIfZero
-                isNegative
-                valueSecondary={financialBreakdown?.secondaryCurrency_orderAmount_discount}
-                value={financialBreakdown?.baseCurrency_orderAmount_discount}
-              />
-            </TableAccordion>
-          </Box>
-        );
-      },
     },
     {
       id: 5,
@@ -552,7 +418,28 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 8,
       type: ['delivery'],
-      headerName: `TOTAL LYXA DELIVERY PROFIT`,
+      headerName: `FREE DELIVERY BY LYXA`,
+      sortable: false,
+      field: 'freeDeliveryByLyxa',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.profitBreakdown?.freeDeliveryByAdmin}
+          valueSecondary={row?.profitBreakdown?.freeDeliveryByAdmin}
+          isNegative
+          showIfZero
+        />
+      ),
+    },
+    {
+      id: 8,
+      type: ['delivery'],
+      headerName: `LYXA DELIVERY PROFIT`,
       sortable: false,
       field: 'totalProfit',
       flex: 1,
@@ -563,24 +450,25 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={row?.financialBreakdown?.baseCurrency_totalProfit}
-          valueSecondary={row?.financialBreakdown?.secondaryCurrency_totalProfit}
+          value={row?.profitBreakdown?.adminDeliveryProfit}
+          valueSecondary={row?.profitBreakdown?.adminDeliveryProfit}
           showIfZero
         />
       ),
     },
   ];
 
-  if (loading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
+  if (loading) return <TableSkeleton columns={['avatar', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
 
   return (
-    <>
+    <Box sx={{ marginBottom: '60px' }}>
       <StyledBox
         padding
         sx={{
           marginTop: '20px',
           paddingTop: '3px',
           paddingBottom: '10px',
+
           overflow: 'visible',
           scrollbarWidth: 'thin',
           scrollbarHeight: 'thin',
@@ -626,6 +514,6 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         </Box>
       </StyledBox>
       <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
-    </>
+    </Box>
   );
 }

@@ -159,13 +159,13 @@ export const adminMenuItem = [
       {
         name: 'Seller TRX',
         icon: 'fas fa-exchange-alt',
-        link: '/add-wallet/seller-transactions',
+        link: '/app-wallet/seller-transactions',
         isSubmenu: false,
       },
       {
         name: 'Delivery TRX',
         icon: 'fas fa-exchange-alt',
-        link: '/add-wallet/delivery-transactions',
+        link: '/app-wallet/delivery-transactions',
         isSubmenu: false,
       },
     ],
@@ -598,7 +598,7 @@ export const shopMenuItem = [
       {
         name: 'Shop TRX',
         icon: 'fas fa-exchange-alt',
-        link: '/add-wallet/shop-transactions',
+        link: '/app-wallet/shop-transactions',
         isSubmenu: false,
       },
     ],

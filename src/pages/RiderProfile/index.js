@@ -22,7 +22,7 @@ const getBreadCrumbItems = (searchUrl, id) => {
     },
     {
       label: 'Rider List',
-      to: '/add-wallet/delivery-transactions',
+      to: '/app-wallet/delivery-transactions',
     },
     {
       label: 'Rider Profile',

@@ -1,15 +1,15 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import jsPDF from 'jspdf';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
-import PayoutDetails from '../../../components/Shared/FinancialsOverview/PayoutDetails';
+import Overview from '../../../components/Shared/FinancialsOverview';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
-import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -33,7 +33,7 @@ export default function SellerFinancialList() {
   const query = useQuery([API_URL.SELLERS_TRX, queryParams], () =>
     AXIOS.get(API_URL.SELLERS_TRX, {
       params: queryParams,
-    })
+    }),
   );
 
   // GENERATE PDF
@@ -80,32 +80,13 @@ export default function SellerFinancialList() {
         <Stack direction="row" alignItems="center" justifyContent="flex-end">
           <DateRange startKey="startDate" endKey="endDate" range={queryParams} setRange={setQueryParams} />
         </Stack>
+        {/* from shop console */}
+        <Overview
+          viewUserType="admin"
+          adminPaymentDetailsRange={{ start: queryParams?.startDate, end: queryParams?.endDate }}
+        />
       </Grid>
-      <InfoCard
-        title="Total Profit"
-        value={`${currency?.symbol} ${(0).toFixed(2)}`}
-        Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <InfoCard
-        title="Orders"
-        value={`${0}`}
-        Tag={<IncreaseDecreaseTag status={Math.round(0) >= 0 ? 'increase' : 'decrement'} amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <InfoCard
-        title=" Marketing Spent"
-        value={`${currency?.symbol} ${0}`}
-        Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <PayoutDetails paymentDetails={{}} />
+
       <Grid sm={12}>
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar

@@ -18,7 +18,7 @@ export const seller_routes = (prefix = '') => [
     component: ShopsTransactions,
   },
   {
-    path: `${prefix}/add-wallet/shop-transactions`,
+    path: `${prefix}/app-wallet/shop-transactions`,
     component: ShopFinancialsTransaction,
     componentProps: { viewUserType: 'seller' },
   },

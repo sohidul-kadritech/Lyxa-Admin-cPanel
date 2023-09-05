@@ -167,3 +167,57 @@ export const getTotalProfit = (currency, secondaryCurrency, paymentDetails, show
     </Typography>
   );
 };
+
+export const getTotalProfitForLyxa = (currency, secondaryCurrency, paymentDetails = {}, showObject = false) => {
+  const profitOutput = {};
+  const secondaryCurrencyPayout = paymentDetails?.secondaryCurrency_adminProfit;
+  const baseCurrencyPayout = paymentDetails?.baseCurrency_adminProfit;
+  const totalPayout = paymentDetails?.totalAdminProfit;
+
+  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
+  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+
+  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+
+  profitOutput.onlyBaseCurrency = onlyBaseCurrency;
+  profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
+  profitOutput.onlyBaseCurrencyComponent = (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+
+  profitOutput.joinBaseAndSecondaryCurrencyComponent = (
+    <Typography variant="body3" fontSize="12px">
+      {joinBaseAndSecondaryCurrency}
+    </Typography>
+  );
+
+  profitOutput.print = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : onlyBaseCurrency;
+  profitOutput.printConditionally = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : '';
+
+  console.log('profitOutput', profitOutput);
+
+  if (showObject) {
+    return profitOutput;
+  }
+
+  if (secondaryCurrencyPayout) {
+    return (
+      <Stack direction="row" gap={2} alignItems="center">
+        <Typography variant="body3" fontSize="12px">
+          {joinBaseAndSecondaryCurrency}
+        </Typography>
+        <Typography variant="body1" fontWeight={600}>
+          {onlyBaseCurrency}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return (
+    <Typography variant="body1" fontWeight={600}>
+      {onlyBaseCurrency}
+    </Typography>
+  );
+};
