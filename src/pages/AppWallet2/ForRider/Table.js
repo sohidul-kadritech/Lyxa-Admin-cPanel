@@ -1,15 +1,40 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import TablePagination from '../../../components/Common/TablePagination';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import { HeaderWithToolTips } from '../ForSeller/helpers';
+
+const getCurrencyValue = (baseCurrency, secondaryCurrency, baseAmount = 0, secondaryAmount = 0) => {
+  const baseValue = Number(baseAmount || 0);
+  const secondaryValue = Math.round(Number(secondaryAmount || 0));
+
+  const baseValueWithCurrency =
+    baseValue < 0
+      ? `-${baseCurrency} ${Math.abs(baseValue).toFixed(2)}`
+      : `${baseCurrency} ${Math.abs(baseValue).toFixed(2)}`;
+  const secondaryValueWithCurrency =
+    secondaryValue < 0
+      ? `-${secondaryCurrency} ${Math.abs(secondaryValue)}`
+      : `${secondaryCurrency} ${Math.abs(secondaryValue)}`;
+
+  const joinCurrencyValue = `${baseValueWithCurrency} + ${secondaryValueWithCurrency}`;
+
+  return {
+    baseValueWithCurrency,
+    secondaryValueWithCurrency,
+    joinAmount: joinCurrencyValue,
+    print: secondaryValue > 0 ? joinCurrencyValue : baseValueWithCurrency,
+  };
+};
 
 function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage, totalPage }) {
   const { general } = useGlobalContext();
   const theme = useTheme();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
   const routeMatch = useRouteMatch();
   const history = useHistory();
 
@@ -54,10 +79,10 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
     },
     {
       id: 2,
-      headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
+      headerName: `LYXA DELIVERY CUT (${secondaryCurrency})`,
+      // headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
       field: 'order',
       flex: 1,
-      sortable: false,
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
           <Box>
@@ -65,7 +90,10 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
               variant="body1"
               style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
             >
-              {params?.row?.summary?.totalOrder}
+              {
+                getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.totalDeliveryFee)
+                  .secondaryValueWithCurrency
+              }
             </Typography>
           </Box>
         </Stack>
@@ -74,65 +102,64 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
     {
       id: 3,
       field: 'delivery_fee',
-      headerName: <HeaderWithToolTips title={`DELIVERY FEE (${currency})`} tooltip="Order delivery fee" />,
-      sortable: false,
+      headerName: `LXYA DELIVERY PROFIT (${secondaryCurrency})`,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {' '}
-          {currency}
-          {(params?.row?.summary?.totalDeliveyFee || 0).toFixed(2)}
+          {
+            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.adminDeliveryProfit)
+              .secondaryValueWithCurrency
+          }
         </Typography>
       ),
     },
     {
       id: 4,
       field: 'lyxa_profit',
-      headerName: <HeaderWithToolTips title={`LYXA PROFIT (${currency})`} tooltip="Previously lyxa earning" />,
+      headerName: `RIDER TIPS (${secondaryCurrency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {' '}
-          {currency}
-          {(params?.row?.summary?.dropEarning || 0).toFixed(2)}
+          {
+            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderTips)
+              .secondaryValueWithCurrency
+          }
         </Typography>
       ),
     },
     {
       id: 5,
       field: 'unsettled_amount',
-      headerName: (
-        <HeaderWithToolTips
-          title={`UNSETTLED AMOUNT (${currency})`}
-          tooltip="Paid 
-      Unpaid"
-        />
-      ),
+      headerName: `RIDER CREDIT (${secondaryCurrency})`,
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {currency}
-          {(params?.row?.summary?.totalUnSettleAmount || 0).toFixed(2)}
+          {
+            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderAddRemoveCredit)
+              .secondaryValueWithCurrency
+          }
         </Typography>
       ),
     },
     {
       id: 6,
       field: 'cash_order',
-      headerName: <HeaderWithToolTips title={`CASH IN HAND(${currency})`} tooltip="Unsettled Cash in hand" />,
+      headerName: `RIDER PAYOUTS (${secondaryCurrency})`,
 
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {currency}
-          {(params?.row?.summary.totalCashInHand || 0).toFixed(2)}
+          {
+            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderPayout)
+              .secondaryValueWithCurrency
+          }
         </Typography>
       ),
     },
@@ -141,15 +168,21 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
       field: 'settled_cash',
       align: 'right',
       headerAlign: 'right',
-      headerName: <HeaderWithToolTips title={`SETTLED CASH (${currency})`} tooltip="Settled Cash in hand" />,
+      headerName: `CASH IN HAND`,
 
       sortable: false,
-      flex: 1,
+      flex: 1.3,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {currency}
-          {(params?.row?.summary?.totalCashReceived || 0).toFixed(2)}
+          {
+            getCurrencyValue(
+              currency,
+              secondaryCurrency,
+              params?.row?.profitBreakdown?.cashInHand?.baseCurrency_CashInHand,
+              params?.row?.profitBreakdown?.cashInHand?.secondaryCurrency_CashInHand,
+            ).joinAmount
+          }
         </Typography>
       ),
     },

@@ -31,6 +31,8 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
   const payout = paymentDetails?.payout;
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
+
+  console.log('paymentDetails', paymentDetails);
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
   discount by lyxa+discount by lyxa = order amount (x online and y cash)
@@ -219,7 +221,14 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
 
           {/* shop cut */}
 
-          <DetailsAccordion title="Payouts" titleAmount={payout?.totalPayout} titleAmountStatus="minus">
+          <DetailsAccordion title="Shop Payouts" titleAmount={payout?.totalPayout} titleAmountStatus="minus">
+            {/* <PriceItem title="Free delivery by shop" amount={payout?.freeDeliveryByShop || 0} isNegative /> */}
+            {/* <PriceItem title="Shop error charge" amount={payout?.totalPayout || 0} /> */}
+            {/* <PriceItem title="Shop customer refund" amount={payout?.shopCustomerRefund || 0} /> */}
+            {/* <PriceItem title="Shop point cashback" amount={payout?.pointsCashback || 0} isNegative /> */}
+            {/* <PriceItem title="Payout" amount={payout?.payout || 0} isNegative /> */}
+          </DetailsAccordion>
+          <DetailsAccordion title="Featured" titleAmount={paymentDetails?.featuredAmount} titleAmountStatus="minus">
             {/* <PriceItem title="Free delivery by shop" amount={payout?.freeDeliveryByShop || 0} isNegative /> */}
             {/* <PriceItem title="Shop error charge" amount={payout?.totalPayout || 0} /> */}
             {/* <PriceItem title="Shop customer refund" amount={payout?.shopCustomerRefund || 0} /> */}
@@ -247,20 +256,6 @@ VAT inclusive"
             </DetailsAccordion>
           )}
 
-          {/* featured */}
-
-          <DetailsAccordion
-            title="Total Featured Amount"
-            titleAmount={paymentDetails?.featuredAmount || 0}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
-            isOpen={currentExpanedTab === 3}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 3 : -1);
-            }}
-          />
-
           {/* Other payments */}
 
           <DetailsAccordion
@@ -268,8 +263,8 @@ VAT inclusive"
             tooltip="Fee for Lyxa-powered deliveries: 20%
           Shop-powered deliveries: 10%. 
           VAT inclusive"
-            titleAmount={otherPayments?.totalOtherPayments || 0}
-            titleAmountStatus="minus"
+            titleAmount={Math.abs(otherPayments?.totalOtherPayments || 0)}
+            titleAmountStatus={otherPayments?.totalOtherPayments > 0 ? 'minus' : 0}
             isOpen={currentExpanedTab === 2}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 2 : -1);
@@ -281,20 +276,35 @@ VAT inclusive"
               isNegative
               showIfZero
             />
-            {/* <PriceItem title="Error charge" amount={0} isNegative showIfZero /> */}
-            <PriceItem title="Customer refund" amount={otherPayments?.customerRefund || 0} isNegative showIfZero />
-            {/* <PriceItem title="Replacement orders by Lyxa" amount={otherPayments?.customerRefund||0} isNegative showIfZero /> */}
-            {/* <PriceItem title="Error order by Lyxa ( endure loss )" amount={otherPayments?.customerRefund||0} isNegative showIfZero /> */}
+            <PriceItem title="Error charge" amount={0} isNegative showIfZero />
+            <PriceItem
+              title="Customer refund by Lyxa"
+              amount={otherPayments?.customerRefund || 0}
+              isNegative
+              showIfZero
+            />
+            <PriceItem
+              title="Replacement orders by Lyxa"
+              amount={otherPayments?.customerRefund || 0}
+              isNegative
+              showIfZero
+            />
+            {/* <PriceItem
+              title="Error order by Lyxa ( endure loss )"
+              amount={otherPayments?.customerRefund || 0}
+              isNegative
+              showIfZero
+            /> */}
             <PriceItem
               title="Free delivery by shop (Lyxa riders)"
               amount={otherPayments?.freeDeliveryByShop || 0}
               isNegative
               showIfZero
             />
-            {/* <PriceItem title="Replacement Orders by Lyxa" amount={0} isNegative showIfZero />
-              <PriceItem title="Error Order by Lyxa (Endure Loss)" amount={0} isNegative showIfZero />
-              <PriceItem title="Coupons" amount={0} isNegative showIfZero /> */}
-            {/* <PriceItem title="Shop Add/Remove Credit" amount={0} isNegative showIfZero /> */}
+            <PriceItem title="Shop VAT" amount={otherPayments?.shopVat} showIfZero />
+            <PriceItem title="Shop Self delivery" amount={otherPayments?.shopDeliveryFee} showIfZero />
+
+            <PriceItem title="Shop Add/Remove Credit" amount={0} isNegative showIfZero />
           </DetailsAccordion>
 
           {/* profit */}

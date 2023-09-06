@@ -38,6 +38,7 @@ function FinancialsForSeller() {
         <TabPanel index={0} value={currentTab} noPadding>
           <SellerFinancialList />
         </TabPanel>
+
         {/* Seller invocie */}
         <TabPanel index={1} value={currentTab} noPadding>
           <SellerInvoice />

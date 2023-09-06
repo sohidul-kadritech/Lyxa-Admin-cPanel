@@ -1,20 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Unstable_Grid2 as Grid, Stack } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import jsPDF from 'jspdf';
 import moment from 'moment';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
 import Overview from '../../../components/Shared/FinancialsOverview';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import { useGlobalContext } from '../../../context';
-import * as API_URL from '../../../network/Api';
-import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
-import SellerFinancialsTable from './SellerFinancialsTable';
+import FinancialsTableForSellerAndShop from '../FinancialsTableForSellerAndShop';
 
 const queryParamsInit = {
   page: 1,
@@ -30,11 +27,11 @@ export default function SellerFinancialList() {
   const { general } = useGlobalContext();
   const currency = general?.currency;
 
-  const query = useQuery([API_URL.SELLERS_TRX, queryParams], () =>
-    AXIOS.get(API_URL.SELLERS_TRX, {
-      params: queryParams,
-    }),
-  );
+  // const query = useQuery([API_URL.SELLERS_TRX, queryParams], () =>
+  //   AXIOS.get(API_URL.SELLERS_TRX, {
+  //     params: queryParams,
+  //   }),
+  // );
 
   // GENERATE PDF
   const downloadPdf = () => {
@@ -53,20 +50,20 @@ export default function SellerFinancialList() {
 
     const marginLeft = 40;
 
-    const data = query?.data?.data?.sellers.map((trx) => [
-      trx?.company_name,
-      trx?.summary.totalOrder,
-      trx?.summary.orderValue?.productAmount.toFixed(2),
-      trx?.summary.orderValue?.deliveryFee,
-      trx?.summary.totalDropGet.toFixed(2),
-      trx?.summary.totalSellerUnsettle.toFixed(2),
-      trx?.summary.totalSellerEarning,
-    ]);
+    // const data = query?.data?.data?.sellers.map((trx) => [
+    //   trx?.company_name,
+    //   trx?.summary.totalOrder,
+    //   trx?.summary.orderValue?.productAmount.toFixed(2),
+    //   trx?.summary.orderValue?.deliveryFee,
+    //   trx?.summary.totalDropGet.toFixed(2),
+    //   trx?.summary.totalSellerUnsettle.toFixed(2),
+    //   trx?.summary.totalSellerEarning,
+    // ]);
 
     const content = {
       startY: 50,
       head: headers,
-      body: data,
+      body: [],
     };
 
     doc.text(title, marginLeft, 40);
@@ -102,13 +99,21 @@ export default function SellerFinancialList() {
             }}
           />
         </Stack>
+
+        <Box marginBottom="30px">
+          <FinancialsTableForSellerAndShop
+            paramsProps={{ startDate: queryParams?.startDate, endDate: queryParams?.endDate }}
+            showFor="allSeller"
+          />
+        </Box>
+        {/* 
         <SellerFinancialsTable
           loading={query?.isLoading}
           data={query?.data?.data?.sellers}
           currentPage={queryParams?.page}
           setPage={(page) => setQueryParams((prev) => ({ ...prev, page }))}
           totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
-        />
+        /> */}
       </Grid>
     </Grid>
   );

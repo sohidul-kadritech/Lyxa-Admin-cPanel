@@ -25,7 +25,7 @@ export default function TableAccordion({ title, titleComponent, children, hideIc
 
         '& .MuiAccordionDetails-root': {
           position: 'relative',
-          zIndex: 999,
+          zIndex: 999999,
           padding: 0,
         },
 

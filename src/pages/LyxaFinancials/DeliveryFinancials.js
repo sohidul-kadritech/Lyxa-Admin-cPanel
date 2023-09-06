@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import DateRange from '../../components/StyledCharts/DateRange';
 
-import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import { dateRangeItit, getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import IncreaseDecreaseTag from '../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../components/StyledCharts/InfoCard';
@@ -22,8 +21,11 @@ const convertDate = (date) => moment(date).format('YYYY-MM-DD');
 
 function DeliveryFinancials({ shopType }) {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
+
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
+
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const getFinancialsDashBoardDelivery = useQuery(
@@ -133,14 +135,7 @@ function DeliveryFinancials({ shopType }) {
             sm={6}
             md={4}
             lg={4}
-          >
-            <Stack gap={3}>
-              <PriceItem title="Discount" amount={0} showIfZero />
-              <PriceItem title="Buy 1 Get 1" amount={0} showIfZero />
-              <PriceItem title="Loyalty points" amount={0} showIfZero />
-              <PriceItem title="Free delivery" amount={0} showIfZero />
-            </Stack>
-          </InfoCard>
+          />
         </Grid>
 
         <Grid item xs={12} mb={7.5}>

@@ -51,6 +51,8 @@ export const SHOP_DASHBOARD_CUSTOMER_INFO = `${ADMIN_ENDPOINT}/dashboard/shop/cu
 export const SHOP_DASHBOARD_ITEM_RANKING = `${ADMIN_ENDPOINT}/dashboard/shop/item-ranking`;
 
 // Lxya financials
+export const GET_FINANCIALS_PROFITBREAKDOWN_SUMMARY = `${ADMIN_ENDPOINT}/financial`;
+export const GET_ADMIN_RIDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider`;
 export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
 export const GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/butler`;
 export const GET_ORDER_LIST_PROFIT_BREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/order-profit-breakdown`;
@@ -58,7 +60,9 @@ export const GET_ADMIN_DELIVERY_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financ
 export const GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/order/shop-profit-breakdown`;
 export const GET_SHOP_ADMIN_DELIVERY_SHOP_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/delivery/shop-profit-breakdown`;
 export const GET_BUTLER_ADMIN_DELIVERY_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/butler/order-profit-breakdown`;
-export const GET_FINANCIALS_PROFITBREAKDOWN_SUMMARY = `${ADMIN_ENDPOINT}/financial`;
+export const GET_ALL_SELLER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/seller-profit-breakdown`;
+export const GET_SPECIFIC_SELLER_SHOP_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/shop-profit-breakdown`;
+export const GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider/rider-profit-breakdown`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
