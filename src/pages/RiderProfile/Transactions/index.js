@@ -1,17 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Unstable_Grid2 as Grid, Modal, Stack } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
-import PriceItem from '../../../components/Shared/FinancialsOverview/PriceItem';
+import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/RiderPayoutBreakDown';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
-import InfoCard from '../../../components/StyledCharts/InfoCard';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { CardTitle } from '../Timestamp/helper';
 import MakePayment from './MakePayment';
 import SearchBar from './Searchbar';
 
@@ -71,7 +70,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   useEffect(() => {
@@ -90,7 +89,7 @@ export default function RiderTransactions({ riderId, showFor }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // on receive cash
@@ -134,61 +133,69 @@ export default function RiderTransactions({ riderId, showFor }) {
         loading={receiveCashMutation.isLoading}
       />
       {showFor !== 'cashOrderList' && (
-        <Grid container spacing={5} pb={7.5}>
-          <InfoCard
-            title={<CardTitle title="Lyxa Earning" tooltip="Lyxa Earning" />}
-            value={(summary?.dropEarning || 0)?.toFixed(2)}
-            sm={6}
-            md={4}
-            lg={2.37}
-            valueSx={amountSx}
-          />
-          <InfoCard
-            title={<CardTitle title="Orders No" tooltip="Orders No" />}
-            value={summary?.totalOrder || 0}
-            sm={6}
-            md={4}
-            valueSx={amountSx}
-            lg={2.5}
-          />
-          <InfoCard
-            title={<CardTitle title="Delivery Fees" tooltip="Total Delivery Fee" />}
-            value={(summary?.totalDeliveyFee || 0)?.toFixed(2)}
-            sm={6}
-            md={4}
-            valueSx={amountSx}
-            lg={2.37}
-          />
-          <InfoCard
-            title={<CardTitle title="Total Profit" tooltip="Total Profit" />}
-            value={(summary?.totalProfitRider || 0)?.toFixed(2)}
-            sm={6}
-            md={4}
-            lg={2.37}
-            valueSx={amountSx}
-            isDropdown
-          >
-            <Stack gap={3}>
-              <PriceItem fontSize="14px!important" title="Paid" amount={summary?.riderEarning} />
-              <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalUnSettleAmount} />
-            </Stack>
-          </InfoCard>
-          {/* setttled + cash in hand */}
-          <InfoCard
-            title={<CardTitle title="Cash Orders" tooltip="Cash Orders" />}
-            value={(summary?.totalCashInHand + summary?.totalCashReceived || 0)?.toFixed(2)}
-            sm={6}
-            md={4}
-            valueSx={amountSx}
-            lg={2.37}
-            isDropdown
-          >
-            <Stack gap={3}>
-              <PriceItem fontSize="14px!important" title="Cash In Hand" amount={summary?.totalCashInHand} />
-              <PriceItem fontSize="14px!important" title="Settled Cash" amount={summary?.totalCashReceived} />
-            </Stack>
-          </InfoCard>
-        </Grid>
+        // <Grid container spacing={5} pb={7.5}>
+        //   <InfoCard
+        //     title={<CardTitle title="Lyxa Earning" tooltip="Lyxa Earning" />}
+        //     value={(summary?.dropEarning || 0)?.toFixed(2)}
+        //     sm={6}
+        //     md={4}
+        //     lg={2.37}
+        //     valueSx={amountSx}
+        //   />
+        //   <InfoCard
+        //     title={<CardTitle title="Orders No" tooltip="Orders No" />}
+        //     value={summary?.totalOrder || 0}
+        //     sm={6}
+        //     md={4}
+        //     valueSx={amountSx}
+        //     lg={2.5}
+        //   />
+        //   <InfoCard
+        //     title={<CardTitle title="Delivery Fees" tooltip="Total Delivery Fee" />}
+        //     value={(summary?.totalDeliveyFee || 0)?.toFixed(2)}
+        //     sm={6}
+        //     md={4}
+        //     valueSx={amountSx}
+        //     lg={2.37}
+        //   />
+        //   <InfoCard
+        //     title={<CardTitle title="Total Profit" tooltip="Total Profit" />}
+        //     value={(summary?.totalProfitRider || 0)?.toFixed(2)}
+        //     sm={6}
+        //     md={4}
+        //     lg={2.37}
+        //     valueSx={amountSx}
+        //     isDropdown
+        //   >
+        //     <Stack gap={3}>
+        //       <PriceItem fontSize="14px!important" title="Paid" amount={summary?.riderEarning} />
+        //       <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalUnSettleAmount} />
+        //     </Stack>
+        //   </InfoCard>
+        //   {/* setttled + cash in hand */}
+        //   <InfoCard
+        //     title={<CardTitle title="Cash Orders" tooltip="Cash Orders" />}
+        //     value={(summary?.totalCashInHand + summary?.totalCashReceived || 0)?.toFixed(2)}
+        //     sm={6}
+        //     md={4}
+        //     valueSx={amountSx}
+        //     lg={2.37}
+        //     isDropdown
+        //   >
+        //     <Stack gap={3}>
+        //       <PriceItem fontSize="14px!important" title="Cash In Hand" amount={summary?.totalCashInHand} />
+        //       <PriceItem fontSize="14px!important" title="Settled Cash" amount={summary?.totalCashReceived} />
+        //     </Stack>
+        //   </InfoCard>
+        // </Grid>
+        <RiderPayoutBreakDown
+          showFor="specific"
+          riderParams={{
+            riderId: queryParams.deliveryBoyId || riderId,
+            start: queryParams?.startDate,
+            end: queryParams.endDate,
+          }}
+        />
       )}
       <TransactionsTable
         refetching={receiveCashMutation.isLoading}

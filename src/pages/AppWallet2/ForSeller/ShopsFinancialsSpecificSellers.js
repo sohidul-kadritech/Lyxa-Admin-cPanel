@@ -14,8 +14,7 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
 import { dateRangeInit } from '../../Faq2/helpers';
-import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
-import ShopsFinancialsTable from './ShopsFinancialsTable';
+import FinancialsTableForSellerAndShop from '../FinancialsTableForSellerAndShop';
 
 const getBreadCrumbItems = (searchUrl) => {
   const breadcrumbItems = [
@@ -106,13 +105,6 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
           backButtonLabel="Back to Financials"
           breadcrumbItems={getBreadCrumbItems(searchParams)}
           backTo="/financials"
-          sx={{
-            position: 'sticky',
-            top: '-2px',
-            zIndex: '999',
-            backgroundColor: '#fbfbfb',
-            fontWeight: 700,
-          }}
         />
       )}
 
@@ -141,7 +133,15 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
           />
         </Stack>
       </Box>
-      <Box sx={{ marginBottom: '30px' }}>
+
+      <Box marginBottom="30px">
+        <FinancialsTableForSellerAndShop
+          paramsProps={{ sellerId, startDate: range?.start, endDate: range?.end }}
+          showFor="seller"
+        />
+      </Box>
+
+      {/* <Box sx={{ marginBottom: '30px' }}>
         {getSellerShopsTnx.isLoading ? (
           <TablePageSkeleton row={3} column={7} />
         ) : (
@@ -151,7 +151,7 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
             viewUserType={viewUserType}
           />
         )}
-      </Box>
+      </Box> */}
     </Box>
   );
 }

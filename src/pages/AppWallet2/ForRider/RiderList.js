@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Unstable_Grid2 as Grid, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import jsPDF from 'jspdf';
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
+import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/RiderPayoutBreakDown';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
@@ -13,7 +14,6 @@ import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { AddMenuButton } from '../../Faq2';
-import RiderPayoutBreakDown from './RiderPayoutBreakDown';
 import RiderFinancialsTable from './Table';
 
 const queryParamsInit = {
@@ -27,11 +27,13 @@ const queryParamsInit = {
 export default function RiderList() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
 
-  const query = useQuery([Api.DELIVERY_TRX, queryParams], () =>
-    AXIOS.get(Api.DELIVERY_TRX, {
+  const query = useQuery([Api.GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN, queryParams], () =>
+    AXIOS.get(Api.GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN, {
       params: queryParams,
     }),
   );
+
+  console.log('query rider', query?.data);
 
   // GENERATE PDF
   const downloadPdf = () => {
@@ -59,7 +61,7 @@ export default function RiderList() {
     ];
     const marginLeft = 40;
 
-    const data = query?.data?.data?.deliveryBoy.map((trx) => [
+    const data = query?.data?.data?.riders.map((trx) => [
       trx?.name,
       trx?.summary?.orderValue?.count ?? 0,
       trx?.summary?.totalDeliveyFee,
@@ -86,40 +88,13 @@ export default function RiderList() {
   const currency = general?.currency?.symbol;
 
   return (
-    <Grid container spacing={7.5} pb={12} pt={7.5}>
-      <Grid sm={12}>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
-        </Stack>
-      </Grid>
+    <Box>
+      <Stack direction="row" alignItems="center" justifyContent="flex-end" pb={7.5}>
+        <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
+      </Stack>
 
-      <RiderPayoutBreakDown />
-      {/* <InfoCard
-        title="Total Riders Profit"
-        value={`${currency} ${(0).toFixed(2)}`}
-        Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <InfoCard
-        title="Total Lyxa Profit"
-        value={`${0}`}
-        Tag={<IncreaseDecreaseTag status={Math.round(0) >= 0 ? 'increase' : 'decrement'} amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <InfoCard
-        title="NO. Orders"
-        value={`${currency} ${0}`}
-        Tag={<IncreaseDecreaseTag status="increase" amount={`${0}% last ${0}`} />}
-        sm={6}
-        md={4}
-        lg={4}
-      />
-      <PayoutDetails paymentDetails={{}} /> */}
-      <Grid sm={12}>
+      <RiderPayoutBreakDown riderParams={{ start: queryParams?.startDate, end: queryParams.endDate }} />
+      <Box>
         <Box>
           <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
             <StyledSearchBar
@@ -138,14 +113,14 @@ export default function RiderList() {
         </Box>
         <RiderFinancialsTable
           loading={query?.isLoading}
-          data={query?.data?.data?.deliveryBoy}
+          data={query?.data?.data?.riders}
           currentPage={queryParams?.page}
           setCurrentPage={(page) => {
             setQueryParams((prev) => ({ ...prev, page }));
           }}
           totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
         />
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 }
