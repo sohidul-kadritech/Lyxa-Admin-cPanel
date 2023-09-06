@@ -12,7 +12,7 @@ import DetailsAccordion from './DetailsAccordion';
 import PriceItem from './PriceItem';
 import { CommonOrderAmountTooltipText, CommonOrderMarketingCashbackTooltipText, getTotalProfit } from './helpers';
 
-export default function PayoutDetails({ paymentDetails }) {
+export default function PayoutDetails({ paymentDetails, viewUserType }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -27,6 +27,8 @@ export default function PayoutDetails({ paymentDetails }) {
   const lyxaMarketingCashback = paymentDetails?.AdminMarketingCashback;
   const otherPayments = paymentDetails?.otherPayments;
   const deliveryFee = paymentDetails?.deliveryFee;
+
+  console.log('shopConsole', paymentDetails);
 
   const orderValue = {};
 
@@ -319,13 +321,14 @@ export default function PayoutDetails({ paymentDetails }) {
                 isNegative
               />
 
-              {/* <PriceItem
+              <PriceItem
                 title="Error Charge"
                 amount={otherPayments?.featuredAmount}
                 // amount={Math.abs(paymentDetails?.totalRefundAmount)}
                 isNegative
+                showIfZero
                 // isNegative={paymentDetails?.totalRefundAmount > 0}
-              /> */}
+              />
 
               <PriceItem
                 title="Refunded Amount"
@@ -384,49 +387,62 @@ export default function PayoutDetails({ paymentDetails }) {
 
           {/* points cashback */}
 
-          {/* {orderValue?.pointsCashback > 0 && (
-            <DetailsAccordion
-              title="Points cashback"
-              titleAmount={orderValue?.pointsCashback}
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
-              isOpen={currentExpanedTab === 3}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 3 : -1);
-              }}
-            />
-          )} */}
-
-          {/* total payout */}
           <DetailsAccordion
-            title="Total Payouts"
-            titleAmount={totalProfit}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%.
-            VAT inclusive"
-            titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
+            title="Shop add/remove credit"
+            titleAmount={0}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
             }}
-            sx={{
-              borderBottom: '0',
-            }}
-          >
-            <PriceItem
-              title="Paid"
-              amount={Math.abs(paymentDetails?.totalPaid)}
-              isNegative={paymentDetails?.totalPaid < 0}
-            />
+          />
 
-            <PriceItem
-              title="Unpaid"
-              console={console.log('totalUnsettle', paymentDetails?.totalUnpaid)}
-              amount={Math.abs(paymentDetails?.totalUnpaid)}
-              isNegative={paymentDetails?.totalUnpaid < 0}
+          {/* total payout */}
+          {viewUserType === 'seller' || viewUserType === 'shop' ? (
+            <DetailsAccordion
+              title="Total Payouts"
+              titleAmount={totalProfit}
+              tooltip="Fee for Lyxa-powered deliveries: 20%
+            Shop-powered deliveries: 10%.
+            VAT inclusive"
+              titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
+              isOpen={currentExpanedTab === 3}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 3 : -1);
+              }}
+              sx={{
+                borderBottom: '0',
+              }}
+            >
+              <PriceItem
+                title="Paid"
+                amount={Math.abs(paymentDetails?.totalPaid)}
+                isNegative={paymentDetails?.totalPaid < 0}
+              />
+
+              <PriceItem
+                title="Unpaid"
+                console={console.log('totalUnsettle', paymentDetails?.totalUnpaid)}
+                amount={Math.abs(paymentDetails?.totalUnpaid)}
+                isNegative={paymentDetails?.totalUnpaid < 0}
+              />
+            </DetailsAccordion>
+          ) : (
+            <DetailsAccordion
+              title="Total Payouts"
+              titleAmount={totalProfit}
+              tooltip="Fee for Lyxa-powered deliveries: 20%
+            Shop-powered deliveries: 10%.
+            VAT inclusive"
+              titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
+              isOpen={currentExpanedTab === 3}
+              onChange={(closed) => {
+                seCurrentExpanedTab(closed ? 3 : -1);
+              }}
+              sx={{
+                borderBottom: '0',
+              }}
             />
-          </DetailsAccordion>
+          )}
         </Box>
       </StyledBox>
     </Grid>

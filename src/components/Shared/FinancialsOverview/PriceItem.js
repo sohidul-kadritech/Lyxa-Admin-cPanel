@@ -1,6 +1,7 @@
 import { Stack, Tooltip, Typography } from '@mui/material';
 import { ReactComponent as InfoIcon } from '../../../assets/icons/info.svg';
 import { useGlobalContext } from '../../../context';
+import { getCurrencyValue } from './DetailsAccordion';
 
 export default function PriceItem({
   title,
@@ -13,10 +14,12 @@ export default function PriceItem({
   showIfZero,
   isNegative,
   isRefused,
+  currencyType = 'baseCurrency',
   sx,
 }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   if (hide) return null;
   if (Number((amount || 0).toFixed(2)) === 0 && !showIfZero) return null;
@@ -56,7 +59,7 @@ export default function PriceItem({
         fontWeight={600}
         fontSize={fontSize}
       >
-        {isNegative ? '-' : ''} {currency} {(amount || 0).toFixed(2)}
+        {isNegative ? '-' : ''} {getCurrencyValue(amount, currencyType, currency, secondaryCurrency)}
       </Typography>
     </Stack>
   );

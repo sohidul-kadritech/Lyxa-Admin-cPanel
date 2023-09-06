@@ -71,7 +71,7 @@ function OrderFinancialsSummary() {
 
   const marketingCashBack = summary?.adminMarketingCashBack;
 
-  const fetured = summary?.featured;
+  const featured = summary?.featured;
 
   const otherAmount = summary?.other;
 
@@ -88,10 +88,17 @@ function OrderFinancialsSummary() {
           <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
         <Grid container spacing={7.5}>
-          {/* Total profit including delivery */}
+          {/* 
+            Total profit  = (all profit)
+            + profit from restaurant
+            + profit from grocery
+            + profit from pharmacy
+            + profit from butler
+            + profit from delivery
+            - Lyxa Pay */}
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
-              title="Total Profit"
+              title="Total profit"
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               isDropdown
               index={1}
@@ -108,14 +115,23 @@ function OrderFinancialsSummary() {
                 <PriceItem title="Profit from Pharmacy" amount={profit?.profitFromPharmacy} showIfZero />
                 <PriceItem title="Profit from Butler" amount={profit?.profitFromButler} showIfZero />
                 <PriceItem title="Profit from Delivery" amount={profit?.profitFromDelivery} showIfZero />
+                <PriceItem title="Lyxa Pay" amount={summary?.adminPay} isNegative showIfZero />
               </Stack>
             </InfoCard>
           </Grid>
-          {/* total order profit */}
+
+          {/* 
+          
+          Total order profit   = (without delivery)
+          + profit from restaurant
+          + profit from grocery
+          + profit from pharmacy
+          
+          */}
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
-              title="Total Orders profit"
+              title="Total orders profit"
               isDropdown
               index={2}
               setExpandedIndex={setExpandedIndex}
@@ -129,14 +145,19 @@ function OrderFinancialsSummary() {
                 <PriceItem title="Profit from Restaurant" amount={orderProfit?.orderProfitFromRestaurant} showIfZero />
                 <PriceItem title="Profit from Grocery" amount={orderProfit?.orderProfitFromGrocery} showIfZero />
                 <PriceItem title="Profit from Pharmacy" amount={orderProfit?.orderProfitFromPharmacy} showIfZero />
-                <PriceItem title="Profit from Butler" amount={orderProfit?.orderProfitFromButler} showIfZero />
               </Stack>
             </InfoCard>
           </Grid>
-          {/* delivery profit */}
+          {/* 
+            Total Delivery profit   = (only delivery)
+            + profit from restaurant
+            + profit from grocery
+            + profit from pharmacy
+            + profit from butler
+           */}
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Total Delivery Profit"
+              title="Total delivery profit"
               sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
               isDropdown
               index={3}
@@ -163,9 +184,15 @@ function OrderFinancialsSummary() {
               </Stack>
             </InfoCard>
           </Grid>
+          {/* 
+            Total refund   = 
+            + refund from restaurant
+            + refund from grocery
+            + refund from pharmacy
+          */}
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
-              title="Total Refund"
+              title="Total refund"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
               index={4}
@@ -180,13 +207,32 @@ function OrderFinancialsSummary() {
                 <PriceItem title="Refund from Restaurant" amount={refund?.refundFromRestaurant} showIfZero />
                 <PriceItem title="Refund from Grocery" amount={refund?.refundFromGrocery} showIfZero />
                 <PriceItem title="Refund from Pharmacy" amount={refund?.refundFromPharmacy} showIfZero />
-                <PriceItem title="Refund from Butler" amount={refund?.refundFromButler} showIfZero />
               </Stack>
             </InfoCard>
           </Grid>
+          {/* 
+            Total marketing spend = 
+ 	          + marketing spent from restaurant 
+	          	+ discount,
+	          	+ loyality,
+	          	+ buy 1, get 1,
+	          	+ coupon
+                  
+ 	          + marketing spent from grocery
+	          	+ discount,
+	          	+ loyality,
+	          	+ buy 1, get 1,
+	          	+ coupon,
+	          + marketing spent from pharmacy
+	          	+ discount,
+	          	+ loyality,
+	          	+ buy 1, get 1,
+	          	+ coupon,
+	          +  Free delivery (Lyxa)
+          */}
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
-              title="Total Marketing Spent"
+              title="Total marketing spent"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
               index={5}
@@ -260,7 +306,7 @@ function OrderFinancialsSummary() {
                 </DetailsAccordion>
                 <DetailsAccordion
                   summarySx={{ padding: '8px 0px' }}
-                  title="Marketing spent from Delivery"
+                  title="Marketing spent from Free Delivery"
                   sx={{ borderBottom: 'none' }}
                   titleAmount={marketingSpent?.delivery?.marketingSpentFromDelivery}
                   isOpen={currentExpanedTab === 1}
@@ -270,9 +316,9 @@ function OrderFinancialsSummary() {
                 >
                   <></>
                   <PriceItem
-                    title="Free Delivery"
+                    title="Free Delivery by Lyxa"
                     amount={marketingSpent?.delivery?.freeDelivery}
-                    isNegative
+                    // isNegative
                     showIfZero
                   />
                 </DetailsAccordion>
@@ -280,7 +326,7 @@ function OrderFinancialsSummary() {
             </InfoCard>
           </Grid>
 
-          <Grid item xs={6} md={4} height="140px">
+          {/* <Grid item xs={6} md={4} height="140px">
             <InfoCard
               title="Marketing cashback"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
@@ -295,18 +341,81 @@ function OrderFinancialsSummary() {
             >
               <Stack gap={3}>
                 <PriceItem title="Discount" amount={marketingCashBack?.discount_amc} showIfZero />
-                {/* <PriceItem title="Loyality points" amount={marketingCashBack?.couponDiscount_amc} showIfZero /> */}
+                <PriceItem title="Loyality points" amount={marketingCashBack?.couponDiscount_amc} showIfZero />
                 <PriceItem title="Buy 1, get 1" amount={marketingCashBack?.buy1Get1_amc} showIfZero />
                 <PriceItem title="Coupon" amount={marketingCashBack?.couponDiscount_amc} showIfZero />
               </Stack>
             </InfoCard>
-          </Grid>
+          </Grid> */}
+
+          {/* 
+          
+            How much earn from featured only
+            + refund from restaurant
+            + refund from grocery
+            + refund from pharmacy
+          
+          */}
 
           <Grid item xs={6} md={4}>
             <InfoCard
               title="How much earn from featured only?"
+              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
+              value={`${currency} ${(featured?.totalFeaturedAmount || 0).toFixed(2)}`}
+              isDropdown
+              index={7}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 7}
+              sm={6}
+              md={4}
+              lg={4}
+            >
+              <Stack gap={3}>
+                <PriceItem
+                  title="Featured from Restaurant"
+                  amount={featured?.featuredAmountFromRestaurant}
+                  showIfZero
+                />
+                <PriceItem title="Featured from Grocery" amount={featured?.featuredAmountFromGrocery} showIfZero />
+                <PriceItem title="Featured from Pharmacy" amount={featured?.featuredAmountFromPharmacy} showIfZero />
+              </Stack>
+            </InfoCard>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Other amount"
               sx={{ position: 'relative', left: 0 }}
-              value={`${currency} ${(fetured?.totalFeaturedAmount || 0).toFixed(2)}`}
+              isDropdown
+              index={8}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 8}
+              value={`${currency} ${(otherAmount?.otherAmount || 0).toFixed(2)}`}
+              sm={6}
+              md={4}
+              lg={4}
+            >
+              <Stack gap={3}>
+                <PriceItem
+                  title="Replacement orders by Lyxa"
+                  amount={otherAmount?.replacementOrderByAdmin}
+                  showIfZero
+                />
+                {/* <PriceItem title="Error Charge" amount={0} showIfZero /> */}
+                {/* <PriceItem title="replacement orders by Lyxa" amount={0} showIfZero /> */}
+                {/* <PriceItem title="Error order by Lyxa ( endure loss )" amount={0} showIfZero /> */}
+                <PriceItem
+                  title="Error order by Lyxa (endure loss)"
+                  amount={otherAmount?.errorOrderByAdmin}
+                  showIfZero
+                />
+              </Stack>
+            </InfoCard>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Free delivery by shop"
+              sx={{ position: 'relative', left: 0 }}
+              value={`${currency} ${(summary?.freeDeliveryShopCut || 0).toFixed(2)}`}
               sm={6}
               md={4}
               lg={4}
@@ -314,29 +423,13 @@ function OrderFinancialsSummary() {
           </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Other Amount"
+              title="Lyxa pay"
               sx={{ position: 'relative', left: 0 }}
-              isDropdown
-              index={7}
-              setExpandedIndex={setExpandedIndex}
-              expandedIndex={expandedIndex === 7}
-              value={`${currency} ${(otherAmount?.otherAmount || 0).toFixed(2)}`}
+              value={`${currency} ${(summary?.adminPay || 0).toFixed(2)}`}
               sm={6}
               md={4}
               lg={4}
-            >
-              <Stack gap={3}>
-                <PriceItem title="Lyxa Marketing Cashback" amount={otherAmount?.adminMarketingCashback} showIfZero />
-                {/* <PriceItem title="Error Charge" amount={0} showIfZero /> */}
-                {/* <PriceItem title="replacement orders by Lyxa" amount={0} showIfZero /> */}
-                {/* <PriceItem title="Error order by Lyxa ( endure loss )" amount={0} showIfZero /> */}
-                <PriceItem
-                  title="Free delivery by shop (Lyxa riders)"
-                  amount={otherAmount?.freeDeliveryByShop}
-                  showIfZero
-                />
-              </Stack>
-            </InfoCard>
+            />
           </Grid>
         </Grid>
       </Box>

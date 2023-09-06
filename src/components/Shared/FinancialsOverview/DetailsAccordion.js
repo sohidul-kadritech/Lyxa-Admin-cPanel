@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, Tooltip, Typography, styled } from '@mui/material';
 import { useRef, useState } from 'react';
@@ -44,6 +46,12 @@ const StyledAccordion = styled(Accordion)(() => ({
   },
 }));
 
+export const getCurrencyValue = (value, currencyType, currency, secondaryCurrency) => {
+  if (currencyType === 'baseCurrency') return `${currency} ${(value || 0).toFixed(2)}`;
+
+  return `${secondaryCurrency} ${Math.round(value || 0)}`;
+};
+
 export default function DetailsAccordion({
   isOpen,
   onChange,
@@ -55,6 +63,7 @@ export default function DetailsAccordion({
   sx,
   summarySx,
   expandIconGap = 1,
+  currencyType = 'baseCurrency',
   ...props
 }) {
   const [open, setOpen] = useState(false);
@@ -62,6 +71,7 @@ export default function DetailsAccordion({
 
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const Icon = open ? ExpandLess : ExpandMore;
 
@@ -106,7 +116,13 @@ export default function DetailsAccordion({
           >
             {typeof titleAmount !== 'string' &&
               typeof titleAmount !== 'object' &&
-              `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
+              // `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
+              `${titleAmountStatus === 'minus' ? '-' : ''} ${getCurrencyValue(
+                titleAmount,
+                currencyType,
+                currency,
+                secondaryCurrency,
+              )}`}
             {typeof titleAmount === 'string' && titleAmount}
             {typeof titleAmount === 'object' && titleAmount}
           </Typography>
