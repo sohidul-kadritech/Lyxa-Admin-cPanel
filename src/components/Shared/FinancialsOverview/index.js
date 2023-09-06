@@ -193,7 +193,7 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
           )}
         </Stack>
       </InfoCard>
-      <PayoutDetails paymentDetails={profitBreakdown} />
+      <PayoutDetails viewUserType={viewUserType} paymentDetails={profitBreakdown} />
       {viewUserType !== 'admin' && (
         <Grid xs={12}>
           <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />

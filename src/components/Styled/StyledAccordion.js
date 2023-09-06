@@ -44,6 +44,9 @@ export default function StyledAccordion({
         }
       }}
       onChange={(e, closed) => {
+        if (!hideIcon) {
+          e.stopPropagation();
+        }
         if (onChange) onChange(closed);
       }}
       {...props}
