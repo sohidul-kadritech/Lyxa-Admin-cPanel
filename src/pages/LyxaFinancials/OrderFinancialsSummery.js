@@ -75,6 +75,8 @@ function OrderFinancialsSummary() {
 
   const otherAmount = summary?.other;
 
+  console.log('pharmacy', marketingSpent?.delivery?.freeDelivery);
+
   return (
     <Box>
       <PageTop
@@ -249,26 +251,30 @@ function OrderFinancialsSummary() {
                   // VAT inclusive"
                   summarySx={{ padding: '8px 0px' }}
                   sx={{ borderBottom: 'none' }}
-                  titleAmount={marketingSpent?.restaurent?.marketingSpentFromRestaurant || 0}
+                  titleAmount={marketingSpent?.restaurant?.marketingSpentFromRestaurant || 0}
                   isOpen={currentExpanedTab === 1}
                   onChange={(closed) => {
                     seCurrentExpanedTab(closed ? 1 : -1);
                   }}
                 >
-                  <PriceItem title="discount" amount={marketingSpent?.restaurent?.discountFromRestaurant} showIfZero />
+                  <PriceItem
+                    title="discount"
+                    amount={marketingSpent?.restaurant?.discountFromRestaurant || 0}
+                    showIfZero
+                  />
                   <PriceItem
                     title="loyality"
-                    amount={marketingSpent?.restaurent?.loyaltyPointFromRestaurant}
+                    amount={marketingSpent?.restaurant?.loyaltyPointFromRestaurant}
                     showIfZero
                   />
                   <PriceItem
                     title="buy 1, get 1"
-                    amount={marketingSpent?.restaurent?.buy1Get1FromRestaurant}
+                    amount={marketingSpent?.restaurant?.buy1Get1FromRestaurant}
                     showIfZero
                   />
                   <PriceItem
                     title="coupon"
-                    amount={marketingSpent?.restaurent?.couponDiscountFromRestaurant}
+                    amount={marketingSpent?.restaurant?.couponDiscountFromRestaurant}
                     showIfZero
                   />
                 </DetailsAccordion>

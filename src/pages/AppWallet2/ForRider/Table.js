@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
@@ -13,11 +14,11 @@ const getCurrencyValue = (baseCurrency, secondaryCurrency, baseAmount = 0, secon
 
   const baseValueWithCurrency =
     baseValue < 0
-      ? `-${baseCurrency} ${Math.abs(baseValue).toFixed(2)}`
+      ? `- ${baseCurrency} ${Math.abs(baseValue).toFixed(2)}`
       : `${baseCurrency} ${Math.abs(baseValue).toFixed(2)}`;
   const secondaryValueWithCurrency =
     secondaryValue < 0
-      ? `-${secondaryCurrency} ${Math.abs(secondaryValue)}`
+      ? `- ${secondaryCurrency} ${Math.abs(secondaryValue)}`
       : `${secondaryCurrency} ${Math.abs(secondaryValue)}`;
 
   const joinCurrencyValue = `${baseValueWithCurrency} + ${secondaryValueWithCurrency}`;
@@ -79,7 +80,7 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
     },
     {
       id: 2,
-      headerName: `LYXA DELIVERY CUT (${secondaryCurrency})`,
+      headerName: `LYXA DELIVERY FEES (${secondaryCurrency})`,
       // headerName: <HeaderWithToolTips title="ORDERS" tooltip="Number of orders" />,
       field: 'order',
       flex: 1,
@@ -102,13 +103,13 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
     {
       id: 3,
       field: 'delivery_fee',
-      headerName: `LXYA DELIVERY PROFIT (${secondaryCurrency})`,
+      headerName: `LXYA DELIVERY CUT (${secondaryCurrency})`,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ color: 'danger.main' }}>
           {
-            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.adminDeliveryProfit)
+            getCurrencyValue(currency, secondaryCurrency, 0, -params?.row?.profitBreakdown?.adminDeliveryProfit)
               .secondaryValueWithCurrency
           }
         </Typography>

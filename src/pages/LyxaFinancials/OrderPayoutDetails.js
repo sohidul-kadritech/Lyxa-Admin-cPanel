@@ -260,9 +260,6 @@ VAT inclusive"
 
           <DetailsAccordion
             title="Other Payments"
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
             titleAmount={Math.abs(otherPayments?.totalOtherPayments || 0)}
             titleAmountStatus={otherPayments?.totalOtherPayments > 0 ? 'minus' : 0}
             isOpen={currentExpanedTab === 2}

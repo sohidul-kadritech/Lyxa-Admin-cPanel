@@ -3,6 +3,7 @@
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import socketServices from '../../../common/socketService';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
@@ -36,6 +37,9 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
     onSuccess: (data) => {
       if (data.status) {
         if (onSuccess) onSuccess(data);
+        socketServices?.emit('updateOrder', {
+          orderId: data?.data?.order?._id,
+        });
         onClose(false);
         queryClient.invalidateQueries(refetchApiKey);
       } else {
@@ -46,10 +50,12 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
   const normalMutation = useMutation((data) => AXIOS.post(Api.CANCEL_ORDER, data, { params: { userType: 'admin' } }), {
     onSuccess: (data) => {
-      console.log({ data });
-
       if (data.status) {
         successMsg(data.message, 'success');
+
+        socketServices?.emit('updateOrder', {
+          orderId: data?.data?.order?._id,
+        });
 
         if (onSuccess) onSuccess(data);
         queryClient.invalidateQueries(refetchApiKey);

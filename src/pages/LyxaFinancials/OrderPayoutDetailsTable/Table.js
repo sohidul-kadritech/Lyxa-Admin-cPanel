@@ -275,7 +275,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     {
       id: 3,
       type: ['order'],
-      headerName: `PAYOUTS`,
+      headerName: `SHOP PAYOUTS`,
       sortable: false,
       field: 'totalPayouts',
       flex: 1,
@@ -335,6 +335,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           currencyType={currencyType}
           value={row?.profitBreakdown?.featuredAmont}
           valueSecondary={row?.profitBreakdown?.featuredAmont}
+          isNegative
           showIfZero
         />
       ),
@@ -360,9 +361,17 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={otherPayments?.totalOtherPayments}
-                  valueSecondary={otherPayments?.totalOtherPayments}
-                  isNegative
+                  value={
+                    otherPayments?.totalOtherPayments < 0
+                      ? Math.abs(otherPayments?.totalOtherPayments)
+                      : otherPayments?.totalOtherPayments
+                  }
+                  valueSecondary={
+                    otherPayments?.totalOtherPayments < 0
+                      ? Math.abs(otherPayments?.totalOtherPayments)
+                      : otherPayments?.totalOtherPayments
+                  }
+                  isNegative={otherPayments?.totalOtherPayments >= 0}
                   showIfZero
                 />
               }
@@ -376,6 +385,14 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
+                label="Error Charge (Endure loss) by lyxa"
+                currencyType={currencyType}
+                isNegative
+                value={otherPayments?.errorCharge}
+                valueSecondary={otherPayments?.errorCharge}
+              />
+
+              <SummaryItem
                 label="Customer refund"
                 currencyType={currencyType}
                 isNegative
@@ -384,11 +401,32 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
+                label="Replacement orders by Lyxa"
+                currencyType={currencyType}
+                isNegative
+                value={otherPayments?.replacementOrderByAdmin}
+                valueSecondary={otherPayments?.replacementOrderByAdmin}
+              />
+
+              <SummaryItem
                 label="Free delivery by shop (Lyxa riders)"
                 currencyType={currencyType}
                 isNegative
                 value={otherPayments?.freeDeliveryByShop}
                 valueSecondary={otherPayments?.freeDeliveryByShop}
+              />
+
+              <SummaryItem
+                label="Shop VAT"
+                currencyType={currencyType}
+                value={otherPayments?.shopVat}
+                valueSecondary={otherPayments?.shopVat}
+              />
+              <SummaryItem
+                label="Shop self delivery"
+                currencyType={currencyType}
+                value={otherPayments?.shopDeliveryFee}
+                valueSecondary={otherPayments?.shopDeliveryFee}
               />
             </TableAccordion>
           </Box>
