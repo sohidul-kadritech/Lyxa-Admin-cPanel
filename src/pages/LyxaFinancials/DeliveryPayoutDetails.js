@@ -99,16 +99,13 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
 
           <DetailsAccordion
             title="Lyxa Delivery Profit"
+            sx={{ borderBottom: 'none' }}
             titleAmount={totalProfit}
-            // titleAmount={deliveryProfitBreakDown?.adminDeliveryProfit}
-            //             tooltip="Fee for Lyxa-powered deliveries: 20%
-            // Shop-powered deliveries: 10%.
-            // VAT inclusive"
             isOpen={currentExpanedTab === 2}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 2 : -1);
             }}
-          ></DetailsAccordion>
+          />
 
           {/* <PriceItem title="Paid" amount={0} showIfZero />
         <PriceItem title="Unpaid" amount={0} showIfZero /> */}

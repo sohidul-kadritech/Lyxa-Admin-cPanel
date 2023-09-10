@@ -79,9 +79,6 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
       }),
   );
 
-  //
-  console.log('query', query?.data?.data);
-
   // eslint-disable-next-line no-unused-vars
   const summary = query?.data?.data;
   const profitBreakdown = summary?.profitBreakdown;

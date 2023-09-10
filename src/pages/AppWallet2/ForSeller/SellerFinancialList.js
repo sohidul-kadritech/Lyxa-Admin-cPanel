@@ -106,14 +106,6 @@ export default function SellerFinancialList() {
             showFor="allSeller"
           />
         </Box>
-        {/* 
-        <SellerFinancialsTable
-          loading={query?.isLoading}
-          data={query?.data?.data?.sellers}
-          currentPage={queryParams?.page}
-          setPage={(page) => setQueryParams((prev) => ({ ...prev, page }))}
-          totalPage={query?.data?.data?.paginate?.metadata?.page?.totalPage}
-        /> */}
       </Grid>
     </Grid>
   );
