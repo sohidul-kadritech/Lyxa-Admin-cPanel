@@ -45,7 +45,7 @@ export const shopTabsReducer = (state, { type, payload }) => {
   if (type === 'change-current-tab-location') {
     return {
       ...state,
-      allTabs: state.allTabs.map((tab) => {
+      allTabs: state?.allTabs?.map((tab) => {
         if (tab?.shopId === state.currentTabId) return { ...tab, currentLocation: payload.location };
         return tab;
       }),
