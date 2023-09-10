@@ -33,6 +33,8 @@ export default function App() {
   const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
   const { userType, adminType, shop } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
+
+  console.log('socket test', socket);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
   const [, setRender] = useState(false);
 

@@ -138,7 +138,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
             {/* Online */}
             <DetailsAccordion
-              // sx={{ borderBottom: 'none' }}
+              sx={{ borderBottom: 'none' }}
               title="Online"
               tooltip="How many amount user paid by online?"
               titleAmount={online?.totalOnline}
@@ -279,24 +279,10 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             VAT inclusive"
           />
 
-          {/* total vat */}
-
-          <PriceItem
-            sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
-            title="Total VAT"
-            amount={Math.abs(paymentDetails?.totalVat)}
-            // tooltip="Fee for Lyxa-powered deliveries: 20%
-            // Shop-powered deliveries: 10%.
-            // VAT inclusive"
-          />
-
           {/* Other payments */}
           {otherPayments?.totalOtherPayments >= 0 && (
             <DetailsAccordion
               title="Other Payments"
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
               titleAmount={Math.abs(otherPayments?.totalOtherPayments)}
               titleAmountStatus={`${otherPayments?.totalOtherPaymentst < 0 ? '' : 'minus'}`}
               isOpen={currentExpanedTab === 2}
@@ -341,14 +327,23 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             </DetailsAccordion>
           )}
 
+          {/* total vat */}
+
+          <PriceItem
+            sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
+            title="Total VAT"
+            amount={Math.abs(paymentDetails?.totalVat)}
+            // tooltip="Fee for Lyxa-powered deliveries: 20%
+            // Shop-powered deliveries: 10%.
+            // VAT inclusive"
+          />
+
           {/* delivery */}
           {deliveryFee?.deliveryFee > 0 && (
             <DetailsAccordion
               title="Delivery fee"
               titleAmount={deliveryFee?.deliveryFee}
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-          Shop-powered deliveries: 10%. 
-          VAT inclusive"
+              tooltip="If self delivery"
               isOpen={currentExpanedTab === 2}
               onChange={(closed) => {
                 seCurrentExpanedTab(closed ? 2 : -1);
@@ -360,9 +355,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                 <DetailsAccordion
                   title="Online"
                   titleAmount={deliveryFee?.online}
-                  //       tooltip="Fee for Lyxa-powered deliveries: 20%
-                  // Shop-powered deliveries: 10%.
-                  // VAT inclusive"
+                  sx={{ borderBottom: 'none' }}
                   isOpen={currentExpanedTab === 4}
                   onChange={(closed) => {
                     seCurrentExpanedTab(closed ? 4 : -1);
@@ -401,9 +394,6 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             <DetailsAccordion
               title="Total Payouts"
               titleAmount={totalProfit}
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%.
-            VAT inclusive"
               titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
               isOpen={currentExpanedTab === 3}
               onChange={(closed) => {

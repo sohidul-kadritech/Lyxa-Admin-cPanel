@@ -5,6 +5,7 @@ import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
+import socketServices from '../../../common/socketService';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -21,6 +22,7 @@ export default function UpdateOrderStatus({
   refetchApiKey = Api.ORDER_LIST,
 }) {
   const theme = useTheme();
+  // eslint-disable-next-line no-unused-vars
   const { socket } = useSelector((state) => state.socketReducer);
   const queryClient = useQueryClient();
 
@@ -109,9 +111,11 @@ export default function UpdateOrderStatus({
       // emit socket
       if (payload.service === 'regular') {
         if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
-          socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+          console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
+          socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
         } else {
-          socket?.emit('updateOrder', {
+          console.log('update order socket....', payload?.data?.orderId);
+          socketServices?.emit('updateOrder', {
             orderId: payload.data?.orderId,
           });
         }
