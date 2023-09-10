@@ -172,7 +172,14 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  if (adminType === 'shop') return order?.baseCurrency_shopEarnings;
+  console.log('baseCurrency_shopEarnings', order);
+  if (adminType === 'shop') {
+    const shopVat = order?.vatAmount?.baseCurrency_vatForShop || 0;
+    const shopEarning = order?.baseCurrency_shopEarnings;
+    const totalPayout = shopVat + shopEarning;
+
+    return totalPayout;
+  }
   const summary = order?.summary;
   return (
     summary?.baseCurrency_totalAmount +

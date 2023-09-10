@@ -119,7 +119,6 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
       }),
     {
       onSuccess: (data) => {
-        console.log('data response: ', data);
         if (data.status) {
           if (onSuccess) onSuccess(data);
           successMsg(data.message, 'success');

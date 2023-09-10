@@ -354,7 +354,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             currencyType={currencyType}
             value={Math.abs(financialBreakdown?.adminFees)}
             valueSecondary={Math.abs(financialBreakdown?.adminFees)}
-            isNegative={financialBreakdown?.adminFees > 0}
+            isNegative={financialBreakdown?.adminFees >= 0}
             showIfZero
           />
         );
@@ -407,7 +407,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   currencyType={currencyType}
                   value={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
                   valueSecondary={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
-                  isNegative={financialBreakdown?.otherPayments?.totalOtherPayments > 0}
+                  isNegative={financialBreakdown?.otherPayments?.totalOtherPayments >= 0}
                   showIfZero
                 />
               }

@@ -279,8 +279,8 @@ export default function OrderTable({
     {
       showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile'],
       id: 5,
-      headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PROFIT'}`,
-      field: 'profit',
+      headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PAYOUTS'}`,
+      field: 'payouts',
       sortable: false,
       align: adminType === 'admin' ? 'center' : 'right',
       headerAlign: adminType === 'admin' ? 'center' : 'right',

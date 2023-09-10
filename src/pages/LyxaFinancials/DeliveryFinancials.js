@@ -66,7 +66,7 @@ function DeliveryFinancials({ shopType }) {
                     fontSize: '40px',
                   }}
                 >
-                  {currency} {(deliveryProfitBreakDown?.totalAdminProfit || 0).toFixed(2)}
+                  {currency} {(deliveryProfitBreakDown?.adminDeliveryProfit || 0).toFixed(2)}
                 </Typography>
 
                 {deliveryProfitBreakDown?.secondaryCurrency_adminDeliveryProfit ? (
