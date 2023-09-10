@@ -249,7 +249,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
                         )}`,
                       },
                       {
@@ -258,7 +258,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
                         )}`,
                       },
                     ]}
@@ -333,9 +333,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           title
           pb={0}
           currencyType={currencyType}
-          value={row?.profitBreakdown?.featuredAmont}
-          valueSecondary={row?.profitBreakdown?.featuredAmont}
-          isNegative
+          value={row?.profitBreakdown?.featuredAmount}
+          valueSecondary={row?.profitBreakdown?.featuredAmount}
           showIfZero
         />
       ),

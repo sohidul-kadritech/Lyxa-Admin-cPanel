@@ -52,7 +52,7 @@ function OrderFinancialsSummary() {
           endDate: convertDate(paymentDetailsRange?.end),
           // orderType: shopType,
         },
-      }),
+      })
   );
 
   console.log('getFinancialsDashBoard', getFinancialsDashBoard?.data?.data);
@@ -365,7 +365,7 @@ function OrderFinancialsSummary() {
 
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="How much earn from featured only?"
+              title="Featured Earning"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               value={`${currency} ${(featured?.totalFeaturedAmount || 0).toFixed(2)}`}
               isDropdown

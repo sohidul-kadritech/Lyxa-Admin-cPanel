@@ -14,7 +14,7 @@ function IncrementDecrementButton({
   setTypeValidation,
 }) {
   const theme = useTheme();
-  console.log(currentValue, 'current value');
+
   return (
     <Stack direction="row" alignItems="center" gap={3}>
       <Box

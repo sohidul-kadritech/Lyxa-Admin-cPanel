@@ -32,7 +32,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
 
-  console.log('paymentDetails', paymentDetails);
+  
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
   discount by lyxa+discount by lyxa = order amount (x online and y cash)
@@ -228,7 +228,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
             {/* <PriceItem title="Shop point cashback" amount={payout?.pointsCashback || 0} isNegative /> */}
             {/* <PriceItem title="Payout" amount={payout?.payout || 0} isNegative /> */}
           </DetailsAccordion>
-          <DetailsAccordion title="Featured" titleAmount={paymentDetails?.featuredAmount} titleAmountStatus="minus">
+          <DetailsAccordion title="Featured" titleAmount={paymentDetails?.featuredAmount}>
             {/* <PriceItem title="Free delivery by shop" amount={payout?.freeDeliveryByShop || 0} isNegative /> */}
             {/* <PriceItem title="Shop error charge" amount={payout?.totalPayout || 0} /> */}
             {/* <PriceItem title="Shop customer refund" amount={payout?.shopCustomerRefund || 0} /> */}
