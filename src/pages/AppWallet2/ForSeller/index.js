@@ -30,7 +30,7 @@ function FinancialsForSeller() {
           }}
         >
           <Tab label="Seller List"></Tab>
-          <Tab label="Invoices"></Tab>
+          <Tab label="Payouts"></Tab>
         </Tabs>
       </Box>
       <Box sx={{ marginBottom: '35px' }}>
