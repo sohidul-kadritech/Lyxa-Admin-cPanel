@@ -51,6 +51,7 @@ export default function AddRemoveCredit({ shopId, onClose, dropAmount, shopAmoun
 
       if (data?.status) {
         queryClient.invalidateQueries([Api.SHOP_TRX, { shopId }]);
+        queryClient.invalidateQueries(Api.GET_SHOP_DASHBOARD_SUMMARY);
         onClose();
       }
     },

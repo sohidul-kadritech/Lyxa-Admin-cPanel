@@ -4,6 +4,23 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
 import IncrementDecrementButton from './IncrementDecrementButton';
 
+// eslint-disable-next-line no-unused-vars
+const defaultStackStyle = {
+  direction: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  sx: {
+    maxWidth: {
+      lg: '40%',
+      xs: '100%',
+    },
+    width: {
+      lg: '40%',
+      xs: '100%',
+    },
+  },
+};
+
 function InputBox({
   inputProps,
   intputType,
@@ -13,27 +30,18 @@ function InputBox({
   decrementHandler,
   setValue,
   setTypeValidation,
+  endAdornment,
+  stackStyle,
+  titleSx,
 }) {
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{
-        maxWidth: {
-          lg: '40%',
-          xs: '100%',
-        },
-        width: {
-          lg: '40%',
-          xs: '100%',
-        },
-      }}
-    >
+    <Stack {...(stackStyle || defaultStackStyle)}>
       <Box>
-        <Typography variant="body1">{title}</Typography>
+        <Typography variant="body1" sx={{ ...(titleSx || {}) }}>
+          {title}
+        </Typography>
       </Box>
-      {intputType === 'select' && (
+      {intputType !== 'incrementButton' && (
         <StyledFormField
           intputType={intputType}
           containerProps={{
@@ -52,6 +60,7 @@ function InputBox({
           decrementHandler={decrementHandler}
           setValue={setValue}
           setTypeValidation={setTypeValidation}
+          endAdornment={endAdornment}
         />
       )}
       {intputType === 'status' && (
