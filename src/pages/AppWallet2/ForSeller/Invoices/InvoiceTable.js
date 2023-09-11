@@ -6,14 +6,14 @@ import { ReactComponent as DownloadIcon } from '../../../../assets/icons/downloa
 // eslint-disable-next-line import/no-named-as-default
 import UserAvatar from '../../../../components/Common/UserAvatar';
 // eslint-disable-next-line import/no-named-as-default
-// eslint-disable-next-line import/no-named-as-default
-// eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../../../components/Styled/StyledIconButton';
 import StyledTable from '../../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../../context';
 
-function InvoiceTable({ data = [], loading = false }) {
+function PayoutTable({ data = [], payoutData, loading = false }) {
   const { general } = useGlobalContext();
+
+  console.log('payoutData', payoutData);
   const theme = useTheme();
   const currency = general?.currency?.symbol;
   // eslint-disable-next-line no-unused-vars
@@ -151,4 +151,4 @@ function InvoiceTable({ data = [], loading = false }) {
   );
 }
 
-export default InvoiceTable;
+export default PayoutTable;

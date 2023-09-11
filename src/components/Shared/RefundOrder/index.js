@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -40,7 +41,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   // secondary currency
   const shopExchangeRate = order?.shopExchangeRate;
   const secondaryCurrency = order?.secondaryCurrency?.code;
-  const baseCurrency = order?.baseCurrency?.code;
+  const baseCurrency = order?.baseCurrency?.symbol;
   const adminExchangeRate = order?.adminExchangeRate;
   const isSecondaryCurrencyEnabled = order?.shopExchangeRate > 0;
 
@@ -64,7 +65,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(refundData.partialPayment.adminOrderProfit) + Number(refundData.partialPayment.adminRiderProfit),
-      vatPercentage
+      vatPercentage,
     );
 
     setRefundData((prev) => ({
@@ -240,21 +241,20 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
       {refundData?.refundType === 'partial' && (
         <TitleWithToolTip
           sx={{ pb: 4 }}
-          title={`Total Admin Vat: ${baseCurrency} ${(refundData?.partialPayment?.adminVat || 0)?.toFixed(2)} 
-          ${
+          title={`Total Admin Vat: ${
             isSecondaryCurrencyEnabled
-              ? ` ~ ${secondaryCurrency} ${Math.round(refundData?.partialPayment?.adminVat * shopExchangeRate)}`
+              ? `${secondaryCurrency} ${Math.round(refundData?.partialPayment?.adminVat * shopExchangeRate)} ~ `
               : ''
-          }
+          } ${baseCurrency} ${(refundData?.partialPayment?.adminVat || 0)?.toFixed(2)}
           `}
         />
       )}
 
       <TitleWithToolTip
-        title={`Total Refund Amount: ${(totalRefundAmount || 0)?.toFixed(2)}  ${
-          isSecondaryCurrencyEnabled ? ` ~ ${secondaryCurrency} ${Math.round(totalRefundSecondary)}` : ''
-        }`}
-        tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT+Rider Earning + Rider VAT"
+        title={`Total Refund Amount: ${
+          isSecondaryCurrencyEnabled ? `${secondaryCurrency} ${Math.round(totalRefundSecondary)} ~ ` : ''
+        } ${baseCurrency} ${(totalRefundAmount || 0)?.toFixed(2)}`}
+        tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
       />
 
       <Box sx={{ textAlign: 'right', pt: 8 }}>

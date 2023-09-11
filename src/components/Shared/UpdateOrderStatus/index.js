@@ -13,7 +13,14 @@ import CloseButton from '../../Common/CloseButton';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import { StyledSelect } from '../../Filter/FilterSelect';
 import StyledFormField from '../../Form/StyledFormField';
-import { paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
+import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
+
+const disableUpdateStatusButton = (order, currentStatus) => {
+  if (getNextStatus(order) === currentStatus) {
+    return false;
+  }
+  return true;
+};
 
 export default function UpdateOrderStatus({
   onClose,
@@ -109,7 +116,19 @@ export default function UpdateOrderStatus({
       if (onUpdateSuccess) onUpdateSuccess(response);
 
       // emit socket
+      console.log('payload.service', payload?.service);
+
       if (payload.service === 'regular') {
+        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
+          console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
+          socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+        } else {
+          console.log('update order socket....', payload?.data?.orderId);
+          socketServices?.emit('updateOrder', {
+            orderId: payload.data?.orderId,
+          });
+        }
+      } else if (payload.service === 'butler') {
         if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
           console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
           socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
@@ -363,7 +382,7 @@ export default function UpdateOrderStatus({
             onClick={() => {
               updateStatus();
             }}
-            disabled={updateStatusMutation?.isLoading}
+            disabled={updateStatusMutation?.isLoading || disableUpdateStatusButton(currentOrder, currentStatus)}
           >
             Update
           </Button>

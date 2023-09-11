@@ -82,14 +82,14 @@ export default function Tabs() {
     }
 
     // is current but tab are available
-    const fallbackTab = shopTabs.allTabs[0]?.shopId === tab?.shopId ? shopTabs.allTabs[1] : shopTabs.allTabs[0];
+    const fallbackTab = shopTabs?.allTabs[0]?.shopId === tab?.shopId ? shopTabs.allTabs[1] : shopTabs.allTabs[0];
     changeTab(fallbackTab);
     dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
   };
 
   return (
     <Stack direction="row" alignItems="center" gap={1.5} position="relative">
-      {shopTabs.allTabs.map((tab) => (
+      {shopTabs?.allTabs?.map((tab) => (
         <StyledTab
           key={tab?.shopId}
           className={shopTabs?.currentTabId === tab?.shopId ? 'active' : undefined}

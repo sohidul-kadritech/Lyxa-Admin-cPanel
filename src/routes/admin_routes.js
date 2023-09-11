@@ -60,6 +60,7 @@ import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminDealSettings from '../pages/Settings/Admin/Marketing/DealSettings';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import PayoutConfiguration from '../pages/Settings/Payout';
 import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
 import TestChat from '../pages/TestChat';
@@ -162,6 +163,7 @@ export const admin_routes = [
   { path: '/app/settings', component: AppSettings },
   { path: '/testing', component: AdminSettings2 },
   { path: '/settings/app-settings', component: Appsettings2 },
+  { path: '/settings/payout-configuration', component: PayoutConfiguration },
   { path: '/admin/settings2', component: AdminSettings },
   { path: '/admin/percentage-settings-history', component: AdminLog },
   { path: '/settings/refer-friend', component: ReferFriend },

@@ -80,8 +80,8 @@ const getPageList = () => [
     to: '/customer-support',
   },
   {
-    label: 'Invoice Configuration',
-    to: '#',
+    label: 'Payout Configuration',
+    to: '/settings/payout-configuration',
   },
 ];
 

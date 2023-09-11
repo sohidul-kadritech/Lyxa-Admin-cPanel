@@ -96,8 +96,6 @@ function ShopSettings() {
     shopExchangeRate: newShop?.shopExchangeRate,
   });
 
-  console.log({ rateofShop: reateOfShop });
-
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data.status ? 'success' : undefined);
@@ -136,7 +134,7 @@ function ShopSettings() {
       shopAcceptedCurrency,
       shopExchangeRate,
       // eslint-disable-next-line prettier/prettier
-      newCusines,
+      newCusines
     );
 
     if (reateOfShop?.shopExchangeRate < reateOfShop?.baseExchangeRate) {
@@ -249,13 +247,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    }),
+    })
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data],
+    [tagsQuery?.data]
   );
 
   return (

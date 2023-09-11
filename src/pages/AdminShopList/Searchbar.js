@@ -103,7 +103,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    [],
+    []
   );
 
   const commonChangeHandler = (prop, value) => {

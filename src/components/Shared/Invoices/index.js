@@ -12,7 +12,7 @@ export default function Invoices() {
       }}
     >
       <Typography variant="body1" fontWeight={600} pb={3}>
-        Invoices: Lyxa to Store
+        Payouts: Lyxa to Store
       </Typography>
       <InvoiceTable rows={data} />
     </StyledBox>

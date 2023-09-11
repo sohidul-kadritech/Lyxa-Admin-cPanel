@@ -98,7 +98,7 @@ function GraphInfo({ graphType }) {
     if (data.length > 0) {
       const labelsData = data?.map((item) =>
         // eslint-disable-next-line prettier/prettier
-        item.date ? new Date(item?.date).toLocaleDateString('en-GB', options) : moment(item?.month, 'M').format('MMMM'),
+        item.date ? new Date(item?.date).toLocaleDateString('en-GB', options) : moment(item?.month, 'M').format('MMMM')
       );
       const seriesData = data?.map((item) => {
         if (graphType !== 'earning') {
@@ -137,8 +137,6 @@ function GraphInfo({ graphType }) {
       getSelectMonthDate(month);
     }
   };
-
-  console.log(chartData);
 
   return (
     <Graph

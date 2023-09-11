@@ -395,6 +395,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.profitBreakdown;
+        console.log('financialBreakdown', financialBreakdown);
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -426,6 +427,13 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 isNegative={financialBreakdown?.otherPayments?.customerRefund > 0}
                 value={financialBreakdown?.otherPayments?.customerRefund}
                 valueSecondary={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
+              />
+              <SummaryItem
+                label="Shop Add/remove credit"
+                currencyType={currencyType}
+                isNegative={financialBreakdown?.otherPayments?.shopAddRemoveCredit >= 0}
+                value={financialBreakdown?.otherPayments?.shopAddRemoveCredit}
+                valueSecondary={Math.abs(financialBreakdown?.otherPayments?.shopAddRemoveCredit)}
               />
             </TableAccordion>
           </Box>
