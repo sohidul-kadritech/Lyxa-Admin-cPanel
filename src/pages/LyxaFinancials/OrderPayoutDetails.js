@@ -17,7 +17,7 @@ import StyledBox from '../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../context';
 import { isDeliveryProfitIsVisible } from './helpers';
 
-export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliveryProfitBreakDown = {} }) {
+export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -32,7 +32,8 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
 
-  
+  console.log('paymentDetails', paymentDetails);
+
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
   discount by lyxa+discount by lyxa = order amount (x online and y cash)
@@ -46,7 +47,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Payout Breakdown
+          Profit Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
           Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business
@@ -228,13 +229,6 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {}, deliv
             {/* <PriceItem title="Shop point cashback" amount={payout?.pointsCashback || 0} isNegative /> */}
             {/* <PriceItem title="Payout" amount={payout?.payout || 0} isNegative /> */}
           </DetailsAccordion>
-          <DetailsAccordion title="Featured" titleAmount={paymentDetails?.featuredAmount}>
-            {/* <PriceItem title="Free delivery by shop" amount={payout?.freeDeliveryByShop || 0} isNegative /> */}
-            {/* <PriceItem title="Shop error charge" amount={payout?.totalPayout || 0} /> */}
-            {/* <PriceItem title="Shop customer refund" amount={payout?.shopCustomerRefund || 0} /> */}
-            {/* <PriceItem title="Shop point cashback" amount={payout?.pointsCashback || 0} isNegative /> */}
-            {/* <PriceItem title="Payout" amount={payout?.payout || 0} isNegative /> */}
-          </DetailsAccordion>
 
           {/* delivery */}
 
@@ -281,8 +275,14 @@ VAT inclusive"
               showIfZero
             />
             <PriceItem
+              title="Customer refund by Shop"
+              amount={otherPayments?.shopCustomerRefund || 0}
+              isNegative
+              showIfZero
+            />
+            <PriceItem
               title="Replacement orders by Lyxa"
-              amount={otherPayments?.customerRefund || 0}
+              amount={otherPayments?.replacementOrderByAdmin || 0}
               isNegative
               showIfZero
             />
@@ -300,8 +300,13 @@ VAT inclusive"
             />
             <PriceItem title="Shop VAT" amount={otherPayments?.shopVat} showIfZero />
             <PriceItem title="Shop Self delivery" amount={otherPayments?.shopDeliveryFee} showIfZero />
-
-            <PriceItem title="Shop Add/Remove Credit" amount={0} isNegative showIfZero />
+            {/* 
+            <PriceItem
+              title="Shop Add/Remove Credit"
+              amount={otherPayments?.shopAddRemoveCredit}
+              isNegative
+              showIfZero
+            /> */}
           </DetailsAccordion>
 
           {/* profit */}

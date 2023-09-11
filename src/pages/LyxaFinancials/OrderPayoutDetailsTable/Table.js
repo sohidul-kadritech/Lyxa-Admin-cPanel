@@ -249,7 +249,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
                         )}`,
                       },
                       {
@@ -258,7 +258,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
                         )}`,
                       },
                     ]}
@@ -319,37 +319,19 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         />
       ),
     },
-    {
-      id: 5,
-      type: ['order'],
-      headerName: `TOTAL FEATURED AMOUNT`,
-      sortable: false,
-      field: 'featured',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => (
-        <SummaryItem
-          title
-          pb={0}
-          currencyType={currencyType}
-          value={row?.profitBreakdown?.featuredAmount}
-          valueSecondary={row?.profitBreakdown?.featuredAmount}
-          showIfZero
-        />
-      ),
-    },
+
     {
       id: 6,
       type: ['order'],
       headerName: `OTHER PAYMENTS`,
       sortable: false,
       field: 'otherPayments',
-      flex: 1.3,
+      flex: 1.5,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const otherPayments = row?.profitBreakdown?.otherPayments;
+        console.log('otherPayments?.shopCustomerRefund', otherPayments);
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -392,11 +374,18 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
-                label="Customer refund"
+                label="Customer refund by Lyxa"
                 currencyType={currencyType}
                 isNegative
                 value={otherPayments?.customerRefund}
                 valueSecondary={otherPayments?.customerRefund}
+              />
+              <SummaryItem
+                label="Customer refund by Shop"
+                currencyType={currencyType}
+                isNegative
+                value={otherPayments?.shopCustomerRefund}
+                valueSecondary={otherPayments?.shopCustomerRefund}
               />
 
               <SummaryItem

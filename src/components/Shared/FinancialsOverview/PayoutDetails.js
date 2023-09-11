@@ -309,9 +309,18 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
               <PriceItem
                 title="Error Charge"
-                amount={otherPayments?.featuredAmount}
+                amount={otherPayments?.errorCharge}
                 // amount={Math.abs(paymentDetails?.totalRefundAmount)}
                 isNegative
+                showIfZero
+                // isNegative={paymentDetails?.totalRefundAmount > 0}
+              />
+
+              <PriceItem
+                title="Shop add/remove credit"
+                amount={Math.abs(otherPayments?.shopAddRemoveCredit)}
+                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
+                isNegative={otherPayments?.shopAddRemoveCredit < 0}
                 showIfZero
                 // isNegative={paymentDetails?.totalRefundAmount > 0}
               />
@@ -380,14 +389,14 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
           {/* points cashback */}
 
-          <DetailsAccordion
+          {/* <DetailsAccordion
             title="Shop add/remove credit"
             titleAmount={0}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);
             }}
-          />
+          /> */}
 
           {/* total payout */}
           {viewUserType === 'seller' || viewUserType === 'shop' ? (

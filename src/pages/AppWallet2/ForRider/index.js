@@ -38,7 +38,7 @@ function RidersTransaction() {
           }}
         >
           <Tab label="Rider LIst"></Tab>
-          <Tab label="Invoices"></Tab>
+          <Tab label="Payouts"></Tab>
         </Tabs>
       </Box>
       <Box sx={{ marginBottom: '35px' }}>
