@@ -63,6 +63,7 @@ export const GET_BUTLER_ADMIN_DELIVERY_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADM
 export const GET_ALL_SELLER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/seller-profit-breakdown`;
 export const GET_SPECIFIC_SELLER_SHOP_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/shop-profit-breakdown`;
 export const GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider/rider-profit-breakdown`;
+export const GET_PAYOUTS = `${ADMIN_ENDPOINT}/payout`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
@@ -201,11 +202,18 @@ export const DELIVERY_BOY_CUSTOMER_RATING = `${ADMIN_ENDPOINT}/order/delivery/cu
 
 //  SETTINGS
 export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
+
 export const UPDATE_ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting/edit`;
 
 export const UPDATE_APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting/edit`;
+
 export const APP_SETTINGS = `${ADMIN_ENDPOINT}/setting/app-setting`;
+
+export const PAYOUT_SETTINGS = `${ADMIN_ENDPOINT}/setting/payout-setting`;
+export const UPDATE_PAYOUT_SETTINGS = `${ADMIN_ENDPOINT}/setting/payout-setting/edit`;
+
 export const UNIT_ADMIN_LOGS = `${ADMIN_ENDPOINT}/unit/admin-logs`;
+
 // REFER A FRIEND
 export const GET_REFER_A_FRIEND_HISTORY = `${ADMIN_ENDPOINT}/setting/referral-history`;
 export const GET_REFER_A_FRIEND_SETTINGS = `${ADMIN_ENDPOINT}/setting/referral-setting`;

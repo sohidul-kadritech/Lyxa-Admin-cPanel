@@ -55,8 +55,6 @@ function OrderFinancialsSummary() {
       }),
   );
 
-  console.log('getFinancialsDashBoard', getFinancialsDashBoard?.data?.data);
-
   const summary = getFinancialsDashBoard?.data?.data;
 
   const profit = summary?.profit;
@@ -75,7 +73,7 @@ function OrderFinancialsSummary() {
 
   const otherAmount = summary?.other;
 
-  console.log('pharmacy', marketingSpent?.delivery?.freeDelivery);
+  const addRemoveCredit = summary?.addRemoveCredit;
 
   return (
     <Box>
@@ -365,7 +363,7 @@ function OrderFinancialsSummary() {
 
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="How much earn from featured only?"
+              title="Featured Earning"
               sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               value={`${currency} ${(featured?.totalFeaturedAmount || 0).toFixed(2)}`}
               isDropdown
@@ -390,7 +388,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Other amount"
-              sx={{ position: 'relative', left: 0 }}
+              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
               isDropdown
               index={8}
               setExpandedIndex={setExpandedIndex}
@@ -436,6 +434,41 @@ function OrderFinancialsSummary() {
               md={4}
               lg={4}
             />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Shop Add/Remove Credit"
+              sx={{ position: 'absolute', left: 0, zIndex: 990 }}
+              isDropdown
+              index={10}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 10}
+              value={`${currency} ${(addRemoveCredit?.totalAddRemoveCredit || 0).toFixed(2)}`}
+              sm={6}
+              md={4}
+              lg={4}
+            >
+              <Stack gap={3}>
+                <PriceItem
+                  title="Add/Remove from Restaurant"
+                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromRestaurant)}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromRestaurant > 0}
+                  showIfZero
+                />
+                <PriceItem
+                  title="Add/Remove from Grocery"
+                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromPharmacy)}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromPharmacy > 0}
+                  showIfZero
+                />
+                <PriceItem
+                  title="Add/Remove from Pharmacy"
+                  amount={Math.abs(addRemoveCredit?.refundFromPharmacy)}
+                  isNegative={addRemoveCredit?.refundFromPharmacy > 0}
+                  showIfZero
+                />
+              </Stack>
+            </InfoCard>
           </Grid>
         </Grid>
       </Box>

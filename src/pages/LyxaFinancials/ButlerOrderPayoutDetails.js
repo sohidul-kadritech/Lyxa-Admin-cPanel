@@ -36,7 +36,7 @@ export default function ButlerOrderPayoutDetails({ paymentDetails }) {
         }}
       >
         <Typography variant="body1" fontWeight={600} pb={2}>
-          Payout Breakdown
+          Profit Breakdown
         </Typography>
         <Typography variant="body4" color="#737373">
           Expected profit is scheduled on {moment().endOf('week').calendar()}. Usually, payments deposit in 1-3 business

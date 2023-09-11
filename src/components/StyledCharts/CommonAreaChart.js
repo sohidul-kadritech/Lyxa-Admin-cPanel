@@ -36,7 +36,7 @@ export default function CommonAreaChart({ title, generateData, api, params, sx, 
           ...params,
         },
         // eslint-disable-next-line prettier/prettier
-      }),
+      })
   );
 
   const data = generateData(query?.data);

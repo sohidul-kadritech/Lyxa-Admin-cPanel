@@ -25,8 +25,6 @@ export const getAllVatInfo = (reqBody, accountType, shopId) => async (dispatch, 
       method: 'POST',
     });
 
-    console.log(data);
-
     // status true
     if (data?.status) {
       dispatch({
@@ -64,7 +62,6 @@ export const settleVat = (reqBody, accountType) => async (dispatch) => {
       method: 'POST',
       data: reqBody,
     });
-    console.log(resp);
 
     if (resp?.data?.status) {
       dispatch({

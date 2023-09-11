@@ -84,6 +84,8 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
   const profitBreakdown = summary?.profitBreakdown;
   const marketingSpent = summary?.marketingSpent;
 
+  console.log('marke');
+
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, marketingSpent),
     [query?.data, marketingSpentType],
@@ -185,15 +187,17 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
           <PriceItem title="Buy 1 Get 1" amount={marketingSpentValues?.totalDoubleMenuItemPrice} />
           <PriceItem title="Loyalty points" amount={marketingSpentValues?.totalRewardAmount} />
           <PriceItem title="Free delivery" amount={marketingSpentValues?.freeDeliveryShopCut} />
-          {marketingSpentType !== 'admin' && (
-            <PriceItem title="Featured" amount={query?.data?.data?.summary?.totalFeaturedAmount} />
-          )}
+          <PriceItem title="Featured" amount={marketingSpentValues?.totalFeaturedAmount} />
         </Stack>
       </InfoCard>
       <PayoutDetails viewUserType={viewUserType} paymentDetails={profitBreakdown} />
       {viewUserType !== 'admin' && (
         <Grid xs={12}>
-          <PayoutDetailsTable startDate={paymentDetailsRange.start} endDate={paymentDetailsRange.end} />
+          <PayoutDetailsTable
+            shopParams={viewUserTypeToApiMap[viewUserType]?.params}
+            startDate={paymentDetailsRange.start}
+            endDate={paymentDetailsRange.end}
+          />
         </Grid>
       )}
     </Grid>
