@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import PageTop from '../../../components/Common/PageTop';
 import TabPanel from '../../../components/Common/TabPanel';
-import RiderInvoice from './Invoices';
+import PayoutList from '../../../components/Shared/Payout';
 import RiderList from './RiderList';
 
 const breadcrumbItems = [
@@ -46,7 +46,7 @@ function RidersTransaction() {
           <RiderList />
         </TabPanel>
         <TabPanel index={1} value={currentTab} noPadding>
-          <RiderInvoice />
+          <PayoutList showFor="rider" payaoutParams={{ payoutAccount: 'deliveryBoy' }} />
         </TabPanel>
       </Box>
     </Box>

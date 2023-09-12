@@ -48,3 +48,47 @@ export const staticData = [
     amount: 148,
   },
 ];
+
+export const getPayoutData = (data) => {
+  console.log('data===>rider', data);
+  const template = {
+    name: '',
+    autoGenId: '',
+    image: '',
+    route: '',
+    type: '',
+    totalAmount: 0,
+    address: '',
+    info: {},
+  };
+
+  const shopData = data?.shop;
+
+  const riderData = data?.deliveryBoy;
+
+  if (shopData) {
+    template.name = shopData?.shopName;
+    template.autoGenId = shopData?.autoGenId;
+    template.image = shopData?.shopLogo;
+    template.route = `/shop/profile/${shopData?._id}`;
+    template.type = 'Shop';
+    template.address = shopData?.address?.address;
+    template.totalAmount = shopData?.profitBreakdown?.totalAmount;
+    template.info = { ...data };
+    return template;
+  }
+
+  if (riderData) {
+    template.name = riderData?.name;
+    template.autoGenId = riderData?.autoGenId;
+    template.image = riderData?.image;
+    template.route = `/riders/${riderData?._id}`;
+    template.type = 'Rider';
+    template.address = riderData?.address;
+    template.totalAmount = riderData?.profitBreakdown?.riderPayout;
+    template.info = { ...data };
+    return template;
+  }
+
+  return template;
+};

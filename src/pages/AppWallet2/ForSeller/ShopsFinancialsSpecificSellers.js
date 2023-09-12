@@ -1,13 +1,14 @@
 /* eslint-disable prettier/prettier */
 import React, { useMemo, useState } from 'react';
 
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid, Stack, Tab, Tabs } from '@mui/material';
 import jsPDF from 'jspdf';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
 import PageTop from '../../../components/Common/PageTop';
 import Overview from '../../../components/Shared/FinancialsOverview';
+import PayoutList from '../../../components/Shared/Payout';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 import DateRange from '../../../components/StyledCharts/DateRange';
 import * as API_URL from '../../../network/Api';
@@ -56,6 +57,8 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
         params: { sellerId, searchKey, startDate: range.start, endDate: range.end },
       }),
   );
+
+  const [currentTab, setCurrentTab] = useState(0);
 
   // console.log('sellerId', sellerId);
   // console.log('query data', getSellerShopsTnx?.data);
@@ -108,50 +111,51 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
         />
       )}
 
-      <Grid sm={12}>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <DateRange range={range} setRange={setRange} />
-        </Stack>
-        {/* from shop console */}
-
-        <Overview
-          viewUserType="admin"
-          adminParams={{ id: sellerId, type: 'seller' }}
-          adminPaymentDetailsRange={{ start: range?.start, end: range?.end }}
-        />
-      </Grid>
-
-      <Box>
-        <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <AddMenuButton
-            title="Download"
-            icon={<DownloadIcon />}
-            onClick={() => {
-              downloadPdf();
-            }}
-          />
-        </Stack>
+      <Box marginBottom={7.5}>
+        <Tabs value={currentTab}>
+          <Tab onClick={() => setCurrentTab(0)} label="Profit Breakdown" />
+          <Tab onClick={() => setCurrentTab(1)} label="Payouts" />
+        </Tabs>
       </Box>
 
-      <Box marginBottom="30px">
-        <FinancialsTableForSellerAndShop
-          paramsProps={{ sellerId, startDate: range?.start, endDate: range?.end }}
-          showFor="seller"
-        />
-      </Box>
+      {currentTab === 0 && (
+        <Box>
+          <Grid sm={12}>
+            <Stack direction="row" alignItems="center" justifyContent="flex-end">
+              <DateRange range={range} setRange={setRange} />
+            </Stack>
+            {/* from shop console */}
 
-      {/* <Box sx={{ marginBottom: '30px' }}>
-        {getSellerShopsTnx.isLoading ? (
-          <TablePageSkeleton row={3} column={7} />
-        ) : (
-          <ShopsFinancialsTable
-            loading={getSellerShopsTnx?.isLoading}
-            data={getSellerShopsTnx?.data?.data?.shops}
-            viewUserType={viewUserType}
-          />
-        )}
-      </Box> */}
+            <Overview
+              viewUserType="admin"
+              adminParams={{ id: sellerId, type: 'seller' }}
+              adminPaymentDetailsRange={{ start: range?.start, end: range?.end }}
+            />
+          </Grid>
+
+          <Box>
+            <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
+              <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
+              <AddMenuButton
+                title="Download"
+                icon={<DownloadIcon />}
+                onClick={() => {
+                  downloadPdf();
+                }}
+              />
+            </Stack>
+          </Box>
+
+          <Box marginBottom="30px">
+            <FinancialsTableForSellerAndShop
+              paramsProps={{ sellerId, startDate: range?.start, endDate: range?.end }}
+              showFor="seller"
+            />
+          </Box>
+        </Box>
+      )}
+
+      {currentTab === 1 && <PayoutList payaoutParams={{ sellerId: searchParams.get('sellerId') || customSellerId }} />}
     </Box>
   );
 }

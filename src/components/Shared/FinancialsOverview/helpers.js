@@ -124,11 +124,14 @@ export const getTotalProfit = (currency, secondaryCurrency, paymentDetails, show
 
   const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
   ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+  const joinBaseAndSecondaryCurrencyWithoutBrackets = `${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
+  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)}`;
 
   const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
 
   profitOutput.onlyBaseCurrency = onlyBaseCurrency;
   profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
+  profitOutput.joinBaseAndSecondaryCurrencyWithoutBrackets = joinBaseAndSecondaryCurrencyWithoutBrackets;
   profitOutput.onlyBaseCurrencyComponent = (
     <Typography variant="body1" fontWeight={600}>
       {onlyBaseCurrency}
