@@ -74,7 +74,6 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
     }),
   );
 
-  console.log(getSellerShopsTnx?.data?.data?.transections);
   return (
     <Box>
       <PageTop
@@ -92,17 +91,7 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
         }}
       />
 
-      {/* <Box marginBottom={7.5}>
-        <Tabs value={currentTab}>
-          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
-          <Tab onClick={() => setCurrentTab(1)} label="Order" />
-        </Tabs>
-      </Box> */}
-
       <ShopTransactions shop={{ _id: searchParams.get('shopId') }} />
-      {/* {currentTab === 1 && (
-        <Overview viewUserType="adminShop" adminParams={{ id: searchParams.get('shopId'), type: 'shop' }} />
-      )} */}
     </Box>
   );
 }

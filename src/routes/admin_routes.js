@@ -38,6 +38,7 @@ import TagsAndCusines from '../pages/Display/Tags';
 import Faq2 from '../pages/Faq2';
 import LyxaFinancials from '../pages/LyxaFinancials';
 import LyxaButlerOrderFinancials from '../pages/LyxaFinancials/ButlerOrderFinancials';
+import LyxaPayout from '../pages/LyxaFinancials/LyxaPayout';
 import LyxaOrderFinancials from '../pages/LyxaFinancials/OrderFinancials';
 import OrderFinancialsSummary from '../pages/LyxaFinancials/OrderFinancialsSummery';
 import Marketing from '../pages/Marketing';
@@ -76,6 +77,7 @@ export const admin_routes = [
   { path: '/financials/lyxa/food', component: LyxaOrderFinancials, componentProps: { shopType: 'food' } },
   { path: '/financials/lyxa/grocery', component: LyxaOrderFinancials, componentProps: { shopType: 'grocery' } },
   { path: '/financials/lyxa/butler', component: LyxaButlerOrderFinancials },
+  { path: '/financials/lyxa/payouts', component: LyxaPayout },
   { path: '/financials/lyxa/pharmacy', component: LyxaOrderFinancials, componentProps: { shopType: 'pharmacy' } },
   { path: '/test-chat', component: TestChat },
 
