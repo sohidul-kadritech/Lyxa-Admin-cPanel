@@ -65,10 +65,10 @@ export default function Layout() {
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
         // eslint-disable-next-line prettier/prettier
-        currentUser?.shop?.shopType
+        currentUser?.shop?.shopType,
       ),
     // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType]
+    [currentUser?.userType],
   );
 
   // const location = useLocation();
@@ -86,8 +86,8 @@ export default function Layout() {
   return (
     <Box
       sx={{
-        display: 'grid',
-        gridTemplateColumns: '1fr',
+        // display: 'grid',
+        // gridTemplateColumns: '1fr',
         height: '100vh',
         overflowY: 'hidden',
       }}

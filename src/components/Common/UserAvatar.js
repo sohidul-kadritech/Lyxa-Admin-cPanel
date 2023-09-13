@@ -1,4 +1,4 @@
-import { Avatar, Stack, Typography } from '@mui/material';
+import { Avatar, Stack, Tooltip, Typography } from '@mui/material';
 
 export default function UserAvatar({
   imgUrl,
@@ -8,6 +8,7 @@ export default function UserAvatar({
   name,
   subTitle,
   subTitleProps,
+  toolTip,
   titleProps,
 }) {
   return (
@@ -16,9 +17,11 @@ export default function UserAvatar({
         {imgFallbackCharacter || name?.charAt(0)}
       </Avatar>
       <Stack gap={1.5} flex={1}>
-        <Typography variant="body4" component="p" {...titleProps}>
-          {name}
-        </Typography>
+        <Tooltip title={toolTip}>
+          <Typography variant="body4" component="p" {...titleProps}>
+            {name}
+          </Typography>
+        </Tooltip>
         {subTitle && (
           <Typography
             variant="body4"

@@ -2,9 +2,9 @@ import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
+import PayoutList from '../../components/Shared/Payout';
 import Banking from '../ShopFinancials/Banking';
 import ShopFlags from './Flag';
-import Invoices from './Invoices';
 import ShopOrders from './Orders';
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
@@ -33,7 +33,7 @@ export default function ShopProfileTabs({ shop }) {
             <Tab label="Reviews" />
             <Tab label="Flagged" />
             <Tab label="Financials" />
-            <Tab label="Invoices" />
+            <Tab label="Payouts" />
             {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
           </Tabs>
           <Box pt={6}>
@@ -50,7 +50,7 @@ export default function ShopProfileTabs({ shop }) {
               <ShopTransactions shop={shop} />
             </TabPanel>
             <TabPanel index={4} noPadding value={currentTab}>
-              <Invoices />
+              <PayoutList marginTop="0px" showFor="shop" payaoutParams={{ shopId: shop?._id }} />
             </TabPanel>
             {shop?.shopReceivePaymentBy === 'bank' && (
               <TabPanel index={5} noPadding value={currentTab}>
