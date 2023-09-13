@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.baf1d0b7.css",
-    "main.js": "/static/js/main.7cf0ffc5.js",
+    "main.js": "/static/js/main.eb84d5c2.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -52,6 +52,7 @@
     "static/media/riderPin.png": "/static/media/riderPin.bf518ad82e06f814723b.png",
     "static/media/spritesheet.svg": "/static/media/spritesheet.a4e0eb7ad904a4858361.svg",
     "static/media/delivery2.svg": "/static/media/delivery2.58f57fbf84805c6098a5529f2293fde0.svg",
+    "static/media/lyxa-logo-text.svg": "/static/media/lyxa-logo-text.92a934c3d8d740f687d37815fcf5992f.svg",
     "static/media/lyxa-text-lg.svg": "/static/media/lyxa-text-lg.ee7cb26ed19937132aae5b38caaf6fbc.svg",
     "static/media/lyxa-logo-lg.svg": "/static/media/lyxa-logo-lg.20be1d149109d79ab2620a6b18806460.svg",
     "static/media/logo-sm.svg": "/static/media/logo-sm.c394c84a7d931f7ff1a4e23f6fbe127c.svg",
@@ -140,6 +141,6 @@
   },
   "entrypoints": [
     "static/css/main.baf1d0b7.css",
-    "static/js/main.7cf0ffc5.js"
+    "static/js/main.eb84d5c2.js"
   ]
 }
