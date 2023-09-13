@@ -31,11 +31,22 @@ const getCurrencyValue = (baseCurrency, secondaryCurrency, baseAmount = 0, secon
   };
 };
 
-function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage, totalPage }) {
+const getValueByCurrencyType = (baseCurrency, secondaryAmount, type, value) => {
+  const currencyValue = type === 'baseCurrency' ? (value || 0).toFixed(2) : Math.round(value || 0);
+
+  if (type === 'baseCurrency') {
+    return `${baseCurrency} ${currencyValue}`;
+  }
+
+  return `${secondaryAmount} ${currencyValue}`;
+};
+
+function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage, totalPage, currencyType }) {
   const { general } = useGlobalContext();
   const theme = useTheme();
-  const currency = general?.currency?.symbol;
+  const baseCurrency = general?.currency?.symbol;
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+  const currency = currencyType !== 'secondaryCurrency' ? baseCurrency : secondaryCurrency;
   const routeMatch = useRouteMatch();
   const history = useHistory();
 
@@ -91,10 +102,12 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
               variant="body1"
               style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%', textTransform: 'capitalize' }}
             >
-              {
-                getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.totalDeliveryFee)
-                  .secondaryValueWithCurrency
-              }
+              {getValueByCurrencyType(
+                baseCurrency,
+                secondaryCurrency,
+                currencyType,
+                params?.row?.profitBreakdown?.totalDeliveryFee,
+              )}
             </Typography>
           </Box>
         </Stack>
@@ -108,10 +121,12 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1" sx={{ color: 'danger.main' }}>
-          {
-            getCurrencyValue(currency, secondaryCurrency, 0, -params?.row?.profitBreakdown?.adminDeliveryProfit)
-              .secondaryValueWithCurrency
-          }
+          {getValueByCurrencyType(
+            baseCurrency,
+            secondaryCurrency,
+            currencyType,
+            -params?.row?.profitBreakdown?.adminDeliveryProfit,
+          )}
         </Typography>
       ),
     },
@@ -124,10 +139,12 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {
-            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderTips)
-              .secondaryValueWithCurrency
-          }
+          {getValueByCurrencyType(
+            baseCurrency,
+            secondaryCurrency,
+            currencyType,
+            params?.row?.profitBreakdown?.riderTips,
+          )}
         </Typography>
       ),
     },
@@ -140,10 +157,12 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {
-            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderAddRemoveCredit)
-              .secondaryValueWithCurrency
-          }
+          {getValueByCurrencyType(
+            baseCurrency,
+            secondaryCurrency,
+            currencyType,
+            params?.row?.profitBreakdown?.riderAddRemoveCredit,
+          )}
         </Typography>
       ),
     },
@@ -151,16 +170,17 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
       id: 6,
       field: 'cash_order',
       headerName: `RIDER PAYOUTS (${secondaryCurrency})`,
-
       sortable: false,
       flex: 1,
       minWidth: 100,
       renderCell: (params) => (
         <Typography variant="body1">
-          {
-            getCurrencyValue(currency, secondaryCurrency, 0, params?.row?.profitBreakdown?.riderPayout)
-              .secondaryValueWithCurrency
-          }
+          {getValueByCurrencyType(
+            baseCurrency,
+            secondaryCurrency,
+            currencyType,
+            params?.row?.profitBreakdown?.riderPayout,
+          )}
         </Typography>
       ),
     },
@@ -178,7 +198,7 @@ function RiderFinancialsTable({ data = [], loading, currentPage, setCurrentPage,
         <Typography variant="body1">
           {
             getCurrencyValue(
-              currency,
+              baseCurrency,
               secondaryCurrency,
               params?.row?.profitBreakdown?.cashInHand?.baseCurrency_CashInHand,
               params?.row?.profitBreakdown?.cashInHand?.secondaryCurrency_CashInHand,

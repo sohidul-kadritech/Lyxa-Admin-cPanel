@@ -83,7 +83,7 @@ function OrderFinancialsSummary() {
         breadcrumbItems={breadcrumbItems()}
       />
 
-      <Box>
+      <Box paddingBottom="80px">
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={4} mb={7.5}>
           <DateRange setRange={setPaymentDetailsRange} range={paymentDetailsRange} />
         </Stack>
@@ -99,7 +99,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
               title="Total profit"
-              sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 1 ? 9999 : 99 }}
               isDropdown
               index={1}
               expandedIndex={expandedIndex === 1}
@@ -130,7 +130,7 @@ function OrderFinancialsSummary() {
           */}
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
-              sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 2 ? 9999 : 99 }}
               title="Total orders profit"
               isDropdown
               index={2}
@@ -158,7 +158,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Total delivery profit"
-              sx={{ position: 'absolute', left: 0, zIndex: 9999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 3 ? 9999 : 99 }}
               isDropdown
               index={3}
               setExpandedIndex={setExpandedIndex}
@@ -193,7 +193,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
               title="Total refund"
-              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 4 ? 9999 : 99 }}
               isDropdown
               index={4}
               setExpandedIndex={setExpandedIndex}
@@ -233,7 +233,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4} height="140px">
             <InfoCard
               title="Total marketing spent"
-              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 5 ? 9999 : 99 }}
               isDropdown
               index={5}
               setExpandedIndex={setExpandedIndex}
@@ -364,7 +364,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Featured Earning"
-              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 7 ? 9999 : 99 }}
               value={`${currency} ${(featured?.totalFeaturedAmount || 0).toFixed(2)}`}
               isDropdown
               index={7}
@@ -388,7 +388,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Other amount"
-              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
               isDropdown
               index={8}
               setExpandedIndex={setExpandedIndex}
@@ -437,8 +437,8 @@ function OrderFinancialsSummary() {
           </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Shop Add/Remove Credit"
-              sx={{ position: 'absolute', left: 0, zIndex: 990 }}
+              title="Add/Remove Credit"
+              sx={{ position: 'relative', left: 0, zIndex: 990 }}
               isDropdown
               index={10}
               setExpandedIndex={setExpandedIndex}
@@ -450,21 +450,27 @@ function OrderFinancialsSummary() {
             >
               <Stack gap={3}>
                 <PriceItem
-                  title="Add/Remove from Restaurant"
+                  title="Add/Remove Credit from Restaurant"
                   amount={Math.abs(addRemoveCredit?.addRemoveCreditFromRestaurant)}
                   isNegative={addRemoveCredit?.addRemoveCreditFromRestaurant > 0}
                   showIfZero
                 />
                 <PriceItem
-                  title="Add/Remove from Grocery"
-                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromPharmacy)}
-                  isNegative={addRemoveCredit?.addRemoveCreditFromPharmacy > 0}
+                  title="Add/Remove Credit from Grocery"
+                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromGrocery)}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromGrocery > 0}
                   showIfZero
                 />
                 <PriceItem
-                  title="Add/Remove from Pharmacy"
-                  amount={Math.abs(addRemoveCredit?.refundFromPharmacy)}
+                  title="Add/Remove Credit from Pharmacy"
+                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromPharmacy)}
                   isNegative={addRemoveCredit?.refundFromPharmacy > 0}
+                  showIfZero
+                />
+                <PriceItem
+                  title="Add/Remove Credit from Delivery"
+                  amount={Math.abs(addRemoveCredit?.addRemoveCreditFromRider)}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromRider > 0}
                   showIfZero
                 />
               </Stack>

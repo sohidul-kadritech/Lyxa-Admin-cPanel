@@ -49,13 +49,7 @@ function SearchBar({ queryParams, setQueryParams, searchPlaceHolder, onPaid, onD
         }}
       />
       <DateRange range={queryParams} startKey="startDate" endKey="endDate" setRange={setQueryParams} />
-      <AddMenuButton
-        title="Mark as Paid"
-        isIcon={false}
-        onClick={() => {
-          if (onPaid) onPaid();
-        }}
-      />
+
       <AddMenuButton
         title="Download"
         icon={<DownloadIcon />}

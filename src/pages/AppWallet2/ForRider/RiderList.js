@@ -27,6 +27,8 @@ const queryParamsInit = {
 export default function RiderList() {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
 
+  const [currencyType, setCurrencyType] = useState('secondaryCurrency');
+
   const query = useQuery([Api.GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN, queryParams], () =>
     AXIOS.get(Api.GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN, {
       params: queryParams,
@@ -93,7 +95,12 @@ export default function RiderList() {
         <DateRange range={queryParams} setRange={setQueryParams} startKey="startDate" endKey="endDate" />
       </Stack>
 
-      <RiderPayoutBreakDown riderParams={{ start: queryParams?.startDate, end: queryParams.endDate }} />
+      <RiderPayoutBreakDown
+        riderParams={{ start: queryParams?.startDate, end: queryParams.endDate }}
+        getCurrencyType={(data) => {
+          setCurrencyType(data?.currency);
+        }}
+      />
       <Box>
         <Box>
           <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
@@ -112,6 +119,7 @@ export default function RiderList() {
           </Stack>
         </Box>
         <RiderFinancialsTable
+          currencyType={currencyType}
           loading={query?.isLoading}
           data={query?.data?.data?.riders}
           currentPage={queryParams?.page}

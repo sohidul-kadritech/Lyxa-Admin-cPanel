@@ -69,7 +69,12 @@ export const GET_BUTLER_ADMIN_DELIVERY_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADM
 export const GET_ALL_SELLER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/seller-profit-breakdown`;
 export const GET_SPECIFIC_SELLER_SHOP_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/shop-profit-breakdown`;
 export const GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider/rider-profit-breakdown`;
+
+// Payouts
 export const GET_PAYOUTS = `${ADMIN_ENDPOINT}/payout`;
+export const REVOKE_PAYOUTS = `${ADMIN_ENDPOINT}/payout/revoked`;
+export const ADD_REMOVE_CREDIT_PAYOUTS = `${ADMIN_ENDPOINT}/payout/add-remove-credit`;
+export const PAID_PAYOUTS = `${ADMIN_ENDPOINT}/payout/paid`;
 
 // banner
 export const BANNER_LIST = `${ADMIN_ENDPOINT}/banner`;
