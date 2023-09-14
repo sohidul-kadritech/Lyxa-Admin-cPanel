@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import Overview from '../../../components/Shared/FinancialsOverview';
 import PayoutDetailsTable from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable';
+import PayoutList from '../../../components/Shared/Payout';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { useGlobalContext } from '../../../context';
@@ -141,6 +142,7 @@ export default function ShopTransactions({ shop }) {
         <Tabs value={currentTab}>
           <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
           <Tab onClick={() => setCurrentTab(1)} label="Order" />
+          <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
         </Tabs>
       </Box>
 
@@ -167,6 +169,8 @@ export default function ShopTransactions({ shop }) {
             />
           </Box>
         )}
+
+        {currentTab === 2 && <PayoutList payaoutParams={{ shopId: shop?._id }} />}
       </Box>
       {/* add/remove credit */}
       <Modal

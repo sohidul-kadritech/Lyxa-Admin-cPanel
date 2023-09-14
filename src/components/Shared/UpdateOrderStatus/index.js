@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, ListItemText, MenuItem, Stack, Typography, useTheme } from '@mui/material';
 
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -13,13 +15,81 @@ import CloseButton from '../../Common/CloseButton';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import { StyledSelect } from '../../Filter/FilterSelect';
 import StyledFormField from '../../Form/StyledFormField';
-import { getNextStatus, paidCurrencyOptions, statusOptions, updateOrderStatusOptions, validate } from './helpers';
+import {
+  getNextStatus,
+  newStatusOptions,
+  paidCurrencyOptions,
+  statusOptions,
+  updateOrderStatusOptions,
+  validate,
+} from './helpers';
 
-const disableUpdateStatusButton = (order, currentStatus) => {
-  if (getNextStatus(order) === currentStatus) {
+const disableUpdateStatusButton = (order, currentStatus, deliveryBoy) => {
+  const isGlobal = order?.orderFor === 'global';
+
+  const isPreparing = order?.orderStatus === 'preparing';
+
+  const notAssignRider = !order?.deliveryBoy;
+
+  const shouldNotDisable = isGlobal && isPreparing && notAssignRider;
+
+  if (shouldNotDisable && currentStatus === 'accepted_delivery_boy') {
+    console.log('1', false);
     return false;
   }
+
+  if (currentStatus === 'accepted_delivery_boy' && !notAssignRider) {
+    console.log('2', true);
+    return true;
+  }
+
+  if (currentStatus === 'ready_to_pickup' && !notAssignRider) {
+    return false;
+  }
+
+  if (getNextStatus(order, true) === currentStatus) {
+    return false;
+  }
+
+  if (deliveryBoy?._id !== order?.deliveryBoy?._id) {
+    return false;
+  }
+
   return true;
+};
+
+export const getUpdateStatusValue = (currentOrder, currentStatus) => {
+  const status = currentStatus;
+
+  const isGlobal = currentOrder?.orderFor === 'global';
+
+  const notAssignRider = !currentOrder?.deliveryBoy;
+
+  const isPreparingFirst =
+    !currentOrder?.accepted_delivery_boyAt && currentOrder?.preparingAt
+      ? true
+      : moment(currentOrder?.accepted_delivery_boyAt) > moment(currentOrder?.preparingAt);
+
+  const isPreparingFirstAndShouldChangeTheCurrentValue = isGlobal && isPreparingFirst;
+
+  if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && notAssignRider) {
+    return 'preparing';
+  }
+
+  if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && !notAssignRider) {
+    return 'accepted_delivery_boy';
+  }
+
+  return status;
+};
+
+const getUpdatedOrderData = (order) => {
+  const orderdata = order;
+  const isPreparing = orderdata?.orderStatus === 'preparing';
+  const notAssignRider = !orderdata?.deliveryBoy;
+  const shouldUpdate = isPreparing && !notAssignRider;
+  const updatedData = !shouldUpdate ? { ...orderdata } : { ...orderdata, orderStatus: 'accepted_delivery_boy' };
+  return updatedData;
 };
 
 export default function UpdateOrderStatus({
@@ -40,7 +110,7 @@ export default function UpdateOrderStatus({
   // const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
 
-  const [currentOrder, setCurrentOrder] = useState(order);
+  const [currentOrder, setCurrentOrder] = useState(getUpdatedOrderData(order));
   const [paidCurrency, setPaidCurrency] = useState('');
   const [deliveryBoyList, setDeliveryBoyList] = useState([]);
 
@@ -116,34 +186,25 @@ export default function UpdateOrderStatus({
       if (onUpdateSuccess) onUpdateSuccess(response);
 
       // emit socket
-      console.log('payload.service', payload?.service);
 
-      if (payload.service === 'regular') {
-        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
-          console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
-          socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
-        } else {
-          console.log('update order socket....', payload?.data?.orderId);
-          socketServices?.emit('updateOrder', {
-            orderId: payload.data?.orderId,
-          });
-        }
-      } else if (payload.service === 'butler') {
-        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
-          console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
-          socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
-        } else {
-          console.log('update order socket....', payload?.data?.orderId);
-          socketServices?.emit('updateOrder', {
-            orderId: payload.data?.orderId,
-          });
-        }
+      if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
+        // console.log('update order socket.... accepted_delivery_boy', payload?.data?.orderId);
+        socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+      } else {
+        // console.log('update order socket....', payload?.data?.orderId);
+        socketServices?.emit('updateOrder', {
+          orderId: payload.data?.orderId,
+        });
       }
 
       if (response?.data?.order?.orderStatus === 'delivered') {
         onClose();
       } else {
-        setCurrentOrder(response?.data?.order);
+        setCurrentOrder(() => {
+          const orderdata = response?.data?.order;
+
+          return getUpdatedOrderData(orderdata);
+        });
         setCurrentStatus(response?.data?.order?.orderStatus);
         // setCurrentStatus(getNextStatus(response?.data?.order));
       }
@@ -163,7 +224,7 @@ export default function UpdateOrderStatus({
     },
   );
 
-  const updateStatus = () => {
+  const updateStatus = async () => {
     if (!validate(currentStatus, currentOrderDelivery, currentOrder, paidCurrency)) return;
 
     const data = {};
@@ -174,11 +235,39 @@ export default function UpdateOrderStatus({
     // if not selected will be undefined
     data.paidCurrency = paidCurrency || undefined;
 
-    updateStatusMutation.mutate({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
+    const isChangedDelivery = currentOrder?.deliveryBoy?._id !== currentOrderDelivery?._id;
+
+    const isSameStatus = currentOrder?.orderStatus === currentStatus;
+    // deliveryBoy?._id !== order?.deliveryBoy?._id
+
+    if (isSameStatus && isChangedDelivery && currentOrder?.deliveryBoy?._id) {
+      await updateStatusMutation.mutateAsync({
+        service: currentOrder?.isButler ? 'butler' : 'regular',
+        data: { ...data, orderStatus: 'accepted_delivery_boy' },
+      });
+      return;
+    }
+
+    if (!isSameStatus && isChangedDelivery && currentOrder?.deliveryBoy?._id) {
+      await updateStatusMutation.mutateAsync({
+        service: currentOrder?.isButler ? 'butler' : 'regular',
+        data: { ...data, orderStatus: 'accepted_delivery_boy' },
+      });
+      await updateStatusMutation.mutateAsync({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
+      return;
+    }
+
+    if (!isSameStatus) {
+      await updateStatusMutation.mutateAsync({ service: currentOrder?.isButler ? 'butler' : 'regular', data });
+      return;
+    }
+
+    successMsg('Please change the status first');
+    // mutateAsync
   };
 
-  console.log({ currentStatus });
-  console.log({ isSelfShop });
+  // console.log({ currentStatus });
+  // console.log({ isSelfShop });
 
   return (
     <Box
@@ -225,7 +314,7 @@ export default function UpdateOrderStatus({
             }}
             fullWidth
             IconComponent={KeyboardArrowDownIcon}
-            value={currentStatus}
+            value={getUpdateStatusValue(currentOrder, currentStatus)}
             onChange={(e) => {
               setCurrentStatus(e.target.value);
             }}
@@ -259,8 +348,14 @@ export default function UpdateOrderStatus({
           >
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
-                disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
-                className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
+                disabled={item?.position <= newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position}
+                // disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
+                className={
+                  item?.position === newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position
+                    ? 'active-status'
+                    : ''
+                }
+                // className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
                 sx={{
@@ -382,7 +477,10 @@ export default function UpdateOrderStatus({
             onClick={() => {
               updateStatus();
             }}
-            disabled={updateStatusMutation?.isLoading || disableUpdateStatusButton(currentOrder, currentStatus)}
+            disabled={
+              updateStatusMutation?.isLoading ||
+              disableUpdateStatusButton(currentOrder, currentStatus, currentOrderDelivery)
+            }
           >
             Update
           </Button>

@@ -1,17 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Modal } from '@mui/material';
+import { Box, Modal, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
+import PayoutList from '../../../components/Shared/Payout';
 import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/RiderPayoutBreakDown';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
+import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MakePayment from './MakePayment';
+import RiderOrderTable from './RiderOrderTable';
 import SearchBar from './Searchbar';
 
 export const queryParamsInit = {
@@ -44,39 +47,9 @@ export default function RiderTransactions({ riderId, showFor }) {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, deliveryBoyId: riderId });
   const [totalPage, setTotalPage] = useState(1);
   const [makePayment, setMakePayment] = useState(false);
+  const [currencyType, setCurrencyType] = useState('secondaryCurrency');
   const [summary, setSummary] = useState({});
-
-  const summaryQuery = useQuery(
-    [
-      Api.DELIVERY_TRX,
-      {
-        deliveryBoyId: queryParams.deliveryBoyId || riderId,
-        startDate: queryParams.startDate,
-        endDate: queryParams.endDate,
-      },
-    ],
-    () =>
-      AXIOS.get(Api.DELIVERY_TRX, {
-        params: {
-          deliveryBoyId: queryParams.deliveryBoyId || riderId,
-          startDate: queryParams.startDate,
-          endDate: queryParams.endDate,
-        },
-      }),
-    {
-      onSuccess: (data) => {
-        if (data?.status && data?.data?.deliveryBoy?.length) {
-          setSummary(data?.data?.deliveryBoy[0]?.summary);
-        }
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
-
-  useEffect(() => {
-    if (summaryQuery?.data?.status && summaryQuery?.data?.data?.deliveryBoy?.length)
-      setSummary(summaryQuery?.data?.data?.deliveryBoy[0]?.summary);
-  }, []);
+  const [currentTab, setCurrentTab] = useState(0);
 
   const query = useQuery(
     [showForToApiMap[showFor]?.get, { ...queryParams, deliveryBoyId: queryParams?.deliveryBoyId || riderId }],
@@ -95,7 +68,6 @@ export default function RiderTransactions({ riderId, showFor }) {
   // on receive cash
   const receiveCashMutation = useMutation((data) => AXIOS.post(Api.RIDER_RECEIVED_PAYMENT, data), {
     onSuccess: () => {
-      queryClient.invalidateQueries([Api.DELIVERY_TRX]);
       queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST]);
       queryClient.invalidateQueries([Api.SINGLE_DELIVERY_WALLET_TRANSACTIONS]);
     },
@@ -123,101 +95,100 @@ export default function RiderTransactions({ riderId, showFor }) {
 
   return (
     <Box>
-      <SearchBar
-        searchPlaceHolder="Search transactions by id"
-        queryParams={queryParams}
-        setQueryParams={setQueryParams}
-        onMakePayment={() => setMakePayment(true)}
-        onReceiveCash={onReceiveCash}
-        showFor={showFor}
-        loading={receiveCashMutation.isLoading}
-      />
+      <Stack direction="row" justifyContent="flex-end">
+        <StyledDateRangePicker
+          startDate={queryParams.startDate}
+          endDate={queryParams.endDate}
+          onChange={({ startDate, endDate }) => {
+            setQueryParams((prev) => ({
+              ...prev,
+              startDate,
+              endDate,
+              page: 1,
+            }));
+          }}
+        />
+      </Stack>
+
       {showFor !== 'cashOrderList' && (
-        // <Grid container spacing={5} pb={7.5}>
-        //   <InfoCard
-        //     title={<CardTitle title="Lyxa Earning" tooltip="Lyxa Earning" />}
-        //     value={(summary?.dropEarning || 0)?.toFixed(2)}
-        //     sm={6}
-        //     md={4}
-        //     lg={2.37}
-        //     valueSx={amountSx}
-        //   />
-        //   <InfoCard
-        //     title={<CardTitle title="Orders No" tooltip="Orders No" />}
-        //     value={summary?.totalOrder || 0}
-        //     sm={6}
-        //     md={4}
-        //     valueSx={amountSx}
-        //     lg={2.5}
-        //   />
-        //   <InfoCard
-        //     title={<CardTitle title="Delivery Fees" tooltip="Total Delivery Fee" />}
-        //     value={(summary?.totalDeliveyFee || 0)?.toFixed(2)}
-        //     sm={6}
-        //     md={4}
-        //     valueSx={amountSx}
-        //     lg={2.37}
-        //   />
-        //   <InfoCard
-        //     title={<CardTitle title="Total Profit" tooltip="Total Profit" />}
-        //     value={(summary?.totalProfitRider || 0)?.toFixed(2)}
-        //     sm={6}
-        //     md={4}
-        //     lg={2.37}
-        //     valueSx={amountSx}
-        //     isDropdown
-        //   >
-        //     <Stack gap={3}>
-        //       <PriceItem fontSize="14px!important" title="Paid" amount={summary?.riderEarning} />
-        //       <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalUnSettleAmount} />
-        //     </Stack>
-        //   </InfoCard>
-        //   {/* setttled + cash in hand */}
-        //   <InfoCard
-        //     title={<CardTitle title="Cash Orders" tooltip="Cash Orders" />}
-        //     value={(summary?.totalCashInHand + summary?.totalCashReceived || 0)?.toFixed(2)}
-        //     sm={6}
-        //     md={4}
-        //     valueSx={amountSx}
-        //     lg={2.37}
-        //     isDropdown
-        //   >
-        //     <Stack gap={3}>
-        //       <PriceItem fontSize="14px!important" title="Cash In Hand" amount={summary?.totalCashInHand} />
-        //       <PriceItem fontSize="14px!important" title="Settled Cash" amount={summary?.totalCashReceived} />
-        //     </Stack>
-        //   </InfoCard>
-        // </Grid>
         <RiderPayoutBreakDown
+          getCurrencyType={(data) => {
+            console.log('currencyType', data);
+            setCurrencyType(data?.currency);
+          }}
           showFor="specific"
           riderParams={{
-            riderId: queryParams.deliveryBoyId || riderId,
+            riderId: queryParams?.deliveryBoyId || riderId,
             start: queryParams?.startDate,
             end: queryParams.endDate,
           }}
         />
       )}
-      <TransactionsTable
-        refetching={receiveCashMutation.isLoading}
-        loading={query.isLoading}
-        rows={query?.data?.data?.[showFor]}
-        type={showFor}
-        queryParams={queryParams}
-      />
-      <TablePagination
-        currentPage={queryParams?.page}
-        lisener={(page) => {
-          setQueryParams((prev) => ({ ...prev, page }));
-        }}
-        totalPage={totalPage}
-      />
+
+      <Box mb={7.5}>
+        <Tabs value={currentTab}>
+          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
+          <Tab onClick={() => setCurrentTab(1)} label="Order" />
+          <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
+        </Tabs>
+      </Box>
+
+      {/* transaction tab */}
+      {currentTab === 0 && (
+        <Box>
+          <SearchBar
+            searchPlaceHolder="Search transactions by id"
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            onMakePayment={() => setMakePayment(true)}
+            onReceiveCash={onReceiveCash}
+            showFor={showFor}
+            loading={receiveCashMutation.isLoading}
+          />
+          <TransactionsTable
+            refetching={receiveCashMutation.isLoading}
+            loading={query.isLoading}
+            rows={query?.data?.data?.[showFor]}
+            type={showFor}
+            queryParams={queryParams}
+          />
+          <TablePagination
+            currentPage={queryParams?.page}
+            lisener={(page) => {
+              setQueryParams((prev) => ({ ...prev, page }));
+            }}
+            totalPage={totalPage}
+          />
+        </Box>
+      )}
+
+      {/* Order Tab */}
+      {currentTab === 1 && (
+        <RiderOrderTable
+          currencyType={currencyType}
+          riderParams={{
+            riderId: queryParams.deliveryBoyId || riderId,
+            startDate: queryParams?.startDate,
+            endDate: queryParams.endDate,
+          }}
+        />
+      )}
+
+      {/* Payout tab */}
+      {currentTab === 2 && (
+        <Box>
+          <PayoutList
+            showFor="specific"
+            payaoutParams={{ deliveryBoyId: queryParams.deliveryBoyId || riderId, payoutAccount: 'deliveryBoy' }}
+          />
+        </Box>
+      )}
       <Modal
         open={makePayment}
         onClose={() => {
           setMakePayment(false);
           queryClient.invalidateQueries([showForToApiMap?.cashOrderList?.get]);
           queryClient.invalidateQueries([showForToApiMap?.transactions?.get]);
-          queryClient.invalidateQueries([Api.DELIVERY_TRX]);
         }}
       >
         <Box>
@@ -229,7 +200,6 @@ export default function RiderTransactions({ riderId, showFor }) {
               setMakePayment(false);
               queryClient.invalidateQueries([showForToApiMap?.cashOrderList?.get]);
               queryClient.invalidateQueries([showForToApiMap?.transactions?.get]);
-              queryClient.invalidateQueries([Api.DELIVERY_TRX]);
             }}
           />
         </Box>

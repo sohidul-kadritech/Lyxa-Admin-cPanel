@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import PageTop from '../../../components/Common/PageTop';
 import TabPanel from '../../../components/Common/TabPanel';
-import SellerPayouts from './Invoices';
+import PayoutList from '../../../components/Shared/Payout';
 import SellerFinancialList from './SellerFinancialList';
 
 const breadcrumbItems = [
@@ -41,7 +41,7 @@ function FinancialsForSeller() {
 
         {/* Seller invocie */}
         <TabPanel index={1} value={currentTab} noPadding>
-          <SellerPayouts />
+          <PayoutList />
         </TabPanel>
       </Box>
     </Box>

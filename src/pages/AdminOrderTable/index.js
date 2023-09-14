@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // third party
 import { Box, Tab, Tabs } from '@mui/material';
 
@@ -65,7 +66,7 @@ export default function AdminOrders() {
       </Tabs>
       <Box>
         <TabPanel panelKey="ongoing" value={queryParams?.type} noPadding>
-          <Orders type="ongoing" queryParams={queryParams} setQueryParams={setQueryParams} />
+          <Orders type="ongoing" queryParams={{ ...queryParams }} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel panelKey="delivered" value={queryParams?.type} noPadding>
           <Orders type="delivered" queryParams={queryParams} setQueryParams={setQueryParams} />

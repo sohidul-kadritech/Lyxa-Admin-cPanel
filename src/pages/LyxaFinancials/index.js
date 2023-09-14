@@ -23,6 +23,10 @@ const pagesList = [
     label: 'Butler',
     to: '/financials/lyxa/butler',
   },
+  {
+    label: 'Payouts',
+    to: '/financials/lyxa/payouts',
+  },
 ];
 
 export default function LyxaFinancials() {

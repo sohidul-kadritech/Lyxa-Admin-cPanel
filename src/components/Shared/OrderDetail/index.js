@@ -34,6 +34,9 @@ const hideUpdateAndCancelOption = (order) => {
 };
 
 function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
+  console.log('currentOrder in shop console', order);
+  const isPreparing = statusOptions[getNextStatus(order)]?.label === 'Preparing';
+  const isSpecific = order?.orderFor !== 'global';
   return (
     <Box>
       {/* This component only visible for shop */}

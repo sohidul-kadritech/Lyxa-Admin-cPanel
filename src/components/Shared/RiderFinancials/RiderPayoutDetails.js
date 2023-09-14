@@ -10,13 +10,13 @@ import StyledBox from '../../StyledCharts/StyledBox';
 import DetailsAccordion from '../FinancialsOverview/DetailsAccordion';
 import PriceItem from '../FinancialsOverview/PriceItem';
 
-function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
+function RiderPayoutDetails({ deliveryProfitBreakDown = {}, currencyType }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
   const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
-  console.log('deliveryProfitBreakDown', deliveryProfitBreakDown);
+  const baseCurrency = general?.currency?.symbol;
+
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
   const totalFreeDelivery =
     deliveryProfitBreakDown?.freeDeliveryByShop + deliveryProfitBreakDown?.freeDeliveryByAdmin || 0;
@@ -53,23 +53,18 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
 
           <DetailsAccordion
             title="Total Delivery Fee"
-            currencyType="secondaryCurrency"
+            currencyType={currencyType}
             titleAmount={deliveryProfitBreakDown?.totalDeliveryFee}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 0 : -1);
             }}
           >
-            <PriceItem
-              title="Users"
-              currencyType="secondaryCurrency"
-              amount={deliveryProfitBreakDown?.users}
-              showIfZero
-            />
+            <PriceItem title="Users" currencyType={currencyType} amount={deliveryProfitBreakDown?.users} showIfZero />
 
             <DetailsAccordion
               title="Free Delivery"
-              currencyType="secondaryCurrency"
+              currencyType={currencyType}
               sx={{ borderBottom: 'none' }}
               titleAmount={totalFreeDelivery || 0}
               isOpen={currentExpanedTab === 3}
@@ -79,13 +74,13 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
             >
               <PriceItem
                 title="Free Delivery by Shops"
-                currencyType="secondaryCurrency"
+                currencyType={currencyType}
                 amount={deliveryProfitBreakDown?.freeDeliveryByShop}
                 showIfZero
               />
               <PriceItem
                 title="Free Delivery by Lyxa"
-                currencyType="secondaryCurrency"
+                currencyType={currencyType}
                 amount={deliveryProfitBreakDown?.freeDeliveryByAdmin}
                 showIfZero
               />
@@ -102,13 +97,13 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
           */}
           <DetailsAccordion
             title="Lyxa Delivery Cut"
-            currencyType="secondaryCurrency"
+            currencyType={currencyType}
             titleAmount={deliveryProfitBreakDown?.adminDeliveryProfit}
             titleAmountStatus="minus"
           />
           <DetailsAccordion
             title="Rider Tips"
-            currencyType="secondaryCurrency"
+            currencyType={currencyType}
             titleAmount={deliveryProfitBreakDown?.riderTips}
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
@@ -117,7 +112,7 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
           />
           <DetailsAccordion
             title="Rider Add/Remove credit"
-            currencyType="secondaryCurrency"
+            currencyType={currencyType}
             titleAmount={deliveryProfitBreakDown?.riderAddRemoveCredit}
             titleAmountStatus={`${deliveryProfitBreakDown?.riderAddRemoveCredit < 0 ? 'minus' : ''}`}
           />
@@ -125,7 +120,7 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {} }) {
           <DetailsAccordion
             sx={{ borderBottom: 'none' }}
             title="Rider Payout"
-            currencyType="secondaryCurrency"
+            currencyType={currencyType}
             titleAmount={deliveryProfitBreakDown?.riderPayout}
             isOpen={currentExpanedTab === 2}
             onChange={(closed) => {
