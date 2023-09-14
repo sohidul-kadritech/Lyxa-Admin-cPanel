@@ -1,56 +1,7 @@
-export const staticData = [
-  {
-    _id: 1,
-    name: 'Restaurent Name',
-    image: 'https://freeaiavatargenerator.pro/wp-content/uploads/2023/03/ai-generated-gebca0d715_1920.jpg',
-    autoGenId: '#4552222',
-    createdAt: 'April 4, 2020',
-    dueDate: 'April 17, 2020',
-    seller: {
-      company_name: 'Seller Name',
-    },
-    amount: 440,
-  },
-  {
-    _id: 2,
-    name: 'Restaurent Name',
-    image: 'https://freeaiavatargenerator.pro/wp-content/uploads/2023/03/ai-generated-gebca0d715_1920.jpg',
-    autoGenId: '#4552222',
-    createdAt: 'April 4, 2020',
-    dueDate: 'April 17, 2020',
-    seller: {
-      company_name: 'Seller Name',
-    },
-    amount: 240,
-  },
-  {
-    _id: 3,
-    name: 'Restaurent Name',
-    image: 'https://freeaiavatargenerator.pro/wp-content/uploads/2023/03/ai-generated-gebca0d715_1920.jpg',
-    autoGenId: '#4552222',
-    createdAt: 'April 4, 2020',
-    dueDate: 'April 17, 2020',
-    seller: {
-      company_name: 'Seller Name',
-    },
-    amount: 350,
-  },
-  {
-    _id: 4,
-    name: 'Restaurent Name',
-    image: 'https://freeaiavatargenerator.pro/wp-content/uploads/2023/03/ai-generated-gebca0d715_1920.jpg',
-    createdAt: 'April 20, 2020',
-    dueDate: 'April 17, 2020',
-    autoGenId: '#4552222',
-    seller: {
-      company_name: 'Seller Name',
-    },
-    amount: 148,
-  },
-];
+import { successMsg } from '../../../helpers/successMsg';
 
+/* eslint-disable no-unused-vars */
 export const getPayoutData = (data) => {
-  console.log('data===>rider', data);
   const template = {
     name: '',
     autoGenId: '',
@@ -91,4 +42,48 @@ export const getPayoutData = (data) => {
   }
 
   return template;
+};
+
+export const validatePaidPayout = (data) => {
+  const forShopPayout = {
+    payoutId: data?._id,
+    baseCurrency_payoutPaidAmount: data?.profitBreakdown?.baseCurrency_Amount,
+    baseCurrency_payoutPaidAmount_sc: data?.profitBreakdown?.baseCurrency_Amount_sc,
+    secondaryCurrency_payoutPaidAmount: data?.profitBreakdown?.secondaryCurrency_Amount,
+    secondaryCurrency_payoutPaidAmount_bc: data?.profitBreakdown?.secondaryCurrency_Amount_bc,
+  };
+
+  const forRider = {
+    baseCurrency: {
+      payoutId: data?._id,
+      baseCurrency_payoutPaidAmount: data?.profitBreakdown?.baseCurrency_riderPayout,
+      baseCurrency_payoutPaidAmount_sc: data?.profitBreakdown?.secondaryCurrency_riderPayout,
+      baseCurrency_riderTip: data?.profitBreakdown?.baseCurrency_riderTips,
+      secondaryCurrency_riderTip: data?.profitBreakdown?.secondaryCurrency_riderTips,
+    },
+    secondaryCurrency: {
+      payoutId: data?._id,
+      secondaryCurrency_payoutPaidAmount: data?.profitBreakdown?.secondaryCurrency_riderPayout,
+      secondaryCurrency_payoutPaidAmount_bc: data?.profitBreakdown?.baseCurrency_riderPayout,
+      baseCurrency_riderTip: data?.profitBreakdown?.baseCurrency_riderTips,
+      secondaryCurrency_riderTip: data?.profitBreakdown?.secondaryCurrency_riderTips,
+    },
+  };
+
+  if (!data?._id) {
+    successMsg('Select a payout first', 'warn');
+    return { status: false };
+  }
+
+  if (data?.payoutAccount === 'shop') {
+    return { status: true, data: { ...forShopPayout } };
+  }
+
+  if (data?.payoutAccount === 'deliveryBoy') {
+    return { status: true, data: { ...forRider[data?.profitBreakdown?.currency] } };
+  }
+
+  successMsg('Payout data is not valid', 'warn');
+
+  return { status: false };
 };

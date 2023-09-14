@@ -203,7 +203,6 @@ export const getThreedotMenuOptions = (order, userType) => {
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
-      console.log('items', item);
       options.push(item);
     });
   };
@@ -446,10 +445,10 @@ export const validateAndGenerateStatusData = (currentOrder, paidCurrency) => {
   //   return status;
   // }
 
-  if (currentStatus === 'preparing' && !currentOrderDelivery) {
-    successMsg(`Assign rider first`);
-    return status;
-  }
+  // if (currentStatus === 'preparing' && !currentOrderDelivery && currentOrder?.orderFor === 'global') {
+  //   successMsg(`Assign rider first`);
+  //   return status;
+  // }
 
   if (currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !paidCurrency) {
     successMsg(`Choose paid currency first`);

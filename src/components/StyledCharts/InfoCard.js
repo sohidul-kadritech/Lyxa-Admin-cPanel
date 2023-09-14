@@ -12,14 +12,8 @@ import {
 import { useState } from 'react';
 import StyledBox from './StyledBox';
 
-const checkIsExpandedOrNot = (expandedIndex, dropdownOpen) => {
-  console.log(
-    'true or not',
-    // eslint-disable-next-line prettier/prettier
-    expandedIndex !== undefined ? expandedIndex : dropdownOpen,
-  );
-  return expandedIndex !== undefined ? expandedIndex : dropdownOpen;
-};
+const checkIsExpandedOrNot = (expandedIndex, dropdownOpen) =>
+  expandedIndex !== undefined ? expandedIndex : dropdownOpen;
 
 const dropdownProps = {
   position: 'absolute',
@@ -71,10 +65,7 @@ export default function InfoCard({
               onClick={() => {
                 setDropdownOpen((prev) => {
                   if (setExpandedIndex) {
-                    setExpandedIndex(() => {
-                      console.log('prev', prev, index);
-                      return !prev ? index : -1;
-                    });
+                    setExpandedIndex(() => (!prev ? index : -1));
                   }
                   return !prev;
                 });

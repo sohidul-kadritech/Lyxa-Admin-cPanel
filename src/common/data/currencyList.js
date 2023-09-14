@@ -1,3 +1,5 @@
+import { dummeyCurrency } from './dummyCurrencyLIst';
+
 const currenciesList = [
   {
     symbol: '$',
@@ -1072,4 +1074,11 @@ const currenciesList = [
   },
 ];
 
-export default currenciesList;
+// eslint-disable-next-line no-unused-vars
+const newCurrencyList = currenciesList.map((item) => {
+  const find = dummeyCurrency.find((child) => child?.code === item?.code);
+
+  return { ...item, flag: find?.flag };
+});
+
+export default newCurrencyList;

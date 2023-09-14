@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -31,7 +32,7 @@ export default function ShopMakePayment({ onClose, type, id, amount = 0 }) {
 
   const onSubmit = () => {
     if (Number.NaN(payment?.amount)) {
-      successMsg('Invalid amount', 'error');
+      // successMsg('Invalid amount', 'error');
       return;
     }
 
@@ -121,7 +122,7 @@ function ListItem({ label, value, isTotal }) {
         {isSecondaryCurrencyEnabled
           ? // with secondary currency
             `${value * adminExchangeRate < 0 ? '-' : ''} ${secondaryCurrency?.code} ${Math.abs(
-              value * adminExchangeRate
+              value * adminExchangeRate,
             )} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`
           : // without secondary currency
             `${value < 0 ? '-' : ''} ${baseCurrency?.code} ${Math.abs(value)}`}

@@ -3,15 +3,17 @@
 import { Box, Modal } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import { convertDate } from '../../../pages/LyxaFinancials/OrderFinancials';
+import ConfirmModal from '../../Common/ConfirmModal';
 import { getFirstMonday } from '../../Styled/StyledDateRangePicker/Presets';
-import PayoutView from './PayoutView/PayoutView';
+import PayoutView from './PayoutView';
 import SearchBar from './SearchBar';
-import { getPayoutData } from './helpers';
+import { getPayoutData, validatePaidPayout } from './helpers';
 import PayoutTable from './payoutTable';
 
 const queryParamsInit = (props) => ({
@@ -34,10 +36,14 @@ function PayoutList({
 
   const [currentPayout, setCurrentPayout] = useState({});
 
+  const [isConfirm, setIsConfirm] = useState(false);
+
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit({ ...payaoutParams }) });
 
   // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
+
+  const queryClient = useQueryClient();
 
   const getPayoutsQuery = useQuery([API_URL.GET_PAYOUTS, { ...queryParams }], () =>
     AXIOS.get(API_URL.GET_PAYOUTS, {
@@ -49,12 +55,37 @@ function PayoutList({
     }),
   );
 
+  const paidPayoutMutation = useMutation((data) => AXIOS.post(API_URL.PAID_PAYOUTS, data), {
+    onSuccess: (data) => {
+      successMsg(data?.message, data?.status ? 'success' : undefined);
+
+      if (data?.status) {
+        queryClient.invalidateQueries(API_URL.GET_PAYOUTS);
+        setIsConfirm(false);
+      }
+    },
+  });
   console.log('getPayoutsQuery', getPayoutsQuery?.data?.data?.payouts);
+
+  const payoutPaidHandler = () => {
+    const validated = validatePaidPayout(currentPayout);
+
+    if (!validated?.status) {
+      successMsg('Payout data is not valid');
+
+      return;
+    }
+    paidPayoutMutation.mutate(validated?.data);
+  };
 
   return (
     <Box sx={{ marginTop }}>
       <Box sx={{ marginBottom }}>
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search payouts..." />
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          searchPlaceHolder="Search payouts by Id..."
+        />
       </Box>
 
       <PayoutTable
@@ -65,6 +96,7 @@ function PayoutList({
         setQueryParams={setQueryParams}
         totalPage={getPayoutsQuery?.data?.data.paginate?.metadata?.page?.totalPage}
         setCurrentPayout={setCurrentPayout}
+        setIsConfirm={setIsConfirm}
         setOpen={setOpen}
       />
 
@@ -75,8 +107,27 @@ function PayoutList({
           setCurrentPayout({});
         }}
       >
-        <PayoutView currentPayout={getPayoutData(currentPayout)} />
+        <PayoutView
+          currentPayout={getPayoutData(currentPayout)}
+          onClose={() => {
+            setOpen(false);
+            setCurrentPayout({});
+          }}
+          setIsConfirm={setIsConfirm}
+        />
       </Modal>
+
+      <ConfirmModal
+        message="Do you want to mark this payout as paid?"
+        isOpen={isConfirm}
+        loading={paidPayoutMutation?.isLoading}
+        onCancel={() => {
+          setIsConfirm(false);
+        }}
+        onConfirm={() => {
+          payoutPaidHandler();
+        }}
+      />
     </Box>
   );
 }

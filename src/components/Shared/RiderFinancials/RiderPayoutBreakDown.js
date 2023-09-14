@@ -14,10 +14,18 @@ import { calculateDateDifference } from '../../../pages/ShopDashboard/helper';
 import InfoCard from '../../StyledCharts/InfoCard';
 import RiderPayoutDetails from './RiderPayoutDetails';
 
-function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit } }) {
+export const getCurrencyValue = (currencyType, value) => {
+  if (currencyType === 'secondaryCurrency') {
+    return Math.round(Number(value || 0));
+  }
+
+  return (value || 0).toFixed(2);
+};
+
+function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, getCurrencyType }) {
   const { general } = useGlobalContext();
 
-  const currency = general?.currency?.symbol;
+  const baseCurrency = general?.currency?.symbol;
 
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
 
@@ -34,11 +42,22 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit } }) {
           ...riderParams,
         },
       }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          if (getCurrencyType) {
+            getCurrencyType(data?.data);
+          }
+        }
+      },
+    },
   );
 
   const summary = getFinancialsDashBoardRider?.data?.data;
 
   const deliveryProfitBreakDown = summary?.profitBreakdown;
+
+  const currency = summary?.currency !== 'secondaryCurrency' ? baseCurrency : secondaryCurrency;
 
   console.log('summary rider ', summary);
   return (
@@ -56,7 +75,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit } }) {
                     fontSize: `${showFor === 'specific' ? '28px !important' : '40px !important'}`,
                   }}
                 >
-                  {secondaryCurrency} {Math.round(deliveryProfitBreakDown?.adminDeliveryProfit || 0)}
+                  {currency} {getCurrencyValue(summary?.currency, deliveryProfitBreakDown?.adminDeliveryProfit)}
                 </Typography>
 
                 {deliveryProfitBreakDown?.secondaryCurrency_adminDeliveryProfit ? (
@@ -120,7 +139,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit } }) {
                 )}% last ${calculateDateDifference(riderParams.start, riderParams.end, 'day')} days`}
               />
             }
-            value={`${secondaryCurrency} ${Math.round(deliveryProfitBreakDown?.riderPayout || 0)}`}
+            value={`${currency} ${getCurrencyValue(summary?.currency, deliveryProfitBreakDown?.riderPayout)}`}
             sm={6}
             md={4}
             lg={4}
@@ -128,7 +147,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit } }) {
         </Grid>
 
         <Grid item xs={12} mb={7.5}>
-          <RiderPayoutDetails deliveryProfitBreakDown={deliveryProfitBreakDown} />
+          <RiderPayoutDetails currencyType={summary?.currency} deliveryProfitBreakDown={deliveryProfitBreakDown} />
         </Grid>
         {/* <Grid item xs={12}>
           <OrderPayoutDetailsTable showFor="delivery" shopType={shopType} riderParams={riderParams} />

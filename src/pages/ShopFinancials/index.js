@@ -44,7 +44,7 @@ export default function ShopFinancials() {
           paddingTop: 7.5,
         }}
       >
-        <Invoices />
+        <Invoices params={{ shopId: shop?._id }} showFor="specific" />
       </TabPanel>
 
       {shop?.shopReceivePaymentBy === 'bank' && (

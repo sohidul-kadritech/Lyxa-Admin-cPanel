@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable max-len */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unused-vars */
 import { Visibility } from '@mui/icons-material';
@@ -23,6 +25,7 @@ function PayoutTable({
   totalPage,
   setOpen,
   setCurrentPayout,
+  setIsConfirm,
 }) {
   const { general } = useGlobalContext();
 
@@ -30,7 +33,12 @@ function PayoutTable({
 
   const theme = useTheme();
 
-  const currency = general?.currency?.symbol;
+  // const currency = general?.currency?.symbol;
+
+  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
+
+  const currency = general?.appSetting?.baseCurrency?.symbol;
+
   // eslint-disable-next-line no-unused-vars
   const history = useHistory();
   const allColumns = [
@@ -51,7 +59,6 @@ function PayoutTable({
               imgFallbackCharacter={rowData?.name?.charAt(0)}
               name={rowData?.name}
               subTitle={rowData?.autoGenId}
-              toolTip={rowData?.type}
               subTitleProps={{ sx: { color: 'text.secondary', cursor: 'pointer' } }}
               titleProps={{
                 sx: { color: 'primary.main', cursor: 'pointer' },
@@ -64,40 +71,49 @@ function PayoutTable({
         );
       },
     },
+    {
+      id: 2,
+      showFor: ['shop', 'rider', 'admin', 'specific'],
+      headerName: `PAYOUT ID`,
+      field: 'autoGenId',
+      flex: 1.5,
+      sortable: false,
+      renderCell: ({ value }) => (
+        <Typography textTransform="capitalize" variant="body1">
+          {value}
+        </Typography>
+      ),
+    },
 
     {
       id: 2,
       showFor: ['shop', 'rider', 'admin'],
-      headerName: `SELLER`,
-      field: 'seller',
+      headerName: `TYPE`,
+      field: 'payoutAccount',
+      flex: 1.5,
+      sortable: false,
+      renderCell: ({ value }) => {
+        const type = value === 'deliveryBoy' ? 'Rider' : 'Shop';
+        return <Typography variant="body1">{type || '_'}</Typography>;
+      },
+    },
+    {
+      id: 2,
+      showFor: ['shop', 'rider', 'admin', 'specific'],
+      headerName: `STATUS`,
+      field: 'payoutStatus',
       flex: 1.5,
       sortable: false,
       renderCell: ({ value }) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <Box>
-            <Typography
-              variant="body1"
-              onClick={() => {
-                if (value?._id) history.push(`/seller/list/${value?._id}`);
-              }}
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                width: '100%',
-                textTransform: 'capitalize',
-                color: 'primary.main',
-                cursor: 'pointer',
-              }}
-            >
-              {value?.company_name || '_'}
-            </Typography>
-          </Box>
-        </Stack>
+        <Typography textTransform="capitalize" variant="body1">
+          {' '}
+          {value}
+        </Typography>
       ),
     },
     {
       id: 3,
-      showFor: ['shop', 'rider', 'admin'],
+      showFor: ['shop', 'rider', 'admin', 'specific'],
       field: 'createdAt',
       headerName: 'DATE ISSUED',
       sortable: false,
@@ -106,7 +122,7 @@ function PayoutTable({
     },
     {
       id: 4,
-      showFor: ['shop', 'rider', 'admin'],
+      showFor: ['shop', 'rider', 'admin', 'specific'],
       field: 'payoutOverDueDate',
       headerName: `DUE DATE`,
       sortable: false,
@@ -115,42 +131,54 @@ function PayoutTable({
     },
     {
       id: 5,
-      showFor: ['shop', 'rider', 'admin'],
+      showFor: ['shop', 'rider', 'admin', 'specific'],
       field: 'profitBreakdown',
       headerName: `AMOUNT (${currency})`,
       sortable: false,
       flex: 1.5,
-      renderCell: ({ value }) => {
-        console.log('value', value);
-        return (
-          <Typography variant="body1">
-            {currency} {(value?.totalAmount || value?.riderPayout || 0).toFixed(2)}
-          </Typography>
-        );
+      renderCell: ({ row }) => {
+        console.log('value', row);
+        // payoutAccount
+        const isShop = row?.payoutAccount === 'shop';
+        const data = isShop
+          ? `${currency} ${(row?.profitBreakdown?.baseCurrency_Amount || 0).toFixed(
+              2,
+            )} + ${secondaryCurrency} ${Math.round(row?.profitBreakdown?.secondaryCurrency_Amount || 0)}`
+          : row?.profitBreakdown?.currency === 'secondaryCurrency'
+          ? `${secondaryCurrency} ${Math.round(row?.profitBreakdown?.riderPayout || 0)}`
+          : `${currency} ${(row?.profitBreakdown?.riderPayout || 0).toFixed(2)}`;
+
+        return <Typography variant="body1">{data}</Typography>;
       },
     },
     {
       id: 6,
-      showFor: ['shop', 'rider', 'admin'],
+      showFor: ['shop', 'rider', 'admin', 'specific'],
       headerName: `ACTION`,
       sortable: false,
-      flex: 1,
+      flex: 1.5,
       headerAlign: 'right',
       align: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" gap={2}>
-          <StyledIconButton
-            color="primary"
-            sx={{
-              width: 'auto',
-              fontSize: '14px',
-              textTransform: 'uppercase',
-              paddingLeft: '20px',
-              paddingRight: '20px',
-            }}
-          >
-            Pay
-          </StyledIconButton>
+          {row?.payoutStatus !== 'paid' && (
+            <StyledIconButton
+              color="primary"
+              sx={{
+                width: 'auto',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                paddingLeft: '20px',
+                paddingRight: '20px',
+              }}
+              onClick={() => {
+                setCurrentPayout(row);
+                setIsConfirm(true);
+              }}
+            >
+              Pay
+            </StyledIconButton>
+          )}
           <StyledIconButton color="primary">
             <DownloadIcon />
           </StyledIconButton>
