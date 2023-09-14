@@ -11,6 +11,8 @@ export default function SellerFinancials() {
   const { currentUser } = useGlobalContext();
   const [currentTab, setCurrentTab] = useState(0);
 
+  console.log('currentUser', currentUser);
+
   return (
     <Box pb={10}>
       <PageTop title="Financials" />
@@ -41,7 +43,7 @@ export default function SellerFinancials() {
             paddingTop: 7.5,
           }}
         >
-          <Invoices />
+          <Invoices params={{ sellerId: currentUser?.seller?._id }} showFor="shop" />
         </TabPanel>
       )}
       <TabPanel

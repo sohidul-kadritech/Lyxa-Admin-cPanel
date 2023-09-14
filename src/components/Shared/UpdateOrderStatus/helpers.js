@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { successMsg } from '../../../helpers/successMsg';
 
 export const statusOptions = {
@@ -26,6 +27,86 @@ export const statusOptions = {
     label: 'Delivered',
     position: 6,
   },
+};
+
+export const newStatusOptions = (currentOrder) => {
+  const isGlobal = currentOrder?.orderFor === 'global';
+
+  const isPreparing = currentOrder?.orderStatus === 'preparing';
+
+  const notAssignRider = !currentOrder?.deliveryBoy;
+
+  const isPreparingFirst =
+    !currentOrder?.accepted_delivery_boyAt && currentOrder?.preparingAt
+      ? true
+      : moment(currentOrder?.accepted_delivery_boyAt) > moment(currentOrder?.preparingAt);
+
+  const shouldSwap = isGlobal && isPreparing && notAssignRider;
+
+  const isPreparingFirstAndShouldSwap = isGlobal && isPreparingFirst;
+
+  // preparingAt
+  // accepted_delivery_boyAt
+
+  // console.log('currentOrder', currentOrder, 'isPreparingFirst', isPreparingFirst, isPreparingFirstAndShouldSwap);
+
+  if (shouldSwap || isPreparingFirstAndShouldSwap) {
+    return {
+      placed: {
+        label: 'Placed',
+        position: 1,
+      },
+      preparing: {
+        label: 'Preparing',
+        position: 2,
+      },
+      accepted_delivery_boy: {
+        label: 'Assign rider',
+        position: 3,
+        isChangeDelivery: true,
+      },
+
+      ready_to_pickup: {
+        label: 'Ready for pickup',
+        position: 4,
+      },
+      order_on_the_way: {
+        label: 'On the way',
+        position: 5,
+      },
+      delivered: {
+        label: 'Delivered',
+        position: 6,
+      },
+    };
+  }
+  return {
+    placed: {
+      label: 'Placed',
+      position: 1,
+    },
+    accepted_delivery_boy: {
+      label: 'Assign rider',
+      position: 2,
+      isChangeDelivery: true,
+    },
+    preparing: {
+      label: 'Preparing',
+      position: 3,
+    },
+    ready_to_pickup: {
+      label: 'Ready for pickup',
+      position: 4,
+    },
+    order_on_the_way: {
+      label: 'On the way',
+      position: 5,
+    },
+    delivered: {
+      label: 'Delivered',
+      position: 6,
+    },
+  };
 };
 
 export const paidCurrencyOptions = [
@@ -72,10 +153,15 @@ export const validate = (currentStatus, currentOrderDelivery, currentOrder, paid
   return true;
 };
 
-export const updateOrderStatusOptions = (currentOrder) => {
+export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) => {
   let list = [];
 
+  let list2 = [];
+
+  const newOptions = newStatusOptions(currentOrder);
+
   Object.entries(statusOptions)?.forEach((opt) => {
+    // console.log('option', opt);
     list.push({
       label: opt[1]?.label,
       value: opt[0],
@@ -83,19 +169,46 @@ export const updateOrderStatusOptions = (currentOrder) => {
     });
   });
 
-  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+  Object.entries(newOptions)?.forEach((opt) => {
+    list2.push({
+      label: opt[1]?.label,
+      value: opt[0],
+      position: opt[1]?.position,
+    });
+  });
+
+  /*
+  currentOrder?.deliveryBoy
+  currentOrder?.orderFor=="global"
+  currentOrder?.orderStatus==="preparing"
+  */
+  // console.log('currentOrder', currentOrder, 'list', list);
+
+  // console.log('newStatusOptions', list2);
+
+  if (currentOrder?.orderFor !== 'global') {
+    list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  }
+
+  if (currentOrder?.orderFor === 'global') {
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
 
   if (currentOrder?.isButler) {
     list = list.filter((opt) => opt.value !== 'preparing' && opt.value !== 'ready_to_pickup');
+    list2 = list2.filter((opt) => opt.value !== 'preparing' && opt.value !== 'ready_to_pickup');
   }
 
+  if (isReturnforAdmin) return list2;
+
+  // console.log(currentOrder, currentOrder?.shop?.haveOwnDeliveryBoy, 'isReturnforAdmin', list);
+
   return list;
+  // return list;
 };
 
-export const getNextStatus = (order) => {
-  const items = updateOrderStatusOptions(order);
+export const getNextStatus = (order, isReturnforAdmin = false) => {
+  const items = updateOrderStatusOptions(order, isReturnforAdmin);
   const currIdx = items?.findIndex((obj) => obj.value === order?.orderStatus);
   return items[currIdx + 1]?.value;
 };

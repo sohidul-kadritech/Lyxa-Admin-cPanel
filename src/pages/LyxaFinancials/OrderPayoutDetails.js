@@ -68,7 +68,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
           >
             <DetailsAccordion
               title="Cash"
-              tooltip="How many amount user paid by cash?"
+              tooltip="How much amount user paid by cash?"
               titleAmount={cash?.totalCash || 0}
               isOpen={currentExpanedTab === 0}
               onChange={(closed) => {
@@ -110,7 +110,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
             <DetailsAccordion
               sx={{ borderBottom: 'none' }}
               title="Online"
-              tooltip="How many amount user paid by online?"
+              tooltip="How much amount user paid by online?"
               titleAmount={online?.totalOnline || 0}
               isOpen={currentExpanedTab === 0}
               onChange={(closed) => {
