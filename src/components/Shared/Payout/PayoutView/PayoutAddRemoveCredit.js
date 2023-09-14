@@ -14,8 +14,8 @@ import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
 
 const initialAddRemoveCredit = {
   payoutId: '',
-  baseCurrency_amount: 0,
-  secondaryCurrency_amount: 0,
+  baseCurrency_amount: '',
+  secondaryCurrency_amount: '',
   type: 'add',
   desc: '',
   paidCurrency: 'baseCurrency',
@@ -97,13 +97,33 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
     console.log('shop expchange rate payout', payout?.shop?.shopExchangeRate);
     console.log('addremove credit', addRemoveCredit);
 
+    const limit = {
+      secondaryCurrency: 5000000,
+      baseCurrency: 100,
+    };
+
+    const currencyCode = {
+      secondaryCurrency: secondaryCurrency?.code,
+      baseCurrency: baseCurrency?.symbol,
+    };
+
     const amount =
       addRemoveCredit?.paidCurrency === 'baseCurrency'
         ? addRemoveCredit?.baseCurrency_amount
         : addRemoveCredit?.secondaryCurrency_amount;
 
-    if (amount <= 0) {
+    if (amount <= 0 || !amount) {
       successMsg(`${addRemoveCredit?.paidCurrency} amount can't be zero or negative`);
+      return;
+    }
+
+    if (Number(amount) > limit[addRemoveCredit?.paidCurrency]) {
+      successMsg(
+        `${addRemoveCredit?.paidCurrency} amount can't greater than  ${currencyCode[addRemoveCredit?.paidCurrency]} ${
+          limit[addRemoveCredit?.paidCurrency]
+        }`,
+      );
+      return;
     }
 
     creditMutation.mutate(addRemoveCredit);
@@ -151,8 +171,8 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
             )}
             onChange={(value) =>
               setAddRemoveCredit((prev) => {
-                const secondaryCurrency_amount = 0;
-                const baseCurrency_amount = 0;
+                const secondaryCurrency_amount = '';
+                const baseCurrency_amount = '';
                 return { ...prev, paidCurrency: value, secondaryCurrency_amount, baseCurrency_amount };
               })
             }
@@ -171,6 +191,9 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
             inputProps={{
               type: 'number',
               value: addRemoveCredit.baseCurrency_amount,
+              min: 0,
+              max: 100,
+              placeholder: `Base currency amount. i.e. ${baseCurrency?.symbol} 100`,
               onChange: (e) =>
                 setAddRemoveCredit((prev) => {
                   const secondaryCurrency_amount = Number(e.target.value) * Number(shopExchangeRate);
@@ -192,6 +215,9 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
             inputProps={{
               type: 'number',
               value: addRemoveCredit.secondaryCurrency_amount,
+              min: 0,
+              max: 5000000,
+              placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5000000`,
               onChange: (e) =>
                 setAddRemoveCredit((prev) => {
                   const baseCurrency_amount = Number(e.target.value) / Number(shopExchangeRate);

@@ -69,6 +69,7 @@ export const GET_BUTLER_ADMIN_DELIVERY_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADM
 export const GET_ALL_SELLER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/seller-profit-breakdown`;
 export const GET_SPECIFIC_SELLER_SHOP_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/shop/shop-profit-breakdown`;
 export const GET_ALL_RIDER_ADMIN_ORDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider/rider-profit-breakdown`;
+export const GET_RIDER_ORDER_PROFIT_BREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider/order-profit-breakdown`;
 
 // Payouts
 export const GET_PAYOUTS = `${ADMIN_ENDPOINT}/payout`;

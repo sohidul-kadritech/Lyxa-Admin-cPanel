@@ -59,7 +59,6 @@ function PayoutTable({
               imgFallbackCharacter={rowData?.name?.charAt(0)}
               name={rowData?.name}
               subTitle={rowData?.autoGenId}
-              toolTip={rowData?.type}
               subTitleProps={{ sx: { color: 'text.secondary', cursor: 'pointer' } }}
               titleProps={{
                 sx: { color: 'primary.main', cursor: 'pointer' },
@@ -89,32 +88,14 @@ function PayoutTable({
     {
       id: 2,
       showFor: ['shop', 'rider', 'admin'],
-      headerName: `SELLER`,
-      field: 'seller',
+      headerName: `TYPE`,
+      field: 'payoutAccount',
       flex: 1.5,
       sortable: false,
-      renderCell: ({ value }) => (
-        <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <Box>
-            <Typography
-              variant="body1"
-              onClick={() => {
-                if (value?._id) history.push(`/seller/list/${value?._id}`);
-              }}
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                width: '100%',
-                textTransform: 'capitalize',
-                color: 'primary.main',
-                cursor: 'pointer',
-              }}
-            >
-              {value?.company_name || '_'}
-            </Typography>
-          </Box>
-        </Stack>
-      ),
+      renderCell: ({ value }) => {
+        const type = value === 'deliveryBoy' ? 'Rider' : 'Shop';
+        return <Typography variant="body1">{type || '_'}</Typography>;
+      },
     },
     {
       id: 2,

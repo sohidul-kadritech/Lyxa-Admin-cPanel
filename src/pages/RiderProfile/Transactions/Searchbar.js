@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import { useMemo } from 'react';
 import FilterSelect from '../../../components/Filter/FilterSelect';
-import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 
 export const sortOptions = [
@@ -30,7 +30,7 @@ export default function SearchBar({
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
-    []
+    [],
   );
 
   return (
@@ -70,7 +70,7 @@ export default function SearchBar({
           }));
         }}
       /> */}
-      <StyledDateRangePicker
+      {/* <StyledDateRangePicker
         startDate={queryParams.startDate}
         endDate={queryParams.endDate}
         onChange={({ startDate, endDate }) => {
@@ -81,7 +81,7 @@ export default function SearchBar({
             page: 1,
           }));
         }}
-      />
+      /> */}
       {/* sort */}
       <FilterSelect
         items={sortOptions}

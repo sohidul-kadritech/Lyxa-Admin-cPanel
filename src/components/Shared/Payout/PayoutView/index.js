@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Modal, Paper, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -39,7 +40,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
     <Paper
       sx={{
         width: 'min(96vw, 816px)',
-        maxHeight: '100vh',
+        maxHeight: '96vh',
         padding: '50px',
         margin: '50px 0px',
         overflow: 'auto',
