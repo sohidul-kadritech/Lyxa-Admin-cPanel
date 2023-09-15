@@ -3,6 +3,7 @@ import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import { useMemo } from 'react';
 import FilterSelect from '../../../components/Filter/FilterSelect';
+import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import StyledSearchBar from '../../../components/Styled/StyledSearchBar';
 
 export const sortOptions = [
@@ -21,6 +22,7 @@ export default function SearchBar({
   queryParams,
   setQueryParams,
   onMakePayment,
+  onAddRemoveCredit,
   showFor,
   onReceiveCash,
   loading,
@@ -70,18 +72,20 @@ export default function SearchBar({
           }));
         }}
       /> */}
-      {/* <StyledDateRangePicker
-        startDate={queryParams.startDate}
-        endDate={queryParams.endDate}
-        onChange={({ startDate, endDate }) => {
-          setQueryParams((prev) => ({
-            ...prev,
-            startDate,
-            endDate,
-            page: 1,
-          }));
-        }}
-      /> */}
+      {showFor === 'cashOrderList' && (
+        <StyledDateRangePicker
+          startDate={queryParams.startDate}
+          endDate={queryParams.endDate}
+          onChange={({ startDate, endDate }) => {
+            setQueryParams((prev) => ({
+              ...prev,
+              startDate,
+              endDate,
+              page: 1,
+            }));
+          }}
+        />
+      )}
       {/* sort */}
       <FilterSelect
         items={sortOptions}
@@ -104,9 +108,14 @@ export default function SearchBar({
           </Button>
         )}
         {showFor === 'transactions' && (
-          <Button size="small" variant="contained" onClick={onMakePayment}>
-            Make Payment
-          </Button>
+          <Stack direction="row" gap={20 / 4}>
+            <Button size="small" variant="contained" onClick={onAddRemoveCredit}>
+              Add/Remove Credit
+            </Button>
+            <Button size="small" variant="contained" onClick={onMakePayment}>
+              Make Payment
+            </Button>
+          </Stack>
         )}
       </Box>
     </Stack>

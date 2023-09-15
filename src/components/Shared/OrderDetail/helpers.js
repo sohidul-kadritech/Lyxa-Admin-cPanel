@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import { OrderContext } from './OrderContext';
 
 // Order Details Handling
-export function StyledOrderDetailBox({ title, children }) {
+export function StyledOrderDetailBox({ title, children, sx }) {
   const theme = useTheme();
 
   return (
@@ -14,6 +14,7 @@ export function StyledOrderDetailBox({ title, children }) {
         border: `1px solid ${theme.palette.custom.border}`,
         borderRadius: '10px',
         padding: '12px 16px',
+        ...(sx || {}),
       }}
     >
       {title && (

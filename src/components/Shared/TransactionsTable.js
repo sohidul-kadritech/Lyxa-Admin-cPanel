@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { useGlobalContext } from '../../context';
 import LoadingOverlay from '../Common/LoadingOverlay';
 import TableSkeleton from '../Skeleton/TableSkeleton';
 import StyledCheckbox from '../Styled/StyledCheckbox';
@@ -18,12 +20,28 @@ export const getTrxType = (trxType) => {
   if (trxType === 'userBalanceAddAdmin') typeLabel = 'Lyxa';
   if (trxType === 'userBalanceWithdrawAdmin') typeLabel = 'Lyxa';
   if (trxType === 'userPayAfterReceivedOrderByCard') typeLabel = 'Card';
+  if (trxType === 'adminAddBalanceRider') typeLabel = 'Add Rider Credit';
+  if (trxType === 'adminRemoveBalanceRider') typeLabel = 'Remove Rider Credit';
   return typeLabel;
 };
 
 export default function TransactionsTable({ rows = [], type, loading, refetching, queryParams = {} }) {
   const [allSelected, setAllSelected] = useState(false);
   const [render, setRender] = useState(false);
+
+  const { general } = useGlobalContext();
+
+  const { appSetting } = general;
+
+  const secondaryCurrency = appSetting?.secondaryCurrency;
+
+  const baseCurrency = appSetting?.baseCurrency;
+
+  const adminExchangeRate = appSetting?.adminExchangeRate;
+
+  const isSecondaryCurrencyEnabled = adminExchangeRate > 0;
+
+  const currency = isSecondaryCurrencyEnabled ? secondaryCurrency?.code : baseCurrency?.symbol;
 
   useEffect(() => {
     if (type === 'cashOrderList') {
@@ -48,12 +66,23 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
     {
       type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 2,
-      headerName: 'AMOUNT',
+      headerName: `AMOUNT ${currency}`,
       field: type === 'cashOrderList' ? 'receivedAmount' : 'amount',
       flex: 1,
       minWidth: 200,
       sortable: false,
       renderCell: ({ value, row }) => {
+        const amount =
+          type === 'cashOrderList'
+            ? isSecondaryCurrencyEnabled
+              ? Math.round(row?.secondaryCurrency_receivedAmount || 0)
+              : (row?.receivedAmount || 0).toFixed(2)
+            : isSecondaryCurrencyEnabled
+            ? Math.round(row?.secondaryCurrency_amount || 0)
+            : (row?.amount || 0).toFixed(2);
+
+        console.log('amount', amount);
+
         if (type === 'user-transactions') {
           const sign =
             row?.type === 'userBalanceAddAdmin' || row?.type === 'userCancelOrderGetWallet'
@@ -65,12 +94,17 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
           return (
             <Typography variant="body4">
               {sign}
-              {value}
+              {currency}
+              {amount}
             </Typography>
           );
         }
 
-        return <Typography variant="body4">{value}</Typography>;
+        return (
+          <Typography variant="body4">
+            {currency} {amount}
+          </Typography>
+        );
       },
     },
     {
@@ -81,7 +115,10 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
       flex: 1.5,
       minWidth: 200,
       sortable: false,
-      renderCell: ({ value }) => <Typography variant="body4">{getTrxType(value)}</Typography>,
+      renderCell: ({ value }) => {
+        console.log('value', value);
+        return <Typography variant="body4">{getTrxType(value)}</Typography>;
+      },
     },
     {
       type: ['transactions', 'cashOrderList', 'user-transactions'],

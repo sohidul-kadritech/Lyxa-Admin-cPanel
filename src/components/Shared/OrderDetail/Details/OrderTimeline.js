@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import Timeline from '@mui/lab/Timeline';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
@@ -59,7 +60,7 @@ const timelineStatusNoteMap = {
   refunded: 'Order was refunded',
 };
 
-export default function OrderTimeline({ order = {}, ...props }) {
+export default function OrderTimeline({ order = {}, sx, timelineTypoSx, ...props }) {
   const theme = useTheme();
   const orderTimeline = [...(order?.timeline || [])];
 
@@ -70,7 +71,7 @@ export default function OrderTimeline({ order = {}, ...props }) {
       status: 'custom',
       createdAt: order?.createdAt,
       note: `Scheduled for ${moment(order?.scheduleDate).format('MMM DD,')} ${moment(order?.scheduleDate)?.format(
-        'hh:mm A'
+        'hh:mm A',
       )}`,
     });
   }
@@ -100,8 +101,8 @@ export default function OrderTimeline({ order = {}, ...props }) {
   }
 
   return (
-    <StyledOrderDetailBox title="Order Timeline">
-      <StyledTimeline {...props}>
+    <StyledOrderDetailBox title="Order Timeline" sx={sx}>
+      <StyledTimeline {...props} sx={sx}>
         {orderTimeline?.map((timeline, index, array) => (
           <TimelineItem key={`${index}`}>
             <TimelineSeparator>
@@ -131,6 +132,7 @@ export default function OrderTimeline({ order = {}, ...props }) {
                   lineHeight: '20px',
                   display: 'flex',
                   gap: '8px',
+                  ...(timelineTypoSx || {}),
                 }}
               >
                 <span

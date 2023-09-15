@@ -13,6 +13,7 @@ import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import GlobalAddRemoveCredit from './GlobalAddRemoveCredit';
 import MakePayment from './MakePayment';
 import RiderOrderTable from './RiderOrderTable';
 import SearchBar from './Searchbar';
@@ -26,6 +27,11 @@ export const queryParamsInit = {
   endDate: moment(),
   searchKey: '',
 };
+
+export const typeOptions = [
+  { label: 'Base', value: 'baseCurrency' },
+  { label: 'Secondary', value: 'secondaryCurrency' },
+];
 
 const showForToApiMap = {
   cashOrderList: {
@@ -47,6 +53,7 @@ export default function RiderTransactions({ riderId, showFor }) {
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit, deliveryBoyId: riderId });
   const [totalPage, setTotalPage] = useState(1);
   const [makePayment, setMakePayment] = useState(false);
+  const [addRemoveCredit, setAddRemoveCredit] = useState(false);
   const [currencyType, setCurrencyType] = useState('secondaryCurrency');
   const [summary, setSummary] = useState({});
   const [currentTab, setCurrentTab] = useState(0);
@@ -96,18 +103,20 @@ export default function RiderTransactions({ riderId, showFor }) {
   return (
     <Box>
       <Stack direction="row" justifyContent="flex-end">
-        <StyledDateRangePicker
-          startDate={queryParams.startDate}
-          endDate={queryParams.endDate}
-          onChange={({ startDate, endDate }) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              startDate,
-              endDate,
-              page: 1,
-            }));
-          }}
-        />
+        {showFor !== 'cashOrderList' && (
+          <StyledDateRangePicker
+            startDate={queryParams.startDate}
+            endDate={queryParams.endDate}
+            onChange={({ startDate, endDate }) => {
+              setQueryParams((prev) => ({
+                ...prev,
+                startDate,
+                endDate,
+                page: 1,
+              }));
+            }}
+          />
+        )}
       </Stack>
 
       {showFor !== 'cashOrderList' && (
@@ -125,13 +134,15 @@ export default function RiderTransactions({ riderId, showFor }) {
         />
       )}
 
-      <Box mb={7.5}>
-        <Tabs value={currentTab}>
-          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
-          <Tab onClick={() => setCurrentTab(1)} label="Order" />
-          <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
-        </Tabs>
-      </Box>
+      {showFor !== 'cashOrderList' && (
+        <Box mb={7.5}>
+          <Tabs value={currentTab}>
+            <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
+            <Tab onClick={() => setCurrentTab(1)} label="Order" />
+            <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
+          </Tabs>
+        </Box>
+      )}
 
       {/* transaction tab */}
       {currentTab === 0 && (
@@ -141,6 +152,7 @@ export default function RiderTransactions({ riderId, showFor }) {
             queryParams={queryParams}
             setQueryParams={setQueryParams}
             onMakePayment={() => setMakePayment(true)}
+            onAddRemoveCredit={() => setAddRemoveCredit(true)}
             onReceiveCash={onReceiveCash}
             showFor={showFor}
             loading={receiveCashMutation.isLoading}
@@ -183,6 +195,7 @@ export default function RiderTransactions({ riderId, showFor }) {
           />
         </Box>
       )}
+
       <Modal
         open={makePayment}
         onClose={() => {
@@ -200,6 +213,23 @@ export default function RiderTransactions({ riderId, showFor }) {
               setMakePayment(false);
               queryClient.invalidateQueries([showForToApiMap?.cashOrderList?.get]);
               queryClient.invalidateQueries([showForToApiMap?.transactions?.get]);
+            }}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={addRemoveCredit}
+        onClose={() => {
+          setAddRemoveCredit(false);
+        }}
+      >
+        <Box>
+          <GlobalAddRemoveCredit
+            type="rider"
+            data={{ _id: riderId }}
+            onClose={() => {
+              setAddRemoveCredit(false);
             }}
           />
         </Box>
