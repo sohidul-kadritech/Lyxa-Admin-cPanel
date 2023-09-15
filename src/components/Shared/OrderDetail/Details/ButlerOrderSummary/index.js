@@ -5,7 +5,7 @@ import EditDocument from '../../../../Common/EditDocument';
 import { StyledOrderDetailBox } from '../../helpers';
 import ButlerProduct from './Product';
 
-export default function ButlerOrderSummary({ order }) {
+export default function ButlerOrderSummary({ order, sx }) {
   const quantity = order?.products?.reduce((acc, cur) => acc + cur.quantity, 0) || null;
   const [editDocumentOpen, setEditDocumentOpen] = useState(false);
   const [currentDoc, setCurrentDoc] = useState({});
@@ -21,6 +21,7 @@ export default function ButlerOrderSummary({ order }) {
   return (
     <>
       <StyledOrderDetailBox
+        sx={sx}
         title={
           <span>
             Order Summary
