@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 // third party
 import { Box, Tab, Tabs } from '@mui/material';

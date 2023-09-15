@@ -10,10 +10,11 @@ import CallUser from './CallUser';
 import OrderTrackingMap from './OrderTracking';
 
 // eslint-disable-next-line no-unused-vars
-export function DeliveryMethod({ order = {}, theme }) {
+export function DeliveryMethod({ order = {}, theme, sx }) {
   console.log('order?.shop?.haveOwnDeliveryboy', order);
   return (
     <StyledOrderDetailBox
+      sx={sx}
       title={
         <Stack
           direction="row"
@@ -41,7 +42,7 @@ export function DeliveryMethod({ order = {}, theme }) {
   );
 }
 
-export default function DeliveryDetails({ order = {} }) {
+export default function DeliveryDetails({ order = {}, sx }) {
   const [mapOpen, setOpen] = useState(false);
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
@@ -52,8 +53,9 @@ export default function DeliveryDetails({ order = {} }) {
 
   return (
     <Stack gap={5}>
-      <DeliveryMethod theme={theme} order={order} />
+      <DeliveryMethod theme={theme} order={order} sx={sx} />
       <StyledOrderDetailBox
+        sx={sx}
         title={
           <Stack
             direction="row"

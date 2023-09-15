@@ -1,36 +1,54 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useGlobalContext } from '../../../../context';
-import { successMsg } from '../../../../helpers/successMsg';
-import * as API_URL from '../../../../network/Api';
-import AXIOS from '../../../../network/axios';
-import CloseButton from '../../../Common/CloseButton';
-import OptionsSelect from '../../../Filter/OptionsSelect';
-import StyledFormField from '../../../Form/StyledFormField';
-import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
 
-const initialAddRemoveCredit = {
-  payoutId: '',
-  baseCurrency_amount: '',
-  secondaryCurrency_amount: '',
-  type: 'add',
-  desc: '',
-  paidCurrency: 'baseCurrency',
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import CloseButton from '../../../components/Common/CloseButton';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
+import StyledFormField from '../../../components/Form/StyledFormField';
+import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import { useGlobalContext } from '../../../context';
+import { successMsg } from '../../../helpers/successMsg';
+import * as API_URL from '../../../network/Api';
+import AXIOS from '../../../network/axios';
+
+const initialAddRemoveCredit = (type, props) => {
+  const typeOptions = {
+    shop: {
+      shopId: '',
+      amount: '',
+      secondaryCurrency_amount: '',
+      type: 'add',
+      desc: 'For refund amount',
+    },
+    rider: {
+      riderId: '',
+      baseCurrency_amount: '',
+      secondaryCurrency_amount: '',
+      type: 'add',
+      desc: 'test',
+      paidCurrency: 'baseCurrency',
+    },
+  };
+
+  if (type === 'shop') {
+    typeOptions[type].shopId = props?._id;
+    return typeOptions[type];
+  }
+  if (type === 'rider') {
+    typeOptions[type].riderId = props?._id;
+    return typeOptions[type];
+  }
+
+  return {};
 };
 
 const typeOptions = [
   { label: 'Add', value: 'add' },
   { label: 'Remove', value: 'remove' },
 ];
-
-export const currencyTypeOptions = [
-  { label: 'Base Currency', value: 'baseCurrency' },
-  { label: 'Secondary Currency', value: 'secondaryCurrency' },
-];
-
 export const currencyOptions = (
   baseCurrency,
   secondaryCurrency,
@@ -57,14 +75,19 @@ export const currencyOptions = (
   return [{ label: baseCode, value: 'baseCurrency' }];
 };
 
-function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
+const limit = {
+  secondaryCurrency: 5000000,
+  baseCurrency: 100,
+};
+
+function GlobalAddRemoveCredit({ type, onClose, data }) {
+  const { general } = useGlobalContext();
+
   const [addRemoveCredit, setAddRemoveCredit] = useState({
-    ...initialAddRemoveCredit,
-    payoutId: payout?._id,
-    paidCurrency: payout?.payoutAccount === 'deliveryBoy' ? payout?.profitBreakdown?.currency : 'baseCurrency',
+    ...initialAddRemoveCredit(type, data),
   });
 
-  const { general } = useGlobalContext();
+  const [baseKey, setBaseKey] = useState(type === 'rider' ? 'baseCurrency_amount' : 'amount');
 
   const { appSetting } = general;
 
@@ -72,43 +95,61 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
 
   const baseCurrency = appSetting?.baseCurrency;
 
-  const adminExchangeRate = appSetting?.adminExchangeRate;
+  const exchangeRate = type === 'shop' ? data?.shopExchangeRate : appSetting?.adminExchangeRate;
 
-  const shopExchangeRate = payout?.payoutAccount === 'shop' ? payout?.shop?.shopExchangeRate : adminExchangeRate;
-
-  const isSecondaryCurrencyEnabled = shopExchangeRate > 0;
+  const isSecondaryCurrencyEnabled = exchangeRate > 0;
 
   const queryClient = useQueryClient();
 
-  const creditMutation = useMutation((data) => AXIOS.post(API_URL.ADD_REMOVE_CREDIT_PAYOUTS, data), {
+  const currencyType = type === 'rider' && exchangeRate > 0 ? 'secondaryCurrency' : 'baseCurrency';
+
+  const currencyCode = {
+    secondaryCurrency: secondaryCurrency?.code,
+    baseCurrency: baseCurrency?.symbol,
+  };
+
+  const typeOption = {
+    shop: {
+      api: API_URL.SHOP_ADD_REMOVE_CREDIT,
+      params: {},
+    },
+    rider: {
+      api: API_URL.RIDER_ADD_REMOVE_CREDIT,
+      params: {},
+    },
+  };
+
+  useEffect(() => {
+    if (type === 'rider') {
+      setAddRemoveCredit((prev) => ({ ...prev, paidCurrency: currencyType }));
+    }
+  }, [data]);
+
+  const creditMutation = useMutation((data) => AXIOS.post(typeOption[type].api, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
 
       if (data?.status) {
-        queryClient.invalidateQueries(API_URL.GET_PAYOUTS);
+        queryClient.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_TRANSACTIONS);
+        queryClient.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.GET_ADMIN_RIDER_FINANCIALS_PROFITBREAKDOWN);
         onClose();
-        closeVeiw();
       }
     },
   });
 
   const addRemoveCreditHandler = () => {
-    // creditMutation.mutate(addRemoveCredit);
-
-    const limit = {
-      secondaryCurrency: 5000000,
-      baseCurrency: 100,
-    };
-
-    const currencyCode = {
-      secondaryCurrency: secondaryCurrency?.code,
-      baseCurrency: baseCurrency?.symbol,
-    };
-
     const amount =
       addRemoveCredit?.paidCurrency === 'baseCurrency'
-        ? addRemoveCredit?.baseCurrency_amount
+        ? addRemoveCredit?.[baseKey]
         : addRemoveCredit?.secondaryCurrency_amount;
+
+    console.log('addremove credit', addRemoveCredit);
+
+    if (!isNumber(amount)) {
+      successMsg('Invalid Amount');
+      return;
+    }
 
     if (amount <= 0 || !amount) {
       successMsg(`${addRemoveCredit?.paidCurrency} amount can't be zero or negative`);
@@ -164,14 +205,14 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
               baseCurrency,
               secondaryCurrency,
               isSecondaryCurrencyEnabled,
-              payout?.payoutAccount === 'deliveryBoy',
-              payout?.profitBreakdown?.currency,
+              type === 'rider',
+              currencyType,
             )}
             onChange={(value) =>
               setAddRemoveCredit((prev) => {
                 const secondaryCurrency_amount = '';
                 const baseCurrency_amount = '';
-                return { ...prev, paidCurrency: value, secondaryCurrency_amount, baseCurrency_amount };
+                return { ...prev, paidCurrency: value, secondaryCurrency_amount, [baseKey]: baseCurrency_amount };
               })
             }
           />
@@ -188,14 +229,15 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
             }}
             inputProps={{
               type: 'number',
-              value: addRemoveCredit.baseCurrency_amount,
+              value: addRemoveCredit[baseKey],
               min: 0,
               max: 100,
               placeholder: `Base currency amount. i.e. ${baseCurrency?.symbol} 100`,
               onChange: (e) =>
                 setAddRemoveCredit((prev) => {
-                  const secondaryCurrency_amount = Number(e.target.value) * Number(shopExchangeRate);
-                  return { ...prev, secondaryCurrency_amount, baseCurrency_amount: Number(e.target.value) };
+                  const secondaryCurrency_amount = Number(e.target.value) * Number(exchangeRate);
+
+                  return { ...prev, secondaryCurrency_amount, [baseKey]: Number(e.target.value) };
                 }),
             }}
           />
@@ -218,8 +260,8 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
               placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5000000`,
               onChange: (e) =>
                 setAddRemoveCredit((prev) => {
-                  const baseCurrency_amount = Number(e.target.value) / Number(shopExchangeRate);
-                  return { ...prev, baseCurrency_amount, secondaryCurrency_amount: Number(e.target.value) };
+                  const baseCurrency_amount = Number(e.target.value) / Number(exchangeRate);
+                  return { ...prev, [baseKey]: baseCurrency_amount, secondaryCurrency_amount: Number(e.target.value) };
                 }),
             }}
           />
@@ -230,7 +272,7 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
             Equivalent To:{' '}
             {addRemoveCredit?.paidCurrency === 'baseCurrency'
               ? `${secondaryCurrency?.code} ${Math.round(addRemoveCredit?.secondaryCurrency_amount)}`
-              : `${baseCurrency?.symbol} ${(addRemoveCredit?.baseCurrency_amount || 0).toFixed(2)}`}
+              : `${baseCurrency?.symbol} ${(addRemoveCredit[baseKey] || 0).toFixed(2)}`}
           </Typography>
         )}
 
@@ -260,4 +302,4 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
   );
 }
 
-export default PayoutAddRemoveCredit;
+export default GlobalAddRemoveCredit;

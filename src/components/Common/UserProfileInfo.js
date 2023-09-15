@@ -4,9 +4,14 @@ import { ReactComponent as Loacation } from '../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as StarIcon } from '../../assets/icons/star.svg';
 import { ReactComponent as UserIcon } from '../../assets/icons/user_outline.svg';
+import { useGlobalContext } from '../../context';
+import CustomerServiceOnlineOfflineToggle from '../../pages/OngoingTickets/CustomerServiceOnlineOfflineToggle';
 import InfoListItem from './InfoListItem';
 
-export default function UserProfileInfo({ user, avatarProps, containerProps }) {
+export default function UserProfileInfo({ user, avatarProps, containerProps, showFor }) {
+  const { currentUser } = useGlobalContext();
+  const { admin } = currentUser;
+
   return (
     <Stack direction="row" alignItems="center" gap={6} {...containerProps}>
       {/* profile */}
@@ -36,6 +41,7 @@ export default function UserProfileInfo({ user, avatarProps, containerProps }) {
             <InfoListItem icon={Loacation} title={user?.address} isFirst link={user.addressLink} linkOpenBlank />
           )}
           {user.phone && <InfoListItem icon={Phone} title={user?.phone} isFirst link={`tel:${user?.phone}`} />}
+          {showFor === 'customerService' && <CustomerServiceOnlineOfflineToggle admin={admin} />}
         </Stack>
         {/* rating */}
         {user?.rating && (

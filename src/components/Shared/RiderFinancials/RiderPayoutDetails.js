@@ -28,6 +28,8 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {}, currencyType }) {
   //     false,
   //   );
 
+  console.log('deliveryProfitBreakDown', deliveryProfitBreakDown);
+
   return (
     <Grid xs={12}>
       <StyledBox
@@ -60,31 +62,24 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {}, currencyType }) {
               seCurrentExpanedTab(closed ? 0 : -1);
             }}
           >
-            <PriceItem title="Users" currencyType={currencyType} amount={deliveryProfitBreakDown?.users} showIfZero />
-
-            <DetailsAccordion
-              title="Free Delivery"
+            <PriceItem
+              title="Delivery Fees"
               currencyType={currencyType}
-              sx={{ borderBottom: 'none' }}
-              titleAmount={totalFreeDelivery || 0}
-              isOpen={currentExpanedTab === 3}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 3 : -1);
-              }}
-            >
-              <PriceItem
-                title="Free Delivery by Shops"
-                currencyType={currencyType}
-                amount={deliveryProfitBreakDown?.freeDeliveryByShop}
-                showIfZero
-              />
-              <PriceItem
-                title="Free Delivery by Lyxa"
-                currencyType={currencyType}
-                amount={deliveryProfitBreakDown?.freeDeliveryByAdmin}
-                showIfZero
-              />
-            </DetailsAccordion>
+              amount={deliveryProfitBreakDown?.users}
+              showIfZero
+            />
+            <PriceItem
+              title="Free Delivery by Shops"
+              currencyType={currencyType}
+              amount={deliveryProfitBreakDown?.freeDeliveryByShop || 0}
+              showIfZero
+            />
+            <PriceItem
+              title="Free Delivery by Lxya"
+              currencyType={currencyType}
+              amount={deliveryProfitBreakDown?.freeDeliveryByAdmin || 0}
+              showIfZero
+            />
           </DetailsAccordion>
 
           {/* 
@@ -113,7 +108,7 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {}, currencyType }) {
           <DetailsAccordion
             title="Rider Add/Remove credit"
             currencyType={currencyType}
-            titleAmount={deliveryProfitBreakDown?.riderAddRemoveCredit}
+            titleAmount={Math.abs(deliveryProfitBreakDown?.riderAddRemoveCredit || 0)}
             titleAmountStatus={`${deliveryProfitBreakDown?.riderAddRemoveCredit < 0 ? 'minus' : ''}`}
           />
 
