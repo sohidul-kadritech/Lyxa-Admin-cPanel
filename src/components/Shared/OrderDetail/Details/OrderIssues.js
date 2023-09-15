@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { ReactComponent as FlagIcon } from '../../../../assets/icons/order-flag.svg';
 import { StyledOrderDetailBox } from '../helpers';
 
-export default function OrderIssues({ flags = [] }) {
+export default function OrderIssues({ flags = [], sx, urgentText = '' }) {
   const theme = useTheme();
   const isResolved = flags?.reduce((acc, curr) => acc && curr?.isResolved, true);
 
@@ -14,6 +15,7 @@ export default function OrderIssues({ flags = [] }) {
 
   return (
     <StyledOrderDetailBox
+      sx={sx}
       title={
         <span>
           <FlagIcon style={{ color: theme.palette.error.main, marginRight: '3px' }} /> Flags

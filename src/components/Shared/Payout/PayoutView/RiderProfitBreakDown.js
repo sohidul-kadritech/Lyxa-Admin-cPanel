@@ -2,7 +2,6 @@ import { Stack } from '@mui/material';
 import { InfoCardForPayout } from './InfoCardForPayout';
 
 export function RiderProfitBreakDown({ currentPayout, currency }) {
-  console.log('currentPayout?.info.profitBreakdown', currentPayout?.info.profitBreakdown);
   const profitBreakdown = currentPayout?.info.profitBreakdown;
   return (
     <Stack>
@@ -20,7 +19,8 @@ export function RiderProfitBreakDown({ currentPayout, currency }) {
 
       <InfoCardForPayout
         title="Rider Add/Remove credit"
-        value={`${currency} ${Math.round(profitBreakdown?.riderAddRemoveCredit)}`}
+        value={`${currency} ${Math.round(Math.abs(profitBreakdown?.riderAddRemoveCredit || 0))}`}
+        isNegative={profitBreakdown?.riderAddRemoveCredit < 0}
       />
 
       <InfoCardForPayout title="Rider Payout" value={`${currency} ${Math.round(profitBreakdown?.riderPayout)}`} />
@@ -28,7 +28,7 @@ export function RiderProfitBreakDown({ currentPayout, currency }) {
       <Stack maxWidth="250px" mt={36 / 4}>
         <InfoCardForPayout
           title={` Total In (${currency})`}
-          value={`${currency} ${Math.round(profitBreakdown?.adminDeliveryProfit)}`}
+          value={`${currency} ${Math.round(profitBreakdown?.riderPayout)}`}
         />
       </Stack>
     </Stack>

@@ -38,15 +38,25 @@ const getCurrentTab = (queryParams) => {
   return queryParams?.orderType;
 };
 
-export default function Orders({ queryParams, setQueryParams, type }) {
+export default function Orders({
+  queryParams,
+  setQueryParams,
+  type,
+  paddingTop = 7.5,
+  api = Api.ORDER_LIST,
+  showTabs = {
+    category: true,
+    errorOrderType: true,
+  },
+}) {
   const [totalPage, setTotalPage] = useState(1);
   const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
   const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState('all');
 
   const ordersQuery = useQuery(
-    [Api.ORDER_LIST, queryParams],
+    [api, queryParams],
     () =>
-      AXIOS.get(Api.ORDER_LIST, {
+      AXIOS.get(api, {
         params: queryParams,
       }),
     {
@@ -57,19 +67,22 @@ export default function Orders({ queryParams, setQueryParams, type }) {
   );
 
   return (
-    <Box pt={7.5}>
+    <Box pt={paddingTop || 0}>
       <Stack gap={4}>
-        <StyledTabs2
-          value={currentTab}
-          options={getTabOptions(queryParams?.type)}
-          onChange={(value) => {
-            setCurrentTab(value);
-            if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
-            else if (value === 'butler') setQueryParams((prev) => ({ ...prev, orderType: '', model: value, page: 1 }));
-            else setQueryParams((prev) => ({ ...prev, orderType: value, model: 'order', page: 1 }));
-          }}
-        />
-        {type === 'ongoing' && (
+        {showTabs?.category && (
+          <StyledTabs2
+            value={currentTab}
+            options={getTabOptions(queryParams?.type)}
+            onChange={(value) => {
+              setCurrentTab(value);
+              if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
+              else if (value === 'butler')
+                setQueryParams((prev) => ({ ...prev, orderType: '', model: value, page: 1 }));
+              else setQueryParams((prev) => ({ ...prev, orderType: value, model: 'order', page: 1 }));
+            }}
+          />
+        )}
+        {type === 'ongoing' && showTabs?.errorOrderType && (
           <StyledTabs2
             value={currentErrorOrderTab}
             options={tabsOptionsForErrorOrder}

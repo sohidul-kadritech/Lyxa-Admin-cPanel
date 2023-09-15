@@ -82,6 +82,7 @@ export const ADD_ADMIN = `${ADMIN_ENDPOINT}/admins/add-admin`;
 export const GET_ALL_ADMIN = `${ADMIN_ENDPOINT}/admins/`;
 export const DELETE_ADMIN = `${ADMIN_ENDPOINT}/admins/delete`;
 export const EDIT_ADMIN = `${ADMIN_ENDPOINT}/admins/update`;
+export const EDIT_LIVE_STATUS = `${ADMIN_ENDPOINT}/admins/update-live-status`;
 export const SINGLE_ADMIN = `${ADMIN_ENDPOINT}/admins/get-single-admin-details`;
 
 // CHANGE PASSWORD
@@ -286,6 +287,8 @@ export const SHOP_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-se
 
 export const SHOP_ADD_REMOVE_CREDIT = `${ADMIN_ENDPOINT}/drop-wallet/shop-amount-add-remove`;
 
+export const RIDER_ADD_REMOVE_CREDIT = `${ADMIN_ENDPOINT}/drop-wallet/rider-amount-add-remove`;
+
 export const SHOP_ADJUST_CASH = `${ADMIN_ENDPOINT}/drop-wallet/shop-cash-in-hand-adjust`;
 
 export const RIDER_MAKE_PAYMENT = `${ADMIN_ENDPOINT}/drop-wallet/settle-amount-delivery-boy`;
@@ -296,6 +299,7 @@ export const RIDER_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/current-lo
 
 // ORDERS
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
+export const URGENT_ORDER_LIST = `${ADMIN_ENDPOINT}/order/urgent`;
 
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
@@ -306,6 +310,7 @@ export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;
 export const ACTIVE_DEIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-nearby-delivery-boy-order`;
 export const SHOP_ACTIVE_DELIVERY_BOYS = `${ADMIN_ENDPOINT}/order/get-shop-delivery-boy-order`;
+export const ACCEPT_URGENT_ORDER = `${ADMIN_ENDPOINT}/order/accept-urgent-order`;
 
 // BUTLER
 export const BUTLER_ORDER_LIST = `${ADMIN_ENDPOINT}/butler`;

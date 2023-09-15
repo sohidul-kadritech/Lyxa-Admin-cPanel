@@ -62,6 +62,7 @@ function PayoutList({
       if (data?.status) {
         queryClient.invalidateQueries(API_URL.GET_PAYOUTS);
         setIsConfirm(false);
+        setOpen(false);
       }
     },
   });

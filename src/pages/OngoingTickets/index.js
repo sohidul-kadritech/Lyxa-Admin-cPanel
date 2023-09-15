@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -11,11 +12,15 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { statusColor } from '../ShopProfile/Info';
 import SlideInContainer from './SlideInContainer';
+import UrgentOrderTable from './UrgentOrders';
 
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
+
+  console.log('admin', admin);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [, setRender] = useState(false);
@@ -37,7 +42,7 @@ export default function OngoingTickets() {
         setOrdersList(data?.data?.list);
         console.log(data);
       },
-    }
+    },
   );
 
   const accountsQuery = useQuery(
@@ -51,7 +56,7 @@ export default function OngoingTickets() {
         setAccountsList(data?.data?.list);
         console.log(data);
       },
-    }
+    },
   );
 
   // realtime add and remove chats
@@ -131,11 +136,13 @@ export default function OngoingTickets() {
               name: admin?.name,
               email: admin?.email,
               phone: admin?.phone_number,
+              statusColor: admin?.liveStatus === 'online' ? statusColor?.green : statusColor?.black,
             }}
             avatarProps={{
               sx: { width: 70, height: 70 },
             }}
             containerProps={{ sx: { gap: 5 } }}
+            showFor="customerService"
           />
           <Tabs
             value={currentTab}
@@ -152,6 +159,7 @@ export default function OngoingTickets() {
           >
             <Tab label="Orders Ticket" />
             <Tab label="Account Tickets" />
+            <Tab label="Urgent Orders" />
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} noPadding value={currentTab}>
@@ -173,6 +181,10 @@ export default function OngoingTickets() {
                 loading={accountsQuery?.isLoading}
                 onAction={onAction}
               />
+            </TabPanel>
+
+            <TabPanel index={2} noPadding value={currentTab}>
+              <UrgentOrderTable />
             </TabPanel>
           </Box>
         </SlideInContainer>

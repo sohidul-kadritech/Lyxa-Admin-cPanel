@@ -7,7 +7,7 @@ import CallUser from '../CallUser';
 import GroupOrder from './GroupOrder';
 import RegularOrder from './RegularOrder';
 
-export default function OrderSummary({ order }) {
+export default function OrderSummary({ order, sx }) {
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
   const totalProductQuantity = order?.productsDetails?.reduce((prev, curr) => curr?.productQuantity + prev, 0);
@@ -16,6 +16,7 @@ export default function OrderSummary({ order }) {
 
   return (
     <StyledOrderDetailBox
+      sx={sx}
       title={
         <span>
           Order Summary
