@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import Overview from '../../../components/Shared/FinancialsOverview';
 import PayoutDetailsTable from '../../../components/Shared/FinancialsOverview/PayoutDetailsTable';
+import GlobalAddRemoveCredit from '../../../components/Shared/GlobalAddRemoveCredit';
 import PayoutList from '../../../components/Shared/Payout';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
@@ -14,7 +15,6 @@ import { useGlobalContext } from '../../../context';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MakePayment from '../../RiderProfile/Transactions/MakePayment';
-import AddRemoveCredit from './AddRemoveCredit';
 import SearchBar from './Searchbar';
 
 const amountSx = {
@@ -89,48 +89,6 @@ export default function ShopTransactions({ shop }) {
           setModalOpen(true);
         }}
       />
-      {/* <Grid container spacing={5} pt={7.5} pb={7.5}>
-        <InfoCard
-          title="Lyxa Profit"
-          value={`${currency}${(lyxaProfit || 0)?.toFixed(2)}`}
-          sm={6}
-          md={4}
-          lg={3}
-          valueSx={amountSx}
-        />
-        <InfoCard
-          title="Shop Profit"
-          value={`${currency}${(summary?.toalShopProfile || 0)?.toFixed(2)}`}
-          sm={6}
-          md={4}
-          lg={3}
-          valueSx={amountSx}
-          isDropdown
-        >
-          <Stack gap={3}>
-            <PriceItem fontSize="14px!important" title="Paid" amount={summary?.totalShopEarning} />
-            <PriceItem fontSize="14px!important" title="Unpaid" amount={summary?.totalShopUnsettle} />
-            {summary?.totalShopDeliveryFee > 0 && (
-              <PriceItem
-                titleSx={{ color: '#b9b9b9' }}
-                fontSize="14px!important"
-                title="Shop Delivery fee"
-                amount={summary?.totalShopDeliveryFee}
-                amountStatus="secondary"
-              />
-            )}
-          </Stack>
-        </InfoCard>
-        <InfoCard title="Orders No" value={summary?.totalExpectedOrder || 0} sm={6} md={4} lg={3} valueSx={amountSx} />
-        <InfoCard
-          title="Order Amount"
-          value={`${currency}${(totalOrderAmount || 0).toFixed(2)}`}
-          sm={6}
-          md={4}
-          lg={3}
-          valueSx={amountSx}
-        />
-      </Grid> */}
 
       <Overview
         viewUserType="admin"
@@ -180,11 +138,9 @@ export default function ShopTransactions({ shop }) {
         }}
       >
         <Box>
-          <AddRemoveCredit
-            shopId={shop?._id}
-            storeAppSettings={storeAppSettings}
-            dropAmount={summary?.totalDropGet}
-            shopAmount={summary?.totalProfit}
+          <GlobalAddRemoveCredit
+            type="shop"
+            data={{ ...shop }}
             onClose={() => {
               setModalOpen(false);
             }}
@@ -196,7 +152,7 @@ export default function ShopTransactions({ shop }) {
         open={makePayment}
         onClose={() => {
           setMakePayment(false);
-          queryClient.invalidateQueries([Api.SHOP_TRX]);
+          queryClient.invalidateQueries([Api?.SHOP_TRX]);
         }}
       >
         <Box>

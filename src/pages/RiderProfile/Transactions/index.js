@@ -5,6 +5,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
+import GlobalAddRemoveCredit from '../../../components/Shared/GlobalAddRemoveCredit';
 import PayoutList from '../../../components/Shared/Payout';
 import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/RiderPayoutBreakDown';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
@@ -13,7 +14,6 @@ import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import GlobalAddRemoveCredit from './GlobalAddRemoveCredit';
 import MakePayment from './MakePayment';
 import RiderOrderTable from './RiderOrderTable';
 import SearchBar from './Searchbar';

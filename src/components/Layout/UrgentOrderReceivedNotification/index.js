@@ -3,13 +3,14 @@
 import { Box, Button, Paper, Stack, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CloseButton from '../../Common/CloseButton';
 import UrgentOrderDetails from './UrgentOrderDetails';
 
-function UrgentOrderRecieved({ order, onClose }) {
+function UrgentOrderRecieved({ order, onClose, showTime }) {
   console.log('order', order);
   const theme = useTheme();
 
@@ -17,11 +18,14 @@ function UrgentOrderRecieved({ order, onClose }) {
 
   const queryClient = useQueryClient();
 
+  const history = useHistory();
+
   useEffect(() => {
     const decrementTime = setInterval(() => {
       if (time > 0) {
         setTime((prev) => prev - 1);
       } else {
+        // onClose();
         clearInterval(decrementTime);
       }
     }, 1000);
@@ -33,7 +37,8 @@ function UrgentOrderRecieved({ order, onClose }) {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data?.message, 'success');
-        // queryClient.invalidateQueries(API_URL.GET_PAYOUTS);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
+        history.push('/ongoing-tickets');
         onClose();
       } else {
         successMsg(data?.message, 'warn');
@@ -50,7 +55,7 @@ function UrgentOrderRecieved({ order, onClose }) {
   return (
     <Paper
       sx={{
-        minWidth: 'max(35vw, 450px)',
+        maxWidth: 'max(70vw, 650px)',
         zIndex: '10 !important',
         maxHeight: '90vh',
         overflow: 'auto',
@@ -66,8 +71,6 @@ function UrgentOrderRecieved({ order, onClose }) {
             gap="16px"
             alignItems="center"
             sx={{
-              position: 'sticky',
-              top: '40px',
               background: '#fff',
               zIndex: '999',
             }}

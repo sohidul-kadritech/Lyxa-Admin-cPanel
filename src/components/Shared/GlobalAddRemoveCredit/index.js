@@ -5,14 +5,15 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { isNumber } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import CloseButton from '../../../components/Common/CloseButton';
-import OptionsSelect from '../../../components/Filter/OptionsSelect';
-import StyledFormField from '../../../components/Form/StyledFormField';
-import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import CloseButton from '../../Common/CloseButton';
+import OptionsSelect from '../../Filter/OptionsSelect';
+import StyledFormField from '../../Form/StyledFormField';
+import StyledRadioGroup from '../../Styled/StyledRadioGroup';
+import { formatNumber, stringToNumber } from './helpers';
 
 const initialAddRemoveCredit = (type, props) => {
   const typeOptions = {
@@ -21,14 +22,15 @@ const initialAddRemoveCredit = (type, props) => {
       amount: '',
       secondaryCurrency_amount: '',
       type: 'add',
-      desc: 'For refund amount',
+      desc: '',
+      paidCurrency: 'baseCurrency',
     },
     rider: {
       riderId: '',
       baseCurrency_amount: '',
       secondaryCurrency_amount: '',
       type: 'add',
-      desc: 'test',
+      desc: '',
       paidCurrency: 'baseCurrency',
     },
   };
@@ -49,6 +51,7 @@ const typeOptions = [
   { label: 'Add', value: 'add' },
   { label: 'Remove', value: 'remove' },
 ];
+
 export const currencyOptions = (
   baseCurrency,
   secondaryCurrency,
@@ -130,9 +133,18 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
       successMsg(data?.message, data?.status ? 'success' : undefined);
 
       if (data?.status) {
-        queryClient.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_TRANSACTIONS);
-        queryClient.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST);
-        queryClient.invalidateQueries(API_URL.GET_ADMIN_RIDER_FINANCIALS_PROFITBREAKDOWN);
+        queryClient?.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_TRANSACTIONS);
+
+        queryClient?.invalidateQueries(API_URL.SINGLE_DELIVERY_WALLET_CASH_ORDER_LIST);
+
+        queryClient?.invalidateQueries(API_URL.GET_ADMIN_RIDER_FINANCIALS_PROFITBREAKDOWN);
+
+        queryClient?.invalidateQueries(API_URL.GET_SHOP_ADMIN_FINANCIALS_PROFITBREAKDOWN);
+
+        queryClient?.invalidateQueries(API_URL.SHOP_TRX);
+
+        queryClient?.invalidateQueries(API_URL.GET_SHOP_DASHBOARD_SUMMARY);
+
         onClose();
       }
     },
@@ -143,8 +155,6 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
       addRemoveCredit?.paidCurrency === 'baseCurrency'
         ? addRemoveCredit?.[baseKey]
         : addRemoveCredit?.secondaryCurrency_amount;
-
-    console.log('addremove credit', addRemoveCredit);
 
     if (!isNumber(amount)) {
       successMsg('Invalid Amount');
@@ -165,7 +175,16 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
       return;
     }
 
-    creditMutation.mutate(addRemoveCredit);
+    if (type === 'rider') {
+      creditMutation.mutate(addRemoveCredit);
+      return;
+    }
+
+    if (type === 'shop') {
+      const tempAddRemoveCredit = addRemoveCredit;
+      delete tempAddRemoveCredit.paidCurrency;
+      creditMutation.mutate(tempAddRemoveCredit);
+    }
   };
 
   return (
@@ -228,17 +247,22 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
               },
             }}
             inputProps={{
-              type: 'number',
-              value: addRemoveCredit[baseKey],
+              type: 'text',
+              value: formatNumber(addRemoveCredit[baseKey]),
               min: 0,
               max: 100,
               placeholder: `Base currency amount. i.e. ${baseCurrency?.symbol} 100`,
-              onChange: (e) =>
+              onChange: (e) => {
+                const convertedValue = stringToNumber(e.target.value);
+                if (!isNumber(Number(convertedValue))) {
+                  return;
+                }
                 setAddRemoveCredit((prev) => {
-                  const secondaryCurrency_amount = Number(e.target.value) * Number(exchangeRate);
-
-                  return { ...prev, secondaryCurrency_amount, [baseKey]: Number(e.target.value) };
-                }),
+                  const secondaryCurrency_amount = Number(convertedValue) * Number(exchangeRate);
+                  console.log('prev', { ...prev, secondaryCurrency_amount, [baseKey]: Number(convertedValue) });
+                  return { ...prev, secondaryCurrency_amount, [baseKey]: Number(convertedValue) };
+                });
+              },
             }}
           />
         )}
@@ -253,16 +277,21 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
               },
             }}
             inputProps={{
-              type: 'number',
-              value: addRemoveCredit.secondaryCurrency_amount,
+              type: 'text',
+              value: formatNumber(addRemoveCredit?.secondaryCurrency_amount),
               min: 0,
               max: 5000000,
               placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5000000`,
-              onChange: (e) =>
+              onChange: (e) => {
+                const convertedValue = stringToNumber(e.target.value);
+                if (!isNumber(Number(convertedValue))) {
+                  return;
+                }
                 setAddRemoveCredit((prev) => {
-                  const baseCurrency_amount = Number(e.target.value) / Number(exchangeRate);
-                  return { ...prev, [baseKey]: baseCurrency_amount, secondaryCurrency_amount: Number(e.target.value) };
-                }),
+                  const baseCurrency_amount = Number(convertedValue) / Number(exchangeRate);
+                  return { ...prev, [baseKey]: baseCurrency_amount, secondaryCurrency_amount: Number(convertedValue) };
+                });
+              },
             }}
           />
         )}
@@ -271,8 +300,8 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
           <Typography variant="body3" sx={{ marginTop: '-8px !important' }}>
             Equivalent To:{' '}
             {addRemoveCredit?.paidCurrency === 'baseCurrency'
-              ? `${secondaryCurrency?.code} ${Math.round(addRemoveCredit?.secondaryCurrency_amount)}`
-              : `${baseCurrency?.symbol} ${(addRemoveCredit[baseKey] || 0).toFixed(2)}`}
+              ? `${secondaryCurrency?.code} ${formatNumber(Math.round(addRemoveCredit?.secondaryCurrency_amount))}`
+              : `${baseCurrency?.symbol} ${formatNumber((addRemoveCredit[baseKey] || 0).toFixed(2), true)}`}
           </Typography>
         )}
 

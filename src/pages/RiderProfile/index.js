@@ -54,6 +54,7 @@ export default function RiderProfile() {
   const queryClient = useQueryClient();
 
   const [rider, setRider] = useState(location?.state?.rider);
+  const [confirm, setConfirm] = useState(false);
 
   const query = useQuery(
     [Api.SINGLE_DELIVERY_MAN, { id: params?.riderId }],

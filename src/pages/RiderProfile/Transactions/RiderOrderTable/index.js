@@ -183,6 +183,7 @@ function RiderOrderTable({ currencyType = 'secondaryCurrency', riderParams, load
   ];
 
   if (query?.isLoading) return <TableSkeleton columns={['text', 'text', 'text', 'text', 'text', 'text']} rows={5} />;
+
   return (
     <>
       <Box

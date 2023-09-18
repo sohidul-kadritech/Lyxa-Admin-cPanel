@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useMemo, useState } from 'react';
@@ -9,6 +10,7 @@ import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 import ShopTransactions from '../../ShopProfile/Transactions';
+import PageSkeletonForShop from './PageSkeletonForShop';
 
 const getBreadCrumbItems = (searchUrl, viewUserType) => {
   let breadcrumbItems = [
@@ -74,6 +76,25 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
     }),
   );
 
+  const shopQuery = useQuery(
+    [
+      API_URL.SINGLE_SHOP,
+      {
+        shopId: searchParams.get('shopId'),
+      },
+    ],
+    () =>
+      AXIOS.get(API_URL.SINGLE_SHOP, {
+        params: {
+          id: searchParams.get('shopId'),
+        },
+      }),
+    {
+      enabled: viewUserType !== 'shop',
+    },
+  );
+
+  console.log('shopQuery', shopQuery?.data?.data?.shop);
   return (
     <Box>
       <PageTop
@@ -91,7 +112,7 @@ function ShopFinancialsTransaction({ viewUserType = 'admin' }) {
         }}
       />
 
-      <ShopTransactions shop={{ _id: searchParams.get('shopId') }} />
+      {shopQuery?.isLoading ? <PageSkeletonForShop /> : <ShopTransactions shop={shopQuery?.data?.data?.shop} />}
     </Box>
   );
 }
