@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useGlobalContext } from '../../../../context';
@@ -11,6 +12,7 @@ import CloseButton from '../../../Common/CloseButton';
 import OptionsSelect from '../../../Filter/OptionsSelect';
 import StyledFormField from '../../../Form/StyledFormField';
 import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
+import { formatNumber, stringToNumber } from '../../GlobalAddRemoveCredit/helpers';
 
 const initialAddRemoveCredit = {
   payoutId: '',
@@ -187,16 +189,22 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
               },
             }}
             inputProps={{
-              type: 'number',
-              value: addRemoveCredit.baseCurrency_amount,
+              type: 'text',
+              value: formatNumber(addRemoveCredit.baseCurrency_amount),
               min: 0,
               max: 100,
               placeholder: `Base currency amount. i.e. ${baseCurrency?.symbol} 100`,
-              onChange: (e) =>
+              onChange: (e) => {
+                const convertedValue = stringToNumber(e.target.value);
+                if (!isNumber(Number(convertedValue))) {
+                  return;
+                }
+
                 setAddRemoveCredit((prev) => {
-                  const secondaryCurrency_amount = Number(e.target.value) * Number(shopExchangeRate);
-                  return { ...prev, secondaryCurrency_amount, baseCurrency_amount: Number(e.target.value) };
-                }),
+                  const secondaryCurrency_amount = Number(convertedValue) * Number(shopExchangeRate);
+                  return { ...prev, secondaryCurrency_amount, baseCurrency_amount: Number(convertedValue) };
+                });
+              },
             }}
           />
         )}
@@ -211,16 +219,21 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
               },
             }}
             inputProps={{
-              type: 'number',
-              value: addRemoveCredit.secondaryCurrency_amount,
+              type: 'text',
+              value: formatNumber(addRemoveCredit.secondaryCurrency_amount),
               min: 0,
               max: 5000000,
               placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5000000`,
-              onChange: (e) =>
+              onChange: (e) => {
+                const convertedValue = stringToNumber(e.target.value);
+                if (!isNumber(Number(convertedValue))) {
+                  return;
+                }
                 setAddRemoveCredit((prev) => {
-                  const baseCurrency_amount = Number(e.target.value) / Number(shopExchangeRate);
-                  return { ...prev, baseCurrency_amount, secondaryCurrency_amount: Number(e.target.value) };
-                }),
+                  const baseCurrency_amount = Number(convertedValue) / Number(shopExchangeRate);
+                  return { ...prev, baseCurrency_amount, secondaryCurrency_amount: Number(convertedValue) };
+                });
+              },
             }}
           />
         )}
@@ -229,8 +242,8 @@ function PayoutAddRemoveCredit({ onClose, payout, closeVeiw }) {
           <Typography variant="body3" sx={{ marginTop: '-8px !important' }}>
             Equivalent To:{' '}
             {addRemoveCredit?.paidCurrency === 'baseCurrency'
-              ? `${secondaryCurrency?.code} ${Math.round(addRemoveCredit?.secondaryCurrency_amount)}`
-              : `${baseCurrency?.symbol} ${(addRemoveCredit?.baseCurrency_amount || 0).toFixed(2)}`}
+              ? `${secondaryCurrency?.code} ${formatNumber(Math.round(addRemoveCredit?.secondaryCurrency_amount))}`
+              : `${baseCurrency?.symbol} ${formatNumber((addRemoveCredit?.baseCurrency_amount || 0).toFixed(2), true)}`}
           </Typography>
         )}
 

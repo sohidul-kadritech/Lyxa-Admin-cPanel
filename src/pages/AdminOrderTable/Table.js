@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 
@@ -9,6 +11,7 @@ import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
+import UrgentOrderRecieved from '../../components/Layout/UrgentOrderReceivedNotification';
 import CancelOrder from '../../components/Shared/CancelOrder';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
@@ -23,7 +26,7 @@ import OrderTrackingModal from './OrderTracking';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
-const filterColumns = (columns, shopType, orderType) => {
+const filterColumns = (columns, shopType, orderType, showFor) => {
   let cols = columns.filter((col) => col?.showFor?.includes(orderType));
 
   if (shopType !== 'all') {
@@ -32,6 +35,10 @@ const filterColumns = (columns, shopType, orderType) => {
 
   if (shopType === 'butler') {
     cols = cols.filter((col) => col.headerName !== 'SHOP' && col.headerName !== 'ORDER RATING');
+  }
+
+  if (showFor !== 'customerService') {
+    cols = cols.filter((col) => col.headerName !== 'ACCEPTED');
   }
 
   return cols;
@@ -46,10 +53,13 @@ export default function Table({
   orderType,
   loading,
   refetching,
+  showFor,
 }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
-  const { general } = useGlobalContext();
+  const { general, currentUser } = useGlobalContext();
+
+  console.log('currentUser', currentUser);
 
   const currency = general?.currency?.symbol;
 
@@ -59,6 +69,8 @@ export default function Table({
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openRefundModal, setOpenRefundModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
+
+  const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
 
@@ -86,6 +98,11 @@ export default function Table({
 
     if (menu === 'update_status') {
       setUpdateStatusModal(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'accept_urgent_order') {
+      setOpenUrgentOrder(true);
       setCurrentOrder(order);
     }
   };
@@ -151,6 +168,28 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => (
         <Typography variant="body4">{row?.isButler ? 'Butler' : shopTypeLabelMap[row?.shop?.shopType]}</Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing'],
+      id: 2,
+      headerName: `ACCEPTED`,
+      field: 'isCustomerServiceAccepted',
+      sortable: false,
+      minWidth: 120,
+      flex: 1.5,
+      renderCell: ({ value }) => (
+        // <Typography variant="body4">{value === true ? 'Customer Service Accepted' : 'Not Accepted'}</Typography>
+        <Chip
+          label={value === true ? 'Accepted' : 'Not Accepted'}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
       ),
     },
     {
@@ -295,13 +334,16 @@ export default function Table({
           handleMenuClick={(menu) => {
             threeDotHandler(menu, params?.row);
           }}
-          menuItems={getThreedotMenuOptions(params?.row, 'admin')}
+          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
         />
       ),
     },
   ];
 
-  const filteredColumns = useMemo(() => filterColumns(columns, shopType, orderType), [shopType, orderType]);
+  const filteredColumns = useMemo(
+    () => filterColumns(columns, shopType, orderType, showFor),
+    [shopType, orderType, showFor],
+  );
 
   if (loading) {
     return <TableSkeleton columns={['avatar', 'avatar', 'text', 'text', 'text', 'text', 'text']} rows={7} />;
@@ -421,6 +463,15 @@ export default function Table({
         <Box>
           <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
         </Box>
+      </Modal>
+
+      <Modal open={openUrgentOrder}>
+        <UrgentOrderRecieved
+          order={currentOrder}
+          onClose={() => {
+            setOpenUrgentOrder(false);
+          }}
+        />
       </Modal>
     </>
   );

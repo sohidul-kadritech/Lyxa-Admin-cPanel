@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Modal, Paper, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../../helpers/successMsg';
@@ -7,6 +7,7 @@ import * as API_URL from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 import CloseButton from '../../../Common/CloseButton';
 import StyledFormField from '../../../Form/StyledFormField';
+import PayoutAddRemoveCredit from './PayoutAddRemoveCredit';
 
 const initRevokePayout = {
   payoutId: '',
@@ -15,6 +16,7 @@ const initRevokePayout = {
 
 function RevokePayout({ onClose, payout, closeVeiw }) {
   const [revokePayout, setRevokePayout] = useState({ ...initRevokePayout, payoutId: payout?._id });
+  const [addRemoveCreditOpen, setAddRemoveCredit] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -90,28 +92,52 @@ function RevokePayout({ onClose, payout, closeVeiw }) {
               },
             }}
           />
-          <Stack direction="row" justifyContent="flex-end" alignItems="center" gap={2}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Button
               variant="text"
               color="primary"
               disableRipple
               onClick={() => {
-                onClose();
+                setAddRemoveCredit(true);
               }}
             >
-              Discard
+              Add/Remove Credit
             </Button>
-            <Button
-              disabled={revokePayoutQuery?.isLoading}
-              variant="contained"
-              color="primary"
-              onClick={onSubmitRevoke}
-            >
-              Confirm
-            </Button>
+            <Stack direction="row" justifyContent="flex-end" alignItems="center" gap={2}>
+              <Button
+                variant="text"
+                color="primary"
+                disableRipple
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Discard
+              </Button>
+              <Button
+                disabled={revokePayoutQuery?.isLoading}
+                variant="contained"
+                color="primary"
+                onClick={onSubmitRevoke}
+              >
+                Confirm
+              </Button>
+            </Stack>
           </Stack>
         </Stack>
       </Box>
+      <Modal open={addRemoveCreditOpen}>
+        <PayoutAddRemoveCredit
+          payout={payout}
+          closeVeiw={() => {
+            closeVeiw();
+            onClose();
+          }}
+          onClose={() => {
+            setAddRemoveCredit(false);
+          }}
+        />
+      </Modal>
     </Paper>
   );
 }

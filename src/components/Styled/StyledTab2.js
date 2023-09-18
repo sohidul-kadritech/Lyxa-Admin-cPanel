@@ -1,4 +1,5 @@
 import { Box, Stack, styled } from '@mui/material';
+import StyledBadgeContainer from './StyledBadge';
 
 const StyledTab = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
@@ -54,7 +55,9 @@ export default function StyledTabs2({ options, onChange, value, size }) {
   return (
     <Stack direction="row" alignItems="center" gap={size === 'small' ? 2 : 4}>
       {options?.map((tab) => (
-        <TabItem key={tab?.value} tab={tab} isActive={value === tab.value} onSelect={onChange} size={size} />
+        <StyledBadgeContainer badgeContent={tab?.badgeContent} key={tab?.value}>
+          <TabItem tab={tab} isActive={value === tab.value} onSelect={onChange} size={size} />
+        </StyledBadgeContainer>
       ))}
     </Stack>
   );

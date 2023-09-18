@@ -5,6 +5,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 
 // project import
 import moment from 'moment';
+import { useHistory, useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
@@ -43,13 +44,18 @@ const defaultSearchParams = {
 export default function AdminOrders() {
   const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
 
+  console.log('queyrParams', queryParams);
+
+  const history = useHistory();
+  const location = useLocation();
+
   return (
     <Box pb={9}>
       <PageTop title="Orders" />
       <Tabs
         value={orderFilterToTabValueMap[queryParams?.type]}
         onChange={(event, newValue) => {
-          setQueryParams({ type: orderFilterToTabValueMap[newValue], page: 1 });
+          setQueryParams((prev) => ({ type: orderFilterToTabValueMap[newValue], page: 1 }));
         }}
         sx={{
           '& .MuiTab-root': {
@@ -67,7 +73,7 @@ export default function AdminOrders() {
       </Tabs>
       <Box>
         <TabPanel panelKey="ongoing" value={queryParams?.type} noPadding>
-          <Orders type="ongoing" queryParams={{ ...queryParams }} setQueryParams={setQueryParams} />
+          <Orders type="ongoing" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel panelKey="delivered" value={queryParams?.type} noPadding>
           <Orders type="delivered" queryParams={queryParams} setQueryParams={setQueryParams} />
