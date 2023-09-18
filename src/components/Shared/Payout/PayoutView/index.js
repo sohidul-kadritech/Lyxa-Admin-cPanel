@@ -6,9 +6,9 @@ import { ReactComponent as Logo } from '../../../../assets/icons/logo-sm.svg';
 import { ReactComponent as LogoText } from '../../../../assets/icons/lyxa-logo-text.svg';
 import { useGlobalContext } from '../../../../context';
 import { Details } from './Details';
-import PayoutAddRemoveCredit from './PayoutAddRemoveCredit';
 import { ProfitBreakDown } from './ProfitBreakDown';
 import RevokePayout from './RevokePayout';
+import { getPayoutStatusLabel } from './helpers';
 
 function TopView() {
   return (
@@ -75,29 +75,20 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
 */}
         {currentPayout?.info?.payoutStatus !== 'paid' && (
           <Stack direction="row" justifyContent="space-between" alignItems="center" mt={7.5}>
-            {currentPayout?.info?.payoutStatus !== 'revoked' ? (
-              <Button
-                variant="text"
-                color="danger"
-                disableRipple
-                onClick={() => {
-                  setOpen(true);
-                }}
-              >
-                Revoke Payment
-              </Button>
-            ) : (
-              <Button
-                variant="text"
-                color="primary"
-                disableRipple
-                onClick={() => {
-                  setAddRemoveCredit(true);
-                }}
-              >
-                Add/Remove Credit
-              </Button>
-            )}
+            <Button
+              variant="text"
+              color="danger"
+              disableRipple
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              Revoke Payment
+            </Button>
+
+            <Typography variant="body2" fontWeight={500}>
+              {getPayoutStatusLabel[currentPayout?.info?.payoutStatus] || 'Unknown'}
+            </Typography>
             <Button
               variant="contained"
               color="primary"
@@ -121,7 +112,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
           }}
         />
       </Modal>
-      <Modal open={addRemoveCreditOpen}>
+      {/* <Modal open={addRemoveCreditOpen}>
         <PayoutAddRemoveCredit
           payout={currentPayout?.info}
           closeVeiw={onClose}
@@ -129,7 +120,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
             setAddRemoveCredit(false);
           }}
         />
-      </Modal>
+      </Modal> */}
     </Paper>
   );
 }

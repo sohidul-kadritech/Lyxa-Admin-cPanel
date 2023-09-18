@@ -108,6 +108,14 @@ export const statusColorVariants = {
     color: '#454545',
     background: '#F0F0F0',
   },
+  true: {
+    color: '#417C45',
+    background: '#DCFCE7',
+  },
+  false: {
+    color: '#454545',
+    background: '#F0F0F0',
+  },
 };
 
 export const sortOptions = [
@@ -200,6 +208,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
   const refundOrder = { label: 'Refund Order', value: 'refund_order' };
   const flagOrder = { label: 'Flag', value: 'flag' };
+  const acceptUrgentOrder = { label: 'Accept Urgent Order', value: 'accept_urgent_order' };
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
@@ -211,6 +220,10 @@ export const getThreedotMenuOptions = (order, userType) => {
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
     makePushOptions([updateStatus, trackOrder, cancelOrder]);
+  }
+
+  if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'customerService') {
+    makePushOptions([updateStatus, trackOrder, cancelOrder, acceptUrgentOrder]);
   }
 
   if (
