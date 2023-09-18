@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Button, Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import moment from 'moment';
@@ -44,13 +46,14 @@ export default function SearchBar({
   customSelectOptions,
   customSelectValue,
   customSelectPlaceholder,
+  customSelectHanlder,
 }) {
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, searchDebounceTime),
-    []
+    [],
   );
 
   return (
@@ -124,6 +127,10 @@ export default function SearchBar({
             minWidth: 'auto',
           }}
           onChange={(e) => {
+            if (customSelectHanlder) {
+              customSelectHanlder(e.target.value);
+              return;
+            }
             setQueryParams((prev) => ({ ...prev, [customSelectValue]: e.target.value, page: 1 }));
           }}
         />

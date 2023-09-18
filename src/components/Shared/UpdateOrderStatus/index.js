@@ -182,6 +182,7 @@ export default function UpdateOrderStatus({
 
     if (response.status) {
       queryClient.invalidateQueries(refetchApiKey);
+      queryClient.invalidateQueries(Api.URGENT_ORDER_LIST);
 
       if (onUpdateSuccess) onUpdateSuccess(response);
 

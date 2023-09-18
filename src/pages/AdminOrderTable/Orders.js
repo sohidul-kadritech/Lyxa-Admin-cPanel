@@ -10,15 +10,19 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
 
-const tabsOptionsForErrorOrder = [
-  { value: 'all', label: 'All' },
-  { value: 'null', label: 'Orders' },
-  { value: 'urgent', label: 'Urgent Orders' },
-  { value: 'late', label: 'Late Orders' },
-  { value: 'replacement', label: 'Replacement' },
-];
+const tabsOptionsForErrorOrder = (value) => {
+  const data = [
+    { value: 'all', label: 'All' },
+    { value: 'null', label: 'Orders' },
+    { value: 'urgent', label: 'Urgent Orders', badgeContent: value || 4 },
+    { value: 'late', label: 'Late Orders' },
+    { value: 'replacement', label: 'Replacement' },
+  ];
 
-const getTabOptions = (type) => {
+  return data;
+};
+
+const getTabOptions = (type, showFor) => {
   const tabsOptions = [
     { value: 'all', label: 'All Categories' },
     { value: 'food', label: 'Restaurant' },
@@ -27,7 +31,8 @@ const getTabOptions = (type) => {
     { value: 'butler', label: 'Butler' },
   ];
 
-  if (type === 'scheduled') return tabsOptions.filter((option) => option.value !== 'butler');
+  if (type === 'scheduled' || showFor === 'customerService')
+    return tabsOptions.filter((option) => option.value !== 'butler');
 
   return tabsOptions;
 };
@@ -43,6 +48,7 @@ export default function Orders({
   setQueryParams,
   type,
   paddingTop = 7.5,
+  showFor = 'admin',
   api = Api.ORDER_LIST,
   showTabs = {
     category: true,
@@ -50,6 +56,7 @@ export default function Orders({
   },
 }) {
   const [totalPage, setTotalPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
   const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState('all');
 
@@ -57,7 +64,7 @@ export default function Orders({
     [api, queryParams],
     () =>
       AXIOS.get(api, {
-        params: queryParams,
+        params: { ...queryParams, orderType: queryParams?.orderType === 'butler' ? '' : queryParams?.orderType },
       }),
     {
       onSuccess: (data) => {
@@ -69,25 +76,13 @@ export default function Orders({
   return (
     <Box pt={paddingTop || 0}>
       <Stack gap={4}>
-        {showTabs?.category && (
-          <StyledTabs2
-            value={currentTab}
-            options={getTabOptions(queryParams?.type)}
-            onChange={(value) => {
-              setCurrentTab(value);
-              if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
-              else if (value === 'butler')
-                setQueryParams((prev) => ({ ...prev, orderType: '', model: value, page: 1 }));
-              else setQueryParams((prev) => ({ ...prev, orderType: value, model: 'order', page: 1 }));
-            }}
-          />
-        )}
         {type === 'ongoing' && showTabs?.errorOrderType && (
           <StyledTabs2
             value={currentErrorOrderTab}
-            options={tabsOptionsForErrorOrder}
+            options={tabsOptionsForErrorOrder(0)}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
+              console.log('value', value);
               if (value === 'all') {
                 setQueryParams((prev) => {
                   delete prev?.errorOrderType;
@@ -105,16 +100,26 @@ export default function Orders({
           />
         )}
       </Stack>
-      <Box pt={7.5} pb={7.5}>
+      <Box pt={paddingTop || 0} pb={7.5}>
         <SearchBar
           searchPlaceHolder="Search orders"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           searchDefaultValue={queryParams?.searchKey}
+          customSelectOptions={getTabOptions(queryParams?.type, showFor)}
+          customSelectValue="orderType"
+          customSelectPlaceholder="Select category"
+          customSelectHanlder={(value) => {
+            if (value === 'all') setQueryParams((prev) => ({ ...prev, orderType: value, model: '', page: 1 }));
+            else if (value === 'butler')
+              setQueryParams((prev) => ({ ...prev, orderType: value, model: value, page: 1 }));
+            else setQueryParams((prev) => ({ ...prev, orderType: value, model: 'order', page: 1 }));
+          }}
           showFilters={{
             search: true,
             sort: true,
             date: true,
+            customSelect: showTabs?.category === true,
           }}
         />
       </Box>
@@ -127,6 +132,7 @@ export default function Orders({
         queryParams={queryParams}
         setQueryParams={setQueryParams}
         totalPage={totalPage}
+        showFor={showFor}
       />
     </Box>
   );

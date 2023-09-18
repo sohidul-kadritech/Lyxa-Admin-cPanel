@@ -9,6 +9,7 @@ import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as Shift } from '../../assets/icons/shift.svg';
 import { ReactComponent as VehicleNumber } from '../../assets/icons/vehicleNumber.svg';
 import { ReactComponent as VehicleType } from '../../assets/icons/vehicleType.svg';
+import ConfirmModal from '../../components/Common/ConfirmModal';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -16,13 +17,16 @@ import AXIOS from '../../network/axios';
 
 export default function RiderDetails({ rider }) {
   const [, setRender] = useState(false);
+  const [isConfirm, setConfirm] = useState(false);
   const queryClient = useQueryClient();
 
   const update = useMutation((data) => AXIOS.post(Api.EDIT_DELIVERY_MAN, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
-        queryClient.invalidateQueries([Api.ALL_DELIVERY_MAN]);
+        queryClient.invalidateQueries(Api.ALL_DELIVERY_MAN);
+        queryClient.invalidateQueries(Api.SINGLE_DELIVERY_MAN);
+        setConfirm(false);
         rider.isLogin = false;
         setRender((prev) => !prev);
       }
@@ -69,12 +73,23 @@ export default function RiderDetails({ rider }) {
           startIcon={<LogoutIcon />}
           disabled={update.isLoading}
           onClick={() => {
-            update.mutate({ id: rider?._id, isLogin: false });
+            setConfirm(true);
           }}
         >
           Force Log out
         </Button>
       </Box>
+      <ConfirmModal
+        isOpen={isConfirm}
+        message="Do you want to log out this rider?"
+        onCancel={() => {
+          setConfirm(false);
+        }}
+        loading={update?.isLoading}
+        onConfirm={() => {
+          update.mutate({ id: rider?._id, isLogin: false });
+        }}
+      />
     </Box>
   );
 }

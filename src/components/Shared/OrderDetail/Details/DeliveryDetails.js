@@ -42,7 +42,7 @@ export function DeliveryMethod({ order = {}, theme, sx }) {
   );
 }
 
-export default function DeliveryDetails({ order = {}, sx }) {
+export default function DeliveryDetails({ order = {}, sx, showMap = true }) {
   const [mapOpen, setOpen] = useState(false);
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
@@ -76,7 +76,7 @@ export default function DeliveryDetails({ order = {}, sx }) {
               Delivery Details
               <MapIcon />
             </span>
-            <Box>{mapOpen ? <ExpandLess /> : <ExpandMore />}</Box>
+            {showMap === true && <Box>{mapOpen ? <ExpandLess /> : <ExpandMore />}</Box>}
           </Stack>
         }
       >
@@ -131,23 +131,25 @@ export default function DeliveryDetails({ order = {}, sx }) {
             </Typography>
           </Box>
         )}
-        <Accordion
-          expanded={mapOpen}
-          sx={{
-            '&::before': {
-              display: 'none',
-            },
-          }}
-        >
-          <AccordionSummary sx={{ display: 'none' }}></AccordionSummary>
-          <AccordionDetails sx={{ padding: '0', paddingTop: '10px' }}>
-            <OrderTrackingMap
-              pickup={order?.pickUpLocation}
-              dropoff={order?.dropOffLocation}
-              orderType={order?.isButler ? 'butler' : order?.orderType}
-            />
-          </AccordionDetails>
-        </Accordion>
+        {showMap === true && (
+          <Accordion
+            expanded={mapOpen}
+            sx={{
+              '&::before': {
+                display: 'none',
+              },
+            }}
+          >
+            <AccordionSummary sx={{ display: 'none' }}></AccordionSummary>
+            <AccordionDetails sx={{ padding: '0', paddingTop: '10px' }}>
+              <OrderTrackingMap
+                pickup={order?.pickUpLocation}
+                dropoff={order?.dropOffLocation}
+                orderType={order?.isButler ? 'butler' : order?.orderType}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
       </StyledOrderDetailBox>
     </Stack>
   );

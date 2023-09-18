@@ -14,6 +14,7 @@ import UserAvatar from '../../Common/UserAvatar';
 import TableSkeleton from '../../Skeleton/TableSkeleton';
 import StyledIconButton from '../../Styled/StyledIconButton';
 import StyledTable from '../../Styled/StyledTable3';
+import { getPayoutStatusLabel } from './PayoutView/helpers';
 import { getPayoutData } from './helpers';
 
 function PayoutTable({
@@ -106,8 +107,7 @@ function PayoutTable({
       sortable: false,
       renderCell: ({ value }) => (
         <Typography textTransform="capitalize" variant="body1">
-          {' '}
-          {value}
+          {getPayoutStatusLabel[value]}
         </Typography>
       ),
     },
@@ -161,24 +161,6 @@ function PayoutTable({
       align: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" gap={2}>
-          {row?.payoutStatus !== 'paid' && (
-            <StyledIconButton
-              color="primary"
-              sx={{
-                width: 'auto',
-                fontSize: '14px',
-                textTransform: 'uppercase',
-                paddingLeft: '20px',
-                paddingRight: '20px',
-              }}
-              onClick={() => {
-                setCurrentPayout(row);
-                setIsConfirm(true);
-              }}
-            >
-              Pay
-            </StyledIconButton>
-          )}
           <StyledIconButton color="primary">
             <DownloadIcon />
           </StyledIconButton>

@@ -86,13 +86,13 @@ export default function Layout() {
 
   useEffect(() => {
     if (userType === 'admin' || adminType === 'customerService') {
-      socketServices.on(`urgent-notification`, (data) => {
-        console.log('urgent order socketData', data);
+      socketServices?.on(`urgent-notification`, (data) => {
+        console.log('urgent order socketData', data?.order);
         setOpenUrgentOrder(true);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
         setOrder(data?.order);
       });
-      socketServices?.removeListener(`urgent-notification-remove`, () => {
+      socketServices?.on(`urgent-notification-remove`, () => {
         console.log('urgent order socketData removed');
         setOpenUrgentOrder(false);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
@@ -102,8 +102,9 @@ export default function Layout() {
 
     return () => {
       socketServices?.removeListener(`urgent-notification`);
+      socketServices?.removeListener(`urgent-notification-remove`);
     };
-  }, [userType]);
+  }, []);
 
   return (
     <Box
