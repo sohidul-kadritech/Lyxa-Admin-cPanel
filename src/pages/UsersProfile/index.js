@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Drawer, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -56,11 +57,8 @@ export default function UserProfile() {
           setUser(data?.data?.user);
         }
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
-
-  console.log({ user });
 
   return (
     <Box>

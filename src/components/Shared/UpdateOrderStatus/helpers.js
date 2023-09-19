@@ -109,16 +109,25 @@ export const newStatusOptions = (currentOrder) => {
   };
 };
 
-export const paidCurrencyOptions = [
-  {
-    label: 'Base Currency',
-    value: 'baseCurrency',
-  },
-  {
-    label: 'Secondary Currency',
-    value: 'secondaryCurrency',
-  },
-];
+// eslint-disable-next-line no-unused-vars
+export const paidCurrencyOptions = (isEnabled) => {
+  const currencyOptions = [
+    {
+      label: 'Base Currency',
+      value: 'baseCurrency',
+    },
+    {
+      label: 'Secondary Currency',
+      value: 'secondaryCurrency',
+    },
+  ];
+
+  if (!isEnabled) {
+    return currencyOptions.filter((item) => item?.value !== 'secondaryCurrency');
+  }
+
+  return currencyOptions;
+};
 
 export const validate = (currentStatus, currentOrderDelivery, currentOrder, paidCurrency) => {
   if (currentStatus === '') {
@@ -177,17 +186,8 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
     });
   });
 
-  /*
-  currentOrder?.deliveryBoy
-  currentOrder?.orderFor=="global"
-  currentOrder?.orderStatus==="preparing"
-  */
-  // console.log('currentOrder', currentOrder, 'list', list);
-
-  // console.log('newStatusOptions', list2);
-
-  if (currentOrder?.orderFor !== 'global') {
-    list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+    list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
 
   if (currentOrder?.orderFor === 'global') {
@@ -209,6 +209,8 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
 
 export const getNextStatus = (order, isReturnforAdmin = false) => {
   const items = updateOrderStatusOptions(order, isReturnforAdmin);
+
   const currIdx = items?.findIndex((obj) => obj.value === order?.orderStatus);
+
   return items[currIdx + 1]?.value;
 };

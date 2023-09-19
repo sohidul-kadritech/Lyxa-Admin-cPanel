@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
@@ -43,6 +44,22 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
 
   const currency = isSecondaryCurrencyEnabled ? secondaryCurrency?.code : baseCurrency?.symbol;
 
+  const getCurrency = (value, type) => {
+    const currencyAmount = Number(value);
+    const currency = {
+      baseCurrency: {
+        symbol: baseCurrency?.symbol,
+        amount: (currencyAmount || 0).toFixed(2),
+      },
+      secondaryCurrency: {
+        symbol: secondaryCurrency?.code,
+        amount: Math.round(currencyAmount || 0),
+      },
+    };
+
+    return currency[type];
+  };
+
   useEffect(() => {
     if (type === 'cashOrderList') {
       setAllSelected(false);
@@ -66,7 +83,7 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
     {
       type: ['transactions', 'cashOrderList', 'user-transactions'],
       id: 2,
-      headerName: `AMOUNT ${currency}`,
+      headerName: `AMOUNT`,
       field: type === 'cashOrderList' ? 'receivedAmount' : 'amount',
       flex: 1,
       minWidth: 200,
@@ -74,14 +91,14 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
       renderCell: ({ value, row }) => {
         const amount =
           type === 'cashOrderList'
-            ? isSecondaryCurrencyEnabled
-              ? Math.round(row?.secondaryCurrency_receivedAmount || 0)
-              : (row?.receivedAmount || 0).toFixed(2)
-            : isSecondaryCurrencyEnabled
-            ? Math.round(row?.secondaryCurrency_amount || 0)
-            : (row?.amount || 0).toFixed(2);
-
-        console.log('amount', amount);
+            ? getCurrency(
+                row?.paidCurrency === 'baseCurrency' ? row?.receivedAmount : row?.secondaryCurrency_receivedAmount,
+                row?.paidCurrency,
+              )
+            : getCurrency(
+                row?.paidCurrency === 'baseCurrency' ? row?.amount : row?.secondaryCurrency_amount,
+                row?.paidCurrency,
+              );
 
         if (type === 'user-transactions') {
           const sign =
@@ -93,16 +110,14 @@ export default function TransactionsTable({ rows = [], type, loading, refetching
 
           return (
             <Typography variant="body4">
-              {sign}
-              {currency}
-              {amount}
+              {sign} {amount.symbol} {amount.amount}
             </Typography>
           );
         }
 
         return (
           <Typography variant="body4">
-            {currency} {amount}
+            {amount.symbol} {amount.amount}
           </Typography>
         );
       },

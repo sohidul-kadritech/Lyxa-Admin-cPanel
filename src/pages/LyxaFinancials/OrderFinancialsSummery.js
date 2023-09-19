@@ -2,19 +2,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-no-useless-fragment */
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import DetailsAccordion from '../../components/Shared/FinancialsOverview/DetailsAccordion';
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
-import { dateRangeItit } from '../../components/Shared/FinancialsOverview/helpers';
+import { dateRangeItit, getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import DateRange from '../../components/StyledCharts/DateRange';
 import InfoCard from '../../components/StyledCharts/InfoCard';
 import { useGlobalContext } from '../../context';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { convertDate } from './OrderFinancials';
+import { bothCurrencyProfitbreakDown } from './helpers';
 
 const breadcrumbItems = () => [
   {
@@ -30,14 +31,16 @@ const breadcrumbItems = () => [
 function OrderFinancialsSummary() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
+
+  const appSettings = general?.appSetting;
+  const { baseCurrency, secondaryCurrency } = appSettings;
+
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
 
-  // eslint-disable-next-line no-unused-vars
   const [expandedIndex, setExpandedIndex] = useState(-1);
 
   const currency = general?.currency?.symbol;
 
-  // eslint-disable-next-line no-unused-vars
   const [currentInfoExpanded, setCurrentInfoExpanded] = useState(-1);
 
   const getFinancialsDashBoard = useQuery(
@@ -104,7 +107,38 @@ function OrderFinancialsSummary() {
               index={1}
               expandedIndex={expandedIndex === 1}
               setExpandedIndex={setExpandedIndex}
-              value={`${currency} ${(profit?.totalProfit || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(profit?.totalProfit || 0).toFixed(2)}
+                  </Typography>
+
+                  {profit?.secondaryCurrency_profit >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(profit, 'total_profit'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -136,7 +170,38 @@ function OrderFinancialsSummary() {
               index={2}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 2}
-              value={`${currency} ${(orderProfit?.totalOrderProfit || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(orderProfit?.totalOrderProfit || 0).toFixed(2)}
+                  </Typography>
+
+                  {orderProfit?.secondaryCurrency_orderProfit >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(orderProfit, 'total_order_profit'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -163,7 +228,38 @@ function OrderFinancialsSummary() {
               index={3}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 3}
-              value={`${currency} ${(deliveryProfit?.totalDeliveryProfit || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(deliveryProfit?.totalDeliveryProfit || 0).toFixed(2)}
+                  </Typography>
+
+                  {deliveryProfit?.secondaryCurrency_deliveryProfit >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(deliveryProfit, 'total_delivery_profit'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -198,7 +294,38 @@ function OrderFinancialsSummary() {
               index={4}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 4}
-              value={`${currency} ${(refund?.totalRefund || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(refund?.totalRefund || 0).toFixed(2)}
+                  </Typography>
+
+                  {deliveryProfit?.secondaryCurrency_refund >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(refund, 'total_refund'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -238,7 +365,38 @@ function OrderFinancialsSummary() {
               index={5}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 5}
-              value={`${currency} ${(marketingSpent?.totalMarketingSpent || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(marketingSpent?.totalMarketingSpent || 0).toFixed(2)}
+                  </Typography>
+
+                  {marketingSpent?.secondaryCurrency_marketingSpent >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(marketingSpent, 'total_marketing_spent'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -330,28 +488,6 @@ function OrderFinancialsSummary() {
             </InfoCard>
           </Grid>
 
-          {/* <Grid item xs={6} md={4} height="140px">
-            <InfoCard
-              title="Marketing cashback"
-              sx={{ position: 'absolute', left: 0, zIndex: 999 }}
-              isDropdown
-              index={6}
-              setExpandedIndex={setExpandedIndex}
-              expandedIndex={expandedIndex === 6}
-              value={`${currency} ${(marketingCashBack?.adminMarketingCashback || 0).toFixed(2)}`}
-              sm={6}
-              md={4}
-              lg={4}
-            >
-              <Stack gap={3}>
-                <PriceItem title="Discount" amount={marketingCashBack?.discount_amc} showIfZero />
-                <PriceItem title="Loyality points" amount={marketingCashBack?.couponDiscount_amc} showIfZero />
-                <PriceItem title="Buy 1, get 1" amount={marketingCashBack?.buy1Get1_amc} showIfZero />
-                <PriceItem title="Coupon" amount={marketingCashBack?.couponDiscount_amc} showIfZero />
-              </Stack>
-            </InfoCard>
-          </Grid> */}
-
           {/* 
           
             How much earn from featured only
@@ -365,7 +501,38 @@ function OrderFinancialsSummary() {
             <InfoCard
               title="Featured Earning"
               sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 7 ? 9999 : 99 }}
-              value={`${currency} ${(featured?.totalFeaturedAmount || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(featured?.totalFeaturedAmount || 0).toFixed(2)}
+                  </Typography>
+
+                  {featured?.secondaryCurrency_featuredAmount >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(featured, 'featured'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               isDropdown
               index={7}
               setExpandedIndex={setExpandedIndex}
@@ -393,7 +560,38 @@ function OrderFinancialsSummary() {
               index={8}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 8}
-              value={`${currency} ${(otherAmount?.otherAmount || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(otherAmount?.otherAmount || 0).toFixed(2)}
+                  </Typography>
+
+                  {otherAmount?.secondaryCurrency_otherAmount >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(otherAmount, 'otherAmount'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -419,7 +617,38 @@ function OrderFinancialsSummary() {
             <InfoCard
               title="Free delivery by shop"
               sx={{ position: 'relative', left: 0 }}
-              value={`${currency} ${(summary?.freeDeliveryShopCut || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(summary?.freeDeliveryShopCut || 0).toFixed(2)}
+                  </Typography>
+
+                  {summary?.secondaryCurrency_freeDeliveryShopCut >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(summary, 'free_delivery'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -429,7 +658,38 @@ function OrderFinancialsSummary() {
             <InfoCard
               title="Lyxa pay"
               sx={{ position: 'relative', left: 0 }}
-              value={`${currency} ${(summary?.adminPay || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(summary?.adminPay || 0).toFixed(2)}
+                  </Typography>
+
+                  {summary?.secondaryCurrency_adminPay >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(summary, 'lyxa_pay'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -443,7 +703,38 @@ function OrderFinancialsSummary() {
               index={10}
               setExpandedIndex={setExpandedIndex}
               expandedIndex={expandedIndex === 10}
-              value={`${currency} ${(addRemoveCredit?.totalAddRemoveCredit || 0).toFixed(2)}`}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(addRemoveCredit?.totalAddRemoveCredit || 0).toFixed(2)}
+                  </Typography>
+
+                  {addRemoveCredit?.secondaryCurrency_addRemoveCredit >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(addRemoveCredit, 'add_remove_credit'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
               sm={6}
               md={4}
               lg={4}
@@ -452,25 +743,25 @@ function OrderFinancialsSummary() {
                 <PriceItem
                   title="Add/Remove Credit from Restaurant"
                   amount={Math.abs(addRemoveCredit?.addRemoveCreditFromRestaurant)}
-                  isNegative={addRemoveCredit?.addRemoveCreditFromRestaurant > 0}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromRestaurant < 0}
                   showIfZero
                 />
                 <PriceItem
                   title="Add/Remove Credit from Grocery"
                   amount={Math.abs(addRemoveCredit?.addRemoveCreditFromGrocery)}
-                  isNegative={addRemoveCredit?.addRemoveCreditFromGrocery > 0}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromGrocery < 0}
                   showIfZero
                 />
                 <PriceItem
                   title="Add/Remove Credit from Pharmacy"
                   amount={Math.abs(addRemoveCredit?.addRemoveCreditFromPharmacy)}
-                  isNegative={addRemoveCredit?.refundFromPharmacy > 0}
+                  isNegative={addRemoveCredit?.refundFromPharmacy < 0}
                   showIfZero
                 />
                 <PriceItem
                   title="Add/Remove Credit from Delivery"
                   amount={Math.abs(addRemoveCredit?.addRemoveCreditFromRider)}
-                  isNegative={addRemoveCredit?.addRemoveCreditFromRider > 0}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromRider < 0}
                   showIfZero
                 />
               </Stack>

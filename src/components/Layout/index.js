@@ -86,13 +86,13 @@ export default function Layout() {
 
   useEffect(() => {
     if (userType === 'admin' || adminType === 'customerService') {
-      socketServices?.on(`urgent-notification`, (data) => {
+      socketServices?.on(`urgent-notification-${currentUser?.admin?._id}`, (data) => {
         console.log('urgent order socketData', data?.order);
         setOpenUrgentOrder(true);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
         setOrder(data?.order);
       });
-      socketServices?.on(`urgent-notification-remove`, () => {
+      socketServices?.on(`urgent-notification-remove-${currentUser?.admin?._id}`, () => {
         console.log('urgent order socketData removed');
         setOpenUrgentOrder(false);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);

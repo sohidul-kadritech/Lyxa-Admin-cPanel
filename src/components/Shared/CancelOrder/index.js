@@ -59,6 +59,7 @@ export default function CancelOrder({ onClose, currentOrder, onSuccess, refetchA
 
         if (onSuccess) onSuccess(data);
         queryClient.invalidateQueries(refetchApiKey);
+        queryClient.invalidateQueries(Api.URGENT_ORDER_LIST);
 
         onClose();
       } else {

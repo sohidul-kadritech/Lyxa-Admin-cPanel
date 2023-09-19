@@ -73,7 +73,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
    if the payout status is revoked then we will show add remove credit button
    otherwise we show Revoke payment
 */}
-        {currentPayout?.info?.payoutStatus !== 'paid' && (
+        {currentPayout?.info?.payoutStatus !== 'paid' ? (
           <Stack direction="row" justifyContent="space-between" alignItems="center" mt={7.5}>
             <Button
               variant="text"
@@ -99,6 +99,12 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
             >
               Mark as Paid
             </Button>
+          </Stack>
+        ) : (
+          <Stack direction="row" justifyContent="center" alignItems="center" mt={7.5}>
+            <Typography variant="body2" fontWeight={500}>
+              {getPayoutStatusLabel[currentPayout?.info?.payoutStatus] || 'Unknown'}
+            </Typography>
           </Stack>
         )}
       </Stack>

@@ -162,7 +162,7 @@ function Appsettings2() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // reset data
@@ -192,7 +192,7 @@ function Appsettings2() {
         bundle,
         oldbundle.map((data) => data?.name),
         // eslint-disable-next-line prettier/prettier
-        type
+        type,
       ) &&
       type === 'text'
     ) {
@@ -214,6 +214,7 @@ function Appsettings2() {
   // on update handler
   const updateData = () => {
     console.log({ newAppSettings });
+
     const generatedData = appSettingsValidateData(oldAppSettings, newAppSettings);
 
     if (isUsedSecondaryCurrency === 'enable' && !newAppSettings.secondaryCurrency?.symbol) {
@@ -230,10 +231,20 @@ function Appsettings2() {
       return;
     }
 
+    if (newAppSettings?.acceptedCurrency === 'both' && !newAppSettings?.adminExchangeRate) {
+      successMsg('Please provide equivalent exchange rate of base currency', 'error');
+      return;
+    }
+
+    if (newAppSettings?.acceptedCurrency === 'base' && newAppSettings?.adminExchangeRate > 0) {
+      successMsg('Exchange rate must be zero when accepted currency base only.', 'error');
+      return;
+    }
+
     const updatedUnits = separatesUpdatedData(
       oldUnits?.map((unit) => unit.name),
       // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name)
+      units?.map((unit) => unit.name),
     );
 
     console.log('', updatedUnits);

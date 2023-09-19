@@ -59,10 +59,8 @@ export default function OrderPayoutDetailsTable({ showFor, shopType, paymentDeta
           startDate: convertDate(paymentDetailsRange?.start),
           endDate: convertDate(paymentDetailsRange?.end),
         },
-      })
+      }),
   );
-
-  console.log('getShopAdminFinancialsProfitbreakdown', getAdminFinancialsProfitBreakdown?.data?.data?.shops);
 
   return (
     <Box>

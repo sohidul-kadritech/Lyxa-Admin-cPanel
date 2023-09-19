@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
 import jsPDF from 'jspdf';
 import moment from 'moment';
@@ -42,19 +43,21 @@ function AccountFinancials() {
   const currency = general?.currency?.symbol;
 
   const [open, setOpen] = useState(false);
+
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+
   const [storeAppSettings, setStoreAppSettings] = useState({});
 
   const getDashboardSummary = useQuery([API_URL.GET_DASHBOARD_SUMMARY, queryParams], () =>
     AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
       params: { startDate: queryParams.startDate, endDate: queryParams.endDate },
-    })
+    }),
   );
 
   const getDropPayList = useQuery([API_URL.DROP_PAY_LIST, queryParams], () =>
     AXIOS.get(API_URL.DROP_PAY_LIST, {
       params: queryParams,
-    })
+    }),
   );
 
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {

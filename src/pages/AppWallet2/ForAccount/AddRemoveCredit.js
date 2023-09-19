@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -50,7 +51,7 @@ function AddRemoveCredit({ onClose }) {
           return data?.data?.users?.length > 0 ? data?.data?.users : prev;
         });
       },
-    }
+    },
   );
 
   const creditMutation = useMutation((data) => AXIOS.post(data?.api, data?.data), {
@@ -80,7 +81,7 @@ function AddRemoveCredit({ onClose }) {
       return;
     }
 
-    if (data?.amount >= max) {
+    if (data?.amount > max) {
       successMsg(`Amount can't be more than maximum`, 'error');
       return;
     }
@@ -107,6 +108,8 @@ function AddRemoveCredit({ onClose }) {
 
     const api = type === 'add' ? Api.ADD_USER_BALANCE : Api.REMOVE_USER_BALANCE;
     const payload = { api, data: { ...data, userId: data?.userId?._id } };
+
+    // console.log('payload', payload);
     creditMutation.mutate(payload);
   };
 
@@ -117,7 +120,7 @@ function AddRemoveCredit({ onClose }) {
         setSearchKeyUser(value);
         shopsQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   const filterOptions = createFilterOptions({

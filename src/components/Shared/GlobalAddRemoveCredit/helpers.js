@@ -2,7 +2,11 @@
 import { isNaN } from 'lodash';
 
 export function formatNumber(number, showDecimal = false) {
+  if (!number) {
+    return '';
+  }
   // Use toLocaleString to format the number with thousands separators
+
   let string = number.toLocaleString('en-US').replace(/,/g, ' ');
 
   if (showDecimal === true) {
