@@ -48,7 +48,6 @@ function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged, disabl
 }
 
 function SecondaryCurrency({ newAppSettings, setNewAppSettings, setHasChanged, setIsUsedSecondaryCurrency, disable }) {
-  console.log('isUsedSecondaryCurrency', newAppSettings?.secondaryCurrency?.code);
   return (
     <InputBox
       title="Secondary Currency"
@@ -126,11 +125,11 @@ function EnabledCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
         }}
         inputProps={{
           placeholder: 'Enabled Currency',
-          value: newAppSettings?.enabledCurrency,
+          value: newAppSettings?.acceptedCurrency,
           items: enabledCurrencyOptions,
           onChange: (e) => {
             setHasChanged(true);
-            setNewAppSettings((prev) => ({ ...prev, enabledCurrecy: e.target.value }));
+            setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value, adminExchangeRate: 0 }));
           },
         }}
       />
@@ -161,7 +160,7 @@ function AppCurrency({
           setHasChanged={setHasChanged}
         />
       </Stack>
-      {newAppSettings.enabledCurrecy === 'both' && (
+      {newAppSettings.acceptedCurrency === 'both' && (
         <Stack direction="row" alignItems="center" flexWrap="wrap" pt={4}>
           <SecondaryCurrency
             newAppSettings={newAppSettings}

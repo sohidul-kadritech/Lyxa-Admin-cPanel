@@ -19,7 +19,7 @@ export default function Taglist({
   const [showAdd, setShowAdd] = useState(false);
   const [newItem, setNewItem] = useState('');
   const inputRef = useRef();
-  console.log('items', items);
+
   return (
     <Box {...props}>
       <Stack direction="row" gap={4} sx={listContainerSx} flexWrap="wrap">

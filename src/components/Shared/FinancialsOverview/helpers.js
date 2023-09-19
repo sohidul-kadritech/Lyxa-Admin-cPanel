@@ -199,8 +199,6 @@ export const getTotalProfitForLyxa = (currency, secondaryCurrency, paymentDetail
   profitOutput.print = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : onlyBaseCurrency;
   profitOutput.printConditionally = secondaryCurrencyPayout ? joinBaseAndSecondaryCurrency : '';
 
-  console.log('profitOutput', profitOutput);
-
   if (showObject) {
     return profitOutput;
   }

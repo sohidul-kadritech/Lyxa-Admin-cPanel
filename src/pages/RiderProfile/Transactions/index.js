@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Modal, Stack, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import GlobalAddRemoveCredit from '../../../components/Shared/GlobalAddRemoveCredit';
@@ -11,12 +12,18 @@ import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/Rid
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
+import StyledTabs2 from '../../../components/Styled/StyledTab2';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import MakePayment from './MakePayment';
 import RiderOrderTable from './RiderOrderTable';
 import SearchBar from './Searchbar';
+
+export const typeOptions = [
+  { label: 'Base', value: 'baseCurrency' },
+  { label: 'Secondary', value: 'secondaryCurrency' },
+];
 
 export const queryParamsInit = {
   page: 1,
@@ -27,11 +34,6 @@ export const queryParamsInit = {
   endDate: moment(),
   searchKey: '',
 };
-
-export const typeOptions = [
-  { label: 'Base', value: 'baseCurrency' },
-  { label: 'Secondary', value: 'secondaryCurrency' },
-];
 
 const showForToApiMap = {
   cashOrderList: {
@@ -58,6 +60,12 @@ export default function RiderTransactions({ riderId, showFor }) {
   const [summary, setSummary] = useState({});
   const [currentTab, setCurrentTab] = useState(0);
 
+  useEffect(() => {
+    if (showFor === 'cashOrderList') {
+      setQueryParams((prev) => ({ ...prev, paidCurrency: 'baseCurrency' }));
+    }
+  }, [showFor]);
+
   const query = useQuery(
     [showForToApiMap[showFor]?.get, { ...queryParams, deliveryBoyId: queryParams?.deliveryBoyId || riderId }],
     () =>
@@ -68,7 +76,6 @@ export default function RiderTransactions({ riderId, showFor }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 
@@ -147,6 +154,17 @@ export default function RiderTransactions({ riderId, showFor }) {
       {/* transaction tab */}
       {currentTab === 0 && (
         <Box>
+          {showFor === 'cashOrderList' && (
+            <Box mb={7.5}>
+              <StyledTabs2
+                options={typeOptions}
+                value={queryParams?.paidCurrency}
+                onChange={(value) => {
+                  setQueryParams((prev) => ({ ...prev, paidCurrency: value }));
+                }}
+              />
+            </Box>
+          )}
           <SearchBar
             searchPlaceHolder="Search transactions by id"
             queryParams={queryParams}
