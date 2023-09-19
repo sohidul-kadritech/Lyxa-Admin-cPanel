@@ -19,7 +19,7 @@ import { calculateDateDifference } from '../ShopDashboard/helper';
 import ButlerOrderPayoutDetails from './ButlerOrderPayoutDetails';
 import ButlerOrderPayoutDetailsTable from './ButlerOrderPayoutDetailsTable';
 import { convertDate } from './OrderFinancials';
-import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
+import { bothCurrencyProfitbreakDown } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -97,7 +97,7 @@ export default function LyxaButlerOrderFinancials() {
                     getTotalProfitForLyxa(
                       currency,
                       secondaryCurrency,
-                      modifiedProfitBreakDownDataForSecondaryCurrency(profitBreakdown, 'butler'),
+                      bothCurrencyProfitbreakDown(profitBreakdown, 'butler'),
                       true,
                     ).printConditionally
                   }

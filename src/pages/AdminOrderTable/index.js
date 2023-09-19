@@ -5,6 +5,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 
 // project import
 import moment from 'moment';
+import { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
@@ -44,10 +45,16 @@ const defaultSearchParams = {
 export default function AdminOrders() {
   const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
 
-  console.log('queyrParams', queryParams);
-
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    if (queryParams?.type !== 'ongoing') {
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.delete('errorOrderType');
+      history.replace({ search: searchParams.toString() });
+    }
+  }, [queryParams]);
 
   return (
     <Box pb={9}>
@@ -55,7 +62,7 @@ export default function AdminOrders() {
       <Tabs
         value={orderFilterToTabValueMap[queryParams?.type]}
         onChange={(event, newValue) => {
-          setQueryParams((prev) => ({ type: orderFilterToTabValueMap[newValue], page: 1 }));
+          setQueryParams({ type: orderFilterToTabValueMap[newValue], page: 1 });
         }}
         sx={{
           '& .MuiTab-root': {

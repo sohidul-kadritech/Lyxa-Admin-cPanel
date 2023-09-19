@@ -9,7 +9,7 @@ import DetailsAccordion from '../../components/Shared/FinancialsOverview/Details
 import { getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../context';
-import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
+import { bothCurrencyProfitbreakDown } from './helpers';
 
 export default function ButlerOrderPayoutDetails({ paymentDetails }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
@@ -23,7 +23,7 @@ export default function ButlerOrderPayoutDetails({ paymentDetails }) {
   const totalProfit = getTotalProfitForLyxa(
     currency,
     secondaryCurrency,
-    modifiedProfitBreakDownDataForSecondaryCurrency(paymentDetails, 'butler'),
+    bothCurrencyProfitbreakDown(paymentDetails, 'butler'),
     false,
   );
 

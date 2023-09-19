@@ -22,6 +22,7 @@ const dropdownProps = {
   width: '100%',
   minHeight: '100%',
   zIndex: 99,
+  transition: 'all 0.2s linear',
 };
 
 export default function InfoCard({
