@@ -15,7 +15,7 @@ import { useGlobalContext } from '../../context';
 import { calculateDateDifference } from '../ShopDashboard/helper';
 import DeliveryPayoutDetails from './DeliveryPayoutDetails';
 import OrderPayoutDetailsTable from './OrderPayoutDetailsTable';
-import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
+import { bothCurrencyProfitbreakDown } from './helpers';
 
 const convertDate = (date) => moment(date).format('YYYY-MM-DD');
 
@@ -81,7 +81,7 @@ function DeliveryFinancials({ shopType }) {
                       getTotalProfitForLyxa(
                         currency,
                         secondaryCurrency,
-                        modifiedProfitBreakDownDataForSecondaryCurrency(deliveryProfitBreakDown, 'delivery'),
+                        bothCurrencyProfitbreakDown(deliveryProfitBreakDown, 'delivery'),
                         true,
                       ).printConditionally
                     }

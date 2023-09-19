@@ -1,10 +1,15 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import { React, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import CloseButton from '../../../components/Common/CloseButton';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
 import StyledFormField from '../../../components/Form/StyledFormField';
+import { currencyOptions } from '../../../components/Shared/GlobalAddRemoveCredit';
+import { formatNumber, stringToNumber } from '../../../components/Shared/GlobalAddRemoveCredit/helpers';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
@@ -57,7 +62,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
           onClose();
         }
       },
-    }
+    },
   );
 
   const addRemoveCredit = () => {
@@ -118,9 +123,6 @@ export default function AddRemoveCredit({ userId, onClose }) {
       </Stack>
       <Box>
         <Stack direction="row" pb={5} alignItems="center" gap="12px">
-          <Typography variant="body2" fontSize={16}>
-            Type
-          </Typography>
           <StyledRadioGroup
             sx={{
               flexDirection: 'row',
@@ -133,19 +135,12 @@ export default function AddRemoveCredit({ userId, onClose }) {
         </Stack>
         {isSecondaryCurrencyEnabled && (
           <Stack direction="row" pb={3} alignItems="center" gap="12px">
-            <Typography variant="body2" fontSize={16}>
-              Currency
-            </Typography>
-            <StyledRadioGroup
-              sx={{
-                flexDirection: 'row',
-                gap: '25px',
-              }}
-              items={currencyTypeOptions}
+            <OptionsSelect
               value={data?.paidCurrency}
-              onChange={(e) =>
-                setData({ ...data, paidCurrency: e.target.value, amount: '', secondaryCurrency_amount: '' })
-              }
+              sx={{ padding: '8px 10px' }}
+              gapSx={3}
+              items={currencyOptions(baseCurrency, secondaryCurrency, isSecondaryCurrencyEnabled, false)}
+              onChange={(value) => setData({ ...data, paidCurrency: value, amount: '', secondaryCurrency_amount: '' })}
             />
           </Stack>
         )}
@@ -154,13 +149,17 @@ export default function AddRemoveCredit({ userId, onClose }) {
             label={`Amount * (max ${baseCurrency?.code} ${max} )`}
             intputType="text"
             inputProps={{
-              type: 'number',
-              value: data?.amount,
+              type: 'text',
+              value: formatNumber(data?.amount),
               onChange: (e) => {
+                const convertedValue = stringToNumber(e.target.value);
+                if (!isNumber(Number(convertedValue))) {
+                  return;
+                }
                 setData({
                   ...data,
-                  amount: e.target.value,
-                  secondaryCurrency_amount: Number(e.target.value) * adminExchangeRate,
+                  amount: convertedValue,
+                  secondaryCurrency_amount: Number(convertedValue) * adminExchangeRate,
                 });
               },
             }}
@@ -171,19 +170,31 @@ export default function AddRemoveCredit({ userId, onClose }) {
               label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
               intputType="text"
               inputProps={{
-                type: 'number',
-                value: data?.amsecondaryCurrency_amountount,
+                type: 'text',
+                value: formatNumber(data?.secondaryCurrency_amount),
                 onChange: (e) => {
+                  const convertedValue = stringToNumber(e.target.value);
+                  if (!isNumber(Number(convertedValue))) {
+                    return;
+                  }
                   setData({
                     ...data,
-                    secondaryCurrency_amount: e.target.value,
-                    amount: Number((Number(e.target.value) / adminExchangeRate)?.toFixed(2) || 0),
+                    secondaryCurrency_amount: Number(convertedValue),
+                    amount: Number((Number(convertedValue) / adminExchangeRate)?.toFixed(2) || 0),
                   });
                 },
               }}
             />
             <span></span>
           </>
+        )}
+        {isSecondaryCurrencyEnabled && (
+          <Typography variant="body3" sx={{ marginTop: '-8px !important' }}>
+            Equivalent To:{' '}
+            {data?.paidCurrency === 'baseCurrency'
+              ? `${secondaryCurrency?.code} ${formatNumber(Math.round(data?.secondaryCurrency_amount || 0))}`
+              : `${baseCurrency?.symbol} ${formatNumber((data?.amount || 0).toFixed(2), true)}`}
+          </Typography>
         )}
         <StyledFormField
           label="Admin note"

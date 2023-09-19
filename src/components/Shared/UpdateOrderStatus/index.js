@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -8,6 +9,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import socketServices from '../../../common/socketService';
+import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -32,6 +34,7 @@ const disableUpdateStatusButton = (order, currentStatus, deliveryBoy) => {
   const notAssignRider = !order?.deliveryBoy;
 
   const shouldNotDisable = isGlobal && isPreparing && notAssignRider;
+  console.log('getNextStatus(order, true)', getNextStatus(order, true), currentStatus);
 
   if (shouldNotDisable && currentStatus === 'accepted_delivery_boy') {
     console.log('1', false);
@@ -72,13 +75,15 @@ export const getUpdateStatusValue = (currentOrder, currentStatus) => {
 
   const isPreparingFirstAndShouldChangeTheCurrentValue = isGlobal && isPreparingFirst;
 
+  console.log('return preparing');
   if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && notAssignRider) {
     return 'preparing';
   }
-
+  console.log('return accepted delivery boy');
   if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && !notAssignRider) {
     return 'accepted_delivery_boy';
   }
+  console.log('return any');
 
   return status;
 };
@@ -88,7 +93,19 @@ const getUpdatedOrderData = (order) => {
   const isPreparing = orderdata?.orderStatus === 'preparing';
   const notAssignRider = !orderdata?.deliveryBoy;
   const shouldUpdate = isPreparing && !notAssignRider;
-  const updatedData = !shouldUpdate ? { ...orderdata } : { ...orderdata, orderStatus: 'accepted_delivery_boy' };
+  const isPreparingFirst =
+    !order?.accepted_delivery_boyAt && order?.preparingAt
+      ? true
+      : moment(order?.accepted_delivery_boyAt) > moment(order?.preparingAt);
+
+  const changedLabel = isPreparingFirst ? 'accepted_delivery_boy' : 'preparing';
+
+  const updatedData = !shouldUpdate ? { ...orderdata } : { ...orderdata, orderStatus: changedLabel };
+
+  if (order?.isButler) {
+    return { ...orderdata };
+  }
+
   return updatedData;
 };
 
@@ -99,9 +116,17 @@ export default function UpdateOrderStatus({
   refetchApiKey = Api.ORDER_LIST,
 }) {
   const theme = useTheme();
-  // eslint-disable-next-line no-unused-vars
+
   const { socket } = useSelector((state) => state.socketReducer);
   const queryClient = useQueryClient();
+
+  const { general } = useGlobalContext();
+
+  const { appSetting } = general;
+
+  const isSecondaryCurrencyEnabled = appSetting?.adminExchangeRate > 0;
+
+  console.log('general', general);
 
   // new one
   const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
@@ -266,9 +291,6 @@ export default function UpdateOrderStatus({
     successMsg('Please change the status first');
     // mutateAsync
   };
-
-  // console.log({ currentStatus });
-  // console.log({ isSelfShop });
 
   return (
     <Box
@@ -463,7 +485,7 @@ export default function UpdateOrderStatus({
               intputType="select"
               inputProps={{
                 value: paidCurrency,
-                items: paidCurrencyOptions,
+                items: paidCurrencyOptions(isSecondaryCurrencyEnabled),
                 onChange: (e) => setPaidCurrency(e.target.value),
               }}
             />

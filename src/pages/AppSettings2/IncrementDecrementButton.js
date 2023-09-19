@@ -82,7 +82,6 @@ function IncrementDecrementButton({
                 },
                 onChange: (e) => {
                   const value = allowDecimal ? e.target.value : Math.round(Number(e?.target?.value));
-                  console.log('allowDecimal', allowDecimal, value);
                   if (objectKey) {
                     if (isNumber(parseInt(value, 10)) && value < 0) setValue((prev) => ({ ...prev, [objectKey]: 0 }));
                     else setValue((prev) => ({ ...prev, [objectKey]: value }));

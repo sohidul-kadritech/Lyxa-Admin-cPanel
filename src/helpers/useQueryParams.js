@@ -8,8 +8,10 @@ export default function useQueryParams(defaultParams) {
   const searchParams = useMemo(() => new URLSearchParams(location.search || defaultParams), [location.search]);
   const searchParamsObj = useMemo(() => Object.fromEntries(searchParams), [searchParams]);
 
+  // console.log('searchParamsObj', searchParamsObj);
+
   const setSearchParam = (key, value) => {
-    console.log('key', key, value);
+    // console.log('key', key, typeof key, value);
     if (typeof key === 'object') {
       Object.entries(key).forEach(([k, v]) => {
         searchParams.set(k, v);
@@ -21,7 +23,7 @@ export default function useQueryParams(defaultParams) {
     } else {
       searchParams.set(key, value);
     }
-    console.log('searchParams.toString()', searchParams.toString());
+    // console.log('searchParams.toString()', searchParams.toString());
     history.replace({ search: searchParams.toString() });
   };
 

@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/no-this-in-sfc */
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 // eslint-disable-next-line import/no-named-as-default
 import moment from 'moment';
@@ -19,7 +22,27 @@ const getStyleForAmount = (value) => {
 
 function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPage }) {
   const { general } = useGlobalContext();
-  const currency = general?.currency?.symbol;
+  const appSettings = general?.appSetting;
+  const { baseCurrency, secondaryCurrency } = appSettings;
+
+  const currency = baseCurrency?.symbol;
+
+  const getCurrency = (value, type) => {
+    const currencyAmount = Number(value);
+    const currency = {
+      baseCurrency: {
+        symbol: baseCurrency?.symbol,
+        amount: (currencyAmount || 0).toFixed(2),
+      },
+      secondaryCurrency: {
+        symbol: secondaryCurrency?.code,
+        amount: Math.round(currencyAmount || 0),
+      },
+    };
+
+    return currency[type];
+  };
+
   const theme = useTheme();
   const routeMatch = useRouteMatch();
   const history = useHistory();
@@ -68,7 +91,7 @@ function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPa
     {
       id: 4,
       field: 'amount',
-      headerName: `AMOUNT(${currency})`,
+      headerName: `AMOUNT`,
       sortable: false,
       flex: 1,
       minWidth: 100,
@@ -80,11 +103,16 @@ function AccountTable({ data = [], loading, currentPage, setCurrentPage, totalPa
             : row?.type === 'userBalanceWithdrawAdmin'
             ? '-'
             : '';
+        const value = getCurrency(
+          row?.paidCurrency === 'baseCurrency' ? row?.amount : row?.secondaryCurrency_amount,
+          row?.paidCurrency,
+        );
+
+        console.log('value==>', value);
 
         return (
           <Typography variant="body4">
-            {sign}
-            {row?.amount}
+            {sign} {value?.symbol} {value?.amount}
           </Typography>
         );
       },

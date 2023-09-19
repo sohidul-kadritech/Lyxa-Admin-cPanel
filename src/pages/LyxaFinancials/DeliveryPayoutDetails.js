@@ -11,7 +11,7 @@ import DetailsAccordion from '../../components/Shared/FinancialsOverview/Details
 import PriceItem from '../../components/Shared/FinancialsOverview/PriceItem';
 import { getTotalProfitForLyxa } from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
-import { modifiedProfitBreakDownDataForSecondaryCurrency } from './helpers';
+import { bothCurrencyProfitbreakDown } from './helpers';
 
 function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
@@ -27,7 +27,7 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
   const totalProfit = getTotalProfitForLyxa(
     currency,
     secondaryCurrency,
-    modifiedProfitBreakDownDataForSecondaryCurrency(deliveryProfitBreakDown, 'delivery'),
+    bothCurrencyProfitbreakDown(deliveryProfitBreakDown, 'delivery'),
     false,
   );
 
@@ -59,29 +59,9 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
               seCurrentExpanedTab(closed ? 0 : -1);
             }}
           >
-            <PriceItem title="Users" amount={deliveryProfitBreakDown?.users} showIfZero />
-
-            <DetailsAccordion
-              title="Free Delivery"
-              // VAT inclusive"
-              sx={{ borderBottom: 'none' }}
-              titleAmount={totalFreeDelivery || 0}
-              isOpen={currentExpanedTab === 3}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 3 : -1);
-              }}
-            >
-              <PriceItem
-                title="Free Delivery by Shops"
-                amount={deliveryProfitBreakDown?.freeDeliveryByShop}
-                showIfZero
-              />
-              <PriceItem
-                title="Free Delivery by Lyxa"
-                amount={deliveryProfitBreakDown?.freeDeliveryByAdmin}
-                showIfZero
-              />
-            </DetailsAccordion>
+            <PriceItem title="Delivery Fees" amount={deliveryProfitBreakDown?.users} showIfZero />
+            <PriceItem title="Free Delivery by Shops" amount={deliveryProfitBreakDown?.freeDeliveryByShop} showIfZero />
+            <PriceItem title="Free Delivery by Lyxa" amount={deliveryProfitBreakDown?.freeDeliveryByAdmin} showIfZero />
           </DetailsAccordion>
 
           {/* shop cut */}

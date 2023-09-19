@@ -42,10 +42,10 @@ export const adminLogTypeOptions = [
 
 export const getTypeName = (type, secondaryCurrency) => {
   const getData = {
-    currency: 'App Currency',
+    baseCurrency: 'Base Currency',
     secondaryCurrency: 'Secondary Currency',
-    exchangeRate: `Equivalent to ${
-      secondaryCurrency?.secondaryCurrency?.symbol ? `(${secondaryCurrency?.secondaryCurrency?.symbol})` : ''
+    adminExchangeRate: `Equivalent to ${
+      secondaryCurrency?.secondaryCurrency?.symbol ? `(${secondaryCurrency?.secondaryCurrency?.code})` : ''
     }`,
     acceptedCurrency: 'Accepted Currency',
     vat: 'VAT',
@@ -64,7 +64,7 @@ export const getTypeName = (type, secondaryCurrency) => {
     // specificSellerDeliveryCut: 'Specific Seller Delivery Cut',
     sellerDropChargeReset: 'Seller Lyxa Charge Reset',
   };
-  return getData[type];
+  return getData[type] ? getData[type] : type;
 };
 
 export function dataFilterForAdminLogs(data) {
