@@ -55,115 +55,113 @@ export const getRefundMaxAmounts = (order) => {
 export const getNewRefundMaxAmounts = (order, refundData, maxAmounts, earning, key, value) => {
   const initialMax = maxAmounts;
 
-  const totalOrderAmount =
-    order?.summary?.baseCurrency_card + order?.summary?.baseCurrency_cash + order?.summary?.baseCurrency_wallet;
-  refundData.partialPayment.adminDeliveryRefund = isNumber(Number(refundData?.partialPayment?.adminDeliveryRefund))
+  /* stored order amount with card,cash,wallet */
+  const orderWithCard = Number(order?.summary?.baseCurrency_card || 0);
+  const orderWithCash = Number(order?.summary?.baseCurrency_cash || 0);
+  const orderWithWallet = Number(order?.summary?.baseCurrency_wallet || 0);
+
+  /* calculate order amount */
+  const totalOrderAmount = orderWithCard + orderWithCash + orderWithWallet;
+
+  /* stored refund amount */
+  const adminDeliveryRefund = isNumber(Number(refundData?.partialPayment?.adminDeliveryRefund))
     ? Number(refundData?.partialPayment?.adminDeliveryRefund)
     : 0;
 
-  refundData.partialPayment.adminOrderRefund = isNumber(Number(refundData?.partialPayment?.adminOrderRefund))
+  const adminOrderRefund = isNumber(Number(refundData?.partialPayment?.adminOrderRefund))
     ? Number(refundData?.partialPayment?.adminOrderRefund)
     : 0;
-  console.log('temp 0 ', refundData);
 
-  refundData.partialPayment.shop = isNumber(Number(refundData?.partialPayment?.shop))
-    ? Number(refundData?.partialPayment?.shop)
-    : 0;
+  const shop = isNumber(Number(refundData?.partialPayment?.shop)) ? Number(refundData?.partialPayment?.shop) : 0;
 
-  refundData.partialPayment.adminVat = isNumber(Number(refundData?.partialPayment?.adminVat))
+  const adminVat = isNumber(Number(refundData?.partialPayment?.adminVat))
     ? Number(refundData?.partialPayment?.adminVat)
     : 0;
 
+  /* store total earning of order amount for lyxa and shop */
   const totalEarning = Number(earning?.adminOrderRefund) + Number(earning?.shop);
+
+  console.log('temp 1', { adminDeliveryRefund, adminOrderRefund, shop });
 
   if (value >= initialMax[key]) {
     return initialMax;
   }
 
-  console.log('temp 0 1 ', refundData);
+  /* when refund only for shop (Shop) */
+  if (adminOrderRefund <= 0 && adminDeliveryRefund <= 0 && shop > 0) {
+    const maxForDelivery = totalOrderAmount - adminOrderRefund - shop - adminVat;
+    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
+    initialMax.adminDeliveryRefund = maxForDelivery <= 0 ? 0 : maxForDelivery;
+    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
+    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
 
-  if (
-    refundData?.partialPayment?.adminOrderRefund === 0 &&
-    refundData?.partialPayment?.adminDeliveryRefund >= 0 &&
-    refundData?.partialPayment?.shop >= 0
-  ) {
-    initialMax.adminDeliveryRefund = 0;
-    initialMax.adminOrderRefund = 0;
-    initialMax.shop = totalOrderAmount;
-    console.log('temp');
-
-    if (refundData?.partialPayment?.shop <= totalEarning) {
-      initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-      initialMax.adminOrderRefund = totalEarning - (value || 0);
-      initialMax.shop = totalOrderAmount;
-
-      if (refundData?.partialPayment?.adminDeliveryRefund >= 0) {
-        initialMax.shop =
-          totalOrderAmount - refundData?.partialPayment?.adminDeliveryRefund - refundData?.partialPayment?.adminVat;
-      }
-    }
-
-    if (refundData?.partialPayment?.shop > totalEarning && refundData?.partialPayment?.shop < totalOrderAmount) {
-      const adminDelivery = totalOrderAmount - refundData?.partialPayment?.shop;
-
-      const adminDeliveryRefund = adminDelivery - (adminDelivery * refundData?.vatPercentage) / 100;
-      // adminDeliveryRefund -= (adminDeliveryRefund * refundData?.vatPercentage) / 100;
-
-      console.log('temp admin', adminDeliveryRefund, (adminDelivery * refundData?.vatPercentage) / 100);
-
-      initialMax.adminDeliveryRefund = adminDeliveryRefund.toFixed(2);
-
+    if (shop >= totalOrderAmount) {
+      initialMax.adminDeliveryRefund = 0;
       initialMax.adminOrderRefund = 0;
-      initialMax.shop = totalOrderAmount;
     }
+
+    console.log('shop', initialMax);
 
     return initialMax;
   }
 
-  if (refundData?.partialPayment?.adminOrderRefund > 0 && refundData?.partialPayment?.shop === 0) {
-    let tmp = totalEarning;
-    tmp -= value;
+  /* when refund only give from delivery and shop (Shop,  Delivery) */
+  if (adminOrderRefund <= 0 && adminDeliveryRefund > 0 && shop > 0) {
+    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
+
     initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = totalEarning;
-    initialMax.shop = tmp;
+    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
+    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+
+    /* if shop pay greater than shop earning */
+    if (shop > totalEarning) {
+      initialMax.adminDeliveryRefund = totalOrderAmount - shop - adminVat;
+      initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+    }
+    console.log('shop delivery', initialMax);
+    return initialMax;
+  }
+
+  /* when refund  give from lyxa  order,delivery and shop (Shop, Order, Delivery) */
+  if (adminOrderRefund > 0 && adminDeliveryRefund > 0 && shop > 0) {
+    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
+    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
+    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : Number((maxForOrderAdmin || 0).toFixed(2));
+    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+
+    console.log('shop order delivery', initialMax);
+    return initialMax;
+  }
+
+  /* when refund  give from lyxa  order,delivery (Order, Delivery) */
+  if (adminOrderRefund > 0 && adminDeliveryRefund > 0 && shop <= 0) {
+    const maxForOrderAdmin = totalEarning - adminVat;
+    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
+    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
+    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+
+    console.log('order deilvery', initialMax);
 
     return initialMax;
   }
 
-  if (
-    refundData?.partialPayment?.adminOrderRefund >= 0 &&
-    refundData?.partialPayment?.adminDeliveryRefund >= 0 &&
-    refundData?.partialPayment?.shop >= 0
-  ) {
-    let tmp = totalEarning;
-    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = 0;
-    initialMax.shop = 0;
+  /* when refund  give from shop ,lyxa order (Shop, Order) */
+  if (adminOrderRefund > 0 && adminDeliveryRefund <= 0 && shop > 0) {
+    const maxForShop = totalEarning - adminOrderRefund - adminVat;
+    const maxForOrderAdmin = totalEarning - shop - adminVat;
+    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund - adminVat;
+    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
+    initialMax.shop = maxForShop <= 0 ? 0 : maxForShop;
 
-    if (key === 'shop') {
-      tmp -= refundData?.partialPayment?.adminOrderRefund;
-      initialMax[key] = tmp;
-      initialMax.adminOrderRefund = totalEarning;
-
-      console.log('temp', tmp, initialMax, key, value);
-      return initialMax;
-    }
-
-    if (key === 'adminOrderRefund') {
-      tmp -= refundData?.partialPayment?.shop;
-      initialMax[key] = tmp;
-      initialMax.shop = totalEarning;
-      console.log('temp', tmp, initialMax, key, value);
-      return initialMax;
-    }
+    console.log('shop order', initialMax);
 
     return initialMax;
   }
 
   initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
   initialMax.adminOrderRefund = totalEarning;
-  initialMax.shop =
-    totalOrderAmount - refundData?.partialPayment?.adminDeliveryRefund - refundData?.partialPayment?.adminVat;
+
+  initialMax.shop = totalOrderAmount;
 
   return initialMax;
 };

@@ -36,14 +36,42 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
 
+    const adminOrderRefund =
+      name === 'adminOrderRefund'
+        ? value > maxAmounts[name]
+          ? maxAmounts[name]
+          : value || 0
+        : refundData?.partialPayment?.adminOrderRefund;
+    const adminDeliveryRefund =
+      name === 'adminDeliveryRefund'
+        ? value > maxAmounts[name]
+          ? maxAmounts[name]
+          : value || 0
+        : refundData?.partialPayment?.adminDeliveryRefund;
+
+    const adminVat = getRefundedVatForAdmin(
+      maxAmounts.adminVat,
+      Number(adminDeliveryRefund) + Number(adminOrderRefund),
+      vatPercentage
+    );
+
     const tempMax = getNewRefundMaxAmounts(
       order,
-      { ...refundData, vatPercentage, partialPayment: { ...refundData?.partialPayment, [name]: value || 0 } },
+      {
+        ...refundData,
+        vatPercentage,
+        partialPayment: {
+          ...refundData?.partialPayment,
+          adminVat,
+          [name]: value > maxAmounts[name] ? maxAmounts[name] : value || 0,
+        },
+      },
       maxAmounts,
       earning,
       name,
-      value,
+      value
     );
+
     setMaxAmounts((prev) => {
       const data = tempMax;
       return data;
@@ -82,19 +110,11 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
   // updates vat amount when order or delivery cut changed
 
-  const onBlurHandler = () => {
-    // setMaxAmounts((prev) => {
-    //   const data = getNewRefundMaxAmounts(order, refundData, maxAmounts, earning);
-    //   console.log('data===>', data);
-    //   return data;
-    // });
-  };
-
   useEffect(() => {
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(refundData?.partialPayment?.adminOrderRefund) + Number(refundData?.partialPayment?.adminDeliveryRefund),
-      vatPercentage,
+      vatPercentage
     );
 
     if (refundData?.refundType === 'full') {
@@ -158,7 +178,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
     console.log('data refund', data);
 
-    mutation.mutate(data);
+    // mutation.mutate(data);
   };
 
   return (
@@ -218,7 +238,6 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
                   name: 'adminOrderRefund',
                   placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
-                  onBlur: onBlurHandler,
                 }}
               />
 
@@ -248,7 +267,6 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
                   name: 'adminDeliveryRefund',
                   placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
-                  onBlur: onBlurHandler,
                 }}
               />
               {isSecondaryCurrencyEnabled && (
@@ -277,7 +295,6 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
                   name: 'shop',
                   placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
-                  onBlur: onBlurHandler,
                 }}
               />
               {isSecondaryCurrencyEnabled && (
