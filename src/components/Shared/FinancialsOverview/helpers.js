@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography } from '@mui/material';
@@ -122,12 +123,17 @@ export const getTotalProfit = (currency, secondaryCurrency, paymentDetails, show
   const baseCurrencyPayout = paymentDetails?.baseCurrency_payout;
   const totalPayout = paymentDetails?.totalPayout;
 
-  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
-  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
-  const joinBaseAndSecondaryCurrencyWithoutBrackets = `${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
-  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)}`;
+  const joinBaseAndSecondaryCurrency = `(${baseCurrencyPayout < 0 ? '- ' : ''} ${currency} ${(
+    Math.abs(baseCurrencyPayout) || 0
+  ).toFixed(2)} + ${secondaryCurrencyPayout < 0 ? '- ' : ''}
+  ${secondaryCurrency || ''} ${Math.abs(Math.round(secondaryCurrencyPayout || 0))})`;
 
-  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+  const joinBaseAndSecondaryCurrencyWithoutBrackets = `${baseCurrencyPayout < 0 ? '- ' : ''} ${currency} ${(
+    Math.abs(baseCurrencyPayout) || 0
+  ).toFixed(2)} + ${secondaryCurrencyPayout < 0 ? '- ' : ''}
+  ${secondaryCurrency || ''} ${Math.abs(Math.round(secondaryCurrencyPayout || 0))}`;
+
+  const onlyBaseCurrency = `${totalPayout < 0 ? '- ' : ''} ${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
 
   profitOutput.onlyBaseCurrency = onlyBaseCurrency;
   profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;
@@ -177,10 +183,13 @@ export const getTotalProfitForLyxa = (currency, secondaryCurrency, paymentDetail
   const baseCurrencyPayout = paymentDetails?.baseCurrency_adminProfit;
   const totalPayout = paymentDetails?.totalAdminProfit;
 
-  const joinBaseAndSecondaryCurrency = `(${currency} ${(baseCurrencyPayout || 0).toFixed(2)} + 
-  ${secondaryCurrency || ''} ${Math.round(secondaryCurrencyPayout || 0)})`;
+  const joinBaseAndSecondaryCurrency = `(${baseCurrencyPayout < 0 ? '- ' : ''}${currency} ${(
+    Math.abs(baseCurrencyPayout) || 0
+  ).toFixed(2)} + ${secondaryCurrencyPayout < 0 ? '- ' : ''} ${secondaryCurrency || ''} ${Math.round(
+    secondaryCurrencyPayout || 0,
+  )})`;
 
-  const onlyBaseCurrency = `${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
+  const onlyBaseCurrency = `${totalPayout < 0 ? '- ' : ''}${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;
 
   profitOutput.onlyBaseCurrency = onlyBaseCurrency;
   profitOutput.joinBaseAndSecondaryCurrency = joinBaseAndSecondaryCurrency;

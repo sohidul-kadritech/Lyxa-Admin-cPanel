@@ -164,6 +164,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     if (refundData?.refundType === 'full') {
       mutation.mutate({
         ...refundData,
+        orderId: order?._id,
         partialPayment: maxAmounts,
       });
 

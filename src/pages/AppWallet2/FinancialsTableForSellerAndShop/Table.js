@@ -420,6 +420,13 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.otherPayments?.freeDeliveryByShop}
                 isNegative
               />
+              <SummaryItem
+                label="Promotion: Featured"
+                currencyType={currencyType}
+                isNegative={financialBreakdown?.otherPayments?.featuredAmount >= 0}
+                value={financialBreakdown?.otherPayments?.featuredAmount}
+                valueSecondary={Math.abs(financialBreakdown?.otherPayments?.featuredAmount)}
+              />
 
               <SummaryItem
                 label="Refunded Amount"

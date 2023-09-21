@@ -462,6 +462,28 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         />
       ),
     },
+
+    {
+      id: 8,
+      type: ['delivery'],
+      headerName: `Delivery Refund`,
+      sortable: false,
+      field: 'deliveryRefund',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.profitBreakdown?.deliveryRefund}
+          valueSecondary={row?.profitBreakdown?.deliveryRefund}
+          isNegative
+          showIfZero
+        />
+      ),
+    },
     {
       id: 8,
       type: ['delivery'],
