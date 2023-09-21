@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { isNumber } from 'lodash';
@@ -78,87 +79,49 @@ export const getNewRefundMaxAmounts = (order, refundData, maxAmounts, earning, k
     ? Number(refundData?.partialPayment?.adminVat)
     : 0;
 
-  /* store total earning of order amount for lyxa and shop */
-  const totalEarning = Number(earning?.adminOrderRefund) + Number(earning?.shop);
-
   const totalRefundAmount = adminOrderRefund + adminDeliveryRefund + shop + adminVat;
 
   const vatPercentage = refundData?.vatPercentage;
   const amountWithVatPercentage = vatPercentage + 100;
 
-  let remainingAmountShouldBeForOrderAndDelivery = totalOrderAmount - shop;
-  remainingAmountShouldBeForOrderAndDelivery *= 100 / amountWithVatPercentage;
-  remainingAmountShouldBeForOrderAndDelivery = Number(remainingAmountShouldBeForOrderAndDelivery.toFixed(2));
+  /* store order amount as remaining */
+  let remainingAmount = totalOrderAmount;
 
-  console.log('temp 0 remaining amount', remainingAmountShouldBeForOrderAndDelivery);
+  /* update remaining amount wihout VAT */
+  remainingAmount *= 100 / amountWithVatPercentage;
 
-  /* store total refund */
-  console.log('temp 0 refund', totalRefundAmount, totalRefundAmount >= totalOrderAmount);
+  /* calculating VAT of remaining amount */
+  const remainAmountVat = remainingAmount * (vatPercentage / 100);
 
-  console.log('temp 1', { adminDeliveryRefund, adminOrderRefund, shop });
+  /* check updated remaining amount VAT is greater than maximum VAT or not, the minimum VAT will be deducted from totalOrderAmount */
+  remainingAmount = totalOrderAmount - Math.min(initialMax?.adminVat, remainAmountVat);
+  remainingAmount = Number(remainingAmount.toFixed(2));
 
-  if (totalRefundAmount >= totalOrderAmount) {
-    if (adminOrderRefund <= 0) {
-      initialMax.adminOrderRefund = 0;
-    }
-
-    if (adminDeliveryRefund <= 0) {
-      initialMax.adminDeliveryRefund = 0;
-    }
-    if (shop <= 0) {
-      initialMax.shop = 0;
-    }
-
-    if (key === 'shop') {
-      const tempRemaining = totalOrderAmount - totalRefundAmount;
-      initialMax.shop = tempRemaining < 0 ? shop - (totalRefundAmount - totalOrderAmount) : totalOrderAmount;
-    }
-    if (key !== 'shop') {
-      initialMax.adminDeliveryRefund = remainingAmountShouldBeForOrderAndDelivery - adminOrderRefund;
-      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
-
-      return initialMax;
-    }
-
-    return initialMax;
-  }
-
-  if (shop > totalEarning && shop < totalOrderAmount && shop > 0) {
-    if (remainingAmountShouldBeForOrderAndDelivery > earning?.adminDeliveryRefund) {
-      initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
-    } else {
-      initialMax.adminDeliveryRefund = remainingAmountShouldBeForOrderAndDelivery;
-      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
-    }
-
-    return initialMax;
-  }
-
-  if (shop >= totalOrderAmount) {
-    initialMax.adminDeliveryRefund = 0;
-    initialMax.adminOrderRefund = 0;
-    return initialMax;
-  }
-
-  if (shop <= 0 && adminOrderRefund < totalEarning) {
-    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = totalEarning;
-    initialMax.shop = totalOrderAmount;
-    return initialMax;
-  }
-
-  if (shop <= 0 && adminOrderRefund >= totalEarning) {
-    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = totalEarning;
+  if (remainingAmount === adminOrderRefund + adminDeliveryRefund) {
     initialMax.shop = 0;
     return initialMax;
   }
 
-  initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-  initialMax.adminOrderRefund = totalEarning;
+  if (shop > 0) {
+    /* check difference of totalOrderAmount and totalRefunded amount is still positive or not 
+    if positive shop max limit is totalOrderAmount or not otherwise shop current value is max */
+    initialMax.shop = totalOrderAmount - totalRefundAmount > 0 ? totalOrderAmount : shop;
+    remainingAmount = totalOrderAmount - shop;
+    const remainAmountVat = remainingAmount * (vatPercentage / 100);
+    remainingAmount -= Math.min(initialMax?.adminVat, remainAmountVat);
+    remainingAmount = Number(remainingAmount.toFixed(2));
+  }
 
-  initialMax.shop = totalOrderAmount;
+  const deliveryRefundMaxAmount = Math.min(remainingAmount, earning?.adminDeliveryRefund);
+
+  initialMax.adminDeliveryRefund = deliveryRefundMaxAmount > 0 ? deliveryRefundMaxAmount : 0;
+
+  remainingAmount -= Math.max(deliveryRefundMaxAmount, 0);
+  remainingAmount = Number(remainingAmount.toFixed(2));
+
+  initialMax.adminOrderRefund = remainingAmount > 0 ? remainingAmount : 0;
+
+  console.log('remainingAmount', remainingAmount);
 
   return initialMax;
 };

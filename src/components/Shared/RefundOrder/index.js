@@ -52,7 +52,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(adminDeliveryRefund) + Number(adminOrderRefund),
-      vatPercentage,
+      vatPercentage
     );
 
     const tempMax = getNewRefundMaxAmounts(
@@ -69,7 +69,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
       maxAmounts,
       earning,
       name,
-      value,
+      value
     );
 
     setMaxAmounts((prev) => {
@@ -79,10 +79,10 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
     console.log('tempMax', tempMax);
 
-    if (value > tempMax[name]) {
-      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: tempMax[name] } }));
+    if (tempMax[name] - value >= 0) {
+      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: value || 0 } }));
     } else {
-      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: value > 0 ? value : 0 } }));
+      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: tempMax[name] } }));
     }
   };
 
@@ -114,7 +114,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(refundData?.partialPayment?.adminOrderRefund) + Number(refundData?.partialPayment?.adminDeliveryRefund),
-      vatPercentage,
+      vatPercentage
     );
 
     if (refundData?.refundType === 'full') {
@@ -179,7 +179,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
     console.log('data refund', data);
 
-    mutation.mutate({ ...data, orderId: order?._id });
+    // mutation.mutate({ ...data, orderId: order?._id });
   };
 
   return (
@@ -245,7 +245,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
               {isSecondaryCurrencyEnabled && (
                 <Typography mt="-8px" variant="body3" display="block">
                   Equivalent Price: {secondaryCurrency}{' '}
-                  {Number(refundData?.partialPayment?.adminOrderRefund) * shopExchangeRate}
+                  {Math.round(Number(refundData?.partialPayment?.adminOrderRefund) * shopExchangeRate)}
                 </Typography>
               )}
             </Box>
