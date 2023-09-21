@@ -81,80 +81,77 @@ export const getNewRefundMaxAmounts = (order, refundData, maxAmounts, earning, k
   /* store total earning of order amount for lyxa and shop */
   const totalEarning = Number(earning?.adminOrderRefund) + Number(earning?.shop);
 
+  const totalRefundAmount = adminOrderRefund + adminDeliveryRefund + shop + adminVat;
+
+  const vatPercentage = refundData?.vatPercentage;
+  const amountWithVatPercentage = vatPercentage + 100;
+
+  let remainingAmountShouldBeForOrderAndDelivery = totalOrderAmount - shop;
+  remainingAmountShouldBeForOrderAndDelivery *= 100 / amountWithVatPercentage;
+  remainingAmountShouldBeForOrderAndDelivery = Number(remainingAmountShouldBeForOrderAndDelivery.toFixed(2));
+
+  console.log('temp 0 remaining amount', remainingAmountShouldBeForOrderAndDelivery);
+
+  /* store total refund */
+  console.log('temp 0 refund', totalRefundAmount, totalRefundAmount >= totalOrderAmount);
+
   console.log('temp 1', { adminDeliveryRefund, adminOrderRefund, shop });
 
-  if (value >= initialMax[key]) {
-    return initialMax;
-  }
-
-  /* when refund only for shop (Shop) */
-  if (adminOrderRefund <= 0 && adminDeliveryRefund <= 0 && shop > 0) {
-    const maxForDelivery = totalOrderAmount - adminOrderRefund - shop - adminVat;
-    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
-    initialMax.adminDeliveryRefund = maxForDelivery <= 0 ? 0 : maxForDelivery;
-    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
-    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
-
-    if (shop >= totalOrderAmount) {
-      initialMax.adminDeliveryRefund = 0;
+  if (totalRefundAmount >= totalOrderAmount) {
+    if (adminOrderRefund <= 0) {
       initialMax.adminOrderRefund = 0;
     }
 
-    console.log('shop', initialMax);
-
-    return initialMax;
-  }
-
-  /* when refund only give from delivery and shop (Shop,  Delivery) */
-  if (adminOrderRefund <= 0 && adminDeliveryRefund > 0 && shop > 0) {
-    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
-
-    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
-    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
-
-    /* if shop pay greater than shop earning */
-    if (shop > totalEarning) {
-      initialMax.adminDeliveryRefund = totalOrderAmount - shop - adminVat;
-      initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+    if (adminDeliveryRefund <= 0) {
+      initialMax.adminDeliveryRefund = 0;
     }
-    console.log('shop delivery', initialMax);
+    if (shop <= 0) {
+      initialMax.shop = 0;
+    }
+
+    if (key === 'shop') {
+      const tempRemaining = totalOrderAmount - totalRefundAmount;
+      initialMax.shop = tempRemaining < 0 ? shop - (totalRefundAmount - totalOrderAmount) : totalOrderAmount;
+    }
+    if (key !== 'shop') {
+      initialMax.adminDeliveryRefund = remainingAmountShouldBeForOrderAndDelivery - adminOrderRefund;
+      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
+
+      return initialMax;
+    }
+
     return initialMax;
   }
 
-  /* when refund  give from lyxa  order,delivery and shop (Shop, Order, Delivery) */
-  if (adminOrderRefund > 0 && adminDeliveryRefund > 0 && shop > 0) {
-    const maxForOrderAdmin = totalOrderAmount - adminDeliveryRefund - shop - adminVat;
+  if (shop > totalEarning && shop < totalOrderAmount && shop > 0) {
+    if (remainingAmountShouldBeForOrderAndDelivery > earning?.adminDeliveryRefund) {
+      initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
+      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
+    } else {
+      initialMax.adminDeliveryRefund = remainingAmountShouldBeForOrderAndDelivery;
+      initialMax.adminOrderRefund = remainingAmountShouldBeForOrderAndDelivery - adminDeliveryRefund;
+    }
+
+    return initialMax;
+  }
+
+  if (shop >= totalOrderAmount) {
+    initialMax.adminDeliveryRefund = 0;
+    initialMax.adminOrderRefund = 0;
+    return initialMax;
+  }
+
+  if (shop <= 0 && adminOrderRefund < totalEarning) {
     initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : Number((maxForOrderAdmin || 0).toFixed(2));
-    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
-
-    console.log('shop order delivery', initialMax);
+    initialMax.adminOrderRefund = totalEarning;
+    initialMax.shop = totalOrderAmount;
     return initialMax;
   }
 
-  /* when refund  give from lyxa  order,delivery (Order, Delivery) */
-  if (adminOrderRefund > 0 && adminDeliveryRefund > 0 && shop <= 0) {
-    const maxForOrderAdmin = totalEarning - adminVat;
+  if (shop <= 0 && adminOrderRefund >= totalEarning) {
     initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund;
-    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
-    initialMax.shop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
-
-    console.log('order deilvery', initialMax);
-
-    return initialMax;
-  }
-
-  /* when refund  give from shop ,lyxa order (Shop, Order) */
-  if (adminOrderRefund > 0 && adminDeliveryRefund <= 0 && shop > 0) {
-    const maxForShop = totalEarning - adminOrderRefund - adminVat;
-    const maxForOrderAdmin = totalEarning - shop - adminVat;
-    initialMax.adminDeliveryRefund = earning?.adminDeliveryRefund - adminVat;
-    initialMax.adminOrderRefund = maxForOrderAdmin <= 0 ? 0 : maxForOrderAdmin;
-    initialMax.shop = maxForShop <= 0 ? 0 : maxForShop;
-
-    console.log('shop order', initialMax);
-
+    initialMax.adminOrderRefund = totalEarning;
+    initialMax.shop = 0;
     return initialMax;
   }
 

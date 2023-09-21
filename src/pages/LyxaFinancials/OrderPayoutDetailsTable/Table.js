@@ -78,7 +78,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             >
               <SummaryItem
                 currencyType={currencyType}
-                label="Users"
+                label="Delivery Fees"
                 valueSecondary={financialBreakdown?.users}
                 value={financialBreakdown?.users}
               />

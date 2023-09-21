@@ -83,9 +83,27 @@ export default function OngoingTickets() {
       }
 
       if (data?.chatType === 'order') {
-        setOrdersList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+        setOrdersList((prev) => {
+          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+
+          if (!findSelectedChat?.length) {
+            setSelectedChat({});
+            setSidebarOpen(false);
+          }
+
+          return prev?.filter((chat) => chat?._id !== data?._id);
+        });
       } else {
-        setAccountsList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+        setAccountsList((prev) => {
+          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+
+          if (!findSelectedChat?.length) {
+            setSelectedChat({});
+            setSidebarOpen(false);
+          }
+
+          return prev?.filter((chat) => chat?._id !== data?._id);
+        });
       }
     });
 
@@ -96,6 +114,7 @@ export default function OngoingTickets() {
   }, []);
 
   const onViewDetails = (chat) => {
+    console.log('chat', chat);
     setSelectedChat(chat);
     setSidebarOpen(true);
   };
