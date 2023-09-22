@@ -59,25 +59,27 @@ function ExchangeRate({ newAppSettings, setNewAppSettings, setHasChanged, isUsed
       </StyledBox>
 
       {/* settings for accepted currency */}
-      <StyledBox title="Accepted Currency">
-        <StyledFormField
-          intputType="select"
-          containerProps={{
-            sx: {
-              width: '125px',
-            },
-          }}
-          inputProps={{
-            placeholder: 'Accepted Currency',
-            value: newAppSettings?.acceptedCurrency || '',
-            items: getAcceptedCurrencyOptions(newAppSettings?.baseCurrency, newAppSettings?.secondaryCurrency),
-            onChange: (e) => {
-              setHasChanged(true);
-              setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
-            },
-          }}
-        />
-      </StyledBox>
+      {newAppSettings?.acceptedCurrency === 'both' && (
+        <StyledBox title="Accepted Currency">
+          <StyledFormField
+            intputType="select"
+            containerProps={{
+              sx: {
+                width: '125px',
+              },
+            }}
+            inputProps={{
+              placeholder: 'Accepted Currency',
+              value: newAppSettings?.acceptedCurrency || '',
+              items: getAcceptedCurrencyOptions(newAppSettings?.baseCurrency, newAppSettings?.secondaryCurrency),
+              onChange: (e) => {
+                setHasChanged(true);
+                setNewAppSettings((prev) => ({ ...prev, acceptedCurrency: e.target.value }));
+              },
+            }}
+          />
+        </StyledBox>
+      )}
     </Box>
   );
 }

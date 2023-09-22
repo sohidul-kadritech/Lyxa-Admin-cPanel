@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { ShopAction } from '../ShopAction';
 
-export function General({ title, isButton, actionTitle, isChecked, action, buttonType }) {
+export function General({ title, isButton, actionTitle, isChecked, action, buttonType, showSwitch = true }) {
   const boxSx = {
     padding: '32px 56px 21px 30px',
     width: '100%',
@@ -26,7 +26,13 @@ export function General({ title, isButton, actionTitle, isChecked, action, butto
       {isButton && (
         <Box>
           {buttonType === 1 && (
-            <ShopAction title={actionTitle} action={action} isChecked={isChecked} actionSx={btnSx} />
+            <ShopAction
+              title={actionTitle}
+              action={action}
+              isChecked={isChecked}
+              showSwitch={showSwitch}
+              actionSx={btnSx}
+            />
           )}
         </Box>
       )}

@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import StyledSwitch from '../../../../components/Styled/StyledSwitch';
 
-export function ShopAction({ actionSx, title, action, isChecked }) {
+export function ShopAction({ actionSx, title, action, isChecked, showSwitch }) {
   const [value, setValue] = useState(isChecked);
 
   return (
@@ -10,16 +10,18 @@ export function ShopAction({ actionSx, title, action, isChecked }) {
       <Box>
         <Typography>{title}</Typography>
       </Box>
-      <Box>
-        <Typography>
-          <StyledSwitch
-            checked={value}
-            onChange={() => {
-              setValue(action(value, title));
-            }}
-          />
-        </Typography>
-      </Box>
+      {showSwitch && (
+        <Box>
+          <Typography>
+            <StyledSwitch
+              checked={value}
+              onChange={() => {
+                setValue(action(value, title));
+              }}
+            />
+          </Typography>
+        </Box>
+      )}
     </Stack>
   );
 }

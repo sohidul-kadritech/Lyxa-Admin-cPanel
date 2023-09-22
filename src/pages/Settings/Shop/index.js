@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box } from '@material-ui/core';
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { cloneDeep, isNaN, isNumber } from 'lodash';
@@ -7,6 +9,7 @@ import { useDidRecover } from 'react-router-cache-route';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
 import IncrementDecrementInput from '../../../components/Form/IncrementDecrementInput';
+import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
@@ -78,6 +81,8 @@ function ShopSettings() {
   const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
 
   const [newShop, setNewShop] = useState(deepClone(shop));
+  console.log('newShop', newShop?.shopNote);
+  const [newShopNote, setNewShopNote] = useState(newShop?.shopNote);
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
   const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive || '');
   const [newDietary, setNewDietary] = useState(newShop?.dietary || []);
@@ -110,7 +115,8 @@ function ShopSettings() {
         shop.haveOwnDeliveryBoy = data?.data?.shop.haveOwnDeliveryBoy || shop.haveOwnDeliveryBoy;
         shop.tagsId = data?.data?.shop.tagsId || shop.tagsId;
         shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
-        shop.shopExchangeRate = data?.data?.shop.shopExchangeRate;
+        shop.shopExchangeRate = data?.data?.shop?.shopExchangeRate;
+        shop.shopNote = data?.data?.shop?.shopNote;
         set_has_unsaved_change(false);
       }
     },
@@ -133,8 +139,8 @@ function ShopSettings() {
       newTags,
       shopAcceptedCurrency,
       shopExchangeRate,
-      // eslint-disable-next-line prettier/prettier
-      newCusines
+      newCusines,
+      newShopNote,
     );
 
     if (reateOfShop?.shopExchangeRate < reateOfShop?.baseExchangeRate) {
@@ -156,6 +162,7 @@ function ShopSettings() {
   };
 
   const populateStateFromShop = () => {
+    setNewShopNote(shop?.shopNote);
     setNewPaymentInformation(shop?.paymentOption);
     setNewPriceRange(shop?.expensive);
     setNewDietary(shop?.dietary);
@@ -247,13 +254,13 @@ function ShopSettings() {
         status: 'active',
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   const { tagsOptions, cuisinesOptions } = useMemo(
     () => filterTagsAndCuisine(tagsQuery?.data?.data?.tags),
     // eslint-disable-next-line prettier/prettier
-    [tagsQuery?.data]
+    [tagsQuery?.data],
   );
 
   return (
@@ -261,6 +268,33 @@ function ShopSettings() {
       <Box sx={{ backgroundColor: '#fbfbfb', height: '100%' }}>
         <PageTop title="Settings" />
         <Box>
+          <ShopSettingsSection
+            buttonType={1}
+            showSwitch={false}
+            title="Shop note to riders"
+            isButton
+            actionTitle={
+              <Stack direction="row" width="100%">
+                <StyledInput
+                  flex={1}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      width: '650px',
+                    },
+                  }}
+                  inputProps={{
+                    type: 'text',
+                    value: newShopNote,
+                    onChange: (e) => {
+                      set_has_unsaved_change(true);
+                      setNewShopNote(e?.target?.value);
+                    },
+                    placeholder: 'shop notes ...',
+                  }}
+                />
+              </Stack>
+            }
+          />
           <ShopSettingsSection
             buttonType={1}
             title="General"
