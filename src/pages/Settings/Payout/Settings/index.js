@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../../../components/Common/ConfirmModal';
@@ -77,7 +78,26 @@ function Settings() {
   };
 
   const onSubmitPayoutData = () => {
-    editPayoutQuery.mutate(settings);
+    if (!settings?.payoutType?.length) {
+      successMsg('Please make some changes first');
+      return;
+    }
+
+    if (!isNumber(Number(settings?.firstDayOfWeek))) {
+      successMsg('First day of week is not found');
+      return;
+    }
+
+    if (!isNumber(Number(settings?.overDuePeriod))) {
+      successMsg('Over due period is not found');
+      return;
+    }
+
+    editPayoutQuery.mutate({
+      ...settings,
+      firstDayOfWeek: Number(settings?.firstDayOfWeek),
+      overDuePeriod: Number(settings?.overDuePeriod),
+    });
   };
 
   return (
@@ -114,11 +134,7 @@ function Settings() {
           variant="contained"
           color="primary"
           onClick={() => {
-            if (settings?.payoutType?.length) {
-              onSubmitPayoutData();
-              return;
-            }
-            successMsg('Please make some changes first');
+            onSubmitPayoutData();
           }}
         >
           Save Changes

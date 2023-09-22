@@ -13,6 +13,7 @@ import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import UrgentOrderRecieved from '../../components/Layout/UrgentOrderReceivedNotification';
 import CancelOrder from '../../components/Shared/CancelOrder';
+import FlaggedModal from '../../components/Shared/Flagged';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
@@ -66,6 +67,7 @@ export default function Table({
   const [detailOpen, setDetailOpen] = useState(false);
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   const [flagModal, setFlagModal] = useState(false);
+  const [flagModalNew, setFlagModalNew] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openRefundModal, setOpenRefundModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -77,6 +79,11 @@ export default function Table({
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
       setFlagModal(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'flag_test') {
+      setFlagModalNew(true);
       setCurrentOrder(order);
     }
 
@@ -401,6 +408,15 @@ export default function Table({
           }}
         />
       </Drawer>
+
+      <Modal open={flagModalNew}>
+        <FlaggedModal
+          onClose={() => {
+            setFlagModalNew(false);
+          }}
+          order={currentOrder}
+        />
+      </Modal>
 
       {/* flag add */}
       <Modal

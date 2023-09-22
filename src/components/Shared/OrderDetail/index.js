@@ -80,6 +80,8 @@ export default function OrderDetail({
   onClickReject,
   onLoadingUpdateStatus,
   showFor = 'admin',
+  stickySx,
+  sx,
 }) {
   console.log('order status', order?.orderStatus);
   console.log('order next order', getNextStatus(order));
@@ -105,6 +107,7 @@ export default function OrderDetail({
         sx={{
           width: '400px',
           padding: '0px 20px 25px 20px',
+          ...(sx || {}),
         }}
       >
         <Box>
@@ -115,6 +118,7 @@ export default function OrderDetail({
               background: '#fff',
               padding: '25px 0px',
               zIndex: '999',
+              ...(stickySx||{})
             }}
           >
             {/* top */}

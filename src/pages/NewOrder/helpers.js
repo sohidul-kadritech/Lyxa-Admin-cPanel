@@ -208,6 +208,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
   const refundOrder = { label: 'Refund Order', value: 'refund_order' };
   const flagOrder = { label: 'Flag', value: 'flag' };
+  const flagOrderNew = { label: 'Flag Test', value: 'flag_test' };
   const acceptUrgentOrder = { label: 'Accept Urgent Order', value: 'accept_urgent_order' };
 
   const makePushOptions = (items) => {
@@ -232,7 +233,7 @@ export const getThreedotMenuOptions = (order, userType) => {
     !order?.isRefundedAfterDelivered &&
     !order?.isButler
   ) {
-    options.push(refundOrder);
+    makePushOptions([refundOrder, flagOrderNew]);
   }
 
   if (userType === 'admin') {
