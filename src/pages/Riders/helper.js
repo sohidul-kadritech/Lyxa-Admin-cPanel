@@ -63,18 +63,24 @@ export const riderType = [
   },
 ];
 
-export const getQueryParamsInit = (viewUserType, shopId) => ({
-  page: 1,
-  pageSize: 25,
-  searchKey: '',
-  sortBy: 'desc',
-  status: '',
-  liveStatus: '',
-  shift: '',
-  zoneId: 'all',
-  deliveryBoyType: viewUserType === 'admin' ? 'dropRider' : 'shopRider ',
-  shopId: viewUserType === 'shop' ? shopId : undefined,
-});
+export const getQueryParamsInit = (viewUserType, shopId) => {
+  const obj = {
+    page: 1,
+    pageSize: 25,
+    searchKey: '',
+    sortBy: 'desc',
+    status: '',
+    liveStatus: '',
+    shift: '',
+    zoneId: 'all',
+    deliveryBoyType: viewUserType === 'admin' ? 'dropRider' : 'shopRider ',
+    shopId: viewUserType === 'shop' ? shopId : undefined,
+  };
+
+  if (shopId) obj.shopId = shopId;
+
+  return obj;
+};
 
 export const getRiderStatus = (rider) => {
   if (rider?.status === 'deactive') return 'deactive';
