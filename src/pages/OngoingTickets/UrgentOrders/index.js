@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import useQueryParams from '../../../helpers/useQueryParams';
 
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
+import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
 import Orders from '../../AdminOrderTable/Orders';
 
@@ -25,11 +26,16 @@ function UrgentOrderTable() {
   const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
   const [order, setOrder] = useState({});
   // const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
+  const { currentUser } = useGlobalContext();
+
   return (
     <Box>
       <Orders
         paddingTop={0}
         showFor="customerService"
+        urgentOrderCountParams={{
+          assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
+        }}
         api={API_URL.URGENT_ORDER_LIST}
         showTabs={{
           category: true,

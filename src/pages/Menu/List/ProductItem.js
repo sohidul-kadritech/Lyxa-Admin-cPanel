@@ -1,10 +1,9 @@
 /* eslint-disable no-dupe-keys */
-import { Avatar, Box, InputAdornment, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
-import StyledInput from '../../../components/Styled/StyledInput';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
@@ -54,7 +53,7 @@ export default function ProductItem({
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   // stock update
@@ -79,7 +78,7 @@ export default function ProductItem({
         console.log(data);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleFavouriteChange = (product) => {
@@ -250,69 +249,51 @@ export default function ProductItem({
       <Stack direction="row" alignItems="center" gap={4}>
         {exchangeCurrency?.currency?.symbol && (
           <>
-            <StyledInput
-              type="number"
-              min={1}
-              value={Math.round(exchangeCurrency?.price)}
-              readOnly
-              InputProps={{
-                startAdornment: <InputAdornment position="end">{exchangeCurrency?.currency?.code}</InputAdornment>,
-              }}
+            <Stack
+              direction="row"
+              alignItems="center"
               sx={{
-                '& .MuiInputBase-root': {
-                  width: `${
-                    Math.round(exchangeCurrency?.price)?.toString().length > 0
-                      ? ((Math.round(exchangeCurrency?.price).toString().length || 1) + 7) * 10
-                      : '100'
-                  }px`,
-                  padding: '9px 14px 9px 12px',
-                },
-
-                '& .MuiInputBase-input': {
-                  padding: 0,
-                  textAlign: 'left',
-                  fontSize: '14px',
-                },
-
-                '& .MuiTypography-root': {
-                  fontSize: '14px',
-                  fontWeight: '500!important',
-                  color: theme.palette.text.main,
-                },
+                borderRadius: '30px',
+                padding: '12px 24px',
+                height: '38px',
+                background: theme.palette.background.secondary,
               }}
-            />
+            >
+              <Typography
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  textWrap: 'nowrap',
+                }}
+              >
+                {exchangeCurrency?.currency?.code} {Math.round(exchangeCurrency?.price)}
+              </Typography>
+            </Stack>
+
             <Typography variant="body1">~</Typography>
           </>
         )}
-        <StyledInput
-          type="number"
-          min={1}
-          value={Number(product?.price).toFixed(2)}
-          readOnly
-          InputProps={{
-            startAdornment: <InputAdornment position="end">{currency}</InputAdornment>,
-          }}
+        <Stack
+          direction="row"
+          alignItems="center"
           sx={{
-            '& .MuiInputBase-root': {
-              width: `${
-                product?.price?.toString().length > 0 ? ((product?.price?.toString().length || 1) + 7) * 10 : '100'
-              }px`,
-              padding: '9px 14px 9px 12px',
-            },
-
-            '& .MuiInputBase-input': {
-              padding: 0,
-              textAlign: 'left',
-              fontSize: '14px',
-            },
-
-            '& .MuiTypography-root': {
-              fontSize: '14px',
-              fontWeight: '500!important',
-              color: theme.palette.text.main,
-            },
+            borderRadius: '30px',
+            padding: '12px 24px',
+            height: '38px',
+            background: theme.palette.background.secondary,
           }}
-        />
+        >
+          <Typography
+            sx={{
+              fontSize: '14px',
+              fontWeight: 500,
+              textWrap: 'nowrap',
+            }}
+          >
+            {currency} {Number(product?.price).toFixed(2)}
+          </Typography>
+        </Stack>
+
         <Box
           onClick={(e) => {
             e.stopPropagation();

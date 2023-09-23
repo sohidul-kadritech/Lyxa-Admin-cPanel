@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
@@ -8,6 +9,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatList from '../../components/Shared/ChatList';
+import StyledBadgeContainer from '../../components/Styled/StyledBadge';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -19,8 +21,6 @@ import UrgentOrderTable from './UrgentOrders';
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
-
-  console.log('admin', admin);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [, setRender] = useState(false);
@@ -42,7 +42,7 @@ export default function OngoingTickets() {
         setOrdersList(data?.data?.list);
         console.log(data);
       },
-    },
+    }
   );
 
   const accountsQuery = useQuery(
@@ -56,8 +56,26 @@ export default function OngoingTickets() {
         setAccountsList(data?.data?.list);
         console.log(data);
       },
-    },
+    }
   );
+
+  const urgentOrderQuery = useQuery(
+    [
+      Api.URGENT_ORDER_COUNT,
+      {
+        assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
+        currentTab,
+      },
+    ],
+    () =>
+      AXIOS.get(Api.URGENT_ORDER_COUNT, {
+        params: {
+          assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
+        },
+      })
+  );
+
+  console.log('urgentOrderQuery?.data?.data?.urgentOrderCount', urgentOrderQuery?.data?.data?.urgentOrderCount);
 
   // realtime add and remove chats
   useEffect(() => {
@@ -178,7 +196,23 @@ export default function OngoingTickets() {
           >
             <Tab label="Orders Ticket" />
             <Tab label="Account Tickets" />
-            <Tab label="Urgent Orders" />
+            {/* <StyledBadgeContainer badgeContent={1}> */}
+            <Tab
+              label={
+                <StyledBadgeContainer
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      right: 3,
+                      top: 10,
+                      padding: '0 4px',
+                    },
+                  }}
+                  badgeContent={urgentOrderQuery?.data?.data?.urgentOrderCount || 0}
+                >
+                  Urgent Orders {urgentOrderQuery?.data?.data?.urgentOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
+                </StyledBadgeContainer>
+              }
+            />
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} noPadding value={currentTab}>
