@@ -18,6 +18,7 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
@@ -48,6 +49,7 @@ export default function NewOrders({ showFor }) {
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
+  const [openAcceptRestaurentModal, setOpenAcceptRestaurentModal] = useState(false);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -114,7 +116,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   // @update order status from this query
@@ -128,7 +130,7 @@ export default function NewOrders({ showFor }) {
       onError: (error) => {
         console.log('api error: ', error);
       },
-    },
+    }
   );
 
   const updateStatusHandler = async () => {
@@ -181,10 +183,16 @@ export default function NewOrders({ showFor }) {
       return;
     }
 
+    if (shouldOpenAcceptedModal) {
+      setOpenAcceptRestaurentModal(true);
+      return;
+    }
+
     /*
     @when next status is delivered it will execute and open the accept modal. 
     Here we used accept modal for both assigning riders and select currency
     */
+
     if (getNextStatus(currentOrder) === 'delivered') {
       setOpenAcceptModal(true);
       return;
@@ -309,6 +317,21 @@ export default function NewOrders({ showFor }) {
       in delivered status it will open for choose currency options
       */}
 
+      <Modal
+        open={openAcceptRestaurentModal}
+        onClose={() => {
+          setOpenAcceptRestaurentModal(!openAcceptRestaurentModal);
+        }}
+        sx={{ zIndex: '1250 !important' }}
+      >
+        <AcceptRestaurent
+          currentOrder={currentOrder}
+          updateStatusMutation={updateStatusMutation}
+          onClose={() => {
+            setOpenAcceptRestaurentModal(!openAcceptRestaurentModal);
+          }}
+        />
+      </Modal>
       <Modal
         open={openAcceptModal}
         onClose={() => {

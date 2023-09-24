@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
@@ -75,6 +76,25 @@ export default function Table({
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
+  const location = useLocation();
+
+  console.log('location', location?.state);
+
+  useEffect(() => {
+    if (location?.search === '?urgent-order') {
+      const findAcceptedCurrentOrder = orders.find(
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+      );
+
+      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder).length) {
+        setCurrentOrder(findAcceptedCurrentOrder);
+        setDetailOpen(true);
+      } else {
+        setCurrentOrder({});
+        setDetailOpen(false);
+      }
+    }
+  }, [orders]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
@@ -348,7 +368,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   if (loading) {

@@ -4,6 +4,7 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import socketServices from '../../common/socketService';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
@@ -21,8 +22,9 @@ import UrgentOrderTable from './UrgentOrders';
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
+  const location = useLocation();
 
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(location?.search === '?urgent-order' ? 2 : 0);
   const [, setRender] = useState(false);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
