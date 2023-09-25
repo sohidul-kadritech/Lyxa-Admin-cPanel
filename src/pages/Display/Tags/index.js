@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
 import { successMsg } from '../../../helpers/successMsg';
+import useQueryParams from '../../../helpers/useQueryParams';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
@@ -33,18 +34,19 @@ const queryParamsInit = {
   pageSize: 20,
   sortBy: 'asc',
   shopType: 'food',
+  tab: 0,
 };
 
 export default function TagsAndCusines() {
   const queryClient = useQueryClient();
 
-  const [currentTab, setCurrentTab] = useState(0);
+  // const [currentTab, setCurrentTab] = useState(0);
   const [, setRender] = useState(false);
   const [sidebar, setSidebar] = useState(null);
   const [currentTag, setCurrentTag] = useState({});
 
   // query
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
 
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES, queryParams], () =>
     AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
@@ -109,10 +111,10 @@ export default function TagsAndCusines() {
         />
         <Box>
           <Tabs
-            value={currentTab}
+            value={Number(queryParams?.tab)}
             onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-              setQueryParams((prev) => ({ ...prev, shopType: typeToTabIndexMap[newValue], page: 1 }));
+              // setCurrentTab(newValue);
+              setQueryParams((prev) => ({ ...prev, shopType: typeToTabIndexMap[newValue], page: 1, tab: newValue }));
             }}
           >
             <Tab label="Food" />
@@ -132,10 +134,10 @@ export default function TagsAndCusines() {
               <Box>
                 <TagsTable
                   items={items}
-                  shopType={typeToTabIndexMap[currentTab]}
+                  shopType={typeToTabIndexMap[Number(queryParams?.tab)]}
                   onDrop={dropSort}
                   loading={tagsQuery.isLoading}
-                  page={queryParams.page}
+                  page={Number(queryParams.page)}
                   setPage={(page) => {
                     setQueryParams({ ...queryParams, page });
                   }}
@@ -171,7 +173,7 @@ export default function TagsAndCusines() {
       <Drawer anchor="right" open={sidebar !== null}>
         {sidebar === 'add' && (
           <AddTag
-            shopType={typeToTabIndexMap[currentTab]}
+            shopType={typeToTabIndexMap[Number(queryParams?.tab)]}
             tag={currentTag}
             onClose={() => {
               setSidebar(null);
