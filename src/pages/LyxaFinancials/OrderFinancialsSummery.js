@@ -334,6 +334,7 @@ function OrderFinancialsSummary() {
                 <PriceItem title="Refund from Restaurant" amount={refund?.refundFromRestaurant} showIfZero />
                 <PriceItem title="Refund from Grocery" amount={refund?.refundFromGrocery} showIfZero />
                 <PriceItem title="Refund from Pharmacy" amount={refund?.refundFromPharmacy} showIfZero />
+                <PriceItem title="Refund from Delivery" amount={refund?.refundFromDelivery} showIfZero />
               </Stack>
             </InfoCard>
           </Grid>

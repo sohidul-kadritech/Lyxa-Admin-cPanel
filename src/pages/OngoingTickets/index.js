@@ -1,13 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import socketServices from '../../common/socketService';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatList from '../../components/Shared/ChatList';
+import StyledBadgeContainer from '../../components/Styled/StyledBadge';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -19,10 +22,9 @@ import UrgentOrderTable from './UrgentOrders';
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
+  const location = useLocation();
 
-  console.log('admin', admin);
-
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(location?.search === '?urgent-order' ? 2 : 0);
   const [, setRender] = useState(false);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,7 +44,7 @@ export default function OngoingTickets() {
         setOrdersList(data?.data?.list);
         console.log(data);
       },
-    },
+    }
   );
 
   const accountsQuery = useQuery(
@@ -56,8 +58,26 @@ export default function OngoingTickets() {
         setAccountsList(data?.data?.list);
         console.log(data);
       },
-    },
+    }
   );
+
+  const urgentOrderQuery = useQuery(
+    [
+      Api.URGENT_ORDER_COUNT,
+      {
+        assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
+        currentTab,
+      },
+    ],
+    () =>
+      AXIOS.get(Api.URGENT_ORDER_COUNT, {
+        params: {
+          assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
+        },
+      })
+  );
+
+  console.log('urgentOrderQuery?.data?.data?.urgentOrderCount', urgentOrderQuery?.data?.data?.urgentOrderCount);
 
   // realtime add and remove chats
   useEffect(() => {
@@ -83,9 +103,27 @@ export default function OngoingTickets() {
       }
 
       if (data?.chatType === 'order') {
-        setOrdersList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+        setOrdersList((prev) => {
+          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+
+          if (!findSelectedChat?.length) {
+            setSelectedChat({});
+            setSidebarOpen(false);
+          }
+
+          return prev?.filter((chat) => chat?._id !== data?._id);
+        });
       } else {
-        setAccountsList((prev) => prev?.filter((chat) => chat?._id !== data?._id));
+        setAccountsList((prev) => {
+          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+
+          if (!findSelectedChat?.length) {
+            setSelectedChat({});
+            setSidebarOpen(false);
+          }
+
+          return prev?.filter((chat) => chat?._id !== data?._id);
+        });
       }
     });
 
@@ -96,6 +134,7 @@ export default function OngoingTickets() {
   }, []);
 
   const onViewDetails = (chat) => {
+    console.log('chat', chat);
     setSelectedChat(chat);
     setSidebarOpen(true);
   };
@@ -159,7 +198,23 @@ export default function OngoingTickets() {
           >
             <Tab label="Orders Ticket" />
             <Tab label="Account Tickets" />
-            <Tab label="Urgent Orders" />
+            {/* <StyledBadgeContainer badgeContent={1}> */}
+            <Tab
+              label={
+                <StyledBadgeContainer
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      right: 3,
+                      top: 10,
+                      padding: '0 4px',
+                    },
+                  }}
+                  badgeContent={urgentOrderQuery?.data?.data?.urgentOrderCount || 0}
+                >
+                  Urgent Orders {urgentOrderQuery?.data?.data?.urgentOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
+                </StyledBadgeContainer>
+              }
+            />
           </Tabs>
           <Box pt={9}>
             <TabPanel index={0} noPadding value={currentTab}>

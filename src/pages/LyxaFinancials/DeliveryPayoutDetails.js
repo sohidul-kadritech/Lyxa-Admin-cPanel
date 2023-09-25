@@ -76,6 +76,11 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
             titleAmount={deliveryProfitBreakDown?.freeDeliveryByAdmin}
             titleAmountStatus="minus"
           />
+          <DetailsAccordion
+            title="Delivery refund"
+            titleAmount={deliveryProfitBreakDown?.deliveryRefund}
+            titleAmountStatus="minus"
+          />
 
           <DetailsAccordion
             title="Lyxa Delivery Profit"

@@ -11,7 +11,6 @@ import OrderTrackingMap from './OrderTracking';
 
 // eslint-disable-next-line no-unused-vars
 export function DeliveryMethod({ order = {}, theme, sx }) {
-  console.log('order?.shop?.haveOwnDeliveryboy', order);
   return (
     <StyledOrderDetailBox
       sx={sx}
