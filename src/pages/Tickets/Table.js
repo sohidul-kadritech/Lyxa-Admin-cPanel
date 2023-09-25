@@ -232,7 +232,7 @@ export default function TicketTable({
         </Box>
       </StyledBox>
       <TablePagination
-        currentPage={queryParams?.page}
+        currentPage={Number(queryParams?.page)}
         lisener={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}
