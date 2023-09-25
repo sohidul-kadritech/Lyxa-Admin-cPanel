@@ -70,7 +70,7 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   return (
@@ -82,7 +82,7 @@ export default function Orders({
             options={tabsOptionsForErrorOrder(0)}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
-              console.log('value', value);
+              // console.log('value', value);
               if (value === 'all') {
                 setQueryParams((prev) => {
                   delete prev?.errorOrderType;

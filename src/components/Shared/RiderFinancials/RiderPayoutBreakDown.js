@@ -50,7 +50,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, get
           }
         }
       },
-    },
+    }
   );
 
   const summary = getFinancialsDashBoardRider?.data?.data;
@@ -95,7 +95,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, get
               <IncreaseDecreaseTag
                 status={summary?.adminDeliveryProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.adminDeliveryProfitAvgInPercentage) || 0,
+                  Math.abs(summary?.adminDeliveryProfitAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(riderParams.start, riderParams.end, 'day')} days`}
               />
             }
@@ -114,7 +114,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, get
               <IncreaseDecreaseTag
                 status={summary?.totalDeliveredOrderAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.totalDeliveredOrderAvgInPercentage) || 0,
+                  Math.abs(summary?.totalDeliveredOrderAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(riderParams.start, riderParams.end, 'day')} days`}
               />
             }
@@ -135,7 +135,7 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, get
               <IncreaseDecreaseTag
                 status={summary?.riderPayoutAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.riderPayoutAvgInPercentage) || 0,
+                  Math.abs(summary?.riderPayoutAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(riderParams.start, riderParams.end, 'day')} days`}
               />
             }
@@ -149,9 +149,6 @@ function RiderPayoutBreakDown({ showFor, riderParams = { ...dateRangeItit }, get
         <Grid item xs={12} mb={7.5}>
           <RiderPayoutDetails currencyType={summary?.currency} deliveryProfitBreakDown={deliveryProfitBreakDown} />
         </Grid>
-        {/* <Grid item xs={12}>
-          <OrderPayoutDetailsTable showFor="delivery" shopType={shopType} riderParams={riderParams} />
-        </Grid> */}
       </Grid>
     </Box>
   );

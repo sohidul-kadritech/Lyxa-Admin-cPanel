@@ -78,10 +78,10 @@ export default function Layout() {
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
         // eslint-disable-next-line prettier/prettier
-        currentUser?.shop?.shopType,
+        currentUser?.shop?.shopType
       ),
     // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType],
+    [currentUser?.userType]
   );
 
   useEffect(() => {
@@ -139,12 +139,14 @@ export default function Layout() {
             ))}
           </Switch>
           <Modal open={openUrgentOrder}>
-            <UrgentOrderRecieved
-              order={order}
-              onClose={() => {
-                setOpenUrgentOrder(false);
-              }}
-            />
+            <Box>
+              <UrgentOrderRecieved
+                order={order}
+                onClose={() => {
+                  setOpenUrgentOrder(false);
+                }}
+              />
+            </Box>
           </Modal>
         </Box>
 
