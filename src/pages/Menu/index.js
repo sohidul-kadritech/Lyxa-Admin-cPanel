@@ -30,6 +30,7 @@ export default function MenuPage() {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop), []);
+  console.log('Deals', Deals);
 
   const [render, setRender] = useState(false);
   const [favoriteChanged, setFavoriteChanged] = useState(false);

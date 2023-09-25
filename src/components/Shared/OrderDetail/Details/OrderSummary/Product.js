@@ -47,8 +47,6 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
 
-  console.log('product', product);
-
   return (
     <Box
       sx={{

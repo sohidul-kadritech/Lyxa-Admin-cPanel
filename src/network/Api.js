@@ -300,6 +300,7 @@ export const RIDER_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/current-lo
 // ORDERS
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
 export const URGENT_ORDER_LIST = `${ADMIN_ENDPOINT}/order/urgent`;
+export const URGENT_ORDER_COUNT = `${ADMIN_ENDPOINT}/order/urgent-count`;
 
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;

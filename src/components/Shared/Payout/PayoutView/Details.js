@@ -20,7 +20,7 @@ export function Details({ currentPayout }) {
         </Typography>
         <Stack mt={1}>
           <Typography variant="body" textAlign="right">
-            Payout Number: {currentPayout?.autoGenId}
+            Payout Number: {currentPayout?.info?.autoGenId}
           </Typography>
           <Typography variant="body" textAlign="right">
             Payout Issue Date: {moment(currentPayout?.info?.createdAt).format('DD/MM/YYYY')}
@@ -28,7 +28,7 @@ export function Details({ currentPayout }) {
           <Typography variant="body" textAlign="right">
             Billing Period:{' '}
             {`${moment(currentPayout?.info?.payoutBillingPeriod?.From).format('DD/MM/YYYY')} - ${moment(
-              currentPayout?.payoutBillingPeriod?.To,
+              currentPayout?.info.payoutBillingPeriod?.To,
             ).format('DD/MM/YYYY')}`}
           </Typography>
           <Typography variant="body" textAlign="right">

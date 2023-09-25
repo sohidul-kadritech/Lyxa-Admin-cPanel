@@ -78,7 +78,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             >
               <SummaryItem
                 currencyType={currencyType}
-                label="Users"
+                label="Delivery Fees"
                 valueSecondary={financialBreakdown?.users}
                 value={financialBreakdown?.users}
               />
@@ -457,6 +457,28 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           currencyType={currencyType}
           value={row?.profitBreakdown?.freeDeliveryByAdmin}
           valueSecondary={row?.profitBreakdown?.freeDeliveryByAdmin}
+          isNegative
+          showIfZero
+        />
+      ),
+    },
+
+    {
+      id: 8,
+      type: ['delivery'],
+      headerName: `Delivery Refund`,
+      sortable: false,
+      field: 'deliveryRefund',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <SummaryItem
+          title
+          pb={0}
+          currencyType={currencyType}
+          value={row?.profitBreakdown?.deliveryRefund}
+          valueSecondary={row?.profitBreakdown?.deliveryRefund}
           isNegative
           showIfZero
         />

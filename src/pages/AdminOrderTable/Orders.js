@@ -49,7 +49,9 @@ export default function Orders({
   type,
   paddingTop = 7.5,
   showFor = 'admin',
+  getUrgentOrderNumber,
   api = Api.ORDER_LIST,
+  urgentOrderCountParams,
   showTabs = {
     category: true,
     errorOrderType: true,
@@ -70,7 +72,39 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
+  );
+
+  // startDate&endDate&orderType=&assignedCustomerService
+
+  const urgentOrderQuery = useQuery(
+    [
+      Api.URGENT_ORDER_COUNT,
+      {
+        startDate: queryParams?.startDate,
+        endDate: queryParams?.endDate,
+        orderType: queryParams?.orderType,
+        type,
+        ...(urgentOrderCountParams || {}),
+      },
+    ],
+    () =>
+      AXIOS.get(Api.URGENT_ORDER_COUNT, {
+        params: {
+          orderType: queryParams?.orderType,
+          errorOrderType: queryParams?.errorOrderType,
+          ...(urgentOrderCountParams || {}),
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          if (getUrgentOrderNumber) {
+            getUrgentOrderNumber(data?.data?.urgentOrderCount);
+          }
+        }
+      },
+    }
   );
 
   return (
@@ -79,7 +113,7 @@ export default function Orders({
         {type === 'ongoing' && showTabs?.errorOrderType && (
           <StyledTabs2
             value={currentErrorOrderTab}
-            options={tabsOptionsForErrorOrder(0)}
+            options={tabsOptionsForErrorOrder(urgentOrderQuery?.data?.data?.urgentOrderCount || 0)}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
               console.log('value', value);

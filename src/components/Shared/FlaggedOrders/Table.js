@@ -1,20 +1,21 @@
 // project import
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
+import { getFlaggedItems } from '../../../pages/ShopProfile/Flag/Table';
 import StyledTable from '../../Styled/StyledTable3';
 
 export default function FlagsTable({ rows = [], onViewDetails = () => {} }) {
   const columns = [
     {
       id: 1,
-      headerName: 'COMMENT',
-      field: 'comment',
+      headerName: 'FLAGGED REASON',
+      field: 'flaggedReason',
       flex: 2,
       sortable: false,
       minWidth: 270,
-      renderCell: ({ value }) => (
-        <Typography className="text-dots" variant="body4" pr={10}>
-          {value}
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-dots" color={!row?.flaggedReason ? '#a7a7a7' : undefined}>
+          {row?.otherReason ? row?.otherReason : getFlaggedItems(row?.flaggedReason) || 'empty'}
         </Typography>
       ),
     },
