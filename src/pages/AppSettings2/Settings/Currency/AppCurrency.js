@@ -2,6 +2,7 @@ import { Stack } from '@mui/material';
 import React from 'react';
 import currenciesList from '../../../../common/data/currencyList';
 import StyledFormField from '../../../../components/Form/StyledFormField';
+import { useGlobalContext } from '../../../../context';
 import InputBox from '../../../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 import { enabledCurrencyOptions } from '../../helpers';
@@ -107,6 +108,8 @@ function SecondaryCurrency({ newAppSettings, setNewAppSettings, setHasChanged, s
 }
 
 function EnabledCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
+  const { general } = useGlobalContext();
+  const { appSetting } = general;
   return (
     <InputBox
       title="Enabled Currencies"
@@ -125,7 +128,7 @@ function EnabledCurrency({ newAppSettings, setNewAppSettings, setHasChanged }) {
         }}
         inputProps={{
           placeholder: 'Enabled Currency',
-          value: newAppSettings?.acceptedCurrency,
+          value: newAppSettings?.acceptedCurrency || appSetting?.acceptedCurrency,
           items: enabledCurrencyOptions,
           onChange: (e) => {
             setHasChanged(true);

@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
@@ -13,6 +14,7 @@ import TablePagination from '../../components/Common/TablePagination';
 import UserAvatar from '../../components/Common/UserAvatar';
 import UrgentOrderRecieved from '../../components/Layout/UrgentOrderReceivedNotification';
 import CancelOrder from '../../components/Shared/CancelOrder';
+import FlaggedModal from '../../components/Shared/Flagged';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
@@ -66,6 +68,7 @@ export default function Table({
   const [detailOpen, setDetailOpen] = useState(false);
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   const [flagModal, setFlagModal] = useState(false);
+  const [flagModalNew, setFlagModalNew] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openRefundModal, setOpenRefundModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -73,10 +76,34 @@ export default function Table({
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
+  const location = useLocation();
+
+  console.log('location', location?.state);
+
+  useEffect(() => {
+    if (location?.search === '?urgent-order') {
+      const findAcceptedCurrentOrder = orders.find(
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+      );
+
+      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder).length) {
+        setCurrentOrder(findAcceptedCurrentOrder);
+        setDetailOpen(true);
+      } else {
+        setCurrentOrder({});
+        setDetailOpen(false);
+      }
+    }
+  }, [orders]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
       setFlagModal(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'flag_test') {
+      setFlagModalNew(true);
       setCurrentOrder(order);
     }
 
@@ -341,7 +368,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   if (loading) {
@@ -401,6 +428,15 @@ export default function Table({
           }}
         />
       </Drawer>
+
+      <Modal open={flagModalNew}>
+        <FlaggedModal
+          onClose={() => {
+            setFlagModalNew(false);
+          }}
+          order={currentOrder}
+        />
+      </Modal>
 
       {/* flag add */}
       <Modal

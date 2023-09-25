@@ -4,8 +4,10 @@ export class ShopDeals {
   }
 
   get_shop_deals(shop) {
+    console.log('shop', shop);
     const deals = {
       free_delivery: false,
+      free_deliveryCreator: '',
       reward: {
         isEntireMenu: false,
         isActive: false,
@@ -13,11 +15,13 @@ export class ShopDeals {
       double_menu: {
         isActive: false,
         isEntireMenu: false,
+        createdBy: '',
       },
       percentage: {
         discountPercentages: [],
         isEntireMenu: false,
         isActive: false,
+        createdBy: '',
       },
       featured: false,
       hasActiveDeal: false,
@@ -26,12 +30,14 @@ export class ShopDeals {
     shop?.marketings?.forEach((obj) => {
       if (obj?.type === 'free_delivery') {
         deals.free_delivery = obj?.isActive;
+        deals.free_deliveryCreator = obj?.creatorType;
         deals.hasActiveDeal = obj?.isActive || deals.hasActiveDeal;
       } else if (obj?.type === 'featured') {
         deals.featured = obj?.isActive;
         deals.hasActiveDeal = obj?.isActive || obj?.isActive;
       } else {
         deals[obj?.type].isActive = obj?.isActive;
+        deals[obj?.type].createdBy = obj?.creatorType;
         deals[obj?.type].isEntireMenu = obj?.itemSelectionType === 'multiple';
 
         if (obj?.type === 'percentage') {
@@ -65,7 +71,7 @@ export class ShopDeals {
       });
 
       if (this.deals.percentage.isEntireMenu) {
-        return `${temp}on entrie menu`;
+        return `${temp}on entire menu`;
       }
 
       str += str ? ', ' : '';
@@ -101,11 +107,12 @@ export class ShopDeals {
     }
 
     if (this.deals.double_menu.isActive) {
+      const { createdBy } = this.deals.double_menu;
       if (this.deals.double_menu.isEntireMenu) {
-        return 'Ongoing 2x Promotion';
+        return `Ongoing 2x Promotion (${createdBy})`;
       }
       str += str ? ', ' : '';
-      str += '2x Deals';
+      str += `2x Deals (${createdBy})`;
     }
 
     if (this.deals.percentage.isActive) {
@@ -124,10 +131,11 @@ export class ShopDeals {
     }
 
     if (this.deals.free_delivery) {
+      const { free_deliveryCreator } = this.deals;
       if (!str) {
-        return `Ongoing Free Delivery Promotion`;
+        return `Ongoing Free Delivery Promotion (${free_deliveryCreator})`;
       }
-      str += ', Free Delivery';
+      str += `, Free Delivery (${free_deliveryCreator})`;
     }
 
     if (this.deals.featured) {

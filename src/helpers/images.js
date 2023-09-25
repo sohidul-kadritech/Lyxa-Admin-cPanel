@@ -5,7 +5,7 @@ import { successMsg } from './successMsg';
 // upload image to server
 export const uploadImage = async (image) => {
   const fdata = new FormData();
-  fdata.append('image', image);
+  fdata.append('image upload', image, fdata);
 
   try {
     const { data } = await AXIOS.post(Api.IMAGE_UPLOAD, fdata);

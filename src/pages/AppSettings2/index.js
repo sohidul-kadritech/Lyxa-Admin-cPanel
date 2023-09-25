@@ -76,6 +76,7 @@ function Appsettings2() {
   const [oldAppSettings, setOldAppSettings] = useState({});
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
   const { general, dispatchGeneral } = useGlobalContext();
+  console.log('appSettings==>', { general });
   const [disableCurrency, setDisableCurrency] = useState({
     base: false,
     secondary: false,
@@ -87,19 +88,12 @@ function Appsettings2() {
       if (data.status) {
         setOldAppSettings(data?.data?.appSetting);
         setNewAppSettings(data?.data?.appSetting);
-        // console.log({ data });
+        console.log('appSettings==>', { data: data?.data?.appSetting });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
         setDisableCurrency({
           base: Object?.keys(data?.data?.appSetting.baseCurrency || {})?.length > 1,
           secondary: Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1,
         });
-
-        // check wheater secondary currency is  enable or disable.
-        // setIsUsedSecondaryCurrency(() => {
-        //   const currency =
-        //     Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1 ? 'enable' : 'disable';
-        //   return currency;
-        // });
       }
     },
   });

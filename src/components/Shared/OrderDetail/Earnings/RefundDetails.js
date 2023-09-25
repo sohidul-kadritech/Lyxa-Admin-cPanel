@@ -4,7 +4,6 @@ import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
 export default function RefundDetails({ order = {} }) {
   const adminExchangeRate = order?.adminExchangeRate;
-  console.log('best-shop', order?.userRefundTnx?.[0]);
 
   return (
     <StyledOrderDetailBox title="Refund After Delivered">

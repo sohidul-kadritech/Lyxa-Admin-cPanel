@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, Stack, Typography } from '@mui/material';
@@ -12,6 +13,7 @@ import CloseButton from '../../Common/CloseButton';
 import StyledFormField from '../../Form/StyledFormField';
 import StyledRadioGroup from '../../Styled/StyledRadioGroup';
 import {
+  getNewRefundMaxAmounts,
   getRefundMaxAmounts,
   getTotalRefundAmount,
   refundDataInit,
@@ -25,16 +27,62 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   const { general } = useGlobalContext();
   const vatPercentage = general?.appSetting?.vat;
 
-  const [maxAmounts] = useState(getRefundMaxAmounts(order));
+  const [render, setRender] = useState(false);
+
+  const [maxAmounts, setMaxAmounts] = useState(getRefundMaxAmounts(order));
+  const [earning, setEarning] = useState(getRefundMaxAmounts(order));
   const [refundData, setRefundData] = useState({ ...refundDataInit, orderId: order._id });
 
   const updateRefundAmount = (e) => {
     const { name, value } = e.target;
 
-    if (value > maxAmounts[name]) {
-      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: maxAmounts[name] } }));
+    const adminOrderRefund =
+      name === 'adminOrderRefund'
+        ? value > maxAmounts[name]
+          ? maxAmounts[name]
+          : value || 0
+        : refundData?.partialPayment?.adminOrderRefund;
+    const adminDeliveryRefund =
+      name === 'adminDeliveryRefund'
+        ? value > maxAmounts[name]
+          ? maxAmounts[name]
+          : value || 0
+        : refundData?.partialPayment?.adminDeliveryRefund;
+
+    const adminVat = getRefundedVatForAdmin(
+      maxAmounts.adminVat,
+      Number(adminDeliveryRefund) + Number(adminOrderRefund),
+      vatPercentage,
+    );
+
+    const tempMax = getNewRefundMaxAmounts(
+      order,
+      {
+        ...refundData,
+        vatPercentage,
+        partialPayment: {
+          ...refundData?.partialPayment,
+          adminVat,
+          [name]: value > maxAmounts[name] ? maxAmounts[name] : value || 0,
+        },
+      },
+      maxAmounts,
+      earning,
+      name,
+      value,
+    );
+
+    setMaxAmounts((prev) => {
+      const data = tempMax;
+      return data;
+    });
+
+    console.log('tempMax', tempMax);
+
+    if (tempMax[name] - value >= 0) {
+      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: value || 0 } }));
     } else {
-      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: value } }));
+      setRefundData((prev) => ({ ...prev, partialPayment: { ...prev.partialPayment, [name]: tempMax[name] } }));
     }
   };
 
@@ -48,8 +96,8 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   // data will update every time react re-renders
   const secondaryValues = {
     shop: Number(refundData?.partialPayment?.shop) * shopExchangeRate,
-    adminOrderProfit: Number(refundData?.partialPayment?.adminOrderProfit) * shopExchangeRate,
-    adminRiderProfit: Number(refundData?.partialPayment?.adminRiderProfit) * adminExchangeRate,
+    adminOrderProfit: Number(refundData?.partialPayment?.adminOrderRefund) * shopExchangeRate,
+    adminRiderProfit: Number(refundData?.partialPayment?.adminDeliveryRefund) * adminExchangeRate,
     adminVat: Number(refundData?.partialPayment?.adminVat) * shopExchangeRate,
   };
 
@@ -61,21 +109,41 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
   });
 
   // updates vat amount when order or delivery cut changed
+
   useEffect(() => {
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
-      Number(refundData.partialPayment.adminOrderProfit) + Number(refundData.partialPayment.adminRiderProfit),
+      Number(refundData?.partialPayment?.adminOrderRefund) + Number(refundData?.partialPayment?.adminDeliveryRefund),
       vatPercentage,
     );
 
-    setRefundData((prev) => ({
-      ...prev,
-      partialPayment: {
-        ...prev.partialPayment,
-        adminVat,
-      },
-    }));
-  }, [refundData.partialPayment.adminOrderProfit, refundData.partialPayment.adminRiderProfit]);
+    if (refundData?.refundType === 'full') {
+      setRefundData((prev) => ({
+        ...prev,
+        ...refundDataInit,
+      }));
+      setMaxAmounts(getRefundMaxAmounts(order));
+    } else {
+      if (!render) {
+        setMaxAmounts(getNewRefundMaxAmounts(order, refundData, maxAmounts, earning));
+        setRender(true);
+      }
+      setRefundData((prev) => ({
+        ...prev,
+        partialPayment: {
+          ...prev.partialPayment,
+          adminVat,
+        },
+      }));
+    }
+
+    // setMaxAmounts((prev)=>{})
+  }, [
+    refundData?.refundType,
+    refundData?.partialPayment?.adminOrderRefund,
+    refundData?.partialPayment?.adminDeliveryRefund,
+    refundData?.partialPayment?.shop,
+  ]);
 
   // update mutation
   const mutation = useMutation((data) => AXIOS.post(Api.REFUND_ORDER, data), {
@@ -88,7 +156,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     },
     onError: (error) => {
       console.log(error);
-      successMsg('Sever error!', 'error');
+      successMsg('Server error !', 'error');
     },
   });
 
@@ -96,6 +164,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     if (refundData?.refundType === 'full') {
       mutation.mutate({
         ...refundData,
+        orderId: order?._id,
         partialPayment: maxAmounts,
       });
 
@@ -106,10 +175,11 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
 
     if (data.error) {
       successMsg(data.msg);
-      return;
     }
 
-    mutation.mutate(data);
+    console.log('data refund', data);
+
+    // mutation.mutate({ ...data, orderId: order?._id });
   };
 
   return (
@@ -153,20 +223,20 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
           }}
         >
           {/* Order Refund */}
-          {maxAmounts?.adminOrderProfit > 0 && (
+          {earning?.adminOrderRefund > 0 && (
             <Box>
               <StyledFormField
                 intputType="text"
                 labelComponent={
                   <TitleWithToolTip
-                    title={`Lyxa Order Refund: ${(maxAmounts?.adminOrderProfit || 0)?.toFixed(2)}`}
+                    title={`Lyxa Order Refund: ${(earning?.adminOrderRefund || 0)?.toFixed(2)}`}
                     tooltip="Lyxa Order Profit"
                   />
                 }
                 inputProps={{
-                  value: refundData?.partialPayment?.adminOrderProfit,
+                  value: refundData?.partialPayment?.adminOrderRefund,
                   type: 'number',
-                  name: 'adminOrderProfit',
+                  name: 'adminOrderRefund',
                   placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
                 }}
@@ -175,27 +245,27 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
               {isSecondaryCurrencyEnabled && (
                 <Typography mt="-8px" variant="body3" display="block">
                   Equivalent Price: {secondaryCurrency}{' '}
-                  {Number(refundData?.partialPayment?.adminOrderProfit) * shopExchangeRate}
+                  {Math.round(Number(refundData?.partialPayment?.adminOrderRefund) * shopExchangeRate)}
                 </Typography>
               )}
             </Box>
           )}
 
           {/* Delivery Refund */}
-          {maxAmounts?.adminRiderProfit > 0 && (
+          {earning?.adminDeliveryRefund > 0 && (
             <Box>
               <StyledFormField
                 labelComponent={
                   <TitleWithToolTip
-                    title={`Lyxa Delivery Refund: ${(maxAmounts?.adminRiderProfit || 0)?.toFixed(2)}`}
+                    title={`Lyxa Delivery Refund: ${(earning?.adminDeliveryRefund || 0)?.toFixed(2)}`}
                     tooltip="Lyxa Delivery Profit"
                   />
                 }
                 intputType="text"
                 inputProps={{
-                  value: refundData?.partialPayment?.adminRiderProfit,
+                  value: refundData?.partialPayment?.adminDeliveryRefund,
                   type: 'number',
-                  name: 'adminRiderProfit',
+                  name: 'adminDeliveryRefund',
                   placeholder: 'Enter Amount',
                   onChange: updateRefundAmount,
                 }}
@@ -203,19 +273,19 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
               {isSecondaryCurrencyEnabled && (
                 <Typography mt="-8px" variant="body3" display="block">
                   Equivalent Price: {secondaryCurrency}{' '}
-                  {Number(refundData?.partialPayment?.adminRiderProfit) * adminExchangeRate}
+                  {Number(refundData?.partialPayment?.adminDeliveryRefund) * adminExchangeRate}
                 </Typography>
               )}
             </Box>
           )}
 
           {/* Shop Profit */}
-          {maxAmounts?.shop > 0 && (
+          {earning?.shop > 0 && (
             <Box>
               <StyledFormField
                 labelComponent={
                   <TitleWithToolTip
-                    title={`Shop Refund: ${(maxAmounts?.shop || 0)?.toFixed(2)}`}
+                    title={`Shop Refund: ${(earning?.shop || 0)?.toFixed(2)}`}
                     tooltip="Shop Earning + Shop VAT"
                   />
                 }

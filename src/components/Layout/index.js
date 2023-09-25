@@ -3,7 +3,8 @@
 import { Box, Modal } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
+
 import { ToastContainer } from 'react-toastify';
 import {
   account_manager_menu_items,
@@ -66,6 +67,7 @@ export default function Layout() {
   const { userType, adminType } = currentUser;
   const [sidebar, setSidebar] = useState(false);
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
+  const history = useHistory();
 
   const [order, setOrder] = useState({});
 
@@ -78,10 +80,10 @@ export default function Layout() {
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
         // eslint-disable-next-line prettier/prettier
-        currentUser?.shop?.shopType,
+        currentUser?.shop?.shopType
       ),
     // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType],
+    [currentUser?.userType]
   );
 
   useEffect(() => {
@@ -91,6 +93,13 @@ export default function Layout() {
         setOpenUrgentOrder(true);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
         setOrder(data?.order);
+        history.push({
+          pathname: '/ongoing-tickets',
+          search: '?urgent-order',
+          state: {
+            order: data?.order,
+          },
+        });
       });
       socketServices?.on(`urgent-notification-remove-${currentUser?.admin?._id}`, () => {
         console.log('urgent order socketData removed');
@@ -109,8 +118,6 @@ export default function Layout() {
   return (
     <Box
       sx={{
-        // display: 'grid',
-        // gridTemplateColumns: '1fr',
         height: '100vh',
         overflowY: 'hidden',
       }}

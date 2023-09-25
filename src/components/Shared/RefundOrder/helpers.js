@@ -1,4 +1,7 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
+import { isNumber } from 'lodash';
 import { deepClone } from '../../../helpers/deepClone';
 
 export const refundTypeOptions = (order) => {
@@ -15,10 +18,10 @@ export const refundDataInit = {
   orderId: '',
   refundType: 'full',
   partialPayment: {
-    shop: '',
-    adminOrderProfit: '',
-    adminRiderProfit: '',
-    adminVat: '',
+    shop: 0,
+    adminOrderRefund: 0,
+    adminDeliveryRefund: 0,
+    adminVat: 0,
   },
 };
 
@@ -36,16 +39,94 @@ export const getRefundMaxAmounts = (order) => {
     shop,
     shopSecondary,
 
-    adminOrderProfit: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
+    adminOrderRefund: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
     adminOrderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder, 0),
 
-    adminRiderProfit: order?.adminCharge?.baseCurrency_adminChargeFromDelivery + order?.baseCurrency_riderFee,
+    adminDeliveryRefund: order?.adminCharge?.baseCurrency_adminChargeFromDelivery + order?.baseCurrency_riderFee,
     adminRiderProfitSecondary:
       order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery + order?.secondaryCurrency_riderFee,
 
     adminVat: order?.vatAmount?.baseCurrency_vatForAdmin,
     adminVatSecondary: order?.vatAmount?.secondaryCurrency_vatForAdmin,
+    // adminOrderRefundTemp: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
+    // adminDeliveryRefundTemp: order?.adminCharge?.baseCurrency_adminChargeFromDelivery + order?.baseCurrency_riderFee,
   };
+};
+
+export const getNewRefundMaxAmounts = (order, refundData, maxAmounts, earning, key, value) => {
+  const initialMax = maxAmounts;
+
+  /* stored order amount with card,cash,wallet */
+  const orderWithCard = Number(order?.summary?.baseCurrency_card || 0);
+  const orderWithCash = Number(order?.summary?.baseCurrency_cash || 0);
+  const orderWithWallet = Number(order?.summary?.baseCurrency_wallet || 0);
+
+  /* calculate order amount */
+  const totalOrderAmount = orderWithCard + orderWithCash + orderWithWallet;
+
+  /* stored refund amount */
+  const adminDeliveryRefund = isNumber(Number(refundData?.partialPayment?.adminDeliveryRefund))
+    ? Number(refundData?.partialPayment?.adminDeliveryRefund)
+    : 0;
+
+  const adminOrderRefund = isNumber(Number(refundData?.partialPayment?.adminOrderRefund))
+    ? Number(refundData?.partialPayment?.adminOrderRefund)
+    : 0;
+
+  const shop = isNumber(Number(refundData?.partialPayment?.shop)) ? Number(refundData?.partialPayment?.shop) : 0;
+
+  const adminVat = isNumber(Number(refundData?.partialPayment?.adminVat))
+    ? Number(refundData?.partialPayment?.adminVat)
+    : 0;
+
+  const totalRefundAmount = adminOrderRefund + adminDeliveryRefund + shop + adminVat;
+
+  const vatPercentage = refundData?.vatPercentage;
+  const amountWithVatPercentage = vatPercentage + 100;
+
+  /* store order amount as remaining */
+  let remainingAmount = totalOrderAmount;
+
+  /* update remaining amount wihout VAT */
+  remainingAmount *= 100 / amountWithVatPercentage;
+
+  /* calculating VAT of remaining amount */
+  const remainAmountVat = remainingAmount * (vatPercentage / 100);
+
+  /* check updated remaining amount VAT is greater than maximum VAT or not, the minimum VAT will be deducted from totalOrderAmount */
+  remainingAmount = totalOrderAmount - Math.min(initialMax?.adminVat, remainAmountVat);
+  remainingAmount = Number(remainingAmount.toFixed(2));
+
+  if (shop > 0) {
+    /* check difference of totalOrderAmount and totalRefunded amount is still positive or not 
+    if positive shop max limit is totalOrderAmount or not otherwise maxOfShop value is max */
+    const maxOfShop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+    initialMax.shop = totalOrderAmount - totalRefundAmount > 0 ? totalOrderAmount : maxOfShop;
+
+    /* calculating new shop limit */
+    remainingAmount = totalOrderAmount - shop;
+    remainingAmount *= 100 / amountWithVatPercentage;
+    const remainAmountVat = remainingAmount * (vatPercentage / 100);
+    remainingAmount = totalOrderAmount - shop - Math.min(initialMax?.adminVat, remainAmountVat);
+    remainingAmount = Number(remainingAmount.toFixed(2));
+  }
+
+  /* calculating minimum of delivery refund amount between remaining amount and delivery earning */
+  const deliveryRefundMaxAmount = Math.min(remainingAmount - adminOrderRefund, earning?.adminDeliveryRefund);
+
+  /* updating new max delivery refund amount */
+  initialMax.adminDeliveryRefund = deliveryRefundMaxAmount > 0 ? deliveryRefundMaxAmount : 0;
+
+  /* updating new remaining amount */
+  remainingAmount -= Math.max(deliveryRefundMaxAmount, 0);
+  remainingAmount = Number(remainingAmount.toFixed(2));
+
+  /* updating new max admin order refund  */
+  initialMax.adminOrderRefund = remainingAmount > 0 ? remainingAmount : 0;
+
+  console.log('remainingAmount', remainingAmount);
+
+  return initialMax;
 };
 
 export const getTotalRefundAmount = ({ refundData, maxAmounts, secondaryValues }) => {
