@@ -56,6 +56,7 @@ export function createShopSettingsData(
   shopExchangeRate,
   newCusines,
   newShopNote,
+  isShopNoteForRiderEnabled,
 ) {
   const tags = [];
   const cuisineType = [];
@@ -86,6 +87,7 @@ export function createShopSettingsData(
       shopStatus: shop?.shopStatus,
       shopNote: newShopNote,
       shopExchangeRate,
+      isShopNoteForRiderEnabled,
       shopDescription: 'desrcriptions',
       tags,
       tagsId,
@@ -144,6 +146,7 @@ export function createShopSettingsData(
     specialInstructions: newSpecialInstructions,
     shopExchangeRate,
     shopNote: newShopNote,
+    isShopNoteForRiderEnabled,
     shopAddress: {
       address: shop?.address.address,
       latitude: shop?.address.latitude,

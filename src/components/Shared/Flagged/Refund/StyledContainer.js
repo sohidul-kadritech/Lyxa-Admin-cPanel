@@ -5,7 +5,7 @@ function StyledContainer({ children }) {
   const theme = useTheme();
   return (
     <Stack
-      gap={2}
+      gap={1}
       sx={{
         background: theme.palette.background.secondary,
         padding: '12px 18px',

@@ -59,7 +59,7 @@ function ExchangeRate({ newAppSettings, setNewAppSettings, setHasChanged, isUsed
       </StyledBox>
 
       {/* settings for accepted currency */}
-      {newAppSettings?.acceptedCurrency === 'both' && (
+      {false && (
         <StyledBox title="Accepted Currency">
           <StyledFormField
             intputType="select"

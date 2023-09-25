@@ -14,7 +14,6 @@ const StyledLabel = styled(FormControlLabel)(() => ({
   },
 }));
 function CustomeCheckedBox({ label, value, onChange, readOnly, sx }) {
-  console.log('check', value, label);
   return (
     <Box sx={{ ...(sx || {}) }}>
       <StyledLabel
@@ -29,6 +28,7 @@ function CustomeCheckedBox({ label, value, onChange, readOnly, sx }) {
               if (readOnly) {
                 return;
               }
+
               if (onChange) onChange(value);
             }}
             sx={{

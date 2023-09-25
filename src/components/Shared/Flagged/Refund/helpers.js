@@ -5,24 +5,24 @@ export const logUsersOptions = [
 ];
 
 export const TypeOptions = [
-  { value: 'missing_item', label: 'Missing item' },
-  { value: 'wrong_item', label: 'Wrong item' },
+  { value: 'missing-item', label: 'Missing item' },
+  { value: 'wrong-item', label: 'Wrong item' },
   { value: 'others', label: 'Others' },
 ];
 
 export const ReplacementOptions = [
-  { value: 'without_replacement', label: 'Without Replacement' },
-  { value: 'with_replacement', label: 'With Replacement' },
+  { value: 'without', label: 'Without Replacement' },
+  { value: 'with', label: 'With Replacement' },
 ];
 
 export const RefundOptions = [
-  { value: 'without_refund', label: 'Without Refund' },
-  { value: 'with_refund', label: 'With Refund' },
+  { value: 'without', label: 'Without Refund' },
+  { value: 'with', label: 'With Refund' },
 ];
 
 export const RefundTypeOptions = [
-  { value: 'full_refund', label: 'Full Refund' },
-  { value: 'partial_refund', label: 'Partial Refund' },
+  { value: 'full', label: 'Full Refund' },
+  { value: 'partial', label: 'Partial Refund' },
 ];
 
 export const RefundPercentage = [

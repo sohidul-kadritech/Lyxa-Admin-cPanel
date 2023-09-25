@@ -50,6 +50,7 @@ function PayoutTable({
       field: 'name',
       flex: 1.5,
       renderCell: ({ row }) => {
+        console.log('row', row);
         const rowData = getPayoutData(row);
         return (
           <Stack direction="row" alignItems="center" sx={{ padding: '10px 0px !important' }}>
@@ -85,7 +86,6 @@ function PayoutTable({
         </Typography>
       ),
     },
-
     {
       id: 2,
       showFor: ['shop', 'rider', 'admin'],

@@ -1,9 +1,18 @@
+/* eslint-disable no-unused-vars */
 import { Stack } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { CustomInputField } from './CustomInputField';
 import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
 
-function ByPercentage() {
+const initialData = {
+  shop: 0,
+  adminOrderRefund: 0,
+  adminDeliveryRefund: 0,
+};
+
+function ByPercentage({ flaggData, setFlaggData }) {
+  console.log('flaggData setFlaggData', { flaggData, setFlaggData });
+  const [byPercentage, setByPercentage] = useState(initialData);
   return (
     <Stack direction="row" gap={2.5}>
       <StyledInputForRefundPercentage title="Shop Profit">
@@ -11,8 +20,8 @@ function ByPercentage() {
           <CustomInputField
             endAdornment="%"
             inputProps={{
-              //   value: 0,
               type: 'number',
+              value: byPercentage?.shop,
             }}
           />
           <span>=</span>
@@ -24,7 +33,7 @@ function ByPercentage() {
             }}
             endAdornment="$"
             inputProps={{
-              //   value: 0,
+              value: flaggData?.partialPayment?.shop,
               type: 'number',
               readOnly: true,
             }}
@@ -49,7 +58,7 @@ function ByPercentage() {
             }}
             endAdornment="$"
             inputProps={{
-              //   value: 0,
+              value: flaggData?.partialPayment?.adminOrderRefund,
               type: 'number',
               readOnly: true,
             }}
@@ -61,7 +70,7 @@ function ByPercentage() {
           <CustomInputField
             endAdornment="%"
             inputProps={{
-              value: 0,
+              type: 'number',
             }}
           />
           <span>=</span>
@@ -73,7 +82,8 @@ function ByPercentage() {
             }}
             endAdornment="$"
             inputProps={{
-              value: 0,
+              value: flaggData?.partialPayment?.adminDeliveryRefund,
+              type: 'number',
               readOnly: true,
             }}
           />
