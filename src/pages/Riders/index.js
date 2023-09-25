@@ -83,7 +83,7 @@ export default function RiderList({ viewUserType }) {
             }}
           />
           <TablePagination
-            currentPage={queryParams.page}
+            currentPage={Number(queryParams.page)}
             totalPage={totalPage}
             lisener={(page) => {
               console.log(page);
