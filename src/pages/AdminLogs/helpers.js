@@ -1,18 +1,15 @@
 import moment from 'moment';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
-const dateRangeInit = {
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
-};
 export const getQueryParamsInit = {
   page: 1,
   pageSize: 20,
   searchKey: '',
-  sortBy: 'desc',
+  sortBy: 'DESC',
   status: '',
   type: 'all',
-  ...dateRangeInit,
+  startDate: getFirstMonday('week'),
+  endDate: moment(),
 };
 
 export const adminLogTypeOptions = [

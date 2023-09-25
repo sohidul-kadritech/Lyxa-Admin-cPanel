@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
-import SearchBar from './SearchBar';
+// import SearchBar from './SearchBar';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import AdminLogsTable from './Table';
-import { getQueryParamsInit } from './helpers';
+import { adminLogTypeOptions, getQueryParamsInit } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -22,7 +24,7 @@ const breadcrumbItems = [
 ];
 
 function AdminLogs() {
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit);
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit);
   const [totalPage, setTotalPage] = useState(1);
 
   const [secondaryCurrency, setSecondaryCurrency] = useState({});
@@ -52,7 +54,7 @@ function AdminLogs() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (
@@ -69,10 +71,21 @@ function AdminLogs() {
           fontWeight: 700,
         }}
       />
-      <Box>
-        <SearchBar searchPlaceHolder="Search by Type" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <Box marginBottom="30px">
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          customSelectOptions={adminLogTypeOptions}
+          customSelectValue="type"
+          customSelectPlaceholder="Log Type"
+          showFilters={{
+            search: true,
+            date: true,
+            sort: true,
+            customSelect: true,
+          }}
+        />
       </Box>
-
       <Box>
         {getAdminLog?.isLoading ? (
           <TablePageSkeleton row={5} column={5} />
