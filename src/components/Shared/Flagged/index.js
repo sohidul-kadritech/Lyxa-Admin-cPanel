@@ -10,8 +10,9 @@ import AXIOS from '../../../network/axios';
 import OrderDetail from '../OrderDetail';
 import OrderContextProvider from '../OrderDetail/OrderContext';
 import ModalContainer from './ModalContainer';
-import RefundOrder from './Refund';
+
 import { validateFlagData } from './helpers';
+import RefundOrder from './Refund';
 
 export const initialDataForFlagg = (order) => {
   const flaggData = {
@@ -61,7 +62,6 @@ function FlaggedModal({ onClose, order }) {
   const theme = useTheme();
   const [flaggData, setFlaggData] = useState(initialDataForFlagg(order));
 
-  
   const { general } = useGlobalContext();
 
   const { appSetting } = general;
@@ -81,7 +81,7 @@ function FlaggedModal({ onClose, order }) {
   });
 
   const onSubmitFlag = () => {
-    const validatedData = validateFlagData(order, flaggData,appSetting?.vat);
+    const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
     console.log('flag', validatedData?.data, getApi(flaggData));
     if (validatedData?.status === true) {
       flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });

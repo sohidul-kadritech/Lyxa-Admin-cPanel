@@ -8,7 +8,9 @@ import StyledInputBox from '../StyledInputBox';
 import ByPercentage from './ByPercentage';
 import ByPrice from './ByPrice';
 import { CustomInputField } from './CustomInputField';
+
 import SelectItemsToRefund from './SelectItemsToRefund';
+
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -235,7 +237,6 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
               {flaggData?.refundPercentage === 'by_percentage' && (
                 <ByPercentage setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
-
               {flaggData?.refundPercentage === 'by_price' && (
                 <ByPrice setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
