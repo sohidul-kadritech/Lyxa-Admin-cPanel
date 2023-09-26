@@ -56,7 +56,11 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
         showFilters={{ search: true, sort: true, date: true }}
       />
       <Box sx={{ paddingTop: '30px' }} />
-      <FlagTable flags={localDatePagination(filteredData, queryParams?.page, 5)} onViewDetail={onViewDetail} />
+      <FlagTable
+        flags={localDatePagination(filteredData, queryParams?.page, 5)}
+        onViewDetail={onViewDetail}
+        showFor="Flagged"
+      />
       <TablePagination
         currentPage={queryParams?.page}
         lisener={(page) => {

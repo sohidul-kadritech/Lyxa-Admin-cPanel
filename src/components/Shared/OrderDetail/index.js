@@ -34,7 +34,6 @@ const hideUpdateAndCancelOption = (order) => {
 };
 
 function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
-  console.log('currentOrder in shop console', order);
   const isPreparing = statusOptions[getNextStatus(order)]?.label === 'Preparing';
   const isSpecific = order?.orderFor !== 'global';
   return (
@@ -83,9 +82,6 @@ export default function OrderDetail({
   stickySx,
   sx,
 }) {
-  console.log('order status', order?.orderStatus);
-  console.log('order next order', getNextStatus(order));
-  console.log('order label', statusOptions[getNextStatus(order)]?.label);
   const { currentUser } = useGlobalContext();
   const { userType } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
@@ -118,7 +114,7 @@ export default function OrderDetail({
               background: '#fff',
               padding: '25px 0px',
               zIndex: '999',
-              ...(stickySx||{})
+              ...(stickySx || {}),
             }}
           >
             {/* top */}

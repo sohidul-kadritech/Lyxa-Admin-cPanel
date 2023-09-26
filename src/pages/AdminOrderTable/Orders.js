@@ -14,7 +14,7 @@ const tabsOptionsForErrorOrder = (value) => {
   const data = [
     { value: 'all', label: 'All' },
     { value: 'null', label: 'Orders' },
-    { value: 'urgent', label: 'Urgent Orders', badgeContent: value || 4 },
+    { value: 'urgent', label: 'Urgent Orders', badgeContent: value },
     { value: 'late', label: 'Late Orders' },
     { value: 'replacement', label: 'Replacement' },
   ];
@@ -72,7 +72,7 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   // startDate&endDate&orderType=&assignedCustomerService
@@ -84,6 +84,7 @@ export default function Orders({
         startDate: queryParams?.startDate,
         endDate: queryParams?.endDate,
         orderType: queryParams?.orderType,
+        errorOrderType: queryParams?.errorOrderType,
         type,
         ...(urgentOrderCountParams || {}),
       },
@@ -92,7 +93,6 @@ export default function Orders({
       AXIOS.get(Api.URGENT_ORDER_COUNT, {
         params: {
           orderType: queryParams?.orderType,
-          errorOrderType: queryParams?.errorOrderType,
           ...(urgentOrderCountParams || {}),
         },
       }),
@@ -104,7 +104,7 @@ export default function Orders({
           }
         }
       },
-    }
+    },
   );
 
   return (

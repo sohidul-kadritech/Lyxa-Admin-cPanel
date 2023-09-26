@@ -54,7 +54,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
               Fiscal Payouts
             </Typography>
             <Typography variant="body2" fontSize="14px" fontWeight={400}>
-              Payout Number: {currentPayout?.autoGenId}
+              Payout Number: {currentPayout?.info?.autoGenId}
             </Typography>
           </Stack>
 

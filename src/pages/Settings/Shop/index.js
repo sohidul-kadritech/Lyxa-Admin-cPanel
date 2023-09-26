@@ -82,6 +82,7 @@ function ShopSettings() {
 
   const [newShop, setNewShop] = useState(deepClone(shop));
   console.log('newShop', newShop?.shopNote);
+  const [isShopNoteForRiderEnabled, setIsShopNoteForRiderEnabled] = useState(newShop?.isShopNoteForRiderEnabled);
   const [newShopNote, setNewShopNote] = useState(newShop?.shopNote);
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
   const [newPriceRange, setNewPriceRange] = useState(newShop?.expensive || '');
@@ -117,6 +118,7 @@ function ShopSettings() {
         shop.cuisineType = data?.data?.shop.cuisineType || shop.cuisineType;
         shop.shopExchangeRate = data?.data?.shop?.shopExchangeRate;
         shop.shopNote = data?.data?.shop?.shopNote;
+        shop.isShopNoteForRiderEnabled = data?.data?.shop?.isShopNoteForRiderEnabled;
         set_has_unsaved_change(false);
       }
     },
@@ -141,6 +143,7 @@ function ShopSettings() {
       shopExchangeRate,
       newCusines,
       newShopNote,
+      isShopNoteForRiderEnabled,
     );
 
     if (reateOfShop?.shopExchangeRate < reateOfShop?.baseExchangeRate) {
@@ -158,6 +161,12 @@ function ShopSettings() {
   const actionHandler = (isActive) => {
     set_has_unsaved_change(true);
     setNewSpecialInstructions(!isActive);
+    return !isActive;
+  };
+
+  const actionHandlerForRiderNotes = (isActive) => {
+    set_has_unsaved_change(true);
+    setIsShopNoteForRiderEnabled(!isActive);
     return !isActive;
   };
 
@@ -270,39 +279,43 @@ function ShopSettings() {
         <Box>
           <ShopSettingsSection
             buttonType={1}
-            showSwitch={false}
-            title="Shop note to riders"
-            isButton
-            actionTitle={
-              <Stack direction="row" width="100%">
-                <StyledInput
-                  flex={1}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      width: '650px',
-                    },
-                  }}
-                  inputProps={{
-                    type: 'text',
-                    value: newShopNote,
-                    onChange: (e) => {
-                      set_has_unsaved_change(true);
-                      setNewShopNote(e?.target?.value);
-                    },
-                    placeholder: 'shop notes ...',
-                  }}
-                />
-              </Stack>
-            }
-          />
-          <ShopSettingsSection
-            buttonType={1}
             title="General"
             isButton
             actionTitle="Allow customers to add special instructions to individual items"
             isChecked={newSpecialInstructions}
             action={actionHandler}
           />
+
+          {/* shop rider notes */}
+
+          <ShopSettingsSection
+            buttonType={1}
+            showSwitch
+            title="Shop note to riders"
+            isButton
+            gapValue={50 / 4}
+            action={actionHandlerForRiderNotes}
+          >
+            <Stack direction="row" flex={1} width="100%">
+              <StyledInput
+                sx={{
+                  flex: 1,
+                  '& .MuiInputBase-root': {
+                    width: '100%',
+                  },
+                }}
+                inputProps={{
+                  type: 'text',
+                  value: newShopNote,
+                  onChange: (e) => {
+                    set_has_unsaved_change(true);
+                    setNewShopNote(e?.target?.value);
+                  },
+                  placeholder: 'shop notes ...',
+                }}
+              />
+            </Stack>
+          </ShopSettingsSection>
           <Box sx={boxSx2}>
             <ShopSettingsSection2
               boxSx={{
