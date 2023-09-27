@@ -61,15 +61,17 @@ export default function Table({
   const routeMatch = useRouteMatch();
   const { general, currentUser } = useGlobalContext();
 
-  console.log('currentUser', currentUser);
-
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
   const [flagModal, setFlagModal] = useState(false);
   const [flagModalNew, setFlagModalNew] = useState(false);
+
   const [openCancelModal, setOpenCancelModal] = useState(false);
+
+  const [openCancelModalNew, setOpenCancelModalNew] = useState(false);
+
   const [openRefundModal, setOpenRefundModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
@@ -83,7 +85,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
 
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder).length) {
@@ -110,6 +112,11 @@ export default function Table({
     if (menu === 'cancel_order') {
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
+    }
+
+    if (menu === 'cancel_order_test') {
+      setCurrentOrder(order);
+      setOpenCancelModalNew(true);
     }
 
     if (menu === 'track_order') {
@@ -368,7 +375,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {
@@ -475,6 +482,25 @@ export default function Table({
       >
         <Box>
           <CancelOrder order={currentOrder} onClose={() => setOpenCancelModal(false)} />
+        </Box>
+      </Modal>
+
+      {/*  cancel order with flag modal */}
+      <Modal
+        open={openCancelModalNew}
+        sx={{ zIndex: '10 !important' }}
+        onClose={() => {
+          setOpenCancelModalNew(false);
+        }}
+      >
+        <Box>
+          <FlaggedModal
+            onClose={() => {
+              setOpenCancelModalNew(false);
+            }}
+            order={currentOrder}
+            showFor="cancel-order"
+          />
         </Box>
       </Modal>
       {/* rerfund order */}

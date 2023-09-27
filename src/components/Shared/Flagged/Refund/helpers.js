@@ -12,6 +12,18 @@ export const TypeOptions = [
   { value: 'others', label: 'Others' },
 ];
 
+export const cancelReasonOptions = [
+  { value: 'lyxa late', label: 'Lyxa late' },
+  { value: 'restaurent late', label: 'Restaurent late' },
+  { value: 'user not there', label: 'User not there' },
+  { value: 'others', label: 'Others' },
+];
+
+export const endorseLoseOptions = [
+  { value: true, label: 'Endorse Loss' },
+  { value: false, label: "Don't Endorse Loss" },
+];
+
 export const ReplacementOptions = [
   { value: 'without', label: 'Without Replacement' },
   { value: 'with', label: 'With Replacement' },

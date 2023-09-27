@@ -7,8 +7,7 @@ import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 // eslint-disable-next-line import/order, no-unused-vars
-import DateRange from '../../components/StyledCharts/DateRange';
-import { createUpdateData, dateRangeInit, statusTypeOptions } from './helpers';
+import { createUpdateData, statusTypeOptions } from './helpers';
 
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import { successMsg } from '../../helpers/successMsg';
@@ -63,8 +62,6 @@ export function AddMenuButton({ title = 'Add', isIcon = true, icon = <Add />, ..
 function Faq() {
   const queryClient = useQueryClient();
 
-  const [range, setRange] = useState({ ...dateRangeInit });
-
   const [currentTab, setCurrentTab] = useState(0);
 
   const [currentFaq, setCurrentFaq] = useState({});
@@ -89,29 +86,29 @@ function Faq() {
 
   const [open, setOpen] = useState(false);
 
-  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey, range }], () =>
+  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, { status, type, searchKey }], () =>
     AXIOS.get(API_URL?.GET_CHAT_REASON, {
       params: {
         status,
         type,
         searchKey,
-        startDate: range.start,
-        endDate: range.end,
+        // startDate: range.start,
+        // endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
-  const getChatFaq = useQuery([API_URL?.GET_FAQ, { status, searchKey, range }], () =>
+  const getChatFaq = useQuery([API_URL?.GET_FAQ, { status, searchKey }], () =>
     AXIOS.get(API_URL?.GET_FAQ, {
       params: {
         status,
         searchKey,
-        startDate: range.start,
-        endDate: range.end,
+        // startDate: range.start,
+        // endDate: range.end,
       },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {
@@ -306,7 +303,7 @@ function Faq() {
 
         <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
+
           <StyledFormField
             intputType="select"
             containerProps={{
