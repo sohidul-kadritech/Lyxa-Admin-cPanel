@@ -59,7 +59,7 @@ export default function Table({
   const routeMatch = useRouteMatch();
   const { general, currentUser } = useGlobalContext();
 
-  console.log('currentUser', currentUser);
+  // console.log('currentUser', currentUser);
 
   const currency = general?.currency?.symbol;
 
@@ -324,6 +324,7 @@ export default function Table({
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 12,
       headerName: `ACTION`,
+      field: 'action',
       sortable: false,
       align: 'right',
       headerAlign: 'right',
