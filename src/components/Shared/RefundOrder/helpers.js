@@ -97,28 +97,31 @@ export const getNewRefundMaxAmounts = (order, refundData, maxAmounts, earning, k
   remainingAmount = totalOrderAmount - Math.min(initialMax?.adminVat, remainAmountVat);
   remainingAmount = Number(remainingAmount.toFixed(2));
 
-  if (remainingAmount === adminOrderRefund + adminDeliveryRefund) {
-    initialMax.shop = 0;
-    return initialMax;
-  }
-
   if (shop > 0) {
     /* check difference of totalOrderAmount and totalRefunded amount is still positive or not 
-    if positive shop max limit is totalOrderAmount or not otherwise shop current value is max */
-    initialMax.shop = totalOrderAmount - totalRefundAmount > 0 ? totalOrderAmount : shop;
+    if positive shop max limit is totalOrderAmount or not otherwise maxOfShop value is max */
+    const maxOfShop = totalOrderAmount - adminDeliveryRefund - adminOrderRefund - adminVat;
+    initialMax.shop = totalOrderAmount - totalRefundAmount > 0 ? totalOrderAmount : maxOfShop;
+
+    /* calculating new shop limit */
     remainingAmount = totalOrderAmount - shop;
+    remainingAmount *= 100 / amountWithVatPercentage;
     const remainAmountVat = remainingAmount * (vatPercentage / 100);
-    remainingAmount -= Math.min(initialMax?.adminVat, remainAmountVat);
+    remainingAmount = totalOrderAmount - shop - Math.min(initialMax?.adminVat, remainAmountVat);
     remainingAmount = Number(remainingAmount.toFixed(2));
   }
 
-  const deliveryRefundMaxAmount = Math.min(remainingAmount, earning?.adminDeliveryRefund);
+  /* calculating minimum of delivery refund amount between remaining amount and delivery earning */
+  const deliveryRefundMaxAmount = Math.min(remainingAmount - adminOrderRefund, earning?.adminDeliveryRefund);
 
+  /* updating new max delivery refund amount */
   initialMax.adminDeliveryRefund = deliveryRefundMaxAmount > 0 ? deliveryRefundMaxAmount : 0;
 
+  /* updating new remaining amount */
   remainingAmount -= Math.max(deliveryRefundMaxAmount, 0);
   remainingAmount = Number(remainingAmount.toFixed(2));
 
+  /* updating new max admin order refund  */
   initialMax.adminOrderRefund = remainingAmount > 0 ? remainingAmount : 0;
 
   console.log('remainingAmount', remainingAmount);

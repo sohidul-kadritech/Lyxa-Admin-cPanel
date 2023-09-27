@@ -52,7 +52,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(adminDeliveryRefund) + Number(adminOrderRefund),
-      vatPercentage
+      vatPercentage,
     );
 
     const tempMax = getNewRefundMaxAmounts(
@@ -69,7 +69,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
       maxAmounts,
       earning,
       name,
-      value
+      value,
     );
 
     setMaxAmounts((prev) => {
@@ -114,7 +114,7 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     const adminVat = getRefundedVatForAdmin(
       maxAmounts.adminVat,
       Number(refundData?.partialPayment?.adminOrderRefund) + Number(refundData?.partialPayment?.adminDeliveryRefund),
-      vatPercentage
+      vatPercentage,
     );
 
     if (refundData?.refundType === 'full') {

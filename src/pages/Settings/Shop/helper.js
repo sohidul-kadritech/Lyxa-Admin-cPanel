@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export const PriceRange = [
   { label: '$', value: 1 },
   { label: '$$', value: 2 },
@@ -49,13 +50,13 @@ export function createShopSettingsData(
   newSpecialInstructions,
   newDeliveryFee,
   OwnDeliveryBoy,
-  // eslint-disable-next-line prettier/prettier
   adminType,
   newTags,
   shopAcceptedCurrency,
   shopExchangeRate,
-  // eslint-disable-next-line prettier/prettier
-  newCusines
+  newCusines,
+  newShopNote,
+  isShopNoteForRiderEnabled,
 ) {
   const tags = [];
   const cuisineType = [];
@@ -84,8 +85,9 @@ export function createShopSettingsData(
       shopLogo: shop?.shopLogo,
       shopBanner: shop?.shopBanner,
       shopStatus: shop?.shopStatus,
-      // shopAcceptedCurrency,
+      shopNote: newShopNote,
       shopExchangeRate,
+      isShopNoteForRiderEnabled,
       shopDescription: 'desrcriptions',
       tags,
       tagsId,
@@ -143,6 +145,8 @@ export function createShopSettingsData(
     deliveryFee: shop?.deliveryFee,
     specialInstructions: newSpecialInstructions,
     shopExchangeRate,
+    shopNote: newShopNote,
+    isShopNoteForRiderEnabled,
     shopAddress: {
       address: shop?.address.address,
       latitude: shop?.address.latitude,

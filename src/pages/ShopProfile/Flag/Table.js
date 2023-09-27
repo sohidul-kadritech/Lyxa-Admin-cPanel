@@ -3,10 +3,19 @@ import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import StyledTable from '../../../components/Styled/StyledTable3';
 
-export default function FlagTable({ flags, onViewDetail }) {
+export const getFlaggedItems = (type) => {
+  if (type === 'missing-item') return 'Missing item';
+  if (type === 'wrong-item') return 'Wrong item';
+
+  return 'unknown';
+};
+
+export default function FlagTable({ flags, onViewDetail, showFor }) {
+  console.log('flags', flags);
   const columns = [
     {
       id: 1,
+      showFor: ['Reviews', 'Flagged'],
       headerName: 'ORDER ID',
       field: 'orderId',
       sortable: false,
@@ -24,15 +33,32 @@ export default function FlagTable({ flags, onViewDetail }) {
       ),
     },
     {
-      showFor: ['Flagged', 'Reviews'],
+      showFor: ['Reviews'],
       id: 2,
       headerName: 'COMMENT',
       field: 'comment',
       flex: 1,
+      align: 'right',
+      headerAlign: 'right',
       sortable: false,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-dots" color={!row?.comment ? '#a7a7a7' : undefined}>
           {row?.comment || 'empty'}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['Flagged'],
+      id: 2,
+      headerName: 'FLAGGED REASON',
+      field: 'flaggedReason',
+      flex: 1,
+      align: 'right',
+      headerAlign: 'right',
+      sortable: false,
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-dots" color={!row?.flaggedReason ? '#a7a7a7' : undefined}>
+          {row?.otherReason ? row?.otherReason : getFlaggedItems(row?.flaggedReason) || 'empty'}
         </Typography>
       ),
     },
@@ -51,7 +77,7 @@ export default function FlagTable({ flags, onViewDetail }) {
       }}
     >
       <StyledTable
-        columns={columns}
+        columns={columns.filter((item) => item?.showFor?.includes(showFor))}
         rows={flags}
         getRowId={(row) => row?._id}
         rowHeight={71}

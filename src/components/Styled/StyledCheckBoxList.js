@@ -11,7 +11,7 @@ const StyledLabel = styled(FormControlLabel)(() => ({
   },
 }));
 
-export default function StyledCheckboxList({ items, onChange, value, readOnly }) {
+export default function StyledCheckboxList({ items, onChange, value, readOnly, checkboxSx, ...props }) {
   return (
     <Stack>
       {items.map((option) => (
@@ -20,15 +20,17 @@ export default function StyledCheckboxList({ items, onChange, value, readOnly })
           label={option.label}
           control={
             <StyledCheckbox
+              {...props}
               checked={value.includes(option?.value)}
               onChange={() => {
                 if (readOnly) {
                   return;
                 }
-                onChange(option);
+                if (onChange) onChange(option);
               }}
               sx={{
                 padding: '3px 8px',
+                ...(props?.sx || {}),
               }}
             />
           }

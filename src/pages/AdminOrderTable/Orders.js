@@ -14,7 +14,7 @@ const tabsOptionsForErrorOrder = (value) => {
   const data = [
     { value: 'all', label: 'All' },
     { value: 'null', label: 'Orders' },
-    { value: 'urgent', label: 'Urgent Orders', badgeContent: value || 4 },
+    { value: 'urgent', label: 'Urgent Orders', badgeContent: value },
     { value: 'late', label: 'Late Orders' },
     { value: 'replacement', label: 'Replacement' },
   ];
@@ -49,7 +49,9 @@ export default function Orders({
   type,
   paddingTop = 7.5,
   showFor = 'admin',
+  getUrgentOrderNumber,
   api = Api.ORDER_LIST,
+  urgentOrderCountParams,
   showTabs = {
     category: true,
     errorOrderType: true,
@@ -73,13 +75,45 @@ export default function Orders({
     }
   );
 
+  // startDate&endDate&orderType=&assignedCustomerService
+
+  const urgentOrderQuery = useQuery(
+    [
+      Api.URGENT_ORDER_COUNT,
+      {
+        startDate: queryParams?.startDate,
+        endDate: queryParams?.endDate,
+        orderType: queryParams?.orderType,
+        errorOrderType: queryParams?.errorOrderType,
+        type,
+        ...(urgentOrderCountParams || {}),
+      },
+    ],
+    () =>
+      AXIOS.get(Api.URGENT_ORDER_COUNT, {
+        params: {
+          orderType: queryParams?.orderType,
+          ...(urgentOrderCountParams || {}),
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          if (getUrgentOrderNumber) {
+            getUrgentOrderNumber(data?.data?.urgentOrderCount);
+          }
+        }
+      },
+    },
+  );
+
   return (
     <Box pt={paddingTop || 0}>
       <Stack gap={4}>
         {type === 'ongoing' && showTabs?.errorOrderType && (
           <StyledTabs2
             value={currentErrorOrderTab}
-            options={tabsOptionsForErrorOrder(0)}
+            options={tabsOptionsForErrorOrder(urgentOrderQuery?.data?.data?.urgentOrderCount || 0)}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
               // console.log('value', value);

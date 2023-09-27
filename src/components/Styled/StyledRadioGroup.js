@@ -17,6 +17,7 @@ export default function StyledRadioGroup({ items, color, ...props }) {
           sx={{
             gap: '12px',
             margin: '0',
+
             '& .MuiRadio-root': {
               padding: 0,
             },
@@ -25,6 +26,7 @@ export default function StyledRadioGroup({ items, color, ...props }) {
               fontSize: '15px',
               lineHeight: '18px',
             },
+            ...(props?.sxForm || {}),
           }}
         />
       ))}
