@@ -105,9 +105,9 @@ function PayoutTable({
       field: 'payoutStatus',
       flex: 1.5,
       sortable: false,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Typography textTransform="capitalize" variant="body1">
-          {getPayoutStatusLabel[value]}
+          {getPayoutStatusLabel(row)}
         </Typography>
       ),
     },

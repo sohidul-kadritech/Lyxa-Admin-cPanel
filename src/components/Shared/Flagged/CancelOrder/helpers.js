@@ -54,6 +54,30 @@ export const validateCancelData = (order, cancelOrderData) => {
     },
   };
 
+  if (order?.isButler) {
+    if (!cancelOrderData?.cancelReason) {
+      successMsg('Select Cancel Reason type option !');
+      return { status: false };
+    }
+
+    if (cancelOrderData?.cancelReason === 'others' && !cancelOrderData?.otherReason) {
+      successMsg('Write other reason !');
+      return { status: false };
+    }
+
+    return {
+      status: true,
+      data: {
+        orderId: order?._id,
+        logUser: 'rider', // all, rider, shop
+        cancelReasonId: '',
+        otherReason:
+          cancelOrderData?.cancelReason === 'others' ? cancelOrderData?.otherReason : cancelOrderData?.cancelReason,
+        isEndorseLoss: false, // true, false
+      },
+    };
+  }
+
   if (!cancelOrderData?.logUser) {
     successMsg('Select Log users option!');
     return { status: false };

@@ -42,30 +42,34 @@ function CancelOrder({ order, cancelOrderData, setCancelOrderData }) {
     setCancelOrderData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  console.log('order?.isButler', order?.isButler);
+
   return (
     <Box marginTop={5} pr={5}>
       <Stack gap={5}>
         {/* log User */}
-        <StyledInputBox title="Log Users">
-          <Stack mt={10 / 4}>
-            <StyledRadioGroup
-              items={logUsersOptions}
-              value={cancelOrderData?.logUser}
-              sx={{
-                flexDirection: 'row',
-                gap: '20px',
-              }}
-              sxForm={{
-                background: theme.palette.background.secondary,
-                padding: '12px 18px',
-                borderRadius: '10px',
-                flex: 1,
-              }}
-              name="logUser"
-              onChange={onChangeHandler}
-            />
-          </Stack>
-        </StyledInputBox>
+        {!order?.isButler && (
+          <StyledInputBox title="Log Users">
+            <Stack mt={10 / 4}>
+              <StyledRadioGroup
+                items={logUsersOptions}
+                value={cancelOrderData?.logUser}
+                sx={{
+                  flexDirection: 'row',
+                  gap: '20px',
+                }}
+                sxForm={{
+                  background: theme.palette.background.secondary,
+                  padding: '12px 18px',
+                  borderRadius: '10px',
+                  flex: 1,
+                }}
+                name="logUser"
+                onChange={onChangeHandler}
+              />
+            </Stack>
+          </StyledInputBox>
+        )}
 
         {/* type ---> flag reasone here */}
 
@@ -106,37 +110,39 @@ function CancelOrder({ order, cancelOrderData, setCancelOrderData }) {
           </StyledInputBox>
         )}
 
-        <StyledInputBox title="Endorse Order">
-          <Stack mt={10 / 4}>
-            <StyledRadioGroup
-              items={endorseLoseOptions}
-              value={cancelOrderData?.isEndorseLoss}
-              name="isEndorseLoss"
-              onChange={(e) => {
-                setCancelOrderData((prev) => {
-                  const endorseLoss = {
-                    baseCurrency_shopLoss: 0,
-                    secondaryCurrency_shopLoss: 0,
-                    baseCurrency_adminLoss: 0,
-                    secondaryCurrency_adminLoss: 0,
-                  };
-                  return { ...prev, endorseLoss: { ...endorseLoss } };
-                });
-                onChangeHandler(e);
-              }}
-              sx={{
-                flexDirection: 'row',
-                gap: '20px',
-              }}
-              sxForm={{
-                background: theme.palette.background.secondary,
-                padding: '12px 18px',
-                borderRadius: '10px',
-                flex: 1,
-              }}
-            />
-          </Stack>
-        </StyledInputBox>
+        {!order?.isButler && (
+          <StyledInputBox title="Endorse Order">
+            <Stack mt={10 / 4}>
+              <StyledRadioGroup
+                items={endorseLoseOptions}
+                value={cancelOrderData?.isEndorseLoss}
+                name="isEndorseLoss"
+                onChange={(e) => {
+                  setCancelOrderData((prev) => {
+                    const endorseLoss = {
+                      baseCurrency_shopLoss: 0,
+                      secondaryCurrency_shopLoss: 0,
+                      baseCurrency_adminLoss: 0,
+                      secondaryCurrency_adminLoss: 0,
+                    };
+                    return { ...prev, endorseLoss: { ...endorseLoss } };
+                  });
+                  onChangeHandler(e);
+                }}
+                sx={{
+                  flexDirection: 'row',
+                  gap: '20px',
+                }}
+                sxForm={{
+                  background: theme.palette.background.secondary,
+                  padding: '12px 18px',
+                  borderRadius: '10px',
+                  flex: 1,
+                }}
+              />
+            </Stack>
+          </StyledInputBox>
+        )}
 
         {cancelOrderData?.isEndorseLoss === 'true' && (
           <StyledInputBox title="Select Item to refund">

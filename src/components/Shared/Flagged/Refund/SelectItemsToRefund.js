@@ -14,7 +14,7 @@ export const getSelectableItems = (order) => {
   let data = [];
   let k = 1;
 
-  order?.productsDetails.forEach((item) => {
+  order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
       const temp = { name: item?.productName, price: item?.baseCurrency_productPrice, id: k };
       data.push(temp);

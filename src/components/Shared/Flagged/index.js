@@ -102,7 +102,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
     },
   });
 
-  const cancelOrderQueryMutation = useMutation((data) => AXIOS.post(API_URL.CANCEL_ORDER, data), {
+  const cancelOrderQueryMutation = useMutation((data) => AXIOS.post(data?.api, data?.payload), {
     onSuccess: (data) => {
       if (data.status) {
         successMsg(data?.message, 'success');
@@ -125,10 +125,12 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const onSubmitCancelOrder = () => {
     const validatedData = validateCancelData(order, cancelOrderData);
 
-    console.log('cancel order', validatedData);
+    const api = order?.isButler ? API_URL.BUTLER_CANCEL_ORDER : API_URL.CANCEL_ORDER;
+
+    console.log({ validatedData, api });
 
     if (validatedData?.status === true) {
-      cancelOrderQueryMutation.mutate(validatedData?.data);
+      cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data });
     }
   };
 
@@ -161,7 +163,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
                 <Typography
                   sx={{ fontSize: '20px', fontWeight: 700, lineHeight: '24px', color: theme.palette.text.primary }}
                 >
-                  Flagged
+                  {showFor === 'flagged' ? 'Flagged' : 'Cancel Order'}
                 </Typography>
                 <Stack>
                   {showFor === 'flagged' ? (

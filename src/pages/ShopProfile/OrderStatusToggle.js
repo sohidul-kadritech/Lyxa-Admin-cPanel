@@ -5,6 +5,7 @@ import { useMutation } from 'react-query';
 import socketServices from '../../common/socketService';
 import { createEditShopData, getShopEditData } from '../../components/Shared/AddShop/helper';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -12,12 +13,16 @@ import AXIOS from '../../network/axios';
 export default function OrderToggle({ shop }) {
   const [, setRender] = useState(false);
 
+  const { dispatchCurrentUser } = useGlobalContext();
+
   const mutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
       if (data?.status) {
         shop.liveStatus = data?.data?.shop?.liveStatus ?? shop.liveStatus;
         socketServices.emit('shopLiveStatusUpdated', { liveStatus: shop.liveStatus, shopId: shop?._id });
+
+        dispatchCurrentUser({ type: 'shop', payload: { shop } });
         setRender((prev) => !prev);
       }
     },

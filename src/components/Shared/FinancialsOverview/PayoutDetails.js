@@ -299,40 +299,23 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                 isNegative
               />
 
-              <PriceItem
-                title="Promotion: Featured"
-                amount={otherPayments?.featuredAmount}
-                // amount={paymentDetails?.totalFeaturedAmount}
-                showIfZero
-                isNegative
-              />
+              <PriceItem title="Promotion: Featured" amount={otherPayments?.featuredAmount} showIfZero isNegative />
 
               <PriceItem
                 title="Error Charge"
-                amount={otherPayments?.errorCharge}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative
+                amount={Math.abs(otherPayments?.errorCharge)}
+                isNegative={otherPayments?.errorCharge > 0}
                 showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
               />
 
               <PriceItem
                 title="Shop add/remove credit"
                 amount={Math.abs(otherPayments?.shopAddRemoveCredit)}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
                 isNegative={otherPayments?.shopAddRemoveCredit < 0}
                 showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
               />
 
-              <PriceItem
-                title="Refunded Amount"
-                amount={otherPayments?.customerRefund}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative
-                showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
-              />
+              <PriceItem title="Refunded Amount" amount={otherPayments?.customerRefund} isNegative showIfZero />
             </DetailsAccordion>
           )}
 
