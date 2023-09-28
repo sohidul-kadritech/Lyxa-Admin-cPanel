@@ -29,10 +29,13 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
 
   const { appSetting } = general;
 
-  console.log('appsettings', appSetting);
-
   const onChangeHandler = (e) => {
-    setFlaggData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFlaggData((prev) => {
+      if (prev?.replacement === 'with' && e.target.name === 'flaggedReason' && e.target.value === 'missing-item') {
+        return { ...prev, deliveryType: 'shop-customer', [e.target.name]: e.target.value };
+      }
+      return { ...prev, [e.target.name]: e.target.value };
+    });
   };
 
   return (
@@ -124,11 +127,14 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         )}
 
         {/* Delivery type */}
-        {flaggData?.replacement === 'with' && (
+        {flaggData?.replacement === 'with' && flaggData?.flaggedReason !== 'missing-item' && (
           <StyledInputBox title="Delivery Type">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
                 items={DeliveryTypeOptions}
+                value={flaggData?.deliveryType}
+                name="deliveryType"
+                onChange={onChangeHandler}
                 sx={{
                   flexDirection: 'row',
                   gap: '20px',
@@ -144,7 +150,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
           </StyledInputBox>
         )}
 
-        {flaggData?.replacement && (
+        {flaggData?.replacement === 'without' && (
           <StyledInputBox title="Refund">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
@@ -168,7 +174,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         )}
 
         {/* when with refund is selected then it will visible */}
-        {flaggData?.refund === 'with' && (
+        {flaggData?.refund === 'with' && flaggData?.replacement === 'without' && (
           <StyledInputBox title="Refund Type">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
@@ -192,17 +198,20 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         )}
 
         {/* when we select partial order */}
-
-        {flaggData?.refundType === 'partial' && (
-          <StyledInputBox title="Select Item to refund">
+        {((flaggData?.refund === 'with' && flaggData?.refundType === 'partial') ||
+          flaggData?.replacement === 'with') && (
+          <StyledInputBox
+            title={flaggData?.replacement === 'with' ? 'Select Item to replacement' : 'Select Item to refund'}
+          >
             <Stack mt={10 / 4}>
               <SelectItemsToRefund order={order} setFlaggData={setFlaggData} flaggData={flaggData} />
             </Stack>
           </StyledInputBox>
         )}
 
-        {flaggData?.refundType === 'partial' && (
-          <StyledInputBox title="Refund Percentage">
+        {((flaggData?.refundType === 'partial' && flaggData?.refund === 'with') ||
+          flaggData?.replacement === 'with') && (
+          <StyledInputBox title={flaggData?.replacement === 'with' ? 'Put cost on' : 'Refund Percentage'}>
             <Stack mt={10 / 4} gap={2.5}>
               <StyledRadioGroup
                 items={RefundPercentage}

@@ -23,9 +23,10 @@ export const initialDataForFlagg = (order) => {
     user: order?.user?._id,
     shop: '',
     delivery: '',
+    deliveryType: '',
     flaggedReason: '', // "missing-item" || "wrong-item" || "others"
     otherReason: '',
-    replacement: '', // "with" || "without"
+    replacement: 'without', // "with" || "without"
     refund: '', // "with" || "without"
     logUser: '',
     refundType: '',
@@ -38,6 +39,13 @@ export const initialDataForFlagg = (order) => {
     },
     selectedItems: [],
     totalSelectedAmount: 0,
+    deliveryfee: 0,
+    replacementOrderCut: {
+      baseCurrency_shopCutForReplacement: 0,
+      secondaryCurrency_shopCutForReplacement: 0,
+      baseCurrency_adminCutForReplacement: 0,
+      secondaryCurrency_adminCutForReplacement: 0,
+    },
   };
 
   return flaggData;
@@ -67,17 +75,18 @@ export const getApi = (flagData) => {
   const api = {
     flagApi: API_URL.SEND_ORDER_FLAG,
     refundApi: API_URL.REFUND_ORDER,
+    placeOrderApi: API_URL.ADMIN_PLACE_ORDER,
   };
 
   if (flagData?.replacement === 'without' && flagData?.refund === 'without') {
-    return api.flagApi;
+    return api?.flagApi;
   }
 
   if (flagData?.replacement === 'without' && flagData?.refund === 'with') {
-    return api.refundApi;
+    return api?.refundApi;
   }
 
-  return '';
+  return api?.placeOrderApi;
 };
 
 function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
@@ -117,7 +126,9 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const onSubmitFlag = () => {
     const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
 
-    if (validatedData?.status === true) {
+    console.log('validation', validatedData);
+
+    if (validatedData?.status === 'hello') {
       flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });
     }
   };

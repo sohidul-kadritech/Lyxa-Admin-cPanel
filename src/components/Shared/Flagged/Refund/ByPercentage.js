@@ -1,7 +1,8 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Stack } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CustomInputField } from './CustomInputField';
 import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
 import { getMaxForPartialPayment, getMaxLimit } from './helpers';
@@ -11,15 +12,15 @@ const initialData = {
   adminOrderRefund: 0,
   adminDeliveryRefund: 0,
 };
-// baseCurrency_shopEarnings
-// summary?.baseCurrency_riderFee
-// adminCharge?.baseCurrency_adminChargeFromOrder
-// delivery_fee
-// selectedItems
+
 function ByPercentage({ flaggData, setFlaggData, order }) {
   const [maxAmount, setMaxAmount] = useState(getMaxLimit(flaggData, order));
 
   const [byPercentage, setByPercentage] = useState(initialData);
+
+  useEffect(() => {
+    setMaxAmount(getMaxLimit(flaggData, order));
+  }, [flaggData]);
 
   const onChangeHandler = (e) => {
     setByPercentage((prev) => {
@@ -41,9 +42,43 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
     });
   };
 
+  const onChangeHandlerForReplacement = (e) => {
+    setByPercentage((prev) => {
+      // check maxium value
+      const maxValue = Number(maxAmount[e.target.name]);
+      console.log('maxValue ==>', maxValue);
+      const newValue = Number(e.target.value);
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : 0;
+
+      const remaingPercentage = 100 - updatedNewValue;
+
+      const baseCurrency_shopCutForReplacement = (
+        flaggData?.totalSelectedAmount *
+        (Number(updatedNewValue) / 100)
+      ).toFixed(2);
+      const baseCurrency_adminCutForReplacement = (
+        flaggData?.totalSelectedAmount *
+        (Number(remaingPercentage) / 100)
+      ).toFixed(2);
+
+      const updatedValue = { ...prev, adminOrderRefund: remaingPercentage, [e.target.name]: updatedNewValue };
+
+      setFlaggData((prev) => ({
+        ...prev,
+        replacementOrderCut: {
+          ...prev?.replacementOrderCut,
+          baseCurrency_shopCutForReplacement,
+          baseCurrency_adminCutForReplacement,
+        },
+      }));
+
+      return { ...updatedValue };
+    });
+  };
+
   return (
     <Stack direction="row" gap={2.5}>
-      <StyledInputForRefundPercentage title="Shop Profit">
+      <StyledInputForRefundPercentage title={flaggData?.replacement === 'with' ? 'Shop' : 'Shop profit'}>
         <Stack direction="row" alignItems="center" gap={2.5}>
           <CustomInputField
             endAdornment="%"
@@ -51,7 +86,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
               type: 'number',
               name: 'shop',
               value: byPercentage?.shop,
-              onChange: onChangeHandler,
+              onChange: flaggData?.replacement === 'with' ? onChangeHandlerForReplacement : onChangeHandler,
             }}
           />
           <span>=</span>
@@ -70,7 +105,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
           />
         </Stack>
       </StyledInputForRefundPercentage>
-      <StyledInputForRefundPercentage title="Lyxa Profit">
+      <StyledInputForRefundPercentage title={flaggData?.replacement === 'with' ? 'Lyxa' : 'Lyxa Profit'}>
         <Stack direction="row" alignItems="center" gap={2.5}>
           <CustomInputField
             endAdornment="%"
@@ -82,7 +117,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
             inputProps={{
               value: byPercentage?.adminOrderRefund,
               name: 'adminOrderRefund',
-              onChange: onChangeHandler,
+              onChange: flaggData?.replacement === 'with' ? onChangeHandlerForReplacement : onChangeHandler,
               type: 'number',
               readOnly: true,
             }}
@@ -103,41 +138,43 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
           />
         </Stack>
       </StyledInputForRefundPercentage>
-      <StyledInputForRefundPercentage title="Lyxa Delivery Profit">
-        <Stack direction="row" alignItems="center" gap={2.5}>
-          <CustomInputField
-            endAdornment="%"
-            sx={{
-              '& .MuiInputBase-root': {
-                background: flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee')
-                  ? '#F6F8FA !important'
-                  : '#E1E3E5 !important',
-              },
-            }}
-            inputProps={{
-              value: byPercentage?.adminDeliveryRefund,
-              name: 'adminDeliveryRefund',
-              type: 'number',
-              onChange: onChangeHandler,
-              readOnly: !flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee'),
-            }}
-          />
-          <span>=</span>
-          <CustomInputField
-            sx={{
-              '& .MuiInputBase-root': {
-                background: '#E1E3E5 !important',
-              },
-            }}
-            endAdornment="$"
-            inputProps={{
-              value: flaggData?.partialPayment?.adminDeliveryRefund,
-              type: 'number',
-              readOnly: true,
-            }}
-          />
-        </Stack>
-      </StyledInputForRefundPercentage>
+      {flaggData?.replacement !== 'with' && (
+        <StyledInputForRefundPercentage title="Lyxa Delivery Profit">
+          <Stack direction="row" alignItems="center" gap={2.5}>
+            <CustomInputField
+              endAdornment="%"
+              sx={{
+                '& .MuiInputBase-root': {
+                  background: flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee')
+                    ? '#F6F8FA !important'
+                    : '#E1E3E5 !important',
+                },
+              }}
+              inputProps={{
+                value: byPercentage?.adminDeliveryRefund,
+                name: 'adminDeliveryRefund',
+                type: 'number',
+                onChange: flaggData?.replacement === 'with' ? onChangeHandlerForReplacement : onChangeHandler,
+                readOnly: !flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee'),
+              }}
+            />
+            <span>=</span>
+            <CustomInputField
+              sx={{
+                '& .MuiInputBase-root': {
+                  background: '#E1E3E5 !important',
+                },
+              }}
+              endAdornment="$"
+              inputProps={{
+                value: flaggData?.partialPayment?.adminDeliveryRefund,
+                type: 'number',
+                readOnly: true,
+              }}
+            />
+          </Stack>
+        </StyledInputForRefundPercentage>
+      )}
     </Stack>
   );
 }

@@ -312,6 +312,7 @@ export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
 
 export const SEND_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag`;
+export const ADMIN_PLACE_ORDER = `${ADMIN_ENDPOINT}/order/place-order`;
 export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;

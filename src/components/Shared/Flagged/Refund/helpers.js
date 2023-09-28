@@ -45,13 +45,15 @@ export const RefundPercentage = [
 ];
 
 export const DeliveryTypeOptions = [
-  { value: 'restaurent_customer', label: 'Restaurent / Customer' },
-  { value: 'customer_restaurent_customer', label: 'Customer / Restaurent / Customer' },
+  { value: 'shop-customer', label: 'Restaurent / Customer' },
+  { value: 'customer-shop-customer', label: 'Customer / Restaurent / Customer' },
 ];
 
 export const calculateVat = (order, flaggedData, adminVat) => {
-  const { partialPayment } = flaggedData;
+  const { partialPayment, replacementOrderCut } = flaggedData;
   const { shop, adminOrderRefund, adminDeliveryRefund } = partialPayment;
+
+  const { baseCurrency_shopCutForReplacement, baseCurrency_adminCutForReplacement } = replacementOrderCut;
 
   const adminRefundAmount = Number(adminOrderRefund || 0) + Number(adminDeliveryRefund || 0);
 
@@ -68,6 +70,19 @@ export const calculateVat = (order, flaggedData, adminVat) => {
     vatForAdmin,
     totalVat: (vatForShop + vatForAdmin).toFixed(2),
   };
+
+  if (flaggedData?.replacement === 'with') {
+    const vatForShop = Math.min(Number(baseCurrency_shopCutForReplacement || 0) * (adminVat / 100), totalVat);
+    const vatForAdmin = Math.min(Number(baseCurrency_adminCutForReplacement || 0) * (adminVat / 100), totalVat);
+
+    const vatData = {
+      vatForShop,
+      vatForAdmin,
+      totalVat: (vatForShop + vatForAdmin).toFixed(2),
+    };
+
+    return vatData;
+  }
 
   return vatData;
 };
@@ -151,8 +166,14 @@ export const getMaxLimit = (flaggData, order, by_percentage = true) => {
     adminOrderRefund: 0,
     adminDeliveryRefund: calculatePercentage(flaggData?.totalSelectedAmount, delivery?.price),
   };
-  if (!by_percentage) {
+  if (!by_percentage && flaggData?.replacement !== 'with') {
     initialMax.shop = flaggData?.totalSelectedAmount;
+    initialMax.adminDeliveryRefund = delivery?.price;
+    return initialMax;
+  }
+
+  if (by_percentage && flaggData?.replacement === 'with' && flaggData?.flaggedReason !== 'missing-item') {
+    initialMax.shop = ((100 / flaggData?.totalSelectedAmount) * flaggData?.deliveryfee).toFixed(2);
     initialMax.adminDeliveryRefund = delivery?.price;
     return initialMax;
   }
@@ -201,6 +222,15 @@ export const getMaxForPartialPaymentByPrice = (flaggedData, order, key) => {
 
     return initialMax;
   }
+
+  return initialMax;
+};
+
+const getMaxForReplacementOrderForPrice = (flaggData, byPrice) => {
+  const initialMax = {
+    shop: 100,
+    adminOrderRefund: 100,
+  };
 
   return initialMax;
 };
