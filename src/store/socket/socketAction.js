@@ -12,7 +12,7 @@ export const socketConnect = () => {
   socketServices.initializeSocket();
 
   socketServices?.on('connect', () => {
-    console.log(accessToken);
+    // console.log(accessToken);
     socketServices?.emit('join_drop', {
       token: accessToken,
       type: 'admin',

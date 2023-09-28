@@ -109,23 +109,28 @@ export default function DetailsAccordion({
               </Tooltip>
             )}
           </Stack>
-          <Typography
-            variant="body1"
-            fontWeight={600}
-            color={titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined}
-          >
-            {typeof titleAmount !== 'string' &&
-              typeof titleAmount !== 'object' &&
-              // `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
-              `${titleAmountStatus === 'minus' ? '-' : ''} ${getCurrencyValue(
-                titleAmount,
-                currencyType,
-                currency,
-                secondaryCurrency,
-              )}`}
-            {typeof titleAmount === 'string' && titleAmount}
-            {typeof titleAmount === 'object' && titleAmount}
-          </Typography>
+          {typeof titleAmount === 'object' ? (
+            titleAmount
+          ) : (
+            <Typography
+              variant="body1"
+              fontWeight={600}
+              color={
+                titleAmountStatus === 'minus' ? 'error' : titleAmountStatus === 'secondary' ? '#818181' : undefined
+              }
+            >
+              {typeof titleAmount !== 'string' &&
+                typeof titleAmount !== 'object' &&
+                // `${titleAmountStatus === 'minus' ? '-' : ''} ${currency} ${(titleAmount || 0).toFixed(2)}`}
+                `${titleAmountStatus === 'minus' ? '-' : ''} ${getCurrencyValue(
+                  titleAmount,
+                  currencyType,
+                  currency,
+                  secondaryCurrency
+                )}`}
+              {typeof titleAmount === 'string' && titleAmount}
+            </Typography>
+          )}
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails
