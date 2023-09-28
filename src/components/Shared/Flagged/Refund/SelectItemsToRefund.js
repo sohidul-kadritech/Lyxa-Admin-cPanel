@@ -34,39 +34,42 @@ export const getSelectableItems = (order, flaggData) => {
   let data = [];
   let k = 1;
 
-  console.log('flaggData', flaggData);
+  // storing admin earning percentage from order amount
+  const adminPercentage = order?.adminPercentage || 0;
 
-  const adminPercentage = order?.adminPercentage;
-
+  // check the order is replacement with missing order or not.
   const replacementWithMissingItem = flaggData?.replacement === 'with' && flaggData?.flaggedReason === 'missing-item';
   const replacementWith = flaggData?.replacement === 'with';
 
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
+      // calculating shop earning
       const shopEarning = item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * (adminPercentage / 100);
-      const secondaryCurrency = order?.shop?.shopExchangeRate * Number(shopEarning);
+      // selecting product price conditionally
       const price = replacementWithMissingItem ? 0 : replacementWith ? shopEarning : item?.baseCurrency_productPrice;
-
+      // calculating secondary currency of this
+      const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
+      // make an template for add product
       const temp = { name: item?.productName, price, id: k, secondaryCurrency, ...item };
+      // push template in data array object
       data.push(temp);
       k++;
     }
   });
 
+  // secondary currncy for delivery fee
   const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
 
+  // check delivery fee is free or not.
   const deliveryFee =
     order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
       ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 
-  console.log('flaggData?.replacement', flaggData?.replacement);
-
+  // check when should delivery fee should add.
   if (deliveryFee && flaggData?.replacement !== 'with' && flaggData?.replacement !== undefined) {
     data = [...data, deliveryFee];
   }
-
-  console.log('id', data);
 
   return data;
 };
@@ -75,6 +78,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
   const theme = useTheme();
 
   const { general } = useGlobalContext();
+
   const { appSetting } = general;
 
   const { baseCurrency } = appSetting;
@@ -93,15 +97,16 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
     setSelectedItem([]);
   }, [flaggData?.deliveryType, flaggData?.flaggedReason, flaggData?.replacement]);
 
+  // toggle handler when make toggle it make the item price zero other wise it return the original price of the item
   const onToggledHandler = (item, closed) => {
     setSelectedItem((prev) => {
-      const findIndexOfToggle = prev?.findIndex((selected) => selected?.id === item?.id);
+      const findIndexOfToggledItem = prev?.findIndex((selected) => selected?.id === item?.id);
       const allItems = getSelectableItems(order, flaggData);
-      const findIndexFromToggleHandler = allItems?.findIndex((selected) => selected?.id === item?.id);
+      const findIndexFromOriginalList = allItems?.findIndex((selected) => selected?.id === item?.id);
 
-      if (findIndexOfToggle >= 0 && findIndexFromToggleHandler >= 0) {
-        const price = allItems[findIndexFromToggleHandler]?.price;
-        prev[findIndexOfToggle].price = closed ? price : 0;
+      if (findIndexOfToggledItem >= 0 && findIndexFromOriginalList >= 0) {
+        const price = allItems[findIndexFromOriginalList]?.price;
+        prev[findIndexOfToggledItem].price = closed ? price : 0;
       }
       setFlaggData((oldData) => {
         const totalSelectedAmount = prev.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee;
@@ -124,7 +129,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       setToggledItem(selected);
       setFlaggData((prev) => {
         const totalSelectedAmount =
-          prev?.replacement !== 'with' && prev?.flaggedReason !== 'missing-item'
+          prev?.replacement !== 'with'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee

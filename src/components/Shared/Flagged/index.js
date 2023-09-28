@@ -126,9 +126,9 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const onSubmitFlag = () => {
     const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
 
-    console.log('validation', validatedData);
+    console.log('validation', validatedData, getApi(flaggData));
 
-    if (validatedData?.status === true) {
+    if (validatedData?.status === 'true') {
       flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });
     }
   };
@@ -152,7 +152,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    [],
+    []
   );
 
   return (

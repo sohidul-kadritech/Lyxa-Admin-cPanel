@@ -48,7 +48,7 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
 
   console.log('order', order, general);
 
-  const [refundItem, setRefundItem] = useState(getSelectableItems({ ...order, adminPercentage: 10 }));
+  const [refundItem, setRefundItem] = useState(getSelectableItems(order));
   const [selectedItem, setSelectedItem] = useState([]);
 
   const onSelectItems = (item) => {

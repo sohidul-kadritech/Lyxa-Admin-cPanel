@@ -98,7 +98,10 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
             }}
             endAdornment="$"
             inputProps={{
-              value: flaggData?.partialPayment?.shop,
+              value:
+                flaggData?.replacement === 'with'
+                  ? flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement
+                  : flaggData?.partialPayment?.shop,
               type: 'number',
               readOnly: true,
             }}
@@ -131,7 +134,10 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
             }}
             endAdornment="$"
             inputProps={{
-              value: flaggData?.partialPayment?.adminOrderRefund,
+              value:
+                flaggData?.replacement === 'with'
+                  ? flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement
+                  : flaggData?.partialPayment?.adminOrderRefund,
               type: 'number',
               readOnly: true,
             }}

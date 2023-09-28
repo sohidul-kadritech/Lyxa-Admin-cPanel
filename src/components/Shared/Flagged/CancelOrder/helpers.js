@@ -23,21 +23,35 @@ const getEndorseLoss = (cancelOrderData) => {
   const { endorseLoss, selectedItems, totalSelectedAmount } = cancelOrderData;
 
   const { baseCurrency_adminLoss, baseCurrency_shopLoss } = endorseLoss;
+  const deliveryfee = selectedItems?.find((item) => item?.id === 'delivery_fee');
+
+  let baseShop = 0;
+
+  let baseAdmin = 0;
+
+  if (baseCurrency_shopLoss <= deliveryfee?.price) {
+    baseShop = baseCurrency_shopLoss - baseCurrency_adminLoss + (deliveryfee?.price - baseCurrency_shopLoss);
+    baseAdmin = baseCurrency_adminLoss;
+  } else {
+    baseShop = baseCurrency_shopLoss - baseCurrency_adminLoss;
+    baseAdmin = baseCurrency_adminLoss - (baseCurrency_shopLoss - deliveryfee?.price);
+  }
 
   const totalSecondaryCurrency = selectedItems?.reduce((prev, item) => prev + item?.secondaryCurrency, 0);
 
-  const percentageOfShop = (100 / totalSelectedAmount) * Number(baseCurrency_shopLoss);
+  const percentageOfShop = (100 / totalSelectedAmount) * Number(baseShop);
 
-  const percentageOfAdmin = (100 / totalSelectedAmount) * Number(baseCurrency_adminLoss);
+  const percentageOfAdmin = (100 / totalSelectedAmount) * Number(baseAdmin);
 
   const secondaryCurrency_adminLoss = totalSecondaryCurrency * (percentageOfAdmin / 100);
   const secondaryCurrency_shopLoss = totalSecondaryCurrency * (percentageOfShop / 100);
 
   return {
-    baseCurrency_adminLoss: Number(baseCurrency_adminLoss) - Number(baseCurrency_shopLoss),
-    baseCurrency_shopLoss: Number(baseCurrency_shopLoss) - Number(baseCurrency_adminLoss),
-    secondaryCurrency_adminLoss: Number(secondaryCurrency_adminLoss) - Number(secondaryCurrency_shopLoss),
-    secondaryCurrency_shopLoss: Number(secondaryCurrency_shopLoss) - Number(secondaryCurrency_adminLoss),
+    baseCurrency_adminLoss: baseAdmin,
+    baseCurrency_shopLoss: baseShop,
+    secondaryCurrency_adminLoss,
+    secondaryCurrency_shopLoss,
+    inEndorseLossDeliveryFeeIncluded: !!deliveryfee,
   };
 };
 

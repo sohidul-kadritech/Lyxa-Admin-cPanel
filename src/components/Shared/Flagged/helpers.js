@@ -9,8 +9,9 @@ const getProductAmount = (productData) => {
   const data = [];
 
   productData?.forEach((item) => {
+    console.log('item?.productId', data, item);
     // check it is exist or not,
-    const isExist = data?.findIndex((d) => item?.productId === d?.productId);
+    const isExist = data?.findIndex((d) => item?.productId === d?.product);
 
     if (isExist >= 0) {
       data[isExist].quantity += 1;
@@ -30,7 +31,7 @@ const getProductAmount = (productData) => {
   return data;
 };
 
-const getReplacementOrderDeliveryInfo = (order, flaggData) => {
+const getReplacementOrderDeliveryInfo = (order, flaggData, vat) => {
   const { adminExchangeRate, shop, summary, adminCharge } = order;
 
   const { shopExchangeRate } = shop;
@@ -70,8 +71,8 @@ const getReplacementOrderDeliveryInfo = (order, flaggData) => {
     secondaryCurrency_riderProfit: secondaryRiderProfit,
     baseCurrency_adminChargeFromDelivery,
     secondaryCurrency_adminDeliveryProfit: secondaryCurrency_adminChargeFromDelivery,
-    baseCurrency_deliveryVat: 2,
-    secondaryCurrency_deliveryVat: 20,
+    baseCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat,
+    secondaryCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat * adminExchangeRate,
   };
 
   return template;
@@ -110,9 +111,19 @@ const getReplacementOrderCut = (order, flaggData) => {
 
   const percentageOfAdmin = (100 / totalSelectedAmount) * Number(baseAdmin);
 
-  secondaryShop = totalSecondaryCurrency * percentageOfShop;
+  secondaryShop = totalSecondaryCurrency * (percentageOfShop / 100);
 
-  secondaryAdmin = totalSecondaryCurrency * percentageOfAdmin;
+  secondaryAdmin = totalSecondaryCurrency * (percentageOfAdmin / 100);
+
+  console.log('data', {
+    baseShop,
+    baseAdmin,
+    secondaryShop,
+    secondaryAdmin,
+    totalSecondaryCurrency,
+    percentageOfShop,
+    percentageOfAdmin,
+  });
 
   const template = {
     baseCurrency_shopCutForReplacement: baseShop,
@@ -124,11 +135,11 @@ const getReplacementOrderCut = (order, flaggData) => {
   return { ...template };
 };
 
-const getReplacementOrderData = (order, flaggData) => {
+const getReplacementOrderData = (order, flaggData, vat) => {
   const template = {
     originalOrderId: order?._id,
     products: [...getProductAmount(flaggData?.selectedItems)],
-    replacementOrderDeliveryInfo: getReplacementOrderDeliveryInfo(order, flaggData),
+    replacementOrderDeliveryInfo: { ...getReplacementOrderDeliveryInfo(order, flaggData, vat) },
     replacementOrderCut: {
       ...getReplacementOrderCut(order, flaggData),
     },
@@ -173,10 +184,10 @@ export const validateFlagData = (order, flaggData, VAT) => {
   const totalVat = baseCurrency_vatForAdmin + baseCurrency_vatForShop;
 
   const baseCurrency_shopCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0,
+    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0
   );
   const baseCurrency_adminCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0,
+    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0
   );
 
   const totalReplacementAmount = baseCurrency_shopCutForReplacement + baseCurrency_adminCutForReplacement;
@@ -210,7 +221,7 @@ export const validateFlagData = (order, flaggData, VAT) => {
 
   if (flaggData?.replacement === 'with') {
     console.log('replacement order');
-    return { status: true, data: { ...getReplacementOrderData(order, flaggData) } };
+    return { status: true, data: { ...getReplacementOrderData(order, flaggData, VAT) } };
   }
 
   if (!flaggData?.refund && flaggData?.replacement === 'without') {
