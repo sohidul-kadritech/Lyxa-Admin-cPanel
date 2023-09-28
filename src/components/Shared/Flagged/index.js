@@ -128,7 +128,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
 
     console.log('validation', validatedData);
 
-    if (validatedData?.status === 'hello') {
+    if (validatedData?.status === true) {
       flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });
     }
   };
