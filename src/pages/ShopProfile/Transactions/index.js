@@ -36,7 +36,14 @@ const getTrxQueryParams = (shopId) => ({
   },
 });
 
-export default function ShopTransactions({ shop }) {
+export default function ShopTransactions({
+  shop,
+  show = {
+    payout: true,
+    order: true,
+    transaction: true,
+  },
+}) {
   const [queryParams, setQueryParams] = useState(getTrxQueryParams(shop?._id));
   const [modalOpen, setModalOpen] = useState(false);
   const [makePayment, setMakePayment] = useState(false);
@@ -98,9 +105,9 @@ export default function ShopTransactions({ shop }) {
 
       <Box mb={7.5}>
         <Tabs value={currentTab}>
-          <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
-          <Tab onClick={() => setCurrentTab(1)} label="Order" />
-          <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
+          {show?.transaction && <Tab onClick={() => setCurrentTab(0)} label="Transaction" />}
+          {show?.order && <Tab onClick={() => setCurrentTab(1)} label="Order" />}
+          {show?.payout && <Tab onClick={() => setCurrentTab(2)} label="Payouts" />}
         </Tabs>
       </Box>
 

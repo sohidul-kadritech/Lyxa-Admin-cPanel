@@ -64,6 +64,8 @@ export default function LyxaOrderFinancials({ shopType }) {
 
   const profitBreakdown = summary?.profitBreakdown;
 
+  console.log('getFinancials', getFinancialsDashBoard?.data?.data);
+
   return (
     <Box>
       <PageTop

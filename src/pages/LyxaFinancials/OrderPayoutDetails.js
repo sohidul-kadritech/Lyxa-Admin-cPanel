@@ -32,7 +32,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
 
-  console.log('paymentDetails', paymentDetails);
+  console.log('paymentDetails===>', paymentDetails);
 
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
@@ -267,7 +267,7 @@ VAT inclusive"
               isNegative
               showIfZero
             />
-            <PriceItem title="Error charge" amount={0} isNegative showIfZero />
+            <PriceItem title="Error charge" amount={otherPayments?.errorCharge} isNegative showIfZero />
             <PriceItem
               title="Customer refund by Lyxa"
               amount={otherPayments?.customerRefund || 0}
@@ -280,12 +280,7 @@ VAT inclusive"
               isNegative
               showIfZero
             />
-            <PriceItem
-              title="Replacement orders by Lyxa"
-              amount={otherPayments?.replacementOrderByAdmin || 0}
-              isNegative
-              showIfZero
-            />
+
             {/* <PriceItem
               title="Error order by Lyxa ( endure loss )"
               amount={otherPayments?.customerRefund || 0}

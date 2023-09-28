@@ -11,8 +11,10 @@ import OrderDetail from '../OrderDetail';
 import OrderContextProvider from '../OrderDetail/OrderContext';
 import ModalContainer from './ModalContainer';
 
-import { validateFlagData } from './helpers';
+import CancelOrder from './CancelOrder';
+import { validateCancelData } from './CancelOrder/helpers';
 import RefundOrder from './Refund';
+import { validateFlagData } from './helpers';
 
 export const initialDataForFlagg = (order) => {
   const flaggData = {
@@ -41,6 +43,26 @@ export const initialDataForFlagg = (order) => {
   return flaggData;
 };
 
+export const initialDataForCancelOrder = (order) => {
+  const cancelData = {
+    orderId: order?._id,
+    logUser: '', // all, rider, shop
+    cancelReason: '',
+    otherReason: '',
+    isEndorseLoss: '', // true, false
+    endorseLoss: {
+      baseCurrency_shopLoss: 0,
+      secondaryCurrency_shopLoss: 0,
+      baseCurrency_adminLoss: 0,
+      secondaryCurrency_adminLoss: 0,
+    },
+    selectedItems: [],
+    totalSelectedAmount: 0,
+  };
+
+  return cancelData;
+};
+
 export const getApi = (flagData) => {
   const api = {
     flagApi: API_URL.SEND_ORDER_FLAG,
@@ -58,10 +80,10 @@ export const getApi = (flagData) => {
   return '';
 };
 
-function FlaggedModal({ onClose, order }) {
+function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const theme = useTheme();
   const [flaggData, setFlaggData] = useState(initialDataForFlagg(order));
-
+  const [cancelOrderData, setCancelOrderData] = useState(initialDataForCancelOrder(order));
   const { general } = useGlobalContext();
 
   const { appSetting } = general;
@@ -80,11 +102,35 @@ function FlaggedModal({ onClose, order }) {
     },
   });
 
+  const cancelOrderQueryMutation = useMutation((data) => AXIOS.post(data?.api, data?.payload), {
+    onSuccess: (data) => {
+      if (data.status) {
+        successMsg(data?.message, 'success');
+        queryClient.invalidateQueries(API_URL.ORDER_LIST);
+        onClose();
+      } else {
+        successMsg(data?.message, 'error');
+      }
+    },
+  });
+
   const onSubmitFlag = () => {
     const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
-    console.log('flag', validatedData?.data, getApi(flaggData));
+
     if (validatedData?.status === true) {
       flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });
+    }
+  };
+
+  const onSubmitCancelOrder = () => {
+    const validatedData = validateCancelData(order, cancelOrderData);
+
+    const api = order?.isButler ? API_URL.BUTLER_CANCEL_ORDER : API_URL.CANCEL_ORDER;
+
+    console.log({ validatedData, api });
+
+    if (validatedData?.status === true) {
+      cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data });
     }
   };
 
@@ -117,10 +163,18 @@ function FlaggedModal({ onClose, order }) {
                 <Typography
                   sx={{ fontSize: '20px', fontWeight: 700, lineHeight: '24px', color: theme.palette.text.primary }}
                 >
-                  Flagged
+                  {showFor === 'flagged' ? 'Flagged' : 'Cancel Order'}
                 </Typography>
                 <Stack>
-                  <RefundOrder flaggData={flaggData} setFlaggData={setFlaggData} order={order} />
+                  {showFor === 'flagged' ? (
+                    <RefundOrder flaggData={flaggData} setFlaggData={setFlaggData} order={order} />
+                  ) : (
+                    <CancelOrder
+                      setCancelOrderData={setCancelOrderData}
+                      cancelOrderData={cancelOrderData}
+                      order={order}
+                    />
+                  )}
                 </Stack>
 
                 <Stack direction="row" justifyContent="flex-end" alignItems="center" gap={10 / 4} py={5}>
@@ -130,8 +184,15 @@ function FlaggedModal({ onClose, order }) {
                   <Button
                     variant="contained"
                     color="primary"
-                    disabled={flaggedQueryMutation?.isLoading}
-                    onClick={onSubmitFlag}
+                    disabled={flaggedQueryMutation?.isLoading || cancelOrderQueryMutation?.isLoading}
+                    onClick={() => {
+                      if (showFor === 'flagged') {
+                        onSubmitFlag();
+                        return;
+                      }
+
+                      onSubmitCancelOrder();
+                    }}
                   >
                     Done
                   </Button>

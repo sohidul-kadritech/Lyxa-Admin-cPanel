@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Box, Tab, Tabs } from '@mui/material';
 import React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
+import TablePagination from '../../components/Common/TablePagination';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import useQueryParams from '../../helpers/useQueryParams';
@@ -55,12 +57,9 @@ function Product() {
   const { general } = useGlobalContext();
   const getCurrentCurrency = general?.currency;
 
-  console.log('currency', getCurrentCurrency);
-
   return (
     <Box>
       <PageTop
-        // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -98,11 +97,19 @@ function Product() {
           <ProductPageSkeleton />
         </Box>
       ) : (
-        <ProductList
-          data={getAllProduct?.data?.data?.products}
-          getCurrentCurrency={getCurrentCurrency}
-          updateStatusQuery={updateStatusQuery}
-        />
+        <Box mb={80 / 4}>
+          <ProductList
+            data={getAllProduct?.data?.data?.products}
+            getCurrentCurrency={getCurrentCurrency}
+            updateStatusQuery={updateStatusQuery}
+          />
+
+          <TablePagination
+            currentPage={Number(queryParams?.page)}
+            totalPage={getAllProduct?.data?.data?.paginate?.metadata?.page?.totalPage}
+            lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
+          />
+        </Box>
       )}
     </Box>
   );

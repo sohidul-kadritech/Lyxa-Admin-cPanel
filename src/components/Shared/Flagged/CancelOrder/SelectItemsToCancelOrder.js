@@ -7,8 +7,8 @@ import React, { useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
 import StyledIconButton from '../../../Styled/StyledIconButton';
-import SelectableItem from './SelectableItem';
-import StyledContainer from './StyledContainer';
+import SelectableItem from '../Refund/SelectableItem';
+import StyledContainer from '../Refund/StyledContainer';
 
 export const getSelectableItems = (order) => {
   let data = [];
@@ -16,28 +16,29 @@ export const getSelectableItems = (order) => {
 
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
-      const temp = { name: item?.productName, price: item?.baseCurrency_productPrice, id: k };
+      const price = item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * (order?.adminPercentage / 100);
+      const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
+      const temp = { name: item?.productName, price, id: k, secondaryCurrency };
       data.push(temp);
-      console.log('console.log==> k', k, temp);
       k++;
     }
   });
 
+  const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
+
   const deliveryFee =
     order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
-      ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee' }
+      ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 
   if (deliveryFee) {
     data = [...data, deliveryFee];
   }
 
-  console.log('id', data);
-
   return data;
 };
 
-function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
+function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
   const theme = useTheme();
 
   const { general } = useGlobalContext();
@@ -45,7 +46,9 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
 
   const { baseCurrency } = appSetting;
 
-  const [refundItem, setRefundItem] = useState(getSelectableItems(order));
+  console.log('order', order, general);
+
+  const [refundItem, setRefundItem] = useState(getSelectableItems({ ...order, adminPercentage: 10 }));
   const [selectedItem, setSelectedItem] = useState([]);
 
   const onSelectItems = (item) => {
@@ -152,4 +155,4 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
   );
 }
 
-export default SelectItemsToRefund;
+export default SelectItemsToCancelOrder;

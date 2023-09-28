@@ -71,7 +71,13 @@ export const validateFlagData = (order, flaggData, VAT) => {
   }
   if (flaggData?.refund === 'with' && flaggData?.refundType === 'partial') {
     refundTemplate.partialPayment.shop += calculateVat(order, flaggData, VAT).vatForShop;
-    refundTemplate.partialPayment.adminVat += calculateVat(order, flaggData, VAT).vatForAdmin;
+
+    refundTemplate.partialPayment.adminVat = (
+      calculateVat(order, flaggData, VAT).totalVat - calculateVat(order, flaggData, VAT).vatForShop
+    ).toFixed(2);
+
+    refundTemplate.partialPayment.adminVat = parseFloat(refundTemplate.partialPayment.adminVat);
+
     return { status: true, data: refundTemplate };
   }
 
