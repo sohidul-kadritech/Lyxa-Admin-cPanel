@@ -4,21 +4,6 @@
 
 import { successMsg } from '../../../../helpers/successMsg';
 
-/*
-baseCurrency_adminLoss
-: 
-"90.00"
-baseCurrency_shopLoss
-: 
-"10.00"
-secondaryCurrency_adminLoss
-: 
-0
-secondaryCurrency_shopLoss
-: 
-0
-*/
-
 const getEndorseLoss = (cancelOrderData) => {
   const { endorseLoss, selectedItems, totalSelectedAmount } = cancelOrderData;
 
@@ -30,11 +15,11 @@ const getEndorseLoss = (cancelOrderData) => {
   let baseAdmin = 0;
 
   if (baseCurrency_shopLoss <= deliveryfee?.price) {
-    baseShop = baseCurrency_shopLoss - baseCurrency_adminLoss + (deliveryfee?.price - baseCurrency_shopLoss);
+    baseShop = baseCurrency_shopLoss - baseCurrency_adminLoss + ((deliveryfee?.price || 0) - baseCurrency_shopLoss);
     baseAdmin = baseCurrency_adminLoss;
   } else {
     baseShop = baseCurrency_shopLoss - baseCurrency_adminLoss;
-    baseAdmin = baseCurrency_adminLoss - (baseCurrency_shopLoss - deliveryfee?.price);
+    baseAdmin = baseCurrency_adminLoss - (baseCurrency_shopLoss - (deliveryfee?.price || 0));
   }
 
   const totalSecondaryCurrency = selectedItems?.reduce((prev, item) => prev + item?.secondaryCurrency, 0);
@@ -43,19 +28,19 @@ const getEndorseLoss = (cancelOrderData) => {
 
   const percentageOfAdmin = (100 / totalSelectedAmount) * Number(baseAdmin);
 
-  const secondaryCurrency_adminLoss = totalSecondaryCurrency * (percentageOfAdmin / 100);
-  const secondaryCurrency_shopLoss = totalSecondaryCurrency * (percentageOfShop / 100);
+  const secondaryCurrency_adminLoss = Math.round(totalSecondaryCurrency * (percentageOfAdmin / 100));
+  const secondaryCurrency_shopLoss = Math.round(totalSecondaryCurrency * (percentageOfShop / 100));
 
   return {
     baseCurrency_adminLoss: baseAdmin,
     baseCurrency_shopLoss: baseShop,
     secondaryCurrency_adminLoss,
     secondaryCurrency_shopLoss,
-    inEndorseLossDeliveryFeeIncluded: !!deliveryfee,
   };
 };
 
 export const validateCancelData = (order, cancelOrderData) => {
+  const deliveryfee = cancelOrderData?.selectedItems?.find((item) => item?.id === 'delivery_fee');
   const cancelOrderTemplate = {
     orderId: order?._id,
     logUser: cancelOrderData?.logUser, // all, rider, shop
@@ -66,7 +51,13 @@ export const validateCancelData = (order, cancelOrderData) => {
     endorseLoss: {
       ...getEndorseLoss(cancelOrderData),
     },
+    inEndorseLossDeliveryFeeIncluded: !!deliveryfee,
   };
+
+  const shopLoss = cancelOrderData?.endorseLoss?.baseCurrency_shopLoss;
+  const adminLoss = cancelOrderData?.endorseLoss?.baseCurrency_adminLoss;
+
+  const totalLoss = Number(adminLoss || 0) + Number(shopLoss || 0);
 
   if (order?.isButler) {
     if (!cancelOrderData?.cancelReason) {
@@ -112,7 +103,7 @@ export const validateCancelData = (order, cancelOrderData) => {
     return { status: false };
   }
 
-  if (!cancelOrderData?.refundPercentage) {
+  if (cancelOrderData?.isEndorseLoss === 'true' && !cancelOrderData?.refundPercentage) {
     successMsg('Select Put cost on options!');
     return { status: false };
   }
@@ -122,8 +113,10 @@ export const validateCancelData = (order, cancelOrderData) => {
     return { status: false };
   }
 
-  if (cancelOrderData?.endorseLoss?.baseCurrency_shopLoss <= 0) {
-    successMsg('Put some amount on shop profit field!');
+  console.log(cancelOrderData?.totalSelectedAmount, totalLoss, cancelOrderData);
+
+  if (cancelOrderData?.isEndorseLoss === 'true' && cancelOrderData?.totalSelectedAmount !== totalLoss) {
+    successMsg('Total entered endorse loss not equal to total amount!');
     return { status: false };
   }
 

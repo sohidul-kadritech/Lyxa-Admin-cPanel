@@ -26,7 +26,7 @@ export const initialDataForFlagg = (order) => {
     deliveryType: '',
     flaggedReason: '', // "missing-item" || "wrong-item" || "others"
     otherReason: '',
-    replacement: 'without', // "with" || "without"
+    replacement: '', // "with" || "without"
     refund: '', // "with" || "without"
     logUser: '',
     refundType: '',
@@ -41,11 +41,12 @@ export const initialDataForFlagg = (order) => {
     totalSelectedAmount: 0,
     deliveryfee: 0,
     replacementOrderCut: {
-      baseCurrency_shopCutForReplacement: 0,
-      secondaryCurrency_shopCutForReplacement: 0,
-      baseCurrency_adminCutForReplacement: 0,
-      secondaryCurrency_adminCutForReplacement: 0,
+      baseCurrency_shopCutForReplacement: '',
+      secondaryCurrency_shopCutForReplacement: '',
+      baseCurrency_adminCutForReplacement: '',
+      secondaryCurrency_adminCutForReplacement: '',
     },
+    byPercentage: {},
   };
 
   return flaggData;
@@ -66,6 +67,7 @@ export const initialDataForCancelOrder = (order) => {
     },
     selectedItems: [],
     totalSelectedAmount: 0,
+    byPercentage: {},
   };
 
   return cancelData;
@@ -128,8 +130,11 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
 
     console.log('validation', validatedData, getApi(flaggData));
 
-    if (validatedData?.status === 'true') {
-      flaggedQueryMutation.mutate({ api: getApi(flaggData), payload: validatedData?.data });
+    if (validatedData?.status === true) {
+      flaggedQueryMutation.mutate({
+        api: getApi(flaggData),
+        payload: validatedData?.data,
+      });
     }
   };
 
@@ -152,7 +157,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    []
+    [],
   );
 
   return (
@@ -205,7 +210,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
                       onSubmitCancelOrder();
                     }}
                   >
-                    Done
+                    {flaggData?.replacement === 'with' ? 'Place Order' : 'Done'}
                   </Button>
                 </Stack>
               </Stack>

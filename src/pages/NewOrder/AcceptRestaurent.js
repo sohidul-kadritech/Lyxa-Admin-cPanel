@@ -20,8 +20,12 @@ function AirbnbThumbComponent(props) {
     </SliderThumb>
   );
 }
-function AcceptRestaurent({ onClose }) {
+function AcceptRestaurent({ onClose, currentOrder, updateStatusMutation }) {
   const [time, setTime] = useState(0);
+
+  const acceptOrder = () => {
+    // updateStatusMutation.mutate({ data: });
+  };
   return (
     <Paper
       sx={{
@@ -65,7 +69,13 @@ function AcceptRestaurent({ onClose }) {
             <Button variant="outlined" color="primary" size="small">
               Cancel
             </Button>
-            <Button variant="contained" color="primary" size="small">
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              disabled={updateStatusMutation?.isLoading}
+              onClick={acceptOrder}
+            >
               Confirm & Accept Order
             </Button>
           </Stack>

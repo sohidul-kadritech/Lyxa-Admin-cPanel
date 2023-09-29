@@ -267,7 +267,18 @@ VAT inclusive"
               isNegative
               showIfZero
             />
-            <PriceItem title="Error charge" amount={otherPayments?.errorCharge} isNegative showIfZero />
+            <PriceItem
+              title="Error charge by Lyxa"
+              amount={Math.abs(otherPayments?.errorCharge)}
+              isNegative={otherPayments?.errorCharge > 0}
+              showIfZero
+            />
+            <PriceItem
+              title="Error charge by Shop"
+              amount={Math.abs(otherPayments?.shopErrorCharge)}
+              isNegative={otherPayments?.shopErrorCharge > 0}
+              showIfZero
+            />
             <PriceItem
               title="Customer refund by Lyxa"
               amount={otherPayments?.customerRefund || 0}

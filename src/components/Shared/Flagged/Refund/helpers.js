@@ -1,5 +1,8 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
+
+import { getRefundMaxAmounts } from '../../RefundOrder/helpers';
+
 export const logUsersOptions = [
   { value: 'all', label: 'All' },
   { value: 'rider', label: 'Rider' },
@@ -72,13 +75,12 @@ export const calculateVat = (order, flaggedData, adminVat) => {
   };
 
   if (flaggedData?.replacement === 'with') {
-    const vatForShop = Math.min(Number(baseCurrency_shopCutForReplacement || 0) * (adminVat / 100), totalVat);
-    const vatForAdmin = Math.min(Number(baseCurrency_adminCutForReplacement || 0) * (adminVat / 100), totalVat);
+    const vatForDeliveryFee = Math.min(Number(flaggedData?.deliveryfee || 0) * (adminVat / 100), totalVat);
 
     const vatData = {
       vatForShop,
       vatForAdmin,
-      totalVat: (vatForShop + vatForAdmin).toFixed(2),
+      totalVat: (vatForDeliveryFee || 0).toFixed(2),
     };
 
     return vatData;
@@ -233,4 +235,22 @@ const getMaxForReplacementOrderForPrice = (flaggData, byPrice) => {
   };
 
   return initialMax;
+};
+
+export const getTotalRefundAmountWithVat = (order, flaggedData, totalVat) => {
+  const { partialPayment } = flaggedData;
+  const { shop, adminOrderRefund, adminDeliveryRefund } = partialPayment;
+
+  const totalAmount =
+    Number(shop || 0) + Number(adminDeliveryRefund || 0) + Number(adminOrderRefund || 0) + Number(totalVat || 0);
+
+  if (flaggedData?.refund === 'with' && flaggedData?.refundType === 'full') {
+    const getMaxForPartialPayment = getRefundMaxAmounts(order);
+    const { shop, adminOrderRefund, adminDeliveryRefund, adminVat } = getMaxForPartialPayment;
+    const totalAmount =
+      Number(shop || 0) + Number(adminDeliveryRefund || 0) + Number(adminOrderRefund || 0) + Number(adminVat || 0);
+    return totalAmount;
+  }
+
+  return totalAmount.toFixed(2);
 };

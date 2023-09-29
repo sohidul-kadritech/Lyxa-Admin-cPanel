@@ -42,8 +42,6 @@ function CancelOrder({ order, cancelOrderData, setCancelOrderData }) {
     setCancelOrderData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  console.log('order?.isButler', order?.isButler);
-
   return (
     <Box marginTop={5} pr={5}>
       <Stack gap={5}>

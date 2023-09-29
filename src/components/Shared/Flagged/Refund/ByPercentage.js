@@ -8,9 +8,9 @@ import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
 import { getMaxForPartialPayment, getMaxLimit } from './helpers';
 
 const initialData = {
-  shop: 0,
-  adminOrderRefund: 0,
-  adminDeliveryRefund: 0,
+  shop: '',
+  adminOrderRefund: '',
+  adminDeliveryRefund: '',
 };
 
 function ByPercentage({ flaggData, setFlaggData, order }) {
@@ -20,7 +20,21 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
 
   useEffect(() => {
     setMaxAmount(getMaxLimit(flaggData, order));
-  }, [flaggData]);
+    setFlaggData((prev) => {
+      if (prev?.replacement === 'with' && prev?.refundPercentage === 'by_percentage') {
+        console.log('replacement', { byPercentage: prev?.byPercentage });
+      }
+      if (
+        prev?.replacement === 'without' &&
+        prev?.refundType === 'with' &&
+        prev?.refundPercentage === 'by_percentage'
+      ) {
+        console.log('refund', { byPercentage: prev?.byPercentage });
+      }
+
+      return { ...prev };
+    });
+  }, [flaggData?.selectedItems]);
 
   const onChangeHandler = (e) => {
     setByPercentage((prev) => {
@@ -33,7 +47,14 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
 
       const distributedPayment = getMaxForPartialPayment(flaggData, order, updatedValue, e.target.name);
       //  updated flagged data
-      setFlaggData((prev) => ({ ...prev, partialPayment: distributedPayment.initialMax }));
+      setFlaggData((prev) => ({
+        ...prev,
+        byPercentage: {
+          ...distributedPayment.percentage,
+          [e.target.name]: updatedNewValue,
+        },
+        partialPayment: distributedPayment.initialMax,
+      }));
 
       return {
         ...distributedPayment.percentage,
@@ -65,6 +86,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
 
       setFlaggData((prev) => ({
         ...prev,
+        byPercentage: { ...updatedValue },
         replacementOrderCut: {
           ...prev?.replacementOrderCut,
           baseCurrency_shopCutForReplacement,

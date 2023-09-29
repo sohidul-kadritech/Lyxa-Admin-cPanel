@@ -9,7 +9,6 @@ const getProductAmount = (productData) => {
   const data = [];
 
   productData?.forEach((item) => {
-    console.log('item?.productId', data, item);
     // check it is exist or not,
     const isExist = data?.findIndex((d) => item?.productId === d?.product);
 
@@ -20,9 +19,9 @@ const getProductAmount = (productData) => {
       const template = {
         product: item?.productId,
         quantity: 1,
-        perProduct: item?.price,
-        totalProductAmount: item?.price,
-        attributes: [{}],
+        perProduct: item?.baseCurrency_productPrice,
+        totalProductAmount: item?.baseCurrency_productPrice,
+        attributes: item?.selectedAttributes,
       };
       data.push(template);
     }
@@ -69,7 +68,7 @@ const getReplacementOrderDeliveryInfo = (order, flaggData, vat) => {
     secondaryCurrency_deliveryFee: secondaryRiderFee,
     baseCurrency_riderProfit: baseriderProfit,
     secondaryCurrency_riderProfit: secondaryRiderProfit,
-    baseCurrency_adminChargeFromDelivery,
+    baseCurrency_adminDeliveryProfit: baseCurrency_adminChargeFromDelivery,
     secondaryCurrency_adminDeliveryProfit: secondaryCurrency_adminChargeFromDelivery,
     baseCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat,
     secondaryCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat * adminExchangeRate,
@@ -184,10 +183,10 @@ export const validateFlagData = (order, flaggData, VAT) => {
   const totalVat = baseCurrency_vatForAdmin + baseCurrency_vatForShop;
 
   const baseCurrency_shopCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0
+    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0,
   );
   const baseCurrency_adminCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0
+    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0,
   );
 
   const totalReplacementAmount = baseCurrency_shopCutForReplacement + baseCurrency_adminCutForReplacement;

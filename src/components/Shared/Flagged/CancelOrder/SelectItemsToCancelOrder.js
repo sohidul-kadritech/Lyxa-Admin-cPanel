@@ -27,7 +27,7 @@ export const getSelectableItems = (order) => {
   const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
 
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
+    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
       ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 

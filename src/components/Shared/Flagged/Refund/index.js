@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import React from 'react';
 import { useGlobalContext } from '../../../../context';
 import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
@@ -9,8 +10,11 @@ import ByPercentage from './ByPercentage';
 import ByPrice from './ByPrice';
 import { CustomInputField } from './CustomInputField';
 
+import { getRefundMaxAmounts } from '../../RefundOrder/helpers';
+
 import SelectItemsToRefund from './SelectItemsToRefund';
 
+import { TitleWithToolTip } from '../../../../pages/NewOrder/helpers';
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -19,6 +23,7 @@ import {
   ReplacementOptions,
   TypeOptions,
   calculateVat,
+  getTotalRefundAmountWithVat,
   logUsersOptions,
 } from './helpers';
 
@@ -34,6 +39,11 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
       if (prev?.replacement === 'with' && e.target.name === 'flaggedReason' && e.target.value === 'missing-item') {
         return { ...prev, deliveryType: 'shop-customer', [e.target.name]: e.target.value };
       }
+
+      if (prev?.refund === 'with' && e.target.name === 'refundType' && e.target.value === 'full') {
+        return { ...prev, partialPayment: { ...getRefundMaxAmounts(order) }, [e.target.name]: e.target.value };
+      }
+
       return { ...prev, [e.target.name]: e.target.value };
     });
   };
@@ -194,6 +204,17 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 }}
               />
             </Stack>
+            {flaggData?.refundType === 'full' && (
+              <Stack mt={2.5}>
+                <TitleWithToolTip
+                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                  title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
+                    order,
+                    flaggData,
+                  )}`}
+                />
+              </Stack>
+            )}
           </StyledInputBox>
         )}
 
@@ -251,9 +272,20 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
               )}
 
               <Stack mt={2.5}>
-                <Typography variant="h6">
-                  Total VAT: {calculateVat(order, flaggData, appSetting?.vat).totalVat}
-                </Typography>
+                <TitleWithToolTip
+                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                  title={`${flaggData?.replacement === 'without' ? 'Total VAT' : 'Total Delivery VAT'}: ${
+                    appSetting?.baseCurrency?.symbol
+                  } ${calculateVat(order, flaggData, appSetting?.vat).totalVat}`}
+                />
+                <TitleWithToolTip
+                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                  title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
+                    order,
+                    flaggData,
+                    calculateVat(order, flaggData, appSetting?.vat).totalVat,
+                  )}`}
+                />
               </Stack>
             </Stack>
           </StyledInputBox>

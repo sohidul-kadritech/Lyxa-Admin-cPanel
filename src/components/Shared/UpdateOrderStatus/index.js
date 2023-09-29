@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
@@ -34,7 +35,6 @@ const disableUpdateStatusButton = (order, currentStatus, deliveryBoy) => {
   const notAssignRider = !order?.deliveryBoy;
 
   const shouldNotDisable = isGlobal && isPreparing && notAssignRider;
-  console.log('getNextStatus(order, true)', getNextStatus(order, true), currentStatus);
 
   if (shouldNotDisable && currentStatus === 'accepted_delivery_boy') {
     console.log('1', false);
@@ -75,15 +75,13 @@ export const getUpdateStatusValue = (currentOrder, currentStatus) => {
 
   const isPreparingFirstAndShouldChangeTheCurrentValue = isGlobal && isPreparingFirst;
 
-  console.log('return preparing');
   if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && notAssignRider) {
     return 'preparing';
   }
-  console.log('return accepted delivery boy');
+
   if (currentStatus === 'preparing' && isPreparingFirstAndShouldChangeTheCurrentValue && !notAssignRider) {
     return 'accepted_delivery_boy';
   }
-  console.log('return any');
 
   return status;
 };
@@ -136,10 +134,13 @@ export default function UpdateOrderStatus({
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
 
   const [currentOrder, setCurrentOrder] = useState(getUpdatedOrderData(order));
+
   const [paidCurrency, setPaidCurrency] = useState('');
+
   const [deliveryBoyList, setDeliveryBoyList] = useState([]);
 
   const [open, setOpen] = useState(false);
+
   const [showDelivery, setShowDelivery] = useState(false);
 
   const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
@@ -292,6 +293,51 @@ export default function UpdateOrderStatus({
     // mutateAsync
   };
 
+  // auto asignRider handler here
+
+  const autoAssingRiderHandler = () => {
+    setCurrentOrderDelivery((prev) => {
+      // check the length of the rider list;
+      if (deliveryBoyList?.length > 0) {
+        // check the old rider is availble in the list or not.
+        const isExistRider = deliveryBoyList?.findIndex((item) => item?._id === prev?._id);
+
+        if (isExistRider >= 0) {
+          // if exist check the the index is same or less than the delivery boy list length or not.
+          if (isExistRider > 0) {
+            // if the existing rider index is smaller than  deliverylist length select the next one.
+            return deliveryBoyList[0];
+          }
+
+          if (isExistRider === 0 && deliveryBoyList?.length > 1) {
+            return deliveryBoyList[1];
+          }
+          // otherwise select the last one of the list
+
+          successMsg('There are no available rider to change');
+
+          return deliveryBoyList[deliveryBoyList?.length - 1];
+        }
+        // if (isExistRider >= 0) {
+        //   // if exist check the the index is same or less than the delivery boy list length or not.
+        //   if (isExistRider < deliveryBoyList?.length - 1) {
+        //     // if the existing rider index is smaller than  deliverylist length select the next one.
+        //     return deliveryBoyList[isExistRider + 1];
+        //   }
+        //   // otherwise select the last one of the list
+
+        //   return deliveryBoyList[deliveryBoyList?.length - 1];
+        // }
+        // select the 1st rider
+        return deliveryBoyList[0];
+      }
+
+      successMsg('No rider are there!');
+
+      return prev;
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -436,6 +482,9 @@ export default function UpdateOrderStatus({
         {(((currentStatus === 'accepted_delivery_boy' || showDelivery) && !isSelfShop) ||
           (currentStatus === 'preparing' && isSelfShop)) && (
           <Box flex={1}>
+            <Button variant="text" disableRipple onClick={autoAssingRiderHandler}>
+              {order?.deliveryBoy ? 'Auto re-assign rider' : 'Auto assign rider'}
+            </Button>
             <StyledFormField
               disabled={globalRidersQuery?.isLoading || shopRiderQuery?.isLoading}
               label="Select Rider *"
@@ -478,7 +527,7 @@ export default function UpdateOrderStatus({
         )}
 
         {/* paid currency */}
-        {currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && (
+        {currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !currentOrder?.isReplacementOrder && (
           <Box>
             <StyledFormField
               label="Paid Currency *"

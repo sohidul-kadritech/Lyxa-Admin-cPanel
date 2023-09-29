@@ -64,8 +64,6 @@ export default function LyxaOrderFinancials({ shopType }) {
 
   const profitBreakdown = summary?.profitBreakdown;
 
-  console.log('getFinancials', getFinancialsDashBoard?.data?.data);
-
   return (
     <Box>
       <PageTop
@@ -89,7 +87,6 @@ export default function LyxaOrderFinancials({ shopType }) {
             </Grid>
             <InfoCard
               title="Total Lyxa Profit"
-              // value={`${currency} ${(profitBreakdown?.totalAdminProfit || 0).toFixed(2)}`}
               valueComponent={
                 <Stack direction="column" alignItems="baseline" gap={2}>
                   <Typography

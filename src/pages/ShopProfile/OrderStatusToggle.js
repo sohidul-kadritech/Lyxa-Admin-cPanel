@@ -18,11 +18,14 @@ export default function OrderToggle({ shop }) {
   const mutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data?.status ? 'success' : undefined);
+
       if (data?.status) {
         shop.liveStatus = data?.data?.shop?.liveStatus ?? shop.liveStatus;
+
         socketServices.emit('shopLiveStatusUpdated', { liveStatus: shop.liveStatus, shopId: shop?._id });
 
         dispatchCurrentUser({ type: 'shop', payload: { shop } });
+
         setRender((prev) => !prev);
       }
     },

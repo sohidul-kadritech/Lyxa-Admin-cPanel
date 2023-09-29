@@ -6,15 +6,11 @@ import { CustomInputField } from '../Refund/CustomInputField';
 import StyledInputForRefundPercentage from '../Refund/StyledInputForRefundPercentage';
 
 const initialData = {
-  shop: 0,
-  adminOrderRefund: 0,
-  adminDeliveryRefund: 0,
+  shop: '',
+  adminOrderRefund: '',
+  adminDeliveryRefund: '',
 };
-// baseCurrency_shopEarnings
-// summary?.baseCurrency_riderFee
-// adminCharge?.baseCurrency_adminChargeFromOrder
-// delivery_fee
-// selectedItems
+
 function ByPercentage({ cancelOrderData, setCancelOrderData, order }) {
   // const [maxAmount, setMaxAmount] = useState(getMaxLimit(cancelOrderData, order));
 
@@ -24,18 +20,25 @@ function ByPercentage({ cancelOrderData, setCancelOrderData, order }) {
     setByPercentage((prev) => {
       const newValue = Number(e.target.value) < 0 ? 0 : Number(e.target.value) > 100 ? 100 : e.target.value;
       const adminOrderRefund = 100 - newValue;
-
+      const updatedPercentageValue = {
+        ...prev,
+        adminOrderRefund,
+        [e.target.name]: newValue,
+      };
       setCancelOrderData((prev) => {
         const totalSelectedAmount = prev?.totalSelectedAmount;
         const baseCurrency_adminLoss = (totalSelectedAmount * (adminOrderRefund / 100)).toFixed(2);
         const baseCurrency_shopLoss = (totalSelectedAmount * (newValue / 100)).toFixed(2);
 
-        return { ...prev, endorseLoss: { ...prev?.endorseLoss, baseCurrency_shopLoss, baseCurrency_adminLoss } };
+        return {
+          ...prev,
+          byPercentage: { ...updatedPercentageValue },
+          endorseLoss: { ...prev?.endorseLoss, baseCurrency_shopLoss, baseCurrency_adminLoss },
+        };
       });
+
       return {
-        ...prev,
-        adminOrderRefund,
-        [e.target.name]: newValue,
+        ...updatedPercentageValue,
       };
     });
   };

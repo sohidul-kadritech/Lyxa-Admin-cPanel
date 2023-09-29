@@ -40,7 +40,7 @@ export const getSelectableItems = (order, flaggData) => {
   // check the order is replacement with missing order or not.
   const replacementWithMissingItem = flaggData?.replacement === 'with' && flaggData?.flaggedReason === 'missing-item';
   const replacementWith = flaggData?.replacement === 'with';
-
+  console.log('order', { order });
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
       // calculating shop earning
@@ -62,7 +62,7 @@ export const getSelectableItems = (order, flaggData) => {
 
   // check delivery fee is free or not.
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
+    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
       ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 
@@ -91,6 +91,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
 
   const [deliveryFee, setDeliveryFee] = useState(0);
 
+  console.log({ flaggData });
   useEffect(() => {
     setDeliveryFee(getDeliveryFee(order, flaggData, setFlaggData));
     setRefundItem((prev) => getSelectableItems(order, flaggData));

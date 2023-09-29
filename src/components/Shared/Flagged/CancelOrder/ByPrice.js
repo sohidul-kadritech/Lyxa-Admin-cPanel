@@ -26,6 +26,8 @@ function ByPrice({ cancelOrderData, setCancelOrderData, order }) {
           ? totalSelectedAmount
           : e.target.value;
 
+      console.log('newValue', newValue);
+
       const baseCurrency_adminLoss = totalSelectedAmount - newValue;
       return {
         ...prev,
@@ -40,7 +42,7 @@ function ByPrice({ cancelOrderData, setCancelOrderData, order }) {
         <CustomInputField
           endAdornment="$"
           inputProps={{
-            value: cancelOrderData?.endorseloss?.baseCurrency_shopLoss,
+            value: cancelOrderData?.endorseLoss?.baseCurrency_shopLoss,
             name: 'baseCurrency_shopLoss',
             type: 'number',
             onChange: onChangeHandler,
