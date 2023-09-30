@@ -106,6 +106,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       if (data.status) {
         successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         onClose();
       } else {
         successMsg(data?.message, 'error');
@@ -118,6 +120,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       if (data.status) {
         successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         onClose();
       } else {
         successMsg(data?.message, 'error');

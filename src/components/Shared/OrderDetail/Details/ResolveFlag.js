@@ -29,6 +29,8 @@ export default function ResolveOrderFlag({ order, setRender }) {
         setRender((prev) => !prev);
         queryClient.invalidateQueries([Api.GET_ALL_FLAGGED_ORDERS]);
         queryClient.invalidateQueries([Api.ORDER_LIST]);
+        queryClient.invalidateQueries(Api.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(Api.LATE_ORDER_COUNT);
       }
     },
   });

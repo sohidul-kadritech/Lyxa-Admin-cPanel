@@ -7,6 +7,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
+import { ReactComponent as ReplacementIcon } from '../../assets/icons/replacement-order-icon.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
@@ -55,17 +56,24 @@ export default function Table({
   orderType,
   loading,
   refetching,
+  render,
+  setRender,
   showFor,
 }) {
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
+
   const { general, currentUser } = useGlobalContext();
 
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
+
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
+
   const [flagModal, setFlagModal] = useState(false);
+
   const [flagModalNew, setFlagModalNew] = useState(false);
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
@@ -87,16 +95,24 @@ export default function Table({
       const findAcceptedCurrentOrder = orders.find(
         (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
-
-      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder).length) {
+      console.log('===>', { findAcceptedCurrentOrder, location, render });
+      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
         setCurrentOrder(findAcceptedCurrentOrder);
         setDetailOpen(true);
+        setRender(true);
+        if (!loading) {
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.delete('urgent-order');
+          history.replace({ search: searchParams.toString() });
+        }
       } else {
         setCurrentOrder({});
         setDetailOpen(false);
+        setRender(false);
       }
     }
-  }, [orders]);
+    // remove the search params
+  }, [loading, location?.search]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
@@ -157,10 +173,17 @@ export default function Table({
           name={
             <span>
               {row?.user?.name}
+
               {row?.chats?.length || row?.admin_chat_request?.length ? (
                 <>
                   &nbsp;&nbsp;
                   <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.isReplacementOrder ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
                 </>
               ) : null}
               {row?.flag?.length ? (

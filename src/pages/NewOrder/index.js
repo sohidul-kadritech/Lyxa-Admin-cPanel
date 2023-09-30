@@ -72,6 +72,8 @@ export default function NewOrders({ showFor }) {
 
     if (response.status) {
       queryClient.invalidateQueries(Api.ORDER_LIST);
+      queryClient.invalidateQueries(Api.URGENT_ORDER_COUNT);
+      queryClient.invalidateQueries(Api.LATE_ORDER_COUNT);
 
       // if (onUpdateSuccess) onUpdateSuccess(response);
 

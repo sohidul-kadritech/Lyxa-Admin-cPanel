@@ -9,7 +9,7 @@ import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
 import Orders from '../../AdminOrderTable/Orders';
 
-const defaultSearchParams = {
+const defaultSearchParams = (type = 'urgent') => ({
   page: 1,
   pageSize: 20,
   sortBy: 'DESC',
@@ -19,11 +19,11 @@ const defaultSearchParams = {
   orderType: 'all',
   model: '',
   type: 'ongoing',
-  errorOrderType: 'urgent',
-};
+  errorOrderType: type,
+});
 
-function UrgentOrderTable() {
-  const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
+function UrgentOrderTable({ api = API_URL.URGENT_ORDER_LIST, type = 'urgent', showFor = 'customerService' }) {
+  const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams(type));
   const [order, setOrder] = useState({});
   // const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
   const { currentUser } = useGlobalContext();
@@ -32,11 +32,11 @@ function UrgentOrderTable() {
     <Box>
       <Orders
         paddingTop={0}
-        showFor="customerService"
+        showFor={showFor}
         urgentOrderCountParams={{
           assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
         }}
-        api={API_URL.URGENT_ORDER_LIST}
+        api={api}
         showTabs={{
           category: true,
           errorOrderType: false,

@@ -314,7 +314,7 @@ export default function UpdateOrderStatus({
           }
           // otherwise select the last one of the list
 
-          successMsg('There are no available rider to change');
+          successMsg('There are no available riders to change');
 
           return deliveryBoyList[deliveryBoyList?.length - 1];
         }
@@ -332,7 +332,7 @@ export default function UpdateOrderStatus({
         return deliveryBoyList[0];
       }
 
-      successMsg('No rider are there!');
+      successMsg('No riders are there!');
 
       return prev;
     });
