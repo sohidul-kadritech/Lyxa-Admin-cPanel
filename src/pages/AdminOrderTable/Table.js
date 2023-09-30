@@ -47,6 +47,15 @@ const filterColumns = (columns, shopType, orderType, showFor) => {
   return cols;
 };
 
+function CustomExpandRow({ row }) {
+  return (
+    <div>
+      <p>{row.description}</p>
+      {/* Add more details as needed */}
+    </div>
+  );
+}
+
 export default function Table({
   orders = [],
   shopType,
@@ -81,14 +90,24 @@ export default function Table({
   const [openCancelModalNew, setOpenCancelModalNew] = useState(false);
 
   const [openRefundModal, setOpenRefundModal] = useState(false);
+
+  const [newOrders, setNewOrders] = useState(orders);
+
   const [currentOrder, setCurrentOrder] = useState({});
 
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
+
+  const [addedIndex, setAddedIndex] = useState(0);
+
   const location = useLocation();
 
   console.log('location', location?.state);
+
+  useEffect(() => {
+    setNewOrders([...orders]);
+  }, [orders]);
 
   useEffect(() => {
     if (location?.search === '?urgent-order') {
@@ -156,6 +175,21 @@ export default function Table({
     }
   };
 
+  const onClickExpandHandler = (data, element) => {
+    const tempOrder = [...newOrders];
+
+    const findOrderIndex = tempOrder?.findIndex((order) => order?._id === data?._id);
+
+    if (findOrderIndex >= 0) {
+      tempOrder?.splice(findOrderIndex + 1, 0, element);
+      setAddedIndex(findOrderIndex + 1);
+    } else {
+      setAddedIndex(0);
+    }
+
+    setNewOrders((prev) => [...tempOrder]);
+  };
+
   const columns = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
@@ -170,10 +204,13 @@ export default function Table({
           imgAlt="user-image"
           imgUrl={row?.user?.profile_photo}
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
+          expandIcon={false}
+          onClickExpand={() => {
+            onClickExpandHandler(row, row?.originalOrder);
+          }}
           name={
             <span>
               {row?.user?.name}
-
               {row?.chats?.length || row?.admin_chat_request?.length ? (
                 <>
                   &nbsp;&nbsp;
@@ -422,8 +459,9 @@ export default function Table({
         {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
         <StyledTable
           columns={filteredColumns}
-          rows={orders}
+          rows={newOrders}
           getRowId={(row) => row?._id}
+          cus
           rowHeight={71}
           components={{
             NoRowsOverlay: () => (
@@ -459,7 +497,7 @@ export default function Table({
         />
       </Drawer>
 
-      <Modal open={flagModalNew}>
+      <Modal sx={{ zIndex: '100 !important' }} open={flagModalNew}>
         <FlaggedModal
           onClose={() => {
             setFlagModalNew(false);
@@ -511,20 +549,18 @@ export default function Table({
       {/*  cancel order with flag modal */}
       <Modal
         open={openCancelModalNew}
-        sx={{ zIndex: '10 !important' }}
+        sx={{ zIndex: '100 !important' }}
         onClose={() => {
           setOpenCancelModalNew(false);
         }}
       >
-        <Box>
-          <FlaggedModal
-            onClose={() => {
-              setOpenCancelModalNew(false);
-            }}
-            order={currentOrder}
-            showFor="cancel-order"
-          />
-        </Box>
+        <FlaggedModal
+          onClose={() => {
+            setOpenCancelModalNew(false);
+          }}
+          order={currentOrder}
+          showFor="cancel-order"
+        />
       </Modal>
       {/* rerfund order */}
       <Modal

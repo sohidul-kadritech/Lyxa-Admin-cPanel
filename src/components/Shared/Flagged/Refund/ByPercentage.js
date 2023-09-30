@@ -2,38 +2,54 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Stack } from '@mui/material';
+import { isFinite } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { CustomInputField } from './CustomInputField';
 import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
 import { getMaxForPartialPayment, getMaxLimit } from './helpers';
 
-const initialData = {
-  shop: '',
-  adminOrderRefund: '',
-  adminDeliveryRefund: '',
+const initialData = (flaggData) => {
+  const template = {
+    adminOrderRefund: '',
+    adminDeliveryRefund: '',
+    shop: '',
+  };
+
+  const { partialPayment, totalSelectedAmount, replacementOrderCut } = flaggData;
+
+  if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'without') {
+    template.adminOrderRefund = Number(
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminOrderRefund || 0)).toFixed(2),
+    );
+    template.adminDeliveryRefund = Number(
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminDeliveryRefund || 0)).toFixed(2),
+    );
+    template.shop = Number(((100 / totalSelectedAmount) * Number(partialPayment.shop || 0)).toFixed(2));
+  }
+
+  if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'with') {
+    template.adminOrderRefund = Number(
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_adminCutForReplacement || 0)).toFixed(2),
+    );
+    template.adminDeliveryRefund = Number(
+      ((100 / totalSelectedAmount) * partialPayment.adminDeliveryRefund).toFixed(2),
+    );
+    template.shop = Number(
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_shopCutForReplacement || 0)).toFixed(2),
+    );
+  }
+
+  return template;
 };
 
 function ByPercentage({ flaggData, setFlaggData, order }) {
   const [maxAmount, setMaxAmount] = useState(getMaxLimit(flaggData, order));
 
-  const [byPercentage, setByPercentage] = useState(initialData);
+  const [byPercentage, setByPercentage] = useState(initialData(flaggData));
 
   useEffect(() => {
     setMaxAmount(getMaxLimit(flaggData, order));
-    setFlaggData((prev) => {
-      if (prev?.replacement === 'with' && prev?.refundPercentage === 'by_percentage') {
-        console.log('replacement', { byPercentage: prev?.byPercentage });
-      }
-      if (
-        prev?.replacement === 'without' &&
-        prev?.refundType === 'with' &&
-        prev?.refundPercentage === 'by_percentage'
-      ) {
-        console.log('refund', { byPercentage: prev?.byPercentage });
-      }
-
-      return { ...prev };
-    });
+    setByPercentage(initialData(flaggData));
   }, [flaggData?.selectedItems]);
 
   const onChangeHandler = (e) => {

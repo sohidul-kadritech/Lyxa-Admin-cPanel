@@ -74,7 +74,6 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-      refetchOnWindowFocus: true,
     },
   );
 

@@ -206,6 +206,16 @@ export const validateFlagData = (order, flaggData, VAT) => {
     return { status: false };
   }
 
+  if (flaggData?.replacement === 'with' && flaggData?.flaggedReason !== 'missing-item' && !flaggData?.deliveryType) {
+    successMsg('Select delivery type option !');
+    return { status: false };
+  }
+
+  if (flaggData?.replacement === 'with' && !flaggData?.selectedItems?.length) {
+    successMsg('Select item to replacement !');
+    return { status: false };
+  }
+
   if (flaggData?.replacement === 'with' && !flaggData?.deliveryType) {
     successMsg('Select delivery type option !');
     return { status: false };
@@ -215,6 +225,11 @@ export const validateFlagData = (order, flaggData, VAT) => {
 
   if (flaggData?.replacement === 'with' && totalReplacementAmount !== flaggData?.totalSelectedAmount) {
     successMsg('Replacement amount should be equal to total amount !');
+    return { status: false };
+  }
+
+  if (flaggData?.flaggedReason === 'others' && !flaggData?.otherReason) {
+    successMsg('Write other reason !');
     return { status: false };
   }
 
@@ -233,8 +248,8 @@ export const validateFlagData = (order, flaggData, VAT) => {
     return { status: false };
   }
 
-  if (flaggData?.flaggedReason === 'others' && !flaggData?.otherReason) {
-    successMsg('Write other reason !');
+  if (flaggData?.refund === 'with' && !flaggData?.selectedItems?.length) {
+    successMsg('Select refund Items!');
     return { status: false };
   }
 
@@ -242,9 +257,22 @@ export const validateFlagData = (order, flaggData, VAT) => {
     refundTemplate.partialPayment = getRefundMaxAmounts(order);
     return { status: true, data: refundTemplate };
   }
-  if (flaggData?.refund === 'with' && flaggData?.refundType === 'partial') {
-    refundTemplate.partialPayment.shop += calculateVat(order, flaggData, VAT).vatForShop;
 
+  if (flaggData?.refund === 'with' && flaggData?.refundType === 'partial') {
+    // adminOrderRefund
+    // adminDeliveryRefund
+    const total =
+      Number(refundTemplate?.partialPayment?.adminDeliveryRefund || 0) +
+      Number(refundTemplate?.partialPayment?.shop || 0) +
+      Number(refundTemplate?.partialPayment?.adminOrderRefund);
+
+    if (total !== flaggData?.totalSelectedAmount) {
+      successMsg('Total refunded amount must be equal to total selected amount');
+
+      return { status: false };
+    }
+
+    refundTemplate.partialPayment.shop += calculateVat(order, flaggData, VAT).vatForShop;
     refundTemplate.partialPayment.adminVat = (
       calculateVat(order, flaggData, VAT).totalVat - calculateVat(order, flaggData, VAT).vatForShop
     ).toFixed(2);

@@ -4,12 +4,74 @@
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { isFinite } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
 import StyledIconButton from '../../../Styled/StyledIconButton';
 import SelectableItem from './SelectableItem';
 import StyledContainer from './StyledContainer';
+
+export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) => {
+  const partialPayment = {
+    shop: '',
+    adminOrderRefund: '',
+    adminDeliveryRefund: '',
+    adminVat: '',
+  };
+
+  const replacementOrderCut = {
+    baseCurrency_shopCutForReplacement: '',
+    secondaryCurrency_shopCutForReplacement: '',
+    baseCurrency_adminCutForReplacement: '',
+    secondaryCurrency_adminCutForReplacement: '',
+  };
+
+  if (
+    isFinite(100 / totalSelectedAmount) &&
+    data?.refundPercentage === 'by_percentage' &&
+    data?.replacement === 'without'
+  ) {
+    const shopLossPercentage = Number(data?.byPercentage?.shop || 0);
+    const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
+    const deliveryPercentage = Number(data?.byPercentage?.adminDeliveryRefund || 0);
+
+    partialPayment.adminOrderRefund = Number((totalSelectedAmount * (adminLossPercentage / 100)).toFixed(2));
+    partialPayment.adminDeliveryRefund = Number((totalSelectedAmount * (deliveryPercentage / 100)).toFixed(2));
+    partialPayment.shop = Number((totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2));
+    return { partialPayment };
+  }
+
+  if (
+    isFinite(100 / totalSelectedAmount) &&
+    data?.refundPercentage === 'by_percentage' &&
+    data?.replacement === 'with'
+  ) {
+    const shopLossPercentage = Number(data?.byPercentage?.shop || 0);
+
+    const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
+
+    replacementOrderCut.baseCurrency_shopCutForReplacement = Number(
+      (totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2),
+    );
+
+    replacementOrderCut.baseCurrency_adminCutForReplacement = Number(
+      (totalSelectedAmount * (adminLossPercentage / 100)).toFixed(2),
+    );
+
+    return { replacementOrderCut };
+  }
+
+  if (data?.refundPercentage === 'by_price' && data?.replacement === 'with') {
+    return { replacementOrderCut };
+  }
+
+  if (data?.refundPercentage === 'by_price' && data?.replacement === 'without') {
+    return { partialPayment };
+  }
+
+  return {};
+};
 
 const getDeliveryFee = (order, flaggData, setFlaggData) => {
   const deliveryFee =
@@ -91,7 +153,6 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
 
   const [deliveryFee, setDeliveryFee] = useState(0);
 
-  console.log({ flaggData });
   useEffect(() => {
     setDeliveryFee(getDeliveryFee(order, flaggData, setFlaggData));
     setRefundItem((prev) => getSelectableItems(order, flaggData));
@@ -111,8 +172,8 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       }
       setFlaggData((oldData) => {
         const totalSelectedAmount = prev.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee;
-
-        return { ...oldData, selectedItems: [...prev], totalSelectedAmount };
+        const changeGivenPrice = getUpdatedPartialAndReplacementOrder(oldData, totalSelectedAmount);
+        return { ...oldData, ...changeGivenPrice, selectedItems: [...prev], totalSelectedAmount };
       });
 
       return [...prev];
@@ -136,7 +197,11 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee
             : prev?.totalSelectedAmount;
 
-        return { ...prev, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
+        const changeGivenPrice = getUpdatedPartialAndReplacementOrder(prev, totalSelectedAmount);
+
+        console.log('changeGivenPrice', changeGivenPrice);
+
+        return { ...prev, ...changeGivenPrice, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
       });
       return selected;
     });
@@ -145,16 +210,21 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
   const deSelectItems = (item) => {
     setSelectedItem((prev) => {
       const selected = prev?.filter((prevItem) => prevItem?.id !== item?.id);
+
       setToggledItem(selected);
+
       setFlaggData((prev) => {
         const totalSelectedAmount =
-          prev?.replacement !== 'with' && prev?.flaggedReason !== 'missing-item'
+          prev?.replacement !== 'with'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee
             : prev?.totalSelectedAmount;
 
-        return { ...prev, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
+        const changeGivenPrice = getUpdatedPartialAndReplacementOrder(prev, totalSelectedAmount);
+        console.log('changeGivenPrice', changeGivenPrice);
+
+        return { ...prev, ...changeGivenPrice, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
       });
       return selected;
     });

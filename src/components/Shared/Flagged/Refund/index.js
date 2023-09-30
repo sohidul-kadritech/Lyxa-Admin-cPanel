@@ -205,7 +205,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
               />
             </Stack>
             {flaggData?.refundType === 'full' && (
-              <Stack mt={2.5}>
+              <Stack mt={2.5} gap={2.5}>
                 <TitleWithToolTip
                   tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
                   title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
@@ -271,21 +271,23 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 <ByPrice setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
 
-              <Stack mt={2.5}>
+              <Stack mt={2.5} gap={2.5}>
                 <TitleWithToolTip
                   tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
                   title={`${flaggData?.replacement === 'without' ? 'Total VAT' : 'Total Delivery VAT'}: ${
                     appSetting?.baseCurrency?.symbol
                   } ${calculateVat(order, flaggData, appSetting?.vat).totalVat}`}
                 />
-                <TitleWithToolTip
-                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
-                  title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
-                    order,
-                    flaggData,
-                    calculateVat(order, flaggData, appSetting?.vat).totalVat,
-                  )}`}
-                />
+                {flaggData?.refundType === 'partial' && (
+                  <TitleWithToolTip
+                    tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                    title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
+                      order,
+                      flaggData,
+                      calculateVat(order, flaggData, appSetting?.vat).totalVat,
+                    )}`}
+                  />
+                )}
               </Stack>
             </Stack>
           </StyledInputBox>

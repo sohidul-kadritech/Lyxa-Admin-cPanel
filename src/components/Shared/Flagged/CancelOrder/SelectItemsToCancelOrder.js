@@ -3,6 +3,7 @@
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { isFinite } from 'lodash';
 import React, { useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
@@ -10,13 +11,33 @@ import StyledIconButton from '../../../Styled/StyledIconButton';
 import SelectableItem from '../Refund/SelectableItem';
 import StyledContainer from '../Refund/StyledContainer';
 
+export const getUpdatedEndorseLossValue = (data, totalSelectedAmount) => {
+  const template = {
+    baseCurrency_shopLoss: 0,
+    secondaryCurrency_shopLoss: 0,
+    baseCurrency_adminLoss: 0,
+    secondaryCurrency_adminLoss: 0,
+  };
+
+  if (isFinite(100 / totalSelectedAmount) && data?.refundPercentage === 'by_percentage') {
+    const shopLossPercentage = Number(data?.byPercentage?.shop || 0);
+    const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
+
+    template.baseCurrency_adminLoss = Number((totalSelectedAmount * (adminLossPercentage / 100)).toFixed(2));
+    template.baseCurrency_shopLoss = Number((totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2));
+  }
+
+  return template;
+};
+
 export const getSelectableItems = (order) => {
   let data = [];
   let k = 1;
 
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
-      const price = item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * (order?.adminPercentage / 100);
+      const price =
+        item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * ((order?.adminPercentage || 0) / 100);
       const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
       const temp = { name: item?.productName, price, id: k, secondaryCurrency };
       data.push(temp);
@@ -61,8 +82,13 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
     setSelectedItem((prev) => {
       const selected = [...prev, item];
       setFlaggData((prev) => {
+        // console.log('prev', prev);
+
         const totalSelectedAmount = selected.reduce((prevValue, item) => item?.price + prevValue, 0);
-        return { ...prev, selectedItems: selected, totalSelectedAmount };
+
+        const endorseLoss = getUpdatedEndorseLossValue(prev, totalSelectedAmount);
+
+        return { ...prev, endorseLoss, selectedItems: selected, totalSelectedAmount };
       });
       return selected;
     });
@@ -73,7 +99,9 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
       const selected = prev?.filter((prevItem) => prevItem?.id !== item?.id);
       setFlaggData((prev) => {
         const totalSelectedAmount = selected.reduce((prevValue, item) => item?.price + prevValue, 0);
-        return { ...prev, selectedItems: selected, totalSelectedAmount };
+        const endorseLoss = getUpdatedEndorseLossValue(prev, totalSelectedAmount);
+        console.log('prev', { endorseLoss });
+        return { ...prev, endorseLoss, selectedItems: selected, totalSelectedAmount };
       });
       return selected;
     });
