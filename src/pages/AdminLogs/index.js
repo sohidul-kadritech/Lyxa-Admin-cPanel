@@ -51,8 +51,7 @@ function AdminLogs() {
           setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (

@@ -20,7 +20,8 @@ import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
-import StyledTable from '../../components/Styled/StyledTable3';
+// import StyledTable from '../../components/Styled/StyledTable3';
+import StyledTable5 from '../../components/Styled/StyledTable5';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
@@ -91,8 +92,6 @@ export default function Table({
 
   const [openRefundModal, setOpenRefundModal] = useState(false);
 
-  const [newOrders, setNewOrders] = useState(orders);
-
   const [currentOrder, setCurrentOrder] = useState({});
 
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
@@ -106,13 +105,9 @@ export default function Table({
   console.log('location', location?.state);
 
   useEffect(() => {
-    setNewOrders([...orders]);
-  }, [orders]);
-
-  useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -175,22 +170,7 @@ export default function Table({
     }
   };
 
-  const onClickExpandHandler = (data, element) => {
-    const tempOrder = [...newOrders];
-
-    const findOrderIndex = tempOrder?.findIndex((order) => order?._id === data?._id);
-
-    if (findOrderIndex >= 0) {
-      tempOrder?.splice(findOrderIndex + 1, 0, element);
-      setAddedIndex(findOrderIndex + 1);
-    } else {
-      setAddedIndex(0);
-    }
-
-    setNewOrders((prev) => [...tempOrder]);
-  };
-
-  const columns = [
+  const columnsForExpand = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 1,
@@ -199,15 +179,13 @@ export default function Table({
       flex: 1.5,
       sortable: false,
       minWidth: 240,
-      renderCell: ({ row }) => (
+      renderCell: ({ row, onExpandHandler }) => (
         <UserAvatar
           imgAlt="user-image"
           imgUrl={row?.user?.profile_photo}
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
           expandIcon={false}
-          onClickExpand={() => {
-            onClickExpandHandler(row, row?.originalOrder);
-          }}
+          // onClickExpand={() => {}}
           name={
             <span>
               {row?.user?.name}
@@ -272,7 +250,6 @@ export default function Table({
       minWidth: 120,
       flex: 1.5,
       renderCell: ({ value }) => (
-        // <Typography variant="body4">{value === true ? 'Customer Service Accepted' : 'Not Accepted'}</Typography>
         <Chip
           label={value === true ? 'Accepted' : 'Not Accepted'}
           sx={{
@@ -344,6 +321,266 @@ export default function Table({
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
+            maxWidth: '150px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['scheduled'],
+      id: 5,
+      headerName: 'SCHEDULED FOR',
+      field: 'scheduleDate',
+      sortable: false,
+      flex: 1,
+      minWidth: 220,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 6,
+      headerName: 'DATE',
+      field: 'createdAt',
+      sortable: false,
+      flex: 1.5,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 7,
+      headerName: `ORDER AMOUNT`,
+      field: 'profit',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const total =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+
+        return (
+          <Typography variant="body4">
+            {currency} {(total || 0).toFixed(2)}
+          </Typography>
+        );
+      },
+    },
+    {
+      showFor: ['delivered', 'low-rating'],
+      id: 8,
+      headerName: 'ORDER RATING',
+      field: 'shopRating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['delivered', 'low-rating'],
+      id: 8,
+      headerName: 'RIDER RATING',
+      field: 'riderRating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'deliveryBoy');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 6,
+      headerName: `ACTION`,
+      sortable: false,
+      align: 'right',
+      headerAlign: 'right',
+      flex: 1,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            threeDotHandler(menu, params?.row);
+          }}
+          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
+        />
+      ),
+    },
+  ];
+
+  const filteredColumnsForExpand = useMemo(
+    () => filterColumns(columnsForExpand, shopType, orderType, showFor),
+    [shopType, orderType, showFor]
+  );
+
+  const columns = [
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 1,
+      headerName: 'ACCOUNT',
+      field: 'orders',
+      flex: 1.5,
+      sortable: false,
+      minWidth: 240,
+      renderCell: ({ row, onExpandHandler }) => {
+        console.log('row', showFor);
+        return (
+          <UserAvatar
+            imgAlt="user-image"
+            imgUrl={row?.user?.profile_photo}
+            imgFallbackCharacter={row?.user?.name?.charAt(0)}
+            expandIcon={
+              !!((row?.orderStatus === 'delivered' || row?.orderStatus === 'cancelled') && row?.isReplacementOrder)
+            }
+            onClickExpand={() => {
+              onExpandHandler(
+                <StyledTable5
+                  showHeader={false}
+                  columns={filteredColumnsForExpand}
+                  rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
+                />
+              );
+            }}
+            name={
+              <span>
+                {row?.user?.name}
+                {row?.chats?.length || row?.admin_chat_request?.length ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <MessageIcon color="#5BBD4E" />
+                  </>
+                ) : null}
+                {row?.isReplacementOrder ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
+                  </>
+                ) : null}
+                {row?.flag?.length ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <FlagIcon color="#DD5B63" />
+                  </>
+                ) : null}
+              </span>
+            }
+            subTitle={row?.isReplacementOrder ? row?.originalOrder?.orderId : row?.orderId}
+            subTitleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                setCurrentOrder(row);
+                setDetailOpen(true);
+              },
+            }}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push({
+                  pathname: `/users/${row?.user?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                });
+              },
+            }}
+          />
+        );
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 2,
+      headerName: `TYPE`,
+      field: 'shopType',
+      sortable: false,
+      minWidth: 120,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{row?.isButler ? 'Butler' : shopTypeLabelMap[row?.shop?.shopType]}</Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing'],
+      id: 2,
+      headerName: `ACCEPTED`,
+      field: 'isCustomerServiceAccepted',
+      sortable: false,
+      minWidth: 120,
+      flex: 1.5,
+      renderCell: ({ value }) => (
+        <Chip
+          label={value === true ? 'Accepted' : 'Not Accepted'}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 3,
+      headerName: 'SHOP',
+      field: 'shop',
+      flex: 1,
+      minWidth: 240,
+      sortable: false,
+      renderCell: ({ row }) => {
+        if (row?.isButler) return '_';
+
+        return (
+          <UserAvatar
+            imgAlt="shop-image"
+            imgUrl={row?.shop?.shopLogo}
+            imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
+            name={row?.shop?.shopName}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push({
+                  pathname: `/shop/profile/${row?.shop?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                });
+              },
+            }}
+          />
+        );
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 4,
+      headerName: 'PAYMENT METHOD',
+      field: 'paymentMethod',
+      minWidth: 150,
+      flex: 1,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-capitalize">
+          {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing', 'cancelled'],
+      id: 5,
+      headerName: 'STATUS',
+      field: 'orderStatus',
+      sortable: false,
+      flex: 1,
+      minWidth: 180,
+      renderCell: ({ value }) => (
+        <Chip
+          label={orderStatusMap[value || '']}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            maxWidth: '150px',
             ...(statusColorVariants[value] || {}),
           }}
           variant="contained"
@@ -435,7 +672,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   if (loading) {
@@ -457,7 +694,7 @@ export default function Table({
         }}
       >
         {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
-        <StyledTable
+        {/* <StyledTable
           columns={filteredColumns}
           rows={newOrders}
           getRowId={(row) => row?._id}
@@ -470,6 +707,16 @@ export default function Table({
               </Stack>
             ),
           }}
+        /> */}
+
+        <StyledTable5
+          columns={filteredColumns}
+          rows={orders}
+          NoRowsOverlay={
+            <Stack height="100%" alignItems="center" justifyContent="center">
+              No Order found
+            </Stack>
+          }
         />
       </Box>
       <TablePagination
