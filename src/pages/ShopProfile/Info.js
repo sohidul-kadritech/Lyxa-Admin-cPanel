@@ -25,17 +25,17 @@ export const statusColor = {
 // function is used in multiple places
 export const getShopStatusColor = (shop) => {
   const color = { color: statusColor?.green, status: 'online' };
+  console.log('shop==>', shop);
 
   if (shop?.shopStatus === 'inactive') {
     return { color: statusColor?.yellow, status: 'inactive' };
   }
-
-  if (shop?.liveStatus === 'busy') {
-    return { color: statusColor?.orange, status: 'busy' };
+  if (!shop?.isShopOpen) {
+    return { color: statusColor?.black, status: 'closed' };
   }
 
-  if (shop?.liveStatus === 'offline' || !shop?.isShopOpen) {
-    return { color: statusColor?.black, status: 'closed' };
+  if (shop?.liveStatus === 'busy' || shop?.liveStatus === 'offline') {
+    return { color: statusColor?.orange, status: 'busy' };
   }
 
   return color;

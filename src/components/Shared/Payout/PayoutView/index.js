@@ -87,7 +87,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
             </Button>
 
             <Typography variant="body2" fontWeight={500}>
-              {getPayoutStatusLabel[currentPayout?.info?.payoutStatus] || 'Unknown'}
+              {getPayoutStatusLabel(currentPayout?.info)}
             </Typography>
             <Button
               variant="contained"
@@ -103,7 +103,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
         ) : (
           <Stack direction="row" justifyContent="center" alignItems="center" mt={7.5}>
             <Typography variant="body2" fontWeight={500}>
-              {getPayoutStatusLabel[currentPayout?.info?.payoutStatus] || 'Unknown'}
+              {getPayoutStatusLabel(currentPayout?.info)}
             </Typography>
           </Stack>
         )}

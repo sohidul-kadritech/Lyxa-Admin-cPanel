@@ -1,14 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
+import TablePagination from '../../components/Common/TablePagination';
 import StyledFormField from '../../components/Form/StyledFormField';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { dateRangeInit, sortOptions } from '../Faq2/helpers';
+import { sortOptions } from '../Faq2/helpers';
 import ProductList from './ProductList';
 import ProductPageSkeleton from './ProductPageSkeleton';
 import { shopType, statusTypeOptions } from './helpers';
@@ -27,39 +29,36 @@ const breadcrumbItems = [
 function Product() {
   const { currentUser } = useGlobalContext();
   console.log(currentUser);
-  // eslint-disable-next-line no-unused-vars
+
   const [currentTab, setCurrentTab] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [range, setRange] = useState({ ...dateRangeInit });
-  // eslint-disable-next-line no-unused-vars
+
   const [status, setStatus] = useState('active');
+
   const [sort, setSort] = useState('asc');
-  // eslint-disable-next-line no-unused-vars
+
   const [type, setType] = useState('food');
-  // eslint-disable-next-line no-unused-vars
-  const [open, setOpen] = useState(false);
+
+  const [page, setPage] = useState(1);
+
   const [searchKey, setSearchKey] = useState('');
 
   const queryClient = useQueryClient();
   const url = currentUser.userType === 'admin' ? API_URL.ALL_PRODUCT : '';
 
-  const getAllProduct = useQuery(
-    [url, { status, type, sort, searchKey, startDate: range.start, endDate: range.end }],
-    () =>
-      AXIOS.get(url, {
-        params: {
-          status,
-          sort,
-          type,
-          searchKey,
-          startDate: range.start,
-          endDate: range.end,
-        },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const getAllProduct = useQuery([url, { status, type, sort, searchKey, page }], () =>
+    AXIOS.get(url, {
+      params: {
+        status,
+        sort,
+        type,
+        searchKey,
+        pageSize: 10,
+        page,
+      },
+      // eslint-disable-next-line prettier/prettier
+    }),
   );
 
-  // eslint-disable-next-line no-unused-vars
   const updateStatusQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_PRODUCT, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -69,18 +68,12 @@ function Product() {
     },
   });
 
-  console.log('data', getAllProduct?.data?.data?.products);
-
-  // const getCurrentCurrency = JSON.parse(localStorage.getItem('currency'));
   const { general } = useGlobalContext();
   const getCurrentCurrency = general?.currency;
-
-  console.log('currency', getCurrentCurrency);
 
   return (
     <Box>
       <PageTop
-        // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -99,9 +92,9 @@ function Product() {
           onChange={(event, newValue) => {
             setCurrentTab(() => {
               setType(shopType[newValue]);
+              setPage(1);
               return newValue;
             });
-            // setIsSideBarOpen(false);
           }}
         >
           <Tab label="Food"></Tab>
@@ -155,11 +148,19 @@ function Product() {
           <ProductPageSkeleton />
         </Box>
       ) : (
-        <ProductList
-          data={getAllProduct?.data?.data?.products}
-          getCurrentCurrency={getCurrentCurrency}
-          updateStatusQuery={updateStatusQuery}
-        />
+        <Box mb={80 / 4}>
+          <ProductList
+            data={getAllProduct?.data?.data?.products}
+            getCurrentCurrency={getCurrentCurrency}
+            updateStatusQuery={updateStatusQuery}
+          />
+
+          <TablePagination
+            currentPage={page}
+            totalPage={getAllProduct?.data?.data?.paginate?.metadata?.page?.totalPage}
+            lisener={(page) => setPage(page)}
+          />
+        </Box>
       )}
     </Box>
   );

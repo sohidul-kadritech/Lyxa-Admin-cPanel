@@ -80,10 +80,10 @@ export default function Layout() {
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
         // eslint-disable-next-line prettier/prettier
-        currentUser?.shop?.shopType
+        currentUser?.shop?.shopType,
       ),
     // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType]
+    [currentUser?.userType],
   );
 
   useEffect(() => {
@@ -92,24 +92,33 @@ export default function Layout() {
         console.log('urgent order socketData', data?.order);
         setOpenUrgentOrder(true);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         setOrder(data?.order);
-        history.push({
-          pathname: '/ongoing-tickets',
-          search: '?urgent-order',
-          state: {
-            order: data?.order,
-          },
-        });
       });
       socketServices?.on(`urgent-notification-remove-${currentUser?.admin?._id}`, () => {
         console.log('urgent order socketData removed');
         setOpenUrgentOrder(false);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         setOrder({});
       });
     }
 
+    socketServices?.on(`notify-urgent-order`, () => {
+      console.log('urgent order count');
+      queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+    });
+
+    socketServices?.on(`notify-late-order`, () => {
+      console.log('urgent order count late');
+      queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+    });
+
     return () => {
+      socketServices?.removeListener(`notify-late-order`);
+      socketServices?.removeListener(`notify-urgent-order`);
       socketServices?.removeListener(`urgent-notification`);
       socketServices?.removeListener(`urgent-notification-remove`);
     };

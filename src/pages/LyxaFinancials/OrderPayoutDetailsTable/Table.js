@@ -366,11 +366,18 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               />
 
               <SummaryItem
-                label="Error Charge (Endure loss) by lyxa"
+                label="Error Charge by Lyxa"
                 currencyType={currencyType}
-                isNegative
-                value={otherPayments?.errorCharge}
-                valueSecondary={otherPayments?.errorCharge}
+                isNegative={otherPayments?.errorCharge > 0}
+                value={Math.abs(otherPayments?.errorCharge)}
+                valueSecondary={Math.abs(otherPayments?.errorCharge)}
+              />
+              <SummaryItem
+                label="Error Charge by Shop"
+                currencyType={currencyType}
+                isNegative={otherPayments?.errorCharge < 0}
+                value={Math.abs(otherPayments?.shopErrorCharge)}
+                valueSecondary={Math.abs(otherPayments?.shopErrorCharge)}
               />
 
               <SummaryItem

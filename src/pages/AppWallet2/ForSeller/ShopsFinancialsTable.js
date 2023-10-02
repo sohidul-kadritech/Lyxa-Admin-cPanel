@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useMemo } from 'react';
 // eslint-disable-next-line import/no-named-as-default
@@ -54,7 +55,6 @@ function ShopsFinancialsTable({ data = [], loading, viewUserType }) {
                   pathname: `/shop/profile/${params?.row?._id}`,
                   state: {
                     from: `${routeMatch?.path}?sellerId=${searchParams.get('sellerId')}&companyName=${searchParams.get(
-                      // eslint-disable-next-line prettier/prettier
                       'companyName',
                     )}`,
                     backToLabel: 'Back to Seller Transaction',

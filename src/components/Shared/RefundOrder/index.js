@@ -176,10 +176,6 @@ export default function RefundOrder({ onClose, order, refetchApi = Api.ORDER_LIS
     if (data.error) {
       successMsg(data.msg);
     }
-
-    console.log('data refund', data);
-
-    // mutation.mutate({ ...data, orderId: order?._id });
   };
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Button, FormControl, FormControlLabel, Paper, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
@@ -51,7 +52,7 @@ const getOrderPayment = (currentOrder) => {
 function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
   const [appVat, setAppVat] = useState(0);
   const [orderCancel, setOrderCancel] = useState(
-    orderCancelDataFormation('refund_order', currentOrder, cancelOrderInit)
+    orderCancelDataFormation('refund_order', currentOrder, cancelOrderInit),
   );
   // eslint-disable-next-line no-unused-vars
   const [orderPayment, setOrderPayment] = useState(getOrderPayment(currentOrder));
@@ -73,6 +74,8 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
       if (data.status) {
         successMsg(data.message, 'success');
         queryClient.invalidateQueries(Api.ORDER_LIST);
+        queryClient.invalidateQueries(Api.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(Api.LATE_ORDER_COUNT);
         onClose();
         setOpenRefundModal(false);
       } else {
@@ -338,7 +341,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                           Number(orderCancel?.summary?.baseCurrency_wallet),
                           Number(orderCancel?.summary?.baseCurrency_card),
                         ],
-                        'full'
+                        'full',
                       )
                     : calculateTotalRefund(
                         [
@@ -349,11 +352,11 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                             // eslint-disable-next-line no-unsafe-optional-chaining
                             orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                             // eslint-disable-next-line prettier/prettier
-                            appVat
+                            appVat,
                           ),
                         ],
                         // eslint-disable-next-line prettier/prettier
-                        'partial'
+                        'partial',
                       )
                 }`}
                   tooltip="Lyxa Earning+Lyxa VAT+Shop Earning+Shop VAT+Rider Earning+Rider VAT"
@@ -364,7 +367,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                 // eslint-disable-next-line no-unsafe-optional-chaining
                 orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                 // eslint-disable-next-line prettier/prettier
-                appVat
+                appVat,
               ) > 0 &&
                 orderCancel.refundType !== 'full' && (
                   <Typography variant="body1" fontWeight={600}>
@@ -374,7 +377,7 @@ function RefundOrder({ setOpenRefundModal, onClose, currentOrder }) {
                       // eslint-disable-next-line no-unsafe-optional-chaining
                       orderCancel?.partialPayment?.admin + orderCancel?.partialPayment?.deliveryBoy,
                       // eslint-disable-next-line prettier/prettier
-                      appVat
+                      appVat,
                     ).toFixed(2)}
                   </Typography>
                 )}

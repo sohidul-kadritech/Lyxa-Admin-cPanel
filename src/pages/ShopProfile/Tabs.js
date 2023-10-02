@@ -47,10 +47,17 @@ export default function ShopProfileTabs({ shop }) {
               <ShopFlags flags={shop?.flags} onViewDetail={onViewDetail} />
             </TabPanel>
             <TabPanel index={3} noPadding value={currentTab}>
-              <ShopTransactions shop={shop} />
+              <ShopTransactions
+                shop={shop}
+                show={{
+                  payout: false,
+                  order: true,
+                  transaction: true,
+                }}
+              />
             </TabPanel>
             <TabPanel index={4} noPadding value={currentTab}>
-              <PayoutList marginTop="0px" showFor="shop" payaoutParams={{ shopId: shop?._id }} />
+              <PayoutList marginTop="0px" showFor="specific" payaoutParams={{ shopId: shop?._id }} />
             </TabPanel>
             {shop?.shopReceivePaymentBy === 'bank' && (
               <TabPanel index={5} noPadding value={currentTab}>

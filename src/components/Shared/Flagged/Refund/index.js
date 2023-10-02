@@ -1,13 +1,20 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import React from 'react';
+import { useGlobalContext } from '../../../../context';
 import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
 import StyledInputBox from '../StyledInputBox';
 import ByPercentage from './ByPercentage';
 import ByPrice from './ByPrice';
 import { CustomInputField } from './CustomInputField';
+
+import { getRefundMaxAmounts } from '../../RefundOrder/helpers';
+
 import SelectItemsToRefund from './SelectItemsToRefund';
+
+import { TitleWithToolTip } from '../../../../pages/NewOrder/helpers';
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -15,14 +22,30 @@ import {
   RefundTypeOptions,
   ReplacementOptions,
   TypeOptions,
+  calculateVat,
+  getTotalRefundAmountWithVat,
   logUsersOptions,
 } from './helpers';
 
 function RefundOrder({ flaggData, setFlaggData, order }) {
   const theme = useTheme();
 
+  const { general } = useGlobalContext();
+
+  const { appSetting } = general;
+
   const onChangeHandler = (e) => {
-    setFlaggData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFlaggData((prev) => {
+      if (prev?.replacement === 'with' && e.target.name === 'flaggedReason' && e.target.value === 'missing-item') {
+        return { ...prev, deliveryType: 'shop-customer', [e.target.name]: e.target.value };
+      }
+
+      if (prev?.refund === 'with' && e.target.name === 'refundType' && e.target.value === 'full') {
+        return { ...prev, partialPayment: { ...getRefundMaxAmounts(order) }, [e.target.name]: e.target.value };
+      }
+
+      return { ...prev, [e.target.name]: e.target.value };
+    });
   };
 
   return (
@@ -114,11 +137,14 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         )}
 
         {/* Delivery type */}
-        {flaggData?.replacement === 'with' && (
+        {flaggData?.replacement === 'with' && flaggData?.flaggedReason !== 'missing-item' && (
           <StyledInputBox title="Delivery Type">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
                 items={DeliveryTypeOptions}
+                value={flaggData?.deliveryType}
+                name="deliveryType"
+                onChange={onChangeHandler}
                 sx={{
                   flexDirection: 'row',
                   gap: '20px',
@@ -134,7 +160,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
           </StyledInputBox>
         )}
 
-        {flaggData?.replacement && (
+        {flaggData?.replacement === 'without' && (
           <StyledInputBox title="Refund">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
@@ -158,7 +184,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         )}
 
         {/* when with refund is selected then it will visible */}
-        {flaggData?.refund === 'with' && (
+        {flaggData?.refund === 'with' && flaggData?.replacement === 'without' && (
           <StyledInputBox title="Refund Type">
             <Stack mt={10 / 4}>
               <StyledRadioGroup
@@ -178,27 +204,54 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 }}
               />
             </Stack>
+            {flaggData?.refundType === 'full' && (
+              <Stack mt={2.5} gap={2.5}>
+                <TitleWithToolTip
+                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                  title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
+                    order,
+                    flaggData,
+                  )}`}
+                />
+              </Stack>
+            )}
           </StyledInputBox>
         )}
 
         {/* when we select partial order */}
-
-        {flaggData?.refundType === 'partial' && (
-          <StyledInputBox title="Select Item to refund">
+        {((flaggData?.refund === 'with' && flaggData?.refundType === 'partial') ||
+          flaggData?.replacement === 'with') && (
+          <StyledInputBox
+            title={flaggData?.replacement === 'with' ? 'Select Item to replacement' : 'Select Item to refund'}
+          >
             <Stack mt={10 / 4}>
               <SelectItemsToRefund order={order} setFlaggData={setFlaggData} flaggData={flaggData} />
             </Stack>
           </StyledInputBox>
         )}
 
-        {flaggData?.refundType === 'partial' && (
-          <StyledInputBox title="Refund Percentage">
+        {((flaggData?.refundType === 'partial' && flaggData?.refund === 'with') ||
+          flaggData?.replacement === 'with') && (
+          <StyledInputBox title={flaggData?.replacement === 'with' ? 'Put cost on' : 'Refund Percentage'}>
             <Stack mt={10 / 4} gap={2.5}>
               <StyledRadioGroup
                 items={RefundPercentage}
                 value={flaggData?.refundPercentage}
                 name="refundPercentage"
-                onChange={onChangeHandler}
+                onChange={(e) => {
+                  onChangeHandler(e);
+
+                  setFlaggData((prev) => {
+                    const partialPayment = {
+                      shop: 0,
+                      adminOrderRefund: 0,
+                      adminDeliveryRefund: 0,
+                      adminVat: 0,
+                    };
+
+                    return { ...prev, partialPayment: { ...partialPayment } };
+                  });
+                }}
                 sx={{
                   flexDirection: 'row',
                   gap: '20px',
@@ -218,8 +271,23 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 <ByPrice setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
 
-              <Stack mt={2.5}>
-                <Typography variant="h6">Total VAT: {flaggData?.totalSelectedAmount * 0.1 || 0}</Typography>
+              <Stack mt={2.5} gap={2.5}>
+                <TitleWithToolTip
+                  tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                  title={`${flaggData?.replacement === 'without' ? 'Total VAT' : 'Total Delivery VAT'}: ${
+                    appSetting?.baseCurrency?.symbol
+                  } ${calculateVat(order, flaggData, appSetting?.vat).totalVat}`}
+                />
+                {flaggData?.refundType === 'partial' && (
+                  <TitleWithToolTip
+                    tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
+                    title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
+                      order,
+                      flaggData,
+                      calculateVat(order, flaggData, appSetting?.vat).totalVat,
+                    )}`}
+                  />
+                )}
               </Stack>
             </Stack>
           </StyledInputBox>

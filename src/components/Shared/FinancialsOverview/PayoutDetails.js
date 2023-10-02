@@ -280,61 +280,43 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
           />
 
           {/* Other payments */}
-          {otherPayments?.totalOtherPayments >= 0 && (
-            <DetailsAccordion
-              title="Other Payments"
-              titleAmount={Math.abs(otherPayments?.totalOtherPayments)}
-              titleAmountStatus={`${otherPayments?.totalOtherPaymentst < 0 ? '' : 'minus'}`}
-              isOpen={currentExpanedTab === 2}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 2 : -1);
-              }}
-            >
-              <PriceItem
-                title="Promotion: Free delivery"
-                tooltip="If Lxya rider"
-                amount={otherPayments?.freeDeliveryByShop}
-                // amount={paymentDetails?.freeDeliveryShopCut}
-                showIfZero
-                isNegative
-              />
 
-              <PriceItem
-                title="Promotion: Featured"
-                amount={otherPayments?.featuredAmount}
-                // amount={paymentDetails?.totalFeaturedAmount}
-                showIfZero
-                isNegative
-              />
+          <DetailsAccordion
+            title="Other Payments"
+            titleAmount={Math.abs(otherPayments?.totalOtherPayments)}
+            titleAmountStatus={`${otherPayments?.totalOtherPayments < 0 ? '' : 'minus'}`}
+            isOpen={currentExpanedTab === 2}
+            onChange={(closed) => {
+              seCurrentExpanedTab(closed ? 2 : -1);
+            }}
+          >
+            <PriceItem
+              title="Promotion: Free delivery"
+              tooltip="If Lxya rider"
+              amount={otherPayments?.freeDeliveryByShop}
+              // amount={paymentDetails?.freeDeliveryShopCut}
+              showIfZero
+              isNegative
+            />
 
-              <PriceItem
-                title="Error Charge"
-                amount={otherPayments?.errorCharge}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative
-                showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
-              />
+            <PriceItem title="Promotion: Featured" amount={otherPayments?.featuredAmount} showIfZero isNegative />
 
-              <PriceItem
-                title="Shop add/remove credit"
-                amount={Math.abs(otherPayments?.shopAddRemoveCredit)}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative={otherPayments?.shopAddRemoveCredit < 0}
-                showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
-              />
+            <PriceItem
+              title="Error Charge"
+              amount={Math.abs(otherPayments?.errorCharge)}
+              isNegative={otherPayments?.errorCharge > 0}
+              showIfZero
+            />
 
-              <PriceItem
-                title="Refunded Amount"
-                amount={otherPayments?.customerRefund}
-                // amount={Math.abs(paymentDetails?.totalRefundAmount)}
-                isNegative
-                showIfZero
-                // isNegative={paymentDetails?.totalRefundAmount > 0}
-              />
-            </DetailsAccordion>
-          )}
+            <PriceItem
+              title="Shop add/remove credit"
+              amount={Math.abs(otherPayments?.shopAddRemoveCredit)}
+              isNegative={otherPayments?.shopAddRemoveCredit < 0}
+              showIfZero
+            />
+
+            <PriceItem title="Refunded Amount" amount={otherPayments?.customerRefund} isNegative showIfZero />
+          </DetailsAccordion>
 
           {/* total vat */}
 

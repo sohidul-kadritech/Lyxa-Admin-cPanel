@@ -1,6 +1,7 @@
 import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import CloseButton from '../../components/Common/CloseButton';
+import ClickableAddress from '../../components/Shared/ClickableAddress';
 
 export const getSellerCredentials = (sellerData) => {
   const parrentUser = [{ name: sellerData?.name }];
@@ -101,8 +102,13 @@ function ViewSellerInfo({ onClose, selectedSeller = {} }) {
           <ShopInfo title="Phone number" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.phone_number}</Typography>
           </ShopInfo>
-          <ShopInfo title="Address" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedSeller?.sellerAddress?.address}</Typography>
+          <ShopInfo title="Location" sx={{ textTransform: 'capitalize' }} theme={theme}>
+            <ClickableAddress
+              latitude={selectedSeller?.sellerAddress?.latitude}
+              longitude={selectedSeller?.sellerAddress?.longitude}
+            >
+              <Typography variant="body4">{selectedSeller?.sellerAddress?.address}</Typography>
+            </ClickableAddress>
           </ShopInfo>
           <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedSeller?.sellerAddress?.pin || '1233'}</Typography>
