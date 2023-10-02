@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.baf1d0b7.css",
-    "main.js": "/static/js/main.8581efd4.js",
+    "main.js": "/static/js/main.1c7029e3.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -73,6 +73,7 @@
     "static/media/collapse.svg": "/static/media/collapse.5edf4c7a3252bac6cc6847b4c1e45d90.svg",
     "static/media/delivery-icon3.svg": "/static/media/delivery-icon3.3434848fe4f71efc74c289dd891967d6.svg",
     "static/media/dietary.svg": "/static/media/dietary.e2d91e6999eefcbac2fd4eb7caaaf36b.svg",
+    "static/media/replacement-order-icon.svg": "/static/media/replacement-order-icon.0263628f5baddccb4dfb578c5fd9d2c3.svg",
     "static/media/featured-icon.svg": "/static/media/featured-icon.d10f79675e4d5c5188a8acdbf124ad02.svg",
     "static/media/ongoing-ticket.svg": "/static/media/ongoing-ticket.230a29006aa3a0018e92da7aac286c00.svg",
     "static/media/credit-cart-colored.svg": "/static/media/credit-cart-colored.50764fb0c7fcb5c6dbcc37ca3a097998.svg",
@@ -144,6 +145,6 @@
   },
   "entrypoints": [
     "static/css/main.baf1d0b7.css",
-    "static/js/main.8581efd4.js"
+    "static/js/main.1c7029e3.js"
   ]
 }
