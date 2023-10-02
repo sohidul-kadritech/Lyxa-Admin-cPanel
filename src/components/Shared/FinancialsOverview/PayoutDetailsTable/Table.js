@@ -1,3 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
@@ -50,7 +52,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -223,7 +225,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       minWidth: 180,
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
 
         return (
           <SummaryItem
@@ -247,7 +249,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
 
         return (
           <SummaryItem
@@ -270,24 +272,45 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       align: 'left',
       headerAlign: 'left',
       renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? row?.endorseLoss : row?.profitBreakdown;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
               hideIcon={financialBreakdown?.otherPayments?.totalOtherPayments === 0}
               titleComponent={
-                <SummaryItem
-                  title
-                  pb={0}
-                  currencyType={currencyType}
-                  value={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
-                  valueSecondary={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
-                  isNegative={financialBreakdown?.otherPayments?.totalOtherPayments >= 0}
-                  showIfZero
-                />
+                <Box>
+                  {row?.orderStatus === 'cancelled' ? (
+                    <SummaryItem
+                      title
+                      pb={0}
+                      currencyType={currencyType}
+                      value={Math.abs(financialBreakdown?.baseCurrency_shopLoss)}
+                      valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_shopLoss)}
+                      isNegative={financialBreakdown?.baseCurrency_shopLoss >= 0}
+                      showIfZero
+                    />
+                  ) : (
+                    <SummaryItem
+                      title
+                      pb={0}
+                      currencyType={currencyType}
+                      value={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
+                      valueSecondary={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
+                      isNegative={financialBreakdown?.otherPayments?.totalOtherPayments >= 0}
+                      showIfZero
+                    />
+                  )}
+                </Box>
               }
             >
+              <SummaryItem
+                currencyType={currencyType}
+                label="Error Charge"
+                value={Math.abs(financialBreakdown?.baseCurrency_shopLoss)}
+                valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_shopLoss)}
+                isNegative={financialBreakdown?.baseCurrency_shopLoss >= 0}
+              />
               <SummaryItem
                 currencyType={currencyType}
                 label="Promotion: Free delivery"
@@ -318,7 +341,10 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.profitBreakdown;
-        const deliveryFee = financialBreakdown?.deliveryFee;
+        const deliveryFee =
+          row?.orderStatus === 'cancelled' && !row?.inEndorseLossDeliveryFeeIncluded
+            ? 0
+            : financialBreakdown?.deliveryFee;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
@@ -395,14 +421,30 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.profitBreakdown;
+        const deliveryFee = row?.inEndorseLossDeliveryFeeIncluded ? financialBreakdown?.deliveryFee?.deliveryFee : 0;
+        const endorseLoss = row?.orderStatus === 'cancelled' ? row?.endorseLoss : {};
+
+        // base currency endorse loss
+        const baseLoss =
+          deliveryFee + endorseLoss?.baseCurrency_shopLoss <= 0
+            ? Math.abs(deliveryFee + endorseLoss?.baseCurrency_shopLoss)
+            : -(deliveryFee + endorseLoss?.baseCurrency_shopLoss);
+        // scondary endorse loss
+        const secondaryLoss =
+          deliveryFee + endorseLoss?.secondaryCurrency_shopLoss <= 0
+            ? Math.abs(deliveryFee + endorseLoss?.secondaryCurrency_shopLoss)
+            : -(deliveryFee + endorseLoss?.secondaryCurrency_shopLoss);
+
+        const baseCurrency = row?.orderStatus === 'cancelled' ? baseLoss : financialBreakdown?.totalPayout;
+        const secondaryCurrency = row?.orderStatus === 'cancelled' ? secondaryLoss : financialBreakdown?.totalPayout;
 
         return (
           <SummaryItem
             title
             pb={0}
             currencyType={currencyType}
-            value={financialBreakdown?.totalPayout}
-            valueSecondary={financialBreakdown?.totalPayout}
+            value={baseCurrency}
+            valueSecondary={secondaryCurrency}
             showIfZero
           />
         );

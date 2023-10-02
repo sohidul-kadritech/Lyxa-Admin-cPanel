@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 // import { Box } from "@material-ui/core";
 import { Box, Button, Stack, Typography } from '@mui/material';
@@ -22,7 +23,7 @@ import {
 } from './helpers';
 
 export default function ShopHourSettings() {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, dispatchCurrentUser } = useGlobalContext();
   const { userType, shop } = currentUser;
 
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
@@ -36,8 +37,11 @@ export default function ShopHourSettings() {
       successMsg(data?.message, data.status ? 'success' : undefined);
 
       if (data?.status) {
+        console.log('data?.data?.shop?.isShopOpen', data?.data?.shop?.isShopOpen);
         shop.normalHours = data?.data?.shop?.normalHours || shop.normalHours;
         shop.holidayHours = data?.data?.shop?.holidayHours || shop.holidayHours;
+        shop.isShopOpen = data?.data?.shop?.isShopOpen;
+        // dispatchCurrentUser({ type: 'shop', payload: { shop } });
         set_has_unsaved_change(false);
       }
     },
@@ -68,7 +72,7 @@ export default function ShopHourSettings() {
     setHolidayHours(
       shop?.holidayHours?.map((holiday) => ({
         ...holiday,
-      }))
+      })),
     );
   };
 

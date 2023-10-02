@@ -72,6 +72,8 @@ export default function NewOrders({ showFor }) {
 
     if (response.status) {
       queryClient.invalidateQueries(Api.ORDER_LIST);
+      queryClient.invalidateQueries(Api.URGENT_ORDER_COUNT);
+      queryClient.invalidateQueries(Api.LATE_ORDER_COUNT);
 
       // if (onUpdateSuccess) onUpdateSuccess(response);
 
@@ -116,7 +118,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   // @update order status from this query
@@ -130,7 +132,7 @@ export default function NewOrders({ showFor }) {
       onError: (error) => {
         console.log('api error: ', error);
       },
-    }
+    },
   );
 
   const updateStatusHandler = async () => {

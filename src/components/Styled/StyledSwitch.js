@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { styled, Switch } from '@mui/material';
 
 const StyledSwitch = styled((props) => <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />)(
@@ -46,7 +47,7 @@ const StyledSwitch = styled((props) => <Switch focusVisibleClassName=".Mui-focus
         duration: 500,
       }),
     },
-  })
+  }),
 );
 
 export default StyledSwitch;

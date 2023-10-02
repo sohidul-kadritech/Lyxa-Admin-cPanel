@@ -94,8 +94,9 @@ export default function App() {
     if (userType === 'shop' || userType === 'admin') {
       socketServices.on(`shopLiveStatusUpdated-${shop?._id}`, (data) => {
         if (shop?._id === data?.shopId) {
-          console.log('socketdata', data);
+          console.log('socketdata for shop', data);
           currentUser.shop.liveStatus = data?.liveStatus;
+          shop.liveStatus = data?.liveStatus
           setRender((prev) => !prev);
         }
       });

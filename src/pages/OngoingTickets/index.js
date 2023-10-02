@@ -30,8 +30,16 @@ export default function OngoingTickets() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
 
+  const [newChatList, setNewChatList] = useState([]);
   const [ordersList, setOrdersList] = useState([]);
   const [accountsList, setAccountsList] = useState([]);
+
+  const newRequestquery = useQuery([Api.NEW_CHATS], () => AXIOS.get(Api.NEW_CHATS), {
+    onSuccess: (data) => {
+      setNewChatList(data?.data?.list);
+      console.log('new chat', data?.data);
+    },
+  });
 
   const ordersQuery = useQuery(
     [Api.ONGOING_CHATS, { chatType: 'order' }],
@@ -44,7 +52,7 @@ export default function OngoingTickets() {
         setOrdersList(data?.data?.list);
         console.log(data);
       },
-    }
+    },
   );
 
   const accountsQuery = useQuery(
@@ -58,10 +66,11 @@ export default function OngoingTickets() {
         setAccountsList(data?.data?.list);
         console.log(data);
       },
-    }
+    },
   );
 
-  const urgentOrderQuery = useQuery(
+  // urgent order count
+  const urgentOrderCountQuery = useQuery(
     [
       Api.URGENT_ORDER_COUNT,
       {
@@ -74,21 +83,25 @@ export default function OngoingTickets() {
         params: {
           assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
         },
-      })
+      }),
   );
 
-  console.log('urgentOrderQuery?.data?.data?.urgentOrderCount', urgentOrderQuery?.data?.data?.urgentOrderCount);
+  // late order count
+  const lateOrderCountQuery = useQuery([Api.LATE_ORDER_COUNT, currentTab], () => AXIOS.get(Api.LATE_ORDER_COUNT));
+
+  console.log('lateOrderCountQuery', lateOrderCountQuery?.data?.data?.lateOrderCount);
 
   // realtime add and remove chats
   useEffect(() => {
     socketServices.on('user_send_chat_request', (data) => {
       successMsg(`New chat request from ${data?.user?.name}`, 'success');
       console.log('add-chat', data);
-      if (data?.chatType === 'order') {
-        setOrdersList((prev) => [data, ...prev]);
-      } else {
-        setAccountsList((prev) => [data, ...prev]);
-      }
+      setNewChatList((prev) => [data, ...prev]);
+      // if (data?.chatType === 'order') {
+      //   setOrdersList((prev) => [data, ...prev]);
+      // } else {
+      //   setAccountsList((prev) => [data, ...prev]);
+      // }
     });
 
     socketServices.on('admin_accepted_chat_remove', (data) => {
@@ -102,29 +115,40 @@ export default function OngoingTickets() {
         selectedChat.acceptedByOther = true;
       }
 
-      if (data?.chatType === 'order') {
-        setOrdersList((prev) => {
-          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+      setNewChatList((prev) => {
+        const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
 
-          if (!findSelectedChat?.length) {
-            setSelectedChat({});
-            setSidebarOpen(false);
-          }
+        if (!findSelectedChat?.length) {
+          setSelectedChat({});
+          setSidebarOpen(false);
+        }
 
-          return prev?.filter((chat) => chat?._id !== data?._id);
-        });
-      } else {
-        setAccountsList((prev) => {
-          const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+        return prev?.filter((chat) => chat?._id !== data?._id);
+      });
 
-          if (!findSelectedChat?.length) {
-            setSelectedChat({});
-            setSidebarOpen(false);
-          }
+      // if (data?.chatType === 'order') {
+      //   setOrdersList((prev) => {
+      //     const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
 
-          return prev?.filter((chat) => chat?._id !== data?._id);
-        });
-      }
+      //     if (!findSelectedChat?.length) {
+      //       setSelectedChat({});
+      //       setSidebarOpen(false);
+      //     }
+
+      //     return prev?.filter((chat) => chat?._id !== data?._id);
+      //   });
+      // } else {
+      //   setAccountsList((prev) => {
+      //     const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
+
+      //     if (!findSelectedChat?.length) {
+      //       setSelectedChat({});
+      //       setSidebarOpen(false);
+      //     }
+
+      //     return prev?.filter((chat) => chat?._id !== data?._id);
+      //   });
+      // }
     });
 
     return () => {
@@ -196,9 +220,9 @@ export default function OngoingTickets() {
               },
             }}
           >
-            <Tab label="Orders Ticket" />
+            <Tab label="New Tickets" />
+            <Tab label="Orders Tickets" />
             <Tab label="Account Tickets" />
-            {/* <StyledBadgeContainer badgeContent={1}> */}
             <Tab
               label={
                 <StyledBadgeContainer
@@ -209,9 +233,26 @@ export default function OngoingTickets() {
                       padding: '0 4px',
                     },
                   }}
-                  badgeContent={urgentOrderQuery?.data?.data?.urgentOrderCount || 0}
+                  badgeContent={urgentOrderCountQuery?.data?.data?.urgentOrderCount || 0}
                 >
-                  Urgent Orders {urgentOrderQuery?.data?.data?.urgentOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
+                  Urgent Orders{' '}
+                  {urgentOrderCountQuery?.data?.data?.urgentOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
+                </StyledBadgeContainer>
+              }
+            />
+            <Tab
+              label={
+                <StyledBadgeContainer
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      right: 3,
+                      top: 10,
+                      padding: '0 4px',
+                    },
+                  }}
+                  badgeContent={lateOrderCountQuery?.data?.data?.lateOrderCount || 0}
+                >
+                  Late Orders {lateOrderCountQuery?.data?.data?.lateOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
                 </StyledBadgeContainer>
               }
             />
@@ -222,12 +263,22 @@ export default function OngoingTickets() {
                 hidePagination
                 refetching={false}
                 onViewDetails={onViewDetails}
+                chats={newChatList}
+                loading={newRequestquery?.isLoading}
+                onAction={onAction}
+              />
+            </TabPanel>
+            <TabPanel index={1} noPadding value={currentTab}>
+              <ChatList
+                hidePagination
+                refetching={false}
+                onViewDetails={onViewDetails}
                 chats={ordersList}
                 loading={ordersQuery?.isLoading}
                 onAction={onAction}
               />
             </TabPanel>
-            <TabPanel index={1} noPadding value={currentTab}>
+            <TabPanel index={2} noPadding value={currentTab}>
               <ChatList
                 hidePagination
                 refetching={false}
@@ -238,8 +289,11 @@ export default function OngoingTickets() {
               />
             </TabPanel>
 
-            <TabPanel index={2} noPadding value={currentTab}>
+            <TabPanel index={3} noPadding value={currentTab}>
               <UrgentOrderTable />
+            </TabPanel>
+            <TabPanel index={4} noPadding value={currentTab}>
+              <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="ongoing" />
             </TabPanel>
           </Box>
         </SlideInContainer>

@@ -301,11 +301,13 @@ export const RIDER_CURRENT_LOCATION = `${ADMIN_ENDPOINT}/delivery-boy/current-lo
 export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
 export const URGENT_ORDER_LIST = `${ADMIN_ENDPOINT}/order/urgent`;
 export const URGENT_ORDER_COUNT = `${ADMIN_ENDPOINT}/order/urgent-count`;
+export const LATE_ORDER_COUNT = `${ADMIN_ENDPOINT}/order/late-count`;
 
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
 
 export const SEND_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag`;
+export const ADMIN_PLACE_ORDER = `${ADMIN_ENDPOINT}/order/place-order`;
 export const DELETE_ORDER_FLAG = `${ADMIN_ENDPOINT}/order/flag/delete`;
 export const CANCEL_ORDER = `${ADMIN_ENDPOINT}/order/cancel-order`;
 export const REFUND_ORDER = `${ADMIN_ENDPOINT}/order/refund-after-delivered`;
@@ -340,6 +342,7 @@ export const CLOSE_CONVERSATION = `${ADMIN_ENDPOINT}/user-chat-request/close`;
 export const ORDER_TYPE_PAST_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/order/past-chats`;
 export const ACCOUNT_TYPE_PAST_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/account/past-chats`;
 export const ONGOING_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/ongoing-chats`;
+export const NEW_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/new-chats`;
 export const SINGLE_USER_ORDER_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/user/all-order-chats`;
 export const SINGLE_USER_ACCOUNTS_CHATS = `${ADMIN_ENDPOINT}/user-chat-request/user/all-account-chats`;
 

@@ -432,14 +432,22 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 label="Refunded Amount"
                 currencyType={currencyType}
                 isNegative={financialBreakdown?.otherPayments?.customerRefund > 0}
-                value={financialBreakdown?.otherPayments?.customerRefund}
+                value={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
                 valueSecondary={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
+              />
+
+              <SummaryItem
+                label="Error Charge"
+                currencyType={currencyType}
+                isNegative={financialBreakdown?.otherPayments?.errorCharge > 0}
+                value={Math.abs(financialBreakdown?.otherPayments?.errorCharge)}
+                valueSecondary={Math.abs(financialBreakdown?.otherPayments?.errorCharge)}
               />
               <SummaryItem
                 label="Shop Add/remove credit"
                 currencyType={currencyType}
                 isNegative={financialBreakdown?.otherPayments?.shopAddRemoveCredit >= 0}
-                value={financialBreakdown?.otherPayments?.shopAddRemoveCredit}
+                value={Math.abs(financialBreakdown?.otherPayments?.shopAddRemoveCredit)}
                 valueSecondary={Math.abs(financialBreakdown?.otherPayments?.shopAddRemoveCredit)}
               />
             </TableAccordion>

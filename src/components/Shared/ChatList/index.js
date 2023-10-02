@@ -39,6 +39,7 @@ export default function ChatList({
         socket.emit('chat-close', { requestId: reqBody?.requestId });
         temporarySelectedChat.status = 'closed';
         queryClient.invalidateQueries([Api.ONGOING_CHATS]);
+        queryClient.invalidateQueries([Api.NEW_CHATS]);
         onAction('resolve', reqBody?.chat);
       }
     },

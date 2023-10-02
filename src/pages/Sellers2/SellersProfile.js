@@ -10,6 +10,7 @@ import InfoListItem from '../../components/Common/InfoListItem';
 import TablePagination from '../../components/Common/TablePagination';
 import StyledFormField from '../../components/Form/StyledFormField';
 import AddShop from '../../components/Shared/AddShop';
+import ClickableAddress from '../../components/Shared/ClickableAddress';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -72,19 +73,19 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler, adminType }) {
               </Box>
             </Stack>
             <Stack direction="row" flexWrap="wrap">
-              <InfoListItem
-                titleSx={{
-                  overflow: 'hidden',
-                  maxWidth: '350px',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-                title={data?.sellerAddress?.address}
-                linkOpenBlank
-                icon={LocationIcon}
-                isFirst
-                link={`https://maps.google.com/?q=${data?.sellerAddress?.latitude},${data?.sellerAddress?.longitude}`}
-              />
+              <ClickableAddress latitude={data?.sellerAddress?.latitude} longitude={data?.sellerAddress?.longitude}>
+                <InfoListItem
+                  titleSx={{
+                    overflow: 'hidden',
+                    maxWidth: '350px',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                  title={data?.sellerAddress?.address}
+                  icon={LocationIcon}
+                  isFirst
+                />
+              </ClickableAddress>
               <InfoListItem title={data?.phone_number} icon={PhoneIcon} link={`tel:${data?.phone_number}`} />
               <InfoListItem title={data?.email} icon={MailIcon} link={`mailto:${data?.email}`} />
             </Stack>

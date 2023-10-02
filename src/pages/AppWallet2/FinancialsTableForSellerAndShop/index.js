@@ -36,7 +36,7 @@ function FinancialsTableForSellerAndShop({ paramsProps, showFor }) {
     },
   };
 
-  const query = useQuery([viewUserType[showFor].api, { ...queryParams, ...paramsProps }], () =>
+  const query = useQuery([viewUserType[showFor]?.api, { ...queryParams, ...paramsProps }], () =>
     AXIOS.get(viewUserType[showFor].api, {
       params: {
         ...queryParams,
@@ -45,8 +45,6 @@ function FinancialsTableForSellerAndShop({ paramsProps, showFor }) {
       },
     }),
   );
-
-  console.log('query for table', query?.data?.data);
 
   return (
     <Box>
