@@ -440,6 +440,7 @@ export default function Table({
                 <StyledTable5
                   showHeader={false}
                   rowSx={{ border: 'none' }}
+                  rowInnerContainerSx={{ padding: '0px' }}
                   columns={filteredColumnsForExpand}
                   rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
                 />,

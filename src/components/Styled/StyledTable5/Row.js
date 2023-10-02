@@ -3,7 +3,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { AccordionDetails, Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
-function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx }) {
+function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx, rowInnerContainerSx }) {
   const theme = useTheme();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -32,7 +32,7 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx }) {
       <Stack
         direction="row"
         alignItems="center"
-        sx={{ padding: '12px 0px' }}
+        sx={{ padding: '12px 0px', ...(rowInnerContainerSx || {}) }}
         onClick={() => {
           if (expandWithRowClick) {
             onExpandHandler(expandWithRowClick(row));
