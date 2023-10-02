@@ -107,7 +107,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -413,7 +413,7 @@ export default function Table({
 
   const filteredColumnsForExpand = useMemo(
     () => filterColumns(columnsForExpand, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   const columns = [
@@ -439,9 +439,10 @@ export default function Table({
               onExpandHandler(
                 <StyledTable5
                   showHeader={false}
+                  rowSx={{ border: 'none' }}
                   columns={filteredColumnsForExpand}
                   rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
-                />
+                />,
               );
             }}
             name={
@@ -580,7 +581,7 @@ export default function Table({
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            maxWidth: '150px',
+            // maxWidth: '150px',
             ...(statusColorVariants[value] || {}),
           }}
           variant="contained"
@@ -672,7 +673,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {
