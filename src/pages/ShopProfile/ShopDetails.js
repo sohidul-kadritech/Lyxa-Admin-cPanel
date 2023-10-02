@@ -12,6 +12,7 @@ import { ReactComponent as Phone } from '../../assets/icons/phone.svg';
 import { ReactComponent as TagIcon } from '../../assets/icons/tag2.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
+import ClickableAddress from '../../components/Shared/ClickableAddress';
 import { AverageOrderValue, OpeningHours, ShopReviewDetails, TagsAndCuisines } from './helper';
 
 export default function ShopDetails({ shop }) {
@@ -28,7 +29,17 @@ export default function ShopDetails({ shop }) {
       />
       <ProfileSidebarInfo label="Shop Type" value={shop?.shopType} icon={CalenderIcon} />
       {shop?.shopBrand && <ProfileSidebarInfo label="Shop Brand" value={shop?.shopBrand} icon={Loyalty} />}
-      <ProfileSidebarInfo label="Location" value={shop?.address?.address} icon={Location} />
+
+      <ProfileSidebarInfo
+        label="Location"
+        value={
+          <ClickableAddress latitude={shop?.address?.latitude} longitude={shop?.address?.longitude}>
+            {shop?.address?.address}
+          </ClickableAddress>
+        }
+        icon={Location}
+      />
+
       <ProfileSidebarInfo label="Delivery by" value={shop?.haveOwnDeliveryBoy ? 'Store' : 'Lyxa'} icon={DeliveryIcon} />
       <ProfileSidebarInfo label="Phone number" value={shop?.phone_number} icon={Phone} />
       <ProfileSidebarInfo

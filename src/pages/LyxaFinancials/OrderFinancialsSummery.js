@@ -73,6 +73,7 @@ function OrderFinancialsSummary() {
   const marketingCashBack = summary?.adminMarketingCashBack;
 
   const featured = summary?.featured;
+  const errorCharge = summary?.errorCharge;
 
   const otherAmount = summary?.other;
 
@@ -277,6 +278,12 @@ function OrderFinancialsSummary() {
                   showIfZero
                 />
                 <PriceItem title="Profit from Butler" amount={deliveryProfit?.deliveryProfitFromButler} showIfZero />
+                <PriceItem
+                  title="Add/Remove Credit from Delivery"
+                  amount={addRemoveCredit?.addRemoveCreditFromRider}
+                  isNegative={addRemoveCredit?.addRemoveCreditFromRider < 0}
+                  showIfZero
+                />
               </Stack>
             </InfoCard>
           </Grid>
@@ -555,12 +562,10 @@ function OrderFinancialsSummary() {
           </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Other amount"
-              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
-              isDropdown
+              title="Error Charge"
+              sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
               index={8}
               setExpandedIndex={setExpandedIndex}
-              expandedIndex={expandedIndex === 8}
               valueComponent={
                 <Stack direction="column" alignItems="baseline" gap={2}>
                   <Typography
@@ -570,10 +575,10 @@ function OrderFinancialsSummary() {
                       fontSize: '40px',
                     }}
                   >
-                    {currency} {(otherAmount?.otherAmount || 0).toFixed(2)}
+                    {currency} {(errorCharge?.totalErrorCharge || 0).toFixed(2)}
                   </Typography>
 
-                  {otherAmount?.secondaryCurrency_otherAmount >= 0 ? (
+                  {errorCharge?.secondaryCurrency_errorCharge >= 0 ? (
                     <Typography
                       variant="inherit"
                       sx={{
@@ -585,7 +590,7 @@ function OrderFinancialsSummary() {
                         getTotalProfitForLyxa(
                           baseCurrency?.symbol,
                           secondaryCurrency?.code,
-                          bothCurrencyProfitbreakDown(otherAmount, 'otherAmount'),
+                          bothCurrencyProfitbreakDown(errorCharge, 'errorCharge'),
                           true,
                         ).printConditionally
                       }

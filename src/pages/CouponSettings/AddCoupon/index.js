@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 // thrid party
 import { Box, Button } from '@mui/material';
@@ -11,6 +12,7 @@ import StyledFormField from '../../../components/Form/StyledFormField';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { TitleWithToolTip } from '../../NewOrder/helpers';
 import {
   checkedInit,
   couponDiscountTypeOptions,
@@ -57,7 +59,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
       onSuccess: (data) => {
         setShopOptions((prev) => data?.data?.shops || prev);
       },
-    }
+    },
   );
 
   const getShops = useMemo(
@@ -66,7 +68,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setShopSearchKey(value);
         shopsQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   const usersQuery = useMutation(
@@ -85,7 +87,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         console.log(data?.data?.users);
         setUserOptions((prev) => data?.data?.users || prev);
       },
-    }
+    },
   );
 
   const getUsers = useMemo(
@@ -94,7 +96,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         setUserSearchKey(value);
         usersQuery.mutate();
       }, 300),
-    []
+    [],
   );
 
   // coupon add
@@ -115,7 +117,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           queryClient.invalidateQueries([Api.GET_COUPON]);
         }
       },
-    }
+    },
   );
 
   const submitCoupon = () => {
@@ -148,7 +150,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* name */}
         <Box position="relative">
           <StyledFormField
-            label="Name"
+            label={<TitleWithToolTip title="Name" tooltip="Coupon Name (should have a maximum of 6 characters)" />}
             intputType="text"
             inputProps={{
               type: 'text',
@@ -178,7 +180,9 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* user */}
         {couponType === 'individual_user' && (
           <StyledFormField
-            label="User"
+            label={
+              <TitleWithToolTip title="User" tooltip="Select an user. (Only the selected user may use this coupon.)" />
+            }
             intputType="autocomplete"
             inputProps={{
               maxHeight: '300px',
@@ -202,7 +206,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* cupon influencer */}
         {couponType === 'custom_coupon' && (
           <StyledFormField
-            label="Influencer Name"
+            label={
+              <TitleWithToolTip
+                title="Influencer Name"
+                tooltip="Select an Influencer. (This coupon is only redeemable when this influencer shares it with his fan base.)"
+              />
+            }
             intputType="autocomplete"
             inputProps={{
               maxHeight: '300px',
@@ -226,7 +235,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* type */}
         <StyledFormField
-          label="Type"
+          label={
+            <TitleWithToolTip
+              title="Type"
+              tooltip="Choose Coupon Type: Percentage for a percentage-based discount on your total order amount, or Fixed Amount for a specific discount value set by the admin, with a maximum limit controlled by them."
+            />
+          }
           intputType="select"
           inputProps={{
             name: 'couponDiscountType',
@@ -238,7 +252,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* value */}
         <StyledFormField
-          label="Value"
+          label={
+            <TitleWithToolTip
+              title="Value"
+              tooltip="Admin specifies percentage for Percentage Type, and fixed amount for Amount Type"
+            />
+          }
           intputType="text"
           inputProps={{
             type: 'number',
@@ -250,7 +269,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* start date */}
         <StyledFormField
-          label="Duration start"
+          label={<TitleWithToolTip title="Duration start" tooltip="Set Start date for coupon" />}
           intputType="date"
           inputProps={{
             fullWidth: true,
@@ -271,7 +290,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* start date */}
         <StyledFormField
-          label="Duration end"
+          label={<TitleWithToolTip title="Duration end" tooltip="Set Coupon Expiry Date." />}
           intputType="date"
           inputProps={{
             fullWidth: true,
@@ -292,7 +311,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* amount limit */}
         <StyledFormField
-          label="Amount limit"
+          label={<TitleWithToolTip title="Amount limit" tooltip="Maximum spending limit during this period" />}
           intputType="text-toggle"
           inputProps={{
             type: 'number',
@@ -310,7 +329,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* user limit */}
         <StyledFormField
-          label="Order Limit Per User"
+          label={<TitleWithToolTip title="Order Limit Per User" tooltip="User-specific order limit for this period." />}
           intputType="text-toggle"
           inputProps={{
             type: 'number',
@@ -329,7 +348,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* order limit */}
         {couponType !== 'individual_user' && (
           <StyledFormField
-            label="Total Order Limit"
+            label={<TitleWithToolTip title="Total Order Limit" tooltip="Total order limit of this coupon period" />}
             intputType="text-toggle"
             inputProps={{
               type: 'number',
@@ -349,7 +368,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* max discount */}
         {coupon.couponDiscountType === 'percentage' && (
           <StyledFormField
-            label="Max. Discount amount"
+            label={
+              <TitleWithToolTip
+                title="Max. Discount amount"
+                tooltip="Maxium discount amount when coupon type is percentage"
+              />
+            }
             intputType="text-toggle"
             inputProps={{
               type: 'number',
@@ -368,7 +392,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* min order */}
         <StyledFormField
-          label="Min. Order Amount"
+          label={<TitleWithToolTip title="Min. Order Amount" tooltip="Minimum order required to use this coupon." />}
           intputType="text-toggle"
           inputProps={{
             type: 'number',
@@ -387,7 +411,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* type */}
         {couponType !== 'global' && (
           <StyledFormField
-            label="Shop Category"
+            label={
+              <TitleWithToolTip
+                title="Shop Category"
+                tooltip="Select shop category.This coupon is valid in Selected categories"
+              />
+            }
             intputType="select"
             inputProps={{
               name: 'couponShopTypes',
@@ -411,7 +440,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {couponType === 'individual_store' && !coupon?.couponShopTypes?.length && (
           <StyledFormField
-            label="Stores"
+            label={<TitleWithToolTip title="Stores" tooltip="Select stores. This coupon is valid in Selected shops" />}
             intputType="autocomplete"
             inputProps={{
               multiple: true,
@@ -441,7 +470,9 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* multiple shops */}
         {couponType !== 'global' && couponType !== 'individual_store' && (
           <StyledFormField
-            label="Custom Shops"
+            label={
+              <TitleWithToolTip title="Custom Shops" tooltip="Select stores. This coupon is valid in Selected shops" />
+            }
             intputType="autocomplete"
             inputProps={{
               multiple: true,

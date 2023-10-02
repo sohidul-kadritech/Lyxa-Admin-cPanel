@@ -9,7 +9,9 @@ export default function InfoListItem({
   dotColor,
   link,
   linkOpenBlank,
+  children,
 }) {
+  console.log('children', children);
   return (
     <StyledInfoItem
       className={`${isFirst ? 'first-info' : ''}`}
@@ -21,15 +23,19 @@ export default function InfoListItem({
       }}
     >
       {Icon && <Icon />}
-      <Typography variant="h4" fontWeight={500} sx={titleSx}>
-        {link ? (
-          <a href={link} target={linkOpenBlank ? '_blank' : '_self'} rel="noreferrer">
-            {title}
-          </a>
-        ) : (
-          title
-        )}
-      </Typography>
+      {title ? (
+        <Typography variant="h4" fontWeight={500} sx={titleSx}>
+          {link ? (
+            <a href={link} target={linkOpenBlank ? '_blank' : '_self'} rel="noreferrer">
+              {title}
+            </a>
+          ) : (
+            title
+          )}
+        </Typography>
+      ) : (
+        children
+      )}
     </StyledInfoItem>
   );
 }

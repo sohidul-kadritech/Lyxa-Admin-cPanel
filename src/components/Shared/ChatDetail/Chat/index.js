@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Button, Stack } from '@mui/material';
 
@@ -61,7 +62,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
       onSuccess: (data) => {
         setMessageData(data, 'order');
       },
-    }
+    },
   );
 
   const accountChatQuery = useQuery(
@@ -73,7 +74,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     {
       enabled: chat?.chatType === 'account',
       onSuccess: (data) => setMessageData(data, 'account'),
-    }
+    },
   );
 
   // message
@@ -148,6 +149,8 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
 
         onAcceptChat(data);
         chatConnect();
+        queryClient.invalidateQueries([Api.ONGOING_CHATS]);
+        queryClient.invalidateQueries([Api.NEW_CHATS]);
       }
     },
     onError: (error) => {

@@ -98,6 +98,14 @@ export const bothCurrencyProfitbreakDown = (data, type) => {
     return template;
   }
 
+  if (type === 'errorCharge') {
+    template.secondaryCurrency_adminProfit = data?.secondaryCurrency_errorCharge || 0;
+    template.baseCurrency_adminProfit = data?.baseCurrency_errorCharge || 0;
+    template.totalAdminProfit = data?.totalErrorCharge || 0;
+
+    return template;
+  }
+
   if (type === 'free_delivery') {
     template.secondaryCurrency_adminProfit = data?.secondaryCurrency_freeDeliveryShopCut || 0;
     template.baseCurrency_adminProfit = data?.baseCurrency_freeDeliveryShopCut || 0;

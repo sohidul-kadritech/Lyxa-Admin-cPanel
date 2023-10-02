@@ -105,8 +105,7 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
       align: 'center',
       renderCell: ({ row }) => (
         <Typography variant="body1">
-          {getCurrentCurrency?.symbol}
-          {row?.price}
+          {getCurrentCurrency?.symbol} {row?.price}
         </Typography>
       ),
     },
@@ -138,7 +137,6 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
       renderCell: ({ row }) => (
         <Stack>
           <Typography variant="body1">{moment(row?.createdAt).format('MMMM DD, YYYY')}</Typography>
-          {/* <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography> */}
           <Typography variant="body3">{moment(row?.createdAt).format('hh:mm A')}</Typography>
         </Stack>
       ),
@@ -170,8 +168,6 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
     <Box
       sx={{
         padding: '20px',
-        maxHeight: '500px',
-        overflow: 'auto',
         border: `1px solid ${theme.palette.custom.border}`,
         borderRadius: '7px',
       }}
@@ -181,18 +177,10 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
         rows={data}
         getRowHeight={() => 'auto'}
         getRowId={(row) => row?._id}
-        //   onRowClick={({ row }) => {
-        //     setCurrentRating(row);
-        //     setIsEdit(true);
-        //     setIsRightBarOpen(true);
-        //   }}
         sx={{
           '& .MuiDataGrid-cell': {
             cursor: 'defualt',
           },
-          //   '& .MuiDataGrid-row:hover': {
-          //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          //   },
         }}
         components={{
           NoRowsOverlay: () => (
@@ -203,32 +191,12 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
         }}
       />
 
-      {/* <ConfirmModal
-        message="Are you sure you want to delete the products?"
-        // isOpen={isConfirm}
-        // loading={deleteQuery?.isLoading}
-        blurClose
-        // onCancel={() => {
-        //   setIsConfirm(false);
-        // }}
-        onConfirm={() => {
-          // callDeleteFaq();
-          // setIsConfirm(false);
-          //   console.log('id: ', id);
-          //   deleteQuery.mutate({ id });
-        }}
-      /> */}
-
       <Drawer open={open} anchor="right">
         <AddProduct
-          // newProductCategory={newProductCategory}
           productReadonly
           editProduct={currentSelectedProduct}
           onClose={() => {
             setOpen(false);
-            // setNewProductCategory(null);
-            // setEditProduct({});
-            // setProductReadonly(false);
           }}
         />
       </Drawer>

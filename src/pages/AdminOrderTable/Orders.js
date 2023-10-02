@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
@@ -10,12 +11,12 @@ import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Table from './Table';
 
-const tabsOptionsForErrorOrder = (value) => {
+const tabsOptionsForErrorOrder = (value, value_late) => {
   const data = [
     { value: 'all', label: 'All' },
     { value: 'null', label: 'Orders' },
-    { value: 'urgent', label: 'Urgent Orders', badgeContent: value || 4 },
-    { value: 'late', label: 'Late Orders' },
+    { value: 'urgent', label: 'Urgent Orders', badgeContent: value },
+    { value: 'late', label: 'Late Orders', badgeContent: value_late },
     { value: 'replacement', label: 'Replacement' },
   ];
 
@@ -58,9 +59,10 @@ export default function Orders({
   },
 }) {
   const [totalPage, setTotalPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
+
   const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
   const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState('all');
+  const [render, setRender] = useState(false);
 
   const ordersQuery = useQuery(
     [api, queryParams],
@@ -72,27 +74,17 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   // startDate&endDate&orderType=&assignedCustomerService
 
   const urgentOrderQuery = useQuery(
-    [
-      Api.URGENT_ORDER_COUNT,
-      {
-        startDate: queryParams?.startDate,
-        endDate: queryParams?.endDate,
-        orderType: queryParams?.orderType,
-        type,
-        ...(urgentOrderCountParams || {}),
-      },
-    ],
+    [Api.URGENT_ORDER_COUNT, { ...queryParams }],
     () =>
       AXIOS.get(Api.URGENT_ORDER_COUNT, {
         params: {
           orderType: queryParams?.orderType,
-          errorOrderType: queryParams?.errorOrderType,
           ...(urgentOrderCountParams || {}),
         },
       }),
@@ -104,8 +96,20 @@ export default function Orders({
           }
         }
       },
-    }
+      refetchOnWindowFocus: true,
+    },
   );
+
+  const lateOrderQuery = useQuery([Api.LATE_ORDER_COUNT, { ...queryParams }], () => AXIOS.get(Api.LATE_ORDER_COUNT), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        if (getUrgentOrderNumber) {
+          getUrgentOrderNumber(data?.data?.urgentOrderCount);
+        }
+      }
+    },
+    refetchOnWindowFocus: true,
+  });
 
   return (
     <Box pt={paddingTop || 0}>
@@ -113,7 +117,10 @@ export default function Orders({
         {type === 'ongoing' && showTabs?.errorOrderType && (
           <StyledTabs2
             value={currentErrorOrderTab}
-            options={tabsOptionsForErrorOrder(urgentOrderQuery?.data?.data?.urgentOrderCount || 0)}
+            options={tabsOptionsForErrorOrder(
+              urgentOrderQuery?.data?.data?.urgentOrderCount || 0,
+              lateOrderQuery?.data?.data?.lateOrderCount || 0,
+            )}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
               console.log('value', value);
@@ -167,6 +174,8 @@ export default function Orders({
         setQueryParams={setQueryParams}
         totalPage={totalPage}
         showFor={showFor}
+        render={render}
+        setRender={setRender}
       />
     </Box>
   );

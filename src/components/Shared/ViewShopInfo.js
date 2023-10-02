@@ -3,6 +3,7 @@ import React from 'react';
 import { AverageOrderValue, OpeningHours, TagsAndCuisines } from '../../pages/ShopProfile/helper';
 import CloseButton from '../Common/CloseButton';
 import Rating from '../Common/Rating';
+import ClickableAddress from './ClickableAddress';
 
 const getDeliveryFee = (selectedShop) => {
   const isFreeDelivery =
@@ -140,7 +141,9 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
           </ShopInfo>
 
           <ShopInfo title="Location" sx={{ textTransform: 'capitalize' }} theme={theme}>
-            <Typography variant="body4">{selectedShop?.address?.address}</Typography>
+            <ClickableAddress latitude={selectedShop?.address?.latitude} longitude={selectedShop?.address?.longitude}>
+              <Typography variant="body4">{selectedShop?.address?.address}</Typography>
+            </ClickableAddress>
           </ShopInfo>
           <ShopInfo title="Zip Code" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4">{selectedShop?.address?.pin || '1233'}</Typography>

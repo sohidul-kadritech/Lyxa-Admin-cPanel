@@ -1,4 +1,5 @@
-import { Avatar, Stack, Tooltip, Typography } from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import { Avatar, Box, Stack, Tooltip, Typography } from '@mui/material';
 
 export default function UserAvatar({
   imgUrl,
@@ -10,6 +11,8 @@ export default function UserAvatar({
   subTitleProps,
   toolTip,
   titleProps,
+  expandIcon,
+  onClickExpand,
 }) {
   return (
     <Stack direction="row" alignItems="center" gap={5}>
@@ -37,6 +40,11 @@ export default function UserAvatar({
           </Typography>
         )}
       </Stack>
+      {expandIcon && (
+        <Box sx={{ cursor: 'pointer' }} onClick={onClickExpand}>
+          <ExpandMore />
+        </Box>
+      )}
     </Stack>
   );
 }

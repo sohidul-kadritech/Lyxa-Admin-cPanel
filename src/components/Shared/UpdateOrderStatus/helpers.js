@@ -154,7 +154,12 @@ export const validate = (currentStatus, currentOrderDelivery, currentOrder, paid
     return false;
   }
 
-  if (currentStatus === 'delivered' && currentOrder?.paymentMethod === 'cash' && !paidCurrency) {
+  if (
+    currentStatus === 'delivered' &&
+    currentOrder?.paymentMethod === 'cash' &&
+    !paidCurrency &&
+    !currentOrder?.isReplacementOrder
+  ) {
     successMsg(`Choose paid currency first`);
     return false;
   }

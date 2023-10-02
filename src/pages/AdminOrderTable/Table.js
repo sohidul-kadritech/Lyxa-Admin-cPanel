@@ -7,6 +7,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
+import { ReactComponent as ReplacementIcon } from '../../assets/icons/replacement-order-icon.svg';
 import LoadingOverlay from '../../components/Common/LoadingOverlay';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
@@ -19,7 +20,8 @@ import OrderDetail from '../../components/Shared/OrderDetail';
 import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
-import StyledTable from '../../components/Styled/StyledTable3';
+// import StyledTable from '../../components/Styled/StyledTable3';
+import StyledTable5 from '../../components/Styled/StyledTable5';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 import { UpdateFlag } from '../NewOrder/UpdateFlag';
@@ -46,6 +48,15 @@ const filterColumns = (columns, shopType, orderType, showFor) => {
   return cols;
 };
 
+function CustomExpandRow({ row }) {
+  return (
+    <div>
+      <p>{row.description}</p>
+      {/* Add more details as needed */}
+    </div>
+  );
+}
+
 export default function Table({
   orders = [],
   shopType,
@@ -55,27 +66,40 @@ export default function Table({
   orderType,
   loading,
   refetching,
+  render,
+  setRender,
   showFor,
 }) {
   const history = useHistory();
-  const routeMatch = useRouteMatch();
-  const { general, currentUser } = useGlobalContext();
 
-  console.log('currentUser', currentUser);
+  const routeMatch = useRouteMatch();
+
+  const { general, currentUser } = useGlobalContext();
 
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
+
   const [updateStatusModal, setUpdateStatusModal] = useState(false);
+
   const [flagModal, setFlagModal] = useState(false);
+
   const [flagModalNew, setFlagModalNew] = useState(false);
+
   const [openCancelModal, setOpenCancelModal] = useState(false);
+
+  const [openCancelModalNew, setOpenCancelModalNew] = useState(false);
+
   const [openRefundModal, setOpenRefundModal] = useState(false);
+
   const [currentOrder, setCurrentOrder] = useState({});
 
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
+
+  const [addedIndex, setAddedIndex] = useState(0);
+
   const location = useLocation();
 
   console.log('location', location?.state);
@@ -85,16 +109,24 @@ export default function Table({
       const findAcceptedCurrentOrder = orders.find(
         (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
       );
-
-      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder).length) {
+      console.log('===>', { findAcceptedCurrentOrder, location, render });
+      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
         setCurrentOrder(findAcceptedCurrentOrder);
         setDetailOpen(true);
+        setRender(true);
+        if (!loading) {
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.delete('urgent-order');
+          history.replace({ search: searchParams.toString() });
+        }
       } else {
         setCurrentOrder({});
         setDetailOpen(false);
+        setRender(false);
       }
     }
-  }, [orders]);
+    // remove the search params
+  }, [loading, location?.search]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
@@ -110,6 +142,11 @@ export default function Table({
     if (menu === 'cancel_order') {
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
+    }
+
+    if (menu === 'cancel_order_test') {
+      setCurrentOrder(order);
+      setOpenCancelModalNew(true);
     }
 
     if (menu === 'track_order') {
@@ -133,7 +170,7 @@ export default function Table({
     }
   };
 
-  const columns = [
+  const columnsForExpand = [
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
       id: 1,
@@ -142,11 +179,13 @@ export default function Table({
       flex: 1.5,
       sortable: false,
       minWidth: 240,
-      renderCell: ({ row }) => (
+      renderCell: ({ row, onExpandHandler }) => (
         <UserAvatar
           imgAlt="user-image"
           imgUrl={row?.user?.profile_photo}
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
+          expandIcon={false}
+          // onClickExpand={() => {}}
           name={
             <span>
               {row?.user?.name}
@@ -154,6 +193,12 @@ export default function Table({
                 <>
                   &nbsp;&nbsp;
                   <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.isReplacementOrder ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
                 </>
               ) : null}
               {row?.flag?.length ? (
@@ -205,7 +250,6 @@ export default function Table({
       minWidth: 120,
       flex: 1.5,
       renderCell: ({ value }) => (
-        // <Typography variant="body4">{value === true ? 'Customer Service Accepted' : 'Not Accepted'}</Typography>
         <Chip
           label={value === true ? 'Accepted' : 'Not Accepted'}
           sx={{
@@ -277,6 +321,266 @@ export default function Table({
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
+            maxWidth: '150px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['scheduled'],
+      id: 5,
+      headerName: 'SCHEDULED FOR',
+      field: 'scheduleDate',
+      sortable: false,
+      flex: 1,
+      minWidth: 220,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 6,
+      headerName: 'DATE',
+      field: 'createdAt',
+      sortable: false,
+      flex: 1.5,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 7,
+      headerName: `ORDER AMOUNT`,
+      field: 'profit',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const total =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+
+        return (
+          <Typography variant="body4">
+            {currency} {(total || 0).toFixed(2)}
+          </Typography>
+        );
+      },
+    },
+    {
+      showFor: ['delivered', 'low-rating'],
+      id: 8,
+      headerName: 'ORDER RATING',
+      field: 'shopRating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['delivered', 'low-rating'],
+      id: 8,
+      headerName: 'RIDER RATING',
+      field: 'riderRating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'deliveryBoy');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 6,
+      headerName: `ACTION`,
+      sortable: false,
+      align: 'right',
+      headerAlign: 'right',
+      flex: 1,
+      renderCell: (params) => (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            threeDotHandler(menu, params?.row);
+          }}
+          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
+        />
+      ),
+    },
+  ];
+
+  const filteredColumnsForExpand = useMemo(
+    () => filterColumns(columnsForExpand, shopType, orderType, showFor),
+    [shopType, orderType, showFor]
+  );
+
+  const columns = [
+    {
+      showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
+      id: 1,
+      headerName: 'ACCOUNT',
+      field: 'orders',
+      flex: 1.5,
+      sortable: false,
+      minWidth: 240,
+      renderCell: ({ row, onExpandHandler }) => {
+        console.log('row', showFor);
+        return (
+          <UserAvatar
+            imgAlt="user-image"
+            imgUrl={row?.user?.profile_photo}
+            imgFallbackCharacter={row?.user?.name?.charAt(0)}
+            expandIcon={
+              !!((row?.orderStatus === 'delivered' || row?.orderStatus === 'cancelled') && row?.isReplacementOrder)
+            }
+            onClickExpand={() => {
+              onExpandHandler(
+                <StyledTable5
+                  showHeader={false}
+                  columns={filteredColumnsForExpand}
+                  rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
+                />
+              );
+            }}
+            name={
+              <span>
+                {row?.user?.name}
+                {row?.chats?.length || row?.admin_chat_request?.length ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <MessageIcon color="#5BBD4E" />
+                  </>
+                ) : null}
+                {row?.isReplacementOrder ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
+                  </>
+                ) : null}
+                {row?.flag?.length ? (
+                  <>
+                    &nbsp;&nbsp;
+                    <FlagIcon color="#DD5B63" />
+                  </>
+                ) : null}
+              </span>
+            }
+            subTitle={row?.isReplacementOrder ? row?.originalOrder?.orderId : row?.orderId}
+            subTitleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                setCurrentOrder(row);
+                setDetailOpen(true);
+              },
+            }}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push({
+                  pathname: `/users/${row?.user?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                });
+              },
+            }}
+          />
+        );
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 2,
+      headerName: `TYPE`,
+      field: 'shopType',
+      sortable: false,
+      minWidth: 120,
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">{row?.isButler ? 'Butler' : shopTypeLabelMap[row?.shop?.shopType]}</Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing'],
+      id: 2,
+      headerName: `ACCEPTED`,
+      field: 'isCustomerServiceAccepted',
+      sortable: false,
+      minWidth: 120,
+      flex: 1.5,
+      renderCell: ({ value }) => (
+        <Chip
+          label={value === true ? 'Accepted' : 'Not Accepted'}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 3,
+      headerName: 'SHOP',
+      field: 'shop',
+      flex: 1,
+      minWidth: 240,
+      sortable: false,
+      renderCell: ({ row }) => {
+        if (row?.isButler) return '_';
+
+        return (
+          <UserAvatar
+            imgAlt="shop-image"
+            imgUrl={row?.shop?.shopLogo}
+            imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
+            name={row?.shop?.shopName}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push({
+                  pathname: `/shop/profile/${row?.shop?._id}`,
+                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                });
+              },
+            }}
+          />
+        );
+      },
+    },
+    {
+      showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
+      id: 4,
+      headerName: 'PAYMENT METHOD',
+      field: 'paymentMethod',
+      minWidth: 150,
+      flex: 1,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-capitalize">
+          {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['ongoing', 'cancelled'],
+      id: 5,
+      headerName: 'STATUS',
+      field: 'orderStatus',
+      sortable: false,
+      flex: 1,
+      minWidth: 180,
+      renderCell: ({ value }) => (
+        <Chip
+          label={orderStatusMap[value || '']}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            maxWidth: '150px',
             ...(statusColorVariants[value] || {}),
           }}
           variant="contained"
@@ -390,10 +694,11 @@ export default function Table({
         }}
       >
         {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
-        <StyledTable
+        {/* <StyledTable
           columns={filteredColumns}
-          rows={orders}
+          rows={newOrders}
           getRowId={(row) => row?._id}
+          cus
           rowHeight={71}
           components={{
             NoRowsOverlay: () => (
@@ -402,6 +707,16 @@ export default function Table({
               </Stack>
             ),
           }}
+        /> */}
+
+        <StyledTable5
+          columns={filteredColumns}
+          rows={orders}
+          NoRowsOverlay={
+            <Stack height="100%" alignItems="center" justifyContent="center">
+              No Order found
+            </Stack>
+          }
         />
       </Box>
       <TablePagination
@@ -429,7 +744,7 @@ export default function Table({
         />
       </Drawer>
 
-      <Modal open={flagModalNew}>
+      <Modal sx={{ zIndex: '100 !important' }} open={flagModalNew}>
         <FlaggedModal
           onClose={() => {
             setFlagModalNew(false);
@@ -476,6 +791,23 @@ export default function Table({
         <Box>
           <CancelOrder order={currentOrder} onClose={() => setOpenCancelModal(false)} />
         </Box>
+      </Modal>
+
+      {/*  cancel order with flag modal */}
+      <Modal
+        open={openCancelModalNew}
+        sx={{ zIndex: '100 !important' }}
+        onClose={() => {
+          setOpenCancelModalNew(false);
+        }}
+      >
+        <FlaggedModal
+          onClose={() => {
+            setOpenCancelModalNew(false);
+          }}
+          order={currentOrder}
+          showFor="cancel-order"
+        />
       </Modal>
       {/* rerfund order */}
       <Modal
