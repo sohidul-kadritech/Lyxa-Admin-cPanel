@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ArrowDownward } from '@mui/icons-material';
 import { Box, Button, Divider, Stack, createFilterOptions, debounce } from '@mui/material';
 import React, { useMemo, useState } from 'react';
@@ -6,6 +7,7 @@ import SidebarContainer from '../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../components/Form/StyledFormField';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { previewGenerator } from '../Sellers2/helpers';
 import { BannerDataValidation, clickableLinkOption, clickableOption, generateData, shopTypeOptions } from './helpers';
 
 const initialData = {
@@ -16,36 +18,44 @@ const initialData = {
   clickableUrl: '',
   clickType: '',
   productId: '',
-  shopIdForClickGo: '',
 };
-function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, isEdit }) {
-  console.log('rowData', rowData);
 
+const getInitialData = (rowData, isEdit, isReadOnly, type) => {
+  if (isEdit || isReadOnly)
+    return {
+      ...rowData,
+      clickType: rowData?.clickType ? rowData?.clickType : 'link',
+      isClickable: rowData?.isClickable ? 'yes' : 'no',
+      image: previewGenerator(rowData?.image),
+    };
+
+  return { ...initialData, type };
+};
+
+function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, isEdit }) {
   const [shopType, setShopType] = useState('');
+
   const [searchKeyShop, setSearchKeyShop] = useState('');
-  // eslint-disable-next-line no-unused-vars
+
   const [searchKeyProduct, setSearchKeyProduct] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [newBanner, setNewBanner] = useState(rowData || { ...initialData, type });
+
+  const [newBanner, setNewBanner] = useState(getInitialData(rowData, isEdit, isReadOnly, type));
+
   const [searchedShopOptions, setSearchedShopOptions] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [searchedProductOptions, setSearchedProductOptions] = useState([]);
 
   const onChangeHandler = (e) => {
-    setNewBanner((prev) => {
-      console.log('=======> banner', { ...prev, [e.target.name]: e.target.value });
-      return { ...prev, [e.target.name]: e.target.value };
-    });
+    setNewBanner((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  // eslint-disable-next-line no-unused-vars
+
   const onDrop = (acceptedFiles, feild) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-        // eslint-disable-next-line prettier/prettier
       }),
     );
-    console.log(newFiles);
+
     if (newFiles?.length) {
       setNewBanner((prev) => ({ ...prev, [feild]: newFiles }));
     }
@@ -53,18 +63,12 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
 
   //   filter for shop
   const filterOptions = createFilterOptions({
-    stringify: ({ shopName, autoGenId, _id }) => {
-      console.log(`===>: ${shopName} ${autoGenId} ${_id}`);
-      return `${shopName} ${autoGenId} ${_id}`;
-    },
+    stringify: ({ shopName, autoGenId, _id }) => `${shopName} ${autoGenId} ${_id}`,
   });
 
   //   filter for product
   const filterOptions2 = createFilterOptions({
-    stringify: ({ name, autoGenId, _id }) => {
-      console.log(`===>: ${name} ${autoGenId} ${_id}`);
-      return `${name} ${autoGenId} ${_id}`;
-    },
+    stringify: ({ name, autoGenId, _id }) => `${name} ${autoGenId} ${_id}`,
   });
 
   const shopsQuery = useMutation(
@@ -80,23 +84,17 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
       }),
     {
       onSuccess: (data) => {
-        setSearchedShopOptions((prev) => {
-          console.log('shopData', data?.data?.shops?.length > 0 ? data?.data?.shops : prev);
-          return data?.data?.shops?.length > 0 ? data?.data?.shops : prev;
-        });
+        setSearchedShopOptions((prev) => (data?.data?.shops?.length > 0 ? data?.data?.shops : prev));
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 
   const getShops = useMemo(
     () =>
       debounce((value) => {
-        console.log('value: ', value);
         setSearchKeyShop(value);
         shopsQuery.mutate();
       }, 300),
-    // eslint-disable-next-line prettier/prettier
     [],
   );
 
@@ -112,23 +110,18 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
       }),
     {
       onSuccess: (data) => {
-        setSearchedProductOptions((prev) => {
-          console.log('shopData', data?.data?.products?.length > 0 ? data?.data?.products : prev);
-          return data?.data?.products?.length > 0 ? data?.data?.products : prev;
-        });
+        setSearchedProductOptions((prev) => (data?.data?.products?.length > 0 ? data?.data?.products : prev));
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 
   const getProduct = useMemo(
     () =>
       debounce((value) => {
-        console.log('value: ', value);
         setSearchKeyProduct(value);
         productQuery.mutate();
       }, 300),
-    // eslint-disable-next-line prettier/prettier
+
     [],
   );
 
@@ -136,6 +129,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
     const isVerified = BannerDataValidation(newBanner, type);
     if (isVerified) {
       const readyData = await generateData(newBanner, type);
+      console.log('readyData', readyData);
       if (readyData && !isEdit) {
         addQuery.mutate(readyData);
       } else {
@@ -265,7 +259,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
               isOptionEqualToValue: (option, value) => option?._id === value?._id,
               onChange: (e, v) => {
                 console.log('value: ', v);
-                setNewBanner((prev) => ({ ...prev, shopIdForClickGo: v }));
+                setNewBanner((prev) => ({ ...prev, shopId: v }));
               },
               onInputChange: (e) => {
                 getShops(e?.target?.value);

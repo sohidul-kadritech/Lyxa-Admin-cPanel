@@ -15,7 +15,7 @@ function Rows({
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack flex={1}>
       {rows?.map((row, index) => (
         <Row
           key={index}

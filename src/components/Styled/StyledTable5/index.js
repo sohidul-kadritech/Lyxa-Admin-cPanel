@@ -137,7 +137,7 @@ function StyledTable5({
   rowInnerContainerSx,
 }) {
   return (
-    <Stack sx={{ background: '#fff', width: '100%', paddingBottom: '12px' }}>
+    <Stack sx={{ background: '#fff', paddingBottom: '12px', overflow: 'auto' }}>
       {showHeader && <Header columns={columns} />}
       <Rows
         columns={columns}

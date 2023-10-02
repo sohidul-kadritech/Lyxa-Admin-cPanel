@@ -48,7 +48,7 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx, row
             justifyContent={
               column?.align === 'right' ? 'flex-end' : column?.align === 'center' ? 'center' : 'flex-start'
             }
-            sx={{ minWidth: column?.minWidth }}
+            sx={{ minWidth: column?.minWidth || 60 }}
             onClick={({ value, row }) => {
               if (column?.expandWithCellClick) {
                 onExpandHandler(column?.expandWithCellClick({ value, row }));

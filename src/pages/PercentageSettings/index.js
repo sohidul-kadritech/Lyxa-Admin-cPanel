@@ -85,25 +85,24 @@ function PercentageSettings2() {
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log('====> seller', data?.data?.sellers);
+          successMsg(data?.message, 'success');
         } else {
-          console.log('=====> msg: ', data.message);
+          successMsg(data?.message);
         }
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
-  // eslint-disable-next-line no-unused-vars
+
   const getGlobalDropCharge = useQuery([API_URL.GET_DELIVERY_FEE], () => AXIOS.get(API_URL.GET_DELIVERY_FEE), {
     onSuccess: (data) => {
       if (data.status) {
-        console.log('====>', data?.data?.charge);
+        successMsg(data?.message, 'success');
         setGlobalCharge(data?.data?.charge?.dropPercentage ? data?.data?.charge?.dropPercentage : 0);
         setGlobalChargeType(
           data?.data?.charge?.dropPercentageType ? data?.data?.charge?.dropPercentageType : 'percentage',
         );
       } else {
-        console.log('=====> msg: ', data.message);
+        successMsg(data?.message);
       }
     },
   });
