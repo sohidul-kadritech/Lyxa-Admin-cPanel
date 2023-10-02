@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button, Drawer, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { isNumber } from 'lodash';
 import React, { useState } from 'react';
@@ -97,8 +98,10 @@ function PercentageSettings2() {
     onSuccess: (data) => {
       if (data.status) {
         console.log('====>', data?.data?.charge);
-        setGlobalCharge(data?.data?.charge?.dropPercentage);
-        setGlobalChargeType(data?.data?.charge?.dropPercentageType);
+        setGlobalCharge(data?.data?.charge?.dropPercentage ? data?.data?.charge?.dropPercentage : 0);
+        setGlobalChargeType(
+          data?.data?.charge?.dropPercentageType ? data?.data?.charge?.dropPercentageType : 'percentage',
+        );
       } else {
         console.log('=====> msg: ', data.message);
       }

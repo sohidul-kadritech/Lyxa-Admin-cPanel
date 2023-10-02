@@ -72,7 +72,7 @@ function Appsettings2() {
   const [oldUnits, setOldUnits] = useState([]);
 
   // store appSettings data
-  const [newAppSettings, setNewAppSettings] = useState({});
+  const [newAppSettings, setNewAppSettings] = useState({ searchDeliveryBoyKm: [] });
   const [oldAppSettings, setOldAppSettings] = useState({});
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
   const { general, dispatchGeneral } = useGlobalContext();
@@ -86,8 +86,8 @@ function Appsettings2() {
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        setOldAppSettings(data?.data?.appSetting ? data?.data?.appSetting : {});
-        setNewAppSettings(data?.data?.appSetting ? data?.data?.appSetting : {});
+        setOldAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
+        setNewAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
         console.log('appSettings==>', { data: data?.data?.appSetting });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
         setDisableCurrency({

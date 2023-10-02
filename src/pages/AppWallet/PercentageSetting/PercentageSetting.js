@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 import { Grid, Paper, Stack, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -22,12 +23,11 @@ import {
 
 function PercentageSetting() {
   const dispatch = useDispatch();
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions?.currency?.code)?.toUpperCase();
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
   const { loading, dropCharge, sellersDropCharge, paging, hasNextPage, hasPreviousPage, currentPage } = useSelector(
-    (state) => state.settingsReducer
+    (state) => state.settingsReducer,
   );
   const [deliveryCut, setDeliveryCut] = useState([]);
   const [butlerDeliveryCut, setButlerDeliveryCut] = useState([]);
@@ -246,9 +246,7 @@ function PercentageSetting() {
                                 }}
                                 onCancel={() => setconfirm_alert(false)}
                               >
-                                {`You want to delete
-                                                                 ${seller?.company_name} 
-                                                                 Lyxa charge.`}
+                                {`You want to delete${seller?.company_name} Lyxa charge.`}
                               </SweetAlert>
                             ) : null}
                           </Td>
