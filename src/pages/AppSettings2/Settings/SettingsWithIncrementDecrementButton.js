@@ -5,12 +5,13 @@ import IncrementDecrementButton from '../IncrementDecrementButton';
 function SettingsWithIncrementDecrementButton({
   title,
   objectKey,
-  newAppSettings,
+  newAppSettings = { [objectKey]: '' },
   setNewAppSettings,
   setHasChanged,
   action,
   endAdornment,
 }) {
+  console.log({ newAppSettings });
   const { incrementHandler, decrementHandler } = action;
   return (
     <StyledBox title={title}>
@@ -30,7 +31,7 @@ function SettingsWithIncrementDecrementButton({
         objectKey={objectKey}
         setValue={setNewAppSettings}
         isValidateType={false}
-        currentValue={newAppSettings[objectKey]}
+        currentValue={Object.hasOwn(newAppSettings, objectKey) ? newAppSettings[objectKey] : ''}
       />
     </StyledBox>
   );

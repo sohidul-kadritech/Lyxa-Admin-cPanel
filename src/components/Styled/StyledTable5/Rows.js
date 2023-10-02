@@ -26,7 +26,11 @@ function Rows({
           rowInnerContainerSx={rowInnerContainerSx}
         />
       ))}
-      {rows?.length <= 0 && NoRowsOverlay}
+      {rows?.length <= 0 && (
+        <Stack minHeight={150} justifyContent="center" alignContent="center" alignItems="center">
+          {NoRowsOverlay}
+        </Stack>
+      )}
     </Stack>
   );
 }

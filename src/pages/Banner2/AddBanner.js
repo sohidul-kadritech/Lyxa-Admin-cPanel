@@ -143,6 +143,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
       }
     }
   };
+
   return (
     <SidebarContainer title={isEdit ? 'Edit Banner' : isReadOnly ? 'View Banner' : 'Add Banner'} onClose={onClose}>
       <Box sx={{ marginTop: '20px', paddingBottom: '20px' }}>
