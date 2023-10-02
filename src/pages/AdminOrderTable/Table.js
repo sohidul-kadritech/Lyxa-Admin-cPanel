@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
@@ -442,7 +443,7 @@ export default function Table({
                   rowSx={{ border: 'none' }}
                   rowInnerContainerSx={{ padding: '0px' }}
                   columns={filteredColumnsForExpand}
-                  rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
+                  rows={[{ ...row }]}
                 />,
               );
             }}
@@ -617,12 +618,18 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => {
         const total =
-          // eslint-disable-next-line no-unsafe-optional-chaining
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+
+        const totalOringinalOrder =
+          row?.originalOrder?.summary?.baseCurrency_cash +
+          row?.originalOrder?.summary?.baseCurrency_wallet +
+          row?.originalOrder?.summary?.baseCurrency_card;
+
+        const finalTotal = row?.isReplacementOrder ? totalOringinalOrder : total;
 
         return (
           <Typography variant="body4">
-            {currency} {(total || 0).toFixed(2)}
+            {currency} {(finalTotal || 0).toFixed(2)}
           </Typography>
         );
       },
