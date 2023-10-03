@@ -17,7 +17,7 @@ function Header({ columns = [] }) {
   return (
     <Stack direction="row" sx={{ borderBottom: `1px dashed ${theme.palette.custom.border}`, padding: '12px 0px' }}>
       {columns?.map((column, index) => (
-        <Stack flex={column?.flex || 1} key={index} sx={{ minWidth: column?.minWidth }}>
+        <Stack flex={column?.flex || 1} key={index} sx={{ minWidth: column?.minWidth || 60 }}>
           {!column?.headerComponent ? (
             <Typography
               sx={{
