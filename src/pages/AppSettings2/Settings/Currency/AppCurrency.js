@@ -12,7 +12,7 @@ function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged, disabl
   return (
     <InputBox
       title="Base Currency"
-      endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
+      endAdornment={`${newAppSettings?.baseCurrency?.symbol || ''}`}
       inputType="number"
       sxLeft={{ width: '200px' }}
       sxRight={{ width: '140px' }}
@@ -52,7 +52,7 @@ function SecondaryCurrency({ newAppSettings, setNewAppSettings, setHasChanged, s
   return (
     <InputBox
       title="Secondary Currency"
-      endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
+      endAdornment={`${newAppSettings?.baseCurrency?.symbol || ''}`}
       inputType="number"
       sxLeft={{ width: '200px' }}
       sxRight={{ width: '140px' }}
@@ -163,7 +163,7 @@ function AppCurrency({
           setHasChanged={setHasChanged}
         />
       </Stack>
-      {newAppSettings.acceptedCurrency === 'both' && (
+      {newAppSettings?.acceptedCurrency === 'both' && (
         <Stack direction="row" alignItems="center" flexWrap="wrap" pt={4}>
           <SecondaryCurrency
             newAppSettings={newAppSettings}

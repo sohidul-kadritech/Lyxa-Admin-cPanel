@@ -76,7 +76,8 @@ export default function AddTag({ onClose, shopType, tag }) {
       onSuccess: (data) => {
         if (data?.status) {
           successMsg(data?.message, 'success');
-          queryClient.invalidateQueries({ queryKey: [`tags-cusines-${shopType}`] });
+          // queryClient.invalidateQueries({ queryKey: [`tags-cusines-${shopType}`] });
+          queryClient.invalidateQueries([Api.GET_ALL_TAGS_AND_CUSINES]);
           onClose();
         }
       },

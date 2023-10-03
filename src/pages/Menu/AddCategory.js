@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -41,7 +42,7 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
   console.log(editCategory);
 
   const [category, setCategory] = useState(
-    editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit(shopType, shopId)
+    editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit(shopType, shopId),
   );
 
   // input handler
@@ -54,8 +55,12 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
-      })
+      }),
     );
+
+    // const files = acceptedFiles[0]
+
+    console.log('newFiles', acceptedFiles);
 
     setCategory((prev) => ({
       ...prev,
@@ -86,7 +91,7 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
           onClose();
         }
       },
-    }
+    },
   );
 
   const onSubmit = async () => {

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -11,7 +13,6 @@ import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
 import { sortOptions, statusTypeOptions } from '../Faq2/helpers';
-import { previewGenerator } from '../Sellers2/helpers';
 import { dateRangeInit } from '../Vat2/helpers';
 import AddBanner from './AddBanner';
 import BannerTableSkeleton from './BannerTableSkeleton';
@@ -54,7 +55,6 @@ function AdBanner() {
   const [isEdit, setIsEdit] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
 
   const queryClient = useQueryClient();
@@ -64,7 +64,7 @@ function AdBanner() {
     () =>
       AXIOS.get(API_URL.BANNER_LIST, {
         params: { sortBy, status, type, startDate: range?.start, endDate: range?.end },
-      })
+      }),
   );
 
   const addBannerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_BANNER, data), {
@@ -193,16 +193,7 @@ function AdBanner() {
         <AddBanner
           isReadOnly={isReadOnly}
           isEdit={isEdit}
-          rowData={
-            isEdit || isReadOnly
-              ? {
-                  ...rowData,
-                  clickType: rowData?.clickType ? rowData?.clickType : 'link',
-                  isClickable: rowData?.isClickable ? 'yes' : 'no',
-                  image: previewGenerator(rowData?.image),
-                }
-              : undefined
-          }
+          rowData={rowData}
           addQuery={isEdit ? editBannerQuery : addBannerQuery}
           type={type}
           onClose={() => {

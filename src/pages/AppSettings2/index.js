@@ -72,7 +72,7 @@ function Appsettings2() {
   const [oldUnits, setOldUnits] = useState([]);
 
   // store appSettings data
-  const [newAppSettings, setNewAppSettings] = useState({});
+  const [newAppSettings, setNewAppSettings] = useState({ searchDeliveryBoyKm: [] });
   const [oldAppSettings, setOldAppSettings] = useState({});
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
   const { general, dispatchGeneral } = useGlobalContext();
@@ -86,13 +86,13 @@ function Appsettings2() {
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        setOldAppSettings(data?.data?.appSetting);
-        setNewAppSettings(data?.data?.appSetting);
+        setOldAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
+        setNewAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
         console.log('appSettings==>', { data: data?.data?.appSetting });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
         setDisableCurrency({
-          base: Object?.keys(data?.data?.appSetting.baseCurrency || {})?.length > 1,
-          secondary: Object?.keys(data?.data?.appSetting.secondaryCurrency || {})?.length > 1,
+          base: Object?.keys(data?.data?.appSetting?.baseCurrency || {})?.length > 1,
+          secondary: Object?.keys(data?.data?.appSetting?.secondaryCurrency || {})?.length > 1,
         });
       }
     },
@@ -294,7 +294,7 @@ function Appsettings2() {
             {/* Settings for lyxa pay limit (customer service) */}
             <SettingsWithIncrementDecrementButton
               title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.baseCurrency?.symbol})`}
-              endAdornment={newAppSettings?.baseCurrency?.symbol}
+              endAdornment={newAppSettings?.baseCurrency?.symbol || ''}
               objectKey="maxCustomerServiceValue"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
@@ -352,7 +352,7 @@ function Appsettings2() {
 
             {/* Settings for maximum discount for lyxa */}
             <SettingsWithIncrementDecrementButton
-              endAdornment={newAppSettings?.baseCurrency?.symbol}
+              endAdornment={newAppSettings?.baseCurrency?.symbol || ''}
               title="Maximum Discount Per Item for Lyxa (Marketing)"
               objectKey="maxDiscount"
               newAppSettings={newAppSettings}
@@ -428,7 +428,6 @@ function Appsettings2() {
           setIsconfirm(false);
         }}
         onConfirm={() => {
-          // callDeleteFaq();
           setIsconfirm(false);
 
           populateData();

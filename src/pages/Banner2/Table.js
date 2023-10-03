@@ -81,7 +81,7 @@ function AddBannerTable({
               textOverflow: 'ellipsis',
             }}
           >
-            {row?.clickType || 'Link'}
+            {row?.clickType || 'Default'}
           </Typography>
         </Stack>
       ),

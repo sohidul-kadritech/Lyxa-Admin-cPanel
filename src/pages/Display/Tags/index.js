@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // thrid pary
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
@@ -49,17 +50,25 @@ export default function TagsAndCusines() {
   const tagsQuery = useQuery([Api.GET_ALL_TAGS_AND_CUSINES, queryParams], () =>
     AXIOS.get(Api.GET_ALL_TAGS_AND_CUSINES, {
       params: queryParams,
-    })
+    }),
   );
 
   const items = tagsQuery.data?.data?.tags || [];
 
-  // edit
-  const tagsMutation = useMutation((data) =>
-    AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
-      ...data,
-      id: data?._id,
-    })
+  // edit tags and cuisine
+  const tagsMutation = useMutation(
+    (data) =>
+      AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
+        ...data,
+        id: data?._id,
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          queryClient.invalidateQueries([Api.GET_ALL_TAGS_AND_CUSINES]);
+        }
+      },
+    },
   );
 
   // sorting

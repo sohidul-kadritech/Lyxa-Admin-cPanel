@@ -41,15 +41,15 @@ export const shopTypeOptions = [
   },
 ];
 const clickTypeValidation = (data) => {
-  if (data?.clickType === 'link' && !data?.clickableUrl) {
+  if (data?.isClickable === 'yes' && data?.clickType === 'link' && !data?.clickableUrl) {
     successMsg('Please provide url!');
     return false;
   }
-  if (data?.clickType === 'shop' && !data?.shopIdForClickGo) {
+  if (data?.isClickable === 'yes' && data?.clickType === 'shop' && !data?.shopId) {
     successMsg('Please select a shop!');
     return false;
   }
-  if (data?.clickType === 'product' && !data?.productId) {
+  if (data?.isClickable === 'yes' && data?.clickType === 'product' && !data?.productId) {
     successMsg('Please select a product!');
     return false;
   }
@@ -66,6 +66,7 @@ export const BannerDataValidation = (data, type) => {
     successMsg('Please provide title!');
     return false;
   }
+
   if (!data?.image) {
     successMsg('Please provide banner!');
     return false;
@@ -74,7 +75,7 @@ export const BannerDataValidation = (data, type) => {
     successMsg('Select the url is clickable or not!');
     return false;
   }
-  if (!data?.clickType && type === 'home') {
+  if (data?.isClickable === 'yes' && !data?.clickType && type === 'home') {
     successMsg('Select the click type!');
     return false;
   }
@@ -92,25 +93,27 @@ export const generateData = async (data, type) => {
     successMsg('Error, when image is uploading!');
     return false;
   }
+
   const readyData = {
     title: data?.title,
     image,
     type: data?.type,
     isClickable: data?.isClickable === 'yes',
     clickType: data?.clickType,
-    // shopId: '',
-    // clickableUrl: '',
-    // productId: '62b303718d5416101a12be6e',
-    // shopIdForClickGo: '',
+    shopId: '',
+    clickableUrl: '',
+    productId: '',
   };
 
-  if (data?.clickType === 'link' && type === 'home') {
+  if (data?.isClickable === 'yes' && data?.clickType === 'link' && type === 'home') {
     return { ...readyData, clickType: '', clickableUrl: data?.clickableUrl };
   }
-  if (data?.clickType === 'shop' && type === 'home') {
-    return { ...readyData, shopIdForClickGo: data?.shopIdForClickGo?._id };
+
+  if (data?.isClickable === 'yes' && data?.clickType === 'shop' && type === 'home') {
+    return { ...readyData, shopId: data?.shopId?._id };
   }
-  if (data?.clickType === 'product' && type === 'home') {
+
+  if (data?.isClickable === 'yes' && data?.clickType === 'product' && type === 'home') {
     return { ...readyData, productId: data?.productId?._id };
   }
 

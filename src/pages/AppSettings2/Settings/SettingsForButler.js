@@ -9,7 +9,7 @@ function SettingsForButler({ newAppSettings, setNewAppSettings, setHasChanged })
       <Stack gap="10px" justifyContent="center">
         <InputBox
           title="Max total EST items price"
-          endAdornment={`${newAppSettings?.baseCurrency?.symbol}`}
+          endAdornment={`${newAppSettings?.baseCurrency?.symbol || ''}`}
           inputValue={`${newAppSettings?.maxTotalEstItemsPriceForButler}`}
           inputType="number"
           sxLeft={{ width: '200px' }}
@@ -17,7 +17,6 @@ function SettingsForButler({ newAppSettings, setNewAppSettings, setHasChanged })
           onInputChange={(e) => {
             setHasChanged(true);
             setNewAppSettings((prev) => ({ ...prev, maxTotalEstItemsPriceForButler: e?.target?.value }));
-            // setMaxTotalEstItemsPriceForButler(e?.target?.value);
           }}
         />
         <InputBox

@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Chip, Drawer, Modal, Stack, Typography } from '@mui/material';
@@ -107,7 +108,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -413,7 +414,7 @@ export default function Table({
 
   const filteredColumnsForExpand = useMemo(
     () => filterColumns(columnsForExpand, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   const columns = [
@@ -439,9 +440,11 @@ export default function Table({
               onExpandHandler(
                 <StyledTable5
                   showHeader={false}
+                  rowSx={{ border: 'none' }}
+                  rowInnerContainerSx={{ padding: '0px' }}
                   columns={filteredColumnsForExpand}
-                  rows={[{ ...row?.originalOrder, orderId: row?.orderId }]}
-                />
+                  rows={[{ ...row }]}
+                />,
               );
             }}
             name={
@@ -580,7 +583,7 @@ export default function Table({
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            maxWidth: '150px',
+            // maxWidth: '150px',
             ...(statusColorVariants[value] || {}),
           }}
           variant="contained"
@@ -615,12 +618,18 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => {
         const total =
-          // eslint-disable-next-line no-unsafe-optional-chaining
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+
+        const totalOringinalOrder =
+          row?.originalOrder?.summary?.baseCurrency_cash +
+          row?.originalOrder?.summary?.baseCurrency_wallet +
+          row?.originalOrder?.summary?.baseCurrency_card;
+
+        const finalTotal = row?.isReplacementOrder ? totalOringinalOrder : total;
 
         return (
           <Typography variant="body4">
-            {currency} {(total || 0).toFixed(2)}
+            {currency} {(finalTotal || 0).toFixed(2)}
           </Typography>
         );
       },
@@ -672,7 +681,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {
