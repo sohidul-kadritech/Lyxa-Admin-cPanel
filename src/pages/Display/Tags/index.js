@@ -55,7 +55,7 @@ export default function TagsAndCusines() {
 
   const items = tagsQuery.data?.data?.tags || [];
 
-  // edit
+  // edit tags and cuisine
   const tagsMutation = useMutation(
     (data) =>
       AXIOS.post(Api.UPDATE_TAGS_AND_CUSINES, {
