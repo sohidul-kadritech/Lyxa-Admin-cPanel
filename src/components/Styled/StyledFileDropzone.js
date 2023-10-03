@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 import { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -33,7 +34,7 @@ const readonlyStyle = {
 
 export default function StyledFileDropzone({ text, readOnly, ...args }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
-    maxSize: 1000 * 1000,
+    maxSize: 1024 * 1024 * 2,
     multiple: false,
     accept: {
       'image/png': ['.png', '.jpg', '.jpeg'],
@@ -48,7 +49,7 @@ export default function StyledFileDropzone({ text, readOnly, ...args }) {
       ...(isDragReject ? rejectStyle : {}),
       ...(readOnly ? readonlyStyle : {}),
     }),
-    [isFocused, isDragAccept, isDragReject, readOnly]
+    [isFocused, isDragAccept, isDragReject, readOnly],
   );
 
   return (
