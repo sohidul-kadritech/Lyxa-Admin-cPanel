@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // thrid pary
 import { Edit, Visibility } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,7 +7,6 @@ import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 // project import
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
-import TablePagination from '../../../components/Common/TablePagination';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 // eslint-disable-next-line import/no-named-as-default
 import StyledIconButton from '../../../components/Styled/StyledIconButton';
@@ -178,7 +178,7 @@ export default function TagsTable({
           noRowsMessage={loading ? 'Loading ...' : 'No Tags or Cuisines'}
         />
       </Box>
-      <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+      {/* <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} /> */}
     </Box>
   );
 }
