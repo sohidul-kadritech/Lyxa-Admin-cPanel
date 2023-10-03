@@ -37,7 +37,7 @@ export default function StyledFileDropzone({ text, readOnly, ...args }) {
     maxSize: 1024 * 1024 * 2,
     multiple: false,
     accept: {
-      'image/png': ['.png', '.jpg', '.jpeg'],
+      'image/png': ['.png', '.jpg', '.jpeg', '.webp', '.avif'],
     },
     ...args,
   });
@@ -49,7 +49,7 @@ export default function StyledFileDropzone({ text, readOnly, ...args }) {
       ...(isDragReject ? rejectStyle : {}),
       ...(readOnly ? readonlyStyle : {}),
     }),
-    [isFocused, isDragAccept, isDragReject, readOnly],
+    [isFocused, isDragAccept, isDragReject, readOnly]
   );
 
   return (

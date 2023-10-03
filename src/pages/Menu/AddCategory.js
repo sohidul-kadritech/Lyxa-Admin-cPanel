@@ -42,7 +42,7 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
   console.log(editCategory);
 
   const [category, setCategory] = useState(
-    editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit(shopType, shopId),
+    editCategory?._id ? getEditCategoryData(editCategory) : getCategoryInit(shopType, shopId)
   );
 
   // input handler
@@ -51,16 +51,25 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
   };
 
   // file handler
-  const onDrop = (acceptedFiles) => {
-    const newFiles = acceptedFiles.map((file) =>
-      Object.assign(file, {
+  const onDrop = (acceptedFiles, rejectedFiles) => {
+    const newFiles = acceptedFiles.map((file) => {
+      const image = new Image();
+      console.log('image', image);
+
+      return Object.assign(file, {
         preview: URL.createObjectURL(file),
-      }),
-    );
+      });
+    });
 
-    // const files = acceptedFiles[0]
+    console.log('newFiles', { acceptedFiles, rejectedFiles });
 
-    console.log('newFiles', acceptedFiles);
+    if (rejectedFiles?.length > 0) {
+      rejectedFiles?.forEach((file) => {
+        file?.errors.forEach((item) => {
+          successMsg(item?.code);
+        });
+      });
+    }
 
     setCategory((prev) => ({
       ...prev,
@@ -91,7 +100,7 @@ export default function AddCategory({ onClose, editCategory, shopId, shopType, m
           onClose();
         }
       },
-    },
+    }
   );
 
   const onSubmit = async () => {
