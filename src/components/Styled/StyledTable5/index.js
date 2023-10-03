@@ -127,11 +127,26 @@ const templateColumn = [
   },
 ];
 
-function StyledTable5({ expandWithRowClick, columns, rows, NoRowsOverlay, showHeader = true }) {
+function StyledTable5({
+  expandWithRowClick,
+  columns,
+  rows,
+  NoRowsOverlay,
+  showHeader = true,
+  rowSx,
+  rowInnerContainerSx,
+}) {
   return (
-    <Stack sx={{ background: '#fff', width: '100%', paddingBottom: '12px' }}>
+    <Stack sx={{ background: '#fff', paddingBottom: '12px', overflow: 'auto' }}>
       {showHeader && <Header columns={columns} />}
-      <Rows columns={columns} rows={rows} expandWithRowClick={expandWithRowClick} NoRowsOverlay={NoRowsOverlay} />
+      <Rows
+        columns={columns}
+        rows={rows}
+        expandWithRowClick={expandWithRowClick}
+        NoRowsOverlay={NoRowsOverlay}
+        rowSx={rowSx}
+        rowInnerContainerSx={rowInnerContainerSx}
+      />
     </Stack>
   );
 }

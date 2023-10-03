@@ -10,7 +10,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
-import StyledTable5 from '../../components/Styled/StyledTable5';
 import useQueryParams from '../../helpers/useQueryParams';
 import Flags from './Flags';
 import Orders from './Orders';
@@ -79,7 +78,6 @@ export default function AdminOrders() {
         <Tab label="Flags" />
         <Tab label="Low Rating" />
         <Tab label="Scheduled" />
-        <Tab label="Test" />
       </Tabs>
       <Box>
         <TabPanel panelKey="ongoing" value={queryParams?.type} noPadding>
@@ -99,9 +97,6 @@ export default function AdminOrders() {
         </TabPanel>
         <TabPanel index="scheduled" value={queryParams?.type} noPadding>
           <Orders type="scheduled" queryParams={queryParams} setQueryParams={setQueryParams} />
-        </TabPanel>
-        <TabPanel panelKey="test" index={queryParams?.type} value="test" noPadding>
-          <StyledTable5 />
         </TabPanel>
       </Box>
     </Box>

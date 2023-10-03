@@ -3,7 +3,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { AccordionDetails, Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
-function Row({ row, columns, isExpandable = true, expandWithRowClick }) {
+function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx, rowInnerContainerSx }) {
   const theme = useTheme();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -28,11 +28,11 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick }) {
   };
 
   return (
-    <Box sx={{ borderBottom: `1px dashed ${theme.palette.custom.border}`, cursor: 'pointer' }}>
+    <Box sx={{ borderBottom: `1px dashed ${theme.palette.custom.border}`, cursor: 'pointer', ...(rowSx || {}) }}>
       <Stack
         direction="row"
         alignItems="center"
-        sx={{ padding: '12px 0px' }}
+        sx={{ padding: '12px 0px', ...(rowInnerContainerSx || {}) }}
         onClick={() => {
           if (expandWithRowClick) {
             onExpandHandler(expandWithRowClick(row));
@@ -48,7 +48,7 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick }) {
             justifyContent={
               column?.align === 'right' ? 'flex-end' : column?.align === 'center' ? 'center' : 'flex-start'
             }
-            sx={{ minWidth: column?.minWidth }}
+            sx={{ minWidth: column?.minWidth || 60 }}
             onClick={({ value, row }) => {
               if (column?.expandWithCellClick) {
                 onExpandHandler(column?.expandWithCellClick({ value, row }));

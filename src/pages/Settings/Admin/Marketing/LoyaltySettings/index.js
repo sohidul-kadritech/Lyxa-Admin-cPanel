@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Box, Button, Drawer, Unstable_Grid2 as Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -67,7 +68,7 @@ export default function LoyaltySettings() {
             return { ...category, name: item?.name };
           }
           return item;
-        })
+        }),
       );
     }
   };
@@ -326,19 +327,7 @@ export default function LoyaltySettings() {
                     }}
                   />
                 </StyledContainer>
-                {/* spending limits */}
-                <StyledContainer title="Spending Limits" xs={12} lg={12}>
-                  <InputBox
-                    title="Minimum spending limit/week"
-                    endAdornment="$"
-                    inputValue={minSpendLimit}
-                    inputType="number"
-                    onInputChange={(e) => {
-                      setMinSpendLimit(e.target.value);
-                      setGlobalChange(true);
-                    }}
-                  />
-                </StyledContainer>
+
                 {/* expiration */}
                 <StyledContainer title="Expiration" xs={12} lg={12}>
                   <InputBox
