@@ -28,7 +28,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
   const otherPayments = paymentDetails?.otherPayments;
   const deliveryFee = paymentDetails?.deliveryFee;
 
-  console.log('shopConsole', paymentDetails);
+  console.log('shopConsole', deliveryFee);
 
   const orderValue = {};
 
@@ -354,8 +354,8 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                 >
                   <PriceItem
                     title="Delivery fee"
-                    amount={deliveryFee?.online}
-                    // amount={orderValue?.deliveryFeeOnline}
+                    // amount={deliveryFee?.online}
+                    amount={deliveryFee?.deliveryFee_online}
                   />
 
                   <PriceItem
