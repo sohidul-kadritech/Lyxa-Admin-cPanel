@@ -84,9 +84,7 @@ function PercentageSettings2() {
     () => AXIOS.get(API_URL.GET_SPECIAL_DROP_CHARGE),
     {
       onSuccess: (data) => {
-        if (data.status) {
-          successMsg(data?.message, 'success');
-        } else {
+        if (!data.status) {
           successMsg(data?.message);
         }
       },
@@ -96,7 +94,6 @@ function PercentageSettings2() {
   const getGlobalDropCharge = useQuery([API_URL.GET_DELIVERY_FEE], () => AXIOS.get(API_URL.GET_DELIVERY_FEE), {
     onSuccess: (data) => {
       if (data.status) {
-        successMsg(data?.message, 'success');
         setGlobalCharge(data?.data?.charge?.dropPercentage ? data?.data?.charge?.dropPercentage : 0);
         setGlobalChargeType(
           data?.data?.charge?.dropPercentageType ? data?.data?.charge?.dropPercentageType : 'percentage',

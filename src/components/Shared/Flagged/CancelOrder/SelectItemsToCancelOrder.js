@@ -82,8 +82,6 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
     setSelectedItem((prev) => {
       const selected = [...prev, item];
       setFlaggData((prev) => {
-        // console.log('prev', prev);
-
         const totalSelectedAmount = selected.reduce((prevValue, item) => item?.price + prevValue, 0);
 
         const endorseLoss = getUpdatedEndorseLossValue(prev, totalSelectedAmount);

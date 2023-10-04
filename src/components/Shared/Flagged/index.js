@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
@@ -11,6 +12,7 @@ import OrderDetail from '../OrderDetail';
 import OrderContextProvider from '../OrderDetail/OrderContext';
 import ModalContainer from './ModalContainer';
 
+import socketServices from '../../../common/socketService';
 import CancelOrder from './CancelOrder';
 import { validateCancelData } from './CancelOrder/helpers';
 import RefundOrder from './Refund';
@@ -119,9 +121,21 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
     onSuccess: (data) => {
       if (data.status) {
         successMsg(data?.message, 'success');
+
+        const order = data?.data?.order;
+
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
+
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+
+        console.log('data?.data?.order?._id', order?._id);
+
+        socketServices?.emit('updateOrder', {
+          orderId: order?._id,
+        });
+
         onClose();
       } else {
         successMsg(data?.message, 'error');
@@ -144,10 +158,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
 
   const onSubmitCancelOrder = () => {
     const validatedData = validateCancelData(order, cancelOrderData);
-
     const api = order?.isButler ? API_URL.BUTLER_CANCEL_ORDER : API_URL.CANCEL_ORDER;
-
-    console.log({ validatedData, api });
 
     if (validatedData?.status === true) {
       cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data });
@@ -221,7 +232,6 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
             </Box>
           </Box>
           {/* Right side here */}
-
           <OrderDetail
             order={order}
             onClose={onClose}
