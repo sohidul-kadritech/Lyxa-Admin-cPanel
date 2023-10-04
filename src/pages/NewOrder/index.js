@@ -118,7 +118,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   // @update order status from this query
@@ -132,7 +132,7 @@ export default function NewOrders({ showFor }) {
       onError: (error) => {
         console.log('api error: ', error);
       },
-    },
+    }
   );
 
   const updateStatusHandler = async () => {
