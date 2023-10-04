@@ -352,18 +352,8 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                     seCurrentExpanedTab(closed ? 4 : -1);
                   }}
                 >
-                  <PriceItem
-                    title="Delivery fee"
-                    // amount={deliveryFee?.online}
-                    amount={deliveryFee?.deliveryFee_online}
-                  />
-
-                  <PriceItem
-                    title="Rider tip"
-                    amount={deliveryFee?.riderTip_online}
-                    // amount={orderValue?.riderTipOnline}
-                    isRefused
-                  />
+                  <PriceItem title="Delivery fee" amount={deliveryFee?.deliveryFee_online} />
+                  <PriceItem title="Rider tip" amount={deliveryFee?.riderTip_online} />
                 </DetailsAccordion>
               )}
             </DetailsAccordion>
