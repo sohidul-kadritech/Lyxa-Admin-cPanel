@@ -206,7 +206,7 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
 
   if (isReturnforAdmin) return list2;
 
-  // console.log(currentOrder, currentOrder?.shop?.haveOwnDeliveryBoy, 'isReturnforAdmin', list);
+  // console.log(currentOrder, currentOrder?.shop?.haveOwnDeliveryBoy, 'isReturnforAdmin', list, list2);
 
   return list;
   // return list;
