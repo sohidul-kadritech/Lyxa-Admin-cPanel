@@ -70,7 +70,7 @@ function RidersCurrentLocationMapView({ riders = [] }) {
     if (riders?.length > 0) {
       riders?.forEach((rider) => {
         const marker = new google.maps.Marker({
-          position: { lat: rider?.location?.coordinates[1], lng: rider?.location?.coordinates[0] },
+          position: { lat: rider?.location?.coordinates[1] || 0, lng: rider?.location?.coordinates[0] || 0 },
           icon: RiderIcon,
           map,
         });
