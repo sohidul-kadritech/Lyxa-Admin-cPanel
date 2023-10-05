@@ -22,7 +22,7 @@ function SettingsForCurrency({
         isUsedSecondaryCurrency={isUsedSecondaryCurrency}
         setIsUsedSecondaryCurrency={setIsUsedSecondaryCurrency}
       />
-      {isUsedSecondaryCurrency !== 'disable' && (
+      {isUsedSecondaryCurrency !== 'disable' && newAppSettings?.acceptedCurrency === 'both' && (
         <ExchangeRate
           newAppSettings={newAppSettings}
           setNewAppSettings={setNewAppSettings}

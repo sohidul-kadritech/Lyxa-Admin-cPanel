@@ -64,19 +64,25 @@ function Appsettings2() {
 
   // for discard and confirmation
   const [isConfirm, setIsconfirm] = useState(false);
+
   const [hasChanged, setHasChanged] = useState(false);
 
   // store units data
   const [units, setUnits] = useState([]);
+
   const [deletedUnitId, setDeletedUnitId] = useState([]);
+
   const [oldUnits, setOldUnits] = useState([]);
 
   // store appSettings data
-  const [newAppSettings, setNewAppSettings] = useState({ searchDeliveryBoyKm: [] });
+  const [newAppSettings, setNewAppSettings] = useState({ searchDeliveryBoyKm: [], acceptedCurrency: 'base' });
+
   const [oldAppSettings, setOldAppSettings] = useState({});
+
   const [isUsedSecondaryCurrency, setIsUsedSecondaryCurrency] = useState('');
+
   const { general, dispatchGeneral } = useGlobalContext();
-  console.log('appSettings==>', { general });
+
   const [disableCurrency, setDisableCurrency] = useState({
     base: false,
     secondary: false,
@@ -86,8 +92,12 @@ function Appsettings2() {
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        setOldAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
-        setNewAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [] });
+        setOldAppSettings(
+          data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [], acceptedCurrency: 'base' },
+        );
+        setNewAppSettings(
+          data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [], acceptedCurrency: 'base' },
+        );
         console.log('appSettings==>', { data: data?.data?.appSetting });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
         setDisableCurrency({
@@ -185,7 +195,6 @@ function Appsettings2() {
       validateList(
         bundle,
         oldbundle.map((data) => data?.name),
-        // eslint-disable-next-line prettier/prettier
         type,
       ) &&
       type === 'text'
@@ -240,9 +249,6 @@ function Appsettings2() {
       // eslint-disable-next-line prettier/prettier
       units?.map((unit) => unit.name),
     );
-
-    console.log('', updatedUnits);
-    console.log('generatedData', generatedData);
 
     if (hasChanged) {
       setOldUnits((prev) => {
@@ -306,7 +312,6 @@ function Appsettings2() {
             />
 
             {/* Settings for VAT Percentage */}
-
             <SettingsForVAT
               endAdornment="%"
               newAppSettings={newAppSettings}

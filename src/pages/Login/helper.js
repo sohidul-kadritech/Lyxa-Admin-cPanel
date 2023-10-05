@@ -47,7 +47,7 @@ export const validateForm = (data, touched, errors, setErrors) => {
     email = 'Email is required';
   }
 
-  if (!data?.email?.match(/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/) && !email) {
+  if (!data?.email?.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) && !email) {
     email = 'Email is not valid';
   }
 

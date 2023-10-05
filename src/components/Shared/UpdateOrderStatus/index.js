@@ -45,8 +45,9 @@ const disableUpdateStatusButton = (order, currentStatus, deliveryBoy) => {
     console.log('2', true);
     return true;
   }
+  // console.log('getNextStatus(order, true)', getNextStatus(order, true));
 
-  if (currentStatus === 'ready_to_pickup' && !notAssignRider) {
+  if (currentStatus === 'ready_to_pickup' && !notAssignRider && getNextStatus(order, true) === 'ready_to_pickup') {
     return false;
   }
 

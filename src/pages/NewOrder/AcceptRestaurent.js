@@ -2,6 +2,7 @@
 import { Box, Button, Paper, SliderThumb, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
+import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
 import TimeRangeSlider from './TimeRangeSlider';
 
 function AirbnbThumbComponent(props) {
@@ -24,6 +25,14 @@ function AcceptRestaurent({ onClose, currentOrder, updateStatusMutation }) {
   const [time, setTime] = useState(0);
 
   const acceptOrder = () => {
+    const currentStatus = getNextStatus(currentOrder);
+    const data = {};
+    data.orderId = currentOrder?._id;
+    data.orderStatus = currentStatus;
+    data.shop = currentOrder?.shop?._id;
+    data.time = time;
+    console.log('currentOrder data', data);
+
     // updateStatusMutation.mutate({ data: });
   };
   return (

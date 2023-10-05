@@ -27,7 +27,7 @@ function BaseCurrency({ newAppSettings, setNewAppSettings, setHasChanged, disabl
           },
         }}
         inputProps={{
-          placeholder: 'currency',
+          placeholder: 'Currency',
           value: newAppSettings?.baseCurrency?.code || '',
           disabled: disable,
           readOnly: disable,
