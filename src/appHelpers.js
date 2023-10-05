@@ -25,6 +25,7 @@ export const getUserData = async (accountType, accountId, credentialUserId) => {
     });
 
     // could not get user data - so considered invalid user - will be logged out
+
     if (!userData?.status || !userData?.data[accountType]) {
       return { status: false, invalidUser: true, user: null };
     }
