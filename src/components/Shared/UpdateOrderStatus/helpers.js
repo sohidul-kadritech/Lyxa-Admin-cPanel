@@ -192,6 +192,7 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
   });
 
   if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+    list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
 
@@ -205,8 +206,6 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
   }
 
   if (isReturnforAdmin) return list2;
-
-  // console.log(currentOrder, currentOrder?.shop?.haveOwnDeliveryBoy, 'isReturnforAdmin', list, list2);
 
   return list;
   // return list;
