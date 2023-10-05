@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Delete, Edit } from '@mui/icons-material';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
@@ -5,6 +6,7 @@ import { ReactComponent as SellersIcon } from '../../assets/icons/menu-icons/sel
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import FilterSelect from '../../components/Filter/FilterSelect';
 // eslint-disable-next-line import/no-named-as-default
+import TablePagination from '../../components/Common/TablePagination';
 import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
@@ -31,6 +33,9 @@ function AdminTeamList({
   editAdminQuery,
   setIsConfirmModal,
   adminType,
+  page,
+  setPage,
+  totalPage,
 }) {
   const theme = useTheme();
   const [rowId, setRowId] = useState('');
@@ -141,6 +146,7 @@ function AdminTeamList({
             }}
             size="lg1"
             value={params?.row?.status || ''}
+            disabled={params?.row?._id === currentUser?.admin?._id}
             onChange={(e) => {
               onStatusChange(e.target.value, params.row);
             }}
@@ -199,48 +205,56 @@ function AdminTeamList({
   ];
 
   return (
-    <Box
-      sx={{
-        padding: '7.5px 16px  2px',
-        maxHeight: '350px',
-        overflow: 'auto',
-        border: `1px solid ${theme.palette.custom.border}`,
-        borderRadius: '7px',
-      }}
-    >
-      <StyledTable
-        // columns={allColumns.filter((column) => column.showFor.includes(tabName))}
-        columns={allColumns}
-        rows={data || []}
-        getRowHeight={() => 'auto'}
-        getRowId={(row) => row?._id}
+    <Box>
+      <Box
         sx={{
-          '& .MuiDataGrid-cell': {
-            cursor: 'defualt',
-          },
+          padding: '7.5px 16px  2px',
+          border: `1px solid ${theme.palette.custom.border}`,
+          borderRadius: '7px',
         }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No Admin Found
-            </Stack>
-          ),
-        }}
-      />
+      >
+        <StyledTable
+          // columns={allColumns.filter((column) => column.showFor.includes(tabName))}
+          columns={allColumns}
+          rows={data || []}
+          getRowHeight={() => 'auto'}
+          getRowId={(row) => row?._id}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              cursor: 'defualt',
+            },
+          }}
+          components={{
+            NoRowsOverlay: () => (
+              <Stack height="100%" alignItems="center" justifyContent="center">
+                No Admin Found
+              </Stack>
+            ),
+          }}
+        />
 
-      <ConfirmModal
-        message="Are you sure you want to delete this admin?"
-        isOpen={isConfirmModal}
-        loading={deleteAdminQuery?.isLoading}
-        onCancel={() => {
-          setIsConfirmModal(false);
-          //   setCurrentDocumet({});
+        <ConfirmModal
+          message="Are you sure you want to delete this admin?"
+          isOpen={isConfirmModal}
+          loading={deleteAdminQuery?.isLoading}
+          onCancel={() => {
+            setIsConfirmModal(false);
+            //   setCurrentDocumet({});
+          }}
+          onConfirm={() => {
+            // setIsConfirmModal(false);
+            deleteAdminQuery.mutate({ id: rowId });
+            //   removeDocument(currentDocumet);
+          }}
+        />
+      </Box>
+
+      <TablePagination
+        currentPage={page}
+        lisener={(page) => {
+          setPage(page);
         }}
-        onConfirm={() => {
-          // setIsConfirmModal(false);
-          deleteAdminQuery.mutate({ id: rowId });
-          //   removeDocument(currentDocumet);
-        }}
+        totalPage={totalPage}
       />
     </Box>
   );

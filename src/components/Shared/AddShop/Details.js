@@ -163,11 +163,11 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
 
       {/* password */}
       <StyledFormField
-        label="Password *"
+        label={`Password ${shop?._id ? '' : '*'}`}
         intputType="password"
         inputProps={{
           value: shop?.password,
-          type: 'password *',
+          type: 'password',
           name: 'password',
           onChange,
         }}
@@ -260,7 +260,7 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
       {/* select zone */}
 
       <StyledFormField
-        label="Select a Zone *"
+        label={`Select a Zone ${shop?._id ? '*' : ''}`}
         intputType="select"
         inputProps={{
           name: 'shopZone',

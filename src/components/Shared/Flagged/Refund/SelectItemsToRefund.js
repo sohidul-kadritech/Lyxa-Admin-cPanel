@@ -74,11 +74,11 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
 };
 
 const getDeliveryFee = (order, flaggData, setFlaggData) => {
+  console.log({ deliveryFee: order?.summary?.baseCurrency_riderFeeWithFreeDelivery });
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
-      ? order?.summary?.baseCurrency_riderFee
+    order?.summary?.baseCurrency_riderFeeWithFreeDelivery > 0
+      ? order?.summary?.baseCurrency_riderFeeWithFreeDelivery
       : 0;
-  // "shop-customer" || "customer-shop-customer"
 
   if (flaggData?.deliveryType === 'customer-shop-customer' && flaggData?.replacement === 'with') {
     setFlaggData((prev) => ({ ...prev, totalSelectedAmount: deliveryFee * 2 }));
@@ -124,7 +124,7 @@ export const getSelectableItems = (order, flaggData) => {
 
   // check delivery fee is free or not.
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
+    order?.summary?.baseCurrency_riderFee > 0
       ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 

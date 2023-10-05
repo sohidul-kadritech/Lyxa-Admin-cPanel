@@ -15,6 +15,7 @@ import { getRefundMaxAmounts } from '../../RefundOrder/helpers';
 import SelectItemsToRefund from './SelectItemsToRefund';
 
 import { TitleWithToolTip } from '../../../../pages/NewOrder/helpers';
+
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -197,7 +198,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                   gap: '20px',
                 }}
                 sxForm={{
-                  background: theme.palette.background.secondary,
+                  background: theme?.palette?.background?.secondary,
                   padding: '12px 18px',
                   borderRadius: '10px',
                   flex: 1,
