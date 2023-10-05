@@ -56,8 +56,6 @@ export default function App() {
 
     const { account_type, account_id, access_token, credentialUserId } = getCookiesAsObject();
 
-    console.log('account_type', account_type);
-
     // any cookie is missing
     if (!account_type || !account_id || !access_token || !credentialUserId) {
       removeAuthCookies();

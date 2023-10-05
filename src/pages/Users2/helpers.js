@@ -10,6 +10,8 @@ export const addUserInit = (type, id) => {
 
 export const validateUser = (data) => {
   const { name, email, password, repeated_password } = data;
+
+  console.log('data', { data });
   const status = { status: false, message: null };
 
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
@@ -36,6 +38,11 @@ export const validateUser = (data) => {
 
   if (!emailRegex.test(email)) {
     status.message = 'Email is not valid!';
+    return status;
+  }
+
+  if (!data?.id && !password?.trim()?.length) {
+    status.message = 'Password is should not be empty!';
     return status;
   }
 
