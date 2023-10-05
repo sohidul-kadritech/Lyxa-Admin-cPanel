@@ -91,8 +91,7 @@ function Login(props) {
     }
 
     // eslint-disable-next-line no-useless-escape
-    const emailRex = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/;
-
+    const emailRex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!forgetPassData.to_email.match(emailRex)) {
       return setForgetStatus({ status: 'error', msg: ' Invalid Email' });
     }

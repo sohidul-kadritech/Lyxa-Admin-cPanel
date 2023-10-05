@@ -143,6 +143,7 @@ function AddAdmin({ adminType = 'admin', onClose, addAdminQuery, currentAdmin = 
               placeholder: 'Select Status',
               name: 'status',
               items: statusTypeOptions,
+              readOnly: !currentAdmin?._id,
               onChange: changeHandler,
               //   readOnly: isReadOnly,
             }}
