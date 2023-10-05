@@ -217,7 +217,6 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
           </DetailsAccordion>
 
           {/* shop cut */}
-
           <DetailsAccordion
             title="Shop Payouts"
             titleAmount={Math.abs(payout?.totalPayout)}
@@ -225,7 +224,6 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
           />
 
           {/* Other payments */}
-
           <DetailsAccordion
             title="Other Payments"
             titleAmount={Math.abs(otherPayments?.totalOtherPayments || 0)}

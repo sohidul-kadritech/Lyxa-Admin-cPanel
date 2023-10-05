@@ -110,7 +110,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   );
 
   // units
-  const unitsQuery = useQuery([Api.GET_ALL_UNIT], () => AXIOS.get(Api.GET_ALL_UNIT));
+  const unitsQuery = useQuery([Api.APP_SETTINGS], () => AXIOS.get(Api.APP_SETTINGS));
 
   // categories
   const setConvertCategories = (data) => {
@@ -655,15 +655,15 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
             inputProps={{
               name: 'unit',
               value: product?.unit,
-              items: unitsQuery?.data?.data || [],
+              items: unitsQuery?.data?.data?.appSetting?.units || [],
               onChange: commonChangeHandler,
               readOnly: productReadonly,
-              disabled: unitsQuery.isLoading,
-              getLabel: (item) => item?.name?.toUpperCase() || '',
-              getKey: (item) => item?.name,
-              getValue: (item) => item?.name,
+              disabled: unitsQuery?.isLoading,
+              getLabel: (item) => item?.toUpperCase() || '',
+              getKey: (item) => item,
+              getValue: (item) => item,
               getDisplayValue: (value) =>
-                unitsQuery?.data?.data?.find((unit) => unit?.name === value)?.name?.toUpperCase() || '',
+                unitsQuery?.data?.data?.appSetting?.units?.find((unit) => unit === value)?.toUpperCase() || '',
             }}
           />
         )}
