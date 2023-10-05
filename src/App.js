@@ -96,7 +96,7 @@ export default function App() {
         if (shop?._id === data?.shopId) {
           console.log('socketdata for shop', data);
           currentUser.shop.liveStatus = data?.liveStatus;
-          shop.liveStatus = data?.liveStatus
+          shop.liveStatus = data?.liveStatus;
           setRender((prev) => !prev);
         }
       });
