@@ -45,7 +45,6 @@ const disableUpdateStatusButton = (order, currentStatus, deliveryBoy) => {
     console.log('2', true);
     return true;
   }
-  // console.log('getNextStatus(order, true)', getNextStatus(order, true));
 
   if (currentStatus === 'ready_to_pickup' && !notAssignRider && getNextStatus(order, true) === 'ready_to_pickup') {
     return false;
@@ -339,6 +338,8 @@ export default function UpdateOrderStatus({
     });
   };
 
+  console.log({ currentStatus, deliveryBoy: currentOrder?.deliveryBoy });
+
   return (
     <Box
       sx={{
@@ -453,7 +454,8 @@ export default function UpdateOrderStatus({
                       </span>
 
                       {item?.position <= statusOptions[currentOrder?.orderStatus]?.position &&
-                        currentStatus !== 'accepted_delivery_boy' && (
+                        currentStatus !== 'accepted_delivery_boy' &&
+                        currentOrder?.deliveryBoy && (
                           <span
                             onClick={(e) => {
                               e.stopPropagation();

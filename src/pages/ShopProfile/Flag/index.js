@@ -37,9 +37,10 @@ const searchFlags = (flags, queryParams) => {
   return items;
 };
 
-export default function ShopFlags({ flags = [], onViewDetail }) {
+export default function ShopFlags({ flags = [], onViewDetail, loading }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit({ page: 1 }));
   const [filteredData, setFilteredData] = useState(flags);
+  console.log({ flags, loading });
 
   useEffect(() => {
     setFilteredData(searchFlags(flags, queryParams));
@@ -60,6 +61,7 @@ export default function ShopFlags({ flags = [], onViewDetail }) {
         flags={localDatePagination(filteredData, queryParams?.page, 5)}
         onViewDetail={onViewDetail}
         showFor="Flagged"
+        loading={loading}
       />
       <TablePagination
         currentPage={queryParams?.page}

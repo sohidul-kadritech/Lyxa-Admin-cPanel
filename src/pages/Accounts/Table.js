@@ -111,7 +111,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       flex: 1.5,
       renderCell: ({ value }) => (
         <Typography className="text-dots" variant="body4" pr={3}>
-          {value}
+          {value || '_'}
         </Typography>
       ),
     },

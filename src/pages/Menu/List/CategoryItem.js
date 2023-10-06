@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/no-named-as-default */
 import { Add, Edit, ExpandMore } from '@mui/icons-material';
 import { AccordionDetails, Avatar, Box, Button, Stack, Tooltip, Typography, useTheme } from '@mui/material';
@@ -23,6 +24,7 @@ export default function CategoryItem({
   secondaryCurrency,
   asSearchResult,
   setEditFavorite,
+  type,
 }) {
   const theme = useTheme();
   const { currentUser } = useGlobalContext();
@@ -34,14 +36,14 @@ export default function CategoryItem({
     AXIOS.post(Api.EDIT_SHOP_BEST_SELLER, {
       shopId: shop?._id,
       isActive: status,
-    })
+    }),
   );
 
   const favouritesMutation = useMutation((status) =>
     AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, {
       shopId: shop?._id,
       isActive: status,
-    })
+    }),
   );
 
   const categoriesMutation = useMutation((data) => AXIOS.post(Api.EDIT_CATEGORY, data), {
@@ -202,6 +204,7 @@ export default function CategoryItem({
             asSearchResult={asSearchResult}
             isInsideFavorites={category?.category?.isShopFavorites}
             isInsideBestSellers={category?.category?.isShopBestSellers}
+            type={type}
           />
         ) : (
           <SubCategoriesContainer

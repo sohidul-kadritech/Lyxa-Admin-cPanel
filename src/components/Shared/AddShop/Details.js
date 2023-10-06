@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
@@ -23,16 +24,17 @@ const addressInit = {
   note: '',
 };
 
-export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditShop }) {
+export default function ShopDetails({ shop, setZones, zones, setShop, onChange, onDrop, isEditShop }) {
   const [render, setRender] = useState(false);
+
   const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
+
+  const [showZoneMsg, setShowZoneMsg] = useState(false);
 
   const [latlngForZone, setLatLngForZone] = useState({
     longitude: shop?.shopAddress?.longitude || 0,
     latitude: shop?.shopAddress?.latitude || 0,
   });
-
-  const [zones, setZones] = useState([]);
 
   const getZoneFromAddress = useQuery(
     [Api.GET_ZONE_FROM_LATLNG, { ...latlngForZone }],
@@ -43,16 +45,12 @@ export default function ShopDetails({ shop, setShop, onChange, onDrop, isEditSho
     {
       onSuccess: (data) => {
         if (data.status) {
-          console.log('data zones', data?.data?.zones);
-
           setZones(() => {
-            const zones = getZoneDataFromLatLng(data?.data?.zones);
-            console.log('zones: ', zones);
+            const zones = getZoneDataFromLatLng(data?.data?.zones, shop);
             return zones;
           });
         }
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 

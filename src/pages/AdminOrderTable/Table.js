@@ -103,8 +103,6 @@ export default function Table({
 
   const location = useLocation();
 
-  console.log('location', location?.state);
-
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
@@ -426,70 +424,67 @@ export default function Table({
       flex: 1.5,
       sortable: false,
       minWidth: 240,
-      renderCell: ({ row, onExpandHandler }) => {
-        console.log('row', showFor);
-        return (
-          <UserAvatar
-            imgAlt="user-image"
-            imgUrl={row?.user?.profile_photo}
-            imgFallbackCharacter={row?.user?.name?.charAt(0)}
-            expandIcon={
-              !!((row?.orderStatus === 'delivered' || row?.orderStatus === 'cancelled') && row?.isReplacementOrder)
-            }
-            onClickExpand={() => {
-              onExpandHandler(
-                <StyledTable5
-                  showHeader={false}
-                  rowSx={{ border: 'none' }}
-                  rowInnerContainerSx={{ padding: '0px' }}
-                  columns={filteredColumnsForExpand}
-                  rows={[{ ...row }]}
-                />,
-              );
-            }}
-            name={
-              <span>
-                {row?.user?.name}
-                {row?.chats?.length || row?.admin_chat_request?.length ? (
-                  <>
-                    &nbsp;&nbsp;
-                    <MessageIcon color="#5BBD4E" />
-                  </>
-                ) : null}
-                {row?.isReplacementOrder ? (
-                  <>
-                    &nbsp;&nbsp;
-                    <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
-                  </>
-                ) : null}
-                {row?.flag?.length ? (
-                  <>
-                    &nbsp;&nbsp;
-                    <FlagIcon color="#DD5B63" />
-                  </>
-                ) : null}
-              </span>
-            }
-            subTitle={row?.isReplacementOrder ? row?.originalOrder?.orderId : row?.orderId}
-            subTitleProps={{
-              sx: { color: 'primary.main', cursor: 'pointer' },
-              onClick: () => {
-                setCurrentOrder(row);
-                setDetailOpen(true);
-              },
-            }}
-            titleProps={{
-              sx: { color: 'primary.main', cursor: 'pointer' },
-              onClick: () => {
-                history.push({
-                  pathname: `/users/${row?.user?._id}`,
-                  state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
-                });
-              },
-            }}
-          />
-        );
-      },
+      renderCell: ({ row, onExpandHandler }) => (
+        <UserAvatar
+          imgAlt="user-image"
+          imgUrl={row?.user?.profile_photo}
+          imgFallbackCharacter={row?.user?.name?.charAt(0)}
+          expandIcon={
+            !!((row?.orderStatus === 'delivered' || row?.orderStatus === 'cancelled') && row?.isReplacementOrder)
+          }
+          onClickExpand={() => {
+            onExpandHandler(
+              <StyledTable5
+                showHeader={false}
+                rowSx={{ border: 'none' }}
+                rowInnerContainerSx={{ padding: '0px' }}
+                columns={filteredColumnsForExpand}
+                rows={[{ ...row }]}
+              />,
+            );
+          }}
+          name={
+            <span>
+              {row?.user?.name}
+              {row?.chats?.length || row?.admin_chat_request?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.isReplacementOrder ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
+                </>
+              ) : null}
+              {row?.flag?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <FlagIcon color="#DD5B63" />
+                </>
+              ) : null}
+            </span>
+          }
+          subTitle={row?.isReplacementOrder ? row?.originalOrder?.orderId : row?.orderId}
+          subTitleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              setCurrentOrder(row);
+              setDetailOpen(true);
+            },
+          }}
+          titleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              history.push({
+                pathname: `/users/${row?.user?._id}`,
+                state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+              });
+            },
+          }}
+        />
+      ),
     },
     {
       showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
