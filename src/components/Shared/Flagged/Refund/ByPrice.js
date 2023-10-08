@@ -18,14 +18,15 @@ function ByPrice({ flaggData, setFlaggData, order }) {
   const [byPrice, setByPrice] = useState(initialData);
 
   useEffect(() => {
-    setMaxAmount(getMaxLimit(flaggData, order));
+    setMaxAmount(getMaxLimit(flaggData, order, false));
   }, [flaggData]);
 
   const onChangeHandler = (e) => {
     setFlaggData((prev) => {
       const maxValue = Number(maxAmount[e.target.name]);
+      console.log({ maxAmount });
       const newValue = Number(e.target.value);
-      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : 0;
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
 
       const tempPartialPayment = {
         ...prev,
@@ -48,7 +49,7 @@ function ByPrice({ flaggData, setFlaggData, order }) {
       const updatedNewValue =
         Number(e.target.value) <= flaggData?.deliveryfee
           ? Number(e.target.value) < 0
-            ? 0
+            ? ''
             : Number(e.target.value)
           : flaggData?.deliveryfee;
 
