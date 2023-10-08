@@ -77,6 +77,8 @@ export default function Table({
 
   const { general, currentUser } = useGlobalContext();
 
+  // console.log('currentUser', currentUser);
+
   const currency = general?.currency?.symbol;
 
   const [detailOpen, setDetailOpen] = useState(false);
@@ -106,7 +108,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -242,7 +244,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing'],
-      id: 2,
+      id: 3,
       headerName: `ACCEPTED`,
       field: 'isCustomerServiceAccepted',
       sortable: false,
@@ -263,7 +265,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
-      id: 3,
+      id: 4,
       headerName: 'SHOP',
       field: 'shop',
       flex: 1,
@@ -293,7 +295,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'delivered', 'low-rating', 'scheduled'],
-      id: 4,
+      id: 5,
       headerName: 'PAYMENT METHOD',
       field: 'paymentMethod',
       minWidth: 150,
@@ -307,7 +309,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'cancelled'],
-      id: 5,
+      id: 6,
       headerName: 'STATUS',
       field: 'orderStatus',
       sortable: false,
@@ -329,7 +331,7 @@ export default function Table({
     },
     {
       showFor: ['scheduled'],
-      id: 5,
+      id: 7,
       headerName: 'SCHEDULED FOR',
       field: 'scheduleDate',
       sortable: false,
@@ -339,7 +341,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
-      id: 6,
+      id: 8,
       headerName: 'DATE',
       field: 'createdAt',
       sortable: false,
@@ -348,7 +350,7 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
-      id: 7,
+      id: 9,
       headerName: `ORDER AMOUNT`,
       field: 'profit',
       sortable: false,
@@ -367,7 +369,7 @@ export default function Table({
     },
     {
       showFor: ['delivered', 'low-rating'],
-      id: 8,
+      id: 10,
       headerName: 'ORDER RATING',
       field: 'shopRating',
       sortable: false,
@@ -380,7 +382,7 @@ export default function Table({
     },
     {
       showFor: ['delivered', 'low-rating'],
-      id: 8,
+      id: 11,
       headerName: 'RIDER RATING',
       field: 'riderRating',
       sortable: false,
@@ -393,8 +395,9 @@ export default function Table({
     },
     {
       showFor: ['ongoing', 'delivered', 'cancelled', 'low-rating', 'scheduled'],
-      id: 6,
+      id: 12,
       headerName: `ACTION`,
+      field: 'action',
       sortable: false,
       align: 'right',
       headerAlign: 'right',
@@ -676,7 +679,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   if (loading) {
@@ -837,12 +840,14 @@ export default function Table({
       </Modal>
 
       <Modal open={openUrgentOrder}>
-        <UrgentOrderRecieved
-          order={currentOrder}
-          onClose={() => {
-            setOpenUrgentOrder(false);
-          }}
-        />
+        <Box>
+          <UrgentOrderRecieved
+            order={currentOrder}
+            onClose={() => {
+              setOpenUrgentOrder(false);
+            }}
+          />
+        </Box>
       </Modal>
     </>
   );

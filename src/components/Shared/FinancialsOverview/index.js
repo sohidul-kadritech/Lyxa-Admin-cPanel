@@ -56,7 +56,7 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
     },
   };
 
-  console.log('adminParams', adminParams);
+  // console.log('adminParams', adminParams);
   // summary
   const query = useQuery(
     [
@@ -71,12 +71,12 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
       AXIOS.get(viewUserTypeToApiMap[viewUserType]?.api, {
         params: {
           startDate: convertDate(
-            viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange?.start,
+            viewUserType === 'admin' ? adminPaymentDetailsRange?.start : paymentDetailsRange?.start
           ),
           endDate: convertDate(viewUserType === 'admin' ? adminPaymentDetailsRange?.end : paymentDetailsRange?.end),
           ...viewUserTypeToApiMap[viewUserType]?.params,
         },
-      }),
+      })
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -84,11 +84,11 @@ export default function Overview({ viewUserType, adminParams = {}, adminPaymentD
   const profitBreakdown = summary?.profitBreakdown;
   const marketingSpent = summary?.marketingSpent;
 
-  console.log('marke');
+  // console.log('marke');
 
   const marketingSpentValues = useMemo(
     () => getMarketingTypeValues(marketingSpentType, marketingSpent),
-    [query?.data, marketingSpentType],
+    [query?.data, marketingSpentType]
   );
 
   return (

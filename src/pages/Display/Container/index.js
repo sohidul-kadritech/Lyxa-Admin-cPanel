@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
 import { successMsg } from '../../../helpers/successMsg';
+import useQueryParams from '../../../helpers/useQueryParams';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CommonFilters from '../CommonFilters';
@@ -24,6 +25,7 @@ const typeToTabIndexMap = {
 const filtersInit = {
   searchKey: '',
   status: '',
+  tab: 0,
   // date: {
   //   start: moment().startOf('month').format('YYYY-MM-DD'),
   //   end: moment().endOf('month').format('YYYY-MM-DD'),
@@ -31,9 +33,10 @@ const filtersInit = {
 };
 
 export default function ContainerList({ containerType }) {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [filters, setFilters] = useQueryParams(filtersInit);
+  // const [currentTab, setCurrentTab] = useState(0);
 
-  let itemsQueryKey = `list-container-${typeToTabIndexMap[currentTab]}`;
+  let itemsQueryKey = `list-container-${typeToTabIndexMap[Number(filters?.tab)]}`;
   let itemsQueryApi = Api.GET_ALL_LIST_CONTAINERS;
   let itemsSortingApi = Api.SORT_LIST_CONTAINERS;
   let itemEditApi = Api.UPDATE_LIST_CONTAINERS;
@@ -45,7 +48,7 @@ export default function ContainerList({ containerType }) {
 
   // switch keys
   if (containerType === 'filter') {
-    itemsQueryKey = `filter-container-${typeToTabIndexMap[currentTab]}`;
+    itemsQueryKey = `filter-container-${typeToTabIndexMap[Number(filters?.tab)]}`;
     itemsQueryApi = Api.GET_ALL_FILTER_CONTAINERS;
     itemsSortingApi = Api.SORT_FILTER_CONTAINERS;
     itemEditApi = Api.UPDATE_FILTER_CONTAINERS;
@@ -58,7 +61,6 @@ export default function ContainerList({ containerType }) {
 
   const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(null);
-  const [filters, setFilters] = useState(filtersInit);
 
   // list query
   const listQuery = useQuery(
@@ -69,7 +71,7 @@ export default function ContainerList({ containerType }) {
         searchKey: filters.searchKey,
         // startDate: filters.date.start,
         // endDate: filters.date.end,
-        shopType: typeToTabIndexMap[currentTab],
+        shopType: typeToTabIndexMap[Number(filters?.tab)],
       },
     ],
     () =>
@@ -82,7 +84,7 @@ export default function ContainerList({ containerType }) {
           searchKey: filters.searchKey,
           // startDate: filters.date.start,
           // endDate: filters.date.end,
-          shopType: typeToTabIndexMap[currentTab],
+          shopType: typeToTabIndexMap[Number(filters?.tab)],
         },
       })
   );
@@ -169,9 +171,10 @@ export default function ContainerList({ containerType }) {
         />
         <Box>
           <Tabs
-            value={currentTab}
+            value={Number(filters?.tab)}
             onChange={(event, newValue) => {
-              setCurrentTab(newValue);
+              setFilters((prev) => ({ ...prev, tab: newValue }));
+              // setCurrentTab(newValue);
             }}
           >
             <Tab label="Food" />
@@ -228,7 +231,7 @@ export default function ContainerList({ containerType }) {
       <Drawer anchor="right" open={Boolean(sidebarOpen)}>
         {sidebarOpen === 'add-item' ? (
           <AddContainer
-            shopType={typeToTabIndexMap[currentTab]}
+            shopType={typeToTabIndexMap[Number(filters?.tab)]}
             editContainer={currentItem}
             containerType={containerType}
             onClose={() => {

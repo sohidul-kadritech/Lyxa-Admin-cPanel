@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
@@ -10,20 +9,19 @@ import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
 import { CardTitle } from '../../../components/Shared/Operations';
-import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 import { createCouponOverviewRows } from '../helpers';
 import CouponOverviewTable from './Table';
 
-const queryParamsInit = {
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
-};
+// const queryParamsInit = {
+//   startDate: getFirstMonday('week'),
+//   endDate: moment(),
+// };
 
-export default function CouponOverview() {
+export default function CouponOverview({ queryParams, setQueryParams }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  // const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [overView, setOverview] = useState({});
   const [rows, setRows] = useState([]);
 
@@ -31,7 +29,10 @@ export default function CouponOverview() {
     [Api.GET_COUPON_OVERVIEW, queryParams],
     () =>
       AXIOS.get(Api.GET_COUPON_OVERVIEW, {
-        params: queryParams,
+        params: {
+          startDate: queryParams.startDate,
+          endDate: queryParams.endDate,
+        },
       }),
     {
       onSuccess: (data) => {

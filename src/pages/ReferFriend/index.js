@@ -40,7 +40,6 @@ function ReferFriend() {
           value={currentTab}
           onChange={(event, newValue) => {
             setCurrentTab(newValue);
-            // setIsSideBarOpen(false);
           }}
         >
           <Tab label="List"></Tab>

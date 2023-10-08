@@ -1,16 +1,18 @@
 import { Box, Drawer, Stack, useTheme } from '@mui/material';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 import StyledFormField from '../../components/Form/StyledFormField';
 // eslint-disable-next-line import/no-named-as-default
+import StyledDateRangePicker from '../../components/Styled/StyledDateRangePicker';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import DateRange from '../../components/StyledCharts/DateRange';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { AddMenuButton } from '../Faq2';
-import { dateRangeInit } from '../Faq2/helpers';
 import AddNotification from './AddNotification';
 import NotificationList from './NotificationList';
 import TablePageSkeleton from './TablePageSkeleton';
@@ -26,40 +28,51 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const getQueryParamsInit = () => ({
+  endDate: moment().format('YYYY-MM-DD'),
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  status: 'active',
+  accountType: '',
+  searchKey: '',
+  type: '',
+  tab: 0,
+});
+
 function Notification() {
   const theme = useTheme();
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit());
+  // const [range, setRange] = useState({ ...dateRangeInit });
 
   const [open, setOpen] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
-  const [status, setStatus] = useState('all');
+  // const [status, setStatus] = useState('all');
 
   // eslint-disable-next-line no-unused-vars
-  const [accountType, setAccountType] = useState('');
+  // const [accountType, setAccountType] = useState('');
   // eslint-disable-next-line no-unused-vars
-  const [type, setType] = useState('');
+  // const [type, setType] = useState('');
   // eslint-disable-next-line no-unused-vars
 
-  const [searchKey, setSearchKey] = useState('');
+  // const [searchKey, setSearchKey] = useState('');
 
   const queryClient = useQueryClient();
 
-  const getAllNotifications = useQuery(
-    [API_URL.GET_NOTIFICATIONS, { status, accountType, type, startDate: range.start, endDate: range.end, searchKey }],
-    () =>
-      AXIOS.get(API_URL.GET_NOTIFICATIONS, {
-        params: {
-          searchKey,
-          status,
-          accountType,
-          type,
-          startDate: range.start,
-          endDate: range.end,
-        },
-        // eslint-disable-next-line prettier/prettier
-      })
+  const getAllNotifications = useQuery([API_URL.GET_NOTIFICATIONS, queryParams], () =>
+    AXIOS.get(API_URL.GET_NOTIFICATIONS, {
+      params: queryParams,
+      // params: {
+      //   searchKey,
+      //   status,
+      //   accountType,
+      //   type,
+      //   startDate: range.start,
+      //   endDate: range.end,
+      // },
+      // eslint-disable-next-line prettier/prettier
+    })
   );
 
   // eslint-disable-next-line no-unused-vars
@@ -103,9 +116,26 @@ function Notification() {
           fontWeight: 700,
         }}
       />
+
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-        <DateRange range={range} setRange={setRange} />
+        <StyledSearchBar
+          sx={{ flex: '1' }}
+          placeholder="Search"
+          onChange={(e) => setQueryParams('search', e.target.value)}
+        />
+        <StyledDateRangePicker
+          startDate={queryParams.startDate === 'null' ? null : moment(queryParams.startDate)}
+          endDate={queryParams.endDate === 'null' ? null : moment(queryParams.endDate)}
+          onChange={({ startDate, endDate }) => {
+            setQueryParams((prev) => ({
+              ...prev,
+              startDate: startDate?.format('YYYY-MM-DD'),
+              endDate: endDate?.format('YYYY-MM-DD'),
+              page: 1,
+            }));
+          }}
+        />
+        {/* <DateRange range={queryParams} setRange={setQueryParams} endKey="endDate" startKey="startDate" /> */}
         <StyledFormField
           intputType="select"
           containerProps={{
@@ -114,11 +144,10 @@ function Notification() {
           inputProps={{
             name: 'status',
             placeholder: 'Status',
-            value: status,
+            value: queryParams?.status,
             items: activeStatusOptions,
             size: 'sm2',
-            //   items: categories,
-            onChange: (e) => setStatus(e.target.value),
+            onChange: (e) => setQueryParams('status', e.target.value),
           }}
         />
         <StyledFormField
@@ -129,11 +158,10 @@ function Notification() {
           inputProps={{
             name: 'accountType',
             placeholder: 'Account Type',
-            value: accountType,
+            value: queryParams?.accountType,
             items: accountTypeOptionsFilter,
             size: 'sm2',
-            //   items: categories,
-            onChange: (e) => setAccountType(e.target.value),
+            onChange: (e) => setQueryParams('accountType', e.target.value),
           }}
         />
         <StyledFormField
@@ -144,14 +172,12 @@ function Notification() {
           inputProps={{
             name: 'type',
             placeholder: 'Notification Type',
-            value: type,
+            value: queryParams?.type,
             items: notificationTypeOptionsFilter,
             size: 'sm2',
-            //   items: categories,
-            onChange: (e) => setType(e.target.value),
+            onChange: (e) => setQueryParams('type', e.target.value),
           }}
         />
-
         <AddMenuButton
           onClick={() => {
             setOpen(() => true);
@@ -171,7 +197,6 @@ function Notification() {
         {getAllNotifications.isLoading ? (
           <TablePageSkeleton column={5} row={6} />
         ) : (
-          // <p>loading...</p>
           <NotificationList
             data={getAllNotifications?.data?.data?.notifications}
             loading={getAllNotifications.isLoading}
