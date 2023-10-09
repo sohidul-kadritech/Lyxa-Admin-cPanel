@@ -14,6 +14,7 @@ const reasonTypeOption = [
   { label: 'User', value: 'userCancel' },
   { label: 'User Refund', value: 'userRefund' },
   { label: 'Butler', value: 'butler' },
+  { label: 'Resolve Chat', value: 'resolve' },
 ];
 const statusOptions = [
   {
@@ -42,6 +43,8 @@ const updateType = (type) => {
     modifiedType = 'User Refund';
   } else if (type === 'butler') {
     modifiedType = 'Butler';
+  } else if (type === 'resolve') {
+    modifiedType = 'Resolve Chat Reason';
   } else {
     modifiedType = 'Admin';
   }
@@ -68,8 +71,12 @@ function AddReason({ isEdit, onClose, reason, submitHandler, loading }) {
     <SidebarContainer
       title={`${
         isEdit
-          ? `Edit ${updateType(currentReason?.type) || ''} Order Cancel Reason`
-          : `Add ${updateType(currentReason?.type) || ''} Order Cancel Reason`
+          ? `Edit ${updateType(currentReason?.type) || ''} ${
+              currentReason?.type === 'resolve' ? '' : 'Order Cancel Reason'
+            }`
+          : `Add ${updateType(currentReason?.type) || ''} ${
+              currentReason?.type === 'resolve' ? '' : 'Order Cancel Reason'
+            }`
       }`}
       onClose={onClose}
     >

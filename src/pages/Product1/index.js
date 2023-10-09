@@ -1,19 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Tab, Tabs } from '@mui/material';
+import React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import TablePagination from '../../components/Common/TablePagination';
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { sortOptions } from '../Faq2/helpers';
 import ProductList from './ProductList';
 import ProductPageSkeleton from './ProductPageSkeleton';
-import { shopType, statusTypeOptions } from './helpers';
+import { shopType } from './helpers';
 
 const breadcrumbItems = [
   {
@@ -26,37 +25,24 @@ const breadcrumbItems = [
   },
 ];
 
+export const queryParamsInit = {
+  currentTab: 0,
+  status: 'active',
+  sortBy: 'DESC',
+  searchKey: '',
+};
+
 function Product() {
   const { currentUser } = useGlobalContext();
-  console.log(currentUser);
-
-  const [currentTab, setCurrentTab] = useState(0);
-
-  const [status, setStatus] = useState('active');
-
-  const [sort, setSort] = useState('asc');
-
-  const [type, setType] = useState('food');
-
-  const [page, setPage] = useState(1);
-
-  const [searchKey, setSearchKey] = useState('');
+  const [queryParams, setQueryParams] = useQueryParams(queryParamsInit);
 
   const queryClient = useQueryClient();
   const url = currentUser.userType === 'admin' ? API_URL.ALL_PRODUCT : '';
 
-  const getAllProduct = useQuery([url, { status, type, sort, searchKey, page }], () =>
+  const getAllProduct = useQuery([url, queryParams], () =>
     AXIOS.get(url, {
-      params: {
-        status,
-        sort,
-        type,
-        searchKey,
-        pageSize: 10,
-        page,
-      },
-      // eslint-disable-next-line prettier/prettier
-    }),
+      params: queryParams,
+    })
   );
 
   const updateStatusQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_PRODUCT, data), {
@@ -88,13 +74,9 @@ function Product() {
 
       <Box marginBottom="20px">
         <Tabs
-          value={currentTab}
+          value={Number(queryParams?.currentTab)}
           onChange={(event, newValue) => {
-            setCurrentTab(() => {
-              setType(shopType[newValue]);
-              setPage(1);
-              return newValue;
-            });
+            setQueryParams((prev) => ({ ...prev, type: shopType[newValue], currentTab: newValue }));
           }}
         >
           <Tab label="Food"></Tab>
@@ -104,40 +86,7 @@ function Product() {
       </Box>
 
       <Box marginBottom="30px">
-        <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sort',
-              placeholder: 'Sort',
-              value: sort,
-              items: sortOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSort(e.target.value),
-            }}
-          />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'status',
-              placeholder: 'Status',
-              value: status,
-              items: statusTypeOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setStatus(e.target.value),
-            }}
-          />
-          {/* <AddMenuButton onClick={() => setOpen(true)} /> */}
-        </Stack>
+        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
       </Box>
       {getAllProduct?.isLoading ? (
         <Box
@@ -156,9 +105,9 @@ function Product() {
           />
 
           <TablePagination
-            currentPage={page}
+            currentPage={Number(queryParams?.page)}
             totalPage={getAllProduct?.data?.data?.paginate?.metadata?.page?.totalPage}
-            lisener={(page) => setPage(page)}
+            lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
           />
         </Box>
       )}

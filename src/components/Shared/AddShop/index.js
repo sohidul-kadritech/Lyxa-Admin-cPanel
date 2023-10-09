@@ -17,6 +17,7 @@ import {
   createAddShopData,
   createEditShopData,
   getShopEditData,
+  getShopZoneData,
   shopInit,
   updateShopData,
   validateBankDetails,
@@ -46,6 +47,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
   const [loading, setLoading] = useState(false);
 
   const [currentTab, setCurrentTab] = useState(0);
+  const [zones, setZones] = useState([]);
 
   const tabMax = getTabMax(editShop?._id, shop?.shopReceivePaymentBy);
 
@@ -127,7 +129,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     let isValid = { status: true };
 
     if (currentTab === 0) {
-      isValid = validateShopDetails(shop, editShop?._id, adminType);
+      const shopZone = getShopZoneData(shop?.shopZone, zones);
+      isValid = validateShopDetails(shop, editShop?._id, adminType, shopZone);
     }
 
     if (currentTab === 1 && !editShop?._id) {
@@ -201,6 +204,8 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
             onChange={onChangeHandler}
             onDrop={onDrop}
             isEditShop={editShop?._id}
+            zones={zones}
+            setZones={setZones}
           />
         </TabPanel>
         {!editShop?._id && (

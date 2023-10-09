@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Stack } from '@mui/material';
@@ -12,9 +13,8 @@ import AXIOS from '../../network/axios';
 import AppSettingsSkeleton from './AppSettingsSkeleton';
 import SettingsForButler from './Settings/SettingsForButler';
 import SettingsForCurrency from './Settings/SettingsForCurrency';
-import SettingsForDeliveryBoySearchArea from './Settings/SettingsForDeliveryBoySearchArea';
-import SettingsForUnits from './Settings/SettingsForUnits';
 import SettingsForVAT from './Settings/SettingsForVAT';
+import SettingsWithBundle from './Settings/SettingsWithBundle';
 import SettingsWithIncrementDecrementButton from './Settings/SettingsWithIncrementDecrementButton';
 import {
   appSettingsValidateData,
@@ -22,8 +22,6 @@ import {
   decrementByOneHandler,
   incrementByFiveHandler,
   incrementByOneHandler,
-  separatesUpdatedData,
-  validateList,
 } from './helpers';
 
 // breadcrumb items list here
@@ -37,6 +35,31 @@ const breadcrumbItems = [
     to: '#',
   },
 ];
+
+const initialAppCurrency = {
+  baseCurrency: {
+    symbol: '$',
+    name: 'US Dollar',
+    symbol_native: '$',
+    decimal_digits: 2,
+    rounding: 0,
+    code: 'USD',
+    name_plural: 'US dollars',
+    flag: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAALESURBVHja7Jc/aBNxFMc/l0STtqYtihgkYLOYitjuFuwiUgfBUOgSOqS6CNqmRRqLmyjBBDQ4FLRL/TOokEEhgyC4O7RSB0MHWxEtWLGtrW2Su/s9h8ZeUlF7rV4XHzy+995v+d77vnf3fpqIsJ3mYpvtPwENcAPeMjppJlD0APXHj9/44nZvrhh3d45tsvYuAk9GdwM0nTiRkZmZb3L9+jPbuBUDmjyA1zAUIyMviMXaSaVzDPSfJJ3O0V+JqRz9A1acSufQgC+XrlpvJRXCVua06nNXYz36m0kArwtAKUVPTzvJ5FPifR0kk0/pW4/x6jje10GhoEOhaHmx7OtzP50XQDfWOIbb2lISjz+SqakFicVGN4yx2OhWJQh7AAzDJB7vYHDwEclkF4nExnBo6DGz3Rfs959/F8aHGQDKBBSJxEOuXeuit/cemUz3hhBA6d82NfxSKlkStLZekcnJeTl2LC35/Jwt/CsS6LpJT88d7oycJRod5sH9c0Sjw9z/A4Lw8egp0MptLmI9V8br8prPB8WCJYGuK27fPkPk9E2y2T5ORzJks71EIqtxZC2uznd23kJ8y9Vj9zv7MZKGjlROQSg0JKHQZZmYmJVgMLFhDAYTW5YAIBwMJmR8/JPU1Z2XsTF7OL3nkH0PtMj7g20ChDUgHAhczC8tlTAM03ZD52ue258CjwfNX8eBty+bNSBsmmbe5XL2z6yUwu12N3sApve34jFMpKQ7swPs3IGxw2NNgTINRARRpv1tQtbFld3+q3VT3CjTsAgE34/j8/kclWBlZQVqa1cJTO89TI3XiyyvOCNBbQ3LpaK1E5pKVX/B/jkDDaWkQoKPr2hoaHBUgoWFBWhsXCXwLtBCY73fUQJzXxfXKmDqfpPPMu8oAfEDBUwN2AccAfY6vJbPAq+18p3AX0YnrQgsav8vp9tN4PsALYQJa7MTgzkAAAAASUVORK5CYII=',
+  },
+  secondaryCurrency: {},
+  units: [],
+  nearByShopKm: 0,
+  nearByShopKmForUserHomeScreen: 0,
+  maxDistanceForButler: 0,
+  maxDiscount: 0,
+  searchDeliveryBoyKm: [],
+  adminExchangeRate: 0,
+  maxTotalEstItemsPriceForButler: 0,
+  maxCustomerServiceValue: 0,
+  acceptedCurrency: 'base',
+  vat: 0,
+};
 
 // initial currency when we have not currency selected before.
 const initialCurrency = {
@@ -67,15 +90,10 @@ function Appsettings2() {
 
   const [hasChanged, setHasChanged] = useState(false);
 
-  // store units data
-  const [units, setUnits] = useState([]);
-
-  const [deletedUnitId, setDeletedUnitId] = useState([]);
-
-  const [oldUnits, setOldUnits] = useState([]);
-
   // store appSettings data
-  const [newAppSettings, setNewAppSettings] = useState({ searchDeliveryBoyKm: [], acceptedCurrency: 'base' });
+  const [newAppSettings, setNewAppSettings] = useState({
+    ...initialAppCurrency,
+  });
 
   const [oldAppSettings, setOldAppSettings] = useState({});
 
@@ -92,13 +110,8 @@ function Appsettings2() {
   const getAppSettingsData = useQuery([API_URL.APP_SETTINGS], () => AXIOS.get(API_URL.APP_SETTINGS), {
     onSuccess: (data) => {
       if (data.status) {
-        setOldAppSettings(
-          data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [], acceptedCurrency: 'base' },
-        );
-        setNewAppSettings(
-          data?.data?.appSetting ? data?.data?.appSetting : { searchDeliveryBoyKm: [], acceptedCurrency: 'base' },
-        );
-        console.log('appSettings==>', { data: data?.data?.appSetting });
+        setOldAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { ...initialAppCurrency });
+        setNewAppSettings(data?.data?.appSetting ? data?.data?.appSetting : { ...initialAppCurrency });
         dispatchGeneral({ type: 'appSetting', payload: { appSetting: data?.data?.appSetting } });
         setDisableCurrency({
           base: Object?.keys(data?.data?.appSetting?.baseCurrency || {})?.length > 1,
@@ -108,66 +121,19 @@ function Appsettings2() {
     },
   });
 
-  // Get all unit data
-  const getAllUnits = useQuery([API_URL.GET_ALL_UNIT], () => AXIOS.get(API_URL.GET_ALL_UNIT), {
-    onSuccess: (data) => {
-      if (data.status) {
-        console.log('data unit', data?.data);
-        setUnits(data?.data || []);
-        setOldUnits(data?.data || []);
-      }
-    },
-  });
-
   // update data
-  const updateQuery2 = useMutation(
-    async (data) => {
-      setDeletedUnitId([]);
-      if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length > 0) {
-        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
-        const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
-        const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
-        return [response1, response3, response4];
+  const updateQuery2 = useMutation(async (data) => AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg(data?.message, 'success');
+        setHasChanged(false);
+        queryClient.invalidateQueries(API_URL.APP_SETTINGS);
+      } else {
+        successMsg(data?.message, 'success');
       }
-      if (data?.addUnit?.nameList?.length > 0 && data?.deleteUnit?.idList?.length === 0) {
-        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
-        const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
-        const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
-        return [response1, response2, response4];
-      }
-      if (data?.addUnit?.nameList?.length === 0 && data?.deleteUnit?.idList?.length === 0) {
-        const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
-        return [response1];
-      }
-      const response1 = await AXIOS.post(API_URL.UPDATE_APP_SETTINGS, data?.appSettings);
-      const response2 = await AXIOS.post(API_URL.ADD_UNIT, data?.addUnit);
-      const response3 = await AXIOS.post(API_URL.DELETE_UNIT, data?.deleteUnit);
-      const response4 = await AXIOS.post(API_URL.UNIT_ADMIN_LOGS, data?.logs);
-      return [response1, response2, response3, response4];
     },
-    {
-      onSuccess: (data) => {
-        Promise.all([
-          queryClient.invalidateQueries(API_URL.APP_SETTINGS),
-          queryClient.invalidateQueries(API_URL.GET_ALL_UNIT),
-        ]);
-
-        if (data.length === 4 && data[0].status && data[1].status && data[2].status && data[2].status) {
-          successMsg('Updated Succesfully', 'success');
-          setHasChanged(false);
-        } else if (data.length === 3 && data[0].status && data[1].status && data[2].status) {
-          successMsg('Updated Succesfully', 'success');
-          setHasChanged(false);
-        } else if (data.length === 1 && data[0].status) {
-          successMsg('Updated Succesfully', 'success');
-          setHasChanged(false);
-        } else {
-          provideErrorMessage(data);
-        }
-      },
-      // eslint-disable-next-line prettier/prettier
-    },
-  );
+    // eslint-disable-next-line prettier/prettier
+  });
 
   // reset data
   const populateData = () => {
@@ -180,39 +146,22 @@ function Appsettings2() {
           : 'disable';
       return currency;
     });
-
-    setUnits(getAllUnits?.data?.data || []);
   };
-  // add new bundle
-  const addNewBundleItem = (bundle, setBundle, oldbundle, objectKey, type = 'number') => {
-    if (validateList(bundle, oldbundle, type) && type === 'number') {
-      setBundle((prev) => ({ ...prev, [objectKey]: [...oldbundle, Number(bundle)] }));
-      setHasChanged(true);
-      return true;
-    }
+  // // add new bundle
+  // const addNewBundleItem = (bundle, setBundle, oldbundle, objectKey, type = 'number') => {
+  //   if (validateList(bundle, oldbundle, type) && type === 'number') {
+  //     setBundle((prev) => ({ ...prev, [objectKey]: [...oldbundle, Number(bundle)] }));
+  //     setHasChanged(true);
+  //     return true;
+  //   }
 
-    if (
-      validateList(
-        bundle,
-        oldbundle.map((data) => data?.name),
-        type,
-      ) &&
-      type === 'text'
-    ) {
-      setHasChanged(true);
-      setBundle((prev) => {
-        // if units already exist in old unit list.
-        const previousData = oldUnits.find((unit) => unit.name === bundle);
-        if (previousData) {
-          setDeletedUnitId((prev) => prev.filter((id) => id !== previousData._id));
-          return [...prev, previousData];
-        }
-        return [...prev, { name: bundle, isNew: true }];
-      });
-      return true;
-    }
-    return false;
-  };
+  //   if (validateList(bundle, oldbundle, type) && type === 'text') {
+  //     setHasChanged(true);
+  //     setBundle((prev) => ({ ...prev, [objectKey]: [...oldbundle, bundle] }));
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   // on update handler
   const updateData = () => {
@@ -244,32 +193,11 @@ function Appsettings2() {
       return;
     }
 
-    const updatedUnits = separatesUpdatedData(
-      oldUnits?.map((unit) => unit.name),
-      // eslint-disable-next-line prettier/prettier
-      units?.map((unit) => unit.name),
-    );
+    console.log('generatedData', generatedData);
 
     if (hasChanged) {
-      setOldUnits((prev) => {
-        if (deletedUnitId?.length > 0) {
-          return [...units];
-        }
-        return [...prev];
-      });
-
       updateQuery2.mutate({
         appSettings: generatedData,
-        addUnit: {
-          nameList: updatedUnits,
-        },
-        deleteUnit: {
-          idList: deletedUnitId,
-        },
-        logs: {
-          newValue: units?.map((unit) => unit.name),
-          oldValue: oldUnits?.map((unit) => unit.name),
-        },
       });
     } else successMsg('Please make some changes first !');
   };
@@ -286,7 +214,7 @@ function Appsettings2() {
         }}
       />
       <Box sx={{ backgroundColor: '#ffffff', borderRadius: '7px', padding: '30px' }}>
-        {getAppSettingsData?.isLoading || getAllUnits?.isLoading ? (
+        {getAppSettingsData?.isLoading ? (
           <AppSettingsSkeleton />
         ) : (
           <>
@@ -320,11 +248,13 @@ function Appsettings2() {
             />
 
             {/* Settings for Delivery Boy Search Area */}
-            <SettingsForDeliveryBoySearchArea
+            <SettingsWithBundle
+              title="Delivery Boy Search Area (KM)"
+              objectKey="searchDeliveryBoyKm"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}
-              addNewBundleItem={addNewBundleItem}
+              // addNewBundleItem={addNewBundleItem}
             />
 
             {/* Settings for Shop distance */}
@@ -369,13 +299,16 @@ function Appsettings2() {
               }}
             />
 
-            {/* Settings for untis  */}
-            <SettingsForUnits
-              units={units}
-              setUnits={setUnits}
+            {/* Settings for Delivery Boy Search Area */}
+            <SettingsWithBundle
+              title="Units"
+              newAppSettings={newAppSettings}
+              setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}
-              setDeletedUnitId={setDeletedUnitId}
-              addNewBundleItem={addNewBundleItem}
+              // addNewBundleItem={addNewBundleItem}
+              objectKey="units"
+              limit="infinity"
+              bundleType="text"
             />
 
             {/* Settings for App Currency */}

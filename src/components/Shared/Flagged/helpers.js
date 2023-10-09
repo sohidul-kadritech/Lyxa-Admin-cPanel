@@ -183,10 +183,10 @@ export const validateFlagData = (order, flaggData, VAT) => {
   const totalVat = baseCurrency_vatForAdmin + baseCurrency_vatForShop;
 
   const baseCurrency_shopCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0,
+    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0
   );
   const baseCurrency_adminCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0,
+    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0
   );
 
   const totalReplacementAmount = baseCurrency_shopCutForReplacement + baseCurrency_adminCutForReplacement;
@@ -304,4 +304,18 @@ export const validateFlagData = (order, flaggData, VAT) => {
   }
 
   return flaggData;
+};
+
+export const getSuccessMessage = (key, value, maxValue, type) => {
+  const messages = {
+    shop: "Shop can't pay greater than delivery fee here",
+    adminOrderRefund: 'Exceeded maximum admin limits',
+    adminDeliveryRefund: 'Exceeded maximum delivery fee limits',
+  };
+
+  messages.shop = type === 'replacement' ? messages?.shop : 'Exceeded maximum shop limits';
+
+  if (value >= maxValue) {
+    successMsg(messages[key]);
+  }
 };

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { dateRangeInit } from '../../helpers/dateRangeInit';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
 export const breadcrumbItems = [
   { label: 'Settings', to: '/settings' },
@@ -14,7 +14,7 @@ export const couponListTabOptions = [
   { label: 'Custom Coupon', value: 'custom_coupon' },
 ];
 
-export const filtersInit = {
+export const queryParamsInit = () => ({
   searchKey: '',
   couponType: 'global',
   couponStatus: 'active',
@@ -22,10 +22,10 @@ export const filtersInit = {
   pageSize: 500,
   pagingRange: 500,
   sortBy: 'desc',
-  date: {
-    ...dateRangeInit,
-  },
-};
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  tab1: 0,
+});
 
 export const sortOptions = [
   {

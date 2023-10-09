@@ -74,7 +74,7 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    },
+    }
   );
 
   // startDate&endDate&orderType=&assignedCustomerService
@@ -123,7 +123,7 @@ export default function Orders({
             )}
             onChange={(value) => {
               setCurrentErrorOrderTab(value);
-              console.log('value', value);
+              // console.log('value', value);
               if (value === 'all') {
                 setQueryParams((prev) => {
                   delete prev?.errorOrderType;

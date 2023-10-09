@@ -52,6 +52,7 @@ export const SHOP_DASHBOARD_ITEM_RANKING = `${ADMIN_ENDPOINT}/dashboard/shop/ite
 
 // Lxya financials
 export const GET_FINANCIALS_PROFITBREAKDOWN_SUMMARY = `${ADMIN_ENDPOINT}/financial`;
+export const GET_FINANCIALS_PENDING_AMOUNT_SUMMARY = `${ADMIN_ENDPOINT}/financial/pending-amount`;
 export const GET_ADMIN_RIDER_FINANCIALS_PROFITBREAKDOWN = `${ADMIN_ENDPOINT}/financial/rider`;
 export const GET_ADMIN_ORDER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/order`;
 export const GET_ADMIN_BUTLER_FINANCIALS_DASHBOARD = `${ADMIN_ENDPOINT}/financial/butler`;

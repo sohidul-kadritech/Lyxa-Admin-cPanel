@@ -18,7 +18,6 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
       focusedInput={focusedInput}
       onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
       noBorder
-      date
       customArrowIcon="-"
       showDefaultInputIcon
       inputIconPosition="after"

@@ -1,5 +1,6 @@
 import { Add } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
@@ -48,13 +49,13 @@ export default function Searchbar({ queryParams, setQueryParams, searchPlaceHold
         }}
       /> */}
       <StyledDateRangePicker
-        startDate={queryParams.startDate}
-        endDate={queryParams.endDate}
+        startDate={moment(queryParams.startDate)}
+        endDate={moment(queryParams.endDate)}
         onChange={({ startDate, endDate }) => {
           setQueryParams((prev) => ({
             ...prev,
-            startDate,
-            endDate,
+            startDate: startDate?.format('YYYY-MM-DD'),
+            endDate: endDate?.format('YYYY-MM-DD'),
           }));
         }}
       />

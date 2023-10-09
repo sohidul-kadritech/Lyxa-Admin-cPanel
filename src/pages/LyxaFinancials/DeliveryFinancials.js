@@ -40,7 +40,7 @@ function DeliveryFinancials({ shopType }) {
           endDate: convertDate(paymentDetailsRange?.end),
           orderType: shopType,
         },
-      }),
+      })
   );
 
   const summary = getFinancialsDashBoardDelivery?.data?.data;
@@ -82,7 +82,7 @@ function DeliveryFinancials({ shopType }) {
                         currency,
                         secondaryCurrency,
                         bothCurrencyProfitbreakDown(deliveryProfitBreakDown, 'delivery'),
-                        true,
+                        true
                       ).printConditionally
                     }
                   </Typography>
@@ -93,7 +93,7 @@ function DeliveryFinancials({ shopType }) {
               <IncreaseDecreaseTag
                 status={summary?.adminDeliveryProfitAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.adminDeliveryProfitAvgInPercentage) || 0,
+                  Math.abs(summary?.adminDeliveryProfitAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
               />
             }
@@ -110,7 +110,7 @@ function DeliveryFinancials({ shopType }) {
               <IncreaseDecreaseTag
                 status={summary?.totalDeliveredOrderAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.totalDeliveredOrderAvgInPercentage) || 0,
+                  Math.abs(summary?.totalDeliveredOrderAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
               />
             }
@@ -127,7 +127,7 @@ function DeliveryFinancials({ shopType }) {
               <IncreaseDecreaseTag
                 status={summary?.riderPayoutAvgInPercentage >= 0 ? 'increase' : 'minus'}
                 amount={`${Math.round(
-                  Math.abs(summary?.riderPayoutAvgInPercentage) || 0,
+                  Math.abs(summary?.riderPayoutAvgInPercentage) || 0
                 )}% last ${calculateDateDifference(paymentDetailsRange.start, paymentDetailsRange.end, 'day')} days`}
               />
             }

@@ -27,7 +27,7 @@ export default function ItemRanking({ ...props }) {
   const query = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
     AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING, {
       params: queryParams,
-    }),
+    })
   );
 
   const column = [
@@ -49,7 +49,8 @@ export default function ItemRanking({ ...props }) {
       renderCell: ({ row }) => (
         <UserAvatar
           imgAlt="product"
-          imgUrl={row?.product?.images}
+          // console={console.log('images', row?.product?.images)}
+          imgUrl={row?.product?.images?.[0]}
           imgStyle="square"
           imgFallbackCharacter={row?.product?.name?.charAt(0) || 'none'}
           name={row?.product?.name}

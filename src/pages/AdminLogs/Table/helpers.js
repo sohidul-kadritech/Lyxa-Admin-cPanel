@@ -49,7 +49,7 @@ export const getValue = (type, value, currency) => {
     newValue = `${currency?.symbol}${value}`;
   } else if (type === 'nearByShopKm' || type === 'nearByShopKmForUserHomeScreen' || type === 'maxDistanceForButler') {
     newValue = `${value}km`;
-  } else if (type === 'rewardBundle' || type === 'unit') {
+  } else if (type === 'rewardBundle' || type === 'units') {
     newValue = (
       <Stack gap="4px" padding="8px 0px">
         {value.map((item) => (

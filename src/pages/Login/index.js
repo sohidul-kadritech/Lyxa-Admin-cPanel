@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Modal, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
@@ -23,8 +24,6 @@ export default function Login({ loginFor }) {
   const [modal, setModal] = useState(false);
 
   const onLoginSuccess = async (data) => {
-    // socketConnect();
-
     if (!data?.status) {
       setLoginError(data?.message);
       return;
@@ -60,7 +59,7 @@ export default function Login({ loginFor }) {
         account_id: currentUser._id,
         credentialUserId: currentUser?.credentialUserId || currentUser._id,
       },
-      15
+      15,
     );
 
     localStorage.setItem('lastLoginType', JSON.stringify(currentUser.account_type));

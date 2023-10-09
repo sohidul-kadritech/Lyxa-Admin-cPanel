@@ -1,39 +1,35 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
-import { dateRangeInit, sortOptions } from '../Faq2/helpers';
 
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import moment from 'moment';
+import SearchBar from '../../components/Common/CommonSearchbar';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import StyledTable from '../../components/Styled/StyledTable3';
-import DateRange from '../../components/StyledCharts/DateRange';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import ReferFriendDashBoard from './ReferFriendDashBoard';
 import ReferFriendDashboardSkeleton from './ReferFriendDashboardSkeleton';
 
+const getQueryParamsInit = () => ({
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  sort: 'DESC',
+  searchKey: '',
+});
+
 function ReferFriendList() {
-  const [range, setRange] = useState({ ...dateRangeInit });
-
-  const [sort, setSort] = useState('asc');
-
-  const [searchKey, setSearchKey] = useState('');
+  console.log('queryParams', getQueryParamsInit());
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit());
 
   const theme = useTheme();
 
-  const getReferrelList = useQuery(
-    [API_URL?.GET_REFER_A_FRIEND_HISTORY, { searchKey, startDate: range.start, endDate: range.end, sortBy: sort }],
-    () =>
-      AXIOS.get(API_URL?.GET_REFER_A_FRIEND_HISTORY, {
-        params: {
-          searchKey,
-          sortBy: sort,
-          startDate: range.start,
-          endDate: range.end,
-        },
-        // eslint-disable-next-line prettier/prettier
-      }),
+  const getReferrelList = useQuery([API_URL?.GET_REFER_A_FRIEND_HISTORY, queryParams], () =>
+    AXIOS.get(API_URL?.GET_REFER_A_FRIEND_HISTORY, {
+      params: queryParams,
+    })
   );
 
   const allColumns = [
@@ -154,7 +150,19 @@ function ReferFriendList() {
 
   return (
     <Box>
-      <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '30px' }}>
+        <SearchBar
+          queryParams={queryParams}
+          // queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          showFilters={{
+            search: true,
+            date: true,
+            sort: true,
+          }}
+        />
+      </Box>
+      {/* <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
         <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
         <DateRange range={range} setRange={setRange} />
         <StyledFormField
@@ -171,11 +179,11 @@ function ReferFriendList() {
             onChange: (e) => setSort(e.target.value),
           }}
         />
-      </Stack>
+      </Stack> */}
 
       {!getReferrelList.isLoading ? (
         <Box>
-          <ReferFriendDashBoard range={range} summery={getReferrelList?.data?.data?.summery} />
+          <ReferFriendDashBoard summery={getReferrelList?.data?.data?.summery} />
         </Box>
       ) : (
         <ReferFriendDashboardSkeleton />

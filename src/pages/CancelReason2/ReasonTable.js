@@ -89,8 +89,7 @@ function ReasonTable({ items, loading, threeDotHandler, onDrop }) {
         rows={items}
         onDrop={onDrop}
         getRowKey={(row) => row?._id}
-        //   onDrop={onDrop}
-        noRowsMessage={loading ? <TableLoader /> : 'No Q&A Found'}
+        noRowsMessage={loading ? <TableLoader /> : 'No Reasons Found'}
       />
     </Box>
   );

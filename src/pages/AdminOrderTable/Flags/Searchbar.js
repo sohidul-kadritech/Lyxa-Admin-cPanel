@@ -119,33 +119,6 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
           updateSearch(e);
         }}
       />
-      {/* <FilterDate
-        tooltip="Start Date"
-        maxDate={moment(queryParams.endDate).subtract(1, 'day')}
-        value={queryParams.startDate}
-        size="sm"
-        onChange={(e) => {
-          setQueryParams((prev) => ({
-            ...prev,
-            startDate: e._d,
-            page: 1,
-          }));
-        }}
-      />
-      <FilterDate
-        tooltip="End Date"
-        minDate={moment(queryParams.startDate).add(1, 'day')}
-        value={queryParams.endDate}
-        size="sm"
-        onChange={(e) => {
-          setQueryParams((prev) => ({
-            ...prev,
-            endDate: e._d,
-            page: 1,
-          }));
-        }}
-      />
-      */}
       <StyledDateRangePicker
         startDate={queryParams.startDate}
         endDate={queryParams.endDate}

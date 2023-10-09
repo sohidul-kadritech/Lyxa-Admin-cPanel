@@ -29,7 +29,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
   const baseCurrency = appSetting?.baseCurrency;
   const secondaryCurrency = appSetting?.secondaryCurrency;
 
-  console.log('rows', rows);
+  // console.log('rows', rows);
 
   const columns = [
     {
@@ -192,7 +192,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
                         )}`,
                       },
                       {
@@ -201,7 +201,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
                         )}`,
                       },
                     ]}

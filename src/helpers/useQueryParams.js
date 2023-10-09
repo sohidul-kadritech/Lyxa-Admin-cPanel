@@ -5,25 +5,29 @@ export default function useQueryParams(defaultParams) {
   const location = useLocation();
   const history = useHistory();
 
+  Object.entries(defaultParams).forEach(([k, v]) => {
+    if (v === undefined) delete defaultParams[k];
+  });
+
   const searchParams = useMemo(() => new URLSearchParams(location.search || defaultParams), [location.search]);
   const searchParamsObj = useMemo(() => Object.fromEntries(searchParams), [searchParams]);
 
-  // console.log('searchParamsObj', searchParamsObj);
-
   const setSearchParam = (key, value) => {
-    // console.log('key', key, typeof key, value);
     if (typeof key === 'object') {
       Object.entries(key).forEach(([k, v]) => {
-        searchParams.set(k, v);
+        if (v === undefined) searchParams.delete(k);
+        else searchParams.set(k, v);
       });
     } else if (typeof key === 'function') {
       Object.entries(key(searchParamsObj)).forEach(([k, v]) => {
-        searchParams.set(k, v);
+        if (v === undefined) searchParams.delete(k);
+        else searchParams.set(k, v);
       });
     } else {
+      if (value === undefined) searchParams.delete(key);
+      else searchParams.set(key, value);
       searchParams.set(key, value);
     }
-    // console.log('searchParams.toString()', searchParams.toString());
     history.replace({ search: searchParams.toString() });
   };
 

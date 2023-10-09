@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -14,9 +16,9 @@ import AdminTeamList from './AdminTeamList';
 
 const adminTypeIndexTracker = {
   0: 'admin',
-  1: 'customerService',
-  2: 'sales',
-  3: 'accountManager',
+  1: 'sales',
+  2: 'accountManager',
+  3: 'customerService',
 };
 
 function AdminControl() {
@@ -32,10 +34,12 @@ function AdminControl() {
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [adminType, setAdminType] = useState('admin');
 
-  const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN, { searchKey, adminType }], () =>
+  const [page, setPage] = useState(1);
+
+  const getAllAdminQuery = useQuery([API_URL.GET_ALL_ADMIN, { searchKey, adminType, page }], () =>
     AXIOS.get(API_URL.GET_ALL_ADMIN, {
-      params: { searchKey, adminType },
-    })
+      params: { searchKey, adminType, page, pageSize: 10 },
+    }),
   );
 
   const addAdminQuery = useMutation((data) => AXIOS.post(API_URL.ADD_ADMIN, data), {
@@ -97,12 +101,13 @@ function AdminControl() {
           onChange={(event, newValue) => {
             setAdminType(adminTypeIndexTracker[newValue]);
             setCurrentTab(newValue);
+            setPage(1);
           }}
         >
-          <Tab label="Admin" />
-          <Tab label="Customer Support" />
+          <Tab label="Super Admin" />
           <Tab label="Sales Manger" />
           <Tab label="Account Manager" />
+          <Tab label="Customer Service" />
         </Tabs>
       </Box>
       <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }} width="444px">
@@ -130,6 +135,9 @@ function AdminControl() {
             setIsConfirmModal={setIsConfirmModal}
             setCurrentAdmin={setCurrentAdmin}
             data={getAllAdminQuery?.data?.data?.Admins}
+            page={page}
+            setPage={setPage}
+            totalPage={getAllAdminQuery?.data?.data?.paginate?.metadata?.page?.totalPage}
           />
         </Box>
       )}

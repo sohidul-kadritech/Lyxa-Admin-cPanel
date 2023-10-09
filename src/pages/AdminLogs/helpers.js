@@ -1,18 +1,15 @@
 import moment from 'moment';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 
-const dateRangeInit = {
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
-};
 export const getQueryParamsInit = {
   page: 1,
   pageSize: 20,
   searchKey: '',
-  sortBy: 'desc',
+  sortBy: 'DESC',
   status: '',
   type: 'all',
-  ...dateRangeInit,
+  startDate: getFirstMonday('week'),
+  endDate: moment(),
 };
 
 export const adminLogTypeOptions = [
@@ -30,7 +27,7 @@ export const adminLogTypeOptions = [
   { label: 'Max Total EST Items Price for Butler', value: 'maxTotalEstItemsPriceForButler' },
   { label: 'Maximum Distance for Butler', value: 'maxDistanceForButler' },
   { label: 'Lyxa Pay Limit (Customer Service)', value: 'maxCustomerServiceValue' },
-  { label: 'Units', value: 'unit' },
+  { label: 'Units', value: 'units' },
   // Percentage settings
   { label: 'Global Lyxa charge (Percentage)', value: 'globalDropCharge' },
   { label: 'Global Delivery Cut', value: 'globalDeliveryCut' },
@@ -56,7 +53,7 @@ export const getTypeName = (type, secondaryCurrency) => {
     maxTotalEstItemsPriceForButler: 'Max Total EST Items Price for Butler',
     maxDistanceForButler: 'Maximum Distance for Butler',
     maxCustomerServiceValue: 'Lyxa Pay Limit (Customer Service)',
-    unit: 'Units',
+    units: 'Units',
     globalDropCharge: 'Global Lyxa charge (Percentage)',
     globalDeliveryCut: 'Global Delivery Cut',
     globalDeliveryCutForButler: 'Global Delivery Cut for Butler',
