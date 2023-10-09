@@ -52,7 +52,7 @@ function PayoutList({
         startDate: convertDate(queryParams?.startDate),
         endDate: convertDate(queryParams?.endDate),
       },
-    }),
+    })
   );
 
   const paidPayoutMutation = useMutation((data) => AXIOS.post(API_URL.PAID_PAYOUTS, data), {
@@ -108,14 +108,16 @@ function PayoutList({
           setCurrentPayout({});
         }}
       >
-        <PayoutView
-          currentPayout={getPayoutData(currentPayout)}
-          onClose={() => {
-            setOpen(false);
-            setCurrentPayout({});
-          }}
-          setIsConfirm={setIsConfirm}
-        />
+        <Box>
+          <PayoutView
+            currentPayout={getPayoutData(currentPayout)}
+            onClose={() => {
+              setOpen(false);
+              setCurrentPayout({});
+            }}
+            setIsConfirm={setIsConfirm}
+          />
+        </Box>
       </Modal>
 
       <ConfirmModal

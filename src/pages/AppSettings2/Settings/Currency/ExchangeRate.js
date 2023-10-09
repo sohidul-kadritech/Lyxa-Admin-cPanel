@@ -14,7 +14,9 @@ function ExchangeRate({ newAppSettings, setNewAppSettings, setHasChanged, isUsed
         <Stack direction="row" alignItems="center" flexWrap="wrap">
           {/* Amount of base currency which is disabled in user inteface */}
           <InputBox
-            title={`Amount of (${newAppSettings?.baseCurrency?.symbol || ''})`}
+            title={`Amount of ${
+              newAppSettings?.baseCurrency?.symbol ? `(${newAppSettings?.baseCurrency?.symbol || ''})` : ''
+            }`}
             endAdornment={`${newAppSettings?.baseCurrency?.symbol || ''}`}
             inputValue={`${1}`}
             inputType="number"

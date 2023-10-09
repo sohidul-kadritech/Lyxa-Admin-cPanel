@@ -9,7 +9,7 @@ import ShopOrders from './Orders';
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
 
-export default function ShopProfileTabs({ shop }) {
+export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
   const [currentTab, setCurrentTab] = useState(0);
   const [open, setOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
@@ -27,6 +27,7 @@ export default function ShopProfileTabs({ shop }) {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
+              if (newValue === 1 || newValue === 2) refetchShopData();
             }}
           >
             <Tab label="Orders" />
@@ -44,7 +45,7 @@ export default function ShopProfileTabs({ shop }) {
               <ShopReviews reviews={shop?.reviews || []} onViewDetail={onViewDetail} />
             </TabPanel>
             <TabPanel index={2} value={currentTab} noPadding>
-              <ShopFlags flags={shop?.flags} onViewDetail={onViewDetail} />
+              <ShopFlags flags={shop?.flags} onViewDetail={onViewDetail} loading={loading} />
             </TabPanel>
             <TabPanel index={3} noPadding value={currentTab}>
               <ShopTransactions

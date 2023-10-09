@@ -7,6 +7,7 @@ import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { createChatFromOrder } from '../PastTickets/helper';
@@ -16,10 +17,11 @@ export const queryParamsInit = {
   page: 1,
   pageSize: 15,
   sortBy: 'DESC',
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
   searchKey: '',
   status: '',
+  tab: 0,
 };
 
 const statusOptions = [
@@ -30,8 +32,8 @@ const statusOptions = [
 ];
 
 export default function Tickets() {
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
-  const [currentTab, setCurrentTab] = useState(0);
+  const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
+  // const [currentTab, setCurrentTab] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
 
@@ -59,10 +61,10 @@ export default function Tickets() {
         />
         <Box pb={7.5}>
           <Tabs
-            value={currentTab}
+            value={Number(queryParams?.tab)}
             onChange={(event, newValue) => {
-              setCurrentTab(newValue);
-              setQueryParams((prev) => ({ ...prev, page: 1 }));
+              // setCurrentTab(newValue);
+              setQueryParams((prev) => ({ ...prev, page: 1, tab: newValue }));
             }}
           >
             <Tab label="Order" />
@@ -86,7 +88,7 @@ export default function Tickets() {
           />
         </Box>
         <Box>
-          <TabPanel value={currentTab} index={0} noPadding>
+          <TabPanel value={Number(queryParams?.tab)} index={0} noPadding>
             <TicketTable
               totalPage={ordersQuery?.data?.data?.paginate?.metadata?.page?.totalPage}
               loading={ordersQuery.isLoading}
@@ -100,7 +102,7 @@ export default function Tickets() {
               }}
             />
           </TabPanel>
-          <TabPanel value={currentTab} index={1} noPadding>
+          <TabPanel value={Number(queryParams?.tab)} index={1} noPadding>
             <TicketTable
               totalPage={accountsQuery?.data?.data?.paginate?.metadata?.page?.totalPage}
               loading={accountsQuery.isLoading}

@@ -3,6 +3,7 @@ import { Box, Button, Paper, SliderThumb, Stack, Typography } from '@mui/materia
 import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
+import { successMsg } from '../../helpers/successMsg';
 import TimeRangeSlider from './TimeRangeSlider';
 
 function AirbnbThumbComponent(props) {
@@ -31,9 +32,23 @@ function AcceptRestaurent({ onClose, currentOrder, updateStatusMutation }) {
     data.orderStatus = currentStatus;
     data.shop = currentOrder?.shop?._id;
     data.time = time;
-    console.log('currentOrder data', data);
 
-    // updateStatusMutation.mutate({ data: });
+    if (!currentOrder?._id) {
+      successMsg('Order not found');
+      return;
+    }
+
+    if (!currentOrder?.shop?._id) {
+      successMsg('Shop not found');
+      return;
+    }
+
+    if (!currentStatus) {
+      successMsg('Order status missing');
+      return;
+    }
+
+    updateStatusMutation.mutate({ data });
   };
   return (
     <Paper

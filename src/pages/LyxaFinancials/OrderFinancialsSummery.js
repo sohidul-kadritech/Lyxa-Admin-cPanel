@@ -58,6 +58,21 @@ function OrderFinancialsSummary() {
       }),
   );
 
+  const getPendingFinancialsDashBoard = useQuery(
+    [
+      API_URL.GET_FINANCIALS_PENDING_AMOUNT_SUMMARY,
+      { startDate: paymentDetailsRange?.start, endDate: paymentDetailsRange?.end },
+    ],
+    () =>
+      AXIOS.get(API_URL.GET_FINANCIALS_PENDING_AMOUNT_SUMMARY, {
+        params: {
+          startDate: convertDate(paymentDetailsRange?.start),
+          endDate: convertDate(paymentDetailsRange?.end),
+          // orderType: shopType,
+        },
+      }),
+  );
+
   const summary = getFinancialsDashBoard?.data?.data;
 
   const profit = summary?.profit;
@@ -73,6 +88,7 @@ function OrderFinancialsSummary() {
   const marketingCashBack = summary?.adminMarketingCashBack;
 
   const featured = summary?.featured;
+
   const errorCharge = summary?.errorCharge;
 
   const otherAmount = summary?.other;
@@ -772,6 +788,30 @@ function OrderFinancialsSummary() {
                 />
               </Stack>
             </InfoCard>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Total Pending Amount"
+              sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
+              index={8}
+              setExpandedIndex={setExpandedIndex}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(getPendingFinancialsDashBoard?.data?.data?.totalOngoingOrderAmount || 0).toFixed(2)}
+                  </Typography>
+                </Stack>
+              }
+              sm={6}
+              md={4}
+              lg={4}
+            />
           </Grid>
         </Grid>
       </Box>

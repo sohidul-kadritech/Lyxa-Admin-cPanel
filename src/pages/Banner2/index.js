@@ -1,19 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 
+import moment from 'moment';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import DateRange from '../../components/StyledCharts/DateRange';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AddMenuButton } from '../Faq2';
-import { sortOptions, statusTypeOptions } from '../Faq2/helpers';
-import { dateRangeInit } from '../Vat2/helpers';
 import AddBanner from './AddBanner';
 import BannerTableSkeleton from './BannerTableSkeleton';
 import AddBannerTable from './Table';
@@ -35,6 +33,20 @@ const bannerTypeIndex = {
   2: 'pharmacy',
   3: 'grocery',
 };
+
+const queryParamsInit = {
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  endDate: moment().format('YYYY-MM-DD'),
+  tab: 0,
+  sortBy: 'DESC',
+  status: 'active',
+  type: 'home',
+
+  page: 1,
+  pageSize: 5,
+  searchKey: '',
+};
+
 // const bannerTypeIndex = {
 //   0: 'home',
 //   1: 'shop',
@@ -44,13 +56,14 @@ const bannerTypeIndex = {
 // };
 
 function AdBanner() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const [sortBy, setSortBy] = useState('desc');
-  const [status, setStatus] = useState('active');
-  const [type, setType] = useState('home');
+  const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
+  // const [currentTab, setCurrentTab] = useState(0);
+  // const [sortBy, setSortBy] = useState('desc');
+  // const [status, setStatus] = useState('active');
+  // const [type, setType] = useState('home');
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [range, setRange] = useState({ ...dateRangeInit });
+  // const [range, setRange] = useState({ ...dateRangeInit });
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
@@ -59,12 +72,10 @@ function AdBanner() {
 
   const queryClient = useQueryClient();
 
-  const getBannerListQuery = useQuery(
-    [API_URL.BANNER_LIST, { sortBy, status, type, startDate: range?.start, endDate: range?.end }],
-    () =>
-      AXIOS.get(API_URL.BANNER_LIST, {
-        params: { sortBy, status, type, startDate: range?.start, endDate: range?.end },
-      }),
+  const getBannerListQuery = useQuery([API_URL.BANNER_LIST, queryParams], () =>
+    AXIOS.get(API_URL.BANNER_LIST, {
+      params: queryParams,
+    })
   );
 
   const addBannerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_BANNER, data), {
@@ -114,10 +125,12 @@ function AdBanner() {
 
       <Box sx={{ marginBottom: '30px' }}>
         <Tabs
-          value={currentTab}
+          value={Number(queryParams?.tab)}
           onChange={(event, newValue) => {
-            setCurrentTab(newValue);
-            setType(bannerTypeIndex[newValue]);
+            setQueryParams((prev) => ({ ...prev, tab: newValue, type: bannerTypeIndex[newValue] }));
+            // setQueryParams
+            // setCurrentTab(newValue);
+            // setType(bannerTypeIndex[newValue]);
           }}
         >
           <Tab label="Home"></Tab>
@@ -127,8 +140,24 @@ function AdBanner() {
           <Tab label="Grocery"></Tab>
         </Tabs>
       </Box>
-      <Box>
-        <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
+      <Box sx={{ marginBottom: '30px' }}>
+        <SearchBar
+          showFilters={{
+            search: true,
+            date: true,
+            sort: true,
+            status: true,
+            button: true,
+          }}
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          buttonLabel="Add"
+          onButtonClick={() => {
+            setRowData({});
+            setOpen(true);
+          }}
+        />
+        {/* <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
           <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
           <DateRange range={range} setRange={setRange} />
           <StyledFormField
@@ -161,13 +190,13 @@ function AdBanner() {
               onChange: (e) => setStatus(e.target.value),
             }}
           />
-          <AddMenuButton
+         <AddMenuButton
             onClick={() => {
               setRowData({});
               setOpen(true);
             }}
           />
-        </Stack>
+        </Stack> */}
       </Box>
       <Box>
         {getBannerListQuery.isLoading ? (
@@ -175,7 +204,7 @@ function AdBanner() {
           <BannerTableSkeleton row={5} column={4} />
         ) : (
           <AddBannerTable
-            type={type}
+            type={queryParams?.type}
             updateQuery={editBannerQuery}
             setIsConfirmModal={setIsConfirmModal}
             isConfirmModal={isConfirmModal}
@@ -195,7 +224,7 @@ function AdBanner() {
           isEdit={isEdit}
           rowData={rowData}
           addQuery={isEdit ? editBannerQuery : addBannerQuery}
-          type={type}
+          type={queryParams?.type}
           onClose={() => {
             setOpen(false);
             setIsReadOnly(false);

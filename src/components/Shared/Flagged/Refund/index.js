@@ -15,6 +15,7 @@ import { getRefundMaxAmounts } from '../../RefundOrder/helpers';
 import SelectItemsToRefund from './SelectItemsToRefund';
 
 import { TitleWithToolTip } from '../../../../pages/NewOrder/helpers';
+
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -23,6 +24,7 @@ import {
   ReplacementOptions,
   TypeOptions,
   calculateVat,
+  getInitialValue,
   getTotalRefundAmountWithVat,
   logUsersOptions,
 } from './helpers';
@@ -44,7 +46,8 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         return { ...prev, partialPayment: { ...getRefundMaxAmounts(order) }, [e.target.name]: e.target.value };
       }
 
-      return { ...prev, [e.target.name]: e.target.value };
+      console.log('value==>', { value: getInitialValue(e.target.name), target: e.target.name });
+      return { ...prev, ...getInitialValue(e.target.name), [e.target.name]: e.target.value };
     });
   };
 
@@ -197,7 +200,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                   gap: '20px',
                 }}
                 sxForm={{
-                  background: theme.palette.background.secondary,
+                  background: theme?.palette?.background?.secondary,
                   padding: '12px 18px',
                   borderRadius: '10px',
                   flex: 1,
@@ -210,7 +213,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                   tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
                   title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
                     order,
-                    flaggData,
+                    flaggData
                   )}`}
                 />
               </Stack>
@@ -230,8 +233,10 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
           </StyledInputBox>
         )}
 
-        {((flaggData?.refundType === 'partial' && flaggData?.refund === 'with') ||
-          flaggData?.replacement === 'with') && (
+        {((flaggData?.refundType === 'partial' &&
+          flaggData?.refund === 'with' &&
+          flaggData?.selectedItems?.length > 0) ||
+          (flaggData?.replacement === 'with' && flaggData?.selectedItems?.length > 0)) && (
           <StyledInputBox title={flaggData?.replacement === 'with' ? 'Put cost on' : 'Refund Percentage'}>
             <Stack mt={10 / 4} gap={2.5}>
               <StyledRadioGroup
@@ -240,7 +245,6 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 name="refundPercentage"
                 onChange={(e) => {
                   onChangeHandler(e);
-
                   setFlaggData((prev) => {
                     const partialPayment = {
                       shop: 0,
@@ -284,7 +288,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                     title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
                       order,
                       flaggData,
-                      calculateVat(order, flaggData, appSetting?.vat).totalVat,
+                      calculateVat(order, flaggData, appSetting?.vat).totalVat
                     )}`}
                   />
                 )}

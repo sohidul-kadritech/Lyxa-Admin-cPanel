@@ -11,7 +11,6 @@ function SettingsWithIncrementDecrementButton({
   action,
   endAdornment,
 }) {
-  console.log({ newAppSettings });
   const { incrementHandler, decrementHandler } = action;
   return (
     <StyledBox title={title}>

@@ -13,6 +13,7 @@ import OrderContextProvider from '../OrderDetail/OrderContext';
 import ModalContainer from './ModalContainer';
 
 import socketServices from '../../../common/socketService';
+import ConfirmModal from '../../Common/ConfirmModal';
 import CancelOrder from './CancelOrder';
 import { validateCancelData } from './CancelOrder/helpers';
 import RefundOrder from './Refund';
@@ -98,6 +99,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const [flaggData, setFlaggData] = useState(initialDataForFlagg(order));
   const [cancelOrderData, setCancelOrderData] = useState(initialDataForCancelOrder(order));
   const { general } = useGlobalContext();
+  const [open, setOpen] = useState(false);
 
   const { appSetting } = general;
 
@@ -111,6 +113,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         onClose();
+        setOpen(false);
       } else {
         successMsg(data?.message, 'error');
       }
@@ -130,13 +133,12 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
 
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
 
-        console.log('data?.data?.order?._id', order?._id);
-
         socketServices?.emit('updateOrder', {
           orderId: order?._id,
         });
 
         onClose();
+        setOpen(false);
       } else {
         successMsg(data?.message, 'error');
       }
@@ -172,7 +174,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    [],
+    []
   );
 
   return (
@@ -217,12 +219,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
                     color="primary"
                     disabled={flaggedQueryMutation?.isLoading || cancelOrderQueryMutation?.isLoading}
                     onClick={() => {
-                      if (showFor === 'flagged') {
-                        onSubmitFlag();
-                        return;
-                      }
-
-                      onSubmitCancelOrder();
+                      setOpen(true);
                     }}
                   >
                     {flaggData?.replacement === 'with' ? 'Place Order' : 'Done'}
@@ -241,6 +238,22 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
             sx={{ padding: '0px 20px 25px 5px', width: '33.33%', maxHeight: `80vh`, overflow: 'auto' }}
           />
         </Stack>
+
+        <ConfirmModal
+          message="Proceed with this operation?"
+          isOpen={open}
+          loading={flaggedQueryMutation?.isLoading || cancelOrderQueryMutation?.isLoading}
+          onCancel={() => {
+            setOpen(false);
+          }}
+          onConfirm={() => {
+            if (showFor === 'flagged') {
+              onSubmitFlag();
+              return;
+            }
+            onSubmitCancelOrder();
+          }}
+        />
       </ModalContainer>
     </OrderContextProvider>
   );

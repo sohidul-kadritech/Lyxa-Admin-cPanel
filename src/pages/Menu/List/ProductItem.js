@@ -53,7 +53,7 @@ export default function ProductItem({
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   // stock update
@@ -78,7 +78,7 @@ export default function ProductItem({
         console.log(data);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const handleFavouriteChange = (product) => {
@@ -202,7 +202,7 @@ export default function ProductItem({
             {product?.name?.charAt(0)}
           </Avatar>
           {product?.status === 'inactive' && <ProductOverlayTag label="Deactivated" color="#363636" />}
-          {product.stockQuantity < 1 && product?.status === 'active' && (
+          {product?.stockQuantity < 1 && product?.status === 'active' && (
             <ProductOverlayTag label="Out of Stock" color="#DD5B63" />
           )}
         </Box>

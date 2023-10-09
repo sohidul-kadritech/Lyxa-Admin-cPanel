@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
 import { Box, Drawer } from '@mui/material';
@@ -82,14 +83,14 @@ export default function MenuPage() {
         setFavorites((prev) => createCatagory(data?.data || {}, 'favorites', shop?.shopFavourites?.title) || prev);
         setBestSellers((prev) => createCatagory(data?.data || {}, 'bestseller') || prev);
       },
-    }
+    },
   );
 
   useEffect(() => {
     if (productsQuery?.data?.status) {
       setCategories((prev) => productsQuery?.data?.data?.productsGroupByCategory || prev);
       setFavorites(
-        (prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites', shop?.shopFavourites?.title) || prev
+        (prev) => createCatagory(productsQuery?.data?.data || {}, 'favorites', shop?.shopFavourites?.title) || prev,
       );
       setBestSellers((prev) => createCatagory(productsQuery?.data?.data || {}, 'bestseller') || prev);
     }
@@ -137,7 +138,7 @@ export default function MenuPage() {
         setSidebar('edit-sub-category');
       },
     }),
-    [favorites, updatedProduct]
+    [favorites, updatedProduct],
   );
 
   return (
@@ -185,6 +186,7 @@ export default function MenuPage() {
                 <CategoryItem
                   secondaryCurrency={secondaryCurrency}
                   category={favorites}
+                  type="favourite"
                   gOpen={category_open}
                   setEditFavorite={() => {
                     setSidebar('edit-favorite');

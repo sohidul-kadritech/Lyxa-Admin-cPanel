@@ -107,31 +107,6 @@ function AppSettings() {
     }
   };
 
-  // eslint-disable-next-line consistent-return
-  // const handleButlerKmAdd = (evt) => {
-  //   if (['Enter', 'Tab', ','].includes(evt.key)) {
-  //     evt.preventDefault();
-  //     const value = areaChangeKeyButler.trim();
-
-  //     if (appSettingsOptions.searchDeliveryBoyKmForButler.length === 3) {
-  //       return toast.warn('Maximum 3 items can add', {
-  //         position: toast.POSITION.TOP_RIGHT,
-  //         autoClose: 3000,
-  //         hideProgressBar: true,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //     }
-
-  //     if (value) {
-  //       setAreaChangeKeyButler('');
-  //       dispatch(updateSearchButlerKm(value));
-  //     }
-  //   }
-  // };
-
   return (
     <GlobalWrapper>
       <div className="page-content">

@@ -17,6 +17,7 @@ import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 
+import socketServices from '../../common/socketService';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
@@ -79,6 +80,7 @@ export default function NewOrders({ showFor }) {
 
       setOpenAcceptModal(false);
       setOpenConfirm(false);
+      setOpenAcceptRestaurentModal(false);
 
       const type = response?.data?.order?.orderStatus;
 
@@ -88,14 +90,13 @@ export default function NewOrders({ showFor }) {
       }
 
       // emit socket
-      if (payload.service === 'regular') {
-        if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
-          socket?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
-        } else {
-          socket?.emit('updateOrder', {
-            orderId: payload.data?.orderId,
-          });
-        }
+
+      if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
+        socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
+      } else {
+        socketServices?.emit('updateOrder', {
+          orderId: payload.data?.orderId,
+        });
       }
 
       if (response?.data?.order?.orderStatus === 'delivered') {
@@ -118,7 +119,7 @@ export default function NewOrders({ showFor }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   // @update order status from this query
@@ -132,7 +133,7 @@ export default function NewOrders({ showFor }) {
       onError: (error) => {
         console.log('api error: ', error);
       },
-    }
+    },
   );
 
   const updateStatusHandler = async () => {

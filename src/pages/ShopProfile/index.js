@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Drawer } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -36,7 +37,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         setShop(data?.data?.shop);
         setOpen(false);
       }
-
       setLoading(false);
     },
     onError: (error) => {
@@ -61,7 +61,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
       onError: (error) => {
         console.log(error);
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 
@@ -168,7 +167,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
           >
             <ShopBanner loading={shopMutation.isLoading || loading} shop={shop} onDrop={onDrop} />
             <ShopInfo menuHandler={menuHandler} onDrop={onDrop} shop={shop} />
-            <ShopProfileTabs shop={shop} />
+            <ShopProfileTabs shop={shop} refetchShopData={shopQuery?.refetch} loading={shopQuery?.isLoading} />
           </Box>
           {/* right */}
           <Box

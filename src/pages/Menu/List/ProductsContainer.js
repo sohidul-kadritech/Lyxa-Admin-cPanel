@@ -1,7 +1,10 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
+import { useGlobalContext } from '../../../context';
 import dropSort from '../../../helpers/dropSort';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -14,19 +17,35 @@ export default function ProductsContainer({
   isInsideBestSellers,
   asSearchResult,
   secondaryCurrency,
+  type,
 }) {
+  console.log({ type });
   const [render, setRender] = useState(false);
+  const { currentUser } = useGlobalContext();
+  const { shop } = currentUser;
   const sortingMutation = useMutation((data) => AXIOS.post(Api.SORT_PRODUCTS, data));
+
+  const sortingFavouriteMutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP_FAVOVRITES, data));
 
   const { updatedProduct } = useContext(ProductsContext);
 
   const onDrop = ({ removedIndex, addedIndex }) => {
-    sortingMutation.mutate({
-      products: dropSort(removedIndex, addedIndex, products).map((product, index) => ({
-        id: product?._id,
-        sortingOrder: index + 1,
-      })),
-    });
+    if (type === 'favourite') {
+      sortingFavouriteMutation.mutate({
+        shopId: shop?._id,
+        products: dropSort(removedIndex, addedIndex, products).map((product, index) => ({
+          product: product?._id,
+          sortingOrder: index + 1,
+        })),
+      });
+    } else {
+      sortingMutation.mutate({
+        products: dropSort(removedIndex, addedIndex, products).map((product, index) => ({
+          id: product?._id,
+          sortingOrder: index + 1,
+        })),
+      });
+    }
 
     setRender(!render);
   };

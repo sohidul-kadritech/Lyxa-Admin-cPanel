@@ -15,7 +15,6 @@ import {
 } from '../../components/Shared/FinancialsOverview/helpers';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../context';
-import { isDeliveryProfitIsVisible } from './helpers';
 
 export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
@@ -32,7 +31,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
 
-  console.log('paymentDetails===>', paymentDetails);
+  console.log({ paymentDetails });
 
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
@@ -58,8 +57,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
           <DetailsAccordion
             title="Order Amount"
-            tooltip="The fees you earn depend on how your customer order and receive their order. 
-          VAT inclusivea"
+            tooltip="The fees you earn depend on how your customer order and receive their order."
             titleAmount={paymentDetails?.orderAmount || 0}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
@@ -104,6 +102,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
               />
               <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
               <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
+              <PriceItem title="Lyxa Pay" amount={cash?.wallet_cash || 0} amountSx={{ color: '#B5B5C3' }} showIfZero />
             </DetailsAccordion>
 
             {/* Online */}
@@ -191,6 +190,12 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
                   />
                 }
               />
+              <PriceItem
+                title="Lyxa Pay"
+                amount={online?.wallet_online || 0}
+                amountSx={{ color: '#B5B5C3' }}
+                showIfZero
+              />
             </DetailsAccordion>
 
             <Box pt={3.5}>
@@ -221,37 +226,13 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
           </DetailsAccordion>
 
           {/* shop cut */}
-
-          <DetailsAccordion title="Shop Payouts" titleAmount={payout?.totalPayout} titleAmountStatus="minus">
-            {/* <PriceItem title="Free delivery by shop" amount={payout?.freeDeliveryByShop || 0} isNegative /> */}
-            {/* <PriceItem title="Shop error charge" amount={payout?.totalPayout || 0} /> */}
-            {/* <PriceItem title="Shop customer refund" amount={payout?.shopCustomerRefund || 0} /> */}
-            {/* <PriceItem title="Shop point cashback" amount={payout?.pointsCashback || 0} isNegative /> */}
-            {/* <PriceItem title="Payout" amount={payout?.payout || 0} isNegative /> */}
-          </DetailsAccordion>
-
-          {/* delivery */}
-
-          {isDeliveryProfitIsVisible(showFor) && (
-            <DetailsAccordion
-              title="Delivery Profit"
-              titleAmount={0}
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-Shop-powered deliveries: 10%. 
-VAT inclusive"
-              isOpen={currentExpanedTab === 2}
-              onChange={(closed) => {
-                seCurrentExpanedTab(closed ? 2 : -1);
-              }}
-            >
-              <PriceItem title="Cash" amount={0} showIfZero />
-              <PriceItem title="Online" amount={0} showIfZero />
-              <PriceItem title="Rider Cut" amount={0} showIfZero isNegative />
-            </DetailsAccordion>
-          )}
+          <DetailsAccordion
+            title="Shop Payouts"
+            titleAmount={Math.abs(payout?.totalPayout)}
+            titleAmountStatus={`${payout?.totalPayout > 0 ? 'minus' : ''}`}
+          />
 
           {/* Other payments */}
-
           <DetailsAccordion
             title="Other Payments"
             titleAmount={Math.abs(otherPayments?.totalOtherPayments || 0)}
@@ -309,24 +290,14 @@ VAT inclusive"
             />
             <PriceItem title="Shop VAT" amount={otherPayments?.shopVat} showIfZero />
             <PriceItem title="Shop Self delivery" amount={otherPayments?.shopDeliveryFee} showIfZero />
-            {/* 
-            <PriceItem
-              title="Shop Add/Remove Credit"
-              amount={otherPayments?.shopAddRemoveCredit}
-              isNegative
-              showIfZero
-            /> */}
           </DetailsAccordion>
 
           {/* profit */}
 
           <DetailsAccordion
             title="Total Lyxa Profit"
-            // titleAmount={paymentDetails?.totalAdminProfit}
             titleAmount={totalProfit}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%.
-            VAT inclusive"
+            tooltip="How much lyxa earn from order only."
             isOpen={currentExpanedTab === 3}
             onChange={(closed) => {
               seCurrentExpanedTab(closed ? 3 : -1);

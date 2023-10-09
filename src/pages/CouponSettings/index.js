@@ -1,21 +1,22 @@
 import { Box, Tab, Tabs } from '@mui/material';
-import { useState } from 'react';
 import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
+import useQueryParams from '../../helpers/useQueryParams';
 import CouponList from './List';
 import CouponOverview from './Overview';
-import { breadcrumbItems } from './helpers';
+import { breadcrumbItems, queryParamsInit } from './helpers';
 
 export default function CouponSettings() {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [queryParams, setQueryParams] = useQueryParams(queryParamsInit());
+  console.log({ queryParams });
 
   return (
     <Box>
       <PageTop backButtonLabel="Back to Marketing" backTo="/settings/marketing" breadcrumbItems={breadcrumbItems} />
       <Tabs
-        value={currentTab}
+        value={Number(queryParams?.tab1)}
         onChange={(event, newValue) => {
-          setCurrentTab(newValue);
+          setQueryParams((prev) => ({ ...prev, tab1: newValue }));
         }}
         sx={{
           '& .MuiTab-root': {
@@ -28,11 +29,11 @@ export default function CouponSettings() {
         <Tab label="Coupons" />
       </Tabs>
       <Box>
-        <TabPanel value={currentTab} index={0} noPadding>
-          <CouponOverview />
+        <TabPanel value={Number(queryParams?.tab1)} index={0} noPadding>
+          <CouponOverview queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
-        <TabPanel value={currentTab} index={1} noPadding>
-          <CouponList />
+        <TabPanel value={Number(queryParams?.tab1)} index={1} noPadding>
+          <CouponList queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
       </Box>
     </Box>

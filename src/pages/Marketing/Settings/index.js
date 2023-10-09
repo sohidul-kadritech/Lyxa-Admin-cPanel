@@ -946,7 +946,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                       message:
                         marketingType === 'featured' && marketingQuery?.data?.data?.marketing?.status === 'active'
                           ? `Deleting this campaign will not refund your ${currency} ${featuredAmount} ?`
-                          : 'Are you sure?. Your campaign will be deleted.',
+                          : 'Are you sure?. Your campaign will be expired.',
                       onCancel: () => setConfirmModal(false),
                       onConfirm: () => {
                         loyaltySettingsDeleteMutation.mutate();
@@ -974,7 +974,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                         message:
                           marketingType === 'featured' && marketingQuery?.data?.data?.marketing?.status === 'active'
                             ? `Deleting this campaign will not refund your ${currency} ${featuredAmount} ?`
-                            : 'Are you sure?. Your campaign will be deleted.',
+                            : 'Are you sure?. Your campaign will be ended.',
                         onCancel: () => setConfirmModal(false),
                         onConfirm: () => {
                           loyaltySettingsDeleteMutation.mutate();
@@ -987,7 +987,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   </Button>
                   {marketingType === 'featured' && (
                     <Typography variant="body3" sx={{ fontSize: 12 }}>
-                      *In case of end promotion, the remaining amount is non refundable
+                      *In case of end promotion, the remaining amount is non-refundable
                     </Typography>
                   )}
                 </Stack>
@@ -1020,9 +1020,9 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                           setConfirmAction({
                             message: (
                               <Stack gap={2}>
-                                <Typography variant="h3">Are you sure?. Your campaign will be deactivaed.</Typography>
+                                <Typography variant="h3">Are you sure?. Your campaign will be paused.</Typography>
                                 <Typography variant="body3" sx={{ fontSize: '14px' }}>
-                                  (The promotion will be paused up to 24h.)
+                                  (The promotion will be expired after 24hrs.)
                                 </Typography>
                               </Stack>
                             ),
