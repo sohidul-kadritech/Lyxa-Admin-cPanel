@@ -34,7 +34,7 @@ export default function App() {
   const { userType, adminType, shop } = currentUser;
   const { socket } = useSelector((state) => state.socketReducer);
 
-  console.log('socket test', socket);
+  // console.log('socket test', socket);
   const [adminDataIsLoading, setAdminDataIsLoading] = useState(true);
   const [, setRender] = useState(false);
 
@@ -55,8 +55,6 @@ export default function App() {
     }
 
     const { account_type, account_id, access_token, credentialUserId } = getCookiesAsObject();
-
-    console.log('account_type', account_type);
 
     // any cookie is missing
     if (!account_type || !account_id || !access_token || !credentialUserId) {

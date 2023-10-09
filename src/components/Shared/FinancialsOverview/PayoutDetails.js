@@ -20,15 +20,13 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
   const totalProfit = getTotalProfit(currency, secondaryCurrency, paymentDetails);
 
-  // const totalPayout = getTotalProfit(currency,secondaryCurrency,paymentDetails)
-
   const cash = paymentDetails?.cash;
   const online = paymentDetails?.online;
   const lyxaMarketingCashback = paymentDetails?.AdminMarketingCashback;
   const otherPayments = paymentDetails?.otherPayments;
   const deliveryFee = paymentDetails?.deliveryFee;
 
-  console.log('shopConsole', deliveryFee);
+  console.log('shopConsole', { paymentDetails });
 
   const orderValue = {};
 
@@ -66,8 +64,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
           <DetailsAccordion
             title="Order Amount"
-            tooltip="The fees you earn depend on how your customer order and receive their order. 
-            VAT inclusivea"
+            tooltip="The fees you earn depend on how your customer order and receive their order."
             titleAmount={paymentDetails?.orderAmount}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
@@ -107,33 +104,15 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                 }
               />
 
-              <PriceItem
-                title="Discount"
-                amount={cash?.discount_cash}
-                isNegative
-                // tooltip={
-                //   <CommonOrderAmountTooltipText
-                //     byAdmin={cash?.totalAdminDiscount}
-                //     byShop={cash?.totalShopDiscount}
-                //     currency={currency}
-                //   />
-                // }
-              />
+              <PriceItem title="Discount" amount={cash?.discount_cash} isNegative />
 
-              <PriceItem
-                title="Buy 1 Get 1"
-                amount={cash?.buy1Get1_cash}
-                isNegative
-                // tooltip={
-                //   <CommonOrderAmountTooltipText
-                //     byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                //     byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
-                //     currency={currency}
-                //   />
-                // }
-              />
+              <PriceItem title="Buy 1 Get 1" amount={cash?.buy1Get1_cash} isNegative />
+
               <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
+
               <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
+
+              <PriceItem title="Lyxa Pay" amount={cash?.wallet_cash || 0} amountSx={{ color: '#B5B5C3' }} showIfZero />
             </DetailsAccordion>
 
             {/* Online */}
@@ -221,6 +200,12 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                   />
                 }
               />
+              <PriceItem
+                title="Lyxa Pay"
+                amount={online?.wallet_online || 0}
+                amountSx={{ color: '#B5B5C3' }}
+                showIfZero
+              />
             </DetailsAccordion>
 
             <Box pt={3.5}>
@@ -272,11 +257,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
           <PriceItem
             sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
             title="Lyxa Points cashback"
-            // amount={1}
             amount={paymentDetails?.pointsCashback}
-            tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%. 
-            VAT inclusive"
           />
 
           {/* Other payments */}
@@ -294,7 +275,6 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
               title="Promotion: Free delivery"
               tooltip="If Lxya rider"
               amount={otherPayments?.freeDeliveryByShop}
-              // amount={paymentDetails?.freeDeliveryShopCut}
               showIfZero
               isNegative
             />
@@ -324,9 +304,6 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             sx={{ padding: '14px 0px 14px 32px', borderBottom: '1px solid #EEEEEE' }}
             title="Total VAT"
             amount={Math.abs(paymentDetails?.totalVat)}
-            // tooltip="Fee for Lyxa-powered deliveries: 20%
-            // Shop-powered deliveries: 10%.
-            // VAT inclusive"
           />
 
           {/* delivery */}
@@ -359,17 +336,6 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             </DetailsAccordion>
           )}
 
-          {/* points cashback */}
-
-          {/* <DetailsAccordion
-            title="Shop add/remove credit"
-            titleAmount={0}
-            isOpen={currentExpanedTab === 3}
-            onChange={(closed) => {
-              seCurrentExpanedTab(closed ? 3 : -1);
-            }}
-          /> */}
-
           {/* total payout */}
           {viewUserType === 'seller' || viewUserType === 'shop' ? (
             <DetailsAccordion
@@ -392,7 +358,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
               <PriceItem
                 title="Unpaid"
-                console={console.log('totalUnsettle', paymentDetails?.totalUnpaid)}
+                // console={console.log('totalUnsettle', paymentDetails?.totalUnpaid)}
                 amount={Math.abs(paymentDetails?.totalUnpaid)}
                 isNegative={paymentDetails?.totalUnpaid < 0}
               />
@@ -401,9 +367,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             <DetailsAccordion
               title="Total Payouts"
               titleAmount={totalProfit}
-              tooltip="Fee for Lyxa-powered deliveries: 20%
-            Shop-powered deliveries: 10%.
-            VAT inclusive"
+              tooltip="Shop's overall income: orders, delivery, VAT."
               titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
               isOpen={currentExpanedTab === 3}
               onChange={(closed) => {

@@ -80,7 +80,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           isDropdown
           sm={6}
           md={4}
-          lg={3}
+          // lg={3}
         >
           {query?.data?.data?.dateWiseRejectedOrder?.length > 0 && (
             <Stack gap={2.5}>
@@ -100,7 +100,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           value={query?.data?.data?.totalRefundedOrder || 0}
           sm={6}
           md={4}
-          lg={3}
+          // lg={3}
         />
         {/* <InfoCard
           title={
@@ -122,7 +122,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           isDropdown
           sm={6}
           md={4}
-          lg={3}
+          // lg={3}
           valueSx={{ color: `${theme.palette.error.main}!important` }}
         >
           {query?.data?.data?.totalDownTime?.totalMinutes !== 0 ? (
@@ -137,7 +137,7 @@ export default function Operations({ viewUserType = 'shop' }) {
             <ListItem label="No downtime found" />
           )}
         </InfoCard>
-        <InfoCard
+        {/* <InfoCard
           title={
             <CardTitle
               title="Missed Orders"
@@ -148,7 +148,7 @@ export default function Operations({ viewUserType = 'shop' }) {
           sm={6}
           md={4}
           lg={3}
-        />
+        /> */}
       </Grid>
     </Box>
   );

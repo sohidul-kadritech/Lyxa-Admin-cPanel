@@ -1,19 +1,18 @@
-import { Add } from '@mui/icons-material';
-import { Box, Button, Drawer, Stack, Tab, Tabs } from '@mui/material';
+/* eslint-disable prettier/prettier */
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import SearchBar from '../../components/Common/CommonSearchbar';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
-import StyledFormField from '../../components/Form/StyledFormField';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
-import DateRange from '../../components/StyledCharts/DateRange';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { dateRangeInit } from '../Faq2/helpers';
 import AddReason from './AddReason';
 import ReasonTable from './ReasonTable';
-import { statusTypeOptions } from './helper';
 
 export const breadcrumbItems = [
   {
@@ -26,9 +25,9 @@ export const breadcrumbItems = [
   },
 ];
 
-const fieldContainerSx = {
-  padding: '0px 0px',
-};
+// const fieldContainerSx = {
+//   padding: '0px 0px',
+// };
 
 // eslint-disable-next-line no-unused-vars
 const tabTracker = {
@@ -36,20 +35,31 @@ const tabTracker = {
   1: 'butler',
   2: 'shopCancel',
   3: 'admin',
+  4: 'resolve',
 };
 
-function AddMenuButton({ ...props }) {
-  return (
-    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
-      Add
-    </Button>
-  );
-}
+// function AddMenuButton({ ...props }) {
+//   return (
+//     <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
+//       Add
+//     </Button>
+//   );
+// }
+
+const getQueryParamsInit = () => ({
+  endDate: moment().format('YYYY-MM-DD'),
+  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  status: 'active',
+  searchKey: '',
+  type: 'userCancel',
+  tab: 0,
+});
 
 // cancel reason main
 function CancelReason() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const [range, setRange] = useState({ ...dateRangeInit });
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit());
+  // const [currentTab, setCurrentTab] = useState(0);
+  // const [range, setRange] = useState({ ...dateRangeInit });
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -57,9 +67,9 @@ function CancelReason() {
 
   const [open, setOpen] = useState(false);
 
-  const [type, setType] = useState('userCancel');
-  const [status, setStatus] = useState('active');
-  const [searchKey, setSearchKey] = useState('');
+  // const [type, setType] = useState('userCancel');
+  // const [status, setStatus] = useState('active');
+  // const [searchKey, setSearchKey] = useState('');
   const queryClient = useQueryClient();
   const [cancelReasons, setCancelReasons] = useState([]);
 
@@ -70,17 +80,10 @@ function CancelReason() {
   });
 
   const getAllcancelReason = useQuery(
-    [API_URL.ALL_ORDER_CANCEL_REASON, { type, status, searchKey, startDate: range.start, endDate: range.end }],
+    [API_URL.ALL_ORDER_CANCEL_REASON, queryParams],
     () =>
       AXIOS.get(API_URL.ALL_ORDER_CANCEL_REASON, {
-        params: {
-          type,
-          status,
-          searchKey,
-          startDate: range.start,
-          endDate: range.end,
-        },
-        // eslint-disable-next-line prettier/prettier
+        params: queryParams,
       }),
     {
       onSuccess: (data) => {
@@ -88,8 +91,7 @@ function CancelReason() {
           setCancelReasons(data?.data?.cancelReason || []);
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const cancelReasonAdd = useMutation((data) => AXIOS.post(API_URL.ADD_ORDER_CANCEL_REASON, data), {
@@ -184,51 +186,38 @@ function CancelReason() {
       />
       <Box sx={{ marginBottom: '30px' }}>
         <Tabs
-          value={currentTab}
+          value={Number(queryParams?.tab)}
           onChange={(event, newValue) => {
-            setCurrentTab(newValue);
-            // setType(() => (newValue === 0 ? 'orderSupport' : newValue === 1 ? 'accountSupport' : 'faq'));
-            // setIsSideBarOpen(false);
-            setType(tabTracker[newValue]);
+            setQueryParams((prev) => ({ ...prev, tab: newValue, type: tabTracker[newValue] }));
           }}
         >
-          <Tab label="User"></Tab>
-          <Tab label="Butler"></Tab>
-          <Tab label="Shop"></Tab>
-          <Tab label="Admin"></Tab>
+          <Tab label="User" />
+          <Tab label="Butler" />
+          <Tab label="Shop" />
+          <Tab label="Admin" />
+          <Tab label="Resolve Chat Reason" />
         </Tabs>
       </Box>
 
-      <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-        <DateRange range={range} setRange={setRange} />
-        <StyledFormField
-          intputType="select"
-          containerProps={{
-            sx: fieldContainerSx,
+      <Box marginBottom="30px">
+        <SearchBar
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
+          showFilters={{
+            search: true,
+            status: true,
+            date: true,
+            button: true,
           }}
-          inputProps={{
-            name: 'status',
-            placeholder: 'Status',
-            value: status,
-            items: statusTypeOptions,
-            size: 'sm2',
-            //   items: categories,
-            onChange: (e) => {
-              setStatus(e.target.value);
-            },
-          }}
-        />
-
-        <AddMenuButton
-          onClick={() => {
+          buttonLabel="Add"
+          onButtonClick={() => {
             setOpen(() => {
               setIsEdit(false);
               return true;
             });
           }}
         />
-      </Stack>
+      </Box>
 
       <Box>
         <ReasonTable
@@ -243,7 +232,7 @@ function CancelReason() {
         <AddReason
           loading={cancelReasonAdd?.isLoading || cancelReasonEdit?.isLoading}
           isEdit={isEdit}
-          reason={isEdit ? currentCancelReason : { type: tabTracker[currentTab] }}
+          reason={isEdit ? currentCancelReason : { type: tabTracker[Number(queryParams?.tab)] }}
           submitHandler={submitCancelReason}
           onClose={() => setOpen(false)}
         />

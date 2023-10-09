@@ -177,7 +177,7 @@ export default function CategoryTable({
         />
       </Box>
       <TablePagination
-        currentPage={queryParams?.page}
+        currentPage={Number(queryParams?.page)}
         lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
         totalPage={totalPage}
       />

@@ -15,6 +15,7 @@ const tabsOptions = [
 ];
 
 const queryParamsInit = {
+  status: '',
   category: '',
   orderStatus: '',
   type: '',
@@ -37,7 +38,7 @@ export default function Flags() {
     () => AXIOS.get(Api.GET_ALL_FLAGGED_ORDERS, { params: queryParams }),
     {
       onSuccess: (data) => {
-        console.log(data);
+        // console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
     }

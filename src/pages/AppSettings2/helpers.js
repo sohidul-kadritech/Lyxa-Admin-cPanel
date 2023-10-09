@@ -19,9 +19,9 @@ function convertArrayToInteger(arr) {
   return result;
 }
 
-export function hasDuplicates(arr1, arr2) {
-  const sortedArr1 = convertArrayToInteger(arr1).sort();
-  const sortedArr2 = convertArrayToInteger(arr2).sort();
+export function hasDuplicates(arr1, arr2, type = 'number') {
+  const sortedArr1 = type === 'number' ? convertArrayToInteger(arr1).sort() : arr1.sort();
+  const sortedArr2 = type === 'number' ? convertArrayToInteger(arr2).sort() : arr2.sort();
   // Check if the lengths are equal
   if (sortedArr1.length !== sortedArr2.length) {
     return false;
@@ -50,6 +50,7 @@ export const typeList = [
   'secondaryCurrency',
   'adminExchangeRate',
   'acceptedCurrency',
+  'units',
 ];
 
 export const appSettingsValidateData = (oldData, newData) => {
@@ -93,6 +94,9 @@ export const appSettingsValidateData = (oldData, newData) => {
   if (newData?.acceptedCurrency?.toString() !== oldData?.acceptedCurrency?.toString()) {
     newType.push(typeList[11]);
   }
+  if (!hasDuplicates(newData?.units, oldData?.units, 'text')) {
+    newType.push(typeList[12]);
+  }
 
   console.log('types:', newType);
   console.log('newData', newData, ' oldData', oldData);
@@ -121,6 +125,7 @@ export const appSettingsValidateData = (oldData, newData) => {
 
 // bundle list validation
 export const validateList = (newValue, oldList, type) => {
+  console.log('==>', { newValue, oldList, type });
   if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;
@@ -135,7 +140,7 @@ export const validateList = (newValue, oldList, type) => {
     successMsg('Bundle item already exists');
     return false;
   }
-  console.log('after if');
+
   if (Number(newValue) < 1 && type === 'number') {
     successMsg('Bundle cannot be smaller than 1');
     return false;

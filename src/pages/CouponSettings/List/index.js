@@ -8,20 +8,20 @@ import StyledTabs2 from '../../../components/Styled/StyledTab2';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import AddCoupon from '../AddCoupon';
-import { couponListTabOptions, filtersInit } from '../helpers';
+import { couponListTabOptions } from '../helpers';
 import CouponTable from './CouponTable';
 import Searchbar from './Seachbar';
 
-export default function CouponList() {
+export default function CouponList({ queryParams, setQueryParams }) {
   const [currentTab, setCurrentTab] = useState('global');
   const [drawer, setDrawer] = useState(false);
 
-  const [filters, setFilters] = useState({ ...filtersInit });
+  // const [filters, setFilters] = useState({ ...filtersInit });
   const [editCoupon, setEditCoupon] = useState({});
 
-  const query = useQuery([Api.GET_COUPON, filters], () =>
+  const query = useQuery([Api.GET_COUPON, queryParams], () =>
     AXIOS.get(Api.GET_COUPON, {
-      params: filters,
+      params: queryParams,
     })
   );
 
@@ -31,7 +31,7 @@ export default function CouponList() {
         value={currentTab}
         onChange={(value) => {
           setCurrentTab(value);
-          setFilters((prev) => ({ ...prev, couponType: value }));
+          setQueryParams((prev) => ({ ...prev, couponType: value }));
         }}
         options={couponListTabOptions}
       />
@@ -40,8 +40,8 @@ export default function CouponList() {
           searchPlaceHolder={`Search ${
             query?.data?.data?.coupons?.length ? `${query?.data?.data?.coupons?.length} ` : ''
           }items `}
-          queryParams={filters}
-          setQueryParams={setFilters}
+          queryParams={queryParams}
+          setQueryParams={setQueryParams}
           onAdd={() => {
             setDrawer(true);
           }}

@@ -51,8 +51,6 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
 
           <DetailsAccordion
             title="Total Delivery Fee"
-            //             tooltip="The fees you earn depend on how your customer order and receive their order.
-            // VAT inclusivea"
             titleAmount={deliveryProfitBreakDown?.totalDeliveryFee}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {

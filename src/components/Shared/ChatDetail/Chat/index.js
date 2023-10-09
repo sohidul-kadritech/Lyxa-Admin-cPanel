@@ -12,6 +12,7 @@ import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
 import ChatBox from './ChatBox';
 import ChatIssues from './ChatIssue';
+import ResolveBox from './ResolveBox';
 
 export const getChatRequestId = (chats = []) => {
   const recentMsg = chats?.at(-1) || chats?.[chats.length - 1];
@@ -28,6 +29,9 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
 
   const { currentUser } = useGlobalContext();
   const { admin } = currentUser;
+
+  const [open, setOpen] = useState(false);
+  const { resolveChatData, setResolveChatData } = useState({});
 
   const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats));
   const [orderId, setOrderId] = useState(getOrderId(chat));
@@ -117,6 +121,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
     onSuccess: (data) => {
       if (data?.status) {
         afterCloseChat('admin');
+        setOpen(false);
       }
     },
     onError: (error) => {
@@ -225,18 +230,27 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
           Accept Enquiry
         </Button>
       )}
-      {chat?.status === 'accepted' && !readOnly && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            closeChatMutation.mutate({ requestId });
-          }}
-          disabled={closeChatMutation.isLoading}
-        >
-          Resolve Ticket
-        </Button>
-      )}
+      <Stack sx={{ position: 'relative', width: '100%' }}>
+        <ResolveBox
+          requestId={requestId}
+          open={open}
+          onClose={() => setOpen(false)}
+          closeChatMutation={closeChatMutation}
+        />
+        {chat?.status === 'accepted' && !readOnly && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              // closeChatMutation.mutate({ requestId });
+              setOpen(true);
+            }}
+            disabled={closeChatMutation.isLoading || open}
+          >
+            Resolve Ticket
+          </Button>
+        )}
+      </Stack>
     </Stack>
   );
 }

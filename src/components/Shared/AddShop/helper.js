@@ -51,7 +51,7 @@ export const getShopEditData = (shop) => {
   };
 };
 
-export const validateShopDetails = (shopData, isEditShop, adminType) => {
+export const validateShopDetails = (shopData, isEditShop, adminType, shopZone) => {
   console.log(shopData);
 
   const status = {
@@ -99,8 +99,14 @@ export const validateShopDetails = (shopData, isEditShop, adminType) => {
     status.msg = 'Please provide valid phone number';
     return status;
   }
+
   if (!shopData?.shopAddress?.address) {
     status.msg = 'Please provide shop address';
+    return status;
+  }
+
+  if (shopData?._id && !shopZone) {
+    status.msg = "Zone field shouldn't be empty";
     return status;
   }
 
@@ -432,26 +438,37 @@ export const shopInit = (sellerId) => ({
   account_swift: '',
 });
 
-export const getZoneDataFromLatLng = (zones = []) => {
-  if (zones.length) {
-    successMsg(`${zones.length} zones found in this area`, 'success');
+export const getZoneDataFromLatLng = (zones = [], shop = {}) => {
+  if (zones?.length) {
+    // successMsg(`${zones?.length} zones found in this area`, 'success');
     return zones.map((zone) => ({ label: zone?.zoneName, value: zone?._id }));
   }
 
-  successMsg('No zone found in this area!');
+  if (shop?.shopAddress?.longitude) successMsg('No zone found in this area!');
 
   return [{ label: 'No zone found', value: null }];
 };
 
 export const getShopZoneData = (data, zones) => {
+  // if there is no zone then we return undefined
   if (zones[0]?.label === 'No zone found' && zones[0].value === null) {
     return undefined;
   }
+  // check the current zone is exist or not. if it is exist it will return true otherwise false
+  const isExist = zones?.findIndex((zone) => zone?.value === data?._id || zone?.value === data) > -1;
 
-  if (data?._id) return data?._id;
+  /*
+  there can be get two types of data one is object another one is object. 
+  if it is object here we got {_id: zone id here}.
+  otherwise it has only string types data which is also zone id.
+  */
+
+  if (data?._id) {
+    return isExist ? data?._id : '';
+  }
 
   if (data) {
-    return data;
+    return isExist ? data : '';
   }
   return '';
 };

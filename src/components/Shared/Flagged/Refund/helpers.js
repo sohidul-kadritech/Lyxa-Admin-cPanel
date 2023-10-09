@@ -89,8 +89,10 @@ export const calculateVat = (order, flaggedData, adminVat) => {
   return vatData;
 };
 
+// calculate percentages
 const calculatePercentage = (totalSelectedAmount, value) => Number((100 / totalSelectedAmount) * value || 0).toFixed(2);
 
+// max amount for partial payment
 export const getMaxForPartialPayment = (flaggedData, order, byPercentage, key) => {
   const delivery = flaggedData?.selectedItems?.find((item) => item?.id === 'delivery_fee');
 
@@ -161,6 +163,7 @@ export const getMaxForPartialPayment = (flaggedData, order, byPercentage, key) =
   return { initialMax, percentage };
 };
 
+// get max limit
 export const getMaxLimit = (flaggData, order, by_percentage = true) => {
   const delivery = flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee');
   const initialMax = {
@@ -183,6 +186,7 @@ export const getMaxLimit = (flaggData, order, by_percentage = true) => {
   return initialMax;
 };
 
+// max partial payment by price
 export const getMaxForPartialPaymentByPrice = (flaggedData, order, key) => {
   const delivery = flaggedData?.selectedItems?.find((item) => item?.id === 'delivery_fee');
 
@@ -228,6 +232,7 @@ export const getMaxForPartialPaymentByPrice = (flaggedData, order, key) => {
   return initialMax;
 };
 
+// get max for replacement order for price
 const getMaxForReplacementOrderForPrice = (flaggData, byPrice) => {
   const initialMax = {
     shop: 100,
@@ -236,6 +241,8 @@ const getMaxForReplacementOrderForPrice = (flaggData, byPrice) => {
 
   return initialMax;
 };
+
+// calculating total vat with refund
 
 export const getTotalRefundAmountWithVat = (order, flaggedData, totalVat) => {
   const { partialPayment } = flaggedData;
@@ -249,8 +256,46 @@ export const getTotalRefundAmountWithVat = (order, flaggedData, totalVat) => {
     const { shop, adminOrderRefund, adminDeliveryRefund, adminVat } = getMaxForPartialPayment;
     const totalAmount =
       Number(shop || 0) + Number(adminDeliveryRefund || 0) + Number(adminOrderRefund || 0) + Number(adminVat || 0);
-    return totalAmount;
+    return totalAmount.toFixed(2);
   }
 
   return totalAmount.toFixed(2);
+};
+
+export const getInitialValue = (targetName) => {
+  const templateForPartialPaymentAndReplacementOrder = {
+    replacementOrderCut: {
+      baseCurrency_shopCutForReplacement: '',
+      secondaryCurrency_shopCutForReplacement: '',
+      baseCurrency_adminCutForReplacement: '',
+      secondaryCurrency_adminCutForReplacement: '',
+    },
+    partialPayment: {
+      shop: '',
+      adminOrderRefund: '',
+      adminDeliveryRefund: '',
+      adminVat: '',
+    },
+  };
+
+  const initialValue = {
+    refund: {
+      ...templateForPartialPaymentAndReplacementOrder,
+      refundType: '',
+      refundPercentage: '',
+      selectedItems: [],
+    },
+    replacement: {
+      ...templateForPartialPaymentAndReplacementOrder,
+      refundType: '',
+      refundPercentage: '',
+      refund: '',
+      selectedItems: [],
+    },
+    refundType: { ...templateForPartialPaymentAndReplacementOrder, refundPercentage: '', selectedItems: [] },
+    deliveryType: { ...templateForPartialPaymentAndReplacementOrder, refundPercentage: '', selectedItems: [] },
+    refundPercentage: {},
+  };
+
+  return initialValue[targetName] ? initialValue[targetName] : {};
 };

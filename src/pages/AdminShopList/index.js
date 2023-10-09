@@ -6,6 +6,7 @@ import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
 import { useGlobalContext } from '../../context';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SearchBar from './Searchbar';
@@ -40,7 +41,9 @@ export default function ShopList() {
   const history = useHistory();
   const routeMatch = useRouteMatch();
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
-  const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
+  const [queryParams, setQueryParams] = useQueryParams(queryParamsInit('food'));
+
+  // const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
   const [currentTab, setCurrentTab] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [open, setOpen] = useState(null);
@@ -58,8 +61,7 @@ export default function ShopList() {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-      // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   const handleMenuClick = (menu, shop) => {

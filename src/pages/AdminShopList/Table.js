@@ -197,7 +197,7 @@ export default function ShopListTable({
             />
           </StyledBox>
           <TablePagination
-            currentPage={queryParams?.page}
+            currentPage={Number(queryParams?.page)}
             lisener={(page) => setQueryParams((prev) => ({ ...prev, page }))}
             totalPage={totalPage}
           />

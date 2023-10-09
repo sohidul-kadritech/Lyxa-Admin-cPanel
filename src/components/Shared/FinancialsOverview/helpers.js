@@ -27,7 +27,7 @@ export function calculateDateDifference(date1, date2, unit) {
 }
 
 export const getMarketingTypeValues = (marketingType, summary = {}) => {
-  console.log('summary', summary);
+  // console.log('summary', summary);
 
   const all = summary;
   const admin = all?.admin;
@@ -186,7 +186,7 @@ export const getTotalProfitForLyxa = (currency, secondaryCurrency, paymentDetail
   const joinBaseAndSecondaryCurrency = `(${baseCurrencyPayout < 0 ? '- ' : ''}${currency} ${(
     Math.abs(baseCurrencyPayout) || 0
   ).toFixed(2)} + ${secondaryCurrencyPayout < 0 ? '- ' : ''} ${secondaryCurrency || ''} ${Math.round(
-    secondaryCurrencyPayout || 0,
+    secondaryCurrencyPayout || 0
   )})`;
 
   const onlyBaseCurrency = `${totalPayout < 0 ? '- ' : ''}${currency} ${(Math.abs(totalPayout) || 0)?.toFixed(2)}`;

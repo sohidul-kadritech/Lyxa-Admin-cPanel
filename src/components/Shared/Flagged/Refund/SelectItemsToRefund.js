@@ -32,6 +32,9 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
     data?.refundPercentage === 'by_percentage' &&
     data?.replacement === 'without'
   ) {
+    if (!data?.selectedItems?.length) {
+      return { partialPayment };
+    }
     const shopLossPercentage = Number(data?.byPercentage?.shop || 0);
     const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
     const deliveryPercentage = Number(data?.byPercentage?.adminDeliveryRefund || 0);
@@ -47,17 +50,26 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
     data?.refundPercentage === 'by_percentage' &&
     data?.replacement === 'with'
   ) {
+    if (!data?.selectedItems?.length) {
+      return { replacementOrderCut };
+    }
+
     const shopLossPercentage = Number(data?.byPercentage?.shop || 0);
 
     const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
 
     replacementOrderCut.baseCurrency_shopCutForReplacement = Number(
-      (totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2),
+      (totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2)
     );
 
-    replacementOrderCut.baseCurrency_adminCutForReplacement = Number(
-      (totalSelectedAmount * (adminLossPercentage / 100)).toFixed(2),
+    replacementOrderCut.baseCurrency_shopCutForReplacement = Math.min(
+      replacementOrderCut.baseCurrency_shopCutForReplacement,
+      data?.deliveryFee
     );
+
+    replacementOrderCut.baseCurrency_adminCutForReplacement =
+      totalSelectedAmount - replacementOrderCut?.baseCurrency_shopCutForReplacement;
+    console.log({ replacementOrderCut, delivery: data?.deliveryFee });
 
     return { replacementOrderCut };
   }
@@ -74,11 +86,11 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
 };
 
 const getDeliveryFee = (order, flaggData, setFlaggData) => {
+  console.log({ deliveryFee: order?.summary?.baseCurrency_riderFeeWithFreeDelivery });
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global'
-      ? order?.summary?.baseCurrency_riderFee
+    order?.summary?.baseCurrency_riderFeeWithFreeDelivery > 0
+      ? order?.summary?.baseCurrency_riderFeeWithFreeDelivery
       : 0;
-  // "shop-customer" || "customer-shop-customer"
 
   if (flaggData?.deliveryType === 'customer-shop-customer' && flaggData?.replacement === 'with') {
     setFlaggData((prev) => ({ ...prev, totalSelectedAmount: deliveryFee * 2 }));
@@ -124,7 +136,7 @@ export const getSelectableItems = (order, flaggData) => {
 
   // check delivery fee is free or not.
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
+    order?.summary?.baseCurrency_riderFee > 0
       ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
       : undefined;
 
@@ -172,7 +184,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       }
       setFlaggData((oldData) => {
         const totalSelectedAmount = prev.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee;
-        const changeGivenPrice = getUpdatedPartialAndReplacementOrder(oldData, totalSelectedAmount);
+        const changeGivenPrice = getUpdatedPartialAndReplacementOrder({ ...oldData, deliveryFee }, totalSelectedAmount);
         return { ...oldData, ...changeGivenPrice, selectedItems: [...prev], totalSelectedAmount };
       });
 
@@ -197,7 +209,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee
             : prev?.totalSelectedAmount;
 
-        const changeGivenPrice = getUpdatedPartialAndReplacementOrder(prev, totalSelectedAmount);
+        const changeGivenPrice = getUpdatedPartialAndReplacementOrder({ ...prev, deliveryFee }, totalSelectedAmount);
 
         console.log('changeGivenPrice', changeGivenPrice);
 
@@ -233,9 +245,13 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
 
   return (
     <Box>
-      <Stack direction="row" gap={5} alignItems="center">
+      <Stack direction="row" gap={5} alignItems="flex-start">
         {/* left items */}
-        <StyledContainer>
+        <StyledContainer
+          sx={{
+            minHeight: '180px',
+          }}
+        >
           {refundItem.map((item, k) => (
             <SelectableItem
               key={k}
@@ -255,17 +271,25 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
           ))}
         </StyledContainer>
         {/* icon button */}
-        <StyledIconButton
-          disableRipple
-          sx={{ width: '44px', height: '44px', padding: '10px', color: 'primary.main', borderRadius: '50%!important' }}
-        >
-          <ExchangeIcon />
-        </StyledIconButton>
+        <Stack sx={{ minHeight: '180px' }} direction="row" alignContent="center" alignItems="center">
+          <StyledIconButton
+            disableRipple
+            sx={{
+              width: '44px',
+              height: '44px',
+              padding: '10px',
+              color: 'primary.main',
+              borderRadius: '50%!important',
+            }}
+          >
+            <ExchangeIcon />
+          </StyledIconButton>
+        </Stack>
         {/* right items */}
         <StyledContainer>
           <Stack
             sx={{
-              minHeight: '182px',
+              minHeight: '180px',
             }}
             alignContent="space-between"
             justifyContent="space-between"

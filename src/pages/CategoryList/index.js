@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddCategory from '../Menu/AddCategory';
@@ -45,7 +46,7 @@ export default function CategoryList2() {
   const [currentTab, setCurrentTab] = useState(0);
   const [open, setOpen] = useState(null);
 
-  const [queryParams, setQueryParams] = useState(queryParamsInit);
+  const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
   const [selectedCategory, setSelectedCategory] = useState({});
 
   const query = useQuery([API_URL.GET_ALL_CATEGORY, queryParams], () =>

@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import TablePagination from '../../components/Common/TablePagination';
 import { useGlobalContext } from '../../context';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddRider from './AddRider';
@@ -24,7 +25,7 @@ export default function RiderList({ viewUserType }) {
   console.log(routeMatch);
   console.log({ viewUserType });
 
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, shop?._id));
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit(viewUserType, shop?._id));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [openRidersMapViewModal, setOpenRidersMapViewModal] = useState(false);
@@ -43,7 +44,7 @@ export default function RiderList({ viewUserType }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    },
+    }
   );
 
   return (
@@ -82,7 +83,7 @@ export default function RiderList({ viewUserType }) {
             }}
           />
           <TablePagination
-            currentPage={queryParams.page}
+            currentPage={Number(queryParams.page)}
             totalPage={totalPage}
             lisener={(page) => {
               console.log(page);

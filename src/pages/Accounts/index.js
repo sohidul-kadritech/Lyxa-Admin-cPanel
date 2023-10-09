@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import UsersTable from './Table';
@@ -22,7 +23,8 @@ const queryParamsInit = {
 };
 
 export default function AccountList() {
-  const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  // const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
+  const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
   const [totalPage, setTotalPage] = useState(1);
   const location = useLocation();
   const query = useQuery(

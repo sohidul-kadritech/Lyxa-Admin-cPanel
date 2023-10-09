@@ -62,7 +62,7 @@ function AdminLogsTable({ data, loading, queryParams, setQueryParams, secondaryC
         </Box>
       </Box>
       <TablePagination
-        currentPage={queryParams?.page}
+        currentPage={Number(queryParams?.page)}
         lisener={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}

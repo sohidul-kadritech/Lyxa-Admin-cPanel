@@ -17,7 +17,7 @@ export const typeOptions = [
 
 const queryParamsInit = (props) => ({
   page: 1,
-  pageSize: 15,
+  pageSize: 20,
   sortBy: 'DESC',
   orderType: 'all',
   model: 'order',
@@ -54,12 +54,11 @@ export default function OrderPayoutDetailsTable({ showFor, shopType, paymentDeta
           ...getParamsQuery(showFor, {
             ...queryParams,
             shopType,
-            pageSize: 20,
           }),
           startDate: convertDate(paymentDetailsRange?.start),
           endDate: convertDate(paymentDetailsRange?.end),
         },
-      }),
+      })
   );
 
   return (
