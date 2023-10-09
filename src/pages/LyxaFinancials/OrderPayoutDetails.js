@@ -31,6 +31,8 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
   const totalProfit = getTotalProfitForLyxa(currency, secondaryCurrency, paymentDetails, false);
 
+  console.log({ paymentDetails });
+
   /*
   Original order amount-discount by shop- buy 1 get 1 by shop-loyalty-
   discount by lyxa+discount by lyxa = order amount (x online and y cash)
@@ -100,6 +102,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
               />
               <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
               <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
+              <PriceItem title="Lyxa Pay" amount={cash?.wallet_cash || 0} amountSx={{ color: '#B5B5C3' }} showIfZero />
             </DetailsAccordion>
 
             {/* Online */}
@@ -186,6 +189,12 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
                     currency={currency}
                   />
                 }
+              />
+              <PriceItem
+                title="Lyxa Pay"
+                amount={online?.wallet_online || 0}
+                amountSx={{ color: '#B5B5C3' }}
+                showIfZero
               />
             </DetailsAccordion>
 

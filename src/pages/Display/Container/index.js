@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // thrid pary
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
@@ -34,7 +35,6 @@ const filtersInit = {
 
 export default function ContainerList({ containerType }) {
   const [filters, setFilters] = useQueryParams(filtersInit);
-  // const [currentTab, setCurrentTab] = useState(0);
 
   let itemsQueryKey = `list-container-${typeToTabIndexMap[Number(filters?.tab)]}`;
   let itemsQueryApi = Api.GET_ALL_LIST_CONTAINERS;
@@ -86,7 +86,7 @@ export default function ContainerList({ containerType }) {
           // endDate: filters.date.end,
           shopType: typeToTabIndexMap[Number(filters?.tab)],
         },
-      })
+      }),
   );
 
   const items =

@@ -279,7 +279,7 @@ export default function MarketingDashboard({ viewUserType }) {
         breadcrumbItems={breadCrumbItems}
         backButtonLabel="Back to Marketing"
         backTo={getBackToUrl(viewUserType)}
-        addButtonLabel="Manage Promotions"
+        addButtonLabel="Manage Promotion"
         onAdd={() => {
           if (viewUserType === 'shop' && userType === 'admin') return;
           setIsModalOpen(true);

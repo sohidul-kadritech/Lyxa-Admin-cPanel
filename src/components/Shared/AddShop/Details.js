@@ -58,6 +58,7 @@ export default function ShopDetails({ shop, setZones, zones, setShop, onChange, 
   const { adminType } = currentUser;
 
   const generateShopAddress = async (address = {}, placeId = '') => {
+    console.log('address', address);
     const { address_components, formatted_address } = address;
     const newAddress = { ...addressInit };
     let latlng;

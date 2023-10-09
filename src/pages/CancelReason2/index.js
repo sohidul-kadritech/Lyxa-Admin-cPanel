@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -34,6 +35,7 @@ const tabTracker = {
   1: 'butler',
   2: 'shopCancel',
   3: 'admin',
+  4: 'resolve',
 };
 
 // function AddMenuButton({ ...props }) {
@@ -82,7 +84,6 @@ function CancelReason() {
     () =>
       AXIOS.get(API_URL.ALL_ORDER_CANCEL_REASON, {
         params: queryParams,
-        // eslint-disable-next-line prettier/prettier
       }),
     {
       onSuccess: (data) => {
@@ -90,8 +91,7 @@ function CancelReason() {
           setCancelReasons(data?.data?.cancelReason || []);
         }
       },
-      // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   const cancelReasonAdd = useMutation((data) => AXIOS.post(API_URL.ADD_ORDER_CANCEL_REASON, data), {
@@ -189,17 +189,13 @@ function CancelReason() {
           value={Number(queryParams?.tab)}
           onChange={(event, newValue) => {
             setQueryParams((prev) => ({ ...prev, tab: newValue, type: tabTracker[newValue] }));
-            // setCurrentTab(newValue);
-            // setType(() => (newValue === 0 ? 'orderSupport' : newValue === 1 ? 'accountSupport' : 'faq'));
-            // setIsSideBarOpen(false);
-
-            // setType(tabTracker[newValue]);
           }}
         >
-          <Tab label="User"></Tab>
-          <Tab label="Butler"></Tab>
-          <Tab label="Shop"></Tab>
-          <Tab label="Admin"></Tab>
+          <Tab label="User" />
+          <Tab label="Butler" />
+          <Tab label="Shop" />
+          <Tab label="Admin" />
+          <Tab label="Resolve Chat Reason" />
         </Tabs>
       </Box>
 
@@ -222,37 +218,6 @@ function CancelReason() {
           }}
         />
       </Box>
-
-      {/* <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-        <DateRange range={range} setRange={setRange} />
-        <StyledFormField
-          intputType="select"
-          containerProps={{
-            sx: fieldContainerSx,
-          }}
-          inputProps={{
-            name: 'status',
-            placeholder: 'Status',
-            value: status,
-            items: statusTypeOptions,
-            size: 'sm2',
-            //   items: categories,
-            onChange: (e) => {
-              setStatus(e.target.value);
-            },
-          }}
-        />
-
-        <AddMenuButton
-          onClick={() => {
-            setOpen(() => {
-              setIsEdit(false);
-              return true;
-            });
-          }}
-        />
-      </Stack> */}
 
       <Box>
         <ReasonTable

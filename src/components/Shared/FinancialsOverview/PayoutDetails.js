@@ -26,7 +26,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
   const otherPayments = paymentDetails?.otherPayments;
   const deliveryFee = paymentDetails?.deliveryFee;
 
-  // console.log('shopConsole', deliveryFee);
+  console.log('shopConsole', { paymentDetails });
 
   const orderValue = {};
 
@@ -111,6 +111,8 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
               <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
 
               <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
+
+              <PriceItem title="Lyxa Pay" amount={cash?.wallet_cash || 0} amountSx={{ color: '#B5B5C3' }} showIfZero />
             </DetailsAccordion>
 
             {/* Online */}
@@ -197,6 +199,12 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
                     currency={currency}
                   />
                 }
+              />
+              <PriceItem
+                title="Lyxa Pay"
+                amount={online?.wallet_online || 0}
+                amountSx={{ color: '#B5B5C3' }}
+                showIfZero
               />
             </DetailsAccordion>
 
