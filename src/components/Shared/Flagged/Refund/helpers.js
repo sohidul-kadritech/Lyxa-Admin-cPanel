@@ -299,3 +299,18 @@ export const getInitialValue = (targetName) => {
 
   return initialValue[targetName] ? initialValue[targetName] : {};
 };
+
+export const getProductPrice = (product, deal) => {
+  if (deal === 'double_menu') {
+    return (product?.baseCurrency_productPrice - product?.baseCurrency_discount) * 2 || 0;
+  }
+
+  if (deal === 'rewards') {
+    return product?.finalReward?.baseCurrency_amount || 0;
+  }
+  if (deal === 'percentage') {
+    return product?.baseCurrency_productPrice - product?.baseCurrency_discount || 0;
+  }
+
+  return product?.baseCurrency_productPrice;
+};

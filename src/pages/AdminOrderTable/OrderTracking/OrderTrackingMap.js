@@ -12,6 +12,7 @@ import GroceryLocation from '../../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import RiderLocation from '../../../assets/icons/riderPin.png';
+import socketServices from '../../../common/socketService';
 import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
 import './gmap.css';
 import { getTitleForMarker } from './helpers';
@@ -170,8 +171,10 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       let latlng = new google.maps.LatLng(lat, lng);
 
       riderLocation.setPosition(latlng);
+      // this steps works for fit the map within one screen
       map.fitBounds(bounds);
       bounds.extend(riderLocation.getPosition());
+      // update location each of 100ms later for smooth transition
       if (i !== numDeltas) {
         i++;
         setTimeout(moveMarker, delay);
@@ -189,19 +192,19 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
     // listening current delivery location via socket
     if (order?._id && socket && order?.deliveryBoy) {
-      socket.emit('join_room', { room: order?._id, data: { access_token } });
-
-      socket?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
-        console.log('socket data', data);
+      // join socket room for tracking order
+      socketServices.emit('join_room', { room: order?._id, data: { access_token } });
+      // listen the updated deliveryBoy current location
+      socketServices?.on(`deliveryBoyCurrentLocationUpdate-${order?._id}`, (data) => {
         const coordinates = data?.location?.coordinates;
         const newPosition = new google.maps.LatLng(coordinates[1], coordinates[0]);
-
         console.log('socket order', order);
-
+        // make transition effect to current location to new location
         transition({
           lat: coordinates[1],
           lng: coordinates[0],
         });
+        // fit the map to the current location
         map.panTo({
           lat: coordinates[1],
           lng: coordinates[0],

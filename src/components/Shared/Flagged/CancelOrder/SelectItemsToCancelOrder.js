@@ -8,8 +8,10 @@ import React, { useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
 import StyledIconButton from '../../../Styled/StyledIconButton';
+import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import SelectableItem from '../Refund/SelectableItem';
 import StyledContainer from '../Refund/StyledContainer';
+import { getProductPrice } from '../Refund/helpers';
 
 export const getUpdatedEndorseLossValue = (data, totalSelectedAmount) => {
   const template = {
@@ -33,11 +35,11 @@ export const getUpdatedEndorseLossValue = (data, totalSelectedAmount) => {
 export const getSelectableItems = (order) => {
   let data = [];
   let k = 1;
-
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
-      const price =
-        item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * ((order?.adminPercentage || 0) / 100);
+      const deal = productDeal(item);
+      const productPrice = getProductPrice(item, deal);
+      const price = productPrice - productPrice * ((order?.adminPercentage || 0) / 100);
       const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
       const temp = { name: item?.productName, price, id: k, secondaryCurrency };
       data.push(temp);

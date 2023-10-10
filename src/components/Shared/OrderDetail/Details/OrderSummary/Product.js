@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { useGlobalContext } from '../../../../../context';
 import { calculateSecondaryCurrency } from '../../../../../pages/RiderProfile/Transactions/helpers';
 
-const productDeal = (product) => {
+export const productDeal = (product) => {
   if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
   if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
