@@ -42,7 +42,7 @@ function SearchBar({ queryParams, setQueryParams, searchPlaceHolder, onPaid, onD
         inputProps={{
           name: 'payoutStatus',
           size: 'sm',
-          placeholder: 'Sort by Payout Status',
+          placeholder: 'Filtered by Payout Status',
           value: queryParams?.payoutStatus,
           items: tabsOptions || [],
           onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),

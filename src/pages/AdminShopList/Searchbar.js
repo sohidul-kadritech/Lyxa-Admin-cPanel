@@ -103,7 +103,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
     // eslint-disable-next-line prettier/prettier
-    []
+    [],
   );
 
   const commonChangeHandler = (prop, value) => {
@@ -187,11 +187,11 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
 
       <StyledFormField
         intputType="select"
-        tooltip="Sort by Zone"
+        tooltip="Filter by Zone"
         inputProps={{
           name: 'zoneId',
           size: 'sm',
-          placeholder: 'Sort by Zone',
+          placeholder: 'Filter by Zone',
           value: queryParams.zoneId,
           items: zoneItems || [],
           getLabel: (option) => option?.zoneName,
@@ -203,11 +203,11 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
 
       <StyledFormField
         intputType="select"
-        tooltip="Sort by Brand"
+        tooltip="Filter by Brand"
         inputProps={{
           name: 'shopBrand',
           size: 'sm',
-          placeholder: 'Sort by Brand',
+          placeholder: 'Filter by Brand',
           value: queryParams?.shopBrand,
           items: shopBrands || [],
           getLabel: (option) => option?.brandName,

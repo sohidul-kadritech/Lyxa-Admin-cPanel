@@ -23,7 +23,10 @@ function TopView() {
 }
 
 function PayoutView({ currentPayout, setIsConfirm, onClose }) {
-  const { general } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
+  const { adminType } = currentUser;
+
   const { appSetting } = general;
 
   const [open, setOpen] = useState(false);
@@ -31,6 +34,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
   const [addRemoveCreditOpen, setAddRemoveCredit] = useState(false);
 
   const baseCurrency = appSetting?.baseCurrency?.symbol;
+
   const secondaryCurrency = appSetting?.secondaryCurrency?.code;
 
   const currencyForRider =
@@ -73,7 +77,7 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
    if the payout status is revoked then we will show add remove credit button
    otherwise we show Revoke payment
 */}
-        {currentPayout?.info?.payoutStatus !== 'paid' ? (
+        {currentPayout?.info?.payoutStatus !== 'paid' && adminType === 'admin' ? (
           <Stack direction="row" justifyContent="space-between" alignItems="center" mt={7.5}>
             <Button
               variant="text"
@@ -118,15 +122,6 @@ function PayoutView({ currentPayout, setIsConfirm, onClose }) {
           }}
         />
       </Modal>
-      {/* <Modal open={addRemoveCreditOpen}>
-        <PayoutAddRemoveCredit
-          payout={currentPayout?.info}
-          closeVeiw={onClose}
-          onClose={() => {
-            setAddRemoveCredit(false);
-          }}
-        />
-      </Modal> */}
     </Paper>
   );
 }
