@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ArrowDownward } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
@@ -8,13 +9,14 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { validateUser } from './helpers';
+import { credentialTypeOptions, validateUser } from './helpers';
 
 const getEditUserData = (editUser) => ({
   email: editUser?.email,
   name: editUser?.name,
   password: '',
   repeated_password: '',
+  credentialType: editUser?.credentialType,
   id: editUser?._id,
   isParentUser: editUser?.isParentUser,
 });
@@ -47,18 +49,18 @@ function EditUser({ onClose, editUser, userType, refetch }) {
           successMsg(data.message, 'error');
         }
       },
-    }
+    },
   );
 
   const onSubmit = () => {
-    const status = validateUser(user);
+    const status = validateUser(user, userType);
 
-    if (!status.status) {
+    if (!status?.status) {
       successMsg(status?.message);
       return;
     }
 
-    editUserMutation.mutate(user);
+    editUserMutation?.mutate(user);
   };
 
   const theme = useTheme();
@@ -92,9 +94,33 @@ function EditUser({ onClose, editUser, userType, refetch }) {
               readOnly: true,
               type: 'email',
               name: 'email',
-              value: user.email,
+              value: user?.email,
             }}
           />
+
+          {/* credential user type */}
+
+          {!user?.isParentUser && (
+            <StyledFormField
+              label="User Type"
+              intputType="select"
+              containerProps={{
+                sx: {
+                  padding: '14px 0px 10px 0',
+                },
+              }}
+              inputProps={{
+                type: 'text',
+                name: 'credentialType',
+                items: credentialTypeOptions,
+                onChange: userEditOnChangeHandler,
+                value: user?.credentialType,
+                inputProps: {
+                  autoComplete: 'off',
+                },
+              }}
+            />
+          )}
 
           {/* new password */}
           <StyledFormField
@@ -105,6 +131,7 @@ function EditUser({ onClose, editUser, userType, refetch }) {
               onChange: userEditOnChangeHandler,
             }}
           />
+
           {/* confirm password */}
           <StyledFormField
             label="Confirm new password"

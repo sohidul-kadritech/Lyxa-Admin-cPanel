@@ -34,7 +34,7 @@ export default function OngoingTickets() {
   const [ordersList, setOrdersList] = useState([]);
   const [accountsList, setAccountsList] = useState([]);
 
-  const newRequestquery = useQuery([Api.NEW_CHATS], () => AXIOS.get(Api.NEW_CHATS), {
+  const newRequestquery = useQuery([Api.NEW_CHATS, { currentTab }], () => AXIOS.get(Api.NEW_CHATS), {
     onSuccess: (data) => {
       setNewChatList(data?.data?.list);
       console.log('new chat', data?.data);
@@ -42,7 +42,7 @@ export default function OngoingTickets() {
   });
 
   const ordersQuery = useQuery(
-    [Api.ONGOING_CHATS, { chatType: 'order' }],
+    [Api.ONGOING_CHATS, { chatType: 'order', currentTab }],
     () =>
       AXIOS.get(Api.ONGOING_CHATS, {
         params: { chatType: 'order' },
@@ -56,7 +56,7 @@ export default function OngoingTickets() {
   );
 
   const accountsQuery = useQuery(
-    [Api.ONGOING_CHATS, { chatType: 'account' }],
+    [Api.ONGOING_CHATS, { chatType: 'account', currentTab }],
     () =>
       AXIOS.get(Api.ONGOING_CHATS, {
         params: { chatType: 'account' },

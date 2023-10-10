@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable default-param-last */
 import { Add } from '@mui/icons-material';
@@ -42,6 +43,7 @@ const userTypeToApiMap = {
   },
 };
 
+// user type shop || seller
 export default function Users({ userType }) {
   const { currentUser } = useGlobalContext();
   const [open, setOpen] = useState(null);
@@ -66,7 +68,7 @@ export default function Users({ userType }) {
           successMsg(data.message, 'error');
         }
       },
-    }
+    },
   );
 
   const deleteUserMutation = useMutation((data) => AXIOS.post(userTypeToApiMap[userType]?.delete, data), {
@@ -132,6 +134,7 @@ export default function Users({ userType }) {
           setUser(row);
           setIsConfirm(true);
         }}
+        showFor={userType}
       />
       <Drawer open={Boolean(open)} anchor="right">
         {open === 'add' && <AddUser onClose={() => setOpen(null)} userType={userType} refetch={refetch} />}

@@ -32,11 +32,14 @@ function Login(props) {
   const { admin, loading } = useSelector((state) => state.Login);
   const [type, setType] = useState('admin');
   const [isForgetPassword, setIsForgetPassword] = useState(false);
+
   const [forgetPassData, setForgetPassData] = useState({
     type: '',
     to_email: '',
   });
+
   const [isLoading, setIsloading] = useState(false);
+
   const [forgetStatus, setForgetStatus] = useState({
     status: '',
     msg: '',

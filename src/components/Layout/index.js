@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { Box, Modal } from '@mui/material';
@@ -12,6 +13,7 @@ import {
   customer_service_menu_items,
   sales_manager_menu_items,
   seller_menu_items,
+  shop_manager_menu_items,
   shop_menu_items,
 } from '../../common/sidebar_menu_items';
 import socketServices from '../../common/socketService';
@@ -27,13 +29,15 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import UrgentOrderRecieved from './UrgentOrderReceivedNotification';
 
-const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, prefix = '') => {
+const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, shopOrderManager, prefix = '') => {
   let routes = [];
   let menuItems = [];
 
   if (userType === 'shop') {
-    routes = shop_routes(prefix, shopDeliveryType);
-    menuItems = shop_menu_items(prefix, shopDeliveryType, shopType);
+    routes = shop_routes(prefix, shopDeliveryType, shopOrderManager);
+    menuItems = shopOrderManager
+      ? shop_manager_menu_items(prefix, shopDeliveryType, shopType)
+      : shop_menu_items(prefix, shopDeliveryType, shopType);
   }
 
   if (userType === 'seller') {
@@ -79,11 +83,10 @@ export default function Layout() {
         currentUser?.userType,
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
-        // eslint-disable-next-line prettier/prettier
         currentUser?.shop?.shopType,
+        currentUser?.shopOrderManager,
       ),
-    // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType],
+    [currentUser?.userType, currentUser?.shopOrderManager],
   );
 
   useEffect(() => {

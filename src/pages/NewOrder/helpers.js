@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable default-param-last */
@@ -206,10 +207,10 @@ export const getThreedotMenuOptions = (order, userType) => {
   const updateStatus = { label: 'Update Status', value: 'update_status' };
   const trackOrder = { label: 'Track Order', value: 'track_order' };
   const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
-  const cancelOrderNew = { label: 'Cancel Order Test', value: 'cancel_order_test' };
+  const cancelOrderNew = { label: 'Cancel Order', value: 'cancel_order_test' };
   const refundOrder = { label: 'Refund Order', value: 'refund_order' };
   const flagOrder = { label: 'Flag', value: 'flag' };
-  const flagOrderNew = { label: 'Flag Test', value: 'flag_test' };
+  const flagOrderNew = { label: 'Flag', value: 'flag_test' };
   const acceptUrgentOrder = { label: 'Accept Urgent Order', value: 'accept_urgent_order' };
 
   const makePushOptions = (items) => {
@@ -221,11 +222,11 @@ export const getThreedotMenuOptions = (order, userType) => {
   // console.log('order?.orderStatus', order?.orderStatus);
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
-    makePushOptions([updateStatus, trackOrder, cancelOrder, cancelOrderNew]);
+    makePushOptions([updateStatus, trackOrder, cancelOrderNew]);
   }
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'customerService') {
-    makePushOptions([updateStatus, trackOrder, cancelOrder, acceptUrgentOrder]);
+    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder]);
   }
 
   if (
@@ -234,12 +235,12 @@ export const getThreedotMenuOptions = (order, userType) => {
     !order?.isRefundedAfterDelivered &&
     !order?.isButler
   ) {
-    makePushOptions([refundOrder, flagOrderNew]);
+    makePushOptions([flagOrderNew]);
   }
 
-  if (userType === 'admin') {
-    options.push(flagOrder);
-  }
+  // if (userType === 'admin' && order?.orderStatus==="ongoing") {
+  //   options.push(flagOrderNew);
+  // }
 
   return options;
 };

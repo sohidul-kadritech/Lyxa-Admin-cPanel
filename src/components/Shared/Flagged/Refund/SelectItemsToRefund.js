@@ -250,6 +250,12 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       });
       return selected;
     });
+
+    const allItems = getSelectableItems(order, flaggData);
+    const findIndexFromOriginalList = allItems?.findIndex((selected) => selected?.id === item?.id);
+
+    if (findIndexFromOriginalList >= -1) item.price = allItems[findIndexFromOriginalList]?.price;
+
     setRefundItem((prev) => [...prev, item]);
   };
 

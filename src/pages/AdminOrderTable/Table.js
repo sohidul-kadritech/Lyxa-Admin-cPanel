@@ -108,7 +108,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -679,7 +679,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {
