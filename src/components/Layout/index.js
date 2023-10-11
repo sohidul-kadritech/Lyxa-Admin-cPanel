@@ -24,7 +24,7 @@ import { account_manager_routes } from '../../routes/account_manager_routes';
 import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customer_service_routes';
 import { seller_routes } from '../../routes/seller_routes';
-import { shop_routes } from '../../routes/shop_routes';
+import { shop_order_manager_routes, shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import UrgentOrderRecieved from './UrgentOrderReceivedNotification';
@@ -34,10 +34,15 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
   let menuItems = [];
 
   if (userType === 'shop') {
-    routes = shop_routes(prefix, shopDeliveryType, shopOrderManager);
-    menuItems = shopOrderManager
-      ? shop_manager_menu_items(prefix, shopDeliveryType, shopType)
-      : shop_menu_items(prefix, shopDeliveryType, shopType);
+    console.log(shopOrderManager, typeof shopOrderManager);
+    routes =
+      shopOrderManager && shopOrderManager !== 'null'
+        ? shop_order_manager_routes()
+        : shop_routes(prefix, shopDeliveryType);
+    menuItems =
+      shopOrderManager && shopOrderManager !== 'null'
+        ? shop_manager_menu_items(prefix, shopDeliveryType, shopType)
+        : shop_menu_items(prefix, shopDeliveryType, shopType);
   }
 
   if (userType === 'seller') {
@@ -76,6 +81,8 @@ export default function Layout() {
   const [order, setOrder] = useState({});
 
   const queryClient = useQueryClient();
+
+  console.log('currentUser', { currentUser });
 
   const { routes, menuItems } = useMemo(
     () =>

@@ -181,7 +181,6 @@ export const fiterOrders = (orders = [], filter) => {
 };
 
 export const getOrderProfit = (order, adminType = 'shop') => {
-  console.log('baseCurrency_shopEarnings', order);
   if (adminType === 'shop') {
     const shopVat = order?.vatAmount?.baseCurrency_vatForShop || 0;
     const shopEarning = order?.baseCurrency_shopEarnings;

@@ -14,7 +14,7 @@ import ShopFinancials from '../pages/ShopFinancials';
 import ShopProfile from '../pages/ShopProfile';
 import Users from '../pages/Users2';
 
-export const shop_routes = (prefix = '', shopDeliveryType, shopOrderManager) => {
+export const shop_routes = (prefix = '', shopDeliveryType) => {
   const routes = [
     { path: `${prefix}/`, component: ShopDashboard },
     { path: `${prefix}/app-wallet/shop-transactions`, component: SingleShopTransactions },
@@ -39,9 +39,15 @@ export const shop_routes = (prefix = '', shopDeliveryType, shopOrderManager) => 
     routes.unshift({ path: `${prefix}/riders/:riderId`, component: RiderProfile });
   }
 
-  if (shopOrderManager) {
-    return routes?.filter((route) => route?.path === `${prefix}/menu` || route?.path === `${prefix}/new-orders`);
-  }
+  return routes;
+};
+
+export const shop_order_manager_routes = (prefix = '') => {
+  const routes = [
+    { path: `${prefix}/menu`, component: MenuPage },
+    { path: `${prefix}/new-orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
+    { path: `${prefix}/*`, component: NotFoundPage },
+  ];
 
   return routes;
 };

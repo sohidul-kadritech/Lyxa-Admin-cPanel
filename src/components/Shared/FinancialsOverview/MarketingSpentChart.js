@@ -43,8 +43,6 @@ const generateData = (data, marketingSpentType = '') => {
   const featureAmount = [];
   const date = [];
 
-  console.log('marketing data', data);
-
   data?.forEach((node) => {
     const dprop = typeNameMap[marketingSpentType]?.discount;
     const pprop = typeNameMap[marketingSpentType]?.points;
@@ -85,8 +83,6 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
     () => generateData(marketingSpentQuery?.data?.data?.info, marketingSpentType),
     [marketingSpentType, marketingSpentQuery?.data],
   );
-
-  console.log('chartdata', marketingSpentQuery?.data);
 
   const lineChartData = {
     labels: chartdata.date,

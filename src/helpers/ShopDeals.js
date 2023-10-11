@@ -4,7 +4,6 @@ export class ShopDeals {
   }
 
   get_shop_deals(shop) {
-    console.log('shop', shop);
     const deals = {
       free_delivery: false,
       free_deliveryCreator: '',

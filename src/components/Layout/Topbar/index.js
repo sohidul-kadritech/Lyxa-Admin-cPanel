@@ -10,7 +10,7 @@ import AccountMenu from './AccountMenu';
 import Notification from './Notification';
 import Tabs from './Tabs';
 
-const getConsoleName = (userType, adminType) => {
+const getConsoleName = (userType, adminType, shopOrderManager) => {
   if (userType === 'admin' && adminType === 'admin') {
     return 'Admin Console';
   }
@@ -23,6 +23,10 @@ const getConsoleName = (userType, adminType) => {
   }
   if (userType === 'admin' && adminType === 'sales') {
     return 'Sales Manager';
+  }
+  console.log('shopManager', { shopOrderManager });
+  if (userType === 'shop' && shopOrderManager && shopOrderManager !== 'null') {
+    return 'Shop Order Manager';
   }
 
   if (userType === 'shop') {
@@ -80,7 +84,7 @@ export default function Topbar({ setSidebar, sidebar }) {
         <Stack direction="row" alignItems="center" gap={2}>
           <Logo />
           <Typography variant="inherit" fontSize={22} lineHeight="26px" fontWeight={500}>
-            {getConsoleName(currentUser.userType, currentUser.adminType)}
+            {getConsoleName(currentUser?.userType, currentUser?.adminType, currentUser?.shopOrderManager)}
           </Typography>
         </Stack>
         <Box
