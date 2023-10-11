@@ -41,7 +41,14 @@ const getBreadCrumbItems = (searchUrl) => {
 
 // used as whole page or just table
 
-function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId }) {
+function ShopsFinancialsSpecificSellers({
+  viewUserType = 'admin',
+  customSellerId,
+  show = {
+    profitBreakdown: true,
+    payouts: true,
+  },
+}) {
   const [range, setRange] = useState({ ...dateRangeInit });
   const [searchKey, setSearchKey] = useState('');
   const { search } = useLocation();
@@ -113,8 +120,8 @@ function ShopsFinancialsSpecificSellers({ viewUserType = 'admin', customSellerId
 
       <Box marginBottom={7.5}>
         <Tabs value={currentTab}>
-          <Tab onClick={() => setCurrentTab(0)} label="Profit Breakdown" />
-          <Tab onClick={() => setCurrentTab(1)} label="Payouts" />
+          {show?.payouts && <Tab onClick={() => setCurrentTab(0)} label="Profit Breakdown" />}
+          {show?.profitBreakdown && <Tab onClick={() => setCurrentTab(1)} label="Payouts" />}
         </Tabs>
       </Box>
 

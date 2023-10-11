@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // thrid party
 import { Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -26,7 +27,7 @@ export default function OrdersByHour() {
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
         params: { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id, timeZone: utcDiff },
-      })
+      }),
   );
 
   console.log('orders-by-hours', ordersGraph?.data?.data?.hourlyOrders);
