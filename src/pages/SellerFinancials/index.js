@@ -23,7 +23,7 @@ export default function SellerFinancials() {
         }}
       >
         <Tab label="Overview" />
-        {currentUser?.userType === 'admin' && <Tab label="Invoices" />}
+        {currentUser?.userType === 'admin' && <Tab label="Payouts" />}
         <Tab label="Shops Transactions" />
       </Tabs>
       <TabPanel

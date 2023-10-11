@@ -21,17 +21,23 @@ import UrgentOrderTable from './UrgentOrders';
 
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
+
   const { admin } = currentUser;
+
   const location = useLocation();
 
   const [currentTab, setCurrentTab] = useState(location?.search === '?urgent-order' ? 2 : 0);
+
   const [, setRender] = useState(false);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [selectedChat, setSelectedChat] = useState({});
 
   const [newChatList, setNewChatList] = useState([]);
+
   const [ordersList, setOrdersList] = useState([]);
+
   const [accountsList, setAccountsList] = useState([]);
 
   const newRequestquery = useQuery([Api.NEW_CHATS, { currentTab }], () => AXIOS.get(Api.NEW_CHATS), {
@@ -49,6 +55,7 @@ export default function OngoingTickets() {
       }),
     {
       onSuccess: (data) => {
+        console.log('orderQuery===>', data?.data?.list);
         setOrdersList(data?.data?.list);
         console.log(data);
       },
@@ -63,6 +70,7 @@ export default function OngoingTickets() {
       }),
     {
       onSuccess: (data) => {
+        console.log('accountQuery===>', data?.data?.list);
         setAccountsList(data?.data?.list);
         console.log(data);
       },
@@ -125,30 +133,6 @@ export default function OngoingTickets() {
 
         return prev?.filter((chat) => chat?._id !== data?._id);
       });
-
-      // if (data?.chatType === 'order') {
-      //   setOrdersList((prev) => {
-      //     const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
-
-      //     if (!findSelectedChat?.length) {
-      //       setSelectedChat({});
-      //       setSidebarOpen(false);
-      //     }
-
-      //     return prev?.filter((chat) => chat?._id !== data?._id);
-      //   });
-      // } else {
-      //   setAccountsList((prev) => {
-      //     const findSelectedChat = prev?.filter((chat) => chat?._id === selectedChat?._id);
-
-      //     if (!findSelectedChat?.length) {
-      //       setSelectedChat({});
-      //       setSidebarOpen(false);
-      //     }
-
-      //     return prev?.filter((chat) => chat?._id !== data?._id);
-      //   });
-      // }
     });
 
     return () => {
@@ -158,8 +142,11 @@ export default function OngoingTickets() {
   }, []);
 
   const onViewDetails = (chat) => {
-    console.log('chat', chat);
-    setSelectedChat(chat);
+    setSelectedChat((prev) => {
+      console.log({ chat, prev });
+
+      return chat;
+    });
     setSidebarOpen(true);
   };
 
