@@ -32,7 +32,12 @@ export default function VatInfo() {
     dispatch(getAllVatInfo(reqBody, userType, admin?._id));
   };
 
-  const vatData = [vatSummary?.totalUnsettleVat, vatSummary?.totalVat - vatSummary?.totalUnsettleVat];
+  const VatInfo = {
+    unpaid: Number((vatSummary?.totalUnsettleVat || 0).toFixed(2)),
+    paid: Number((vatSummary?.totalVat - vatSummary?.totalUnsettleVat || 0).toFixed(2)),
+  };
+
+  const vatData = [VatInfo?.paid, VatInfo?.unpaid];
 
   useEffect(() => {
     callApi();

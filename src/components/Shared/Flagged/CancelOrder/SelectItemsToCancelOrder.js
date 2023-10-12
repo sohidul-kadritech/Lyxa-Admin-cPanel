@@ -50,8 +50,13 @@ export const getSelectableItems = (order) => {
   const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
 
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
-      ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
+    order?.summary?.baseCurrency_riderFeeWithFreeDelivery > 0 && order?.orderFor === 'global' && order?.deliveryBoy
+      ? {
+          name: 'Delivery Fee',
+          price: order?.summary?.baseCurrency_riderFeeWithFreeDelivery,
+          id: 'delivery_fee',
+          secondaryCurrency,
+        }
       : undefined;
 
   if (deliveryFee) {
@@ -173,7 +178,7 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
                 Total
               </Typography>
               <Typography variant="body2">
-                {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0)}
+                {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0).toFixed(2)}
               </Typography>
             </Stack>
           </Stack>
