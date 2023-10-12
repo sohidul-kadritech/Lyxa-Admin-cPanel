@@ -19,7 +19,7 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
     // center points
     const map = new google.maps.Map(mapRef.current, {
       center: { lat: dropoff?.latitude, lng: dropoff?.longitude },
-      zoom: 15,
+      zoom: 13,
       disableDefaultUI: true,
     });
 
@@ -39,22 +39,37 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
       draggable: true,
     });
 
-    // userLocationMarker.current.addListener('dragstart', () => {
-    //   // Handle drag start event
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+    }
 
-    //   const markerPosition = userLocationMarker.current.getPosition();
-    //   const latitude = markerPosition.lat();
-    //   const longitude = markerPosition.lng();
-    //   console.log('drag start', { latitude, longitude });
-    // });
+    // Function to smoothly pan the map to a new location with easing
+    function smoothPanTo(map, finalPosition, duration) {
+      const initialPosition = map.getCenter();
+      const startTime = Date.now();
 
-    // userLocationMarker.current.addListener('drag', () => {
-    //   // Handle drag event (e.g., update the position on the sidebar)
-    //   const markerPosition = userLocationMarker.current.getPosition();
-    //   const latitude = markerPosition.lat();
-    //   const longitude = markerPosition.lng();
-    //   console.log('dragging', { latitude, longitude });
-    // });
+      function animateStep() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        const percentage = Math.min(1, elapsedTime / duration);
+        const easedPercentage = easeInOutCubic(percentage);
+
+        const newLat = initialPosition.lat() + (finalPosition.lat() - initialPosition.lat()) * easedPercentage;
+        const newLng = initialPosition.lng() + (finalPosition.lng() - initialPosition.lng()) * easedPercentage;
+
+        const newPosition = new google.maps.LatLng(newLat, newLng);
+        map.panTo(newPosition);
+        map.setZoom(13);
+
+        if (percentage < 1) {
+          requestAnimationFrame(animateStep);
+        }
+      }
+
+      requestAnimationFrame(animateStep);
+    }
+
+    // drag||dragend||dragstart
 
     userLocationMarker.current.addListener('dragend', () => {
       // Handle drag end event (e.g., update the new position in your application)
@@ -68,8 +83,14 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
     // intializing boundary
     const bounds = new google.maps.LatLngBounds();
 
-    bounds.extend(userLocationMarker.current.getPosition());
-    map.fitBounds(bounds);
+    // bounds.extend(userLocationMarker.current.getPosition());
+    // map.fitBounds(bounds);
+    // map.panTo(userLocationMarker.current.getPosition());
+
+    // map.panTo(userLocationMarker.current.getPosition());
+    setTimeout(() => {
+      smoothPanTo(map, userLocationMarker.current.getPosition(), 300);
+    }, 100);
 
     // initializing control panel
     const control = floatingPanel.current;

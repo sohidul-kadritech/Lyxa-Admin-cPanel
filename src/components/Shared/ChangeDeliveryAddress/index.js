@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../helpers/successMsg';
@@ -95,33 +95,69 @@ function ChangeDeliveryAddress({ order, onClose }) {
   };
 
   return (
-    <Box
+    <Grid
+      container
+      width="100%"
+      height="100%"
       sx={{
-        padding: '15px 20px 20px',
-        minWidth: 'max(50vw, 600px)',
+        width: 'min(90vw, 1440px)',
+        height: 'min(90vh, 750px)',
         background: '#fff',
         position: 'relative',
         borderRadius: '8px',
-        minHeight: 'min(90vh, 850px)',
-        maxHeight: 'min(90vh, 850px)',
+        padding: '12px',
         overflow: 'auto',
       }}
+      spacing={4}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
-        <Typography fontSize="18px" variant="h4">
-          Change Delivery Address
-        </Typography>
-        <CloseButton onClick={onClose} size="sm" />
-      </Stack>
-      <Stack>
-        <Stack sx={{ height: 'min(40vh,350px)' }}>
-          <Map
-            dropoff={order?.dropOffLocation}
-            deliveryAddress={deliveryAddress}
-            getSelectedLatLng={getSelectedLatLng}
-          />
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          '&.MuiGrid-item': {
+            paddingLeft: '0px !important',
+            paddingTop: '0px !important',
+          },
+        }}
+      >
+        {/* map */}
+        <Stack sx={{ height: { xs: '350px', md: '100%' } }}>
+          <Box flex={1}>
+            <Map
+              dropoff={order?.dropOffLocation}
+              deliveryAddress={deliveryAddress}
+              getSelectedLatLng={getSelectedLatLng}
+            />
+          </Box>
         </Stack>
-        <Stack>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          '&.MuiGrid-item': {
+            paddingRight: '0px !important',
+            paddingTop: '0px !important',
+          },
+          '@media (max-width: 900px)': {
+            '&.MuiGrid-item': {
+              /* Adjust styles for screens smaller than or equal to 600px */
+              paddingLeft: '0px !important',
+              paddingTop: '5px !important',
+            },
+          },
+        }}
+      >
+        {/* input feilds */}
+        <Stack width="100%">
+          <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
+            <Typography fontSize="18px" variant="h4">
+              Change Delivery Address
+            </Typography>
+            <CloseButton onClick={onClose} size="medium" />
+          </Stack>
           <StyledSearchAddress
             deliveryAddress={deliveryAddress}
             setDeliveryAddress={setDeliveryAddress}
@@ -176,7 +212,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
 
           <StyledFormField
             intputType="text"
-            label="Address Labe *"
+            label="Address Label *"
             inputProps={{
               name: 'addressLabel',
               value: deliveryAddress?.deliveryAddress?.addressLabel,
@@ -195,8 +231,8 @@ function ChangeDeliveryAddress({ order, onClose }) {
             </Button>
           </Stack>
         </Stack>
-      </Stack>
-    </Box>
+      </Grid>
+    </Grid>
   );
 }
 
