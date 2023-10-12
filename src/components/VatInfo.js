@@ -37,6 +37,7 @@ export default function VatInfo() {
     paid: Number((vatSummary?.totalVat - vatSummary?.totalUnsettleVat || 0).toFixed(2)),
   };
 
+  // vat data
   const vatData = [VatInfo?.paid, VatInfo?.unpaid];
 
   useEffect(() => {
