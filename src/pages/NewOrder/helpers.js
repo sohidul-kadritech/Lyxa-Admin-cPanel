@@ -211,6 +211,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   const flagOrder = { label: 'Flag', value: 'flag' };
   const flagOrderNew = { label: 'Flag', value: 'flag_test' };
   const acceptUrgentOrder = { label: 'Accept Urgent Order', value: 'accept_urgent_order' };
+  const adderssChange = { label: 'Change Address', value: 'change_address' };
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
@@ -221,11 +222,11 @@ export const getThreedotMenuOptions = (order, userType) => {
   // console.log('order?.orderStatus', order?.orderStatus);
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
-    makePushOptions([updateStatus, trackOrder, cancelOrderNew]);
+    makePushOptions([updateStatus, trackOrder, cancelOrderNew, adderssChange]);
   }
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'customerService') {
-    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder]);
+    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder, adderssChange]);
   }
 
   if (

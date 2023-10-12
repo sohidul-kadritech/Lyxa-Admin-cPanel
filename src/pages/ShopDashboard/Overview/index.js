@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
 import MarketingSpentChart from '../../../components/Shared/FinancialsOverview/MarketingSpentChart';
@@ -30,7 +31,7 @@ export default function Overview() {
           generateGraphData(
             data?.data?.info || [],
             (item) => item.order,
-            (item) => moment(item?.date).format('MMMM DD')
+            (item) => moment(item?.date).format('MMMM DD'),
           )
         }
       />
@@ -40,7 +41,7 @@ export default function Overview() {
       <MarketingSpentChart viewUserType="shop" />
       <ItemRanking xs={12} sm={12} md={12} lg={6} />
       <CommonAreaChart
-        title="Orders with issues"
+        title="Orders with Issues"
         api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
         params={{
           id: shop?._id,
@@ -50,7 +51,7 @@ export default function Overview() {
           generateGraphData(
             data?.data?.info || [],
             (item) => item.ordersIssue,
-            (item) => moment(item?.date).format('MMMM DD')
+            (item) => moment(item?.date).format('MMMM DD'),
           )
         }
         gridProps={{ xs: 12, lg: 6 }}

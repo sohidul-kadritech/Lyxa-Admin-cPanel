@@ -56,7 +56,7 @@ export default function ProfitChart({ viewUserType = 'shop' }) {
       setDateRange={setQueryParams}
       startDateKey="startDate"
       endDateKey="endDate"
-      title="Profit details"
+      title="Profit Details"
       sm={12}
       xl={6}
     >

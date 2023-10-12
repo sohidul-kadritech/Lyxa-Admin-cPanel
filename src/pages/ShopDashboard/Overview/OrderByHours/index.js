@@ -12,13 +12,13 @@ import AXIOS from '../../../../network/axios';
 import OrderByHoursChart from './Chart';
 
 const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
-const utcDiff = new Date().getTimezoneOffset() / 60;
+let utcDiff = new Date().getTimezoneOffset() / 60;
+utcDiff = utcDiff < 0 ? Math.abs(utcDiff) : utcDiff;
 
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
-
   const ordersGraph = useQuery(
     [
       Api.SHOP_DASHBOARD_ORDER_BY_HOURS,
@@ -30,6 +30,7 @@ export default function OrdersByHour() {
       }),
   );
 
+  console.log('time zone', { timeOffset: new Date().getTimezoneOffset(), utcDiff });
   console.log('orders-by-hours', ordersGraph?.data?.data?.hourlyOrders);
 
   return (

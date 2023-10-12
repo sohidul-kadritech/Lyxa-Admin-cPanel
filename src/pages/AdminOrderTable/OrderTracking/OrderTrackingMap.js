@@ -4,7 +4,6 @@
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import ButlerLocation from '../../../assets/icons/butler-location.png';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
@@ -35,8 +34,6 @@ let deltaLat;
 let deltaLng;
 
 export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, orderType = '' }) {
-  const { socket } = useSelector((state) => state.socketReducer);
-
   const { access_token } = getCookiesAsObject();
 
   const [riderLoc, setRiderLoc] = useState({});
@@ -172,8 +169,8 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
       riderLocation.setPosition(latlng);
       // this steps works for fit the map within one screen
-      map.fitBounds(bounds);
       bounds.extend(riderLocation.getPosition());
+      map.fitBounds(bounds);
       // update location each of 100ms later for smooth transition
       if (i !== numDeltas) {
         i++;
@@ -191,7 +188,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
     }
 
     // listening current delivery location via socket
-    if (order?._id && socket && order?.deliveryBoy) {
+    if (order?._id && socketServices && order?.deliveryBoy) {
       // join socket room for tracking order
       socketServices.emit('join_room', { room: order?._id, data: { access_token } });
       // listen the updated deliveryBoy current location
@@ -217,7 +214,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
     return () => {
       isMounted = false;
-      socket?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
+      socketServices?.removeListener(`deliveryBoyCurrentLocationUpdate-${order?._id}`);
     };
   }, []);
 
