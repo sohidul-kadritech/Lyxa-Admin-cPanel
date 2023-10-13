@@ -91,7 +91,7 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                   letterSpacing: '0.05em',
                 }}
               >
-                {title}
+                {name}
               </Typography>
               <Typography
                 className="text-dots"
@@ -103,7 +103,7 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                   lineHeight: 1,
                 }}
               >
-                {name}
+                {title}
               </Typography>
             </Box>
           </Stack>

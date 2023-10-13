@@ -222,11 +222,13 @@ export const getThreedotMenuOptions = (order, userType) => {
   // console.log('order?.orderStatus', order?.orderStatus);
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
-    makePushOptions([updateStatus, trackOrder, cancelOrderNew, adderssChange]);
+    makePushOptions([updateStatus, trackOrder, cancelOrderNew]);
+
+    if (!order?.isButler) makePushOptions([adderssChange]);
   }
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'customerService') {
-    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder, adderssChange]);
+    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder]);
   }
 
   if (

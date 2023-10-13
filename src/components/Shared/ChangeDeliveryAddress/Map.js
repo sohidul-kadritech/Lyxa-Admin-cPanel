@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { Box } from '@mui/material';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
+import { addCurrentLocationControl } from './helpers';
 
 function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
   const { google } = window;
@@ -37,6 +38,7 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
       icon: userIcon,
       map,
       draggable: true,
+      // animation: google.maps.Animation.DROP,
     });
 
     function easeInOutCubic(t) {
@@ -70,6 +72,9 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
     }
 
     // drag||dragend||dragstart
+    userLocationMarker.current.addListener('dragstart', () => {
+      userLocationMarker.current.setAnimation(google.maps.Animation.BOUNCE);
+    });
 
     userLocationMarker.current.addListener('dragend', () => {
       // Handle drag end event (e.g., update the new position in your application)
@@ -78,6 +83,7 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
       const longitude = markerPosition.lng();
 
       getSelectedLatLng({ latitude, longitude });
+      userLocationMarker.current.setAnimation(null);
     });
 
     // intializing boundary
@@ -91,6 +97,8 @@ function Map({ dropoff, deliveryAddress, getSelectedLatLng }) {
     setTimeout(() => {
       smoothPanTo(map, userLocationMarker.current.getPosition(), 300);
     }, 100);
+
+    addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng);
 
     // initializing control panel
     const control = floatingPanel.current;

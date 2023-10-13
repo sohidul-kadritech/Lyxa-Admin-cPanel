@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
@@ -23,22 +24,22 @@ const initialDeliveryAddress = (order) => {
   const templateOfDeliveryAddress = {
     orderId: order?._id,
     deliveryAddress: {
-      address: order?.deliveryAddress?.address || '',
-      nickname: order?.deliveryAddress?.nickname || '',
-      apartment: order?.deliveryAddress?.apartment || '',
-      latitude: order?.deliveryAddress?.latitude || '',
-      longitude: order?.deliveryAddress?.longitude || '',
-      country: order?.deliveryAddress?.country || '',
-      state: order?.deliveryAddress?.state || '',
-      city: order?.deliveryAddress?.city || '',
-      pin: order?.deliveryAddress?.pin || '',
-      note: order?.deliveryAddress?.note || '',
-      tags: order?.deliveryAddress?.tags || '',
-      placeId: order?.deliveryAddress?.placeId || '',
-      buildingName: order?.deliveryAddress?.buildingName || '',
-      deliveryOptions: order?.deliveryAddress?.deliveryOptions || '',
-      addressLabel: order?.deliveryAddress?.addressLabel || '',
-      instructions: order?.deliveryAddress?.instructions || '',
+      address: order?.dropOffLocation?.address || '',
+      nickname: order?.dropOffLocation?.nickname || '',
+      apartment: order?.dropOffLocation?.apartment || '',
+      latitude: order?.dropOffLocation?.latitude || '',
+      longitude: order?.dropOffLocation?.longitude || '',
+      country: order?.dropOffLocation?.country || '',
+      state: order?.dropOffLocation?.state || '',
+      city: order?.dropOffLocation?.city || '',
+      pin: order?.dropOffLocation?.pin || '',
+      note: order?.dropOffLocation?.note || '',
+      tags: order?.dropOffLocation?.tags || '',
+      placeId: order?.dropOffLocation?.placeId || '',
+      buildingName: order?.dropOffLocation?.buildingName || '',
+      deliveryOptions: order?.dropOffLocation?.deliveryOptions || '',
+      addressLabel: order?.dropOffLocation?.addressLabel || '',
+      instructions: order?.dropOffLocation?.instructions || '',
     },
   };
   return templateOfDeliveryAddress;
@@ -75,13 +76,13 @@ function ChangeDeliveryAddress({ order, onClose }) {
   const updateDeliveryAddressQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_ORDER_DELIVERY_ADDRESS, data), {
     onSuccess: (data) => {
       if (data?.status) {
-        successMsg(data?.message);
+        successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         onClose();
       } else {
-        successMsg(data?.message);
+        successMsg(data?.message, 'warn');
       }
     },
   });
@@ -143,7 +144,6 @@ function ChangeDeliveryAddress({ order, onClose }) {
           },
           '@media (max-width: 900px)': {
             '&.MuiGrid-item': {
-              /* Adjust styles for screens smaller than or equal to 600px */
               paddingLeft: '0px !important',
               paddingTop: '5px !important',
             },
@@ -182,7 +182,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
             }}
           />
 
-          <Stack>
+          <Stack py={3}>
             <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px', pb: '8px' }} variant="h4">
               Delivery option
             </Typography>

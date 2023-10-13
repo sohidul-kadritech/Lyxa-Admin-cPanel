@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Avatar, Box, Drawer, Stack, Tab, Tabs, Tooltip, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
@@ -121,13 +122,15 @@ function SellersProfile({
   });
 
   const [currentTab, setCurrentTab] = useState(0);
+
   const [tabName, setTabName] = useState('Shop List');
 
   const [selectedShop, setSelectedShop] = useState({});
+
   const [open, setOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
+
   const queryClient = useQueryClient();
-  // eslint-disable-next-line no-unused-vars
+
   const [selectedMenu, setSelectedMenu] = useState('');
 
   const accessAsUser = useAccessAsUser();
@@ -157,7 +160,6 @@ function SellersProfile({
     }
     if (menu === 'go_to_financials') {
       history.push(
-        // eslint-disable-next-line prettier/prettier
         `/app-wallet/seller/shops-transactions?sellerId=${currentSeller._id}&companyName=${currentSeller.company_name}`,
       );
     }
@@ -185,7 +187,6 @@ function SellersProfile({
           setQueryParams((prev) => ({ ...prev, totalPage }));
         }
       },
-      // eslint-disable-next-line prettier/prettier
     },
   );
 
@@ -212,53 +213,56 @@ function SellersProfile({
               onChange={(event, newValue) => {
                 setTabName(sellerShopTabType[newValue]);
                 setCurrentTab(newValue);
+                setQueryParams((prev) => ({ ...prev, searchKey: '' }));
               }}
             >
               <Tab label="Shop List"></Tab>
               <Tab label="Documents"></Tab>
             </Tabs>
           </Box>
-          <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
-            <StyledSearchBar
-              sx={{ flex: '1' }}
-              placeholder="Search"
-              onChange={debounce(
-                (e) => {
-                  setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
-                },
-                // eslint-disable-next-line prettier/prettier
-                300,
-              )}
-            />
-            <StyledFormField
-              intputType="select"
-              containerProps={{
-                sx: { padding: '0px 0px' },
-              }}
-              inputProps={{
-                name: 'sortBy',
-                placeholder: 'Sort',
-                value: queryParams.sortBy,
-                items: sortOptions,
-                size: 'sm2',
-                onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
-              }}
-            />
-            <StyledFormField
-              intputType="select"
-              containerProps={{
-                sx: { padding: '0px 0px' },
-              }}
-              inputProps={{
-                name: 'shopStatus',
-                placeholder: 'Status',
-                value: queryParams.shopStatus,
-                items: statusTypeOptions,
-                size: 'sm2',
-                onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
-              }}
-            />
-          </Stack>
+          {currentTab !== 1 && (
+            <Stack direction="row" justifyContent="start" gap="17px" marginBottom="30px">
+              <StyledSearchBar
+                sx={{ flex: '1' }}
+                placeholder="Search"
+                onChange={debounce(
+                  (e) => {
+                    setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }));
+                  },
+                  // eslint-disable-next-line prettier/prettier
+                  300,
+                )}
+              />
+              <StyledFormField
+                intputType="select"
+                containerProps={{
+                  sx: { padding: '0px 0px' },
+                }}
+                inputProps={{
+                  name: 'sortBy',
+                  placeholder: 'Sort',
+                  value: queryParams.sortBy,
+                  items: sortOptions,
+                  size: 'sm2',
+                  onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
+                }}
+              />
+              <StyledFormField
+                intputType="select"
+                containerProps={{
+                  sx: { padding: '0px 0px' },
+                }}
+                inputProps={{
+                  name: 'shopStatus',
+                  placeholder: 'Status',
+                  value: queryParams.shopStatus,
+                  items: statusTypeOptions,
+                  size: 'sm2',
+                  onChange: (e) => setQueryParams((prev) => ({ ...prev, [e.target.name]: e.target.value })),
+                }}
+              />
+            </Stack>
+          )}
           <ShopList
             adminType={admin?.adminType}
             setSelectedShop={setSelectedShop}
@@ -280,13 +284,15 @@ function SellersProfile({
                 : generateDataForSellerDocuments(currentSeller) || []
             }
           />
-          <TablePagination
-            totalPage={queryParams?.totalPage}
-            currentPage={queryParams?.page}
-            lisener={(value) => {
-              setQueryParams((prev) => ({ ...prev, page: value }));
-            }}
-          />
+          {currentTab !== 1 && (
+            <TablePagination
+              totalPage={queryParams?.totalPage}
+              currentPage={queryParams?.page}
+              lisener={(value) => {
+                setQueryParams((prev) => ({ ...prev, page: value }));
+              }}
+            />
+          )}
         </Stack>
       ) : (
         <Stack alignContent="center" justifyContent="center">
