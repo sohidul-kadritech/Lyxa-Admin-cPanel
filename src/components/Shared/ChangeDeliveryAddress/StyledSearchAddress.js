@@ -5,7 +5,12 @@ import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 import StyledInput from '../../Styled/StyledInput';
 
-function StyledSearchAddress({ deliveryAddress = {}, setDeliveryAddress, onChangeAddressHandler }) {
+function StyledSearchAddress({
+  deliveryAddress = {},
+  setDeliveryAddress,
+  onChangeAddressHandler,
+  getZoneServiceQuery,
+}) {
   const theme = useTheme();
 
   const generateShopAddress = async (address = {}) => {
@@ -16,6 +21,8 @@ function StyledSearchAddress({ deliveryAddress = {}, setDeliveryAddress, onChang
     } catch (error) {
       console.log(error);
     }
+
+    getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
     // newAddress.placeId = placeId;
     setDeliveryAddress((prev) => ({
       ...prev,

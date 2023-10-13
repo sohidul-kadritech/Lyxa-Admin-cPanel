@@ -3,6 +3,7 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import socketServices from '../../../common/socketService';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -48,7 +49,49 @@ const initialDeliveryAddress = (order) => {
 function ChangeDeliveryAddress({ order, onClose }) {
   const [deliveryAddress, setDeliveryAddress] = useState(initialDeliveryAddress(order));
 
+  const [disableButton, setDisableButton] = useState(false);
+
   const queryClient = useQueryClient();
+
+  // get zone service availabilty in selected location
+  const getZoneServiceQuery = useMutation(
+    ({ latitude, longitude }) =>
+      AXIOS.get(API_URL.GET_ZONE_SERVICE_AVAILABILITY, {
+        params: {
+          longitude,
+          latitude,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          setDisableButton(data?.data?.isZoneBusy ? true : !data?.data?.isUserInZone);
+        } else {
+          successMsg(data?.message, 'warn');
+          setDisableButton(false);
+        }
+      },
+    },
+  );
+
+  // udpate delivery boy query
+  const updateDeliveryAddressQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_ORDER_DELIVERY_ADDRESS, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg(data?.message, 'success');
+        socketServices?.emit('updateOrder', {
+          orderId: order?._id,
+        });
+        queryClient.invalidateQueries(API_URL.ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+
+        onClose();
+      } else {
+        successMsg(data?.message, 'warn');
+      }
+    },
+  });
 
   const getSelectedLatLng = async ({ latitude, longitude }) => {
     const { data } = await getLocationFromLatLng(latitude, longitude);
@@ -57,6 +100,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
       ...prev,
       deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
     }));
+    getZoneServiceQuery.mutate({ latitude, longitude });
   };
 
   const onChangeAddressHandler = (address) => {
@@ -72,20 +116,6 @@ function ChangeDeliveryAddress({ order, onClose }) {
       deliveryAddress: { ...prev?.deliveryAddress, [e.target.name]: e.target.value },
     }));
   };
-
-  const updateDeliveryAddressQuery = useMutation((data) => AXIOS.post(API_URL.UPDATE_ORDER_DELIVERY_ADDRESS, data), {
-    onSuccess: (data) => {
-      if (data?.status) {
-        successMsg(data?.message, 'success');
-        queryClient.invalidateQueries(API_URL.ORDER_LIST);
-        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
-        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
-        onClose();
-      } else {
-        successMsg(data?.message, 'warn');
-      }
-    },
-  });
 
   const submitDeliveryAddress = () => {
     const validate = validateDeliveryAddress(deliveryAddress);
@@ -162,6 +192,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
             deliveryAddress={deliveryAddress}
             setDeliveryAddress={setDeliveryAddress}
             onChangeAddressHandler={onChangeAddressHandler}
+            getZoneServiceQuery={getZoneServiceQuery}
           />
           <StyledFormField
             intputType="text"
@@ -225,9 +256,9 @@ function ChangeDeliveryAddress({ order, onClose }) {
               variant="contained"
               color="primary"
               onClick={submitDeliveryAddress}
-              disabled={updateDeliveryAddressQuery?.isLoading}
+              disabled={updateDeliveryAddressQuery?.isLoading || disableButton}
             >
-              Confirm Location
+              {disableButton ? 'Service Not Available' : 'Confirm Location'}
             </Button>
           </Stack>
         </Stack>
