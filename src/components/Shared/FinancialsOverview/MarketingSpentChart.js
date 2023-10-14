@@ -43,8 +43,6 @@ const generateData = (data, marketingSpentType = '') => {
   const featureAmount = [];
   const date = [];
 
-  console.log('marketing data', data);
-
   data?.forEach((node) => {
     const dprop = typeNameMap[marketingSpentType]?.discount;
     const pprop = typeNameMap[marketingSpentType]?.points;
@@ -71,7 +69,9 @@ const getQueryParamsInit = (type, id) => ({
 });
 
 export default function MarketingSpentChart({ viewUserType = 'shop' }) {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
+  const { currency } = general;
   const [marketingSpentType, setMarketingSpentType] = useState('all');
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
@@ -86,34 +86,32 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
     [marketingSpentType, marketingSpentQuery?.data],
   );
 
-  console.log('chartdata', marketingSpentQuery?.data);
-
   const lineChartData = {
     labels: chartdata.date,
     datasets: [
       {
-        label: 'Discount',
+        label: `Discount (${currency?.symbol})`,
         data: chartdata.discount,
         borderColor: 'rgba(221, 91, 99, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
       {
-        label: 'Points',
+        label: `Points (${currency?.symbol})`,
         data: chartdata.points,
         borderColor: 'rgba(21, 11, 202, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
       {
-        label: 'Double Deal',
+        label: `Double Deal (${currency?.symbol})`,
         data: chartdata.doubleDeal,
         borderColor: 'rgba(21, 255, 0, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
         borderWidth: 1,
       },
       {
-        label: 'Free Delivery',
+        label: `Free Delivery (${currency?.symbol})`,
         data: chartdata.freeDelivery,
         borderColor: 'rgba(255, 176, 23, 1)',
         backgroundColor: 'rgba(21, 191, 202, 0)',
@@ -124,7 +122,7 @@ export default function MarketingSpentChart({ viewUserType = 'shop' }) {
 
   if (marketingSpentType !== 'admin') {
     lineChartData?.datasets.push({
-      label: 'Featured',
+      label: `Featured (${currency?.symbol})`,
       data: chartdata.featureAmount,
       borderColor: 'rgba(76, 153, 0, 1)',
       backgroundColor: 'rgba(21, 191, 202, 0)',

@@ -5,7 +5,6 @@ import TabPanel from '../../components/Common/TabPanel';
 import Overview from '../../components/Shared/FinancialsOverview';
 import Invoices from '../../components/Shared/Invoices';
 import { useGlobalContext } from '../../context';
-import ShopsFinancialsSpecificSellers from '../AppWallet2/ForSeller/ShopsFinancialsSpecificSellers';
 
 export default function SellerFinancials() {
   const { currentUser } = useGlobalContext();
@@ -23,8 +22,8 @@ export default function SellerFinancials() {
         }}
       >
         <Tab label="Overview" />
-        {currentUser?.userType === 'admin' && <Tab label="Invoices" />}
-        <Tab label="Shops Transactions" />
+        <Tab label="Payouts" />
+        {/* <Tab label="Shops Transactions" /> */}
       </Tabs>
       <TabPanel
         index={0}
@@ -35,18 +34,18 @@ export default function SellerFinancials() {
       >
         <Overview viewUserType="seller" />
       </TabPanel>
-      {currentUser?.userType === 'admin' && (
-        <TabPanel
-          index={1}
-          value={currentTab}
-          sx={{
-            paddingTop: 7.5,
-          }}
-        >
-          <Invoices params={{ sellerId: currentUser?.seller?._id }} showFor="shop" />
-        </TabPanel>
-      )}
+
       <TabPanel
+        index={1}
+        value={currentTab}
+        sx={{
+          paddingTop: 7.5,
+        }}
+      >
+        <Invoices params={{ sellerId: currentUser?.seller?._id }} showFor="shop" />
+      </TabPanel>
+
+      {/* <TabPanel
         index={currentUser?.userType === 'admin' ? 2 : 1}
         value={currentTab}
         sx={{
@@ -54,7 +53,7 @@ export default function SellerFinancials() {
         }}
       >
         <ShopsFinancialsSpecificSellers viewUserType="seller" customSellerId={currentUser?.seller?._id} />
-      </TabPanel>
+      </TabPanel> */}
     </Box>
   );
 }

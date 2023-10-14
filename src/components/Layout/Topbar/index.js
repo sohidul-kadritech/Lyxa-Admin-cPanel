@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { Avatar, Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Drawer, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ReactComponent as Logo } from '../../../assets/icons/logo-sm.svg';
 import { ReactComponent as NotificationIcon } from '../../../assets/icons/t-notification.svg';
@@ -7,9 +7,10 @@ import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.s
 import { useGlobalContext } from '../../../context';
 import { getProfilePhotoAndAltName } from '../helper';
 import AccountMenu from './AccountMenu';
+import Notification from './Notification';
 import Tabs from './Tabs';
 
-const getConsoleName = (userType, adminType) => {
+const getConsoleName = (userType, adminType, shopOrderManager) => {
   if (userType === 'admin' && adminType === 'admin') {
     return 'Admin Console-Develop';
   }
@@ -22,6 +23,10 @@ const getConsoleName = (userType, adminType) => {
   }
   if (userType === 'admin' && adminType === 'sales') {
     return 'Sales Manager';
+  }
+  console.log('shopManager', { shopOrderManager });
+  if (userType === 'shop' && shopOrderManager && shopOrderManager !== 'null') {
+    return 'Shop Order Manager';
   }
 
   if (userType === 'shop') {
@@ -38,6 +43,7 @@ const getConsoleName = (userType, adminType) => {
 export default function Topbar({ setSidebar, sidebar }) {
   const { currentUser } = useGlobalContext();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -78,7 +84,7 @@ export default function Topbar({ setSidebar, sidebar }) {
         <Stack direction="row" alignItems="center" gap={2}>
           <Logo />
           <Typography variant="inherit" fontSize={22} lineHeight="26px" fontWeight={500}>
-            {getConsoleName(currentUser.userType, currentUser.adminType)}
+            {getConsoleName(currentUser?.userType, currentUser?.adminType, currentUser?.shopOrderManager)}
           </Typography>
         </Stack>
         <Box
@@ -94,7 +100,7 @@ export default function Topbar({ setSidebar, sidebar }) {
         <Typography variant="body2">
           <SupportIcon /> Get Support
         </Typography>
-        <Button variant="text" disableRipple sx={{ minWidth: 0 }}>
+        <Button variant="text" disableRipple sx={{ minWidth: 0 }} onClick={() => setOpen(true)}>
           <NotificationIcon />
         </Button>
         <IconButton onClick={handleClick} disableRipple>
@@ -104,6 +110,14 @@ export default function Topbar({ setSidebar, sidebar }) {
         </IconButton>
       </Stack>
       <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
+
+      <Drawer open={open} anchor="right">
+        <Notification
+          onClose={() => {
+            setOpen(false);
+          }}
+        />
+      </Drawer>
     </Stack>
   );
 }

@@ -56,7 +56,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   };
 
   const orderChatQuery = useQuery(
-    [Api.SINGLE_CHAT, { orderId }],
+    [Api.SINGLE_CHAT, { orderId, chat }],
     () =>
       AXIOS.get(Api.SINGLE_CHAT, {
         params: { orderId },
@@ -70,7 +70,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   );
 
   const accountChatQuery = useQuery(
-    [Api.SINGLE_CHAT_ACCOUNT, { requestId }],
+    [Api.SINGLE_CHAT_ACCOUNT, { requestId, chat }],
     () =>
       AXIOS.get(Api.SINGLE_CHAT_ACCOUNT, {
         params: { requestId },
@@ -153,9 +153,12 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
         });
 
         onAcceptChat(data);
+
         chatConnect();
-        queryClient.invalidateQueries([Api.ONGOING_CHATS]);
-        queryClient.invalidateQueries([Api.NEW_CHATS]);
+
+        queryClient.invalidateQueries(Api.ONGOING_CHATS);
+
+        queryClient.invalidateQueries(Api.NEW_CHATS);
       }
     },
     onError: (error) => {

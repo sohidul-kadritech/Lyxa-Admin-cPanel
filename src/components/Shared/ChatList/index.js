@@ -1,13 +1,13 @@
 import { Box, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { useSelector } from 'react-redux';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import OrderCancel from '../../../pages/NewOrder/OrderCancel';
 import { UpdateFlag } from '../../../pages/NewOrder/UpdateFlag';
 
+import socketServices from '../../../common/socketService';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import TablePagination from '../../Common/TablePagination';
 import { getChatRequestId } from '../ChatDetail/Chat';
@@ -29,14 +29,14 @@ export default function ChatList({
   hidePagination,
 }) {
   const queryClient = useQueryClient();
-  const { socket } = useSelector((store) => store.socketReducer);
+
   const [temporarySelectedChat, setTemporarySelectedChat] = useState({});
   const [modals, setModals] = useState({ ...modalsStateInit });
 
   const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, { requestId: data?.requestId }), {
     onSuccess: (data, reqBody) => {
       if (data?.status) {
-        socket.emit('chat-close', { requestId: reqBody?.requestId });
+        socketServices.emit('chat-close', { requestId: reqBody?.requestId });
         temporarySelectedChat.status = 'closed';
         queryClient.invalidateQueries([Api.ONGOING_CHATS]);
         queryClient.invalidateQueries([Api.NEW_CHATS]);

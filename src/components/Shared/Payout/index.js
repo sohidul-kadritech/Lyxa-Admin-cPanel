@@ -40,7 +40,6 @@ function PayoutList({
 
   const [queryParams, setQueryParams] = useState({ ...queryParamsInit({ ...payaoutParams }) });
 
-  // eslint-disable-next-line no-unused-vars
   const [searchKey, setSearchKey] = useState('');
 
   const queryClient = useQueryClient();
@@ -52,7 +51,7 @@ function PayoutList({
         startDate: convertDate(queryParams?.startDate),
         endDate: convertDate(queryParams?.endDate),
       },
-    })
+    }),
   );
 
   const paidPayoutMutation = useMutation((data) => AXIOS.post(API_URL.PAID_PAYOUTS, data), {

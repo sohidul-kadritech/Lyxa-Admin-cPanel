@@ -22,6 +22,7 @@ import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 // import StyledTable from '../../components/Styled/StyledTable3';
+import ChangeDeliveryAddress from '../../components/Shared/ChangeDeliveryAddress';
 import StyledTable5 from '../../components/Styled/StyledTable5';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
@@ -101,6 +102,8 @@ export default function Table({
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
 
+  const [openAddressChange, setOpenAddressChange] = useState(false);
+
   const [addedIndex, setAddedIndex] = useState(0);
 
   const location = useLocation();
@@ -108,7 +111,7 @@ export default function Table({
   useEffect(() => {
     if (location?.search === '?urgent-order') {
       const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted
+        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
       );
       console.log('===>', { findAcceptedCurrentOrder, location, render });
       if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
@@ -132,6 +135,10 @@ export default function Table({
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
       setFlagModal(true);
+      setCurrentOrder(order);
+    }
+    if (menu === 'change_address') {
+      setOpenAddressChange(true);
       setCurrentOrder(order);
     }
 
@@ -679,7 +686,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {
@@ -848,6 +855,15 @@ export default function Table({
             }}
           />
         </Box>
+      </Modal>
+
+      <Modal open={openAddressChange}>
+        <ChangeDeliveryAddress
+          order={currentOrder}
+          onClose={() => {
+            setOpenAddressChange(false);
+          }}
+        />
       </Modal>
     </>
   );

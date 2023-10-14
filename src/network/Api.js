@@ -108,6 +108,7 @@ export const ALL_USERS = `${ADMIN_ENDPOINT}/user`;
 export const SINGLE_USER = `${ADMIN_ENDPOINT}/user/get-user-details`;
 export const USER_TRANSACTIONS = `${ADMIN_ENDPOINT}/user/get-user-transaction`;
 export const USER_ORDERS = `${ADMIN_ENDPOINT}/order/user`;
+export const UPDATE_ORDER_DELIVERY_ADDRESS = `${ADMIN_ENDPOINT}/order/update-delivery-address`;
 export const USER_STATUS = `${ADMIN_ENDPOINT}/USER/update-status`;
 export const USER_UPDATE = `${ADMIN_ENDPOINT}/user/update`;
 export const USER_REVIEWS = `${ADMIN_ENDPOINT}/user/reviews`;
@@ -252,8 +253,8 @@ export const EDIT_ADMIN_FEATURED_SETTINGS = `${ADMIN_ENDPOINT}/setting/featured-
 
 export const DATABASE_ALL_COLLECTIONS = `${ADMIN_ENDPOINT}/database/collections`;
 export const DATABASE_COLLECTION_BACKUP = `${ADMIN_ENDPOINT}/database/back-up`;
-export const DATABASE_RESTORE_LAST_COLLECTION_BACKUP = `${ADMIN_ENDPOINT}/database/restore-backup`;
-export const DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP = `${ADMIN_ENDPOINT}/database/restore-all-backup`;
+export const DATABASE_RESTORE_LAST_COLLECTION_BACKUP = `${ADMIN_ENDPOINT}/database/storage-bucket/restore-backup`;
+export const DATABASE_RESTORE_ALL_COLLECTIONS_LAST_BACKUP = `${ADMIN_ENDPOINT}/database/storage-bucket/restore-all-backup`;
 export const DATABASE_DELETE_COLLECTION = `${ADMIN_ENDPOINT}/database/delete-collection`;
 export const DATABASE_DELETE_ALL_COLLECTION = `${ADMIN_ENDPOINT}/database/delete-all`;
 
@@ -454,3 +455,4 @@ export const DELETE_ZONE = `${ADMIN_ENDPOINT}/zone/delete`;
 export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;
 export const ZONE_MAP_OVERVIEW = `${ADMIN_ENDPOINT}/zone/map-overview`;
 export const GET_ZONE_FROM_LATLNG = `${ADMIN_ENDPOINT}/shop/get-zones`;
+export const GET_ZONE_SERVICE_AVAILABILITY = `${ADMIN_ENDPOINT}/zone/check`;

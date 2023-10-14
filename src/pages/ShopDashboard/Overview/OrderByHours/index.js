@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // thrid party
 import { Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -11,13 +12,13 @@ import AXIOS from '../../../../network/axios';
 import OrderByHoursChart from './Chart';
 
 const tabValueToOrderTypeMap = { 0: 'delivered', 1: 'incomplete' };
-const utcDiff = new Date().getTimezoneOffset() / 60;
+let utcDiff = new Date().getTimezoneOffset() / 60;
+utcDiff = utcDiff < 0 ? Math.abs(utcDiff) : utcDiff;
 
 export default function OrdersByHour() {
   const [currentTab, setCurrentTab] = useState(0);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
-
   const ordersGraph = useQuery(
     [
       Api.SHOP_DASHBOARD_ORDER_BY_HOURS,
@@ -26,9 +27,10 @@ export default function OrdersByHour() {
     () =>
       AXIOS.get(Api.SHOP_DASHBOARD_ORDER_BY_HOURS, {
         params: { type: tabValueToOrderTypeMap[currentTab], shopId: shop?._id, timeZone: utcDiff },
-      })
+      }),
   );
 
+  console.log('time zone', { timeOffset: new Date().getTimezoneOffset(), utcDiff });
   console.log('orders-by-hours', ordersGraph?.data?.data?.hourlyOrders);
 
   return (

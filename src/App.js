@@ -54,7 +54,7 @@ export default function App() {
       return;
     }
 
-    const { account_type, account_id, access_token, credentialUserId } = getCookiesAsObject();
+    const { account_type, account_id, access_token, credentialUserId, shopOrderManager } = getCookiesAsObject();
 
     // any cookie is missing
     if (!account_type || !account_id || !access_token || !credentialUserId) {
@@ -75,6 +75,7 @@ export default function App() {
 
     dispatchCurrentUser({ type: account_type, payload: { [account_type]: userData?.user, isCurrentUser: true } });
     dispatchCurrentUser({ type: 'credentialUserId', payload: { credentialUserId: credentialUserId } });
+    dispatchCurrentUser({ type: 'shopOrderManager', payload: { shopOrderManager: shopOrderManager } });
     setAdminDataIsLoading(false);
   };
 
@@ -92,7 +93,6 @@ export default function App() {
     if (userType === 'shop' || userType === 'admin') {
       socketServices.on(`shopLiveStatusUpdated-${shop?._id}`, (data) => {
         if (shop?._id === data?.shopId) {
-          console.log('socketdata for shop', data);
           currentUser.shop.liveStatus = data?.liveStatus;
           shop.liveStatus = data?.liveStatus;
           setRender((prev) => !prev);

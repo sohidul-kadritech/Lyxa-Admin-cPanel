@@ -31,7 +31,6 @@ export default function Login({ loginFor }) {
 
     let currentUser = data?.data?.admin;
 
-    // if credential user
     if (currentUser?.parentSeller || currentUser?.parentShop) {
       const parentUserData = await getParentUser(currentUser);
 
@@ -41,10 +40,16 @@ export default function Login({ loginFor }) {
       }
 
       const { _id: credentialUserId, token, account_type } = currentUser;
+
+      const shopOrderManager = currentUser?.credentialType === 'shopOrderManager' ? credentialUserId : null;
+
       currentUser = parentUserData?.parentUser;
 
       currentUser.credentialUserId = credentialUserId;
+
       currentUser.token = token;
+      currentUser.shopOrderManager = shopOrderManager;
+
       currentUser.account_type = account_type;
     }
 
@@ -57,7 +62,8 @@ export default function Login({ loginFor }) {
         access_token: currentUser.token,
         account_type: currentUser.account_type,
         account_id: currentUser._id,
-        credentialUserId: currentUser?.credentialUserId || currentUser._id,
+        credentialUserId: currentUser?.credentialUserId || currentUser?._id,
+        shopOrderManager: currentUser?.shopOrderManager || null,
       },
       15,
     );
@@ -75,9 +81,17 @@ export default function Login({ loginFor }) {
       payload: { credentialUserId: currentUser?.credentialUserId || currentUser._id },
     });
 
+    dispatchCurrentUser({
+      type: 'shopOrderManager',
+      payload: {
+        shopOrderManager: currentUser?.shopOrderManager || null,
+      },
+    });
+
     // redirect after login success
     if (currentUser?.account_type === 'admin' && currentUser?.adminType === 'customerService')
       history.push('/ongoing-tickets');
+    if (currentUser?.shopOrderManager) history.push('/new-orders');
     else history.push('/');
   };
 

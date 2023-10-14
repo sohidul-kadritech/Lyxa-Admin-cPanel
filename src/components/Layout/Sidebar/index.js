@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unsafe-optional-chaining */
 import { Avatar, Box, Stack, Typography, styled } from '@mui/material';
 import { useGlobalContext } from '../../../context';
 import { getProfilePhotoAndAltName } from '../helper';
@@ -84,14 +86,19 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                 pb={1}
                 variant="h3"
                 sx={{
+                  width: '170px',
                   color: '#fff',
                   fontWeight: '500',
-                  fontSize: '22px',
+                  fontSize: `${name?.length <= 20 ? 18 : 18 - (name?.length * 2 - 18)}px`, // Set font size to 'auto' for dynamic sizing
                   lineHeight: '27px',
                   letterSpacing: '0.05em',
+                  whiteSpace: 'nowrap', // Prevent text from wrapping
+                  overflow: 'hidden', // Hide overflowed text
+                  textOverflow: 'ellipsis', // Show ellipsis (...) when text overflows
+                  // width: '100%',
                 }}
               >
-                {title}
+                {name}
               </Typography>
               <Typography
                 className="text-dots"
@@ -103,7 +110,7 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                   lineHeight: 1,
                 }}
               >
-                {name}
+                {title}
               </Typography>
             </Box>
           </Stack>

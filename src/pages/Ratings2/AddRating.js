@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -43,10 +44,8 @@ export const validateList = (newValue, oldList) => {
   return true;
 };
 
-// eslint-disable-next-line no-unused-vars
 function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFlags }) {
   const queryClient = useQueryClient();
-
   const [currentRating, setCurrentRating] = useState({ ...initRating });
   // add new rating
   const addNewRating = useMutation((ratings) => AXIOS.post(API_URL.ADD_NEW_RATING, ratings), {
@@ -65,6 +64,7 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
     },
   });
 
+  // update ratings
   const updateRatings = useMutation((ratings) => AXIOS.post(API_URL.UPDATE_RATING, ratings), {
     onSuccess: (data) => {
       if (data?.status) {
@@ -82,6 +82,7 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
     },
   });
 
+  // submit ratings
   const submitRatings = () => {
     if (currentRating?.tags?.length < 1) {
       successMsg('Please add atleast one tag');
@@ -142,7 +143,7 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
           <OptionsSelect
             items={ratingOptions}
             value={`${currentRating?.rating}`}
-            disabled={isEdit}
+            disabled={isEdit || currentRating?.tags?.length}
             onChange={(value) => {
               setCurrentRating((prev) => ({ ...prev, rating: value }));
             }}
@@ -163,7 +164,6 @@ function AddRating({ onClose, submitHandler, isEdit, rating, loading, refetchFla
             }}
             onDelete={(item) => {
               setCurrentRating((prev) => ({ ...prev, tags: prev.tags.filter((value) => value !== item) }));
-              // setCurrentRating((prev) => prev.filter((value) => value !== item));
             }}
           />
         </StyledBox>

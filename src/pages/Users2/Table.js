@@ -7,9 +7,15 @@ import StyledIconButton from '../../components/Styled/StyledIconButton';
 import StyledTable from '../../components/Styled/StyledTable3';
 import StyledBox from '../../components/StyledCharts/StyledBox';
 
-export default function UserTable({ rows, onEdit, onDelete, loading }) {
+const getUserType = {
+  credentialUser: 'Credential User',
+  shopOrderManager: 'Shop Order Manager',
+};
+
+export default function UserTable({ rows, onEdit, onDelete, loading, showFor }) {
   const columns = [
     {
+      showFor: ['shop', 'seller'],
       id: 1,
       headerName: `NAME`,
       sortable: false,
@@ -20,6 +26,22 @@ export default function UserTable({ rows, onEdit, onDelete, loading }) {
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['shop'],
+      id: 2,
+      headerName: `USER TYPE`,
+      sortable: false,
+      field: 'credentialType',
+      flex: 2,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => (
+        <Typography variant="body4">
+          {row?.isParentUser ? 'Parent User' : getUserType[row?.credentialType] || 'Not set yet'}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['shop', 'seller'],
       id: 2,
       headerName: `EMAIL`,
       sortable: false,
@@ -30,6 +52,7 @@ export default function UserTable({ rows, onEdit, onDelete, loading }) {
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['shop', 'seller'],
       id: 3,
       headerName: `ACTION`,
       sortable: false,
@@ -79,7 +102,7 @@ export default function UserTable({ rows, onEdit, onDelete, loading }) {
     >
       <StyledTable
         autoHeight
-        columns={columns}
+        columns={columns?.filter((column) => column?.showFor?.includes(showFor))}
         getRowId={(row) => row?._id}
         rows={rows}
         rowHeight={71}
