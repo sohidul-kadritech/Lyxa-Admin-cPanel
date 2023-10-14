@@ -51,6 +51,8 @@ function ChangeDeliveryAddress({ order, onClose }) {
 
   const [disableButton, setDisableButton] = useState(false);
 
+  const [mapReference, setMapReference] = useState(null);
+
   const queryClient = useQueryClient();
 
   // get zone service availabilty in selected location
@@ -71,7 +73,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
           setDisableButton(false);
         }
       },
-    },
+    }
   );
 
   // udpate delivery boy query
@@ -156,6 +158,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
         <Stack sx={{ height: { xs: '350px', md: '100%' } }}>
           <Box flex={1}>
             <Map
+              setMapReference={setMapReference}
               dropoff={order?.dropOffLocation}
               deliveryAddress={deliveryAddress}
               getSelectedLatLng={getSelectedLatLng}
@@ -189,6 +192,8 @@ function ChangeDeliveryAddress({ order, onClose }) {
             <CloseButton onClick={onClose} size="medium" />
           </Stack>
           <StyledSearchAddress
+            setMapReference={setMapReference}
+            mapReference={mapReference}
             deliveryAddress={deliveryAddress}
             setDeliveryAddress={setDeliveryAddress}
             onChangeAddressHandler={onChangeAddressHandler}

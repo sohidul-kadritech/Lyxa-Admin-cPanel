@@ -4,16 +4,21 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 import StyledInput from '../../Styled/StyledInput';
+import { smoothPanTo } from './helpers';
 
 function StyledSearchAddress({
   deliveryAddress = {},
   setDeliveryAddress,
   onChangeAddressHandler,
   getZoneServiceQuery,
+  mapReference,
+  setMapReference,
 }) {
   const theme = useTheme();
 
-  const generateShopAddress = async (address = {}) => {
+  console.log({ mapReference });
+
+  const generateAddress = async (address = {}) => {
     let latlng;
 
     try {
@@ -23,6 +28,11 @@ function StyledSearchAddress({
     }
 
     getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
+    const { google } = window;
+    const center = new google.maps.LatLng(latlng?.lat, latlng?.lng);
+    // mapReference.setCenter(center);
+    mapReference.setZoom(24);
+    smoothPanTo(mapReference, center, 300, google);
     // newAddress.placeId = placeId;
     setDeliveryAddress((prev) => ({
       ...prev,
@@ -38,7 +48,7 @@ function StyledSearchAddress({
     }));
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
-      .then((results) => generateShopAddress(results[0], placeId))
+      .then((results) => generateAddress(results[0], placeId))
       .catch((error) => console.error('Error', error));
   };
   return (
