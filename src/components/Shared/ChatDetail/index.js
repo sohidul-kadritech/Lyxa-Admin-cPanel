@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';

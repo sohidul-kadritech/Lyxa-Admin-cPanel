@@ -240,8 +240,6 @@ function PercentageOfRate({ rate, percentage, color }) {
 }
 
 export function ShopReviewDetails({ shop }) {
-  console.log('shoprating: ', shop, calculatePercantagesOfRating(shop?.reviews));
-
   const ratings = calculatePercantagesOfRating(shop?.reviews);
   return (
     <Stack gap={4}>

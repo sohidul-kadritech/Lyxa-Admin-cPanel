@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { Box, Modal } from '@mui/material';
@@ -12,6 +13,7 @@ import {
   customer_service_menu_items,
   sales_manager_menu_items,
   seller_menu_items,
+  shop_manager_menu_items,
   shop_menu_items,
 } from '../../common/sidebar_menu_items';
 import socketServices from '../../common/socketService';
@@ -22,18 +24,25 @@ import { account_manager_routes } from '../../routes/account_manager_routes';
 import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customer_service_routes';
 import { seller_routes } from '../../routes/seller_routes';
-import { shop_routes } from '../../routes/shop_routes';
+import { shop_order_manager_routes, shop_routes } from '../../routes/shop_routes';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import UrgentOrderRecieved from './UrgentOrderReceivedNotification';
 
-const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, prefix = '') => {
+const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, shopOrderManager, prefix = '') => {
   let routes = [];
   let menuItems = [];
 
   if (userType === 'shop') {
-    routes = shop_routes(prefix, shopDeliveryType);
-    menuItems = shop_menu_items(prefix, shopDeliveryType, shopType);
+    console.log(shopOrderManager, typeof shopOrderManager);
+    routes =
+      shopOrderManager && shopOrderManager !== 'null'
+        ? shop_order_manager_routes()
+        : shop_routes(prefix, shopDeliveryType);
+    menuItems =
+      shopOrderManager && shopOrderManager !== 'null'
+        ? shop_manager_menu_items(prefix, shopDeliveryType, shopType)
+        : shop_menu_items(prefix, shopDeliveryType, shopType);
   }
 
   if (userType === 'seller') {
@@ -73,17 +82,18 @@ export default function Layout() {
 
   const queryClient = useQueryClient();
 
+  console.log('currentUser', { currentUser });
+
   const { routes, menuItems } = useMemo(
     () =>
       getRouteAndSidebarItems(
         currentUser?.userType,
         currentUser?.adminType,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
-        // eslint-disable-next-line prettier/prettier
         currentUser?.shop?.shopType,
+        currentUser?.shopOrderManager,
       ),
-    // eslint-disable-next-line prettier/prettier
-    [currentUser?.userType],
+    [currentUser?.userType, currentUser?.shopOrderManager],
   );
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { Avatar, Box, Stack, Typography, useTheme } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
@@ -13,6 +14,14 @@ import AXIOS from '../../../network/axios';
 import { ProductsContext } from '../ProductContext';
 import { ProductOverlayTag, getProductMenuOptions, isBestSellerOrFavorite } from '../helpers';
 import { getExchangeRate } from './helpers';
+
+export const replaceLastSlugPath = (path, replaceSlug) => {
+  // Regular expression to match the last part of the URL
+  const regex = /\/[^/]+$/;
+  // Replace the last part of the URL with the new slug
+  const newUrl = path.replace(regex, replaceSlug);
+  return newUrl;
+};
 
 export default function ProductItem({
   product,
@@ -25,6 +34,7 @@ export default function ProductItem({
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
   const theme = useTheme();
   const history = useHistory();
+  const location = useLocation();
 
   // eslint-disable-next-line no-unused-vars
   const [exchangeCurrency, setExchangeCurrency] = useState(getExchangeRate(secondaryCurrency, product));
@@ -142,7 +152,7 @@ export default function ProductItem({
 
   // handle menu click
   const handleMenuClick = (menu) => {
-    if (menu === 'marketing') history.push('/marketing');
+    if (menu === 'marketing') history.push(replaceLastSlugPath(location?.pathname, '/marketing'));
 
     if (menu === 'edit') {
       setEditProduct(deepClone(product));

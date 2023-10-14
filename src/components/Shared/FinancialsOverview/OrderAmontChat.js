@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import moment from 'moment';
 import { useQuery } from 'react-query';
 
@@ -19,20 +21,25 @@ const getQueryParamsInit = (type, id) => ({
 });
 
 export default function OrderAmountChart({ viewUserType }) {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
+  const { currency } = general;
+
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
+
+  console.log({ general });
 
   // order amount graph
   const orderAmountGraphQuery = useQuery([Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, queryParams], () =>
     AXIOS.get(Api.GET_SHOP_DASHBOARD_ORDER_AMOUNT_GRAPH, {
       params: queryParams,
-    })
+    }),
   );
 
   const orderAmountData = generateGraphData(
     orderAmountGraphQuery?.data?.data?.info || [],
     (item) => item.revenue,
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const areaChartData = {
@@ -40,7 +47,7 @@ export default function OrderAmountChart({ viewUserType }) {
     datasets: [
       {
         fill: true,
-        label: 'Amount',
+        label: `Amount (${currency?.symbol})`,
         data: orderAmountData.data,
         borderColor: 'rgba(126, 130, 153, 1)',
         borderWidth: 1,

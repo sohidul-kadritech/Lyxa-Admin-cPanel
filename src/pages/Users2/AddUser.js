@@ -9,15 +9,17 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { addUserInit, validateUser } from './helpers';
+import { addUserInit, credentialTypeOptions, validateUser } from './helpers';
 
 const userTypeToApiMap = { shop: Api.ADD_SHOP_CREDENTIAL, seller: Api.ADD_SELLER_CREDENTIAL };
 
 function AddUser({ onClose, userType, refetch }) {
   const theme = useTheme();
+
   const { currentUser } = useGlobalContext();
 
   const [user, setUser] = useState(addUserInit(userType, currentUser[userType]?._id));
+
   console.log(addUserInit(userType, currentUser[userType]?._id));
 
   const addUserMutation = useMutation((data) => AXIOS.post(userTypeToApiMap[userType], data), {
@@ -35,7 +37,7 @@ function AddUser({ onClose, userType, refetch }) {
   };
 
   const onSubmit = () => {
-    const status = validateUser(user);
+    const status = validateUser(user, userType);
 
     if (!status.status) {
       successMsg(status?.message);
@@ -79,11 +81,34 @@ function AddUser({ onClose, userType, refetch }) {
               },
             }}
           />
+
           <Typography
             sx={{ fontSize: '15px', color: theme.palette.text.secondary, fontWeight: 500, margin: '0px 0px 18px 0px' }}
           >
             Email connected to Lyxa account
           </Typography>
+
+          {/* credential user type */}
+          <StyledFormField
+            label="User Type"
+            intputType="select"
+            containerProps={{
+              sx: {
+                padding: '14px 0px 10px 0',
+              },
+            }}
+            inputProps={{
+              type: 'text',
+              name: 'credentialType',
+              items: credentialTypeOptions,
+              onChange,
+              value: user?.credentialType,
+              inputProps: {
+                autoComplete: 'off',
+              },
+            }}
+          />
+
           {/* password */}
           <StyledFormField
             label="Password"

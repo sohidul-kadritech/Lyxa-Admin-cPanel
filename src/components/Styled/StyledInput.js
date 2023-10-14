@@ -31,9 +31,9 @@ const StyledInput = React.forwardRef(({ ...props }, ref) => (
     ref={ref}
     onWheel={(e) => {
       e.target.blur();
-      setTimeout(() => {
-        e.target.focus();
-      }, 0);
+      // setTimeout(() => {
+      //   e.target.focus();
+      // }, 0);
     }}
   />
 ));

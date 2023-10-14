@@ -34,7 +34,12 @@ export const currentUserReducer = (state, { type, payload }) => {
     case 'credentialUserId':
       return {
         ...state,
-        credentialUserId: payload.credentialUserId,
+        credentialUserId: payload?.credentialUserId,
+      };
+    case 'shopOrderManager':
+      return {
+        ...state,
+        shopOrderManager: payload?.shopOrderManager,
       };
 
     default:

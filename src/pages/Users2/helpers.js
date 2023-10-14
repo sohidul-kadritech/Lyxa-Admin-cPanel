@@ -5,13 +5,12 @@ export const addUserInit = (type, id) => {
   if (type === 'seller') sellerId = id;
   if (type === 'shop') shopId = id;
 
-  return { name: '', email: '', password: '', repeated_password: '', sellerId, shopId };
+  return { name: '', email: '', password: '', repeated_password: '', credentialType: '', sellerId, shopId };
 };
 
-export const validateUser = (data) => {
-  const { name, email, password, repeated_password } = data;
+export const validateUser = (data, userType) => {
+  const { name, email, password, repeated_password, credentialType, isParentUser } = data;
 
-  console.log('data', { data });
   const status = { status: false, message: null };
 
   const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
@@ -41,10 +40,20 @@ export const validateUser = (data) => {
     return status;
   }
 
+  if (!credentialType && userType === 'shop' && !isParentUser) {
+    status.message = 'Select user type';
+    return status;
+  }
+
   if (!data?.id && !password?.trim()?.length) {
-    status.message = 'Password is should not be empty!';
+    status.message = 'Password field should not be empty!';
     return status;
   }
 
   return { status: true };
 };
+
+export const credentialTypeOptions = [
+  { label: 'Credential User', value: 'credentialUser' },
+  { label: 'Shop Order Manager', value: 'shopOrderManager' },
+];

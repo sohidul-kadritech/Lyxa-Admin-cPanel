@@ -295,7 +295,8 @@ export default function UpdateOrderStatus({
 
   // auto asignRider handler here
 
-  const autoAssingRiderHandler = () => {
+  const autoAssingRiderHandler = async () => {
+    await globalRidersQuery?.refetch();
     setCurrentOrderDelivery((prev) => {
       // check the length of the rider list;
       if (deliveryBoyList?.length > 0) {

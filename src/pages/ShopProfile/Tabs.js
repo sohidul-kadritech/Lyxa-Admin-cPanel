@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import TabPanel from '../../components/Common/TabPanel';
@@ -27,7 +28,7 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
             value={currentTab}
             onChange={(event, newValue) => {
               setCurrentTab(newValue);
-              if (newValue === 1 || newValue === 2) refetchShopData();
+              // if (newValue === 1 || newValue === 2) refetchShopData();
             }}
           >
             <Tab label="Orders" />
