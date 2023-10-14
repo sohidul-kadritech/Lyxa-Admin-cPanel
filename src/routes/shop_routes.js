@@ -41,3 +41,13 @@ export const shop_routes = (prefix = '', shopDeliveryType) => {
 
   return routes;
 };
+
+export const shop_order_manager_routes = (prefix = '') => {
+  const routes = [
+    { path: `${prefix}/menu`, component: MenuPage },
+    { path: `${prefix}/new-orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
+    { path: `${prefix}/*`, component: NotFoundPage },
+  ];
+
+  return routes;
+};

@@ -9,8 +9,10 @@ import React, { useEffect, useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
 import StyledIconButton from '../../../Styled/StyledIconButton';
+import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import SelectableItem from './SelectableItem';
 import StyledContainer from './StyledContainer';
+import { getProductPrice } from './helpers';
 
 export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) => {
   const partialPayment = {
@@ -59,12 +61,12 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
     const adminLossPercentage = Number(data?.byPercentage?.adminOrderRefund || 0);
 
     replacementOrderCut.baseCurrency_shopCutForReplacement = Number(
-      (totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2)
+      (totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2),
     );
 
     replacementOrderCut.baseCurrency_shopCutForReplacement = Math.min(
       replacementOrderCut.baseCurrency_shopCutForReplacement,
-      data?.deliveryFee
+      data?.deliveryFee,
     );
 
     replacementOrderCut.baseCurrency_adminCutForReplacement =
@@ -116,11 +118,19 @@ export const getSelectableItems = (order, flaggData) => {
   const replacementWith = flaggData?.replacement === 'with';
   console.log('order', { order });
   order?.productsDetails?.forEach((item) => {
-    for (let i = 0; i < item?.productQuantity; i++) {
+    let quantity = item?.productQuantity;
+    const deal = productDeal(item);
+    if (deal === 'double_menu' && flaggData?.replacement !== 'with') {
+      quantity /= 2;
+    }
+    for (let i = 0; i < quantity; i++) {
+      // check there are any deal or not.
+
+      const productPrice = getProductPrice(item, deal);
       // calculating shop earning
-      const shopEarning = item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * (adminPercentage / 100);
+      const shopEarning = productPrice - item?.baseCurrency_productPrice * (adminPercentage / 100);
       // selecting product price conditionally
-      const price = replacementWithMissingItem ? 0 : replacementWith ? shopEarning : item?.baseCurrency_productPrice;
+      const price = replacementWithMissingItem ? 0 : replacementWith ? shopEarning : productPrice;
       // calculating secondary currency of this
       const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
       // make an template for add product
@@ -240,6 +250,12 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       });
       return selected;
     });
+
+    const allItems = getSelectableItems(order, flaggData);
+    const findIndexFromOriginalList = allItems?.findIndex((selected) => selected?.id === item?.id);
+
+    if (findIndexFromOriginalList >= -1) item.price = allItems[findIndexFromOriginalList]?.price;
+
     setRefundItem((prev) => [...prev, item]);
   };
 

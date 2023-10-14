@@ -30,8 +30,6 @@ function PayoutTable({
 }) {
   const { general } = useGlobalContext();
 
-  console.log('payoutData', payoutData);
-
   const theme = useTheme();
 
   // const currency = general?.currency?.symbol;
@@ -50,7 +48,6 @@ function PayoutTable({
       field: 'name',
       flex: 1.5,
       renderCell: ({ row }) => {
-        console.log('row', row);
         const rowData = getPayoutData(row);
         return (
           <Stack direction="row" alignItems="center" sx={{ padding: '10px 0px !important' }}>
@@ -137,12 +134,11 @@ function PayoutTable({
       sortable: false,
       flex: 1.5,
       renderCell: ({ row }) => {
-        console.log('value', row);
         // payoutAccount
         const isShop = row?.payoutAccount === 'shop';
         const data = isShop
           ? `${currency} ${(row?.profitBreakdown?.baseCurrency_Amount || 0).toFixed(
-              2
+              2,
             )} + ${secondaryCurrency} ${Math.round(row?.profitBreakdown?.secondaryCurrency_Amount || 0)}`
           : row?.profitBreakdown?.currency === 'secondaryCurrency'
           ? `${secondaryCurrency} ${Math.round(row?.profitBreakdown?.riderPayout || 0)}`

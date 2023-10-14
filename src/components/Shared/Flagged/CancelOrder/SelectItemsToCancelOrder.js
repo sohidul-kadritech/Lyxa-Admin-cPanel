@@ -8,8 +8,10 @@ import React, { useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
 import StyledIconButton from '../../../Styled/StyledIconButton';
+import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import SelectableItem from '../Refund/SelectableItem';
 import StyledContainer from '../Refund/StyledContainer';
+import { getProductPrice } from '../Refund/helpers';
 
 export const getUpdatedEndorseLossValue = (data, totalSelectedAmount) => {
   const template = {
@@ -33,11 +35,11 @@ export const getUpdatedEndorseLossValue = (data, totalSelectedAmount) => {
 export const getSelectableItems = (order) => {
   let data = [];
   let k = 1;
-
   order?.productsDetails?.forEach((item) => {
     for (let i = 0; i < item?.productQuantity; i++) {
-      const price =
-        item?.baseCurrency_productPrice - item?.baseCurrency_productPrice * ((order?.adminPercentage || 0) / 100);
+      const deal = productDeal(item);
+      const productPrice = getProductPrice(item, deal);
+      const price = productPrice - productPrice * ((order?.adminPercentage || 0) / 100);
       const secondaryCurrency = order?.shop?.shopExchangeRate * Number(price);
       const temp = { name: item?.productName, price, id: k, secondaryCurrency };
       data.push(temp);
@@ -48,8 +50,13 @@ export const getSelectableItems = (order) => {
   const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
 
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFee > 0 && order?.orderFor === 'global' && order?.deliveryBoy
-      ? { name: 'Delivery Fee', price: order?.summary?.baseCurrency_riderFee, id: 'delivery_fee', secondaryCurrency }
+    order?.summary?.baseCurrency_riderFeeWithFreeDelivery > 0 && order?.orderFor === 'global' && order?.deliveryBoy
+      ? {
+          name: 'Delivery Fee',
+          price: order?.summary?.baseCurrency_riderFeeWithFreeDelivery,
+          id: 'delivery_fee',
+          secondaryCurrency,
+        }
       : undefined;
 
   if (deliveryFee) {
@@ -171,7 +178,7 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
                 Total
               </Typography>
               <Typography variant="body2">
-                {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0)}
+                {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0).toFixed(2)}
               </Typography>
             </Stack>
           </Stack>

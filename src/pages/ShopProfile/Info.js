@@ -25,7 +25,6 @@ export const statusColor = {
 // function is used in multiple places
 export const getShopStatusColor = (shop) => {
   const color = { color: statusColor?.green, status: 'online' };
-  console.log('shop==>', shop);
 
   if (shop?.shopStatus === 'inactive') {
     return { color: statusColor?.yellow, status: 'inactive' };

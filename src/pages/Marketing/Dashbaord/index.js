@@ -214,14 +214,14 @@ export default function MarketingDashboard({ viewUserType }) {
       params?.type === 'reward'
         ? [
             {
-              label: 'Amount(Shop)',
+              label: `Amount(Shop) (${currency?.symbol})`,
               data: aData?.data.map((amount) => amount?.shopAmountSpent),
               borderColor: 'rgba(221, 91, 99, 1)',
               backgroundColor: 'rgba(21, 191, 202, 0)',
               borderWidth: 1,
             },
             {
-              label: 'Amount(Lxya)',
+              label: `Amount(Lxya) (${currency?.symbol})`,
               data: aData?.data.map((amount) => amount?.adminAmountSpent),
               borderColor: 'rgba(21, 11, 202, 1)',
               backgroundColor: 'rgba(21, 191, 202, 0)',
@@ -230,7 +230,7 @@ export default function MarketingDashboard({ viewUserType }) {
           ]
         : [
             {
-              label: 'Amount',
+              label: `Amount (${currency?.symbol})`,
               data: aData.data,
               borderColor: 'rgba(21, 191, 202, 1)',
               backgroundColor: 'rgba(21, 191, 202, 0)',

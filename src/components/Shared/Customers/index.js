@@ -44,7 +44,9 @@ const getQueryParamsInit = (type, id) => ({
 
 export default function Customers({ viewUserType }) {
   const [currentTab, setCurrentTab] = useState('total');
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
+
+  const { currency } = general;
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(viewUserType, currentUser[viewUserType]?._id));
 
   const handleTabChange = (index) => {
@@ -118,7 +120,7 @@ export default function Customers({ viewUserType }) {
         </Grid>
         {currentTab !== 'lapsed' && (
           <CommonAreaChart
-            valueLabel="Sales"
+            valueLabel={`Sales (${currency?.symbol})`}
             api={Api.SHOP_DASHBOARD_CUSTOMER_SALES_GRAPH}
             title={`${tabValueToPropsMap[currentTab].title} sales`}
             params={{

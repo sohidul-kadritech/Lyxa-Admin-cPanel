@@ -23,6 +23,29 @@ import { ReactComponent as UserIcon } from '../assets/icons/menu-icons/user.svg'
 import { ReactComponent as UsersIcon } from '../assets/icons/menu-icons/users.svg';
 
 /* ======== shop ======== */
+export const shop_manager_menu_items = (prefix = '') => {
+  const menuItems = [
+    {
+      title: 'Order & Menu Details',
+      menu: [
+        {
+          label: 'Order',
+          icon: OrderIcon,
+          to: `${prefix}/new-orders`,
+        },
+        {
+          label: 'Menu',
+          icon: MenuIcon,
+          to: `${prefix}/menu`,
+        },
+      ],
+    },
+  ];
+
+  return menuItems;
+};
+
+/* ======== shop ======== */
 export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
   const menuItems = [
     {

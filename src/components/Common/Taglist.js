@@ -33,7 +33,7 @@ export default function Taglist({
             }}
           />
         ))}
-        {showAdd && (
+        {(showAdd || !items?.length) && (
           <ClickAwayListener
             onClickAway={() => {
               if (showAdd) {
@@ -70,32 +70,38 @@ export default function Taglist({
             />
           </ClickAwayListener>
         )}
-        {items?.length < 1 && !showAdd && (
+        {/* {items?.length < 1 && !showAdd && (
           <Box pt={2} pb={2}>
             <Typography variant="body3">No Categories Added</Typography>
           </Box>
-        )}
+        )} */}
       </Stack>
-      <Button
-        disableRipple
-        color="primary"
-        variant="text"
-        startIcon={<Add />}
-        sx={{
-          fontSize: '14px',
-          lineHeight: '17px',
 
-          ...(buttonSx || {}),
-        }}
-        onClick={() => {
-          setShowAdd(true);
-          setTimeout(() => {
-            inputRef?.current?.querySelector('input')?.focus();
-          }, 10);
-        }}
-      >
-        {addButtonLabel}
-      </Button>
+      <Stack gap={2}>
+        <Typography variant="body3">After completing your typing, kindly press the 'Enter' key.</Typography>
+        <Stack direction="row">
+          <Button
+            disableRipple
+            color="primary"
+            variant="text"
+            startIcon={<Add />}
+            sx={{
+              fontSize: '14px',
+              lineHeight: '17px',
+
+              ...(buttonSx || {}),
+            }}
+            onClick={() => {
+              setShowAdd(true);
+              setTimeout(() => {
+                inputRef?.current?.querySelector('input')?.focus();
+              }, 10);
+            }}
+          >
+            {addButtonLabel}
+          </Button>
+        </Stack>
+      </Stack>
     </Box>
   );
 }

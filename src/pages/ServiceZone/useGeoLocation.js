@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { successMsg } from '../../helpers/successMsg';
 
 const useGeoLocation = () => {
   const [location, setLocation] = useState({
@@ -20,6 +21,7 @@ const useGeoLocation = () => {
 
   const onError = (error) => {
     console.log('on error');
+    successMsg('Please Turn on your location');
     setLocation({
       loaded: true,
       isCurrent: false,
