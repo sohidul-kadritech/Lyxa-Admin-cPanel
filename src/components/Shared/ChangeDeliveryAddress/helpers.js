@@ -39,6 +39,7 @@ export function addCurrentLocationControl(map, google, smoothPanTo, getSelectedL
 
   controlUI.style.backgroundColor = '#fff';
   controlUI.style.border = '2px solid #fff';
+  controlUI.style.marginRight = '10px';
   controlUI.style.borderRadius = '3px';
   controlUI.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.3)';
   controlUI.style.cursor = 'pointer';

@@ -51,6 +51,7 @@ const StyledOverlay = styled(Box)(() => ({
 export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], title, childFor = '' }) {
   const { currentUser } = useGlobalContext();
   const { profilePhoto, altName, name } = getProfilePhotoAndAltName(currentUser, childFor);
+  console.log({ lngh: name?.length });
 
   return (
     <Box>
@@ -89,7 +90,7 @@ export default function Sidebar({ variant, sidebar, setSidebar, menuItems = [], 
                   width: '170px',
                   color: '#fff',
                   fontWeight: '500',
-                  fontSize: `${name?.length <= 20 ? 18 : 18 - (name?.length * 2 - 18)}px`, // Set font size to 'auto' for dynamic sizing
+                  fontSize: `${name?.length <= 13 ? 24 : 20 - (name?.length - 20) * 0.6}px !important`, // Set font size to 'auto' for dynamic sizing
                   lineHeight: '27px',
                   letterSpacing: '0.05em',
                   whiteSpace: 'nowrap', // Prevent text from wrapping
