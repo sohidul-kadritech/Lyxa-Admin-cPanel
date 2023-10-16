@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import socketServices from '../../common/socketService';
 import CloseButton from '../../components/Common/CloseButton';
 import { successMsg } from '../../helpers/successMsg';
 import * as Api from '../../network/Api';
@@ -59,13 +60,17 @@ function OrderRejectForShop({ currentOrder, setCurrentOrder, onClose, onSuccess,
         },
       }),
     {
-      onSuccess: (data) => {
+      onSuccess: (data, payload) => {
         console.log('data response: ', data);
         if (data.status) {
           if (onSuccess) onSuccess(data);
           successMsg(data.message, 'success');
-          console.log('data status true');
+
+          socketServices?.emit('updateOrder', {
+            orderId: payload?.orderId,
+          });
           onClose();
+
           queryClient.invalidateQueries(refetchApiKey);
         } else {
           successMsg(data.message, 'error');

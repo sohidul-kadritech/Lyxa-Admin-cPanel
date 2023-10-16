@@ -91,6 +91,8 @@ export default function NewOrders({ showFor }) {
 
       // emit socket
 
+      console.log({ payload });
+
       if (payload?.data?.orderStatus === 'accepted_delivery_boy') {
         socketServices?.emit('adminAcceptedOrder', { orderId: payload.data?.orderId });
       } else {
@@ -305,7 +307,7 @@ export default function NewOrders({ showFor }) {
         <OrderRejectForShop
           onClose={() => {
             setOpenCancelModal(false);
-            // setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           onSuccess={(data) => {
             // when rejection is successfull it will update the currentOrder state
