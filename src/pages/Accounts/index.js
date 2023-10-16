@@ -39,7 +39,7 @@ export default function AccountList() {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   return (
@@ -55,7 +55,7 @@ export default function AccountList() {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"
-          showFilters={{ search: true, status: true, type: true, date: true, sort: true }}
+          showFilters={{ search: true, status: true, type: true, date: false, sort: true }}
         />
       </Box>
       <UsersTable
