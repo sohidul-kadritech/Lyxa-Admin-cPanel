@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
+import { colorList } from '../helper';
 
 function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
   const { google } = window;
@@ -51,6 +52,19 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
     });
 
     addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng, userLocationMarker.current);
+
+    zones.forEach((item, i) => {
+      const polygon = new google.maps.Polygon({
+        paths: item?.zoneGeometry?.coordinates,
+        strokeColor: colorList[i % 50],
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: colorList[i % 50],
+        fillOpacity: 0.35,
+      });
+
+      polygon.setMap(map);
+    });
 
     // initializing control panel
     const control = floatingPanel.current;

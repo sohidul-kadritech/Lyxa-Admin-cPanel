@@ -120,30 +120,38 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
     },
   });
 
-  const cancelOrderQueryMutation = useMutation((data) => AXIOS.post(data?.api, data?.payload), {
-    onSuccess: (data) => {
-      if (data.status) {
-        successMsg(data?.message, 'success');
+  const cancelOrderQueryMutation = useMutation(
+    (data) =>
+      AXIOS.post(data?.api, data?.payload, {
+        params: {
+          ...data?.params,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data.status) {
+          successMsg(data?.message, 'success');
 
-        const order = data?.data?.order;
+          const order = data?.data?.order;
 
-        queryClient.invalidateQueries(API_URL.ORDER_LIST);
+          queryClient.invalidateQueries(API_URL.ORDER_LIST);
 
-        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+          queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
 
-        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+          queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
 
-        socketServices?.emit('updateOrder', {
-          orderId: order?._id,
-        });
+          socketServices?.emit('updateOrder', {
+            orderId: order?._id,
+          });
 
-        onClose();
-        setOpen(false);
-      } else {
-        successMsg(data?.message, 'error');
-      }
+          onClose();
+          setOpen(false);
+        } else {
+          successMsg(data?.message, 'error');
+        }
+      },
     },
-  });
+  );
 
   const onSubmitFlag = () => {
     const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
@@ -161,9 +169,10 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const onSubmitCancelOrder = () => {
     const validatedData = validateCancelData(order, cancelOrderData);
     const api = order?.isButler ? API_URL.BUTLER_CANCEL_ORDER : API_URL.CANCEL_ORDER;
+    const params = order?.isButler ? {} : { userType: 'admin' };
 
     if (validatedData?.status === true) {
-      cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data });
+      cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data, params });
     }
   };
 
@@ -174,7 +183,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
       shopExchangeRate: order?.shopExchangeRate,
       adminExchangeRate: order?.adminExchangeRate,
     }),
-    []
+    [],
   );
 
   return (

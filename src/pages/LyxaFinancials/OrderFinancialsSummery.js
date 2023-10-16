@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-no-useless-fragment */
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
@@ -31,6 +31,8 @@ const breadcrumbItems = () => [
 function OrderFinancialsSummary() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
   const { general } = useGlobalContext();
+
+  const theme = useTheme();
 
   const appSettings = general?.appSetting;
   const { baseCurrency, secondaryCurrency } = appSettings;
@@ -589,9 +591,14 @@ function OrderFinancialsSummary() {
                     sx={{
                       lineHeight: '24px',
                       fontSize: '40px',
+                      color:
+                        errorCharge?.totalErrorCharge >= 0
+                          ? `${theme.palette.danger.main} !important`
+                          : `${theme.palette.text.primary} !important`,
                     }}
                   >
-                    {currency} {(errorCharge?.totalErrorCharge || 0).toFixed(2)}
+                    {errorCharge?.totalErrorCharge >= 0 ? '-' : ''} {currency}{' '}
+                    {(errorCharge?.totalErrorCharge || 0).toFixed(2)}
                   </Typography>
 
                   {errorCharge?.secondaryCurrency_errorCharge >= 0 ? (
