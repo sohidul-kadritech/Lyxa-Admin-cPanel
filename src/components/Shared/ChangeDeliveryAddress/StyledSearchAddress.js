@@ -13,10 +13,9 @@ function StyledSearchAddress({
   getZoneServiceQuery,
   mapReference,
   setMapReference,
+  isNotMarker = true,
 }) {
   const theme = useTheme();
-
-  console.log({ mapReference });
 
   const generateAddress = async (address = {}) => {
     let latlng;
@@ -27,12 +26,19 @@ function StyledSearchAddress({
       console.log(error);
     }
 
-    getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
+    if (getZoneServiceQuery) getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
     const { google } = window;
     const center = new google.maps.LatLng(latlng?.lat, latlng?.lng);
     // mapReference.setCenter(center);
-    mapReference.setZoom(24);
-    smoothPanTo(mapReference, center, 300, google);
+
+    if (mapReference && isNotMarker) {
+      mapReference.setZoom(24);
+      smoothPanTo(mapReference, center, 300, google);
+    } else if (mapReference && !isNotMarker) {
+      mapReference?.marker.setPosition(center);
+      smoothPanTo(mapReference?.map, center, 300, google);
+    }
+
     // newAddress.placeId = placeId;
     setDeliveryAddress((prev) => ({
       ...prev,
@@ -59,7 +65,9 @@ function StyledSearchAddress({
 
       <PlacesAutocomplete
         value={deliveryAddress?.deliveryAddress?.address}
-        onChange={(address) => onChangeAddressHandler(address)}
+        onChange={(address) => {
+          if (onChangeAddressHandler) onChangeAddressHandler(address);
+        }}
         onSelect={handleAddressSelect}
         onError={(error) => {
           console.log(error);

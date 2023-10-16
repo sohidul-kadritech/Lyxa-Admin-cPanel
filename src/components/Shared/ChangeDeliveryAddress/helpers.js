@@ -32,7 +32,7 @@ export const validateDeliveryAddress = (data) => {
   return { status: true };
 };
 
-export function addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng) {
+export function addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng, markerLocation = undefined) {
   const controlDiv = document.createElement('div');
   const controlUI = document.createElement('div');
   const controlIcon = document.createElement('img'); // Use an <img> element for the icon
@@ -66,13 +66,17 @@ export function addCurrentLocationControl(map, google, smoothPanTo, getSelectedL
 
           const latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-          getSelectedLatLng({ latitude: pos?.lat, longitude: pos?.lng });
+          if (markerLocation) {
+            markerLocation.setPosition(latlng);
+          }
+
+          if (getSelectedLatLng) getSelectedLatLng({ latitude: pos?.lat, longitude: pos?.lng });
 
           smoothPanTo(map, latlng, 500, google);
         },
         () => {
           successMsg('Please Turn on your location');
-        }
+        },
       );
     }
   });
