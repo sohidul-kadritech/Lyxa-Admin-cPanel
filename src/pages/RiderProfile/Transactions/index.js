@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
 import GlobalAddRemoveCredit from '../../../components/Shared/GlobalAddRemoveCredit';
-import PayoutList from '../../../components/Shared/Payout';
 import RiderPayoutBreakDown from '../../../components/Shared/RiderFinancials/RiderPayoutBreakDown';
 import TransactionsTable from '../../../components/Shared/TransactionsTable';
 import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
@@ -76,7 +75,7 @@ export default function RiderTransactions({ riderId, showFor }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-    },
+    }
   );
 
   // on receive cash
@@ -146,7 +145,6 @@ export default function RiderTransactions({ riderId, showFor }) {
           <Tabs value={currentTab}>
             <Tab onClick={() => setCurrentTab(0)} label="Transaction" />
             <Tab onClick={() => setCurrentTab(1)} label="Order" />
-            <Tab onClick={() => setCurrentTab(2)} label="Payouts" />
           </Tabs>
         </Box>
       )}
@@ -202,16 +200,6 @@ export default function RiderTransactions({ riderId, showFor }) {
             endDate: queryParams.endDate,
           }}
         />
-      )}
-
-      {/* Payout tab */}
-      {currentTab === 2 && (
-        <Box>
-          <PayoutList
-            showFor="specific"
-            payaoutParams={{ deliveryBoyId: queryParams.deliveryBoyId || riderId, payoutAccount: 'deliveryBoy' }}
-          />
-        </Box>
       )}
 
       <Modal
