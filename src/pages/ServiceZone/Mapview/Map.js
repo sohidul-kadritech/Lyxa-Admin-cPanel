@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
+import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 import { colorList } from '../helper';
 
 function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
@@ -64,6 +65,21 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
       });
 
       polygon.setMap(map);
+      // Create an InfoWindow to display the tooltip
+      const infoWindow = new google.maps.InfoWindow({
+        content: getTitleForMarker(item?.zoneName),
+      });
+
+      // Add a mouseover event listener to show the tooltip
+      google.maps.event.addListener(polygon, 'mouseover', (event) => {
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      });
+
+      // Add a mouseout event listener to hide the tooltip
+      google.maps.event.addListener(polygon, 'mouseout', () => {
+        infoWindow.close();
+      });
     });
 
     // initializing control panel

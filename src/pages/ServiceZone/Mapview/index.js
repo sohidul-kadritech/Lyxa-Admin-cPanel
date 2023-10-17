@@ -6,6 +6,7 @@ import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddres
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ModalContainer from '../ModalContainer';
+import { getLocationFromLatLng } from '../helper';
 import useGeoLocation from '../useGeoLocation';
 import Map from './Map';
 
@@ -30,6 +31,15 @@ function MapView({ onClose }) {
   const { location: currentLocation, getCurrentLocation } = useGeoLocation();
 
   const { coordinates } = currentLocation;
+
+  const getSelectedLatLng = async ({ latitude, longitude }) => {
+    const { data } = await getLocationFromLatLng(latitude, longitude);
+    console.log({ data });
+    setZoneAddress((prev) => ({
+      ...prev,
+      deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
+    }));
+  };
 
   // getAllZones
   const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
@@ -90,6 +100,7 @@ function MapView({ onClose }) {
             currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
             setMapReference={setMapReference}
             zones={zones}
+            getSelectedLatLng={getSelectedLatLng}
           />
         </Stack>
       </Stack>
