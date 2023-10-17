@@ -11,11 +11,17 @@ function MarketingLabelCard({ label }) {
       sx={{
         background: '#CC274B',
         padding: '4px 8px',
-        borderRadius: '32px',
+        borderRadius: '10px',
         border: `1px solid #CC274B`,
       }}
     >
-      <Typography variant="h6" lineHeight="20px" fontSize="14px" color={theme?.palette.primary.contrastText}>
+      <Typography
+        variant="body"
+        lineHeight="20px"
+        fontSize="14px"
+        fontWeight={400}
+        color={theme?.palette.primary.contrastText}
+      >
         {label}
       </Typography>
     </Box>

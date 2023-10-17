@@ -346,6 +346,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             ? 0
             : financialBreakdown?.deliveryFee;
 
+        // console.log({ deliveryFee, financialBreakdown, row });
+
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion

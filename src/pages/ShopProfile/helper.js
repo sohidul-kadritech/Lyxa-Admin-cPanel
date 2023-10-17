@@ -323,12 +323,16 @@ export const getMarketingLabel = (shop) => {
         });
 
         if (deals.percentage.isEntireMenu) {
-          temp = `${temp}on Entire Menu (${obj?.creatorType})`;
+          temp = (
+            <>
+              <b style={{ fontWeight: '700' }}>Up to {temp}off </b> on Entire Menu ({obj?.creatorType})
+            </>
+          );
         } else {
           temp = (
-            <strong>
-              Up to {temp}off on Selected Items ({obj?.creatorType})
-            </strong>
+            <>
+              <b style={{ fontWeight: '700' }}>Up to {temp}off </b> on Selected Items ({obj?.creatorType})
+            </>
           );
         }
 
