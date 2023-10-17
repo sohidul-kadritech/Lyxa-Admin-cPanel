@@ -296,7 +296,10 @@ export default function UpdateOrderStatus({
   // auto asignRider handler here
 
   const autoAssingRiderHandler = async () => {
-    await globalRidersQuery?.refetch();
+    if (!isSelfShop) await globalRidersQuery?.refetch();
+    else {
+      await shopRiderQuery?.refetch();
+    }
     setCurrentOrderDelivery((prev) => {
       // check the length of the rider list;
       if (deliveryBoyList?.length > 0) {

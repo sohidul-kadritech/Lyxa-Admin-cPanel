@@ -4,6 +4,8 @@ import React from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import UserAvatar from '../../components/Common/UserAvatar';
 import ViewUserInfoItem from '../../components/Common/ViewUserInfoItems';
+import ClickableAddress from '../../components/Shared/ClickableAddress';
+import { sortAddress } from '../UsersProfile/helpers';
 
 export default function ViewAccountInfo({ onClose, user = {} }) {
   console.log(user);
@@ -64,14 +66,21 @@ export default function ViewAccountInfo({ onClose, user = {} }) {
                   Address
                 </Typography>
                 <Stack gap={4}>
-                  {user?.address?.map((item) => (
-                    <Typography
-                      key={item?.id}
-                      variant="inherit"
-                      sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}
-                    >
-                      {item?.address}
-                    </Typography>
+                  {sortAddress(user?.address)?.map((item, i) => (
+                    <ClickableAddress key={i} latitude={item?.latitude} longitude={item?.longitude}>
+                      <Typography
+                        key={item?.id}
+                        variant="inherit"
+                        sx={{
+                          textTransform: 'capitalize',
+                          fontSize: '14px',
+                          color: item?.primary ? 'primary.main' : 'text.secondary',
+                          fontWeight: item?.primary ? '700' : '500',
+                        }}
+                      >
+                        {item?.address}
+                      </Typography>
+                    </ClickableAddress>
                   ))}
                 </Stack>
               </Stack>

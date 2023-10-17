@@ -50,6 +50,7 @@ export default function DeliveryDetails({ order = {}, sx, showMap = true }) {
   const routeMatch = useRouteMatch();
   const theme = useTheme();
 
+  console.log({ status: order?.orderStatus });
   return (
     <Stack gap={5}>
       <DeliveryMethod theme={theme} order={order} sx={sx} />
@@ -98,7 +99,12 @@ export default function DeliveryDetails({ order = {}, sx, showMap = true }) {
               user={{
                 name: order?.deliveryBoy?.name,
                 image: order?.deliveryBoy?.image,
-                secondary: order?.orderStatus === 'delivered' ? 'Delivered' : 'Delivering',
+                secondary:
+                  order?.orderStatus === 'delivered'
+                    ? 'Delivered'
+                    : order?.orderStatus === 'cancelled'
+                    ? 'Cancelled'
+                    : 'Delivering',
                 vehicleNumber: order?.deliveryBoy?.vehicleNumber,
                 number: order?.deliveryBoy?.number,
               }}

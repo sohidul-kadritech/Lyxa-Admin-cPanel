@@ -4,16 +4,20 @@ import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 import StyledInput from '../../Styled/StyledInput';
+import { smoothPanTo } from './helpers';
 
 function StyledSearchAddress({
   deliveryAddress = {},
   setDeliveryAddress,
   onChangeAddressHandler,
   getZoneServiceQuery,
+  mapReference,
+  setMapReference,
+  isNotMarker = true,
 }) {
   const theme = useTheme();
 
-  const generateShopAddress = async (address = {}) => {
+  const generateAddress = async (address = {}) => {
     let latlng;
 
     try {
@@ -22,7 +26,19 @@ function StyledSearchAddress({
       console.log(error);
     }
 
-    getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
+    if (getZoneServiceQuery) getZoneServiceQuery.mutate({ latitude: latlng?.lat, longitude: latlng?.lng });
+    const { google } = window;
+    const center = new google.maps.LatLng(latlng?.lat, latlng?.lng);
+    // mapReference.setCenter(center);
+
+    if (mapReference && isNotMarker) {
+      mapReference.setZoom(24);
+      smoothPanTo(mapReference, center, 300, google);
+    } else if (mapReference && !isNotMarker) {
+      mapReference?.marker.setPosition(center);
+      smoothPanTo(mapReference?.map, center, 300, google);
+    }
+
     // newAddress.placeId = placeId;
     setDeliveryAddress((prev) => ({
       ...prev,
@@ -38,7 +54,7 @@ function StyledSearchAddress({
     }));
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
-      .then((results) => generateShopAddress(results[0], placeId))
+      .then((results) => generateAddress(results[0], placeId))
       .catch((error) => console.error('Error', error));
   };
   return (
@@ -49,7 +65,9 @@ function StyledSearchAddress({
 
       <PlacesAutocomplete
         value={deliveryAddress?.deliveryAddress?.address}
-        onChange={(address) => onChangeAddressHandler(address)}
+        onChange={(address) => {
+          if (onChangeAddressHandler) onChangeAddressHandler(address);
+        }}
         onSelect={handleAddressSelect}
         onError={(error) => {
           console.log(error);

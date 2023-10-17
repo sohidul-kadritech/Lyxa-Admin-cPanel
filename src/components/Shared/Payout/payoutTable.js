@@ -138,7 +138,7 @@ function PayoutTable({
         const isShop = row?.payoutAccount === 'shop';
         const data = isShop
           ? `${currency} ${(row?.profitBreakdown?.baseCurrency_Amount || 0).toFixed(
-              2,
+              2
             )} + ${secondaryCurrency} ${Math.round(row?.profitBreakdown?.secondaryCurrency_Amount || 0)}`
           : row?.profitBreakdown?.currency === 'secondaryCurrency'
           ? `${secondaryCurrency} ${Math.round(row?.profitBreakdown?.riderPayout || 0)}`
@@ -183,6 +183,7 @@ function PayoutTable({
           overflow: 'auto',
           border: `1px solid ${theme.palette.custom.border}`,
           borderRadius: '7px',
+          background: '#fff',
         }}
       >
         {loading ? (

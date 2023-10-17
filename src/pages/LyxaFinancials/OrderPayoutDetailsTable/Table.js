@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -331,12 +332,52 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const otherPayments = row?.profitBreakdown?.otherPayments;
-        console.log('otherPayments?.shopCustomerRefund', otherPayments);
+
+        // cashback
+        const adminMarketingCashBack =
+          otherPayments?.adminMarketingCashback < 0 || otherPayments?.adminMarketingCashback > 0;
+
+        // errror charge
+        const errorCharge = otherPayments?.errorCharge < 0 || otherPayments?.errorCharge > 0;
+        const shopErrorCharge = otherPayments?.shopErrorCharge < 0 || otherPayments?.shopErrorCharge > 0;
+
+        // customerRefund
+        const customerRefund = otherPayments?.customerRefund < 0 || otherPayments?.customerRefund > 0;
+
+        // shopCustomerRefund
+        const shopCustomerRefund = otherPayments?.shopCustomerRefund < 0 || otherPayments?.shopCustomerRefund > 0;
+
+        // replacement order
+        const replacementOrderByAdmin =
+          otherPayments?.replacementOrderByAdmin < 0 || otherPayments?.replacementOrderByAdmin > 0;
+
+        // replacement order
+        const freeDeliveryByShop = otherPayments?.freeDeliveryByShop < 0 || otherPayments?.freeDeliveryByShop > 0;
+
+        // shopVat order
+        const shopVat = otherPayments?.shopVat < 0 || otherPayments?.shopVat > 0;
+
+        // shopDeliveryFee
+        const shopDeliveryFee = otherPayments?.shopDeliveryFee < 0 || otherPayments?.shopDeliveryFee > 0;
+
+        // total
+        const total = otherPayments?.totalOtherPayments < 0 || otherPayments?.totalOtherPayments > 0;
+        // should hide icon
+        const shouldShowExapandIcon =
+          adminMarketingCashBack ||
+          errorCharge ||
+          shopErrorCharge ||
+          customerRefund ||
+          shopCustomerRefund ||
+          replacementOrderByAdmin ||
+          freeDeliveryByShop ||
+          shopVat ||
+          shopDeliveryFee;
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
-              hideIcon={otherPayments?.totalOtherPayments === 0}
+              hideIcon={!shouldShowExapandIcon}
               titleComponent={
                 <SummaryItem
                   title
@@ -375,7 +416,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 label="Error Charge by Shop"
                 currencyType={currencyType}
-                isNegative={otherPayments?.errorCharge < 0}
+                isNegative={otherPayments?.shopErrorCharge > 0}
                 value={Math.abs(otherPayments?.shopErrorCharge)}
                 valueSecondary={Math.abs(otherPayments?.shopErrorCharge)}
               />
