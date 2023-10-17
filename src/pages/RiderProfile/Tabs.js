@@ -6,6 +6,7 @@ import TabPanel from '../../components/Common/TabPanel';
 import Documents from './Documents';
 // import RiderFlags from './Flags';
 import FlaggedOrders from '../../components/Shared/FlaggedOrders';
+import PayoutList from '../../components/Shared/Payout';
 import RiderOrders from './Orders';
 import RiderRating from './RiderRating';
 import RiderTimeStamp from './Timestamp';
@@ -38,6 +39,7 @@ export default function RiderTabs({ rider, isFinancials, storeAppSettings }) {
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Flagged" />}
         <Tab label="Documents" />
         {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Reviews" />}
+        {rider?.deliveryBoyType !== 'shopRider' && <Tab label="Payouts" />}
       </Tabs>
       <Box>
         <TabPanel index={0} value={currentTab}>
@@ -60,6 +62,15 @@ export default function RiderTabs({ rider, isFinancials, storeAppSettings }) {
         </TabPanel>
         <TabPanel index={6} value={currentTab}>
           <RiderRating rider={rider} />
+        </TabPanel>
+        <TabPanel index={7} value={currentTab}>
+          <Box>
+            <PayoutList
+              marginTop="0px"
+              showFor="specific"
+              payaoutParams={{ deliveryBoyId: rider?._id, payoutAccount: 'deliveryBoy' }}
+            />
+          </Box>
         </TabPanel>
       </Box>
     </Box>

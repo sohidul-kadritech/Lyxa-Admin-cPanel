@@ -192,7 +192,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
                         )}`,
                       },
                       {
@@ -201,7 +201,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(
                           currencyType,
-                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc
+                          financialBreakdown?.AdminMarketingCashback?.couponDiscount_amc,
                         )}`,
                       },
                     ]}
@@ -346,6 +346,8 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             ? 0
             : financialBreakdown?.deliveryFee;
 
+        // console.log({ deliveryFee, financialBreakdown, row });
+
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
@@ -355,8 +357,16 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                   title
                   pb={0}
                   currencyType={currencyType}
-                  value={deliveryFee?.deliveryFee}
-                  valueSecondary={deliveryFee?.deliveryFee}
+                  value={
+                    row?.inEndorseLossDeliveryFeeIncluded
+                      ? deliveryFee?.deliveryFee - deliveryFee?.riderTip_online
+                      : deliveryFee?.deliveryFee
+                  }
+                  valueSecondary={
+                    row?.inEndorseLossDeliveryFeeIncluded
+                      ? deliveryFee?.deliveryFee - deliveryFee?.riderTip_online
+                      : deliveryFee?.deliveryFee
+                  }
                   showIfZero
                 />
               }
@@ -371,15 +381,23 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 label="Online"
                 currencyType={currencyType}
-                value={deliveryFee?.online}
-                valueSecondary={deliveryFee?.online}
+                value={
+                  row?.orderStatus === 'cancelled'
+                    ? deliveryFee?.online - deliveryFee?.riderTip_online
+                    : deliveryFee?.online
+                }
+                valueSecondary={
+                  row?.orderStatus === 'cancelled'
+                    ? deliveryFee?.online - deliveryFee?.riderTip_online
+                    : deliveryFee?.online
+                }
               />
 
               <SummaryItem
                 label="Rider tip"
                 currencyType={currencyType}
-                value={deliveryFee?.riderTip_online}
-                valueSecondary={deliveryFee?.riderTip_online}
+                value={row?.orderStatus === 'cancelled' ? 0 : deliveryFee?.riderTip_online}
+                valueSecondary={row?.orderStatus === 'cancelled' ? 0 : deliveryFee?.riderTip_online}
                 isRejected
               />
             </TableAccordion>
@@ -421,22 +439,38 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.profitBreakdown;
-        const deliveryFee = row?.inEndorseLossDeliveryFeeIncluded ? financialBreakdown?.deliveryFee?.deliveryFee : 0;
+        // delivery fee
+        const deliveryFee = row?.inEndorseLossDeliveryFeeIncluded
+          ? financialBreakdown?.deliveryFee?.deliveryFee - financialBreakdown?.deliveryFee?.riderTip_online
+          : 0;
+
+        // endorse loss
         const endorseLoss = row?.orderStatus === 'cancelled' ? row?.endorseLoss : {};
 
         // base currency endorse loss
         const baseLoss =
           deliveryFee + endorseLoss?.baseCurrency_shopLoss <= 0
-            ? Math.abs(deliveryFee + endorseLoss?.baseCurrency_shopLoss)
-            : -(deliveryFee + endorseLoss?.baseCurrency_shopLoss);
+            ? Math.abs(deliveryFee - endorseLoss?.baseCurrency_shopLoss)
+            : -(deliveryFee - endorseLoss?.baseCurrency_shopLoss);
+
         // scondary endorse loss
         const secondaryLoss =
           deliveryFee + endorseLoss?.secondaryCurrency_shopLoss <= 0
             ? Math.abs(deliveryFee + endorseLoss?.secondaryCurrency_shopLoss)
             : -(deliveryFee + endorseLoss?.secondaryCurrency_shopLoss);
 
+        // baseCurrency and secondary currency
         const baseCurrency = row?.orderStatus === 'cancelled' ? baseLoss : financialBreakdown?.totalPayout;
         const secondaryCurrency = row?.orderStatus === 'cancelled' ? secondaryLoss : financialBreakdown?.totalPayout;
+
+        console.log('error:', {
+          row,
+          deliveryFee,
+          endorseLoss,
+          baseLoss,
+          secondaryLoss,
+          deliveryFeeObj: financialBreakdown?.deliveryFee,
+        });
 
         return (
           <SummaryItem

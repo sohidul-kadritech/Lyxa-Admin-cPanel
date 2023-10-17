@@ -51,7 +51,7 @@ export default function RiderTimeStamp({ riderId }) {
           title={
             <CardTitle title="Rider Rejecterd" tooltip="How many orders were rejected by rider during working hours?" />
           }
-          value={query?.data?.data?.totalRiderMissedOrder || 0}
+          value={query?.data?.data?.totalRiderRejectedOrder || 0}
           sm={6}
           md={3}
         />
@@ -59,7 +59,7 @@ export default function RiderTimeStamp({ riderId }) {
           title={
             <CardTitle title="Missed Orders" tooltip="How many orders were missed by rider during working hours?" />
           }
-          value={query?.data?.data?.totalRiderRejectedOrder || 0}
+          value={query?.data?.data?.totalRiderMissedOrder || 0}
           sm={6}
           md={3}
         />
