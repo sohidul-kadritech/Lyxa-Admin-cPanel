@@ -264,3 +264,120 @@ export function ShopReviewDetails({ shop }) {
     </Stack>
   );
 }
+
+export const getMarketingLabel = (shop) => {
+  const deals = {
+    free_delivery: false,
+    free_deliveryCreator: '',
+    reward: {
+      isEntireMenu: false,
+      isActive: false,
+    },
+    double_menu: {
+      isActive: false,
+      isEntireMenu: false,
+      createdBy: '',
+    },
+    percentage: {
+      discountPercentages: [],
+      isEntireMenu: false,
+      isActive: false,
+      createdBy: '',
+    },
+    featured: false,
+    hasActiveDeal: false,
+  };
+
+  const promotion = {};
+
+  shop?.marketings?.forEach((obj) => {
+    console.log({ obj });
+    if (obj?.type === 'free_delivery') {
+      deals.free_delivery = obj?.isActive;
+      deals.free_deliveryCreator = obj?.creatorType;
+      deals.hasActiveDeal = obj?.isActive || deals.hasActiveDeal;
+      promotion[obj?.type] = {
+        label: `Ongoing Free Delivery Promotion (${obj?.creatorType})`,
+        isActive: obj?.isActive,
+      };
+    } else if (obj?.type === 'featured') {
+      deals.featured = obj?.isActive;
+      deals.hasActiveDeal = obj?.isActive || obj?.isActive;
+
+      promotion[obj?.type] = {
+        label: `Ongoing Featured Promotion`,
+        isActive: obj?.isActive,
+      };
+    } else {
+      deals[obj?.type].isActive = obj?.isActive;
+      deals[obj?.type].createdBy = obj?.creatorType;
+      deals[obj?.type].isEntireMenu = obj?.itemSelectionType === 'multiple';
+
+      if (obj?.type === 'percentage') {
+        deals.percentage.discountPercentages = [...(obj?.discountPercentages || [])];
+
+        let temp = '';
+
+        deals.percentage.discountPercentages?.forEach((e, i, { length }) => {
+          temp += `${e}%${i === length - 1 ? '' : ','} `;
+        });
+
+        if (deals.percentage.isEntireMenu) {
+          temp = `${temp}on Entire Menu (${obj?.creatorType})`;
+        } else {
+          temp = (
+            <strong>
+              Up to {temp}off on Selected Items ({obj?.creatorType})
+            </strong>
+          );
+        }
+
+        // percentage
+        promotion[obj?.type] = {
+          label: temp,
+          isActive: obj?.isActive,
+        };
+      }
+
+      if (obj?.type === 'double_menu') {
+        let temp = 'Ongoing 2x Promotion';
+
+        if (deals.percentage.isEntireMenu) {
+          temp = `${temp}on Entire Menu`;
+        } else {
+          temp = 'Ongoing 2x Promotion on Selected Items';
+        }
+
+        // double menu
+        promotion[obj?.type] = {
+          label: `${temp} (${obj?.creatorType})`,
+          isActive: obj?.isActive,
+        };
+      }
+
+      if (obj?.type === 'reward') {
+        let temp = 'Ongoing Reward Promotion';
+
+        if (deals.reward.isEntireMenu) {
+          temp = `${temp}on Entire Menu`;
+        } else {
+          temp = 'Ongoing Reward Promotion on Selected Items';
+        }
+
+        // reward
+        promotion[obj?.type] = {
+          label: `${temp} (${obj?.creatorType})`,
+          isActive: obj?.isActive,
+        };
+      }
+
+      if (deals[obj?.type].isActive) {
+        deals.hasActiveDeal = true;
+      }
+    }
+  });
+
+  console.log({ promotion, shop: shop?.marketings });
+
+  return promotion;
+};
