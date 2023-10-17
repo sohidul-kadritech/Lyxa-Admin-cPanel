@@ -1,11 +1,9 @@
 import { Box } from '@mui/material';
-import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import PageTop from '../../components/Common/PageTop';
-import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -16,14 +14,11 @@ const queryParamsInit = {
   pageSize: 20,
   sortBy: 'DESC',
   type: 'ongoing',
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
   searchKey: '',
   status: '',
 };
 
 export default function AccountList() {
-  // const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
   const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
   const [totalPage, setTotalPage] = useState(1);
   const location = useLocation();
@@ -39,7 +34,7 @@ export default function AccountList() {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   return (
@@ -55,7 +50,7 @@ export default function AccountList() {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"
-          showFilters={{ search: true, status: true, type: true, date: true, sort: true }}
+          showFilters={{ search: true, status: true, type: true, date: false, sort: true }}
         />
       </Box>
       <UsersTable

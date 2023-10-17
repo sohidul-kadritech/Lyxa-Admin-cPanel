@@ -49,8 +49,17 @@ export const getSelectableItems = (order) => {
 
   const secondaryCurrency = order?.adminExchangeRate * order?.summary?.baseCurrency_riderFee;
 
+  // status list for showing delivery fee
+  const status = ['preparing', 'ready_to_pickup', 'order_on_the_way'];
+
+  // for global order
+  const shouldShowForGlobal = order?.orderFor === 'global' && order?.deliveryBoy;
+
+  // for specific order
+  const shouldShowForSpecific = order?.orderFor === 'specific' && status?.includes(order?.orderStatus);
+
   const deliveryFee =
-    order?.summary?.baseCurrency_riderFeeWithFreeDelivery > 0 && order?.orderFor === 'global' && order?.deliveryBoy
+    shouldShowForGlobal || shouldShowForSpecific
       ? {
           name: 'Delivery Fee',
           price: order?.summary?.baseCurrency_riderFeeWithFreeDelivery,

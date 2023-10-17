@@ -19,6 +19,7 @@ import CouponOverviewTable from './Table';
 
 export default function CouponOverview({ queryParams, setQueryParams }) {
   const { general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
 
   // const [queryParams, setQueryParams] = useState({ ...queryParamsInit });
@@ -41,7 +42,7 @@ export default function CouponOverview({ queryParams, setQueryParams }) {
           setRows(createCouponOverviewRows(data?.data));
         }
       },
-    }
+    },
   );
 
   useEffect(() => {
@@ -83,7 +84,10 @@ export default function CouponOverview({ queryParams, setQueryParams }) {
         />
         <InfoCard
           title={
-            <CardTitle title="Order Increase" tooltip="How many orders have been made during the ongoing coupons?" />
+            <CardTitle
+              title="Order Increase"
+              tooltip="How many orders have been increased during the ongoing coupons?"
+            />
           }
           value={`${overView?.orderIncreasePercentage || 0}%`}
           sm={6}
@@ -93,7 +97,7 @@ export default function CouponOverview({ queryParams, setQueryParams }) {
           title={
             <CardTitle
               title="Usage"
-              tooltip="Percentage of total orders on total order limits on the ongoing coupons"
+              tooltip="Percentage of total orders on total order limits during the ongoing coupons"
             />
           }
           value={`${overView?.totalCouponsUsagePercentage || 0}%`}

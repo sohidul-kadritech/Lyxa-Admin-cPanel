@@ -13,6 +13,8 @@ import { ReactComponent as Check } from '../../assets/icons/timeline-check.svg';
 import { ReactComponent as Account } from '../../assets/icons/user.svg';
 import { ReactComponent as Warning } from '../../assets/icons/warning-icon.svg';
 import ProfileSidebarInfo from '../../components/Common/ProfileSidebarInfo';
+import ClickableAddress from '../../components/Shared/ClickableAddress';
+import { sortAddress } from './helpers';
 
 export default function UserDetails({ user = {} }) {
   return (
@@ -68,14 +70,21 @@ function UserAddress({ address }) {
         </Typography>
       </Stack>
       <Stack gap={4}>
-        {address?.map((item) => (
-          <Typography
-            key={item?.id}
-            variant="inherit"
-            sx={{ textTransform: 'capitalize', fontSize: '14px', fontWeight: '500' }}
-          >
-            {item?.address}
-          </Typography>
+        {sortAddress(address)?.map((item, i) => (
+          <ClickableAddress key={i} latitude={item?.latitude} longitude={item?.longitude}>
+            <Typography
+              key={item?.id}
+              variant="inherit"
+              sx={{
+                textTransform: 'capitalize',
+                fontSize: '14px',
+                color: item?.primary ? 'primary.main' : 'text.secondary',
+                fontWeight: item?.primary ? '700' : '500',
+              }}
+            >
+              {item?.address}
+            </Typography>
+          </ClickableAddress>
         ))}
       </Stack>
     </Box>

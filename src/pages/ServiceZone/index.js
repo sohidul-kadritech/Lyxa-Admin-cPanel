@@ -1,4 +1,4 @@
-import { Add, Close, Edit } from '@mui/icons-material';
+import { Add, Close, Edit, Map } from '@mui/icons-material';
 import { Box, Button, Fade, Grid, Modal, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -21,6 +21,7 @@ import AddZoneStatus from './AddZoneStatus';
 import CreateZone from './CreateZone';
 import EditZone from './EditZone';
 import MapOverview from './MapOverview';
+import MapView from './Mapview';
 import ServiceZonePageSkeleton from './ServiceZonePageSkeleton';
 import SidebarZone from './SidebarZone';
 
@@ -72,10 +73,10 @@ const listFilterOptions = [
     value: 'busy',
   },
 ];
-function AddMenuButton({ ...props }) {
+function AddMenuButton({ label, Icon, ...props }) {
   return (
-    <Button variant="contained" color="primary" size="small" startIcon={<Add />} {...props}>
-      Add
+    <Button variant="contained" color="primary" size="small" startIcon={Icon || <Add />} {...props}>
+      {label || 'Add'}
     </Button>
   );
 }
@@ -88,6 +89,8 @@ function ServiceZone() {
   const [zoneId, setZoneId] = useState('');
 
   const [open, setOpen] = useState(false);
+
+  const [openMap, setOpenMap] = useState(false);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
@@ -138,7 +141,7 @@ function ServiceZone() {
         }
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
@@ -402,6 +405,14 @@ function ServiceZone() {
                   onChange: (e) => setSelectedZoneStatus(e.target.value),
                 }}
               />
+              {/* Map veiw */}
+              <AddMenuButton
+                label="Map"
+                Icon={<Map />}
+                onClick={() => {
+                  setOpenMap(true);
+                }}
+              />
               {/* Add new zone */}
               <AddMenuButton
                 onClick={() => {
@@ -546,6 +557,14 @@ function ServiceZone() {
           // setIsConfirmModalOpen(false);
         }}
       />
+
+      <Modal open={openMap}>
+        <MapView
+          onClose={() => {
+            setOpenMap(false);
+          }}
+        />
+      </Modal>
     </Box>
   );
 }
