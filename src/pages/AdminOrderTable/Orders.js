@@ -74,11 +74,10 @@ export default function Orders({
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   // startDate&endDate&orderType=&assignedCustomerService
-
   const urgentOrderQuery = useQuery(
     [Api.URGENT_ORDER_COUNT, { ...queryParams }],
     () =>
