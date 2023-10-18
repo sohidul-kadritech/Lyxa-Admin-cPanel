@@ -241,29 +241,6 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       },
     },
     {
-      id: 4,
-      headerName: `TOTAL VAT`,
-      sortable: false,
-      field: 'totalVat',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
-
-        return (
-          <SummaryItem
-            title
-            pb={0}
-            currencyType={currencyType}
-            value={financialBreakdown?.totalVat}
-            valueSecondary={financialBreakdown?.totalVat}
-            showIfZero
-          />
-        );
-      },
-    },
-    {
       id: 5,
       headerName: `OTHER PAYMENTS`,
       sortable: false,
@@ -331,6 +308,30 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         );
       },
     },
+    {
+      id: 4,
+      headerName: `TOTAL VAT`,
+      sortable: false,
+      field: 'totalVat',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.totalVat}
+            valueSecondary={financialBreakdown?.totalVat}
+            showIfZero
+          />
+        );
+      },
+    },
+
     {
       id: 7,
       headerName: `DELIVERY FEE`,
