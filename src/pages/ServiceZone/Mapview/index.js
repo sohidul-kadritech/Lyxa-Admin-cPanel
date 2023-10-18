@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Stack, useTheme } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddress/StyledSearchAddress';
@@ -103,13 +103,17 @@ function MapView({ onClose }) {
           </Stack>
         </Stack>
         <Stack flex={1} gap="36px">
-          <Map
-            currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
-            setMapReference={setMapReference}
-            zones={zones}
-            getSelectedLatLng={getSelectedLatLng}
-            stores={getAllStore?.data?.data?.shops || []}
-          />
+          {getAllStore?.isLoading || getAllZones?.isLoading ? (
+            <Typography>Loading</Typography>
+          ) : (
+            <Map
+              currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
+              setMapReference={setMapReference}
+              zones={zones}
+              getSelectedLatLng={getSelectedLatLng}
+              stores={getAllStore?.data?.data?.shops || []}
+            />
+          )}
         </Stack>
       </Stack>
     </ModalContainer>

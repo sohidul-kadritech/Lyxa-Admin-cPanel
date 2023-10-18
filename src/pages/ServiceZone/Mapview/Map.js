@@ -15,7 +15,7 @@ const orderTypeToIconMap = {
   food: ReturantLocation,
 };
 
-function Map({ currentLocation, getSelectedLatLng, setMapReference, zones, stores = [] }) {
+function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], stores = [] }) {
   const { google } = window;
   const mapRef = useRef();
   const sidebar = useRef();
@@ -49,8 +49,6 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones, store
     });
 
     setMapReference({ marker: userLocationMarker?.current, map });
-
-    getSelectedLatLng({ latitude: currentLocation?.latitude || 0, longitude: currentLocation?.longitude || 0 });
 
     userLocationMarker.current.addListener('dragend', () => {
       // Handle drag end event (e.g., update the new position in your application)
@@ -132,7 +130,7 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones, store
     return () => {
       isMounted = false;
     };
-  }, [currentLocation?.latitude, currentLocation?.longitude, zones, stores]);
+  }, [currentLocation?.latitude, currentLocation?.longitude, zones]);
 
   return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }
