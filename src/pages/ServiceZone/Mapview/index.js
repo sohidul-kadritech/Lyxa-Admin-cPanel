@@ -45,8 +45,6 @@ function MapView({ onClose }) {
   const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
     onSuccess: (data) => {
       if (data.status) {
-        // setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-
         const tempZones = data?.data?.zones || [];
 
         const allZones = tempZones.map((item) => {
@@ -60,6 +58,15 @@ function MapView({ onClose }) {
       }
     },
     // eslint-disable-next-line prettier/prettier
+  });
+
+  // getAllStore
+  const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('data', data?.data?.shops);
+      }
+    },
   });
 
   // onChange address handler
@@ -101,6 +108,7 @@ function MapView({ onClose }) {
             setMapReference={setMapReference}
             zones={zones}
             getSelectedLatLng={getSelectedLatLng}
+            stores={getAllStore?.data?.data?.shops || []}
           />
         </Stack>
       </Stack>

@@ -2,11 +2,20 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
+import GroceryLocation from '../../../assets/icons/grocery-location.png';
+import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
+import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
 import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 import { colorList } from '../helper';
 
-function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
+const orderTypeToIconMap = {
+  grocery: GroceryLocation,
+  pharmacy: PharmacyLocation,
+  food: ReturantLocation,
+};
+
+function Map({ currentLocation, getSelectedLatLng, setMapReference, zones, stores = [] }) {
   const { google } = window;
   const mapRef = useRef();
   const sidebar = useRef();
@@ -41,6 +50,8 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
 
     setMapReference({ marker: userLocationMarker?.current, map });
 
+    getSelectedLatLng({ latitude: currentLocation?.latitude || 0, longitude: currentLocation?.longitude || 0 });
+
     userLocationMarker.current.addListener('dragend', () => {
       // Handle drag end event (e.g., update the new position in your application)
       const markerPosition = userLocationMarker.current.getPosition();
@@ -54,13 +65,44 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
 
     addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng, userLocationMarker.current);
 
+    // set marker for each stores.
+    stores.forEach((store, i) => {
+      const shopIcon = {
+        url: orderTypeToIconMap[store?.shopType],
+        scaledSize: new google.maps.Size(30, 60),
+      };
+
+      const shopLocation = new google.maps.Marker({
+        position: {
+          lat: store?.location?.coordinates[1] || 0,
+          lng: store?.location?.coordinates[0] || 0,
+        },
+        icon: shopIcon,
+        map,
+      });
+
+      // store Title
+
+      const infowindowForStore = new google.maps.InfoWindow({
+        content: getTitleForMarker(store?.shopName || 'Store name'),
+      });
+
+      infowindowForStore.open(map, shopLocation);
+
+      // store.addListener('click', () => {
+      //   redirectWithId(order?.deliveryBoy?._id, 'rider');
+      // });
+    });
+
+    // set polygon of each zone
     zones.forEach((item, i) => {
+      console.log({ color: colorList[i + (1 % 50)], i });
       const polygon = new google.maps.Polygon({
         paths: item?.zoneGeometry?.coordinates,
-        strokeColor: colorList[i % 50],
+        strokeColor: colorList[i + (1 % 50)],
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: colorList[i % 50],
+        fillColor: colorList[i + (1 % 50)],
         fillOpacity: 0.35,
       });
 
@@ -90,7 +132,7 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
     return () => {
       isMounted = false;
     };
-  }, [currentLocation?.latitude, currentLocation?.longitude, zones]);
+  }, [currentLocation?.latitude, currentLocation?.longitude, zones, stores]);
 
   return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }
