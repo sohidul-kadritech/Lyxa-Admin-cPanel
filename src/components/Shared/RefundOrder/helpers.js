@@ -26,21 +26,23 @@ export const refundDataInit = {
 };
 
 export const getRefundMaxAmounts = (order) => {
-  let shop = order?.baseCurrency_shopEarnings + order?.vatAmount?.baseCurrency_vatForShop;
-  let shopSecondary = order?.secondaryCurrency_shopEarnings + order?.vatAmount?.secondaryCurrency_vatForShop;
+  const shop = order?.baseCurrency_shopEarnings + order?.vatAmount?.baseCurrency_vatForShop;
+  const shopSecondary = order?.secondaryCurrency_shopEarnings + order?.vatAmount?.secondaryCurrency_vatForShop;
+
+  console.log({ shop, adminCharge: order?.adminCharge?.baseCurrency_adminChargeFromOrder });
 
   // if negative it will be deducted from shop earnings
-  if (order?.adminCharge?.baseCurrency_adminChargeFromOrder < 0) {
-    shop -= Math.abs(order?.adminCharge?.baseCurrency_adminChargeFromOrder);
-    shopSecondary -= Math.abs(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder);
-  }
+  // if (order?.adminCharge?.baseCurrency_adminChargeFromOrder < 0) {
+  //   shop -= Math.abs(order?.adminCharge?.baseCurrency_adminChargeFromOrder);
+  //   shopSecondary -= Math.abs(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder);
+  // }
 
   return {
     shop,
     shopSecondary,
 
-    adminOrderRefund: Math.max(order?.adminCharge?.baseCurrency_adminChargeFromOrder, 0),
-    adminOrderProfitSecondary: Math.max(order?.adminCharge?.secondaryCurrency_adminChargeFromOrder, 0),
+    adminOrderRefund: order?.adminCharge?.baseCurrency_adminChargeFromOrder,
+    adminOrderProfitSecondary: order?.adminCharge?.secondaryCurrency_adminChargeFromOrder,
 
     adminDeliveryRefund: order?.adminCharge?.baseCurrency_adminChargeFromDelivery + order?.baseCurrency_riderFee,
     adminRiderProfitSecondary:

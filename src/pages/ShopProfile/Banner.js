@@ -7,13 +7,15 @@ function MarketingLabelCard({ label }) {
   const theme = useTheme();
 
   return (
-    <Box
+    <Stack
       sx={{
         background: '#CC274B',
         padding: '4px 8px',
         borderRadius: '10px',
         border: `1px solid #CC274B`,
       }}
+      direction="row"
+      alignContent="center"
     >
       <Typography
         variant="body"
@@ -21,10 +23,16 @@ function MarketingLabelCard({ label }) {
         fontSize="14px"
         fontWeight={400}
         color={theme?.palette.primary.contrastText}
+        sx={{
+          maxWidth: '280px',
+          overflow: 'hidden',
+          textWrap: 'nowrap',
+          textOverflow: 'ellipsize',
+        }}
       >
         {label}
       </Typography>
-    </Box>
+    </Stack>
   );
 }
 
@@ -54,7 +62,7 @@ export default function ShopBanner({ shop, loading, onDrop }) {
           objectFit: 'cover',
         }}
       />
-      <Box sx={{ position: 'absolute', top: '10px', left: '10px', minWidth: '450px', height: '120px' }}>
+      <Box sx={{ position: 'absolute', top: '10px', left: '10px', minWidth: '300px', height: '120px' }}>
         <Stack sx={{ position: 'absolute', width: '100%', height: '120px' }} gap={2.5}>
           {promotion?.percentage?.isActive && <MarketingLabelCard label={promotion?.percentage?.label} />}
           {promotion?.double_menu?.isActive && <MarketingLabelCard label={promotion?.double_menu?.label} />}

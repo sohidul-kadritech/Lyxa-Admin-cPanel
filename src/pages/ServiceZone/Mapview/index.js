@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Stack, useTheme } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddress/StyledSearchAddress';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ModalContainer from '../ModalContainer';
+import { getLocationFromLatLng } from '../helper';
 import useGeoLocation from '../useGeoLocation';
 import Map from './Map';
 
@@ -31,12 +32,19 @@ function MapView({ onClose }) {
 
   const { coordinates } = currentLocation;
 
+  const getSelectedLatLng = async ({ latitude, longitude }) => {
+    const { data } = await getLocationFromLatLng(latitude, longitude);
+    console.log({ data });
+    setZoneAddress((prev) => ({
+      ...prev,
+      deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
+    }));
+  };
+
   // getAllZones
   const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
     onSuccess: (data) => {
       if (data.status) {
-        // setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-
         const tempZones = data?.data?.zones || [];
 
         const allZones = tempZones.map((item) => {
@@ -50,6 +58,15 @@ function MapView({ onClose }) {
       }
     },
     // eslint-disable-next-line prettier/prettier
+  });
+
+  // getAllStore
+  const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {
+    onSuccess: (data) => {
+      if (data.status) {
+        console.log('data', data?.data?.shops);
+      }
+    },
   });
 
   // onChange address handler
@@ -86,11 +103,17 @@ function MapView({ onClose }) {
           </Stack>
         </Stack>
         <Stack flex={1} gap="36px">
-          <Map
-            currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
-            setMapReference={setMapReference}
-            zones={zones}
-          />
+          {getAllStore?.isLoading || getAllZones?.isLoading ? (
+            <Typography>Loading</Typography>
+          ) : (
+            <Map
+              currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
+              setMapReference={setMapReference}
+              zones={zones}
+              getSelectedLatLng={getSelectedLatLng}
+              stores={getAllStore?.data?.data?.shops || []}
+            />
+          )}
         </Stack>
       </Stack>
     </ModalContainer>

@@ -362,30 +362,6 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     },
     {
       showFor: ['seller', 'shop', 'allSeller'],
-      id: 4,
-      headerName: `TOTAL VAT (${currency})`,
-      sortable: false,
-      field: 'totalVat',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
-
-        return (
-          <SummaryItem
-            title
-            pb={0}
-            currencyType={currencyType}
-            value={financialBreakdown?.totalVat}
-            valueSecondary={financialBreakdown?.totalVat}
-            showIfZero
-          />
-        );
-      },
-    },
-    {
-      showFor: ['seller', 'shop', 'allSeller'],
       id: 5,
       headerName: `OTHER PAYMENTS (${currency})`,
       sortable: false,
@@ -455,6 +431,31 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         );
       },
     },
+    {
+      showFor: ['seller', 'shop', 'allSeller'],
+      id: 4,
+      headerName: `TOTAL VAT (${currency})`,
+      sortable: false,
+      field: 'totalVat',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.totalVat}
+            valueSecondary={financialBreakdown?.totalVat}
+            showIfZero
+          />
+        );
+      },
+    },
+
     {
       showFor: ['seller', 'shop', 'allSeller'],
       id: 7,

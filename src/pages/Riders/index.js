@@ -26,6 +26,7 @@ export default function RiderList({ viewUserType }) {
   console.log({ viewUserType });
 
   const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit(viewUserType, shop?._id));
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [openRidersMapViewModal, setOpenRidersMapViewModal] = useState(false);
@@ -44,7 +45,7 @@ export default function RiderList({ viewUserType }) {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
       // eslint-disable-next-line prettier/prettier
-    }
+    },
   );
 
   return (
