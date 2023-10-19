@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { getSuccessMessage } from '../helpers';
 import { CustomInputField } from './CustomInputField';
 import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
-import { getMaxForPartialPayment, getMaxLimit } from './helpers';
+import { getMaxForPartialPaymentModified, getMaxLimit } from './helpers';
 
 const initialData = (flaggData) => {
   const template = {
@@ -20,23 +20,23 @@ const initialData = (flaggData) => {
 
   if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'without') {
     template.adminOrderRefund = Number(
-      ((100 / totalSelectedAmount) * Number(partialPayment.adminOrderRefund || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminOrderRefund || 0)).toFixed(2),
     );
     template.adminDeliveryRefund = Number(
-      ((100 / totalSelectedAmount) * Number(partialPayment.adminDeliveryRefund || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminDeliveryRefund || 0)).toFixed(2),
     );
     template.shop = Number(((100 / totalSelectedAmount) * Number(partialPayment.shop || 0)).toFixed(2));
   }
 
   if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'with') {
     template.adminOrderRefund = Number(
-      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_adminCutForReplacement || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_adminCutForReplacement || 0)).toFixed(2),
     );
     template.adminDeliveryRefund = Number(
-      ((100 / totalSelectedAmount) * partialPayment.adminDeliveryRefund).toFixed(2)
+      ((100 / totalSelectedAmount) * partialPayment.adminDeliveryRefund).toFixed(2),
     );
     template.shop = Number(
-      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_shopCutForReplacement || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_shopCutForReplacement || 0)).toFixed(2),
     );
   }
 
@@ -50,21 +50,27 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
 
   useEffect(() => {
     setMaxAmount(getMaxLimit(flaggData, order));
-    setByPercentage(initialData(flaggData));
-  }, [flaggData?.selectedItems]);
+    setByPercentage({
+      adminOrderRefund: '',
+      adminDeliveryRefund: '',
+      shop: '',
+    });
+  }, [flaggData?.selectedItems, flaggData?.totalSelectedAmount]);
 
   const onChangeHandler = (e) => {
     setByPercentage((prev) => {
       // check maxium value
       const maxValue = Number(maxAmount[e.target.name]);
       const newValue = Number(e.target.value);
-      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue >= 0 ? newValue : '';
 
       const updatedValue = { ...prev, [e.target.name]: updatedNewValue };
 
       getSuccessMessage(e.target.name, newValue, maxValue, 'refund');
 
-      const distributedPayment = getMaxForPartialPayment(flaggData, order, updatedValue, e.target.name);
+      const distributedPayment = getMaxForPartialPaymentModified(flaggData, order, updatedValue, e.target.name);
+      // const distributedPayment = getMaxForPartialPayment(flaggData, order, updatedValue, e.target.name);
+
       //  updated flagged data
       setFlaggData((prev) => ({
         ...prev,
@@ -184,7 +190,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
           />
         </Stack>
       </StyledInputForRefundPercentage>
-      {flaggData?.replacement !== 'with' && (
+      {flaggData?.replacement !== 'with' && order?.orderFor !== 'specific' && (
         <StyledInputForRefundPercentage title="Lyxa Delivery Profit">
           <Stack direction="row" alignItems="center" gap={2.5}>
             <CustomInputField

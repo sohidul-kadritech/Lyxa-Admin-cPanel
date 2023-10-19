@@ -2,10 +2,20 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 import CustomerLocation from '../../../assets/icons/customer-location.png';
+import GroceryLocation from '../../../assets/icons/grocery-location.png';
+import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
+import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
+import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 import { colorList } from '../helper';
 
-function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
+const orderTypeToIconMap = {
+  grocery: GroceryLocation,
+  pharmacy: PharmacyLocation,
+  food: ReturantLocation,
+};
+
+function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], stores = [] }) {
   const { google } = window;
   const mapRef = useRef();
   const sidebar = useRef();
@@ -53,17 +63,63 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones }) {
 
     addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng, userLocationMarker.current);
 
+    // set marker for each stores.
+    stores.forEach((store, i) => {
+      const shopIcon = {
+        url: orderTypeToIconMap[store?.shopType],
+        scaledSize: new google.maps.Size(30, 60),
+      };
+
+      const shopLocation = new google.maps.Marker({
+        position: {
+          lat: store?.location?.coordinates[1] || 0,
+          lng: store?.location?.coordinates[0] || 0,
+        },
+        icon: shopIcon,
+        map,
+      });
+
+      // store Title
+
+      const infowindowForStore = new google.maps.InfoWindow({
+        content: getTitleForMarker(store?.shopName || 'Store name'),
+      });
+
+      infowindowForStore.open(map, shopLocation);
+
+      // store.addListener('click', () => {
+      //   redirectWithId(order?.deliveryBoy?._id, 'rider');
+      // });
+    });
+
+    // set polygon of each zone
     zones.forEach((item, i) => {
+      console.log({ color: colorList[i + (1 % 50)], i });
       const polygon = new google.maps.Polygon({
         paths: item?.zoneGeometry?.coordinates,
-        strokeColor: colorList[i % 50],
+        strokeColor: colorList[i + (1 % 50)],
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: colorList[i % 50],
+        fillColor: colorList[i + (1 % 50)],
         fillOpacity: 0.35,
       });
 
       polygon.setMap(map);
+      // Create an InfoWindow to display the tooltip
+      const infoWindow = new google.maps.InfoWindow({
+        content: getTitleForMarker(item?.zoneName),
+      });
+
+      // Add a mouseover event listener to show the tooltip
+      google.maps.event.addListener(polygon, 'mouseover', (event) => {
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      });
+
+      // Add a mouseout event listener to hide the tooltip
+      google.maps.event.addListener(polygon, 'mouseout', () => {
+        infoWindow.close();
+      });
     });
 
     // initializing control panel

@@ -3,7 +3,7 @@
 import { successMsg } from '../../../helpers/successMsg';
 
 import locationIcon from '../../../assets/icons/currentLocation.png';
-import CustomerLocation from '../../../assets/icons/customer-location.png';
+import LocationPin from '../../../assets/icons/location-pin.png';
 
 export const validateDeliveryAddress = (data) => {
   const status = {
@@ -76,7 +76,7 @@ export function addCurrentLocationControl(map, google, smoothPanTo, getSelectedL
         },
         () => {
           successMsg('Please Turn on your location');
-        },
+        }
       );
     }
   });
@@ -100,7 +100,7 @@ export function customMarker(map, google) {
   const shadowDiv = document.createElement('div');
 
   // Set the path to your PNG icon image
-  controlIcon.src = CustomerLocation; // Replace with the actual path to your PNG icon
+  controlIcon.src = LocationPin; // Replace with the actual path to your PNG icon
   controlIcon.style.width = '30px'; // Adjust the width of the icon as needed
   controlIcon.style.height = '60px'; // Adjust the height of the icon as needed
 
@@ -121,12 +121,12 @@ export function customMarker(map, google) {
   controlUI.style.marginBottom = '22px';
 
   // Apply shadow style
-  shadowDiv.style.width = '30px'; // Adjust the shadow width
+  shadowDiv.style.width = '12px'; // Adjust the shadow width
   shadowDiv.style.height = '5px'; // Adjust the shadow height
   shadowDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; // Adjust shadow color and opacity
   shadowDiv.style.borderRadius = '50%'; // Make the shadow rounded
   shadowDiv.style.marginTop = '1px';
-  shadowDiv.style.marginLeft = '0px';
+  shadowDiv.style.marginLeft = '9px';
   // shadowDiv.style.backdropFilter = 'blur(20px)';
   shadowDiv.style.transition = 'all 0.3s ease-in-out';
 
@@ -139,21 +139,21 @@ export function customMarker(map, google) {
   // Add event listeners for map drag and dragend events
   map.addListener('drag', () => {
     // Animate the marker image to the top
-    controlDiv.style.top = '-8%'; // Adjust the top positioning as needed
-    shadowDiv.style.width = '20px'; // Adjust the shadow width
-    shadowDiv.style.height = '10px';
-    shadowDiv.style.marginTop = '16px';
-    shadowDiv.style.marginLeft = '5px';
-    shadowDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+    controlDiv.style.top = '-6%'; // Adjust the top positioning as needed
+    shadowDiv.style.width = '8px'; // Adjust the shadow width
+    shadowDiv.style.height = '5px';
+    shadowDiv.style.marginTop = '2px';
+    shadowDiv.style.marginLeft = '11px';
+    shadowDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
   });
 
   map.addListener('dragend', () => {
     // Return the marker image to its initial position
     controlDiv.style.top = '-5%';
-    shadowDiv.style.width = '30px'; // Adjust the shadow width
+    shadowDiv.style.width = '12px'; // Adjust the shadow width
     shadowDiv.style.height = '5px';
     shadowDiv.style.marginTop = '1px';
-    shadowDiv.style.marginLeft = '0px';
+    shadowDiv.style.marginLeft = '9px';
     shadowDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
   });
 }

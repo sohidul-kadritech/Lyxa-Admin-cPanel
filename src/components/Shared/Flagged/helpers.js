@@ -183,10 +183,10 @@ export const validateFlagData = (order, flaggData, VAT) => {
   const totalVat = baseCurrency_vatForAdmin + baseCurrency_vatForShop;
 
   const baseCurrency_shopCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0
+    flaggData?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0,
   );
   const baseCurrency_adminCutForReplacement = Number(
-    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0
+    flaggData?.replacementOrderCut?.baseCurrency_adminCutForReplacement || 0,
   );
 
   const totalReplacementAmount = baseCurrency_shopCutForReplacement + baseCurrency_adminCutForReplacement;
@@ -248,7 +248,7 @@ export const validateFlagData = (order, flaggData, VAT) => {
     return { status: false };
   }
 
-  if (flaggData?.refund === 'with' && !flaggData?.selectedItems?.length) {
+  if (flaggData?.refund === 'with' && flaggData?.refundType === 'partial' && !flaggData?.selectedItems?.length) {
     successMsg('Select refund Items!');
     return { status: false };
   }
@@ -277,7 +277,9 @@ export const validateFlagData = (order, flaggData, VAT) => {
       calculateVat(order, flaggData, VAT).totalVat - calculateVat(order, flaggData, VAT).vatForShop
     ).toFixed(2);
 
-    refundTemplate.partialPayment.adminVat = parseFloat(refundTemplate.partialPayment.adminVat);
+    refundTemplate.partialPayment.adminVat = parseFloat(refundTemplate?.partialPayment?.adminVat);
+    refundTemplate.partialPayment.adminOrderRefund = parseFloat(refundTemplate?.partialPayment?.adminOrderRefund);
+    refundTemplate.partialPayment.adminDeliveryRefund = parseFloat(refundTemplate?.partialPayment?.adminDeliveryRefund);
 
     return { status: true, data: refundTemplate };
   }

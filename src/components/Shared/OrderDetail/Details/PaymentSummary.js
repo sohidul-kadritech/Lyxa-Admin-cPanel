@@ -126,12 +126,16 @@ export default function PaymentSummary({ order = {} }) {
               const summary = user?.summary;
 
               const total_base_user =
-                summary?.baseCurrency_totalAmount +
-                summary?.baseCurrency_vat +
-                summary?.baseCurrency_riderTip -
-                summary?.baseCurrency_discount -
-                summary?.reward?.baseCurrency_amount -
-                summary?.baseCurrency_couponDiscountAmount;
+                summary?.baseCurrency_wallet + summary?.baseCurrency_card + summary?.baseCurrency_cash;
+              // const total_base_user =
+              //   summary?.baseCurrency_totalAmount +
+              //   summary?.baseCurrency_vat +
+              //   summary?.baseCurrency_riderTip -
+              //   summary?.baseCurrency_discount -
+              //   summary?.reward?.baseCurrency_amount -
+              //   summary?.baseCurrency_couponDiscountAmount;
+
+              console.log({ total_base_user, summary });
 
               return (
                 <SummaryItem

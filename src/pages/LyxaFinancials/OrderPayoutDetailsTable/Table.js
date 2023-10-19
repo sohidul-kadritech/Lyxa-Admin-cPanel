@@ -424,16 +424,16 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 label="Customer refund by Lyxa"
                 currencyType={currencyType}
-                isNegative
-                value={otherPayments?.customerRefund}
-                valueSecondary={otherPayments?.customerRefund}
+                isNegative={otherPayments?.customerRefund > 0}
+                value={Math.abs(otherPayments?.customerRefund)}
+                valueSecondary={Math.abs(otherPayments?.customerRefund)}
               />
               <SummaryItem
                 label="Customer refund by Shop"
                 currencyType={currencyType}
-                isNegative
-                value={otherPayments?.shopCustomerRefund}
-                valueSecondary={otherPayments?.shopCustomerRefund}
+                isNegative={otherPayments?.shopCustomerRefund > 0}
+                value={Math.abs(otherPayments?.shopCustomerRefund)}
+                valueSecondary={Math.abs(otherPayments?.shopCustomerRefund)}
               />
 
               <SummaryItem

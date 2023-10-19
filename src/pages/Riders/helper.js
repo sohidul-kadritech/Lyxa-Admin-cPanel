@@ -77,7 +77,7 @@ export const getQueryParamsInit = (viewUserType, shopId) => {
     shopId: viewUserType === 'shop' ? shopId : undefined,
   };
 
-  if (shopId) obj.shopId = shopId;
+  if (shopId && viewUserType !== 'admin') obj.shopId = shopId;
 
   return obj;
 };

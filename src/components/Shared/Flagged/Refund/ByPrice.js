@@ -26,7 +26,7 @@ function ByPrice({ flaggData, setFlaggData, order }) {
       const maxValue = Number(maxAmount[e.target.name]);
       console.log({ maxAmount });
       const newValue = Number(e.target.value);
-      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue >= 0 ? newValue : '';
 
       const tempPartialPayment = {
         ...prev,
@@ -110,14 +110,22 @@ function ByPrice({ flaggData, setFlaggData, order }) {
         />
       </StyledInputForRefundPercentage>
       {/* Lyxa delivery profit */}
-      {flaggData?.replacement !== 'with' && (
+      {flaggData?.replacement !== 'with' && order?.orderFor !== 'specific' && (
         <StyledInputForRefundPercentage title="Lyxa Delivery Profit" sx={{ flex: 1 }}>
           <CustomInputField
             endAdornment="$"
+            sx={{
+              '& .MuiInputBase-root': {
+                background: flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee')
+                  ? '#F6F8FA !important'
+                  : '#E1E3E5 !important',
+              },
+            }}
             inputProps={{
               value: flaggData?.partialPayment?.adminDeliveryRefund,
               name: 'adminDeliveryRefund',
               type: 'number',
+              readOnly: !flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee'),
               onChange: flaggData?.replacement === 'with' ? onChangeHandlerForReplacement : onChangeHandler,
             }}
           />
