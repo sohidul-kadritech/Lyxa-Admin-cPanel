@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { getSuccessMessage } from '../helpers';
 import { CustomInputField } from './CustomInputField';
 import StyledInputForRefundPercentage from './StyledInputForRefundPercentage';
-import { getMaxForPartialPayment, getMaxLimit } from './helpers';
+import { getMaxForPartialPaymentModified, getMaxLimit } from './helpers';
 
 const initialData = (flaggData) => {
   const template = {
@@ -50,21 +50,27 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
 
   useEffect(() => {
     setMaxAmount(getMaxLimit(flaggData, order));
-    setByPercentage(initialData(flaggData));
-  }, [flaggData?.selectedItems]);
+    setByPercentage({
+      adminOrderRefund: '',
+      adminDeliveryRefund: '',
+      shop: '',
+    });
+  }, [flaggData?.selectedItems, flaggData?.totalSelectedAmount]);
 
   const onChangeHandler = (e) => {
     setByPercentage((prev) => {
       // check maxium value
       const maxValue = Number(maxAmount[e.target.name]);
       const newValue = Number(e.target.value);
-      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue >= 0 ? newValue : '';
 
       const updatedValue = { ...prev, [e.target.name]: updatedNewValue };
 
       getSuccessMessage(e.target.name, newValue, maxValue, 'refund');
 
-      const distributedPayment = getMaxForPartialPayment(flaggData, order, updatedValue, e.target.name);
+      const distributedPayment = getMaxForPartialPaymentModified(flaggData, order, updatedValue, e.target.name);
+      // const distributedPayment = getMaxForPartialPayment(flaggData, order, updatedValue, e.target.name);
+
       //  updated flagged data
       setFlaggData((prev) => ({
         ...prev,

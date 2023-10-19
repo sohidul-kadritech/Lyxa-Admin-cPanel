@@ -16,6 +16,7 @@ import SelectItemsToRefund from './SelectItemsToRefund';
 
 import { TitleWithToolTip } from '../../../../pages/NewOrder/helpers';
 
+import StyledFormField from '../../../Form/StyledFormField';
 import {
   DeliveryTypeOptions,
   RefundOptions,
@@ -25,6 +26,7 @@ import {
   TypeOptions,
   calculateVat,
   getInitialValue,
+  getMaximumAdjustableAmount,
   getTotalRefundAmountWithVat,
   logUsersOptions,
 } from './helpers';
@@ -44,6 +46,19 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
 
       if (prev?.refund === 'with' && e.target.name === 'refundType' && e.target.value === 'full') {
         return { ...prev, partialPayment: { ...getRefundMaxAmounts(order) }, [e.target.name]: e.target.value };
+      }
+
+      if (e.target.name === 'totalSelectedAmount') {
+        return {
+          ...prev,
+          partialPayment: {
+            shop: '',
+            adminOrderRefund: '',
+            adminDeliveryRefund: '',
+            adminVat: '',
+          },
+          [e.target.name]: e.target.value,
+        };
       }
 
       console.log('value==>', { value: getInitialValue(e.target.name), target: e.target.name });
@@ -213,7 +228,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                   tooltip="Lyxa Earning + Lyxa VAT + Shop Earning + Shop VAT + Rider Earning + Rider VAT"
                   title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
                     order,
-                    flaggData
+                    flaggData,
                   )}`}
                 />
               </Stack>
@@ -232,6 +247,26 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
             </Stack>
           </StyledInputBox>
         )}
+
+        {flaggData?.selectedItems?.length > 0 &&
+          order?.summary?.baseCurrency_couponDiscountAmount > 0 &&
+          flaggData?.refund === 'with' &&
+          flaggData?.refundType === 'partial' && (
+            <StyledFormField
+              label="Adjust total amount"
+              intputType="text"
+              inputProps={{
+                type: 'number',
+                name: 'totalSelectedAmount',
+                value: flaggData?.totalSelectedAmount,
+                onChange: (e) => {
+                  const updatedInputValue = getMaximumAdjustableAmount(order, e.target.value);
+                  console.log('updatedInputValue', updatedInputValue);
+                  onChangeHandler({ ...e, target: { ...e?.target, name: e.target.name, value: updatedInputValue } });
+                },
+              }}
+            />
+          )}
 
         {((flaggData?.refundType === 'partial' &&
           flaggData?.refund === 'with' &&
@@ -268,10 +303,10 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 }}
               />
 
-              {flaggData?.refundPercentage === 'by_percentage' && (
+              {flaggData?.refundPercentage === 'by_percentage' && flaggData?.totalSelectedAmount > 0 && (
                 <ByPercentage setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
-              {flaggData?.refundPercentage === 'by_price' && (
+              {flaggData?.refundPercentage === 'by_price' && flaggData?.totalSelectedAmount > 0 && (
                 <ByPrice setFlaggData={setFlaggData} flaggData={flaggData} order={order} />
               )}
 
@@ -288,7 +323,7 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                     title={`Total Refund Amount: ${appSetting?.baseCurrency?.symbol} ${getTotalRefundAmountWithVat(
                       order,
                       flaggData,
-                      calculateVat(order, flaggData, appSetting?.vat).totalVat
+                      calculateVat(order, flaggData, appSetting?.vat).totalVat,
                     )}`}
                   />
                 )}

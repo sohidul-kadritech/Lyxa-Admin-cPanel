@@ -26,7 +26,7 @@ function ByPrice({ flaggData, setFlaggData, order }) {
       const maxValue = Number(maxAmount[e.target.name]);
       console.log({ maxAmount });
       const newValue = Number(e.target.value);
-      const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
+      const updatedNewValue = newValue > maxValue ? maxValue : newValue >= 0 ? newValue : '';
 
       const tempPartialPayment = {
         ...prev,

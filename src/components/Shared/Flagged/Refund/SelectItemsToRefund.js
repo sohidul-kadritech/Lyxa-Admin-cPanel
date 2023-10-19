@@ -44,7 +44,7 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
     partialPayment.adminOrderRefund = Number((totalSelectedAmount * (adminLossPercentage / 100)).toFixed(2));
     partialPayment.adminDeliveryRefund = Number((totalSelectedAmount * (deliveryPercentage / 100)).toFixed(2));
     partialPayment.shop = Number((totalSelectedAmount * (shopLossPercentage / 100)).toFixed(2));
-    return { partialPayment };
+    return { partialPayment: { shop: '', adminOrderRefund: '', adminDeliveryRefund: '', adminVat: '' } };
   }
 
   if (
@@ -73,7 +73,14 @@ export const getUpdatedPartialAndReplacementOrder = (data, totalSelectedAmount) 
       totalSelectedAmount - replacementOrderCut?.baseCurrency_shopCutForReplacement;
     console.log({ replacementOrderCut, delivery: data?.deliveryFee });
 
-    return { replacementOrderCut };
+    return {
+      replacementOrderCut: {
+        baseCurrency_shopCutForReplacement: '',
+        secondaryCurrency_shopCutForReplacement: '',
+        baseCurrency_adminCutForReplacement: '',
+        secondaryCurrency_adminCutForReplacement: '',
+      },
+    };
   }
 
   if (data?.refundPercentage === 'by_price' && data?.replacement === 'with') {
@@ -214,7 +221,9 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       setFlaggData((prev) => {
         const totalSelectedAmount =
           prev?.replacement !== 'with'
-            ? selected.reduce((prevValue, item) => item?.price + prevValue, 0)
+            ? order?.summary?.baseCurrency_couponDiscountAmount > 0
+              ? 0
+              : selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee
             : prev?.totalSelectedAmount;
@@ -238,7 +247,9 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       setFlaggData((prev) => {
         const totalSelectedAmount =
           prev?.replacement !== 'with'
-            ? selected.reduce((prevValue, item) => item?.price + prevValue, 0)
+            ? order?.summary?.baseCurrency_couponDiscountAmount > 0
+              ? 0
+              : selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
             ? selected.reduce((prevValue, item) => item?.price + prevValue, 0) + deliveryFee
             : prev?.totalSelectedAmount;
@@ -352,12 +363,23 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
                   fontSize: '16px',
                 }}
               >
-                Total
+                Total{' '}
               </Typography>
-              <Typography variant="body2" minWidth="40px">
-                {baseCurrency?.symbol} {flaggData?.totalSelectedAmount}
-              </Typography>
+              {order?.summary?.baseCurrency_couponDiscountAmount > 0 ? (
+                <Typography variant="body2" minWidth="40px">
+                  {baseCurrency?.symbol} {0}
+                </Typography>
+              ) : (
+                <Typography variant="body2" minWidth="40px">
+                  {baseCurrency?.symbol} {flaggData?.totalSelectedAmount}
+                </Typography>
+              )}
             </Stack>
+            {order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.selectedItems?.length > 0 && (
+              <Typography variant="body3">
+                (Here, a coupon is used, allowing the admin to change the overall amount.)
+              </Typography>
+            )}
           </Stack>
         </StyledContainer>
       </Stack>
