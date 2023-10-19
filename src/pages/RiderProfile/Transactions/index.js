@@ -75,7 +75,7 @@ export default function RiderTransactions({ riderId, showFor }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage || 1);
       },
-    }
+    },
   );
 
   // on receive cash

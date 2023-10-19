@@ -10,6 +10,7 @@ import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import { toTitleCase } from '../helpers';
 
 const fieldContainerSx = {
   padding: '22px 0',
@@ -116,7 +117,7 @@ export default function AddTag({ onClose, shopType, tag }) {
     }
 
     if (shopType === 'food') {
-      const data = { ...currentTag };
+      const data = { ...currentTag, name: toTitleCase(currentTag?.name) };
       data.type = currentTag.type;
       data.shopType = shopType;
 
@@ -140,10 +141,11 @@ export default function AddTag({ onClose, shopType, tag }) {
 
       tagsMutation.mutate(data);
     } else if (tag?._id) {
-      tagsMutation.mutate(currentTag);
+      tagsMutation.mutate({ ...currentTag, name: toTitleCase(currentTag?.name) });
     } else {
       tagsMutation.mutate({
         ...currentTag,
+        name: toTitleCase(currentTag?.name),
         shopType,
       });
     }
@@ -193,6 +195,9 @@ export default function AddTag({ onClose, shopType, tag }) {
               type: 'text',
               value: currentTag.name,
               onChange: (e) => {
+                if (e?.target?.value?.length > 10) {
+                  return;
+                }
                 setCurrentTag((prev) => ({ ...prev, name: e.target.value }));
               },
             }}

@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 
 import { useQuery } from 'react-query';
 import TablePagination from '../../../../components/Common/TablePagination';
+import OrderDetail from '../../../../components/Shared/OrderDetail';
 import TableSkeleton from '../../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../../context';
@@ -42,6 +43,11 @@ function RiderOrderTable({ currencyType = 'secondaryCurrency', riderParams, load
     paidCurrency: currencyType === 'secondaryCurrency' ? 'secondaryCurrency' : 'baseCurrency',
   });
   const [totalPage, setTotalPage] = useState(1);
+  // currentOrder
+  const [currentOrder, setCurrentOrder] = useState({});
+  // detailOpen
+  const [detailOpen, setDetailOpen] = useState(false);
+
   const theme = useTheme();
   const baseCurrency = general?.currency?.symbol;
   const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
@@ -77,7 +83,22 @@ function RiderOrderTable({ currencyType = 'secondaryCurrency', riderParams, load
       headerName: `ORDER ID`,
       flex: 1,
       minWidth: 100,
-      renderCell: ({ value }) => <Typography variant="body1">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          sx={{
+            color: 'primary.main',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            setCurrentOrder(row);
+            console.log({ row });
+            setDetailOpen(true);
+          }}
+        >
+          {row?.orderId}
+        </Typography>
+      ),
     },
     {
       id: 2,
@@ -218,6 +239,24 @@ function RiderOrderTable({ currencyType = 'secondaryCurrency', riderParams, load
         }}
         totalPage={totalPage}
       />
+
+      {/* order detail */}
+      <Drawer
+        anchor="right"
+        open={detailOpen}
+        onClose={() => {
+          setDetailOpen(false);
+          setCurrentOrder({});
+        }}
+      >
+        <OrderDetail
+          order={currentOrder}
+          onClose={() => {
+            setDetailOpen(false);
+            setCurrentOrder({});
+          }}
+        />
+      </Drawer>
     </>
   );
 }

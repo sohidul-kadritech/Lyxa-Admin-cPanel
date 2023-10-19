@@ -295,7 +295,12 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
               showIfZero
             />
 
-            <PriceItem title="Refunded Amount" amount={otherPayments?.customerRefund} isNegative showIfZero />
+            <PriceItem
+              title="Refunded Amount"
+              amount={Math.abs(otherPayments?.customerRefund)}
+              isNegative={otherPayments?.customerRefund > 0}
+              showIfZero
+            />
           </DetailsAccordion>
 
           {/* total vat */}

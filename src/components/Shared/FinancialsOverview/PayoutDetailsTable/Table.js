@@ -2,13 +2,15 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Drawer, Stack, Typography } from '@mui/material';
 import { isNumber } from 'lodash';
+import { useState } from 'react';
 import { useGlobalContext } from '../../../../context';
 import TablePagination from '../../../Common/TablePagination';
 import TableSkeleton from '../../../Skeleton/TableSkeleton';
 import StyledTable from '../../../Styled/StyledTable3';
 import StyledBox from '../../../StyledCharts/StyledBox';
+import OrderDetail from '../../OrderDetail';
 import { CommonOrderMarketingCashbackTooltipText } from '../helpers';
 import SummaryItem from './SummaryItem';
 import TableAccordion from './TableAccordion';
@@ -29,6 +31,11 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
   const baseCurrency = appSetting?.baseCurrency;
   const secondaryCurrency = appSetting?.secondaryCurrency;
 
+  // currentOrder
+  const [currentOrder, setCurrentOrder] = useState({});
+  // detailOpen
+  const [detailOpen, setDetailOpen] = useState(false);
+
   // console.log('rows', rows);
 
   const columns = [
@@ -41,7 +48,22 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
 
       align: 'left',
       headerAlign: 'left',
-      renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          sx={{
+            color: 'primary.main',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            setCurrentOrder(row);
+            console.log({ row });
+            setDetailOpen(true);
+          }}
+        >
+          {row?.orderId}
+        </Typography>
+      ),
     },
     {
       id: 2,
@@ -241,29 +263,6 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       },
     },
     {
-      id: 4,
-      headerName: `TOTAL VAT`,
-      sortable: false,
-      field: 'totalVat',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
-
-        return (
-          <SummaryItem
-            title
-            pb={0}
-            currencyType={currencyType}
-            value={financialBreakdown?.totalVat}
-            valueSecondary={financialBreakdown?.totalVat}
-            showIfZero
-          />
-        );
-      },
-    },
-    {
       id: 5,
       headerName: `OTHER PAYMENTS`,
       sortable: false,
@@ -323,7 +322,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 label="Refunded Amount"
                 currencyType={currencyType}
                 isNegative={financialBreakdown?.otherPayments?.customerRefund > 0}
-                value={financialBreakdown?.otherPayments?.customerRefund}
+                value={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
                 valueSecondary={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
               />
             </TableAccordion>
@@ -331,6 +330,30 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         );
       },
     },
+    {
+      id: 4,
+      headerName: `TOTAL VAT`,
+      sortable: false,
+      field: 'totalVat',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.orderStatus === 'cancelled' ? {} : row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.totalVat}
+            valueSecondary={financialBreakdown?.totalVat}
+            showIfZero
+          />
+        );
+      },
+    },
+
     {
       id: 7,
       headerName: `DELIVERY FEE`,
@@ -541,6 +564,24 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         </Box>
       </StyledBox>
       <TablePagination currentPage={page} lisener={setPage} totalPage={totalPage} />
+
+      {/* order detail */}
+      <Drawer
+        anchor="right"
+        open={detailOpen}
+        onClose={() => {
+          setDetailOpen(false);
+          setCurrentOrder({});
+        }}
+      >
+        <OrderDetail
+          order={currentOrder}
+          onClose={() => {
+            setDetailOpen(false);
+            setCurrentOrder({});
+          }}
+        />
+      </Drawer>
     </>
   );
 }
