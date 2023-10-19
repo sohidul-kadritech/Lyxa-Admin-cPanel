@@ -110,7 +110,7 @@ function ByPrice({ flaggData, setFlaggData, order }) {
         />
       </StyledInputForRefundPercentage>
       {/* Lyxa delivery profit */}
-      {flaggData?.replacement !== 'with' && (
+      {flaggData?.replacement !== 'with' && order?.orderFor !== 'specific' && (
         <StyledInputForRefundPercentage title="Lyxa Delivery Profit" sx={{ flex: 1 }}>
           <CustomInputField
             endAdornment="$"

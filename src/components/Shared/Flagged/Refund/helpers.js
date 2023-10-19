@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 
@@ -113,33 +114,37 @@ export const getMaxForPartialPayment = (flaggedData, order, byPercentage, key) =
   const shopShare = totalSelectedAmount * (Number(byPercentage?.shop || 0) / 100);
   initialMax.shop = shopShare;
 
-  const diffShopShareTP = totalProductAmount - shopShare;
+  const diffShopShareTP =
+    (order?.orderFor !== 'specific' ? totalProductAmount : totalProductAmount + delivery?.price || 0) - shopShare;
 
-  initialMax.adminDeliveryRefund = delivery?.price;
-  initialMax.adminDeliveryRefund = (initialMax?.adminDeliveryRefund || 0).toFixed(2);
+  initialMax.adminDeliveryRefund = delivery?.price || 0;
+  initialMax.adminDeliveryRefund =
+    order?.orderFor !== 'specific' ? (initialMax?.adminDeliveryRefund || 0).toFixed(2) : 0;
   initialMax.adminOrderRefund = (diffShopShareTP || 0).toFixed(2);
 
   if (shopShare >= totalProductAmount) {
     initialMax.adminDeliveryRefund =
-      diffShopShareTP < 0 ? delivery?.price - Math.abs(diffShopShareTP) : delivery?.price;
-    initialMax.adminDeliveryRefund = (initialMax?.adminDeliveryRefund || 0).toFixed(2);
+      diffShopShareTP < 0 ? delivery?.price || 0 - Math.abs(diffShopShareTP) : delivery?.price || 0;
+    initialMax.adminDeliveryRefund =
+      order?.orderFor !== 'specific' ? (totalSelectedAmount - shopShare || 0).toFixed(2) : 0;
     initialMax.adminOrderRefund = 0;
   }
 
   percentage = {
     shop: calculatePercentage(totalSelectedAmount, initialMax?.shop),
     adminOrderRefund: calculatePercentage(totalSelectedAmount, initialMax?.adminOrderRefund),
-    adminDeliveryRefund: calculatePercentage(totalSelectedAmount, initialMax?.adminDeliveryRefund),
+    adminDeliveryRefund:
+      order?.orderFor !== 'specific' ? calculatePercentage(totalSelectedAmount, initialMax?.adminDeliveryRefund) : 0,
   };
 
   if (key === 'adminDeliveryRefund') {
     const deliveryShare = totalSelectedAmount * (Number(byPercentage?.adminDeliveryRefund || 0) / 100);
 
-    const remainingDeliveryFee = Math.max(delivery?.price - deliveryShare, 0);
+    const remainingDeliveryFee = Math.max(delivery?.price || 0 - deliveryShare, 0);
 
     const remainingPercentage = 100 - Number(byPercentage?.adminDeliveryRefund || 0);
 
-    initialMax.adminDeliveryRefund = Math.min(deliveryShare, delivery?.price).toFixed(2);
+    initialMax.adminDeliveryRefund = Math.min(deliveryShare, delivery?.price || 0).toFixed(2);
 
     initialMax.adminOrderRefund = (
       (totalSelectedAmount * (remainingPercentage / 2)) / 100 -
@@ -188,7 +193,9 @@ export const getMaxLimit = (flaggData, order, by_percentage = true) => {
 
 // max partial payment by price
 export const getMaxForPartialPaymentByPrice = (flaggedData, order, key) => {
-  const delivery = flaggedData?.selectedItems?.find((item) => item?.id === 'delivery_fee');
+  const delivery = flaggedData?.selectedItems?.find(
+    (item) => item?.id === 'delivery_fee' && order?.orderFor !== 'specific',
+  );
 
   const totalProductAmount = flaggedData?.selectedItems
     ?.filter((item) => item?.id !== 'delivery_fee')
@@ -207,7 +214,7 @@ export const getMaxForPartialPaymentByPrice = (flaggedData, order, key) => {
 
     initialMax.shop = Number(partialPayment?.shop || 0);
 
-    initialMax.adminDeliveryRefund = remaining > 0 ? Math.min(remaining, delivery?.price) : 0;
+    initialMax.adminDeliveryRefund = remaining > 0 ? Math.min(remaining, delivery?.price || 0) : 0;
 
     remaining -= initialMax.adminDeliveryRefund;
 

@@ -20,23 +20,23 @@ const initialData = (flaggData) => {
 
   if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'without') {
     template.adminOrderRefund = Number(
-      ((100 / totalSelectedAmount) * Number(partialPayment.adminOrderRefund || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminOrderRefund || 0)).toFixed(2),
     );
     template.adminDeliveryRefund = Number(
-      ((100 / totalSelectedAmount) * Number(partialPayment.adminDeliveryRefund || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(partialPayment.adminDeliveryRefund || 0)).toFixed(2),
     );
     template.shop = Number(((100 / totalSelectedAmount) * Number(partialPayment.shop || 0)).toFixed(2));
   }
 
   if (isFinite(100 / totalSelectedAmount) && flaggData?.replacement === 'with') {
     template.adminOrderRefund = Number(
-      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_adminCutForReplacement || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_adminCutForReplacement || 0)).toFixed(2),
     );
     template.adminDeliveryRefund = Number(
-      ((100 / totalSelectedAmount) * partialPayment.adminDeliveryRefund).toFixed(2)
+      ((100 / totalSelectedAmount) * partialPayment.adminDeliveryRefund).toFixed(2),
     );
     template.shop = Number(
-      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_shopCutForReplacement || 0)).toFixed(2)
+      ((100 / totalSelectedAmount) * Number(replacementOrderCut.baseCurrency_shopCutForReplacement || 0)).toFixed(2),
     );
   }
 
@@ -184,7 +184,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
           />
         </Stack>
       </StyledInputForRefundPercentage>
-      {flaggData?.replacement !== 'with' && (
+      {flaggData?.replacement !== 'with' && order?.orderFor !== 'specific' && (
         <StyledInputForRefundPercentage title="Lyxa Delivery Profit">
           <Stack direction="row" alignItems="center" gap={2.5}>
             <CustomInputField

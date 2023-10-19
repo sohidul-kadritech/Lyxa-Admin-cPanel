@@ -279,6 +279,7 @@ export const validateFlagData = (order, flaggData, VAT) => {
 
     refundTemplate.partialPayment.adminVat = parseFloat(refundTemplate?.partialPayment?.adminVat);
     refundTemplate.partialPayment.adminOrderRefund = parseFloat(refundTemplate?.partialPayment?.adminOrderRefund);
+    refundTemplate.partialPayment.adminDeliveryRefund = parseFloat(refundTemplate?.partialPayment?.adminDeliveryRefund);
 
     return { status: true, data: refundTemplate };
   }
