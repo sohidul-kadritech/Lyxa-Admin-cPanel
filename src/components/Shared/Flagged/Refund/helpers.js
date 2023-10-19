@@ -135,6 +135,8 @@ export const getMaxForPartialPaymentModified = (flaggedData, order, byPercentage
         ? delivery?.price
         : Math.max(totalSelectedAmount - shopShare, 0);
 
+    initialMax.adminDeliveryRefund = Math.min(initialMax.adminDeliveryRefund, delivery?.price);
+
     // calculating how many amount should refund admin from delivery
     initialMax.adminDeliveryRefund =
       order?.orderFor !== 'specific' ? (initialMax?.adminDeliveryRefund || 0).toFixed(2) : 0;
@@ -447,11 +449,12 @@ export const getInitialValue = (targetName) => {
 };
 
 export const getProductPrice = (product, deal) => {
+  console.log({ product });
   if (deal === 'double_menu') {
     return (product?.baseCurrency_productPrice - product?.baseCurrency_discount) * 2 || 0;
   }
 
-  if (deal === 'rewards') {
+  if (deal === 'reward') {
     return product?.finalReward?.baseCurrency_amount || 0;
   }
   if (deal === 'percentage') {

@@ -114,10 +114,18 @@ function ByPrice({ flaggData, setFlaggData, order }) {
         <StyledInputForRefundPercentage title="Lyxa Delivery Profit" sx={{ flex: 1 }}>
           <CustomInputField
             endAdornment="$"
+            sx={{
+              '& .MuiInputBase-root': {
+                background: flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee')
+                  ? '#F6F8FA !important'
+                  : '#E1E3E5 !important',
+              },
+            }}
             inputProps={{
               value: flaggData?.partialPayment?.adminDeliveryRefund,
               name: 'adminDeliveryRefund',
               type: 'number',
+              readOnly: !flaggData?.selectedItems?.find((item) => item?.id === 'delivery_fee'),
               onChange: flaggData?.replacement === 'with' ? onChangeHandlerForReplacement : onChangeHandler,
             }}
           />

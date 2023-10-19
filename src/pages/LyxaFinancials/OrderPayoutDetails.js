@@ -265,14 +265,14 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
             <PriceItem
               title="Customer refund by Lyxa"
-              amount={otherPayments?.customerRefund || 0}
-              isNegative
+              amount={Math.abs(otherPayments?.customerRefund || 0)}
+              isNegative={otherPayments?.customerRefund > 0}
               showIfZero
             />
             <PriceItem
               title="Customer refund by Shop"
-              amount={otherPayments?.shopCustomerRefund || 0}
-              isNegative
+              amount={Math.abs(otherPayments?.shopCustomerRefund || 0)}
+              isNegative={otherPayments?.shopCustomerRefund > 0}
               showIfZero
             />
 

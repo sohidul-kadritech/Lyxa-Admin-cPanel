@@ -322,7 +322,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 label="Refunded Amount"
                 currencyType={currencyType}
                 isNegative={financialBreakdown?.otherPayments?.customerRefund > 0}
-                value={financialBreakdown?.otherPayments?.customerRefund}
+                value={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
                 valueSecondary={Math.abs(financialBreakdown?.otherPayments?.customerRefund)}
               />
             </TableAccordion>
