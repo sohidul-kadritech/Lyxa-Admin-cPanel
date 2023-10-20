@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -409,14 +410,7 @@ export default function Table({
       align: 'right',
       headerAlign: 'right',
       flex: 1,
-      renderCell: (params) => (
-        <ThreeDotsMenu
-          handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row);
-          }}
-          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
-        />
-      ),
+      renderCell: (params) => <></>,
     },
   ];
 
@@ -462,7 +456,7 @@ export default function Table({
                   <MessageIcon color="#5BBD4E" />
                 </>
               ) : null}
-              {row?.isReplacementOrder ? (
+              {row?.isReplacementOrder && row?.orderStatus !== 'delivered' ? (
                 <>
                   &nbsp;&nbsp;
                   <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
@@ -480,7 +474,7 @@ export default function Table({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              setCurrentOrder(row);
+              setCurrentOrder(row?.isReplacementOrder ? row?.originalOrder : row);
               setDetailOpen(true);
             },
           }}
@@ -676,9 +670,18 @@ export default function Table({
       renderCell: (params) => (
         <ThreeDotsMenu
           handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row);
+            threeDotHandler(menu, params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row);
           }}
-          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
+          disabled={
+            !getThreedotMenuOptions(
+              params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row,
+              currentUser?.adminType,
+            ).length
+          }
+          menuItems={getThreedotMenuOptions(
+            params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row,
+            currentUser?.adminType,
+          )}
         />
       ),
     },
