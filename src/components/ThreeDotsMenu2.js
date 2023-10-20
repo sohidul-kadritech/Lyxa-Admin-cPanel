@@ -3,7 +3,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Button, Menu, MenuItem, styled } from '@mui/material';
 import React from 'react';
 
-function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent }) {
+function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent, disabled }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (e) => {
@@ -19,12 +19,13 @@ function ThreeDotsMenu({ menuItems = [], handleMenuClick, ButtonComponent }) {
     <>
       {/* button */}
       {ButtonComponent ? (
-        <ButtonComponent onClick={handleClick} />
+        <ButtonComponent disabled={disabled} onClick={handleClick} />
       ) : (
         <StyledButton
           color="primary"
           disableRipple
           onClick={handleClick}
+          disabled={disabled}
           sx={{
             background: anchorEl ? '#F6F8FA' : 'transparent',
           }}

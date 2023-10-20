@@ -362,6 +362,31 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
     },
     {
       showFor: ['seller', 'shop', 'allSeller'],
+      id: 7,
+      headerName: `POINTS CASHBACK (${currency})`,
+      sortable: false,
+      field: 'pointsCashback',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.pointsCashback}
+            valueSecondary={financialBreakdown?.pointsCashback}
+            showIfZero
+          />
+        );
+      },
+    },
+    {
+      showFor: ['seller', 'shop', 'allSeller'],
       id: 5,
       headerName: `OTHER PAYMENTS (${currency})`,
       sortable: false,
@@ -510,31 +535,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         );
       },
     },
-    {
-      showFor: ['seller', 'shop', 'allSeller'],
-      id: 7,
-      headerName: `POINTS CASHBACK (${currency})`,
-      sortable: false,
-      field: 'pointsCashback',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
 
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
-
-        return (
-          <SummaryItem
-            title
-            pb={0}
-            currencyType={currencyType}
-            value={financialBreakdown?.pointsCashback}
-            valueSecondary={financialBreakdown?.pointsCashback}
-            showIfZero
-          />
-        );
-      },
-    },
     {
       showFor: ['seller', 'shop', 'allSeller'],
       id: 8,
