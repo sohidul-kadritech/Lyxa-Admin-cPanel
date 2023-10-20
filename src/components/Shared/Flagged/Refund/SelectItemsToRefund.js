@@ -135,7 +135,7 @@ export const getSelectableItems = (order, flaggData) => {
 
       const productPrice = getProductPrice(item, deal);
       // calculating shop earning
-      const shopEarning = productPrice - item?.baseCurrency_productPrice * (adminPercentage / 100);
+      const shopEarning = productPrice - productPrice * (adminPercentage / 100);
       // selecting product price conditionally
       const price = replacementWithMissingItem ? 0 : replacementWith ? shopEarning : productPrice;
       // calculating secondary currency of this
@@ -221,7 +221,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       setFlaggData((prev) => {
         const totalSelectedAmount =
           prev?.replacement !== 'with'
-            ? order?.summary?.baseCurrency_couponDiscountAmount > 0
+            ? order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.replacement === 'without'
               ? 0
               : selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
@@ -247,7 +247,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
       setFlaggData((prev) => {
         const totalSelectedAmount =
           prev?.replacement !== 'with'
-            ? order?.summary?.baseCurrency_couponDiscountAmount > 0
+            ? order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.replacement === 'without'
               ? 0
               : selected.reduce((prevValue, item) => item?.price + prevValue, 0)
             : prev?.replacement === 'with' && prev?.flaggedReason !== 'missing-item'
@@ -365,7 +365,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
               >
                 Total{' '}
               </Typography>
-              {order?.summary?.baseCurrency_couponDiscountAmount > 0 ? (
+              {order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.replacement === 'without' ? (
                 <Typography variant="body2" minWidth="40px">
                   {baseCurrency?.symbol} {0}
                 </Typography>
@@ -375,11 +375,13 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
                 </Typography>
               )}
             </Stack>
-            {order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.selectedItems?.length > 0 && (
-              <Typography variant="body3">
-                (Here, a coupon is used, allowing the admin to change the overall amount.)
-              </Typography>
-            )}
+            {order?.summary?.baseCurrency_couponDiscountAmount > 0 &&
+              flaggData?.replacement === 'without' &&
+              flaggData?.selectedItems?.length > 0 && (
+                <Typography variant="body3">
+                  (Here, a coupon is used, allowing the admin to change the overall amount.)
+                </Typography>
+              )}
           </Stack>
         </StyledContainer>
       </Stack>

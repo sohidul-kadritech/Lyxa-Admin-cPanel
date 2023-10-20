@@ -235,6 +235,7 @@ export const getThreedotMenuOptions = (order, userType) => {
     userType === 'admin' &&
     order?.orderStatus === 'delivered' &&
     !order?.isRefundedAfterDelivered &&
+    !order?.replacementOrder &&
     !order?.isReplacementOrder &&
     !order?.isButler
   ) {
