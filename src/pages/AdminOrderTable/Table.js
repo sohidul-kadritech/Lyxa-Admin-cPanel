@@ -474,7 +474,7 @@ export default function Table({
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              setCurrentOrder(row?.isReplacementOrder ? row?.originalOrder : row);
+              setCurrentOrder(row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder : row);
               setDetailOpen(true);
             },
           }}
@@ -619,12 +619,19 @@ export default function Table({
         const total =
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
+        console.log({ row });
+
         const totalOringinalOrder =
           row?.originalOrder?.summary?.baseCurrency_cash +
           row?.originalOrder?.summary?.baseCurrency_wallet +
           row?.originalOrder?.summary?.baseCurrency_card;
 
-        const finalTotal = row?.isReplacementOrder ? totalOringinalOrder : total;
+        const finalTotal =
+          row?.isReplacementOrder && row?.orderStatus === 'delivered'
+            ? totalOringinalOrder
+            : row?.isReplacementOrder
+            ? row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat
+            : total;
 
         return (
           <Typography variant="body4">
@@ -670,16 +677,25 @@ export default function Table({
       renderCell: (params) => (
         <ThreeDotsMenu
           handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row);
+            threeDotHandler(
+              menu,
+              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+                ? params?.row?.originalOrder
+                : params?.row,
+            );
           }}
           disabled={
             !getThreedotMenuOptions(
-              params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row,
+              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+                ? params?.row?.originalOrder
+                : params?.row,
               currentUser?.adminType,
             ).length
           }
           menuItems={getThreedotMenuOptions(
-            params?.row?.isReplacementOrder ? params?.row?.originalOrder : params?.row,
+            params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+              ? params?.row?.originalOrder
+              : params?.row,
             currentUser?.adminType,
           )}
         />
