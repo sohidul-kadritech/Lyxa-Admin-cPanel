@@ -92,10 +92,6 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
       shopLocation.addListener('mouseout', () => {
         infowindowForStore.close();
       });
-
-      // store.addListener('click', () => {
-      //   redirectWithId(order?.deliveryBoy?._id, 'rider');
-      // });
     });
 
     // set polygon of each zone

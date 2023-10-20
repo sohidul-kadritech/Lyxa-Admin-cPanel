@@ -104,7 +104,7 @@ function MapView({ onClose }) {
         </Stack>
         <Stack flex={1} gap="36px">
           {getAllStore?.isLoading || getAllZones?.isLoading ? (
-            <Skeleton />
+            <Skeleton height="100%" />
           ) : (
             <Map
               currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}

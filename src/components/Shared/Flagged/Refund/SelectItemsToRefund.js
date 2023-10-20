@@ -101,13 +101,18 @@ const getDeliveryFee = (order, flaggData, setFlaggData) => {
       ? order?.summary?.baseCurrency_riderFeeWithFreeDelivery
       : 0;
 
+  const deliveryType =
+    flaggData?.flaggedReason === 'missing-item' && flaggData?.replacement === 'with'
+      ? 'shop-customer'
+      : flaggData?.deliveryType;
+
   if (flaggData?.deliveryType === 'customer-shop-customer' && flaggData?.replacement === 'with') {
-    setFlaggData((prev) => ({ ...prev, totalSelectedAmount: deliveryFee * 2 }));
+    setFlaggData((prev) => ({ ...prev, deliveryType, totalSelectedAmount: deliveryFee * 2 }));
     return deliveryFee * 2;
   }
 
   if (flaggData?.replacement === 'with') {
-    setFlaggData((prev) => ({ ...prev, totalSelectedAmount: deliveryFee }));
+    setFlaggData((prev) => ({ ...prev, deliveryType, totalSelectedAmount: deliveryFee }));
   }
 
   return deliveryFee;
@@ -230,9 +235,15 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
 
         const changeGivenPrice = getUpdatedPartialAndReplacementOrder({ ...prev, deliveryFee }, totalSelectedAmount);
 
-        console.log('changeGivenPrice', changeGivenPrice);
+        return {
+          ...prev,
+          ...changeGivenPrice,
 
-        return { ...prev, ...changeGivenPrice, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
+          // deliveryType: prev?.flaggedReason === 'missing-item' ? 'shop-customer' : prev?.deliveryType,
+          selectedItems: selected,
+          totalSelectedAmount,
+          deliveryfee: deliveryFee,
+        };
       });
       return selected;
     });
@@ -255,9 +266,15 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
             : prev?.totalSelectedAmount;
 
         const changeGivenPrice = getUpdatedPartialAndReplacementOrder(prev, totalSelectedAmount);
-        console.log('changeGivenPrice', changeGivenPrice);
 
-        return { ...prev, ...changeGivenPrice, selectedItems: selected, totalSelectedAmount, deliveryfee: deliveryFee };
+        return {
+          ...prev,
+          ...changeGivenPrice,
+          // deliveryType: prev?.flaggedReason === 'missing-item' ? 'shop-customer' : prev?.deliveryType,
+          selectedItems: selected,
+          totalSelectedAmount,
+          deliveryfee: deliveryFee,
+        };
       });
       return selected;
     });
