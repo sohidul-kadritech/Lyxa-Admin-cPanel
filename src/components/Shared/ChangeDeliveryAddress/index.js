@@ -73,7 +73,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
           setDisableButton(false);
         }
       },
-    }
+    },
   );
 
   // udpate delivery boy query

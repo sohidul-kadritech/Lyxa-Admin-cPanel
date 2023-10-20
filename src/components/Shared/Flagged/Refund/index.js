@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Box, Stack, useTheme } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useGlobalContext } from '../../../../context';
 import StyledRadioGroup from '../../../Styled/StyledRadioGroup';
@@ -222,6 +222,14 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
                 }}
               />
             </Stack>
+            {/* when refund with group order the message will show */}
+            {order?.cart?.cartType === 'group' && flaggData?.refund === 'with' && flaggData?.refundType && (
+              <Typography variant="body3">
+                {flaggData?.refundType === 'full'
+                  ? '** Full refund is refundable for all individual user'
+                  : '** Partial refund only refundable for creator of this group order'}
+              </Typography>
+            )}
             {flaggData?.refundType === 'full' && (
               <Stack mt={2.5} gap={2.5}>
                 <TitleWithToolTip

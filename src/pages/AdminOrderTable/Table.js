@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -364,12 +365,15 @@ export default function Table({
       flex: 1,
       renderCell: ({ row }) => {
         const total =
-          // eslint-disable-next-line no-unsafe-optional-chaining
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+
+        console.log('rplace', { row });
+
+        const totalOringinalOrder = row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat;
 
         return (
           <Typography variant="body4">
-            {currency} {(total || 0).toFixed(2)}
+            {currency} {(totalOringinalOrder || 0).toFixed(2)}
           </Typography>
         );
       },
@@ -409,14 +413,7 @@ export default function Table({
       align: 'right',
       headerAlign: 'right',
       flex: 1,
-      renderCell: (params) => (
-        <ThreeDotsMenu
-          handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row);
-          }}
-          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
-        />
-      ),
+      renderCell: (params) => <></>,
     },
   ];
 
@@ -439,9 +436,7 @@ export default function Table({
           imgAlt="user-image"
           imgUrl={row?.user?.profile_photo}
           imgFallbackCharacter={row?.user?.name?.charAt(0)}
-          expandIcon={
-            !!((row?.orderStatus === 'delivered' || row?.orderStatus === 'cancelled') && row?.isReplacementOrder)
-          }
+          expandIcon={row?.orderStatus === 'delivered' && row?.isReplacementOrder}
           onClickExpand={() => {
             onExpandHandler(
               <StyledTable5
@@ -462,7 +457,7 @@ export default function Table({
                   <MessageIcon color="#5BBD4E" />
                 </>
               ) : null}
-              {row?.isReplacementOrder ? (
+              {row?.isReplacementOrder && row?.orderStatus !== 'delivered' ? (
                 <>
                   &nbsp;&nbsp;
                   <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
@@ -476,11 +471,13 @@ export default function Table({
               ) : null}
             </span>
           }
-          subTitle={row?.isReplacementOrder ? row?.originalOrder?.orderId : row?.orderId}
+          subTitle={
+            row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder?.orderId : row?.orderId
+          }
           subTitleProps={{
             sx: { color: 'primary.main', cursor: 'pointer' },
             onClick: () => {
-              setCurrentOrder(row);
+              setCurrentOrder(row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder : row);
               setDetailOpen(true);
             },
           }}
@@ -625,12 +622,19 @@ export default function Table({
         const total =
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
+        console.log({ row });
+
         const totalOringinalOrder =
           row?.originalOrder?.summary?.baseCurrency_cash +
           row?.originalOrder?.summary?.baseCurrency_wallet +
           row?.originalOrder?.summary?.baseCurrency_card;
 
-        const finalTotal = row?.isReplacementOrder ? totalOringinalOrder : total;
+        const finalTotal =
+          row?.isReplacementOrder && row?.orderStatus === 'delivered'
+            ? totalOringinalOrder
+            : row?.isReplacementOrder
+            ? row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat
+            : total;
 
         return (
           <Typography variant="body4">
@@ -676,9 +680,27 @@ export default function Table({
       renderCell: (params) => (
         <ThreeDotsMenu
           handleMenuClick={(menu) => {
-            threeDotHandler(menu, params?.row);
+            threeDotHandler(
+              menu,
+              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+                ? params?.row?.originalOrder
+                : params?.row,
+            );
           }}
-          menuItems={getThreedotMenuOptions(params?.row, currentUser?.adminType)}
+          disabled={
+            !getThreedotMenuOptions(
+              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+                ? params?.row?.originalOrder
+                : params?.row,
+              currentUser?.adminType,
+            ).length
+          }
+          menuItems={getThreedotMenuOptions(
+            params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+              ? params?.row?.originalOrder
+              : params?.row,
+            currentUser?.adminType,
+          )}
         />
       ),
     },
