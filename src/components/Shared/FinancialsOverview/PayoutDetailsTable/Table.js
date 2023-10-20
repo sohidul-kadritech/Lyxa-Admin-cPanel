@@ -79,7 +79,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
-              hideIcon={financialBreakdown?.orderAmount === 0}
+              hideIcon={financialBreakdown?.orderAmount === 0 || !financialBreakdown?.orderAmount}
               titleComponent={
                 <SummaryItem
                   title
@@ -263,6 +263,30 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       },
     },
     {
+      id: 7,
+      headerName: `POINTS CASHBACK`,
+      sortable: false,
+      field: 'pointsCashback',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+
+      renderCell: ({ row }) => {
+        const financialBreakdown = row?.profitBreakdown;
+
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={financialBreakdown?.pointsCashback}
+            valueSecondary={financialBreakdown?.pointsCashback}
+            showIfZero
+          />
+        );
+      },
+    },
+    {
       id: 5,
       headerName: `OTHER PAYMENTS`,
       sortable: false,
@@ -272,11 +296,28 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
       headerAlign: 'left',
       renderCell: ({ row }) => {
         const financialBreakdown = row?.orderStatus === 'cancelled' ? row?.endorseLoss : row?.profitBreakdown;
+        console.log({ row });
+
+        /*
+        isReplacementOrder,
+        replacementOrderCut?.baseCurrency_shopCutForReplacement
+        replacementOrderCut?.secondaryCurrency_shopCutForReplacement
+        */
 
         return (
           <Box position="relative" sx={{ width: '100%', height: '100%' }}>
             <TableAccordion
-              hideIcon={financialBreakdown?.otherPayments?.totalOtherPayments === 0}
+              hideIcon={
+                row?.orderStatus === 'cancelled'
+                  ? Math.abs(financialBreakdown?.baseCurrency_shopLoss) === 0
+                  : Math.abs(
+                      row?.isReplacementOrder
+                        ? row?.replacementOrderCut?.baseCurrency_shopCutForReplacement +
+                            financialBreakdown?.otherPayments?.totalOtherPayments ===
+                            0
+                        : financialBreakdown?.otherPayments?.totalOtherPayments === 0,
+                    )
+              }
               titleComponent={
                 <Box>
                   {row?.orderStatus === 'cancelled' ? (
@@ -294,9 +335,24 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                       title
                       pb={0}
                       currencyType={currencyType}
-                      value={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
-                      valueSecondary={Math.abs(financialBreakdown?.otherPayments?.totalOtherPayments)}
-                      isNegative={financialBreakdown?.otherPayments?.totalOtherPayments >= 0}
+                      value={Math.abs(
+                        row?.isReplacementOrder
+                          ? row?.replacementOrderCut?.baseCurrency_shopCutForReplacement +
+                              financialBreakdown?.otherPayments?.totalOtherPayments
+                          : financialBreakdown?.otherPayments?.totalOtherPayments,
+                      )}
+                      valueSecondary={Math.abs(
+                        row?.isReplacementOrder
+                          ? row?.replacementOrderCut?.secondaryCurrency_shopCutForReplacement +
+                              financialBreakdown?.otherPayments?.totalOtherPayments
+                          : financialBreakdown?.otherPayments?.totalOtherPayments,
+                      )}
+                      isNegative={
+                        (row?.isReplacementOrder
+                          ? row?.replacementOrderCut?.secondaryCurrency_shopCutForReplacement +
+                            financialBreakdown?.otherPayments?.totalOtherPayments
+                          : financialBreakdown?.otherPayments?.totalOtherPayments) >= 0
+                      }
                       showIfZero
                     />
                   )}
@@ -306,9 +362,21 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
               <SummaryItem
                 currencyType={currencyType}
                 label="Error Charge"
-                value={Math.abs(financialBreakdown?.baseCurrency_shopLoss)}
-                valueSecondary={Math.abs(financialBreakdown?.secondaryCurrency_shopLoss)}
-                isNegative={financialBreakdown?.baseCurrency_shopLoss >= 0}
+                value={Math.abs(
+                  row?.isReplacementOrder
+                    ? row?.replacementOrderCut?.baseCurrency_shopCutForReplacement
+                    : financialBreakdown?.baseCurrency_shopLoss,
+                )}
+                valueSecondary={Math.abs(
+                  row?.isReplacementOrder
+                    ? row?.replacementOrderCut?.secondaryCurrency_shopCutForReplacement
+                    : financialBreakdown?.secondaryCurrency_shopLoss,
+                )}
+                isNegative={
+                  (row?.isReplacementOrder
+                    ? row?.replacementOrderCut?.secondaryCurrency_shopCutForReplacement
+                    : financialBreakdown?.baseCurrency_shopLoss) >= 0
+                }
               />
               <SummaryItem
                 currencyType={currencyType}
@@ -428,30 +496,7 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         );
       },
     },
-    {
-      id: 7,
-      headerName: `POINTS CASHBACK`,
-      sortable: false,
-      field: 'pointsCashback',
-      flex: 1,
-      align: 'left',
-      headerAlign: 'left',
 
-      renderCell: ({ row }) => {
-        const financialBreakdown = row?.profitBreakdown;
-
-        return (
-          <SummaryItem
-            title
-            pb={0}
-            currencyType={currencyType}
-            value={financialBreakdown?.pointsCashback}
-            valueSecondary={financialBreakdown?.pointsCashback}
-            showIfZero
-          />
-        );
-      },
-    },
     {
       id: 8,
       headerName: `TOTAL PAYOUTS`,
@@ -500,8 +545,16 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
             title
             pb={0}
             currencyType={currencyType}
-            value={baseCurrency}
-            valueSecondary={secondaryCurrency}
+            value={
+              row?.isReplacementOrder
+                ? baseCurrency - row?.replacementOrderCut?.baseCurrency_shopCutForReplacement || 0
+                : baseCurrency
+            }
+            valueSecondary={
+              row?.isReplacementOrder
+                ? secondaryCurrency - row?.replacementOrderCut?.secondaryCurrency_shopCutForReplacement || 0
+                : secondaryCurrency
+            }
             showIfZero
           />
         );

@@ -301,8 +301,9 @@ export const getMaxLimit = (flaggData, order, by_percentage = true) => {
   const initialMax = {
     shop: 100,
     adminOrderRefund: 0,
-    adminDeliveryRefund: calculatePercentage(flaggData?.totalSelectedAmount, delivery?.price),
+    adminDeliveryRefund: calculatePercentage(flaggData?.totalSelectedAmount, delivery?.price || 0),
   };
+
   if (!by_percentage && flaggData?.replacement !== 'with') {
     initialMax.shop = flaggData?.totalSelectedAmount;
     initialMax.adminDeliveryRefund = delivery?.price;
@@ -310,7 +311,7 @@ export const getMaxLimit = (flaggData, order, by_percentage = true) => {
   }
 
   if (by_percentage && flaggData?.replacement === 'with' && flaggData?.flaggedReason !== 'missing-item') {
-    initialMax.shop = ((100 / flaggData?.totalSelectedAmount) * flaggData?.deliveryfee).toFixed(2);
+    initialMax.shop = Number(((100 / flaggData?.totalSelectedAmount) * flaggData?.deliveryfee).toFixed(3));
     initialMax.adminDeliveryRefund = delivery?.price;
     return initialMax;
   }

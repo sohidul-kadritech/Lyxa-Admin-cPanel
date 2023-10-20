@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Stack, Typography, useTheme } from '@mui/material';
+import { Skeleton, Stack, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddress/StyledSearchAddress';
@@ -104,7 +104,7 @@ function MapView({ onClose }) {
         </Stack>
         <Stack flex={1} gap="36px">
           {getAllStore?.isLoading || getAllZones?.isLoading ? (
-            <Typography>Loading</Typography>
+            <Skeleton height="100%" />
           ) : (
             <Map
               currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}

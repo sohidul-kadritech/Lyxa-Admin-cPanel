@@ -85,11 +85,13 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
         content: getTitleForMarker(store?.shopName || 'Store name'),
       });
 
-      infowindowForStore.open(map, shopLocation);
+      shopLocation.addListener('mouseover', () => {
+        infowindowForStore.open(map, shopLocation);
+      });
 
-      // store.addListener('click', () => {
-      //   redirectWithId(order?.deliveryBoy?._id, 'rider');
-      // });
+      shopLocation.addListener('mouseout', () => {
+        infowindowForStore.close();
+      });
     });
 
     // set polygon of each zone

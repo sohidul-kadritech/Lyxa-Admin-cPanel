@@ -35,16 +35,21 @@ const getReplacementOrderDeliveryInfo = (order, flaggData, vat) => {
 
   const { shopExchangeRate } = shop;
 
-  const { secondaryCurrency_riderFee, baseCurrency_riderFee } = summary;
+  const { secondaryCurrency_riderFeeWithFreeDelivery, baseCurrency_riderFeeWithFreeDelivery } = summary;
 
   // rider section
   const baseriderProfit =
     flaggData?.deliveryType === 'shop-customer' ? order?.baseCurrency_riderFee : order?.baseCurrency_riderFee * 2;
 
-  const baseriderFee = flaggData?.deliveryType === 'shop-customer' ? baseCurrency_riderFee : baseCurrency_riderFee * 2;
+  const baseriderFee =
+    flaggData?.deliveryType === 'shop-customer'
+      ? baseCurrency_riderFeeWithFreeDelivery
+      : baseCurrency_riderFeeWithFreeDelivery * 2;
 
   const secondaryRiderFee =
-    flaggData?.deliveryType === 'shop-customer' ? secondaryCurrency_riderFee : secondaryCurrency_riderFee * 2;
+    flaggData?.deliveryType === 'shop-customer'
+      ? secondaryCurrency_riderFeeWithFreeDelivery
+      : secondaryCurrency_riderFeeWithFreeDelivery * 2;
 
   const secondaryRiderProfit =
     flaggData?.deliveryType === 'shop-customer'
@@ -54,13 +59,19 @@ const getReplacementOrderDeliveryInfo = (order, flaggData, vat) => {
   // admin section
   const baseCurrency_adminChargeFromDelivery =
     flaggData?.deliveryType === 'shop-customer'
-      ? adminCharge?.baseCurrency_adminChargeFromDelivery
-      : adminCharge?.baseCurrency_adminChargeFromDelivery * 2;
+      ? adminCharge?.baseCurrency_adminChargeFromDelivery +
+        +order?.freeDeliveryCut?.baseCurrency_dropLossForFreeDelivery
+      : (adminCharge?.baseCurrency_adminChargeFromDelivery +
+          order?.freeDeliveryCut?.baseCurrency_dropLossForFreeDelivery) *
+        2;
 
   const secondaryCurrency_adminChargeFromDelivery =
     flaggData?.deliveryType === 'shop-customer'
-      ? adminCharge?.secondaryCurrency_adminChargeFromDelivery
-      : adminCharge?.secondaryCurrency_adminChargeFromDelivery * 2;
+      ? adminCharge?.secondaryCurrency_adminChargeFromDelivery +
+        order?.freeDeliveryCut?.secondaryCurrency_dropLossForFreeDelivery
+      : (adminCharge?.secondaryCurrency_adminChargeFromDelivery +
+          order?.freeDeliveryCut?.secondaryCurrency_dropLossForFreeDelivery) *
+        2;
 
   const template = {
     deliveryType: flaggData?.deliveryType, // "shop-customer" || "customer-shop-customer"
@@ -70,8 +81,8 @@ const getReplacementOrderDeliveryInfo = (order, flaggData, vat) => {
     secondaryCurrency_riderProfit: secondaryRiderProfit,
     baseCurrency_adminDeliveryProfit: baseCurrency_adminChargeFromDelivery,
     secondaryCurrency_adminDeliveryProfit: secondaryCurrency_adminChargeFromDelivery,
-    baseCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat,
-    secondaryCurrency_deliveryVat: calculateVat(order, flaggData, vat).totalVat * adminExchangeRate,
+    baseCurrency_deliveryVat: Number(calculateVat(order, flaggData, vat).totalVat),
+    secondaryCurrency_deliveryVat: Number(calculateVat(order, flaggData, vat).totalVat * adminExchangeRate),
   };
 
   return template;
