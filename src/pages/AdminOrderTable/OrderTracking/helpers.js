@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 export const dummyLocationRider = [
   {
@@ -40,19 +41,16 @@ export const dummyLocationRider = [
   },
 ];
 
-// alert('${title}')
-
-// eslint-disable-next-line no-unused-vars
-export const getTitleForMarker = (title, isBlack = false) => {
-  if (isBlack) {
-    return `<div style="padding:4px 8px 0px;position:relative;right:8px; width:auto;background:"#000">
-      <p style="text-align:center;font-size:16px;font-weight:bold;color:#5E97A9;cursor:pointer;"
-      ><b>${title}</b></p>
-    </div>`;
-  }
-
-  return `<div style="padding:4px 8px 0px;position:relative;right:8px; width:auto;">
+export const getTitleForMarker = (title) => `<div style="padding:4px 8px 0px;position:relative;right:8px; width:auto;">
     <p style="text-align:center;font-size:16px;font-weight:bold;color:#5E97A9;cursor:pointer;"
     ><b>${title}</b></p>
   </div>`;
-};
+// for store
+export const getTitleForStoreMarker = (
+  title,
+  imageUrl,
+) => `<div style="padding:4px 8px 0px;position:relative;right:8px; width:auto;display: flex;flex-direction:column; justify-content: center; align-items: center;gap:10px;">
+<img style="width:80px;height:80px;object-fit:contained;" src=${imageUrl} alt="store_image"/>
+    <p style="text-align:center;font-size:16px;font-weight:bold;color:#5E97A9;cursor:pointer;"
+    ><b>${title}</b></p>
+  </div>`;

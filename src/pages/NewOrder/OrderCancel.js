@@ -230,7 +230,6 @@ function OrderCancel({ setOpenCancelModal, currentOrder, onSuccess, refetchApiKe
       }
 
       const data = {
-        // ...orderCancel,
         orderId: orderCancel?.orderId,
         otherReason: orderCancel?.otherReason,
         refundType: orderCancel?.refundType,

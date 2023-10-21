@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable array-callback-return */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 import { Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
@@ -265,7 +267,17 @@ export function ShopReviewDetails({ shop }) {
   );
 }
 
-export const getMarketingLabel = (shop) => {
+export const getMarketingLabel = (shop, appSettings) => {
+  const maxDiscount = {
+    shop: shop?.maxDiscount,
+    admin: appSettings?.maxDiscount,
+  };
+
+  const currency = {
+    base: appSettings?.baseCurrency,
+    secondary: appSettings?.secondaryCurrency,
+  };
+
   const deals = {
     free_delivery: false,
     free_deliveryCreator: '',
@@ -283,6 +295,8 @@ export const getMarketingLabel = (shop) => {
       isEntireMenu: false,
       isActive: false,
       createdBy: '',
+      maxDiscount: '',
+      currency: currency?.base?.symbol,
     },
     featured: false,
     hasActiveDeal: false,
@@ -315,23 +329,44 @@ export const getMarketingLabel = (shop) => {
 
       if (obj?.type === 'percentage') {
         deals.percentage.discountPercentages = [...(obj?.discountPercentages || [])];
+        deals.percentage.maxDiscount = maxDiscount[obj?.creatorType];
 
         let temp = '';
 
-        deals.percentage.discountPercentages?.forEach((e, i, { length }) => {
-          temp += `${e}%${i === length - 1 ? '' : ','} `;
-        });
+        if (deals.percentage.discountPercentages.length > 0) {
+          deals.percentage.discountPercentages.sort().reverse();
+          const item = deals.percentage.discountPercentages[0];
+          temp = `${item}% `;
+        }
 
         if (deals.percentage.isEntireMenu) {
           temp = (
             <>
-              <b style={{ fontWeight: '700' }}>Up to {temp}off </b> on Entire Menu ({obj?.creatorType})
+              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
+                <b style={{ fontWeight: '700' }}>
+                  {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
+                </b>
+              ) : (
+                <b style={{ fontWeight: '700' }}>
+                  {deals.percentage.discountPercentages.length > 0 ? '' : 'Up to'} {temp}off
+                </b>
+              )}{' '}
+              on Entire Menu ({obj?.creatorType})
             </>
           );
         } else {
           temp = (
             <>
-              <b style={{ fontWeight: '700' }}>Up to {temp}off </b> on Selected Items ({obj?.creatorType})
+              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
+                <b style={{ fontWeight: '700' }}>
+                  {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
+                </b>
+              ) : (
+                <b style={{ fontWeight: '700' }}>
+                  {deals.percentage.discountPercentages.length > 0 ? '' : 'Up to'} {temp}off
+                </b>
+              )}{' '}
+              on Selected Items ({obj?.creatorType})
             </>
           );
         }
@@ -344,12 +379,12 @@ export const getMarketingLabel = (shop) => {
       }
 
       if (obj?.type === 'double_menu') {
-        let temp = 'Ongoing 2x Promotion';
+        let temp = 'Buy 1 Get 1 Promotion';
 
         if (deals.percentage.isEntireMenu) {
           temp = `${temp}on Entire Menu`;
         } else {
-          temp = 'Ongoing 2x Promotion on Selected Items';
+          temp = 'Buy 1 Get 1 Promotion on Selected Items';
         }
 
         // double menu
@@ -360,12 +395,12 @@ export const getMarketingLabel = (shop) => {
       }
 
       if (obj?.type === 'reward') {
-        let temp = 'Ongoing Reward Promotion';
+        let temp = 'Reward Promotion';
 
         if (deals.reward.isEntireMenu) {
           temp = `${temp}on Entire Menu`;
         } else {
-          temp = 'Ongoing Reward Promotion on Selected Items';
+          temp = 'Reward Promotion on Selected Items';
         }
 
         // reward
@@ -381,7 +416,63 @@ export const getMarketingLabel = (shop) => {
     }
   });
 
-  console.log({ promotion, shop: shop?.marketings });
+  console.log({ promotion, deals });
 
   return promotion;
+};
+
+// get deals with on selected items
+export const GetDealsWithOnselectedItems = (categoryItems, details, symble = '$') => {
+  const result = [];
+  let double_deal_Count = 0;
+  let total_Product_Count = 0;
+  let percentage_Count = 0;
+  const percentageHolder = [];
+  categoryItems?.map((item) => {
+    item?.data?.map((child) => {
+      total_Product_Count++;
+      if (child?.marketing?.isActive) {
+        if (child?.marketing?.type === 'double_menu') {
+          double_deal_Count++;
+        } else if (child?.marketing?.type === 'percentage') {
+          percentage_Count++;
+          const checkDuplicate = percentageHolder.includes(child?.discountPercentage);
+          if (!checkDuplicate) {
+            percentageHolder.push(child?.discountPercentage);
+          }
+        }
+      }
+    });
+  });
+  if (double_deal_Count) {
+    if (double_deal_Count === total_Product_Count) {
+      result.push({
+        first: `Buy 1 get 1`,
+        third: ` on entire menu`,
+      });
+    } else {
+      result.push({
+        first: 'Buy 1 get 1',
+        third: ` on selected items`,
+      });
+    }
+  }
+  if (percentage_Count) {
+    percentageHolder.sort().reverse();
+    const item = percentageHolder[0];
+    if (percentage_Count == total_Product_Count) {
+      result.push({
+        first: percentageHolder?.length === 1 ? `${item}% off` : `Up to ${item}% off`,
+        second: details?.maxDiscount > 0 ? ` up to ${symble}${details?.maxDiscount}` : undefined,
+        third: ` on entire menu`,
+      });
+    } else {
+      result.push({
+        first: percentageHolder?.length === 1 ? `${item}% off` : `Up to ${item}% off`,
+        second: details?.maxDiscount > 0 ? ` up to ${symble}${details?.maxDiscount}` : undefined,
+        third: ` on selected items`,
+      });
+    }
+  }
+  return result;
 };

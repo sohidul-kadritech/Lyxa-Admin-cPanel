@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useGlobalContext } from '../../context';
 import { CoverPhotoButton, getMarketingLabel } from './helper';
 
-function MarketingLabelCard({ label }) {
+function MarketingLabelCard({ label, sx }) {
   const theme = useTheme();
-
   return (
     <Stack
       sx={{
@@ -13,6 +13,7 @@ function MarketingLabelCard({ label }) {
         padding: '4px 8px',
         borderRadius: '10px',
         border: `1px solid #CC274B`,
+        ...(sx || {}),
       }}
       direction="row"
       alignContent="center"
@@ -37,10 +38,15 @@ function MarketingLabelCard({ label }) {
 }
 
 export default function ShopBanner({ shop, loading, onDrop }) {
-  const [promotion, setPromotion] = useState(getMarketingLabel(shop));
+  const { currentUser, general } = useGlobalContext();
+  const currency = general?.currency;
+  const { admin } = currentUser;
+
+  const [promotion, setPromotion] = useState(getMarketingLabel(shop, general?.appSetting));
 
   useEffect(() => {
-    setPromotion(getMarketingLabel(shop));
+    setPromotion(getMarketingLabel(shop, general?.appSetting));
+    console.log({ shop });
   }, [shop?.marketings]);
 
   return (
