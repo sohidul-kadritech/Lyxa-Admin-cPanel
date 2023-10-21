@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 import { Stack } from '@mui/material';
 import React from 'react';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import InputBox from '../../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 
@@ -8,7 +10,14 @@ function SettingsForButler({ newAppSettings, setNewAppSettings, setHasChanged })
     <StyledBox title="Butler">
       <Stack gap="10px" justifyContent="center">
         <InputBox
-          title="Max total EST items price"
+          title={
+            <TitleWithToolTip
+              title="Max total EST items price"
+              alignItems="flex-start"
+              size="small"
+              tooltip="The estimated item price for butler orders that include both a purchase and delivery should be in this range."
+            />
+          }
           endAdornment={`${newAppSettings?.baseCurrency?.symbol || ''}`}
           inputValue={`${newAppSettings?.maxTotalEstItemsPriceForButler}`}
           inputType="number"
@@ -22,7 +31,13 @@ function SettingsForButler({ newAppSettings, setNewAppSettings, setHasChanged })
         <InputBox
           sxLeft={{ width: '200px' }}
           sxRight={{ width: '140px' }}
-          title="Maximum Distance"
+          title={
+            <TitleWithToolTip
+              title="Maximum Distance"
+              size="small"
+              tooltip="If the distance between the delivery to and delivery from addresses falls within this range, a Butler Order is available."
+            />
+          }
           endAdornment="KM"
           inputValue={`${newAppSettings?.maxDistanceForButler}`}
           inputType="number"

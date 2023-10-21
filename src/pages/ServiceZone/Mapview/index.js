@@ -1,14 +1,18 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import { Skeleton, Stack, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddress/StyledSearchAddress';
+import { smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ModalContainer from '../ModalContainer';
 import { getLocationFromLatLng } from '../helper';
 import useGeoLocation from '../useGeoLocation';
 import Map from './Map';
+import StyledSearchForZone from './StyledSearchForZone';
 
 // eslint-disable-next-line prettier/prettier, no-unused-vars
 const fieldContainerSx = {
@@ -30,7 +34,7 @@ function MapView({ onClose }) {
 
   const { location: currentLocation, getCurrentLocation } = useGeoLocation();
 
-  const { coordinates } = currentLocation;
+  const { coordinates, loaded } = currentLocation;
 
   const getSelectedLatLng = async ({ latitude, longitude }) => {
     const { data } = await getLocationFromLatLng(latitude, longitude);
@@ -40,6 +44,20 @@ function MapView({ onClose }) {
       deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
     }));
   };
+
+  useEffect(() => {
+    getSelectedLatLng({ latitude: coordinates?.lat, longitude: coordinates?.lon });
+
+    const { google } = window;
+    // locaton for center position
+    const center = new google.maps.LatLng(coordinates?.lat, coordinates?.lon);
+    if (mapReference?.marker && mapReference?.map) {
+      // change center position
+      mapReference?.marker.setPosition(center);
+
+      smoothPanTo(mapReference?.map, center, 300, google);
+    }
+  }, [loaded, coordinates?.lat, coordinates?.lon]);
 
   // getAllZones
   const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
@@ -94,11 +112,41 @@ function MapView({ onClose }) {
         <Stack flexDirection="row" gap="36px">
           <Stack flex={1}>
             <StyledSearchAddress
+              label="Search with address"
               deliveryAddress={zoneAddress}
               setDeliveryAddress={setZoneAddress}
               onChangeAddressHandler={onChangeAddressHandler}
               mapReference={mapReference}
               isNotMarker={false}
+            />
+          </Stack>
+          <Stack flex={1}>
+            <StyledSearchForZone
+              onClick={(value) => {
+                if (value?.zoneGeometry?.coordinates?.length > 0) {
+                  const { google } = window;
+                  // const { center } = getCenterOfTheZone(formateZoneCoordinates([value])[0].zoneGeometry?.coordinates);
+
+                  // locaton for generating address
+                  const locationOfMarker = {
+                    latitude: value?.zoneGeometry?.coordinates[0][0][1],
+                    longitude: value?.zoneGeometry?.coordinates[0][0][0],
+                  };
+
+                  // locaton for center position
+                  const center = new google.maps.LatLng(
+                    value?.zoneGeometry?.coordinates[0][0][1],
+                    value?.zoneGeometry?.coordinates[0][0][0],
+                  );
+
+                  // generating address
+                  getSelectedLatLng(locationOfMarker);
+
+                  // change center position
+                  mapReference?.marker.setPosition(center);
+                  smoothPanTo(mapReference?.map, center, 300, google);
+                }
+              }}
             />
           </Stack>
         </Stack>
@@ -109,7 +157,7 @@ function MapView({ onClose }) {
             <Map
               currentLocation={{ latitude: coordinates?.lat, longitude: coordinates?.lon }}
               setMapReference={setMapReference}
-              zones={zones}
+              zones={getAllZones?.data?.data?.zones || []}
               getSelectedLatLng={getSelectedLatLng}
               stores={getAllStore?.data?.data?.shops || []}
             />

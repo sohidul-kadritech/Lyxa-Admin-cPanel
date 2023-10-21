@@ -1,9 +1,22 @@
+/* eslint-disable max-len */
 export class ShopDeals {
-  constructor(shop) {
-    this.deals = this.get_shop_deals(shop);
+  constructor(shop, appSettings = {}) {
+    this.deals = this.get_shop_deals(shop, appSettings);
   }
 
-  get_shop_deals(shop) {
+  get_shop_deals(shop, appSettings) {
+    console.log({ shop, appSettings });
+
+    const maxDiscount = {
+      shop: shop?.maxDiscount,
+      admin: appSettings?.maxDiscount,
+    };
+
+    const currency = {
+      base: appSettings?.baseCurrency,
+      secondary: appSettings?.secondaryCurrency,
+    };
+
     const deals = {
       free_delivery: false,
       free_deliveryCreator: '',
@@ -21,12 +34,15 @@ export class ShopDeals {
         isEntireMenu: false,
         isActive: false,
         createdBy: '',
+        maxDiscount: '',
+        currency: currency?.base?.symbol,
       },
       featured: false,
       hasActiveDeal: false,
     };
 
     shop?.marketings?.forEach((obj) => {
+      console.log('obj', { obj });
       if (obj?.type === 'free_delivery') {
         deals.free_delivery = obj?.isActive;
         deals.free_deliveryCreator = obj?.creatorType;
@@ -41,6 +57,7 @@ export class ShopDeals {
 
         if (obj?.type === 'percentage') {
           deals.percentage.discountPercentages = [...(obj?.discountPercentages || [])];
+          deals.percentage.maxDiscount = maxDiscount[obj?.creatorType];
         }
 
         if (deals[obj?.type].isActive) {
@@ -54,12 +71,11 @@ export class ShopDeals {
 
   get_double_percentage_str() {
     let str = '';
-
     if (this.deals.double_menu.isActive) {
       if (this.deals.double_menu.isEntireMenu) {
-        return '2x deals on entrie menus';
+        return 'Buy 1 Get 1 on entrie menus';
       }
-      str += '2x deals';
+      str += 'Buy 1 Get 1';
     }
 
     if (this.deals.percentage.isActive) {
@@ -111,7 +127,7 @@ export class ShopDeals {
         return `Ongoing 2x Promotion (${createdBy})`;
       }
       str += str ? ', ' : '';
-      str += `2x Deals (${createdBy})`;
+      str += `Buy 1 Get 1 (${createdBy})`;
     }
 
     if (this.deals.percentage.isActive) {
@@ -122,11 +138,11 @@ export class ShopDeals {
       });
 
       if (this.deals.percentage.isEntireMenu) {
-        return `Ongoing ${temp} off Promotion`;
+        return `Ongoing ${temp} off Promotion up to ${this.deals.percentage.currency}${this.deals.percentage.maxDiscount} (${this.deals.percentage.createdBy})`;
       }
 
       str += str ? ', ' : '';
-      str += `${temp} off`;
+      str += `${temp} off up to ${this.deals.percentage.currency}${this.deals.percentage.maxDiscount} (${this.deals.percentage.createdBy})`;
     }
 
     if (this.deals.free_delivery) {

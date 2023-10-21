@@ -44,7 +44,8 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
   const { admin } = currentUser;
-  const Deals = useMemo(() => new ShopDeals(shop || {}), []);
+  console.log({ appSettings: general });
+  const Deals = useMemo(() => new ShopDeals(shop || {}, general?.appSetting || {}), []);
   const routeMatch = useRouteMatch();
 
   return (
@@ -163,7 +164,10 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             >
               <AccessTime sx={{ width: '17px', height: '17px' }} />
               <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>
-                ETA {Math.round(shop?.avgOrderDeliveryTime)} min
+                {Math.round(shop?.avgOrderDeliveryTime) < 10
+                  ? `0${Math.round(shop?.avgOrderDeliveryTime)}`
+                  : Math.round(shop?.avgOrderDeliveryTime)}{' '}
+                - {Math.round(shop?.avgOrderDeliveryTime) + 10} min
               </Typography>
             </Box>
             {Deals.deals.reward.isActive && (

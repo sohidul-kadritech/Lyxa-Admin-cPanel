@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Checkbox, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
@@ -34,6 +35,7 @@ export default function StyledFormField({
   intputType,
   inputProps,
   tooltip,
+  showToggle = true,
 }) {
   const theme = useTheme();
   return (
@@ -100,7 +102,7 @@ export default function StyledFormField({
                 }}
               />
             </Box>
-            <StyledSwitch checked={inputProps?.checked} onChange={inputProps?.onToggle} />
+            {showToggle && <StyledSwitch checked={inputProps?.checked} onChange={inputProps?.onToggle} />}
           </Stack>
         )}
 
@@ -202,7 +204,7 @@ export default function StyledFormField({
                     onDelete={() => {
                       inputProps.onChange(
                         undefined,
-                        inputProps.value.filter((dItem, dIndex) => index !== dIndex)
+                        inputProps.value.filter((dItem, dIndex) => index !== dIndex),
                       );
                     }}
                   />
