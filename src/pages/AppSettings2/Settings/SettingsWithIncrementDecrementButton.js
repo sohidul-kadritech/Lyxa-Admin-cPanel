@@ -1,9 +1,11 @@
 import React from 'react';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import StyledBox from '../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 import IncrementDecrementButton from '../IncrementDecrementButton';
 
 function SettingsWithIncrementDecrementButton({
   title,
+  tooltip,
   objectKey,
   newAppSettings = { [objectKey]: '' },
   setNewAppSettings,
@@ -13,7 +15,7 @@ function SettingsWithIncrementDecrementButton({
 }) {
   const { incrementHandler, decrementHandler } = action;
   return (
-    <StyledBox title={title}>
+    <StyledBox title={<TitleWithToolTip title={title} tooltip={tooltip} />}>
       <IncrementDecrementButton
         endAdornment={endAdornment}
         dynamicWidth

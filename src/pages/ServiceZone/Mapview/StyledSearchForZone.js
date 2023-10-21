@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { LocationOnOutlined } from '@mui/icons-material';
 import { Box, Stack, Typography, debounce, useTheme } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import StyledInput from '../../../components/Styled/StyledInput';
 import * as API_URL from '../../../network/Api';
@@ -13,6 +13,20 @@ function StyledSearchForZone({ onClick }) {
   const [zoneName, setZoneName] = useState('');
   const [open, setOpen] = useState(false);
   const [searchedZone, setSearchedZone] = useState([]);
+
+  useEffect(() => {
+    function handleClickOutside() {
+      setOpen(false);
+    }
+
+    // Attach the click event listener to the document
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      // Remove the event listener when the component unmounts
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   // getAllZones
   const getAllZones = useMutation(
