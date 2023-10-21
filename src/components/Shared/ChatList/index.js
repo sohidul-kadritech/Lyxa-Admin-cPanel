@@ -52,7 +52,7 @@ export default function ChatList({
       console.log(error);
     },
   });
-  // closeChatMutation.mutate({ requestId: getChatRequestId(chat?.chats), chat })
+
   const handleMenuClick = (menu, chat) => {
     // set user inside order
     if (typeof chat?.order === 'object') chat.order.user = chat?.user;
@@ -129,8 +129,6 @@ export default function ChatList({
       <Modal open={modals.resolveChat} onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}>
         <ResolveChat
           onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}
-          refetchApiKey={Api.ONGOING_CHATS}
-          onSuccess={(data) => onAction('resolve', data)}
           requestId={requestId}
           closeChatMutation={closeChatMutation}
         />

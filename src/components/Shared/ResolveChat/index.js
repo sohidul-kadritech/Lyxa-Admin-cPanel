@@ -17,6 +17,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import CloseButton from '../../Common/CloseButton';
+import ConfirmModal from '../../Common/ConfirmModal';
 
 const initialData = {
   requestId: '',
@@ -25,6 +26,7 @@ const initialData = {
 };
 function ResolveChat({ onClose, requestId, closeChatMutation }) {
   const [resolveData, setResolveChatData] = useState({ ...initialData, requestId });
+  const [isConfirm, setIsConfirm] = useState(false);
   const [searchKey, setSearchKey] = useState('');
   const [isOtherReason, setIsOtherReason] = useState(false);
   const getCancelReasonsQuery = useQuery(
@@ -172,12 +174,29 @@ function ResolveChat({ onClose, requestId, closeChatMutation }) {
             <Button variant="outlined" color="danger" onClick={onClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="danger" disabled={closeChatMutation?.isLoading} onClick={onResolve}>
+            <Button
+              variant="contained"
+              color="danger"
+              disabled={closeChatMutation?.isLoading}
+              onClick={() => {
+                setIsConfirm(true);
+              }}
+            >
               Resolve chat
             </Button>
           </Stack>
         </Stack>
       </Box>
+
+      <ConfirmModal
+        onCancel={() => setIsConfirm(false)}
+        message="Do you want to resolve this chat?"
+        isOpen={isConfirm}
+        loading={closeChatMutation?.isLoading}
+        onConfirm={() => {
+          onResolve();
+        }}
+      />
     </Paper>
   );
 }
