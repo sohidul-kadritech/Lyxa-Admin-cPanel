@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context';
 import { CoverPhotoButton, getMarketingLabel } from './helper';
 
-function MarketingLabelCard({ label }) {
+function MarketingLabelCard({ label, sx }) {
   const theme = useTheme();
   return (
     <Stack
@@ -13,6 +13,7 @@ function MarketingLabelCard({ label }) {
         padding: '4px 8px',
         borderRadius: '10px',
         border: `1px solid #CC274B`,
+        ...(sx || {}),
       }}
       direction="row"
       alignContent="center"
@@ -45,7 +46,6 @@ export default function ShopBanner({ shop, loading, onDrop }) {
 
   useEffect(() => {
     setPromotion(getMarketingLabel(shop, general?.appSetting));
-    // GetDealsWithOnselectedItems([])
     console.log({ shop });
   }, [shop?.marketings]);
 
