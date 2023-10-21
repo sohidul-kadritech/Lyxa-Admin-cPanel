@@ -8,7 +8,6 @@ import { breadcrumbItems, queryParamsInit } from './helpers';
 
 export default function CouponSettings() {
   const [queryParams, setQueryParams] = useQueryParams(queryParamsInit());
-  console.log({ queryParams });
 
   return (
     <Box>

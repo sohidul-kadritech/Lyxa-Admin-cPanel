@@ -27,6 +27,7 @@ import {
 
 export default function AddCoupon({ onClose, couponType, editCoupon }) {
   const queryClient = useQueryClient();
+
   const [render, setRender] = useState(false);
 
   const [coupon, setCoupon] = useState(editCoupon?._id ? getCouponEditdData(editCoupon) : getCouponInit(couponType));
@@ -392,14 +393,20 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* min order */}
         <StyledFormField
-          label={<TitleWithToolTip title="Min. Order Amount" tooltip="Minimum order required to use this coupon." />}
+          label={
+            <TitleWithToolTip
+              title={`${coupon.couponDiscountType === 'fixed' ? 'Min. Order Amount *' : 'Min. Order Amount'}`}
+              tooltip="Minimum order required to use this coupon."
+            />
+          }
           intputType="text-toggle"
+          showToggle={coupon.couponDiscountType !== 'fixed'}
           inputProps={{
             type: 'number',
             name: 'couponMinimumOrderValue',
-            value: coupon.couponMinimumOrderValue,
+            value: coupon?.couponMinimumOrderValue,
             onChange: commonChangeHandler,
-            disabled: !checked.couponMinimumOrderValue,
+            disabled: coupon.couponDiscountType === 'fixed' ? false : !checked.couponMinimumOrderValue,
             checked: checked.couponMinimumOrderValue,
             onToggle: () => {
               checked.couponMinimumOrderValue = !checked.couponMinimumOrderValue;
