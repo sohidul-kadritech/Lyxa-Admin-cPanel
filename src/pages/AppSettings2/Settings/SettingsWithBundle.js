@@ -1,21 +1,22 @@
 import React from 'react';
 import Taglist from '../../../components/Common/Taglist';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import { successMsg } from '../../../helpers/successMsg';
 import StyledBox from '../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
 import { addNewBundleItem } from './helpers';
 
 function SettingsWithBundle({
   title,
+  tooltip,
   newAppSettings,
   setNewAppSettings,
   setHasChanged,
   objectKey,
-
   bundleType = 'number',
   limit = 2,
 }) {
   return (
-    <StyledBox title={title}>
+    <StyledBox title={<TitleWithToolTip title={title} tooltip={tooltip} />}>
       <Taglist
         listContainerSx={{
           mb: 2.5,

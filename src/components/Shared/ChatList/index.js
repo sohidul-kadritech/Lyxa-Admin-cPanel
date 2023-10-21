@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Box, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -11,11 +13,12 @@ import socketServices from '../../../common/socketService';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import TablePagination from '../../Common/TablePagination';
 import { getChatRequestId } from '../ChatDetail/Chat';
+import ResolveChat from '../ResolveChat';
 import UpdateOrderStatus from '../UpdateOrderStatus';
 import ChatItem from './ChatItem';
 import ChatListSkeleton from './Skeleton';
 
-const modalsStateInit = { flag: false, updateStatus: false, cancelOrder: false };
+const modalsStateInit = { flag: false, updateStatus: false, cancelOrder: false, resolveChat: false };
 
 export default function ChatList({
   onViewDetails,
@@ -31,6 +34,7 @@ export default function ChatList({
   const queryClient = useQueryClient();
 
   const [temporarySelectedChat, setTemporarySelectedChat] = useState({});
+  const [requestId, setRequestedId] = useState('');
   const [modals, setModals] = useState({ ...modalsStateInit });
 
   const closeChatMutation = useMutation((data) => AXIOS.post(Api.CLOSE_CONVERSATION, { requestId: data?.requestId }), {
@@ -57,8 +61,11 @@ export default function ChatList({
     if (menu === 'flag') setModals((prev) => ({ ...prev, flag: true }));
     if (menu === 'cancel_order') setModals((prev) => ({ ...prev, cancelOrder: true }));
     if (menu === 'update_status') setModals((prev) => ({ ...prev, updateStatus: true }));
+
+    // requestedId
+    setRequestedId(getChatRequestId(chat?.chats));
     // send due to closure causing afterChat close to get old
-    if (menu === 'resolve_ticket') closeChatMutation.mutate({ requestId: getChatRequestId(chat?.chats), chat });
+    if (menu === 'resolve_ticket') setModals((prev) => ({ ...prev, resolveChat: true }));
   };
 
   if (loading) return <ChatListSkeleton />;
@@ -117,6 +124,13 @@ export default function ChatList({
           setOpenCancelModal={() => setModals((prev) => ({ ...prev, cancelOrder: false }))}
           refetchApiKey={Api.ONGOING_CHATS}
           onSuccess={(data) => onAction('cancelOrder', data)}
+        />
+      </Modal>
+      <Modal open={modals.resolveChat} onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}>
+        <ResolveChat
+          onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}
+          requestId={requestId}
+          closeChatMutation={closeChatMutation}
         />
       </Modal>
     </>

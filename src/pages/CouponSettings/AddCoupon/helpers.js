@@ -94,6 +94,17 @@ export const validateCoupon = (coupon, couponType) => {
       return error;
     }
   }
+  console.log({
+    type: coupon?.couponDiscountType,
+    cpv: coupon.couponValue,
+    mov: coupon.couponMinimumOrderValue,
+    isTrue: Number(coupon.couponMinimumOrderValue) < Number(coupon.couponValue),
+  });
+  /* fixed && 50 < 40 */
+  if (coupon?.couponDiscountType === 'fixed' && Number(coupon.couponMinimumOrderValue) < Number(coupon.couponValue)) {
+    error.message = 'Minimum order value should be greater or equal to coupon value';
+    return error;
+  }
 
   return { status: true };
 };

@@ -14,6 +14,7 @@ function StyledSearchAddress({
   mapReference,
   setMapReference,
   isNotMarker = true,
+  label = 'Location *',
 }) {
   const theme = useTheme();
 
@@ -60,7 +61,7 @@ function StyledSearchAddress({
   return (
     <Stack mt={2.5} sx={{ position: 'relative' }}>
       <Typography sx={{ fontSize: '16px', fontWeight: 600, lineHeight: '20px', pb: '8px' }} variant="h4">
-        Location *
+        {label}
       </Typography>
 
       <PlacesAutocomplete

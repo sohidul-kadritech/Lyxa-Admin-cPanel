@@ -1,6 +1,8 @@
+/* eslint-disable max-len */
 import { Stack } from '@mui/material';
 import React from 'react';
 import currenciesList from '../../../../common/data/currencyList';
+import { TitleWithToolTip } from '../../../../components/Common/TitleWithToolTip';
 import StyledFormField from '../../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../../context';
 import InputBox from '../../../Settings/Admin/Marketing/LoyaltySettings/InputBox';
@@ -149,7 +151,14 @@ function AppCurrency({
   disableCurrency,
 }) {
   return (
-    <StyledBox title="App Currency">
+    <StyledBox
+      title={
+        <TitleWithToolTip
+          title="App Currency"
+          tooltip="Dual currency system: Once both are set, they're fixed, but you can toggle the secondary currency."
+        />
+      }
+    >
       <Stack direction="row" alignItems="center" flexWrap="wrap">
         <BaseCurrency
           newAppSettings={newAppSettings}

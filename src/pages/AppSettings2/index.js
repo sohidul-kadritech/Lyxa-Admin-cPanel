@@ -13,7 +13,6 @@ import AXIOS from '../../network/axios';
 import AppSettingsSkeleton from './AppSettingsSkeleton';
 import SettingsForButler from './Settings/SettingsForButler';
 import SettingsForCurrency from './Settings/SettingsForCurrency';
-import SettingsForVAT from './Settings/SettingsForVAT';
 import SettingsWithBundle from './Settings/SettingsWithBundle';
 import SettingsWithIncrementDecrementButton from './Settings/SettingsWithIncrementDecrementButton';
 import {
@@ -228,6 +227,7 @@ function Appsettings2() {
             {/* Settings for lyxa pay limit (customer service) */}
             <SettingsWithIncrementDecrementButton
               title={`Lyxa Pay Limit (Customer Service) (${newAppSettings?.baseCurrency?.symbol})`}
+              tooltip="Lyxa pay limit functions when an admin wants to add or remove credit for a particular user. This upper limit will hold. Admin is not permitted to add or remove credit that exceeds this range."
               endAdornment={newAppSettings?.baseCurrency?.symbol || ''}
               objectKey="maxCustomerServiceValue"
               newAppSettings={newAppSettings}
@@ -239,17 +239,25 @@ function Appsettings2() {
               }}
             />
 
-            {/* Settings for VAT Percentage */}
-            <SettingsForVAT
+            {/* Settings VAT */}
+            <SettingsWithIncrementDecrementButton
+              title="VAT (Percentage)"
+              tooltip="A percentage of VAT is added to the total product price and delivery charge."
+              objectKey="vat"
               endAdornment="%"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}
+              action={{
+                incrementHandler: incrementByOneHandler,
+                decrementHandler: decrementByOneHandler,
+              }}
             />
 
             {/* Settings for Delivery Boy Search Area */}
             <SettingsWithBundle
               title="Delivery Boy Search Area (KM)"
+              tooltip="When available Lyxa riders are close enough to the source address, they are made visible as available; otherwise, none are."
               objectKey="searchDeliveryBoyKm"
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
@@ -260,6 +268,7 @@ function Appsettings2() {
             {/* Settings for Shop distance */}
             <SettingsWithIncrementDecrementButton
               title="Shop Distance (KM)"
+              tooltip="The user cannot access the shops if the distance between the shops and the delivery address is outside of this range."
               endAdornment="KM"
               objectKey="nearByShopKm"
               newAppSettings={newAppSettings}
@@ -274,6 +283,7 @@ function Appsettings2() {
             {/* settings for near shop distance in home screens */}
             <SettingsWithIncrementDecrementButton
               title="Near Shop Distance in Home Screen (KM)"
+              tooltip="On the user app home screen, nearby shops are displayed, sorted by their distance."
               endAdornment="KM"
               objectKey="nearByShopKmForUserHomeScreen"
               newAppSettings={newAppSettings}
@@ -290,6 +300,7 @@ function Appsettings2() {
               endAdornment={newAppSettings?.baseCurrency?.symbol || ''}
               title="Maximum Discount Per Item for Lyxa (Marketing)"
               objectKey="maxDiscount"
+              tooltip="Lyxa offers discounts within this acceptable price range; otherwise, the maximum discount applies."
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}
@@ -302,6 +313,7 @@ function Appsettings2() {
             {/* Settings for Delivery Boy Search Area */}
             <SettingsWithBundle
               title="Units"
+              tooltip="Any product with units may use these units."
               newAppSettings={newAppSettings}
               setNewAppSettings={setNewAppSettings}
               setHasChanged={setHasChanged}

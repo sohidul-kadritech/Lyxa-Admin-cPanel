@@ -3,8 +3,6 @@ import { ReactComponent as SupremeIcon } from '../../../../assets/icons/shop-set
 import StyledFormField from '../../../../components/Form/StyledFormField';
 import { ShopAction2 } from '../ShopAction/ShopAction2';
 
-//
-
 export function ShopSettingsSection2({
   title,
   title2,

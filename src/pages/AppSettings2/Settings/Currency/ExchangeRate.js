@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 import { Box, Stack } from '@mui/material';
 import React from 'react';
+import { TitleWithToolTip } from '../../../../components/Common/TitleWithToolTip';
 import StyledFormField from '../../../../components/Form/StyledFormField';
 import InputBox from '../../../Settings/Admin/Marketing/LoyaltySettings/InputBox';
 import StyledBox from '../../../Settings/Admin/Marketing/LoyaltySettings/StyledContainer';
@@ -10,7 +12,14 @@ function ExchangeRate({ newAppSettings, setNewAppSettings, setHasChanged, isUsed
   const { incrementHandler, decrementHandler } = action;
   return (
     <Box>
-      <StyledBox title="Rate">
+      <StyledBox
+        title={
+          <TitleWithToolTip
+            title="Rate"
+            tooltip="Admins have the ability to change the exchange rate when secondary currency is enabled. Flexibility is provided by the store's ability to change this rate if it is within 10% less or greater or equalt to the administrator's rate."
+          />
+        }
+      >
         <Stack direction="row" alignItems="center" flexWrap="wrap">
           {/* Amount of base currency which is disabled in user inteface */}
           <InputBox

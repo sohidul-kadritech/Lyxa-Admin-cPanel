@@ -28,9 +28,9 @@ import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage() {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { shop } = currentUser;
-  const Deals = useMemo(() => new ShopDeals(shop), []);
+  const Deals = useMemo(() => new ShopDeals(shop, general?.appSetting || {}), []);
   console.log('Deals', Deals);
 
   const [render, setRender] = useState(false);
