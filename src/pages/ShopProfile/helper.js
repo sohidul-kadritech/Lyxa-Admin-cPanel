@@ -342,7 +342,7 @@ export const getMarketingLabel = (shop, appSettings) => {
         if (deals.percentage.isEntireMenu) {
           temp = (
             <>
-              {deals.percentage.maxDiscount > 0 ? (
+              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
                 <b style={{ fontWeight: '700' }}>
                   {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
                 </b>
@@ -357,7 +357,7 @@ export const getMarketingLabel = (shop, appSettings) => {
         } else {
           temp = (
             <>
-              {deals.percentage.maxDiscount > 0 ? (
+              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
                 <b style={{ fontWeight: '700' }}>
                   {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
                 </b>
