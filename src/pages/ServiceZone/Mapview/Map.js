@@ -6,8 +6,9 @@ import GroceryLocation from '../../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../../assets/icons/restaurant-location.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
-import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
+import { getTitleForMarker, getTitleForStoreMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 import { colorList } from '../helper';
+import { formateZoneCoordinates } from './helpers';
 
 const orderTypeToIconMap = {
   grocery: GroceryLocation,
@@ -58,6 +59,8 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
 
       const longitude = markerPosition.lng();
 
+      smoothPanTo(map, markerPosition, 300, google);
+
       if (getSelectedLatLng) getSelectedLatLng({ latitude, longitude });
     });
 
@@ -80,9 +83,8 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
       });
 
       // store Title
-
       const infowindowForStore = new google.maps.InfoWindow({
-        content: getTitleForMarker(store?.shopName || 'Store name'),
+        content: getTitleForStoreMarker(store?.shopName || 'Store name', store?.shopLogo),
       });
 
       shopLocation.addListener('mouseover', () => {
@@ -95,33 +97,40 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     });
 
     // set polygon of each zone
-    zones.forEach((item, i) => {
+    formateZoneCoordinates(zones).forEach((item, i) => {
       console.log({ color: colorList[i + (1 % 50)], i });
-      const polygon = new google.maps.Polygon({
-        paths: item?.zoneGeometry?.coordinates,
-        strokeColor: colorList[i + (1 % 50)],
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: colorList[i + (1 % 50)],
-        fillOpacity: 0.35,
-      });
+      const coordinates = item?.zoneGeometry?.coordinates;
 
-      polygon.setMap(map);
-      // Create an InfoWindow to display the tooltip
-      const infoWindow = new google.maps.InfoWindow({
-        content: getTitleForMarker(item?.zoneName),
-      });
+      if (coordinates && coordinates.length > 0) {
+        // Transform the coordinates into LatLng objects
+        const path = coordinates.map((coord) => new google.maps.LatLng(coord.lat, coord.lng));
 
-      // Add a mouseover event listener to show the tooltip
-      google.maps.event.addListener(polygon, 'mouseover', (event) => {
-        infoWindow.setPosition(event.latLng);
-        infoWindow.open(map);
-      });
+        const polygon = new google.maps.Polygon({
+          paths: path, // Use the transformed coordinates
+          strokeColor: colorList[i % 50], // Corrected the strokeColor index
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: colorList[i % 50], // Corrected the fillColor index
+          fillOpacity: 0.35,
+        });
 
-      // Add a mouseout event listener to hide the tooltip
-      google.maps.event.addListener(polygon, 'mouseout', () => {
-        infoWindow.close();
-      });
+        polygon.setMap(map);
+        // Create an InfoWindow to display the tooltip
+        const infoWindow = new google.maps.InfoWindow({
+          content: getTitleForMarker(item?.zoneName),
+        });
+
+        // Add a mouseover event listener to show the tooltip
+        google.maps.event.addListener(polygon, 'mouseover', (event) => {
+          infoWindow.setPosition(event.latLng);
+          infoWindow.open(map);
+        });
+
+        // Add a mouseout event listener to hide the tooltip
+        google.maps.event.addListener(polygon, 'mouseout', () => {
+          infoWindow.close();
+        });
+      }
     });
 
     // initializing control panel
@@ -132,7 +141,7 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     return () => {
       isMounted = false;
     };
-  }, [currentLocation?.latitude, currentLocation?.longitude, zones]);
+  }, [currentLocation?.latitude, currentLocation?.longitude]);
 
   return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }
