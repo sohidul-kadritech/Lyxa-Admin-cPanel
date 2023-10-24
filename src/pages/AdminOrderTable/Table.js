@@ -730,20 +730,6 @@ export default function Table({
         }}
       >
         {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
-        {/* <StyledTable
-          columns={filteredColumns}
-          rows={newOrders}
-          getRowId={(row) => row?._id}
-          cus
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Order found
-              </Stack>
-            ),
-          }}
-        /> */}
 
         <StyledTable5
           columns={filteredColumns}

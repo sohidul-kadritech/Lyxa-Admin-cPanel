@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
@@ -91,7 +92,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: viewUserType !== 'shop',
-    }
+    },
   );
 
   const dealSettingsQuery = useQuery(
@@ -106,7 +107,7 @@ export default function MarketingOverview({ viewUserType }) {
         params: {
           type: 'all',
         },
-      })
+      }),
   );
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export default function MarketingOverview({ viewUserType }) {
       setCurrentShop(shopQuery?.data?.data?.shop || {});
       const activeDeals = getActiveDeals(
         dealSettingsQuery?.data?.data?.dealSetting || [],
-        shopQuery?.data?.data?.shop?.shopType
+        shopQuery?.data?.data?.shop?.shopType,
       );
       setActiveDeals(activeDeals);
 
@@ -150,7 +151,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: Boolean(currentShop?._id),
-    }
+    },
   );
 
   const featuredSettingsQuery = useQuery(
@@ -166,7 +167,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: Boolean(currentShop?._id),
-    }
+    },
   );
 
   const discountQuery = useQuery(
@@ -182,7 +183,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: Boolean(currentShop?._id),
-    }
+    },
   );
 
   const doubleDealQuery = useQuery(
@@ -198,7 +199,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: Boolean(currentShop?._id),
-    }
+    },
   );
 
   const freeDeliveryQuery = useQuery(
@@ -214,7 +215,7 @@ export default function MarketingOverview({ viewUserType }) {
       }),
     {
       enabled: Boolean(currentShop?._id),
-    }
+    },
   );
 
   const openHandler = (marketingType, mData = {}) => {

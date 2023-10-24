@@ -24,12 +24,6 @@ function MarketingLabelCard({ label, sx }) {
         fontSize="14px"
         fontWeight={400}
         color={theme?.palette.primary.contrastText}
-        // sx={{
-        //   maxWidth: '100%',
-        //   overflow: 'hidden',
-        //   textWrap: 'nowrap',
-        //   textOverflow: 'ellipsize',
-        // }}
       >
         {label}
       </Typography>

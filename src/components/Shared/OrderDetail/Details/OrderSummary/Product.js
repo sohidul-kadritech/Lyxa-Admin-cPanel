@@ -79,6 +79,7 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
             }}
           >
             {getPriceWithCurrency(currency, secondaryCurrency, baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
+            {/* {FormateCurrency.get(baseCurrencyFinalPrice)} */}
           </Typography>
         </Stack>
         {/* deal info */}
