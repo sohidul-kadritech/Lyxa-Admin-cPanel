@@ -15,6 +15,7 @@ import dropSort from '../../helpers/dropSort';
 import { local_product_category_search, local_product_category_subCategory_search } from '../../helpers/localSearch';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { getMarketingLabel } from '../ShopProfile/helper';
 import AddCategory from './AddCategory';
 import AddProduct from './AddProduct';
 import EditFavorite from './EditFavorite';
@@ -145,7 +146,11 @@ export default function MenuPage() {
     <ProductsContext.Provider value={ContextObj}>
       <PageTop
         title={shop?.shopType === 'food' ? `Menu (${shop?.shopName})` : `Product List (${shop?.shopName})`}
-        tag={Deals.deals.hasActiveDeal ? <OngoingTag label={Deals.get_promotion_str()} /> : undefined}
+        tag={
+          Deals.deals.hasActiveDeal ? (
+            <OngoingTag label={getMarketingLabel(shop, general?.appSetting, true)} />
+          ) : undefined
+        }
         titleSx={{
           lineHeight: '28px',
         }}
