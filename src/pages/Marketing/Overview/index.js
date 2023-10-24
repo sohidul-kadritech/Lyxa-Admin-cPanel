@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 // third party
@@ -39,6 +40,7 @@ const getApliedDeals = (marketings, currentUserType) => {
   const options = { ...marketingTypesInit };
 
   marketings?.forEach((item) => {
+    console.log('creator: ', item?.creatorType, ' ', currentUserType);
     if (item?.creatorType !== currentUserType) {
       options[item?.type] = true;
     }
@@ -220,11 +222,22 @@ export default function MarketingOverview({ viewUserType }) {
 
   const openHandler = (marketingType, mData = {}) => {
     const marketing = mData?.data?.marketing;
-    console.log(mData);
+    console.log(
+      mData,
+      { userType, viewUserType },
+      !mData?.isMarketing,
+      mData?.marketing?.creatorType,
+      currentShop?._id,
+      mData?.isNotEligible,
+    );
 
     if (!mData?.isMarketing) {
       if (viewUserType === 'shop' && userType === 'admin' && mData?.isNotEligible) {
         history.push(`${routeMatch?.url}/dashboard/${marketingType}/${mData?.marketing?._id}`);
+      } else if (viewUserType === 'shop' && userType === 'shop' && mData?.isNotEligible) {
+        history.push(
+          `${routeMatch?.url}/dashboard/${marketingType}/${mData?.marketing?._id}?&shopId=${currentShop?._id}`,
+        );
       } else {
         setCurrentModal(marketingType);
       }
@@ -259,6 +272,8 @@ export default function MarketingOverview({ viewUserType }) {
 
   const isAdminViewAsShop = viewUserType === 'shop' && userType === 'admin';
 
+  console.log('appliedDeals.percentage || !activeDeals.percentage', appliedDeals.percentage, activeDeals.percentage);
+
   return (
     <Box>
       <Grid
@@ -275,14 +290,20 @@ export default function MarketingOverview({ viewUserType }) {
             title="Discounted Items"
             icon={DiscountIcon}
             isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
-            readOnly={isReadonly(discountQuery.data)}
+            readOnly={isReadonly(discountQuery?.data)}
             loading={__loading || discountQuery?.isFetching}
-            disabled={appliedDeals.percentage || !activeDeals.percentage}
+            disabled={
+              discountQuery?.data?.marketing?.creatorType === 'admin' && viewUserType === 'shop'
+                ? false
+                : appliedDeals.percentage || !activeDeals.percentage
+            }
+            // disabled={appliedDeals.percentage || !activeDeals.percentage}
             status={getPromotionStatus(discountQuery, 'percentage', activeDeals)}
-            ongoingBy={getOngoingBy(discountQuery.data)}
+            ongoingBy={getOngoingBy(discountQuery?.data)}
             onOpen={() => {
               if (activeDeals.percentage && !__loading) {
-                if (!appliedDeals.percentage || isAdminViewAsShop) openHandler('percentage', discountQuery.data);
+                openHandler('percentage', discountQuery?.data);
+                // if (!appliedDeals.percentage || isAdminViewAsShop) openHandler('percentage', discountQuery?.data);
               }
             }}
           />
@@ -295,12 +316,18 @@ export default function MarketingOverview({ viewUserType }) {
             isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
             readOnly={isReadonly(doubleDealQuery.data)}
             loading={__loading || doubleDealQuery.isFetching}
-            disabled={appliedDeals.double_menu || !activeDeals.double_menu}
+            // disabled={appliedDeals.double_menu || !activeDeals.double_menu}
+            disabled={
+              doubleDealQuery?.data?.marketing?.creatorType === 'admin' && viewUserType === 'shop'
+                ? false
+                : appliedDeals.double_menu || !activeDeals.double_menu
+            }
             status={getPromotionStatus(doubleDealQuery, 'double_menu', activeDeals)}
             ongoingBy={getOngoingBy(doubleDealQuery.data)}
             onOpen={() => {
               if (!__loading && activeDeals.double_menu) {
-                if (!appliedDeals.double_menu || isAdminViewAsShop) openHandler('double_menu', doubleDealQuery.data);
+                openHandler('double_menu', doubleDealQuery.data);
+                // if (!appliedDeals.double_menu || isAdminViewAsShop) openHandler('double_menu', doubleDealQuery.data);
               }
             }}
           />
@@ -313,14 +340,19 @@ export default function MarketingOverview({ viewUserType }) {
               isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
               loading={__loading || freeDeliveryQuery?.isFetching}
               readOnly={isReadonly(freeDeliveryQuery.data)}
-              disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
+              // disabled={appliedDeals.free_delivery || !activeDeals.free_delivery}
+              disabled={
+                freeDeliveryQuery?.data?.marketing?.creatorType === 'admin' && viewUserType === 'shop'
+                  ? false
+                  : appliedDeals.free_delivery || !activeDeals.free_delivery
+              }
               status={getPromotionStatus(freeDeliveryQuery, 'free_delivery', activeDeals)}
               ongoingBy={getOngoingBy(freeDeliveryQuery.data)}
               icon={DeliveryIcon}
               onOpen={() => {
                 if (!__loading && activeDeals.free_delivery) {
-                  if (!appliedDeals.free_delivery || isAdminViewAsShop)
-                    openHandler('free_delivery', freeDeliveryQuery.data);
+                  openHandler('free_delivery', freeDeliveryQuery.data);
+                  // if (!appliedDeals.free_delivery || isAdminViewAsShop)
                 }
               }}
             />
