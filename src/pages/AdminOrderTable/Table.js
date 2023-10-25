@@ -687,14 +687,14 @@ export default function Table({
                 : params?.row,
             );
           }}
-          disabled={
-            !getThreedotMenuOptions(
-              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
-                ? params?.row?.originalOrder
-                : params?.row,
-              currentUser?.adminType,
-            ).length
-          }
+          // disabled={
+          //   !getThreedotMenuOptions(
+          //     params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+          //       ? params?.row?.originalOrder
+          //       : params?.row,
+          //     currentUser?.adminType,
+          //   ).length
+          // }
           menuItems={getThreedotMenuOptions(
             params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
               ? params?.row?.originalOrder

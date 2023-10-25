@@ -48,8 +48,9 @@ function MapView({ onClose }) {
       onSuccess: (data) => {
         if (data?.status) {
           if (data?.data?.zones?.length > 0) {
-            console.log('===>zone', data?.data?.zones[0]?.zoneName);
             setZoneName(data?.data?.zones[0]?.zoneName);
+          } else {
+            setZoneName('');
           }
         }
       },
