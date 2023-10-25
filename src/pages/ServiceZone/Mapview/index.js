@@ -83,23 +83,7 @@ function MapView({ onClose }) {
   }, [loaded, coordinates?.lat, coordinates?.lon]);
 
   // getAllZones
-  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE), {
-    onSuccess: (data) => {
-      if (data.status) {
-        const tempZones = data?.data?.zones || [];
-
-        const allZones = tempZones.map((item) => {
-          const coordinates = item?.zoneGeometry?.coordinates[0]?.map((coord) => ({ lat: coord[1], lng: coord[0] }));
-
-          return { ...item, zoneGeometry: { ...item?.zoneGeometry, coordinates: [...coordinates] } };
-        });
-        console.log({ zones: allZones, tempZones });
-
-        setZones(allZones);
-      }
-    },
-    // eslint-disable-next-line prettier/prettier
-  });
+  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE));
 
   // getAllStore
   const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {
