@@ -61,7 +61,6 @@ function RefundOrder({ flaggData, setFlaggData, order }) {
         };
       }
 
-      console.log('value==>', { value: getInitialValue(e.target.name), target: e.target.name });
       return { ...prev, ...getInitialValue(e.target.name), [e.target.name]: e.target.value };
     });
   };

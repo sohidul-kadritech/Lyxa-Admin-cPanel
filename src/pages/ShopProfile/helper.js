@@ -267,7 +267,7 @@ export function ShopReviewDetails({ shop }) {
   );
 }
 
-export const getMarketingLabel = (shop, appSettings) => {
+export const getMarketingLabel = (shop, appSettings, showPromotionString = false) => {
   const maxDiscount = {
     shop: shop?.maxDiscount,
     admin: appSettings?.maxDiscount,
@@ -303,23 +303,28 @@ export const getMarketingLabel = (shop, appSettings) => {
   };
 
   const promotion = {};
+  let promotionString = 'Ongoing ';
 
   shop?.marketings?.forEach((obj) => {
-    console.log({ obj });
     if (obj?.type === 'free_delivery') {
       deals.free_delivery = obj?.isActive;
       deals.free_deliveryCreator = obj?.creatorType;
       deals.hasActiveDeal = obj?.isActive || deals.hasActiveDeal;
+      // string for free delivery
+      promotionString += `Free Delivery (${obj?.creatorType}), `;
+      // label for specific
       promotion[obj?.type] = {
-        label: `Ongoing Free Delivery Promotion (${obj?.creatorType})`,
+        label: `Free Delivery Promotion (${obj?.creatorType})`,
         isActive: obj?.isActive,
       };
     } else if (obj?.type === 'featured') {
       deals.featured = obj?.isActive;
       deals.hasActiveDeal = obj?.isActive || obj?.isActive;
-
+      // string for featured
+      promotionString += `Featured, `;
+      // label for specific
       promotion[obj?.type] = {
-        label: `Ongoing Featured Promotion`,
+        label: `Featured Promotion`,
         isActive: obj?.isActive,
       };
     } else {
@@ -340,31 +345,42 @@ export const getMarketingLabel = (shop, appSettings) => {
         }
 
         if (deals.percentage.isEntireMenu) {
+          // string for percentage on entire menu
+          promotionString += `${
+            deals.percentage.maxDiscount > 0
+              ? `${temp}off up to ${deals?.percentage?.currency}${deals?.percentage?.maxDiscount}`
+              : `Up to ${temp}off`
+          } on Entire Menu (${obj?.creatorType}), `;
+
           temp = (
             <>
-              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
+              {deals.percentage.maxDiscount > 0 ? (
                 <b style={{ fontWeight: '700' }}>
-                  {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
+                  {temp}off Up to {deals?.percentage?.currency}
+                  {deals?.percentage?.maxDiscount}
                 </b>
               ) : (
-                <b style={{ fontWeight: '700' }}>
-                  {deals.percentage.discountPercentages.length > 0 ? '' : 'Up to'} {temp}off
-                </b>
+                <b style={{ fontWeight: '700' }}>Up to {temp}off</b>
               )}{' '}
               on Entire Menu ({obj?.creatorType})
             </>
           );
         } else {
+          // string for percentage on selected items
+          promotionString += `${
+            deals.percentage.maxDiscount > 0
+              ? `${temp}off up to ${deals?.percentage?.currency}${deals?.percentage?.maxDiscount}`
+              : `Up to ${temp}off`
+          } on selected items (${obj?.creatorType}), `;
+
           temp = (
             <>
-              {deals.percentage.maxDiscount > 0 && deals.percentage.discountPercentages.length === 1 ? (
+              {deals.percentage.maxDiscount > 0 ? (
                 <b style={{ fontWeight: '700' }}>
                   {temp}off Up to {deals?.percentage?.currency} {deals?.percentage?.maxDiscount}
                 </b>
               ) : (
-                <b style={{ fontWeight: '700' }}>
-                  {deals.percentage.discountPercentages.length > 0 ? '' : 'Up to'} {temp}off
-                </b>
+                <b style={{ fontWeight: '700' }}>Up to {temp}off</b>
               )}{' '}
               on Selected Items ({obj?.creatorType})
             </>
@@ -372,6 +388,7 @@ export const getMarketingLabel = (shop, appSettings) => {
         }
 
         // percentage
+        // label for specific
         promotion[obj?.type] = {
           label: temp,
           isActive: obj?.isActive,
@@ -386,6 +403,9 @@ export const getMarketingLabel = (shop, appSettings) => {
         } else {
           temp = 'Buy 1 Get 1 Promotion on Selected Items';
         }
+
+        // string for double deal
+        promotionString += `${temp.replace('Promotion', '')} (${obj?.creatorType}), `;
 
         // double menu
         promotion[obj?.type] = {
@@ -403,6 +423,9 @@ export const getMarketingLabel = (shop, appSettings) => {
           temp = 'Reward Promotion on Selected Items';
         }
 
+        // string for double deal
+        promotionString += `${temp.replace('Promotion', '')}, `;
+
         // reward
         promotion[obj?.type] = {
           label: `${temp} (${obj?.creatorType})`,
@@ -416,7 +439,9 @@ export const getMarketingLabel = (shop, appSettings) => {
     }
   });
 
-  console.log({ promotion, deals });
+  if (showPromotionString) {
+    return `${promotionString} promotions`;
+  }
 
   return promotion;
 };

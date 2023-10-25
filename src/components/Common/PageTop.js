@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 import { West } from '@mui/icons-material';
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Button, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import BreadCrumbs from './BreadCrumb2';
 import PageButton from './PageButton';
 
@@ -9,6 +10,7 @@ export default function PageTop({
   backButtonLabel,
   onAdd,
   onAddDisabled,
+  addButtonToolTip,
   addButtonLabel,
   title,
   titleSx,
@@ -20,12 +22,14 @@ export default function PageTop({
 }) {
   const theme = useTheme();
 
+  console.log({ onAddDisabled });
+
   return (
     <Box pt={9} pb={7.5} {...rest}>
       {(backButtonLabel || addButtonLabel) && (
         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={3.5}>
           {backButtonLabel && <PageButton label={backButtonLabel} to={backTo} startIcon={<West />} />}
-          {addButtonLabel && (
+          {addButtonLabel && !onAddDisabled && (
             <Button
               color="primary"
               variant="contained"
@@ -38,6 +42,29 @@ export default function PageTop({
             >
               {addButtonLabel}
             </Button>
+          )}
+
+          {addButtonLabel && onAddDisabled && (
+            <Tooltip
+              title={
+                addButtonToolTip || 'You have no eligibility to modify this promotion, as you are not the creator.'
+              }
+            >
+              <Typography variant="span">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{
+                    borderRadius: '8px',
+                    padding: '11px 30px',
+                  }}
+                  disabled={onAddDisabled}
+                  onClick={onAdd}
+                >
+                  {addButtonLabel}
+                </Button>
+              </Typography>
+            </Tooltip>
           )}
         </Stack>
       )}

@@ -24,12 +24,6 @@ function MarketingLabelCard({ label, sx }) {
         fontSize="14px"
         fontWeight={400}
         color={theme?.palette.primary.contrastText}
-        sx={{
-          maxWidth: '100%',
-          overflow: 'hidden',
-          textWrap: 'nowrap',
-          textOverflow: 'ellipsize',
-        }}
       >
         {label}
       </Typography>
@@ -68,8 +62,8 @@ export default function ShopBanner({ shop, loading, onDrop }) {
           objectFit: 'cover',
         }}
       />
-      <Box sx={{ position: 'absolute', top: '10px', left: '10px', minWidth: '350px', height: '120px' }}>
-        <Stack sx={{ position: 'absolute', width: '100%', height: '120px' }} gap={2.5}>
+      <Box sx={{ position: 'absolute', top: '10px', left: '10px', minWidth: '350px', minHeight: '120px' }}>
+        <Stack sx={{ position: 'relative' }} gap={2.5} alignItems="flex-start">
           {promotion?.percentage?.isActive && <MarketingLabelCard label={promotion?.percentage?.label} />}
           {promotion?.double_menu?.isActive && <MarketingLabelCard label={promotion?.double_menu?.label} />}
           {promotion?.featured?.isActive && <MarketingLabelCard label={promotion?.featured?.label} />}

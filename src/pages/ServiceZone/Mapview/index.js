@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import { Skeleton, Stack, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import StyledSearchAddress from '../../../components/Shared/ChangeDeliveryAddress/StyledSearchAddress';
 import { smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
 import * as API_URL from '../../../network/Api';
@@ -31,14 +31,37 @@ function MapView({ onClose }) {
   const [zoneAddress, setZoneAddress] = useState(initialAddress);
   const [zones, setZones] = useState([]);
   const [mapReference, setMapReference] = useState(null);
+  const [zoneName, setZoneName] = useState('');
 
   const { location: currentLocation, getCurrentLocation } = useGeoLocation();
 
   const { coordinates, loaded } = currentLocation;
 
-  const getSelectedLatLng = async ({ latitude, longitude }) => {
+  const getZoneFromAddress = useMutation(
+    (data) =>
+      AXIOS.get(API_URL.GET_ZONE_FROM_LATLNG, {
+        params: {
+          ...data,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          if (data?.data?.zones?.length > 0) {
+            setZoneName(data?.data?.zones[0]?.zoneName);
+          } else {
+            setZoneName('');
+          }
+        }
+      },
+    },
+  );
+
+  const getSelectedLatLng = async ({ latitude, longitude }, ignoreZoneFind = false) => {
     const { data } = await getLocationFromLatLng(latitude, longitude);
-    console.log({ data });
+
+    if (!ignoreZoneFind) await getZoneFromAddress.mutateAsync({ latitude, longitude });
+
     setZoneAddress((prev) => ({
       ...prev,
       deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
@@ -60,23 +83,7 @@ function MapView({ onClose }) {
   }, [loaded, coordinates?.lat, coordinates?.lon]);
 
   // getAllZones
-  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
-    onSuccess: (data) => {
-      if (data.status) {
-        const tempZones = data?.data?.zones || [];
-
-        const allZones = tempZones.map((item) => {
-          const coordinates = item?.zoneGeometry?.coordinates[0]?.map((coord) => ({ lat: coord[1], lng: coord[0] }));
-
-          return { ...item, zoneGeometry: { ...item?.zoneGeometry, coordinates: [...coordinates] } };
-        });
-        console.log({ zones: allZones, tempZones });
-
-        setZones(allZones);
-      }
-    },
-    // eslint-disable-next-line prettier/prettier
-  });
+  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE));
 
   // getAllStore
   const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {
@@ -89,6 +96,7 @@ function MapView({ onClose }) {
 
   // onChange address handler
   const onChangeAddressHandler = (address) => {
+    setZoneName('');
     setZoneAddress((prev) => ({
       ...prev,
       deliveryAddress: { ...prev?.deliveryAddress, address },
@@ -116,12 +124,15 @@ function MapView({ onClose }) {
               deliveryAddress={zoneAddress}
               setDeliveryAddress={setZoneAddress}
               onChangeAddressHandler={onChangeAddressHandler}
+              getSelectedLatLng={getSelectedLatLng}
               mapReference={mapReference}
               isNotMarker={false}
             />
           </Stack>
           <Stack flex={1}>
             <StyledSearchForZone
+              zoneName={zoneName}
+              setZoneName={setZoneName}
               onClick={(value) => {
                 if (value?.zoneGeometry?.coordinates?.length > 0) {
                   const { google } = window;
@@ -140,7 +151,7 @@ function MapView({ onClose }) {
                   );
 
                   // generating address
-                  getSelectedLatLng(locationOfMarker);
+                  getSelectedLatLng(locationOfMarker, true);
 
                   // change center position
                   mapReference?.marker.setPosition(center);

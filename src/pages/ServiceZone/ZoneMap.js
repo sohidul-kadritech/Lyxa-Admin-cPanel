@@ -62,7 +62,6 @@ function checkPolygonIntersections(newPolygons, existingPolygons) {
 
     const intersection = turf.intersect(poly1, poly2);
 
-    console.log('intersection', intersection);
     if (intersection) {
       isIntersects = true;
     }

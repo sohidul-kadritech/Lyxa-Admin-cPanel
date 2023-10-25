@@ -116,6 +116,7 @@ export default function UpdateOrderStatus({
   const theme = useTheme();
 
   const { socket } = useSelector((state) => state.socketReducer);
+
   const queryClient = useQueryClient();
 
   const { general } = useGlobalContext();
@@ -225,6 +226,8 @@ export default function UpdateOrderStatus({
       }
 
       if (response?.data?.order?.orderStatus === 'delivered') {
+        queryClient.invalidateQueries(Api.LATE_ORDER_COUNT);
+        queryClient.invalidateQueries(Api.URGENT_ORDER_COUNT);
         onClose();
       } else {
         setCurrentOrder(() => {
@@ -233,7 +236,6 @@ export default function UpdateOrderStatus({
           return getUpdatedOrderData(orderdata);
         });
         setCurrentStatus(response?.data?.order?.orderStatus);
-        // setCurrentStatus(getNextStatus(response?.data?.order));
       }
     }
   };

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box } from '@material-ui/core';
@@ -8,6 +9,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useDidRecover } from 'react-router-cache-route';
 import ConfirmModal from '../../../components/Common/ConfirmModal';
 import PageTop from '../../../components/Common/PageTop';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import IncrementDecrementInput from '../../../components/Form/IncrementDecrementInput';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
@@ -207,10 +209,6 @@ function ShopSettings() {
   const decrementOrder = (setValue) => {
     set_has_unsaved_change(true);
     setValue((prev) => {
-      // if (isNumber(parseInt(prev, 10)) && prev !== '') return parseInt(prev, 10) - 1;
-      // if (prev === '' || prev <= 0) return 1;
-      // return prev;
-
       if (Number(prev) <= 1) return 1;
       return prev - 1;
     });
@@ -279,7 +277,13 @@ function ShopSettings() {
         <Box>
           <ShopSettingsSection
             buttonType={1}
-            title="General"
+            title={
+              <TitleWithToolTip
+                title="General"
+                tooltip="When this feature is active, users can effortlessly customize product instructions using their preferred apps."
+                sx={{ fontSize: '16px', fontWeight: 600 }}
+              />
+            }
             isButton
             actionTitle="Allow customers to add special instructions to individual items"
             isChecked={newSpecialInstructions}
@@ -291,7 +295,13 @@ function ShopSettings() {
           <ShopSettingsSection
             buttonType={1}
             showSwitch
-            title="Shop note to riders"
+            title={
+              <TitleWithToolTip
+                title="Shop note to riders"
+                tooltip="When enabled, riders can view these notes when accepting orders."
+                sx={{ fontSize: '16px', fontWeight: 600 }}
+              />
+            }
             isButton
             gapValue={50 / 4}
             action={actionHandlerForRiderNotes}
@@ -323,7 +333,13 @@ function ShopSettings() {
               }}
               buttonType={2}
               value={newPayMentInformation}
-              title="Payment Information"
+              title={
+                <TitleWithToolTip
+                  title="Payment Information"
+                  tooltip="It specified the payment methods accepted by this store."
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              }
               options={PaymentInformationList}
               action={handlePaymentInformation}
               isButton
@@ -336,7 +352,13 @@ function ShopSettings() {
               }}
               buttonType={2}
               disabled={admin?.adminType === 'admin' ? false : admin?.adminType !== 'accountManager'}
-              title="Price Range"
+              title={
+                <TitleWithToolTip
+                  title="Price Range"
+                  tooltip="This is only editable by super admin and account manager of this shop."
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              }
               title2="Method"
               accessType="SUPERADMIN / ACCOUNTMANAGER"
               value={newPriceRange}
@@ -351,7 +373,13 @@ function ShopSettings() {
               <ShopSettingsSection2
                 boxSx={section2Sx}
                 buttonType={2}
-                title="Dietary"
+                title={
+                  <TitleWithToolTip
+                    title="Dietary"
+                    tooltip="Dietary information indicates the types of diets followed by this store."
+                    sx={{ fontSize: '16px', fontWeight: 600 }}
+                  />
+                }
                 options={getDietaryOptions(shop?.shopType)}
                 value={newDietary}
                 action={handleDietary}
@@ -364,7 +392,13 @@ function ShopSettings() {
             <ShopSettingsSection3
               boxSx={section2Sx}
               setHasChanged={set_has_unsaved_change}
-              title="Tags"
+              title={
+                <TitleWithToolTip
+                  title="Tags"
+                  tooltip="What kinds of foods the store offers"
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              }
               options={tagsOptions}
               loading={tagsQuery?.isLoading}
               value={newTags}
@@ -376,7 +410,13 @@ function ShopSettings() {
               <ShopSettingsSection3
                 boxSx={section2Sx}
                 setHasChanged={set_has_unsaved_change}
-                title="Cuisine"
+                title={
+                  <TitleWithToolTip
+                    title="Cuisine"
+                    tooltip="What kinds of cuisine the store follows"
+                    sx={{ fontSize: '16px', fontWeight: 600 }}
+                  />
+                }
                 options={cuisinesOptions}
                 loading={tagsQuery?.isLoading}
                 value={newCusines}
@@ -390,7 +430,13 @@ function ShopSettings() {
                 paddingBottom: '20px',
               }}
               buttonType={2}
-              title="Delivery Settings"
+              title={
+                <TitleWithToolTip
+                  title="Delivery Settings"
+                  tooltip="We offer two delivery options: 'Lyxa' and 'Store'. When 'Lyxa' is selected, Lyxa handles all delivery-related responsibilities; otherwise, the store takes care of them."
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              }
               title2="Method"
               value={OwnDeliveryBoy}
               options={DeliverySettings}
@@ -456,7 +502,15 @@ function ShopSettings() {
               }}
             >
               <Stack direction="row" alignItems="center" gap={10}>
-                <Typography sx={TypoSx}>Order Capacity</Typography>
+                <Typography sx={TypoSx}>
+                  <TitleWithToolTip
+                    title="Order Capacity"
+                    tooltip={
+                      "The shop can only make a certain number of orders at once. If it's full, you have to wait until they finish some orders before you can order. This way, you can order once they have space to make your order."
+                    }
+                    sx={{ fontSize: '16px', fontWeight: 600 }}
+                  />
+                </Typography>
                 <StyledSwitch
                   checked={Number(newOrderCapacity) > 0}
                   onChange={() => {
@@ -495,7 +549,13 @@ function ShopSettings() {
                 paddingTop: '21px',
               }}
             >
-              <Typography sx={TypoSx}>Max Discount Per Item (Marketing) </Typography>
+              <Typography sx={TypoSx}>
+                <TitleWithToolTip
+                  title="Max Discount Per Item (Marketing)"
+                  tooltip="Maxium discount amount that shop can offer on each product item."
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              </Typography>
               <Box
                 sx={{
                   marginTop: '15px',
@@ -522,7 +582,12 @@ function ShopSettings() {
                 boxSx={{
                   paddingBottom: '29px',
                 }}
-                title="Rate"
+                title={
+                  <TitleWithToolTip
+                    title="Rate"
+                    tooltip="An admin can set a rate, and the shop can change it by 10% more, 10% less, or keep it the same."
+                  />
+                }
                 rateofShop={reateOfShop}
                 setRateofShop={setRateofShop}
                 setHasChanged={set_has_unsaved_change}
