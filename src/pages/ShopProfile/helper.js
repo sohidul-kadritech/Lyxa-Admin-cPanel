@@ -321,7 +321,7 @@ export const getMarketingLabel = (shop, appSettings, showPromotionString = false
       deals.featured = obj?.isActive;
       deals.hasActiveDeal = obj?.isActive || obj?.isActive;
       // string for featured
-      promotionString += `Featured `;
+      promotionString += `Featured, `;
       // label for specific
       promotion[obj?.type] = {
         label: `Featured Promotion`,
@@ -405,7 +405,7 @@ export const getMarketingLabel = (shop, appSettings, showPromotionString = false
         }
 
         // string for double deal
-        promotionString += `${temp.replace('Promotion', '')}, `;
+        promotionString += `${temp.replace('Promotion', '')} (${obj?.creatorType}), `;
 
         // double menu
         promotion[obj?.type] = {
