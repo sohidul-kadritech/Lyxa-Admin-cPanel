@@ -30,8 +30,10 @@ import { socketConnect } from './store/socket/socketAction';
 export default function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const { dispatchCurrentUser, currentUser, dispatchGeneral } = useGlobalContext();
+  const { dispatchCurrentUser, currentUser, dispatchGeneral, general } = useGlobalContext();
   const { userType, adminType, shop } = currentUser;
+  const { appSetting } = general;
+  console.log({ appSetting });
   const { socket } = useSelector((state) => state.socketReducer);
 
   // console.log('socket test', socket);

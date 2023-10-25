@@ -234,9 +234,9 @@ export const getThreedotMenuOptions = (order, userType) => {
   if (
     userType === 'admin' &&
     order?.orderStatus === 'delivered' &&
-    !order?.isRefundedAfterDelivered &&
-    !order?.replacementOrder &&
-    !order?.isReplacementOrder &&
+    // !order?.isRefundedAfterDelivered &&
+    // !order?.replacementOrder &&
+    // !order?.isReplacementOrder &&
     !order?.isButler
   ) {
     makePushOptions([flagOrderNew]);

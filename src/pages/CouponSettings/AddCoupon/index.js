@@ -236,12 +236,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* type */}
         <StyledFormField
-          label={
-            <TitleWithToolTip
-              title="Type"
-              tooltip="Choose Coupon Type: Percentage for a percentage-based discount on your total order amount, or Fixed Amount for a specific discount value set by the admin, with a maximum limit controlled by them."
-            />
-          }
+          label={<TitleWithToolTip title="Type" />}
           intputType="select"
           inputProps={{
             name: 'couponDiscountType',
@@ -256,7 +251,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           label={
             <TitleWithToolTip
               title="Value"
-              tooltip="Admin specifies percentage for Percentage Type, and fixed amount for Amount Type"
+              tooltip="Admin specifies percentage for Percentage Type, and fixed amount for Amount Type. This value applies on the total order amount of a users."
             />
           }
           intputType="text"
@@ -312,7 +307,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* amount limit */}
         <StyledFormField
-          label={<TitleWithToolTip title="Amount limit" tooltip="Maximum spending limit during this period" />}
+          label={
+            <TitleWithToolTip
+              title="Amount limit"
+              tooltip="When you use the coupon during this time, the total amount you're allowed to spend on orders should not go over this limit. when this limit is exceeded the coupon will automatically expired"
+            />
+          }
           intputType="text-toggle"
           inputProps={{
             type: 'number',
@@ -330,7 +330,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
 
         {/* user limit */}
         <StyledFormField
-          label={<TitleWithToolTip title="Order Limit Per User" tooltip="User-specific order limit for this period." />}
+          label={
+            <TitleWithToolTip
+              title="Order Limit Per User"
+              tooltip="Maximum time order limit for a user. users are eligible to use this coupon when they have reamaining chances to place orders."
+            />
+          }
           intputType="text-toggle"
           inputProps={{
             type: 'number',
@@ -349,7 +354,12 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
         {/* order limit */}
         {couponType !== 'individual_user' && (
           <StyledFormField
-            label={<TitleWithToolTip title="Total Order Limit" tooltip="Total order limit of this coupon period" />}
+            label={
+              <TitleWithToolTip
+                title="Total Order Limit"
+                tooltip="Maximum time order limit for all users. users are eligible to use this coupon when they have reamaining total chances to place orders."
+              />
+            }
             intputType="text-toggle"
             inputProps={{
               type: 'number',
@@ -372,7 +382,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
             label={
               <TitleWithToolTip
                 title="Max. Discount amount"
-                tooltip="Maxium discount amount when coupon type is percentage"
+                tooltip="Maxium discount amount on total order amount when coupon type is percentage"
               />
             }
             intputType="text-toggle"
@@ -396,7 +406,7 @@ export default function AddCoupon({ onClose, couponType, editCoupon }) {
           label={
             <TitleWithToolTip
               title={`${coupon.couponDiscountType === 'fixed' ? 'Min. Order Amount *' : 'Min. Order Amount'}`}
-              tooltip="Minimum order required to use this coupon."
+              tooltip="Minimum total order amount required to use this coupon."
             />
           }
           intputType="text-toggle"

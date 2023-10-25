@@ -1,4 +1,8 @@
-export const calculateSecondaryCurrency = (baseCurrency, secondaryCurrency, value, exchangeRate, multiplyWith = 1) => {
+/* eslint-disable prettier/prettier */
+import FormateBaseCurrency from '../../../components/Common/FormateBaseCurrency';
+import FormatesecondaryCurrency from '../../../components/Common/FormatesecondaryCurrency';
+
+export const calculateSecondaryCurrency = (value, exchangeRate, multiplyWith = 1) => {
   const isSecondaryCurrencyEnabled = Number(exchangeRate) > 0;
   const baseAmount = Number(value);
   const secondaryAmount = baseAmount * Number(exchangeRate);
@@ -6,15 +10,15 @@ export const calculateSecondaryCurrency = (baseCurrency, secondaryCurrency, valu
   let resultendSecondaryAmount = Math.round(secondaryAmount * multiplyWith);
   resultendSecondaryAmount = Math.abs(resultendSecondaryAmount);
 
-  const withSecondaryCurrency = `${secondaryAmount < 0 ? '-' : ''} ${
-    secondaryCurrency?.code
-  } ${resultendSecondaryAmount} ~ ${value < 0 ? '-' : ''} ${baseCurrency?.symbol} ${resultendBaseAmount.toFixed(2)}`;
+  const withSecondaryCurrency = `${secondaryAmount < 0 ? '-' : ''}${FormatesecondaryCurrency.get(
+    resultendSecondaryAmount,
+  )} ~ ${value < 0 ? '-' : ''}${FormateBaseCurrency.get(resultendBaseAmount)}`;
 
-  const withOutSecondaryCurrency = `${value < 0 ? '-' : ''} ${baseCurrency?.symbol} ${resultendBaseAmount.toFixed(2)}`;
+  const withOutSecondaryCurrency = `${value < 0 ? '-' : ''}${FormateBaseCurrency.get(resultendBaseAmount)}`;
 
-  const withOutbaseCurrency = `${secondaryAmount < 0 ? '-' : ''} ${
-    secondaryCurrency?.code
-  } ${resultendSecondaryAmount}`;
+  const withOutbaseCurrency = `${secondaryAmount < 0 ? '-' : ''}${FormatesecondaryCurrency.get(
+    resultendSecondaryAmount,
+  )}`;
 
   const result = {
     enabled: isSecondaryCurrencyEnabled,

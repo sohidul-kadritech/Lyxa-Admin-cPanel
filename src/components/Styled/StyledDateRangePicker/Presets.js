@@ -8,6 +8,8 @@ export const getFirstMonday = (period) => {
   else start = moment().startOf('month');
 
   while (start.day() !== 1) start.add('1', 'day');
+
+  console.log({ moment: moment(), start });
   return start;
 };
 

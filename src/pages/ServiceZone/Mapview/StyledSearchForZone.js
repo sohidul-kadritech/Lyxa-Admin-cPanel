@@ -8,9 +8,9 @@ import StyledInput from '../../../components/Styled/StyledInput';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
-function StyledSearchForZone({ onClick }) {
+function StyledSearchForZone({ onClick, zoneName, setZoneName }) {
   const theme = useTheme();
-  const [zoneName, setZoneName] = useState('');
+
   const [open, setOpen] = useState(false);
   const [searchedZone, setSearchedZone] = useState([]);
 
@@ -36,6 +36,7 @@ function StyledSearchForZone({ onClick }) {
         params: {
           searchKey: zoneName,
           pageSize: 10,
+          page: 1,
         },
       }),
     {

@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
-import { useGlobalContext } from '../../../../../context';
 import { calculateSecondaryCurrency } from '../../../../../pages/RiderProfile/Transactions/helpers';
+import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
+import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
 
 export const productDeal = (product) => {
   if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
@@ -20,30 +21,22 @@ const dealTypeToLabelMap = {
 
 // eslint-disable-next-line no-unused-vars
 const getPriceWithCurrency = (
-  baseCurrency,
-  secondaryCurrency,
   price,
   secondaryCurrencyPrice = undefined,
   exchangeRate = { shouldCalculate: false, rate: null },
 ) => {
   if (exchangeRate?.shouldCalculate) {
-    if (exchangeRate?.rate > 0) return `${secondaryCurrency} ${Math.round(price * exchangeRate?.rate || 0)}`;
-    return `${baseCurrency} ${(price || 0)?.toFixed(2)}`;
+    if (exchangeRate?.rate > 0) return `${FormatesecondaryCurrency(price * exchangeRate?.rate || 0)}`;
+    return `${FormateBaseCurrency.get(price || 0)}`;
   }
 
-  return `${secondaryCurrency} ${Math.round(secondaryCurrencyPrice || 0)} ~ ${baseCurrency}
-  ${(price || 0)?.toFixed(2)}`;
+  return `${FormatesecondaryCurrency.get(secondaryCurrencyPrice)} ~ ${FormateBaseCurrency.get(price || 0)}`;
 };
 
 // eslint-disable-next-line no-unused-vars
 export default function Product({ product, isFirst, isLast, shopExchangeRate }) {
-  const { general } = useGlobalContext();
-
-  const currency = general?.currency?.symbol;
-  const secondaryCurrency = general?.appSetting?.secondaryCurrency?.code;
   const deal = productDeal(product);
   const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
-  // eslint-disable-next-line no-unused-vars
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
 
@@ -78,7 +71,8 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
               textDecoration: deal !== null ? 'line-through' : undefined,
             }}
           >
-            {getPriceWithCurrency(currency, secondaryCurrency, baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
+            {getPriceWithCurrency(baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
+            {/* {FormateCurrency.get(baseCurrencyFinalPrice)} */}
           </Typography>
         </Stack>
         {/* deal info */}
@@ -100,18 +94,18 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
               {/* percentage */}
               {deal === 'percentage' &&
-                `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
-                  2,
-                )}`}
+                `${FormateBaseCurrency.get(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount)}`}
 
               {/* reward */}
               {deal === 'reward' &&
-                `${product?.finalReward?.points} pts + ${currency} ${product?.finalReward?.baseCurrency_amount}`}
+                `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
+                  product?.finalReward?.baseCurrency_amount,
+                )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
-                `${currency} ${(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0).toFixed(
-                  2,
+                `${FormateBaseCurrency.get(
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}
             </Typography>
           </Stack>
@@ -132,27 +126,10 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
                     </Typography>
                     <Typography variant="inherit" fontSize="14px" lineHeight="22px" fontWeight={500}>
                       (
-                      {calculateSecondaryCurrency(
-                        general?.appSetting?.baseCurrency,
-                        general?.appSetting?.secondaryCurrency,
-                        item?.extraPrice,
-                        shopExchangeRate,
-                        quantity,
-                      ).enabled
-                        ? calculateSecondaryCurrency(
-                            general?.appSetting?.baseCurrency,
-                            general?.appSetting?.secondaryCurrency,
-                            item?.extraPrice,
-                            shopExchangeRate,
-                            quantity,
-                          ).withOutbaseCurrency
-                        : calculateSecondaryCurrency(
-                            general?.appSetting?.baseCurrency,
-                            general?.appSetting?.secondaryCurrency,
-                            item?.extraPrice,
-                            shopExchangeRate,
-                            quantity,
-                          ).withOutSecondaryCurrency}
+                      {calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity).enabled
+                        ? calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity).withOutbaseCurrency
+                        : calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity)
+                            .withOutSecondaryCurrency}
                       )
                     </Typography>
                   </Stack>

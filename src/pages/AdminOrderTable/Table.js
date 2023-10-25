@@ -687,14 +687,14 @@ export default function Table({
                 : params?.row,
             );
           }}
-          disabled={
-            !getThreedotMenuOptions(
-              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
-                ? params?.row?.originalOrder
-                : params?.row,
-              currentUser?.adminType,
-            ).length
-          }
+          // disabled={
+          //   !getThreedotMenuOptions(
+          //     params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+          //       ? params?.row?.originalOrder
+          //       : params?.row,
+          //     currentUser?.adminType,
+          //   ).length
+          // }
           menuItems={getThreedotMenuOptions(
             params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
               ? params?.row?.originalOrder
@@ -730,20 +730,6 @@ export default function Table({
         }}
       >
         {refetching && <LoadingOverlay sx={{ zIndex: '99' }} />}
-        {/* <StyledTable
-          columns={filteredColumns}
-          rows={newOrders}
-          getRowId={(row) => row?._id}
-          cus
-          rowHeight={71}
-          components={{
-            NoRowsOverlay: () => (
-              <Stack height="100%" alignItems="center" justifyContent="center">
-                No Order found
-              </Stack>
-            ),
-          }}
-        /> */}
 
         <StyledTable5
           columns={filteredColumns}
