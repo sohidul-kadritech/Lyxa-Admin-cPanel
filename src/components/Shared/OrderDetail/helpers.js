@@ -1,7 +1,10 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
+import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
+import FormatesecondaryCurrency from '../../Common/FormatesecondaryCurrency';
 import { OrderContext } from './OrderContext';
 
 // Order Details Handling
@@ -62,12 +65,12 @@ export function SummaryItem({
   isRejected,
   isNegative,
   showIfZero,
-  decimalPrecision = 2,
   showBaseOnly,
+  showSecondaryOnly,
 }) {
   const theme = useTheme();
   const context = useContext(OrderContext);
-  const { baseCurrency, secondaryCurrency, adminExchangeRate } = context || {};
+  const { adminExchangeRate } = context || {};
   const hideSecondary = adminExchangeRate === 0;
 
   if (hide) return null;
@@ -125,20 +128,27 @@ export function SummaryItem({
         {/* not base value */}
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          `${isNegative || value < 0 ? '-' : ''}${FormateBaseCurrency.get(Math.abs(value || 0))}`}
+        {/* `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value || 0).toFixed(decimalPrecision)}`} */}
+
+        {/* show secondary Only */}
+        {typeof value !== 'string' &&
+          showSecondaryOnly &&
+          `${isNegative || value < 0 ? '-' : ''}${FormatesecondaryCurrency.get(Math.abs(valueSecondary || 0))}`}
 
         {/* base and secondary both */}
         {typeof value !== 'string' &&
           !showBaseOnly &&
+          !showSecondaryOnly &&
           `
           ${
             hideSecondary
               ? ''
-              : `${isNegative || valueSecondary < 0 ? '-' : ''}${secondaryCurrency} ${Math.round(
-                  Math.abs(valueSecondary),
+              : `${isNegative || valueSecondary < 0 ? '-' : ''}${FormatesecondaryCurrency.get(
+                  Math.abs(valueSecondary || 0),
                 )} ~ `
           }
-          ${isNegative || value < 0 ? '-' : ''}${baseCurrency} ${Math.abs(value || 0).toFixed(decimalPrecision)}`}
+          ${isNegative || value < 0 ? '-' : ''}${FormateBaseCurrency.get(Math.abs(value || 0))}`}
       </Typography>
     </Stack>
   );

@@ -6,12 +6,12 @@ import CancelReason from './CancelReason';
 import CouponDetails from './Coupon';
 import DeliveryDetails from './DeliveryDetails';
 import GroupOrderSettings from './GroupOrderSettings';
+import NewPaymentSummary from './NewPaymentSummary';
 import OrderIssues from './OrderIssues';
 import OrderReward from './OrderReward';
 import OrderSummary from './OrderSummary';
 import OrderTimeline from './OrderTimeline';
 import PaymentMethod from './PaymentMethod';
-import PaymentSummary from './PaymentSummary';
 import ResolveOrderFlag from './ResolveFlag';
 import OrderScheduleTimer from './ScheduleTimer';
 
@@ -32,7 +32,8 @@ export default function Detail({ order, hideIssues, userType, hideMoreOptions })
       {order?.couponDetails && <CouponDetails coupon={order?.couponDetails} />}
       {order?.rewardPoints > 0 && userType === 'admin' ? <OrderReward points={order?.rewardPoints} /> : null}
       {order?.cart?.cartType === 'group' && <GroupOrderSettings order={order} />}
-      <PaymentSummary order={order} />
+      {/* <PaymentSummary order={order} /> */}
+      <NewPaymentSummary order={order} />
       {order?.flag?.length && !hideMoreOptions ? <ResolveOrderFlag order={order} setRender={setRender} /> : null}
     </Stack>
   );

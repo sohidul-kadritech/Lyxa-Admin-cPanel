@@ -25,6 +25,8 @@ import { admin_routes } from '../../routes/admin_routes';
 import { customer_service_routes } from '../../routes/customer_service_routes';
 import { seller_routes } from '../../routes/seller_routes';
 import { shop_order_manager_routes, shop_routes } from '../../routes/shop_routes';
+import FormateBaseCurrency from '../Common/FormateBaseCurrency';
+import FormatesecondaryCurrency from '../Common/FormatesecondaryCurrency';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import UrgentOrderRecieved from './UrgentOrderReceivedNotification';
@@ -72,8 +74,9 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
 };
 
 export default function Layout() {
-  const { currentUser } = useGlobalContext();
+  const { currentUser, general } = useGlobalContext();
   const { userType, adminType } = currentUser;
+  const { appSetting } = general;
   const [sidebar, setSidebar] = useState(false);
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
   const history = useHistory();
@@ -125,6 +128,10 @@ export default function Layout() {
       console.log('urgent order count late');
       queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
     });
+
+    // initialize currency format
+    FormateBaseCurrency.initialize(appSetting?.baseCurrency?.code);
+    FormatesecondaryCurrency.initialize(appSetting?.secondaryCurrency?.code);
 
     return () => {
       socketServices?.removeListener(`notify-late-order`);
