@@ -121,8 +121,8 @@ function ServiceZone() {
 
   const apiurl = currentUser?.userType === 'admin' ? API_URL.GET_ALL_ZONE : '';
 
-  // getAllZones
-  const getAllZones = useQuery(
+  // getAllZonesWithPagination
+  const getAllZonesWithPagination = useQuery(
     [apiurl, { slectedStatus: slectedZoneStatus, searchedValue, pageNo, selectedPageSize, selectedsortBy }],
     () =>
       AXIOS.get(apiurl, {
@@ -143,6 +143,9 @@ function ServiceZone() {
       // eslint-disable-next-line prettier/prettier
     },
   );
+
+  // getAllZonesWithoutPagination
+  const getAllZonesWithoutPagination = useQuery([apiurl], () => AXIOS.get(apiurl));
   // add new zones
   const addNewZone = useMutation((data) => AXIOS.post(API_URL.CREATE_ZONE, data), {
     onSuccess: (data) => {
@@ -182,7 +185,7 @@ function ServiceZone() {
     deleteAZoneQuery.mutate({ zoneId: id });
   };
 
-  console.log(getAllZones?.data?.data?.zones);
+  console.log(getAllZonesWithPagination?.data?.data?.zones);
 
   // eslint-disable-next-line no-unused-vars
   const onStatusChange = (value, data) => {
@@ -415,6 +418,7 @@ function ServiceZone() {
               />
               {/* Add new zone */}
               <AddMenuButton
+                disabled={getAllZonesWithoutPagination?.isLoading}
                 onClick={() => {
                   setOpen(() => {
                     setActionType('add');
@@ -438,10 +442,10 @@ function ServiceZone() {
                 // width: '100%',
               }}
             >
-              {!getAllZones?.isLoading ? (
+              {!getAllZonesWithPagination?.isLoading && !getAllZonesWithoutPagination?.isLoading ? (
                 <StyledTable
                   columns={columns}
-                  rows={getAllZones?.data?.data?.zones || []}
+                  rows={getAllZonesWithPagination?.data?.data?.zones || []}
                   getRowId={(row) => row?._id}
                   components={{
                     NoRowsOverlay: () => (
@@ -467,7 +471,7 @@ function ServiceZone() {
             <Modal open={open} centered>
               {actionType === 'add' ? (
                 <CreateZone
-                  allZones={getAllZones?.data?.data?.zones || []}
+                  allZones={getAllZonesWithoutPagination?.data?.data?.zones || []}
                   addNewZone={addNewZone}
                   onClose={() => {
                     console.log('add');
@@ -476,7 +480,7 @@ function ServiceZone() {
                 />
               ) : actionType === 'edit' ? (
                 <EditZone
-                  allZones={getAllZones?.data?.data?.zones || []}
+                  allZones={getAllZonesWithoutPagination?.data?.data?.zones || []}
                   currentLocation={{
                     loaded: true,
                     isCurrent: null,
@@ -494,7 +498,7 @@ function ServiceZone() {
                 />
               ) : (
                 <AddZoneStatus
-                  allZones={getAllZones?.data?.data?.zones || []}
+                  allZones={getAllZonesWithPagination?.data?.data?.zones || []}
                   currentLocation={{
                     loaded: true,
                     isCurrent: null,
@@ -517,7 +521,7 @@ function ServiceZone() {
             <Box>
               <MapOverview
                 setCurrentRowData={setCurrentRowData}
-                getAllZone={getAllZones?.data?.data?.zones || []}
+                getAllZone={getAllZonesWithPagination?.data?.data?.zones || []}
                 setIsSideBarOpen={setIsSideBarOpen}
               />
             </Box>

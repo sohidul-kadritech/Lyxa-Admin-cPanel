@@ -77,7 +77,6 @@ export default function Orders({
     },
   );
 
-  // startDate&endDate&orderType=&assignedCustomerService
   const urgentOrderQuery = useQuery(
     [Api.URGENT_ORDER_COUNT, { ...queryParams }],
     () =>

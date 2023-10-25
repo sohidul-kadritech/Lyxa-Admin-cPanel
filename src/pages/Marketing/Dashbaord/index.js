@@ -5,9 +5,9 @@
 // third party
 import { Box, Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../../components/Common/PageTop';
 
@@ -44,6 +44,9 @@ export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
   const routeMatch = useRouteMatch();
+  const { search } = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
@@ -72,13 +75,16 @@ export default function MarketingDashboard({ viewUserType }) {
   );
 
   const marketingQuery = useQuery(
-    [`marketing-settings`],
+    [
+      `marketing-settings`,
+      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: {
           creatorType: viewUserType,
           type: params?.type,
-          shop: params?.shopId,
+          shop: params?.shopId || searchParams.get('shopId'),
         },
       }),
     {
@@ -273,6 +279,8 @@ export default function MarketingDashboard({ viewUserType }) {
     return routeSeg?.join('/');
   };
 
+  console.log({ marketingData: marketingQuery?.data }, marketingQuery?.data?.isNotEligible);
+
   return (
     <Box>
       <PageTop
@@ -281,10 +289,19 @@ export default function MarketingDashboard({ viewUserType }) {
         backTo={getBackToUrl(viewUserType)}
         addButtonLabel="Manage Promotion"
         onAdd={() => {
-          if (viewUserType === 'shop' && userType === 'admin') return;
+          if (
+            (viewUserType === 'shop' && userType === 'admin') ||
+            marketingQuery?.data?.isNotEligible ||
+            marketingQuery.isLoading
+          )
+            return;
           setIsModalOpen(true);
         }}
-        onAddDisabled={viewUserType === 'shop' && userType === 'admin'}
+        onAddDisabled={
+          (viewUserType === 'shop' && userType === 'admin') ||
+          marketingQuery?.data?.isNotEligible ||
+          marketingQuery.isLoading
+        }
       />
       {__loading && isInitialLoad ? (
         <PageSkeleton />

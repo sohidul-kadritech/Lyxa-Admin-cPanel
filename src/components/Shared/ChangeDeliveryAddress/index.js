@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import socketServices from '../../../common/socketService';
 import { successMsg } from '../../../helpers/successMsg';
@@ -97,12 +97,13 @@ function ChangeDeliveryAddress({ order, onClose }) {
 
   const getSelectedLatLng = async ({ latitude, longitude }) => {
     const { data } = await getLocationFromLatLng(latitude, longitude);
+    console.log('test==>');
+    getZoneServiceQuery.mutateAsync({ latitude, longitude });
     console.log({ data });
     setDeliveryAddress((prev) => ({
       ...prev,
       deliveryAddress: { ...prev?.deliveryAddress, address: data?.results[0]?.formatted_address, latitude, longitude },
     }));
-    getZoneServiceQuery.mutate({ latitude, longitude });
   };
 
   const onChangeAddressHandler = (address) => {
@@ -126,6 +127,10 @@ function ChangeDeliveryAddress({ order, onClose }) {
       updateDeliveryAddressQuery.mutate(deliveryAddress);
     }
   };
+
+  useEffect(() => {
+    getSelectedLatLng({ latitude: order?.dropOffLocation?.latitude, longitude: order?.dropOffLocation?.longitude });
+  }, [order?.dropOffLocation?.latitude, order?.dropOffLocation?.longitude]);
 
   return (
     <Grid
@@ -263,7 +268,7 @@ function ChangeDeliveryAddress({ order, onClose }) {
               onClick={submitDeliveryAddress}
               disabled={updateDeliveryAddressQuery?.isLoading || disableButton}
             >
-              {disableButton ? 'Service Not Available' : 'Confirm Location'}
+              {disableButton ? 'Service Unavailable Here' : 'Confirm Location'}
             </Button>
           </Stack>
         </Stack>

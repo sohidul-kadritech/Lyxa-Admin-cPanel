@@ -12,6 +12,7 @@ function StyledSearchAddress({
   onChangeAddressHandler,
   getZoneServiceQuery,
   mapReference,
+  getSelectedLatLng,
   setMapReference,
   isNotMarker = true,
   label = 'Location *',
@@ -38,6 +39,9 @@ function StyledSearchAddress({
     } else if (mapReference && !isNotMarker) {
       mapReference?.marker.setPosition(center);
       smoothPanTo(mapReference?.map, center, 300, google);
+      if (getSelectedLatLng) {
+        getSelectedLatLng({ latitude: latlng?.lat, longitude: latlng?.lng });
+      }
     }
 
     // newAddress.placeId = placeId;
