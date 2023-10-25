@@ -60,7 +60,7 @@ function MapView({ onClose }) {
   }, [loaded, coordinates?.lat, coordinates?.lon]);
 
   // getAllZones
-  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE, {}), {
+  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE), {
     onSuccess: (data) => {
       if (data.status) {
         const tempZones = data?.data?.zones || [];

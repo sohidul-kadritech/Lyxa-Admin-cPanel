@@ -36,6 +36,7 @@ function StyledSearchForZone({ onClick }) {
         params: {
           searchKey: zoneName,
           pageSize: 10,
+          page: 1,
         },
       }),
     {
