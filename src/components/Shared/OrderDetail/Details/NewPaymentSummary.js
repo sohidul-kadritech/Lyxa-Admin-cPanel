@@ -111,29 +111,20 @@ function NewPaymentSummary({ order }) {
           showSecondaryOnly={order?.adminExchangeRate > 0}
           showIfZero
         />
-        <SummaryItem
-          label="Lyxa Pay"
-          value={summary?.baseCurrency_wallet}
-          valueSecondary={summary?.baseCurrency_wallet * avg_rate}
-          showSecondaryOnly={order?.adminExchangeRate > 0}
-          isNegative
-          // isTotal
-        />
 
-        {total_base - summary?.baseCurrency_wallet > 0 && (
-          <SummaryItem
-            label="Total Amount"
-            value={total_base - summary?.baseCurrency_wallet}
-            valueSecondary={total_secondary - summary?.baseCurrency_wallet * avg_rate}
-            showIfZero
-            isTotal
-          />
-        )}
+        <SummaryItem label="Total Amount" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
 
         <SummaryItem
           label="Cash"
           value={summary?.baseCurrency_cash}
           valueSecondary={summary?.baseCurrency_cash * avg_rate}
+          showSecondaryOnly={order?.adminExchangeRate > 0}
+          isTotal
+        />
+        <SummaryItem
+          label="Lyxa Pay"
+          value={summary?.baseCurrency_wallet}
+          valueSecondary={summary?.baseCurrency_wallet * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal
         />
