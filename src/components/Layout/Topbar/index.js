@@ -7,7 +7,7 @@ import { ReactComponent as SupportIcon } from '../../../assets/icons/t-support.s
 import { useGlobalContext } from '../../../context';
 import { getProfilePhotoAndAltName } from '../helper';
 import AccountMenu from './AccountMenu';
-import Notification from './Notification';
+import Notification from './NotificationSidebar';
 import Tabs from './Tabs';
 
 const getConsoleName = (userType, adminType, shopOrderManager) => {

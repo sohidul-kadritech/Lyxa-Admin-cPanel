@@ -50,8 +50,8 @@ export const RefundPercentage = [
 ];
 
 export const DeliveryTypeOptions = [
-  { value: 'shop-customer', label: 'Restaurent / Customer' },
-  { value: 'customer-shop-customer', label: 'Customer / Restaurent / Customer' },
+  { value: 'shop-customer', label: 'Store / Customer' },
+  { value: 'shop-customer-shop', label: 'Store / Customer / Store' },
 ];
 
 export const calculateVat = (order, flaggedData, adminVat) => {
