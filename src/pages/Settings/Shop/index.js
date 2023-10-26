@@ -508,9 +508,7 @@ function ShopSettings() {
                 <Typography sx={TypoSx}>
                   <TitleWithToolTip
                     title="Order Capacity"
-                    tooltip={
-                      "The shop can only make a certain number of orders at once. If it's full, you have to wait until they finish some orders before you can order. This way, you can order once they have space to make your order."
-                    }
+                    tooltip="The store can only make a certain number of orders at once. If order capacity is full user can't place order in this shop.users need to wait until store finish some orders. After the availabilty of their capacity user can order."
                     sx={{ fontSize: '16px', fontWeight: 600 }}
                   />
                 </Typography>
