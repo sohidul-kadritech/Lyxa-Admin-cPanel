@@ -135,6 +135,7 @@ function StyledTable5({
   showHeader = true,
   rowSx,
   rowInnerContainerSx,
+  onRowClick,
 }) {
   return (
     <Stack sx={{ background: '#fff', paddingBottom: '12px', overflow: 'auto' }}>
@@ -146,6 +147,7 @@ function StyledTable5({
         NoRowsOverlay={NoRowsOverlay}
         rowSx={rowSx}
         rowInnerContainerSx={rowInnerContainerSx}
+        onRowClick={onRowClick}
       />
     </Stack>
   );
