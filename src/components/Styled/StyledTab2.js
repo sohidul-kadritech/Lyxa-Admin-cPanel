@@ -55,7 +55,7 @@ export default function StyledTabs2({ options, onChange, value, size }) {
   return (
     <Stack direction="row" alignItems="center" gap={size === 'small' ? 2 : 4}>
       {options?.map((tab) => (
-        <StyledBadgeContainer badgeContent={tab?.badgeContent} key={tab?.value}>
+        <StyledBadgeContainer color="primary" badgeContent={tab?.badgeContent} key={tab?.value}>
           <TabItem tab={tab} isActive={value === tab.value} onSelect={onChange} size={size} />
         </StyledBadgeContainer>
       ))}

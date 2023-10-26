@@ -30,7 +30,7 @@ export const shop_routes = (prefix = '', shopDeliveryType) => {
       component: MarketingDashboard,
       componentProps: { viewUserType: 'shop' },
     },
-    { path: `${prefix}/new-orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
+    { path: `${prefix}/orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
     { path: `${prefix}/*`, component: NotFoundPage },
   ];
 
@@ -45,7 +45,7 @@ export const shop_routes = (prefix = '', shopDeliveryType) => {
 export const shop_order_manager_routes = (prefix = '') => {
   const routes = [
     { path: `${prefix}/menu`, component: MenuPage },
-    { path: `${prefix}/new-orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
+    { path: `${prefix}/orders`, component: NewOrders, componentProps: { showFor: 'shop' } },
     { path: `${prefix}/*`, component: NotFoundPage },
   ];
 

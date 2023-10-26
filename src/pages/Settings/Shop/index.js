@@ -97,6 +97,8 @@ function ShopSettings() {
   const [newSpecialInstructions, setNewSpecialInstructions] = useState(newShop?.specialInstructions || false);
   const [OwnDeliveryBoy, setOwnDeliveryBoy] = useState(newShop?.haveOwnDeliveryBoy);
   const [newMaxDiscount, setNewMaxDiscount] = useState(newShop?.maxDiscount?.toString() || '100');
+  // defaultPreparationTime
+  const [defaultPreparationTime, setDefaultPreparationTime] = useState(newShop?.defaultPreparationTime);
   const [has_unsaved_change, set_has_unsaved_change] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
@@ -121,6 +123,7 @@ function ShopSettings() {
         shop.shopExchangeRate = data?.data?.shop?.shopExchangeRate;
         shop.shopNote = data?.data?.shop?.shopNote;
         shop.isShopNoteForRiderEnabled = data?.data?.shop?.isShopNoteForRiderEnabled;
+        shop.defaultPreparationTime = data?.data?.shop?.defaultPreparationTime;
         set_has_unsaved_change(false);
       }
     },
@@ -146,6 +149,7 @@ function ShopSettings() {
       newCusines,
       newShopNote,
       isShopNoteForRiderEnabled,
+      defaultPreparationTime,
     );
 
     if (reateOfShop?.shopExchangeRate < reateOfShop?.baseExchangeRate) {
@@ -291,7 +295,6 @@ function ShopSettings() {
           />
 
           {/* shop rider notes */}
-
           <ShopSettingsSection
             buttonType={1}
             showSwitch
@@ -571,6 +574,38 @@ function ShopSettings() {
                   onChange={(value) => {
                     set_has_unsaved_change(true);
                     maxDiscountHandler(value);
+                  }}
+                />
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                paddingTop: '21px',
+              }}
+            >
+              <Typography sx={TypoSx}>
+                <TitleWithToolTip
+                  title="Default Preparation time"
+                  tooltip="When store accept any orders the default preparation time will selected. that we put here."
+                  sx={{ fontSize: '16px', fontWeight: 600 }}
+                />
+              </Typography>
+              <Box
+                sx={{
+                  marginTop: '15px',
+                }}
+              >
+                <IncrementDecrementInput
+                  endAdornment="min"
+                  min={0}
+                  max={60}
+                  step={5}
+                  dynamicWidth
+                  value={defaultPreparationTime}
+                  onChange={(value) => {
+                    set_has_unsaved_change(true);
+                    setDefaultPreparationTime(Number(value));
                   }}
                 />
               </Box>

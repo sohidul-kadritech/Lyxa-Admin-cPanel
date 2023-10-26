@@ -13,8 +13,8 @@ function Row({ theme }) {
             <Skeleton sx={{ width: '150px', height: '12px' }} />
             <Skeleton sx={{ width: '80px', height: '8px' }} />
           </Stack>
-          <Skeleton sx={{ width: '200px', height: '10px' }} />
-          <Skeleton sx={{ width: '200px', height: '10px' }} />
+          <Skeleton sx={{ width: '100%', height: '10px' }} />
+          <Skeleton sx={{ width: '100%', height: '10px' }} />
         </Stack>
       </Stack>
     </Box>

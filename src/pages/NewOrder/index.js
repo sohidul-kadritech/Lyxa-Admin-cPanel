@@ -155,7 +155,7 @@ export default function NewOrders({ showFor }) {
     */
     const shouldConvertStatusOnTheWay =
       getNextStatus(currentOrder) === 'ready_to_pickup' && haveOwnDeliveryBoy && !currentOrderDelivery;
-
+    console.log({ validated });
     if (validated?.status === false) return;
 
     const payload = validated?.data;
@@ -175,7 +175,12 @@ export default function NewOrders({ showFor }) {
   };
 
   const onAcceptHandler = () => {
-    const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
+    const isSelfShop = currentOrder?.orderFor === 'specific';
+
+    const shouldReplacementOrderOntheWay =
+      !currentOrder?.isReplacementItemPickFromUser &&
+      currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop' &&
+      currentOrder?.orderStatus === 'order_on_the_way';
 
     /* @Here we check whether the next status is preparing or not */
     const shouldOpenAcceptedModal = getNextStatus(currentOrder) === 'preparing';
@@ -183,6 +188,8 @@ export default function NewOrders({ showFor }) {
     /* @ if delivery method is self
     and next status is preparing then it update the openAcceptModal state as true to open the modal
     */
+    console.log({ isSelfShop, shouldOpenAcceptedModal, currentOrder });
+
     if (isSelfShop && shouldOpenAcceptedModal) {
       setOpenAcceptModal(true);
       return;
@@ -198,7 +205,11 @@ export default function NewOrders({ showFor }) {
     Here we used accept modal for both assigning riders and select currency
     */
 
-    if (getNextStatus(currentOrder) === 'delivered') {
+    if (
+      !shouldReplacementOrderOntheWay &&
+      !currentOrder?.isReplacementOrder &&
+      getNextStatus(currentOrder) === 'delivered'
+    ) {
       setOpenAcceptModal(true);
       return;
     }

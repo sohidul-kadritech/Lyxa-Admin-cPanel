@@ -20,9 +20,6 @@ function Notification({ onClose }) {
   const specificElementRef = useRef();
   const [queryParams, setQueryParams] = useState(initializeParams);
   const theme = useTheme();
-  const notificationCountQuery = useQuery([API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT], () =>
-    AXIOS.get(API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT),
-  );
 
   const notificationQuery = useQuery(
     [API_URL.GET_UNSEEN_NOTIFICATIONS, { ...queryParams }],
@@ -42,7 +39,7 @@ function Notification({ onClose }) {
       ) : (
         <Stack gap={2.5} ref={specificElementRef} sx={{ paddingBottom: '40px' }}>
           {notificationQuery?.data?.data?.notifications?.map((notification, i) => (
-            <NotificationCard key={i} notification={notification} />
+            <NotificationCard key={i} notification={notification} onClose={onClose} />
           ))}
 
           {!notificationQuery?.data?.data?.notifications?.length && (

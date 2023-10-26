@@ -475,9 +475,14 @@ export const validateAndGenerateStatusData = (currentOrder, paidCurrency) => {
     return status;
   }
 
+  const shouldReplacementOrderOntheWay =
+    !currentOrder?.isReplacementItemPickFromUser &&
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop' &&
+    currentOrder?.orderStatus === 'order_on_the_way';
+
   const data = {};
   data.orderId = currentOrder?._id;
-  data.orderStatus = currentStatus;
+  data.orderStatus = shouldReplacementOrderOntheWay ? 'replacement_item_on_the_way' : currentStatus;
   data.shop = currentOrder?.shop?._id;
   data.deliveryBoy = currentOrderDelivery?._id === 'no-rider' ? undefined : currentOrderDelivery?._id;
   // if not selected will be undefined

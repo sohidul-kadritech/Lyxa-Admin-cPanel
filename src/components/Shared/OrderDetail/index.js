@@ -36,6 +36,12 @@ const hideUpdateAndCancelOption = (order) => {
 function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
   const isPreparing = statusOptions[getNextStatus(order)]?.label === 'Preparing';
   const isSpecific = order?.orderFor !== 'global';
+
+  const shouldReplacementOrderOntheWay =
+    !order?.isReplacementItemPickFromUser &&
+    order?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop' &&
+    order?.orderStatus === 'order_on_the_way';
+
   return (
     <Box>
       {/* This component only visible for shop */}
@@ -47,7 +53,7 @@ function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onL
           >
             {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
             {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
-              <Button onClick={onClickReject} variant="contained" color="danger">
+              <Button onClick={onClickReject} variant="contained" size="small" color="danger">
                 Reject
               </Button>
             )}
@@ -57,9 +63,17 @@ function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onL
               </Button>
               {/* @If there has next step it will visible otherWise not (Next Status Button) */}
               {hideUpdateAndCancelOption(order) && (
-                <Button onClick={onClickAccept} variant="contained" color="primary" disabled={onLoadingUpdateStatus}>
+                <Button
+                  onClick={onClickAccept}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  disabled={onLoadingUpdateStatus}
+                >
                   {statusOptions[getNextStatus(order)]?.label === 'Preparing'
                     ? 'Accept'
+                    : shouldReplacementOrderOntheWay
+                    ? 'Replacement Order on The Way'
                     : statusOptions[getNextStatus(order)]?.label}
                 </Button>
               )}

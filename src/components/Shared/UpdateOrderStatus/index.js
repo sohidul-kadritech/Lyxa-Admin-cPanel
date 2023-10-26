@@ -144,7 +144,6 @@ export default function UpdateOrderStatus({
       : order.orderStatus,
   );
 
-  // old one
   // const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
 
@@ -158,7 +157,7 @@ export default function UpdateOrderStatus({
 
   const [showDelivery, setShowDelivery] = useState(false);
 
-  const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
+  const isSelfShop = currentOrder?.orderFor === 'specific';
 
   // global riders
   const getNearByDeliveryBoys = () => {
@@ -345,17 +344,7 @@ export default function UpdateOrderStatus({
 
           return deliveryBoyList[deliveryBoyList?.length - 1];
         }
-        // if (isExistRider >= 0) {
-        //   // if exist check the the index is same or less than the delivery boy list length or not.
-        //   if (isExistRider < deliveryBoyList?.length - 1) {
-        //     // if the existing rider index is smaller than  deliverylist length select the next one.
-        //     return deliveryBoyList[isExistRider + 1];
-        //   }
-        //   // otherwise select the last one of the list
 
-        //   return deliveryBoyList[deliveryBoyList?.length - 1];
-        // }
-        // select the 1st rider
         return deliveryBoyList[0];
       }
 
@@ -447,13 +436,11 @@ export default function UpdateOrderStatus({
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
                 disabled={item?.position <= newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position}
-                // disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
                 className={
                   item?.position === newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position
                     ? 'active-status'
                     : ''
                 }
-                // className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
                 sx={{

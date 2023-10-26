@@ -10,9 +10,5 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 export default function StyledBadgeContainer({ children, ...props }) {
-  return (
-    <StyledBadge {...props} color="primary">
-      {children}
-    </StyledBadge>
-  );
+  return <StyledBadge {...props}>{children}</StyledBadge>;
 }

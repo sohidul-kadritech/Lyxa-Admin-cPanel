@@ -2,6 +2,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as NotificationIcon } from '../../../../assets/icons/notification-icon.svg';
 
 const notificationCardSx = (theme, isHover) => {
@@ -11,9 +12,9 @@ const notificationCardSx = (theme, isHover) => {
       borderRadius: '7px',
       border: `1px solid ${theme?.palette?.custom?.border}`,
       cursor: 'pointer',
-      transition: 'all 0.3s ease-in',
+      transition: 'all 0.1s linear',
       '&:hover': {
-        background: `rgba(177,177,177,0.1)`,
+        background: `rgba(177,177,177,0.3)`,
       },
     };
   }
@@ -22,20 +23,73 @@ const notificationCardSx = (theme, isHover) => {
     padding: 2,
     borderRadius: '7px',
     border: `1px solid ${theme?.palette?.custom?.border}`,
-    cursor: 'pointer',
+    cursor: 'default',
   };
 };
 
-export const dynamicRedirectingPathForAdmin = (accountType) => 'hello';
+export const dynamicRedirectingPathForAdmin = (type, order) => {
+  const tempReoutes = {
+    admin: {
+      route: '/orders',
+      params: {},
+    },
+    customerService: {
+      route: '/orders',
+      params: {},
+    },
+    shop: {
+      route: '/orders',
+      params: {},
+    },
+    sales: {
+      route: '/orders',
+      params: {},
+    },
+    accountManager: {
+      route: '/orders',
+      params: {},
+    },
+  };
 
-function NotificationCard({ notification, onClick }) {
+  tempReoutes[type].params = {
+    ...tempReoutes[type].params,
+    type: 'ongoing',
+    errorOrderType: order?.errorOrderType,
+    page: 1,
+  };
+
+  return tempReoutes[type];
+};
+
+const getQueryString = (data) =>
+  Object.keys(data)
+    .map((key) => `${key}=${encodeURIComponent(data[key])}`)
+    .join('&');
+
+function NotificationCard({ notification, onClick, onClose }) {
   const theme = useTheme();
+
+  const history = useHistory();
+
+  const onClickHandler = () => {
+    const path = dynamicRedirectingPathForAdmin(notification?.accountType, notification?.order);
+    history.push({
+      pathname: path?.route,
+      search: getQueryString(path?.params),
+    });
+
+    if (onClose) onClose();
+  };
   return (
     <Box
       sx={notificationCardSx(theme, notification?.clickable)}
       onClick={() => {
-        if (onClick) {
-          onClick();
+        if (notification?.clickable) {
+          if (onClick) {
+            onClick();
+            return;
+          }
+          onClickHandler();
         }
       }}
     >

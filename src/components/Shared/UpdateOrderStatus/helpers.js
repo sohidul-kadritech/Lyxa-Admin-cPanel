@@ -45,11 +45,6 @@ export const newStatusOptions = (currentOrder) => {
 
   const isPreparingFirstAndShouldSwap = isGlobal && isPreparingFirst;
 
-  // preparingAt
-  // accepted_delivery_boyAt
-
-  // console.log('currentOrder', currentOrder, 'isPreparingFirst', isPreparingFirst, isPreparingFirstAndShouldSwap);
-
   if (
     (shouldSwap || isPreparingFirstAndShouldSwap) &&
     !currentOrder?.isReplacementOrder &&
@@ -272,10 +267,14 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
     });
   });
 
-  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+  if (currentOrder?.orderFor === 'specific') {
     list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
+  // if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+  //   list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  //   list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  // }
 
   if (currentOrder?.orderFor === 'global') {
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
