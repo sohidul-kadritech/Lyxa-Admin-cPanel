@@ -53,7 +53,7 @@ export const newStatusOptions = (currentOrder) => {
   if (
     (shouldSwap || isPreparingFirstAndShouldSwap) &&
     !currentOrder?.isReplacementOrder &&
-    currentOrder?.replacementOrderDeliveryInfo.deliveryType !== 'shop-customer-shop'
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType !== 'shop-customer-shop'
   ) {
     return {
       placed: {
@@ -88,7 +88,7 @@ export const newStatusOptions = (currentOrder) => {
   if (
     (shouldSwap || isPreparingFirstAndShouldSwap) &&
     currentOrder?.isReplacementOrder &&
-    currentOrder?.replacementOrderDeliveryInfo.deliveryType === 'shop-customer-shop'
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop'
   ) {
     return {
       placed: {
@@ -126,7 +126,7 @@ export const newStatusOptions = (currentOrder) => {
 
   if (
     currentOrder?.isReplacementOrder &&
-    currentOrder?.replacementOrderDeliveryInfo.deliveryType === 'shop-customer-shop'
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop'
   ) {
     return {
       placed: {
