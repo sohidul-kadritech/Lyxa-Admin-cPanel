@@ -23,6 +23,7 @@ import RefundOrder from '../../components/Shared/RefundOrder';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 // import StyledTable from '../../components/Styled/StyledTable3';
+import FormateBaseCurrency from '../../components/Common/FormateBaseCurrency';
 import ChangeDeliveryAddress from '../../components/Shared/ChangeDeliveryAddress';
 import StyledTable5 from '../../components/Styled/StyledTable5';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -371,11 +372,7 @@ export default function Table({
 
         const totalOringinalOrder = row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat;
 
-        return (
-          <Typography variant="body4">
-            {currency} {(totalOringinalOrder || 0).toFixed(2)}
-          </Typography>
-        );
+        return <Typography variant="body4">{FormateBaseCurrency.get(totalOringinalOrder || 0)}</Typography>;
       },
     },
     {
@@ -622,8 +619,6 @@ export default function Table({
         const total =
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
-        console.log({ row });
-
         const totalOringinalOrder =
           row?.originalOrder?.summary?.baseCurrency_cash +
           row?.originalOrder?.summary?.baseCurrency_wallet +
@@ -636,11 +631,7 @@ export default function Table({
             ? row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat
             : total;
 
-        return (
-          <Typography variant="body4">
-            {currency} {(finalTotal || 0).toFixed(2)}
-          </Typography>
-        );
+        return <Typography variant="body4">{FormateBaseCurrency.get(finalTotal || 0)}</Typography>;
       },
     },
     {
@@ -687,14 +678,14 @@ export default function Table({
                 : params?.row,
             );
           }}
-          // disabled={
-          //   !getThreedotMenuOptions(
-          //     params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
-          //       ? params?.row?.originalOrder
-          //       : params?.row,
-          //     currentUser?.adminType,
-          //   ).length
-          // }
+          disabled={
+            !getThreedotMenuOptions(
+              params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+                ? params?.row?.originalOrder
+                : params?.row,
+              currentUser?.adminType,
+            ).length
+          }
           menuItems={getThreedotMenuOptions(
             params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
               ? params?.row?.originalOrder
