@@ -58,11 +58,14 @@ const timelineStatusNoteMap = {
   delivered: 'Your order has been delivered!',
   cancelled: 'Order got cancelled',
   refunded: 'Order was refunded',
+  replacement_item_on_the_way: 'Replacement item drop-off and pickup',
 };
 
 export default function OrderTimeline({ order = {}, sx, timelineTypoSx, ...props }) {
   const theme = useTheme();
   const orderTimeline = [...(order?.timeline || [])];
+
+  console.log(order?.timeline);
 
   // order scheduled
   if (order?.type === 'schedule') {

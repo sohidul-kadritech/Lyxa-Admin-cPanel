@@ -83,6 +83,14 @@ export const getUpdateStatusValue = (currentOrder, currentStatus) => {
     return 'accepted_delivery_boy';
   }
 
+  if (
+    currentStatus === 'replacement_item_on_the_way' &&
+    currentOrder?.isReplacementItemPickFromUser &&
+    currentOrder?.orderStatus === 'replacement_item_on_the_way'
+  ) {
+    return 'replacement_item_on_the_way';
+  }
+
   return status;
 };
 
@@ -99,6 +107,10 @@ const getUpdatedOrderData = (order) => {
   const changedLabel = isPreparingFirst ? 'accepted_delivery_boy' : 'preparing';
 
   const updatedData = !shouldUpdate ? { ...orderdata } : { ...orderdata, orderStatus: changedLabel };
+
+  if (order?.isReplacementItemPickFromUser && order?.orderStatus === 'order_on_the_way') {
+    return { ...orderdata, orderStatus: 'replacement_item_on_the_way' };
+  }
 
   if (order?.isButler) {
     return { ...orderdata };
@@ -125,10 +137,12 @@ export default function UpdateOrderStatus({
 
   const isSecondaryCurrencyEnabled = appSetting?.adminExchangeRate > 0;
 
-  console.log('general', general);
-
-  // new one
-  const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
+  // when order is replacement order and isReplacementItemPickFromUser equal to true and current order status is order on the way. then it should be replace with replacement item on the way
+  const [currentStatus, setCurrentStatus] = useState(
+    order?.isReplacementItemPickFromUser && order?.orderStatus === 'order_on_the_way'
+      ? 'replacement_item_on_the_way'
+      : order.orderStatus,
+  );
 
   // old one
   // const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
@@ -235,7 +249,14 @@ export default function UpdateOrderStatus({
 
           return getUpdatedOrderData(orderdata);
         });
-        setCurrentStatus(response?.data?.order?.orderStatus);
+
+        // when order is replacement order and isReplacementItemPickFromUser equal to true and current order status is order on the way. then it should be replace with replacement item on the way
+        setCurrentStatus(
+          response?.data?.order?.isReplacementItemPickFromUser &&
+            response?.data?.order?.orderStatus === 'order_on_the_way'
+            ? 'replacement_item_on_the_way'
+            : response?.data?.order?.orderStatus,
+        );
       }
     }
   };

@@ -79,7 +79,7 @@ export const calculateVat = (order, flaggedData, adminVat) => {
   };
 
   if (flaggedData?.replacement === 'with') {
-    const vatForDeliveryFee = Math.min(Number(flaggedData?.deliveryfee || 0) * (adminVat / 100), totalVat);
+    const vatForDeliveryFee = Math.min(Number(flaggedData?.deliveryfee || 0) * (adminVat / 100));
 
     const vatData = {
       vatForShop,

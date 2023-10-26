@@ -95,7 +95,7 @@ function ByPercentage({ flaggData, setFlaggData, order }) {
       const newValue = Number(e.target.value);
       const updatedNewValue = newValue > maxValue ? maxValue : newValue > 0 ? newValue : '';
       getSuccessMessage(e.target.name, newValue, maxValue, 'replacement');
-      const remaingPercentage = 100 - updatedNewValue;
+      const remaingPercentage = (100 - updatedNewValue).toFixed(2);
 
       const baseCurrency_shopCutForReplacement = (
         flaggData?.totalSelectedAmount *
