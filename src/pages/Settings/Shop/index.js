@@ -587,7 +587,7 @@ function ShopSettings() {
               <Typography sx={TypoSx}>
                 <TitleWithToolTip
                   title="Default Preparation time"
-                  tooltip="When store accept any orders the default preparation time will selected. that we put here."
+                  tooltip="When store try to accept any orders the default preparation time will selected. that we put here."
                   sx={{ fontSize: '16px', fontWeight: 600 }}
                 />
               </Typography>
