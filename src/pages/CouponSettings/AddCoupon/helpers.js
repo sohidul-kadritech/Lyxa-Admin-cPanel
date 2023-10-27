@@ -116,6 +116,8 @@ export const createCouponUploaData = (coupon, checked) => {
   data.couponUsers = coupon?.couponUsers?.map((shop) => shop?._id);
   data.couponInfluencer = coupon.couponInfluencer?._id;
 
+  console.log({ checked });
+
   // limits
   Object.entries(checked).forEach(([key, value]) => {
     if (!value || !Number(coupon[key])) {

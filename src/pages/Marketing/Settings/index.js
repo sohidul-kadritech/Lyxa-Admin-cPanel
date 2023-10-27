@@ -82,13 +82,31 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       onSuccess: (data) => {
         const types = {};
 
+        const counter = {};
+
         data?.data?.products?.forEach((product) => {
           if (product?.marketing) {
             types[product?.marketing?.type] = true;
+
+            if (!counter[product?.marketing?.type]) {
+              counter[product?.marketing?.type] = 1;
+            } else counter[product?.marketing?.type] += 1;
           }
         });
 
         const keys = Object.keys(types);
+
+        const total = { total: 0 };
+
+        keys?.forEach((key) => {
+          total.total += counter[key];
+        });
+
+        if (!types[marketingType] && marketingType !== 'free_delivery' && marketingType !== 'featured') {
+          if (total?.total === data?.data?.products?.length) {
+            successMsg('There are no products to add promotion!');
+          }
+        }
 
         if (keys.length >= 2) {
           setEntireMenu(false);
@@ -224,7 +242,14 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   };
 
   const marketingQuery = useQuery(
-    [`marketing-${marketingType}-settings`],
+    [
+      `marketing-${marketingType}-settings`,
+      {
+        creatorType,
+        type: marketingType,
+        shop: shop?._id,
+      },
+    ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: {

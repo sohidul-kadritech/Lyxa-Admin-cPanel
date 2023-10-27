@@ -41,7 +41,13 @@ export default function UserAvatar({
         )}
       </Stack>
       {expandIcon && (
-        <Box sx={{ cursor: 'pointer' }} onClick={onClickExpand}>
+        <Box
+          sx={{ cursor: 'pointer' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClickExpand();
+          }}
+        >
           <ExpandMore />
         </Box>
       )}

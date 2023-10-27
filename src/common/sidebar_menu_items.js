@@ -31,7 +31,7 @@ export const shop_manager_menu_items = (prefix = '') => {
         {
           label: 'Order',
           icon: OrderIcon,
-          to: `${prefix}/new-orders`,
+          to: `${prefix}/orders`,
         },
         {
           label: 'Menu',
@@ -74,7 +74,7 @@ export const shop_menu_items = (prefix = '', shopDeliveryType, shopType) => {
         {
           label: 'Order',
           icon: OrderIcon,
-          to: `${prefix}/new-orders`,
+          to: `${prefix}/orders`,
         },
 
         {

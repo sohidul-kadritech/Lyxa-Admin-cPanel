@@ -29,6 +29,7 @@ import FormateBaseCurrency from '../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../Common/FormatesecondaryCurrency';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import NotifyChatTimeout from './Topbar/NotifyChatTimeout';
 import UrgentOrderRecieved from './UrgentOrderReceivedNotification';
 
 const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType, shopOrderManager, prefix = '') => {
@@ -75,10 +76,19 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
 
 export default function Layout() {
   const { currentUser, general } = useGlobalContext();
+
   const { userType, adminType } = currentUser;
+
   const { appSetting } = general;
+
   const [sidebar, setSidebar] = useState(false);
+
   const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
+
+  const [openTimeoutMessage, setTimeoutMessage] = useState(false);
+
+  const [notifyMessage, setNotifyMessage] = useState({});
+
   const history = useHistory();
 
   const [order, setOrder] = useState({});
@@ -110,12 +120,20 @@ export default function Layout() {
         setOrder(data?.order);
       });
       socketServices?.on(`urgent-notification-remove-${currentUser?.admin?._id}`, () => {
-        console.log('urgent order socketData removed');
         setOpenUrgentOrder(false);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         setOrder({});
+      });
+
+      socketServices?.on(`notify-timeout-message-${currentUser?.admin?._id}`, (message) => {
+        setTimeoutMessage(true);
+        setNotifyMessage(message);
+        // setOpenUrgentOrder(false);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
       });
     }
 
@@ -136,6 +154,7 @@ export default function Layout() {
     return () => {
       socketServices?.removeListener(`notify-late-order`);
       socketServices?.removeListener(`notify-urgent-order`);
+      socketServices?.removeListener(`notify-timeout-message`);
       socketServices?.removeListener(`urgent-notification`);
       socketServices?.removeListener(`urgent-notification-remove`);
     };
@@ -177,6 +196,18 @@ export default function Layout() {
                 order={order}
                 onClose={() => {
                   setOpenUrgentOrder(false);
+                }}
+              />
+            </Box>
+          </Modal>
+
+          {/* current message */}
+          <Modal open={openTimeoutMessage}>
+            <Box>
+              <NotifyChatTimeout
+                message={notifyMessage}
+                onClose={() => {
+                  setTimeoutMessage(false);
                 }}
               />
             </Box>
