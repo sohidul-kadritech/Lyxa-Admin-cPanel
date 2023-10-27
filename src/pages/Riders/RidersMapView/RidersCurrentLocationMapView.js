@@ -6,7 +6,7 @@ import RiderLocation from '../../../assets/icons/riderPin.png';
 import { successMsg } from '../../../helpers/successMsg';
 import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
 
-function RidersCurrentLocationMapView({ riders = [] }) {
+function RidersCurrentLocationMapView({ riders = [], setMapRef }) {
   const { google } = window;
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
@@ -21,7 +21,6 @@ function RidersCurrentLocationMapView({ riders = [] }) {
   const routeMatch = useRouteMatch();
 
   const redirectWithId = (id) => {
-    console.log('click me');
     const path = '/riders/';
     history.push({
       pathname: `${path}${id}`,
@@ -45,6 +44,8 @@ function RidersCurrentLocationMapView({ riders = [] }) {
       disableDefaultUI: true,
     });
 
+    setMapRef(map);
+
     // icons --
 
     const RiderIcon = {
@@ -53,13 +54,11 @@ function RidersCurrentLocationMapView({ riders = [] }) {
     };
 
     const redirectWithId = (id) => {
-      console.log('click me');
       const path = '/riders/';
       history.push({
         pathname: `${path}${id}`,
         state: {
           from: routeMatch?.path,
-
           backToLabel: 'Back to Order List',
         },
       });

@@ -22,9 +22,6 @@ export default function RiderList({ viewUserType }) {
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
 
-  console.log(routeMatch);
-  console.log({ viewUserType });
-
   const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit(viewUserType, shop?._id));
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -122,7 +119,13 @@ export default function RiderList({ viewUserType }) {
         </Box>
       </Modal>
 
-      <Modal open={openRidersMapViewModal} centered>
+      <Modal
+        open={openRidersMapViewModal}
+        centered
+        sx={{
+          zIndex: '10 !important',
+        }}
+      >
         <Box>
           <RidersMapView onClose={() => setOpenRidersMapViewModal(false)} />
         </Box>

@@ -3,17 +3,19 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line no-unused-vars
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ModalContainer from '../../ServiceZone/ModalContainer';
 import MapSkeleton from './MapSkeleton';
 import RidersCurrentLocationMapView from './RidersCurrentLocationMapView';
+import RidersWithZone from './RidersWithZone';
 
 function RidersMapView({ onClose, currentOrder }) {
   const theme = useTheme();
-  console.log('currentOrder', currentOrder);
+
+  const [mapRef, setMapRef] = useState({});
 
   const getAllRiders = useQuery([API_URL.RIDER_CURRENT_LOCATION], () =>
     AXIOS.get(API_URL.RIDER_CURRENT_LOCATION, {
@@ -48,20 +50,40 @@ function RidersMapView({ onClose, currentOrder }) {
         borderRadius: '10px',
       }}
     >
-      <Box
+      {/* <Box
         sx={{
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
         }}
+      > */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { md: '1fr', lg: '1fr 400px' },
+          height: { lg: '100%', md: 'auto' },
+          gap: '20px',
+        }}
       >
-        <Box flex={1}>
+        <Box
+          sx={{
+            minHeight: '500px',
+          }}
+        >
           {getAllRiders?.isLoading ? (
             <MapSkeleton />
           ) : (
-            <RidersCurrentLocationMapView riders={getAllRiders?.data?.data?.deliveryBoys} />
+            <RidersCurrentLocationMapView setMapRef={setMapRef} riders={getAllRiders?.data?.data?.deliveryBoys} />
           )}
+        </Box>
+
+        <Box
+          sx={{
+            overflow: 'auto',
+          }}
+        >
+          <RidersWithZone mapRef={mapRef} />
         </Box>
       </Box>
     </ModalContainer>
