@@ -66,6 +66,7 @@ export default function Topbar({ setSidebar, sidebar }) {
     {
       refetchInterval: 5000,
       refetchIntervalInBackground: true,
+      enabled: currentUser?.userType !== 'shop',
     },
   );
 
