@@ -83,6 +83,14 @@ export const getUpdateStatusValue = (currentOrder, currentStatus) => {
     return 'accepted_delivery_boy';
   }
 
+  if (
+    currentStatus === 'replacement_item_on_the_way' &&
+    currentOrder?.isReplacementItemPickFromUser &&
+    currentOrder?.orderStatus === 'replacement_item_on_the_way'
+  ) {
+    return 'replacement_item_on_the_way';
+  }
+
   return status;
 };
 
@@ -99,6 +107,10 @@ const getUpdatedOrderData = (order) => {
   const changedLabel = isPreparingFirst ? 'accepted_delivery_boy' : 'preparing';
 
   const updatedData = !shouldUpdate ? { ...orderdata } : { ...orderdata, orderStatus: changedLabel };
+
+  if (order?.isReplacementItemPickFromUser && order?.orderStatus === 'order_on_the_way') {
+    return { ...orderdata, orderStatus: 'replacement_item_on_the_way' };
+  }
 
   if (order?.isButler) {
     return { ...orderdata };
@@ -125,12 +137,13 @@ export default function UpdateOrderStatus({
 
   const isSecondaryCurrencyEnabled = appSetting?.adminExchangeRate > 0;
 
-  console.log('general', general);
+  // when order is replacement order and isReplacementItemPickFromUser equal to true and current order status is order on the way. then it should be replace with replacement item on the way
+  const [currentStatus, setCurrentStatus] = useState(
+    order?.isReplacementItemPickFromUser && order?.orderStatus === 'order_on_the_way'
+      ? 'replacement_item_on_the_way'
+      : order.orderStatus,
+  );
 
-  // new one
-  const [currentStatus, setCurrentStatus] = useState(order.orderStatus);
-
-  // old one
   // const [currentStatus, setCurrentStatus] = useState(getNextStatus(order));
   const [currentOrderDelivery, setCurrentOrderDelivery] = useState(order?.deliveryBoy || null);
 
@@ -144,7 +157,7 @@ export default function UpdateOrderStatus({
 
   const [showDelivery, setShowDelivery] = useState(false);
 
-  const isSelfShop = currentOrder?.shop?.haveOwnDeliveryBoy;
+  const isSelfShop = currentOrder?.orderFor === 'specific';
 
   // global riders
   const getNearByDeliveryBoys = () => {
@@ -235,7 +248,14 @@ export default function UpdateOrderStatus({
 
           return getUpdatedOrderData(orderdata);
         });
-        setCurrentStatus(response?.data?.order?.orderStatus);
+
+        // when order is replacement order and isReplacementItemPickFromUser equal to true and current order status is order on the way. then it should be replace with replacement item on the way
+        setCurrentStatus(
+          response?.data?.order?.isReplacementItemPickFromUser &&
+            response?.data?.order?.orderStatus === 'order_on_the_way'
+            ? 'replacement_item_on_the_way'
+            : response?.data?.order?.orderStatus,
+        );
       }
     }
   };
@@ -324,17 +344,7 @@ export default function UpdateOrderStatus({
 
           return deliveryBoyList[deliveryBoyList?.length - 1];
         }
-        // if (isExistRider >= 0) {
-        //   // if exist check the the index is same or less than the delivery boy list length or not.
-        //   if (isExistRider < deliveryBoyList?.length - 1) {
-        //     // if the existing rider index is smaller than  deliverylist length select the next one.
-        //     return deliveryBoyList[isExistRider + 1];
-        //   }
-        //   // otherwise select the last one of the list
 
-        //   return deliveryBoyList[deliveryBoyList?.length - 1];
-        // }
-        // select the 1st rider
         return deliveryBoyList[0];
       }
 
@@ -426,13 +436,11 @@ export default function UpdateOrderStatus({
             {updateOrderStatusOptions(currentOrder).map((item, index) => (
               <MenuItem
                 disabled={item?.position <= newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position}
-                // disabled={item?.position <= statusOptions[currentOrder?.orderStatus]?.position}
                 className={
                   item?.position === newStatusOptions(currentOrder)[currentOrder?.orderStatus]?.position
                     ? 'active-status'
                     : ''
                 }
-                // className={item?.position === statusOptions[currentOrder?.orderStatus]?.position ? 'active-status' : ''}
                 key={index}
                 value={item?.value}
                 sx={{

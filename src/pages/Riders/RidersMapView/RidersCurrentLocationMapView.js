@@ -5,8 +5,10 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import RiderLocation from '../../../assets/icons/riderPin.png';
 import { successMsg } from '../../../helpers/successMsg';
 import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
+import { formateZoneCoordinates } from '../../ServiceZone/Mapview/helpers';
+import { colorList } from '../../ServiceZone/helper';
 
-function RidersCurrentLocationMapView({ riders = [] }) {
+function RidersCurrentLocationMapView({ riders = [], setMapRef, zones }) {
   const { google } = window;
   const [directionsRenderer, setdirectionsRenderer] = useState(null);
   const [directionsService, setdirectionsService] = useState(null);
@@ -21,7 +23,6 @@ function RidersCurrentLocationMapView({ riders = [] }) {
   const routeMatch = useRouteMatch();
 
   const redirectWithId = (id) => {
-    console.log('click me');
     const path = '/riders/';
     history.push({
       pathname: `${path}${id}`,
@@ -45,21 +46,20 @@ function RidersCurrentLocationMapView({ riders = [] }) {
       disableDefaultUI: true,
     });
 
-    // icons --
+    setMapRef(map);
 
+    // icons --
     const RiderIcon = {
       url: RiderLocation,
       scaledSize: new google.maps.Size(60, 70),
     };
 
     const redirectWithId = (id) => {
-      console.log('click me');
       const path = '/riders/';
       history.push({
         pathname: `${path}${id}`,
         state: {
           from: routeMatch?.path,
-
           backToLabel: 'Back to Order List',
         },
       });
@@ -92,6 +92,43 @@ function RidersCurrentLocationMapView({ riders = [] }) {
     }
 
     map.fitBounds(bounds);
+
+    // set polygon of each zone
+    formateZoneCoordinates(zones).forEach((item, i) => {
+      console.log({ color: colorList[i + (1 % 50)], i });
+      const coordinates = item?.zoneGeometry?.coordinates;
+
+      if (coordinates && coordinates.length > 0) {
+        // Transform the coordinates into LatLng objects
+        const path = coordinates.map((coord) => new google.maps.LatLng(coord.lat, coord.lng));
+
+        const polygon = new google.maps.Polygon({
+          paths: path, // Use the transformed coordinates
+          strokeColor: colorList[i % 50], // Corrected the strokeColor index
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: colorList[i % 50], // Corrected the fillColor index
+          fillOpacity: 0.2,
+        });
+
+        polygon.setMap(map);
+        // Create an InfoWindow to display the tooltip
+        const infoWindow = new google.maps.InfoWindow({
+          content: getTitleForMarker(item?.zoneName),
+        });
+
+        // Add a mouseover event listener to show the tooltip
+        google.maps.event.addListener(polygon, 'mouseover', (event) => {
+          infoWindow.setPosition(event.latLng);
+          infoWindow.open(map);
+        });
+
+        // Add a mouseout event listener to hide the tooltip
+        google.maps.event.addListener(polygon, 'mouseout', () => {
+          infoWindow.close();
+        });
+      }
+    });
 
     const control = floatingPanel.current;
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);

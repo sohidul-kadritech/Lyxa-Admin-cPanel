@@ -4,7 +4,7 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import socketServices from '../../common/socketService';
 import TabPanel from '../../components/Common/TabPanel';
 import UserProfileInfo from '../../components/Common/UserProfileInfo';
@@ -13,20 +13,26 @@ import ChatList from '../../components/Shared/ChatList';
 import StyledBadgeContainer from '../../components/Styled/StyledBadge';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { statusColor } from '../ShopProfile/Info';
 import SlideInContainer from './SlideInContainer';
 import UrgentOrderTable from './UrgentOrders';
 
+const defaultSearchParams = {
+  currentTab: 0,
+};
+
 export default function OngoingTickets() {
   const { currentUser } = useGlobalContext();
 
+  const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams);
+
   const { admin } = currentUser;
 
+  const history = useHistory();
   const location = useLocation();
-
-  const [currentTab, setCurrentTab] = useState(location?.search === '?urgent-order' ? 2 : 0);
 
   const [, setRender] = useState(false);
 
@@ -40,39 +46,66 @@ export default function OngoingTickets() {
 
   const [accountsList, setAccountsList] = useState([]);
 
-  const newRequestquery = useQuery([Api.NEW_CHATS, { currentTab }], () => AXIOS.get(Api.NEW_CHATS), {
+  const searchParams = new URLSearchParams(location.search);
+
+  useEffect(() => {
+    if (location?.pathname === '/ongoing-tickets') {
+      if (searchParams.get('currentTab') === '1') {
+        const chat = ordersList?.find((item) => item?._id === location?.state?.message?._id);
+        if (chat) {
+          setSidebarOpen(true);
+          history.push({
+            pathname: location?.pathname,
+            search: location?.search,
+          });
+
+          setSelectedChat(chat);
+        }
+      } else if (searchParams.get('currentTab') === '2') {
+        const chat = accountsList?.find((item) => item?._id === location?.state?.message?._id);
+
+        if (chat) {
+          setSidebarOpen(true);
+          history.push({
+            pathname: location?.pathname,
+            search: location?.search,
+          });
+          setSelectedChat(chat);
+        }
+      } else if (searchParams.get('currentTab') === '3' || searchParams.get('currentTab') === '4') {
+        setSidebarOpen(false);
+      }
+    }
+  }, [queryParams?.currentTab, location, ordersList, accountsList]);
+
+  const newRequestquery = useQuery([Api.NEW_CHATS, { ...queryParams }], () => AXIOS.get(Api.NEW_CHATS), {
     onSuccess: (data) => {
       setNewChatList(data?.data?.list);
-      console.log('new chat', data?.data);
     },
   });
 
   const ordersQuery = useQuery(
-    [Api.ONGOING_CHATS, { chatType: 'order', currentTab }],
+    [Api.ONGOING_CHATS, { chatType: 'order', ...queryParams }],
     () =>
       AXIOS.get(Api.ONGOING_CHATS, {
         params: { chatType: 'order' },
       }),
     {
       onSuccess: (data) => {
-        console.log('orderQuery===>', data?.data?.list);
         setOrdersList(data?.data?.list);
-        console.log(data);
       },
     },
   );
 
   const accountsQuery = useQuery(
-    [Api.ONGOING_CHATS, { chatType: 'account', currentTab }],
+    [Api.ONGOING_CHATS, { chatType: 'account', ...queryParams }],
     () =>
       AXIOS.get(Api.ONGOING_CHATS, {
         params: { chatType: 'account' },
       }),
     {
       onSuccess: (data) => {
-        console.log('accountQuery===>', data?.data?.list);
         setAccountsList(data?.data?.list);
-        console.log(data);
       },
     },
   );
@@ -83,7 +116,7 @@ export default function OngoingTickets() {
       Api.URGENT_ORDER_COUNT,
       {
         assignedCustomerService: currentUser?.admin?.adminType === 'customerService' ? currentUser?.admin?._id : '',
-        currentTab,
+        ...queryParams,
       },
     ],
     () =>
@@ -95,15 +128,14 @@ export default function OngoingTickets() {
   );
 
   // late order count
-  const lateOrderCountQuery = useQuery([Api.LATE_ORDER_COUNT, currentTab], () => AXIOS.get(Api.LATE_ORDER_COUNT));
-
-  console.log('lateOrderCountQuery', lateOrderCountQuery?.data?.data?.lateOrderCount);
+  const lateOrderCountQuery = useQuery([Api.LATE_ORDER_COUNT, { ...queryParams }], () =>
+    AXIOS.get(Api.LATE_ORDER_COUNT),
+  );
 
   // realtime add and remove chats
   useEffect(() => {
     socketServices.on('user_send_chat_request', (data) => {
       successMsg(`New chat request from ${data?.user?.name}`, 'success');
-      console.log('add-chat', data);
       setNewChatList((prev) => [data, ...prev]);
       // if (data?.chatType === 'order') {
       //   setOrdersList((prev) => [data, ...prev]);
@@ -113,8 +145,6 @@ export default function OngoingTickets() {
     });
 
     socketServices.on('admin_accepted_chat_remove', (data) => {
-      console.log('remove-chat', data);
-
       if (data?.admin?._id === admin?._id) {
         return;
       }
@@ -142,11 +172,7 @@ export default function OngoingTickets() {
   }, []);
 
   const onViewDetails = (chat) => {
-    setSelectedChat((prev) => {
-      console.log({ chat, prev });
-
-      return chat;
-    });
+    setSelectedChat((prev) => chat);
     setSidebarOpen(true);
   };
 
@@ -195,9 +221,20 @@ export default function OngoingTickets() {
             showFor="customerService"
           />
           <Tabs
-            value={currentTab}
+            value={Number(queryParams?.currentTab)}
             onChange={(event, newValue) => {
-              setCurrentTab(newValue);
+              if (newValue < 3) {
+                setQueryParams({ currentTab: newValue });
+                return;
+              }
+
+              if (newValue === 3) {
+                setQueryParams({ currentTab: newValue, type: 'ongoing', page: 1, errorOrderType: 'urgent' });
+              }
+
+              if (newValue === 4) {
+                setQueryParams({ currentTab: newValue, type: 'ongoing', page: 1, errorOrderType: 'late' });
+              }
             }}
             sx={{
               paddingTop: '40px',
@@ -217,9 +254,10 @@ export default function OngoingTickets() {
                     '& .MuiBadge-badge': {
                       right: 3,
                       top: 10,
-                      padding: '0 4px',
+                      padding: '4px 4px',
                     },
                   }}
+                  color="primary"
                   badgeContent={urgentOrderCountQuery?.data?.data?.urgentOrderCount || 0}
                 >
                   Urgent Orders{' '}
@@ -234,10 +272,11 @@ export default function OngoingTickets() {
                     '& .MuiBadge-badge': {
                       right: 3,
                       top: 10,
-                      padding: '0 4px',
+                      padding: '4px 4px',
                     },
                   }}
                   badgeContent={lateOrderCountQuery?.data?.data?.lateOrderCount || 0}
+                  color="primary"
                 >
                   Late Orders {lateOrderCountQuery?.data?.data?.lateOrderCount > 0 ? <>&nbsp; &nbsp;&nbsp;</> : ''}
                 </StyledBadgeContainer>
@@ -245,7 +284,7 @@ export default function OngoingTickets() {
             />
           </Tabs>
           <Box pt={9}>
-            <TabPanel index={0} noPadding value={currentTab}>
+            <TabPanel index={0} noPadding value={Number(queryParams?.currentTab)}>
               <ChatList
                 hidePagination
                 refetching={false}
@@ -255,7 +294,7 @@ export default function OngoingTickets() {
                 onAction={onAction}
               />
             </TabPanel>
-            <TabPanel index={1} noPadding value={currentTab}>
+            <TabPanel index={1} noPadding value={Number(queryParams?.currentTab)}>
               <ChatList
                 hidePagination
                 refetching={false}
@@ -265,7 +304,7 @@ export default function OngoingTickets() {
                 onAction={onAction}
               />
             </TabPanel>
-            <TabPanel index={2} noPadding value={currentTab}>
+            <TabPanel index={2} noPadding value={Number(queryParams?.currentTab)}>
               <ChatList
                 hidePagination
                 refetching={false}
@@ -276,10 +315,10 @@ export default function OngoingTickets() {
               />
             </TabPanel>
 
-            <TabPanel index={3} noPadding value={currentTab}>
+            <TabPanel index={3} noPadding value={Number(queryParams?.currentTab)}>
               <UrgentOrderTable />
             </TabPanel>
-            <TabPanel index={4} noPadding value={currentTab}>
+            <TabPanel index={4} noPadding value={Number(queryParams?.currentTab)}>
               <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="ongoing" />
             </TabPanel>
           </Box>

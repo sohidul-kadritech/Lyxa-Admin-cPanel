@@ -64,7 +64,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
 
           <DetailsAccordion
             title="Order Amount"
-            tooltip="The fees you earn depend on how your customer order and receive their order."
+            tooltip="The total amount of products the user purchased (including Lyxa Marketing Cashback and excluding deals)."
             titleAmount={paymentDetails?.orderAmount}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {
@@ -273,7 +273,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
           >
             <PriceItem
               title="Promotion: Free delivery"
-              tooltip="If Lxya rider"
+              tooltip="If Lxya rider. When shop applied free delivery promotion"
               amount={otherPayments?.freeDeliveryByShop}
               showIfZero
               isNegative

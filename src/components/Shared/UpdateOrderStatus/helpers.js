@@ -45,12 +45,11 @@ export const newStatusOptions = (currentOrder) => {
 
   const isPreparingFirstAndShouldSwap = isGlobal && isPreparingFirst;
 
-  // preparingAt
-  // accepted_delivery_boyAt
-
-  // console.log('currentOrder', currentOrder, 'isPreparingFirst', isPreparingFirst, isPreparingFirstAndShouldSwap);
-
-  if (shouldSwap || isPreparingFirstAndShouldSwap) {
+  if (
+    (shouldSwap || isPreparingFirstAndShouldSwap) &&
+    !currentOrder?.isReplacementOrder &&
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType !== 'shop-customer-shop'
+  ) {
     return {
       placed: {
         label: 'Placed',
@@ -80,6 +79,83 @@ export const newStatusOptions = (currentOrder) => {
       },
     };
   }
+
+  if (
+    (shouldSwap || isPreparingFirstAndShouldSwap) &&
+    currentOrder?.isReplacementOrder &&
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop'
+  ) {
+    return {
+      placed: {
+        label: 'Placed',
+        position: 1,
+      },
+      preparing: {
+        label: 'Preparing',
+        position: 2,
+      },
+      accepted_delivery_boy: {
+        label: 'Assign rider',
+        position: 3,
+        isChangeDelivery: true,
+      },
+
+      ready_to_pickup: {
+        label: 'Ready for pickup',
+        position: 4,
+      },
+      order_on_the_way: {
+        label: 'On the way',
+        position: 5,
+      },
+      replacement_item_on_the_way: {
+        label: 'Replacement Order on the way',
+        position: 6,
+      },
+      delivered: {
+        label: 'Delivered',
+        position: 7,
+      },
+    };
+  }
+
+  if (
+    currentOrder?.isReplacementOrder &&
+    currentOrder?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop'
+  ) {
+    return {
+      placed: {
+        label: 'Placed',
+        position: 1,
+      },
+      accepted_delivery_boy: {
+        label: 'Assign rider',
+        position: 2,
+        isChangeDelivery: true,
+      },
+      preparing: {
+        label: 'Preparing',
+        position: 3,
+      },
+      ready_to_pickup: {
+        label: 'Ready for pickup',
+        position: 4,
+      },
+      order_on_the_way: {
+        label: 'On the way',
+        position: 5,
+      },
+      replacement_item_on_the_way: {
+        label: 'Replacement Order on The Way',
+        position: 6,
+      },
+      delivered: {
+        label: 'Delivered',
+        position: 7,
+      },
+    };
+  }
+
   return {
     placed: {
       label: 'Placed',
@@ -191,10 +267,14 @@ export const updateOrderStatusOptions = (currentOrder, isReturnforAdmin = true) 
     });
   });
 
-  if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+  if (currentOrder?.orderFor === 'specific') {
     list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
   }
+  // if (currentOrder?.shop?.haveOwnDeliveryBoy) {
+  //   list2 = list2.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  //   list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');
+  // }
 
   if (currentOrder?.orderFor === 'global') {
     list = list.filter((opt) => opt.value !== 'accepted_delivery_boy');

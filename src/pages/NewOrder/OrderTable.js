@@ -1,19 +1,21 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 // project import
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { ReactComponent as ReplacementIcon } from '../../assets/icons/replacement-order-icon.svg';
 import Rating from '../../components/Common/Rating';
 import TableDateTime from '../../components/Common/TableDateTime';
 import UserAvatar from '../../components/Common/UserAvatar';
-import StyledTable from '../../components/Styled/StyledTable3';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../context';
 
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
+import StyledTable5 from '../../components/Styled/StyledTable5';
 import OrderTrackingModal from '../AdminOrderTable/OrderTracking';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
@@ -69,7 +71,7 @@ export default function OrderTable({
     }
   };
 
-  const columns = [
+  const columnsForExpand = [
     {
       showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'scheduled'],
       id: 1,
@@ -89,6 +91,12 @@ export default function OrderTable({
                 <>
                   &nbsp;&nbsp;
                   <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.isReplacementOrder && row?.orderStatus !== 'delivered' ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
                 </>
               ) : null}
               {row?.flag?.length ? (
@@ -315,6 +323,279 @@ export default function OrderTable({
     },
   ];
 
+  const columns = [
+    {
+      showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile', 'riderProfile', 'scheduled'],
+      id: 1,
+      headerName: 'ACCOUNT',
+      field: 'orders',
+      flex: orderType === 'cancelled ' ? 1.5 : 1,
+      sortable: false,
+      renderCell: ({ row, onExpandHandler }) => (
+        <UserAvatar
+          imgAlt="user-image"
+          imgUrl={row?.user?.profile_photo}
+          imgFallbackCharacter={row?.user?.name?.charAt(0)}
+          expandIcon={row?.orderStatus === 'delivered' && row?.isReplacementOrder}
+          onClickExpand={() => {
+            onExpandHandler(
+              <StyledTable5
+                showHeader={false}
+                rowSx={{ border: 'none' }}
+                rowInnerContainerSx={{ padding: '0px' }}
+                columns={columnsForExpand?.filter((column) => column.showFor.includes(orderType))}
+                rows={[{ ...row }]}
+              />,
+            );
+          }}
+          name={
+            <span>
+              {row?.user?.name}
+              {(row?.chats?.length || row?.admin_chat_request?.length) && userType === 'admin' ? (
+                <>
+                  &nbsp;&nbsp;
+                  <MessageIcon color="#5BBD4E" />
+                </>
+              ) : null}
+              {row?.isReplacementOrder && row?.orderStatus !== 'delivered' ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
+                </>
+              ) : null}
+              {row?.flag?.length ? (
+                <>
+                  &nbsp;&nbsp;
+                  <FlagIcon color="#DD5B63" />
+                </>
+              ) : null}
+            </span>
+          }
+          subTitle={
+            row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder?.orderId : row?.orderId
+          }
+          subTitleProps={{
+            sx: { color: 'primary.main', cursor: 'pointer' },
+            onClick: () => {
+              if (onViewDetail)
+                onViewDetail(row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder : row);
+            },
+          }}
+          titleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    history.push({
+                      pathname: `/users/${row?.user?._id}`,
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                    });
+                  },
+                }
+              : undefined
+          }
+        />
+      ),
+    },
+    {
+      showFor: ['riderProfile', 'userProfile'],
+      id: 2,
+      headerName: 'SHOP',
+      field: 'shop',
+      flex: 1,
+      minWidth: 240,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <UserAvatar
+          imgAlt="shop-image"
+          imgUrl={row?.shop?.shopLogo}
+          imgFallbackCharacter={row?.shop?.shopName?.charAt(0)}
+          name={row?.shop?.shopName}
+          titleProps={
+            adminType === 'admin'
+              ? {
+                  sx: { color: 'primary.main', cursor: 'pointer' },
+                  onClick: () => {
+                    history.push({
+                      pathname: `/shop/profile/${row?.shop?._id}`,
+                      state: { from: routeMatch?.path, backToLabel: 'Back to Orders' },
+                    });
+                  },
+                }
+              : undefined
+          }
+        />
+      ),
+    },
+    {
+      showFor: ['ongoing', 'requested', 'userProfile', 'scheduled'],
+      id: 2,
+      headerName: 'PAYMENT METHOD',
+      field: 'paymentMethod',
+      flex: 1,
+      sortable: false,
+      renderCell: ({ row }) => (
+        <Typography variant="body4" className="text-capitalize">
+          {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
+        </Typography>
+      ),
+    },
+    {
+      showFor: [
+        'ongoing',
+        'requested',
+        'delivered',
+        'cancelled',
+        'shopProfile',
+        'userProfile',
+        'riderProfile',
+        'scheduled',
+      ],
+      id: 3,
+      headerName: 'DATE',
+      field: 'createdAt',
+      sortable: false,
+      flex: orderType === 'cancelled' ? 1.5 : 1,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['scheduled'],
+      id: 3,
+      headerName: 'SCHEDULED FOR',
+      field: 'scheduleDate',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ value }) => <TableDateTime date={value} />,
+    },
+    {
+      showFor: ['delivered', 'shopProfile'],
+      id: 3,
+      headerName: 'RIDER',
+      field: 'deliveryBoy',
+      minWidth: 240,
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        if (!row?.deliveryBoy) {
+          return '_';
+        }
+
+        return (
+          <UserAvatar
+            imgAlt="rider-image"
+            imgUrl={row?.deliveryBoy?.image}
+            imgFallbackCharacter={row?.deliveryBoy?.name?.charAt(0)}
+            name={row?.deliveryBoy?.name}
+            titleProps={
+              adminType === 'admin'
+                ? {
+                    sx: { color: 'primary.main', cursor: 'pointer' },
+                    onClick: () => {
+                      history.push(`/riders/${row?.deliveryBoy?._id}`);
+                    },
+                  }
+                : undefined
+            }
+          />
+        );
+      },
+    },
+    {
+      showFor: ['riderProfile'],
+      id: 4,
+      headerName: 'RIDER RATING',
+      field: 'rating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const r = row?.reviews?.find((r) => r?.type === 'deliveryBoy');
+
+        if (r) {
+          return <Rating amount={r?.rating} />;
+        }
+
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['delivered', 'shopProfile'],
+      id: 3,
+      headerName: 'SHOP RATING',
+      field: 'rating',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ row }) => {
+        const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
+        if (rating) return <Rating amount={rating?.rating} />;
+        return <Typography variant="body4">_</Typography>;
+      },
+    },
+    {
+      showFor: ['ongoing', 'requested', 'cancelled', 'shopProfile', 'userProfile'],
+      id: 4,
+      headerName: 'STATUS',
+      field: 'orderStatus',
+      sortable: false,
+      flex: 1,
+      minWidth: 140,
+      renderCell: ({ value }) => (
+        <Chip
+          label={orderStatusMap[value || '']}
+          sx={{
+            height: 'auto',
+            padding: '12px 23px',
+            borderRadius: '40px',
+            ...(statusColorVariants[value] || {}),
+          }}
+          variant="contained"
+        />
+      ),
+    },
+    {
+      showFor: ['ongoing', 'requested', 'delivered', 'cancelled', 'shopProfile'],
+      id: 5,
+      headerName: `${adminType === 'admin' ? 'ORDER AMOUNT' : 'PAYOUTS'}`,
+      field: 'payouts',
+      sortable: false,
+      align: adminType === 'admin' ? 'center' : 'right',
+      headerAlign: adminType === 'admin' ? 'center' : 'right',
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Typography variant="body4">
+          {currency}{' '}
+          {(
+            getOrderProfit(
+              row?.isReplacementOrder && row?.orderStatus === 'delivered' ? row?.originalOrder : row,
+              adminType,
+            ) || 0
+          )?.toFixed(2)}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['riderProfile'],
+      id: 5,
+      headerName: 'NET PAYOUT',
+      field: 'payout',
+      sortable: false,
+      flex: 0.5,
+      minWidth: 140,
+      renderCell: ({ row }) => (
+        <Typography
+          variant="body4"
+          fontWeight={600}
+          display="flex"
+          sx={{
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          {currency} {row?.baseCurrency_riderFee?.toFixed(2)}
+        </Typography>
+      ),
+    },
+  ];
+
   /*
   This column is only for admin console
   */
@@ -357,7 +638,7 @@ export default function OrderTable({
         background: '#fff',
       }}
     >
-      <StyledTable
+      {/* <StyledTable
         columns={columns.filter((column) => column.showFor.includes(orderType))}
         rows={orders}
         getRowId={(row) => row?._id}
@@ -375,6 +656,17 @@ export default function OrderTable({
             </Stack>
           ),
         }}
+      /> */}
+
+      <StyledTable5
+        columns={columns.filter((column) => column.showFor.includes(orderType))}
+        rows={orders}
+        onRowClick={onRowClick}
+        NoRowsOverlay={
+          <Stack height="100%" alignItems="center" justifyContent="center">
+            No Order found
+          </Stack>
+        }
       />
 
       {/* Update status */}

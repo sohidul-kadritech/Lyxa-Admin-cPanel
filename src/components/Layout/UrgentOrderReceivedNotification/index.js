@@ -40,7 +40,7 @@ function UrgentOrderRecieved({ order, onClose, showTime }) {
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
         history.push({
           pathname: '/ongoing-tickets',
-          search: 'urgent-order',
+          search: 'currentTab=3&type=ongoing&page=1&errorOrderType=urgent',
           state: {
             order: { ...order },
           },
