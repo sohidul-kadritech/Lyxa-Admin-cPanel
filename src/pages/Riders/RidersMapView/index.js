@@ -28,6 +28,8 @@ function RidersMapView({ onClose, currentOrder }) {
     }),
   );
 
+  const getMapoverView = useQuery([API_URL.ZONE_MAP_OVERVIEW], () => AXIOS.get(API_URL.ZONE_MAP_OVERVIEW));
+
   console.log('getAllRiders', getAllRiders?.data?.data?.deliveryBoys);
 
   return (
@@ -74,7 +76,11 @@ function RidersMapView({ onClose, currentOrder }) {
           {getAllRiders?.isLoading ? (
             <MapSkeleton />
           ) : (
-            <RidersCurrentLocationMapView setMapRef={setMapRef} riders={getAllRiders?.data?.data?.deliveryBoys} />
+            <RidersCurrentLocationMapView
+              setMapRef={setMapRef}
+              riders={getAllRiders?.data?.data?.deliveryBoys}
+              zones={getMapoverView?.data?.data?.zones || []}
+            />
           )}
         </Box>
 
