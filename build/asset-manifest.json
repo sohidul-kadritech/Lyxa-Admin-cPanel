@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.baf1d0b7.css",
-    "main.js": "/static/js/main.2907e421.js",
+    "main.js": "/static/js/main.008d9c59.js",
     "static/js/905.f37c0484.chunk.js": "/static/js/905.f37c0484.chunk.js",
     "static/js/313.4174e906.chunk.js": "/static/js/313.4174e906.chunk.js",
     "static/js/867.49200939.chunk.js": "/static/js/867.49200939.chunk.js",
@@ -66,6 +66,7 @@
     "static/media/coupon.svg": "/static/media/coupon.b33a7c7f57ec050b270d5b3035948d82.svg",
     "static/media/vehicleType.svg": "/static/media/vehicleType.5fff8228f57c3aefc0b03c4fea188491.svg",
     "static/media/discount-icon.svg": "/static/media/discount-icon.ad72e76c78272af0477057c8464ceaf5.svg",
+    "static/media/notification-icon.svg": "/static/media/notification-icon.f825aeb18d6917355b5599f749b5f13e.svg",
     "static/media/register.svg": "/static/media/register.61ac615b8b8df851cae44d007de3ab42.svg",
     "static/media/dob.svg": "/static/media/dob.0ae4b13309929a890723929ca04f9659.svg",
     "static/media/areaCovered.svg": "/static/media/areaCovered.25148bfc3f9c48667c4904ec5e1c9263.svg",
@@ -146,6 +147,6 @@
   },
   "entrypoints": [
     "static/css/main.baf1d0b7.css",
-    "static/js/main.2907e421.js"
+    "static/js/main.008d9c59.js"
   ]
 }
