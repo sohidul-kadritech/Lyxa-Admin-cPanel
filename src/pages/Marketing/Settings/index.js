@@ -85,7 +85,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         const counter = {};
 
         data?.data?.products?.forEach((product) => {
-          console.log({ product, marketing: product?.marketing, counter: counter[product?.marketing?.type] });
           if (product?.marketing) {
             types[product?.marketing?.type] = true;
 

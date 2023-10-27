@@ -50,10 +50,7 @@ export default function OngoingTickets() {
 
   useEffect(() => {
     if (location?.pathname === '/ongoing-tickets') {
-      console.log(location?.search);
-
       if (searchParams.get('currentTab') === '1') {
-        console.log(location?.search, location?.state);
         const chat = ordersList?.find((item) => item?._id === location?.state?.message?._id);
         if (chat) {
           setSidebarOpen(true);
@@ -84,7 +81,6 @@ export default function OngoingTickets() {
   const newRequestquery = useQuery([Api.NEW_CHATS, { ...queryParams }], () => AXIOS.get(Api.NEW_CHATS), {
     onSuccess: (data) => {
       setNewChatList(data?.data?.list);
-      console.log('new chat', data?.data);
     },
   });
 
@@ -109,9 +105,7 @@ export default function OngoingTickets() {
       }),
     {
       onSuccess: (data) => {
-        // console.log('accountQuery===>', data?.data?.list);
         setAccountsList(data?.data?.list);
-        console.log(data);
       },
     },
   );
@@ -142,7 +136,6 @@ export default function OngoingTickets() {
   useEffect(() => {
     socketServices.on('user_send_chat_request', (data) => {
       successMsg(`New chat request from ${data?.user?.name}`, 'success');
-      console.log('add-chat', data);
       setNewChatList((prev) => [data, ...prev]);
       // if (data?.chatType === 'order') {
       //   setOrdersList((prev) => [data, ...prev]);
@@ -152,8 +145,6 @@ export default function OngoingTickets() {
     });
 
     socketServices.on('admin_accepted_chat_remove', (data) => {
-      console.log('remove-chat', data);
-
       if (data?.admin?._id === admin?._id) {
         return;
       }
@@ -181,11 +172,7 @@ export default function OngoingTickets() {
   }, []);
 
   const onViewDetails = (chat) => {
-    setSelectedChat((prev) => {
-      console.log({ chat, prev });
-
-      return chat;
-    });
+    setSelectedChat((prev) => chat);
     setSidebarOpen(true);
   };
 
