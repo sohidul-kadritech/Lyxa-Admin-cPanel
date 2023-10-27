@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
@@ -34,7 +35,7 @@ import OrderTrackingModal from './OrderTracking';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
-const filterColumns = (columns, shopType, orderType, showFor) => {
+const filterColumns = (columns, shopType, orderType = 'ongoing', showFor) => {
   let cols = columns.filter((col) => col?.showFor?.includes(orderType));
 
   if (shopType !== 'all') {
@@ -56,7 +57,6 @@ function CustomExpandRow({ row }) {
   return (
     <div>
       <p>{row.description}</p>
-      {/* Add more details as needed */}
     </div>
   );
 }
@@ -74,6 +74,18 @@ export default function Table({
   setRender,
   showFor,
 }) {
+  console.log({
+    shopType,
+    queryParams,
+    setQueryParams,
+    totalPage,
+    orderType,
+    loading,
+    refetching,
+    render,
+    setRender,
+    showFor,
+  });
   const history = useHistory();
 
   const routeMatch = useRouteMatch();
@@ -110,29 +122,23 @@ export default function Table({
 
   const location = useLocation();
 
+  const searchParams = new URLSearchParams(location.search);
+
   useEffect(() => {
-    if (location?.search === '?urgent-order') {
-      const findAcceptedCurrentOrder = orders.find(
-        (order) => location?.state?.order?._id === order?._id && order?.isCustomerServiceAccepted,
-      );
-      console.log('===>', { findAcceptedCurrentOrder, location, render });
-      if (findAcceptedCurrentOrder && Object?.keys(findAcceptedCurrentOrder)?.length && !render) {
-        setCurrentOrder(findAcceptedCurrentOrder);
-        setDetailOpen(true);
-        setRender(true);
-        if (!loading) {
-          const searchParams = new URLSearchParams(location.search);
-          searchParams.delete('urgent-order');
-          history.replace({ search: searchParams.toString() });
+    if (location?.pathname === '/ongoing-tickets') {
+      if (searchParams.get('currentTab') === '3') {
+        const findAcceptedCurrentOrder = orders?.find((item) => item?._id === location?.state?.order?._id);
+        if (findAcceptedCurrentOrder) {
+          setCurrentOrder(findAcceptedCurrentOrder);
+          setDetailOpen(true);
+          history.push({
+            pathname: location?.pathname,
+            search: location?.search,
+          });
         }
-      } else {
-        setCurrentOrder({});
-        setDetailOpen(false);
-        setRender(false);
       }
     }
-    // remove the search params
-  }, [loading, location?.search]);
+  }, [loading, location?.search, orders]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {

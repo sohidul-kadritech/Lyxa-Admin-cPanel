@@ -24,8 +24,9 @@ const defaultSearchParams = (type = 'urgent') => ({
 
 function UrgentOrderTable({ api = API_URL.URGENT_ORDER_LIST, type = 'urgent', showFor = 'customerService' }) {
   const [queryParams, setQueryParams] = useQueryParams(defaultSearchParams(type));
+
   const [order, setOrder] = useState({});
-  // const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
+
   const { currentUser } = useGlobalContext();
 
   return (

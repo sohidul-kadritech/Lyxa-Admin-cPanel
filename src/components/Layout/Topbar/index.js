@@ -60,8 +60,13 @@ export default function Topbar({ setSidebar, sidebar }) {
 
   const { profilePhoto, altName } = getProfilePhotoAndAltName(currentUser, currentUser?.userType);
 
-  const notificationCountQuery = useQuery([API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT], () =>
-    AXIOS.get(API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT),
+  const notificationCountQuery = useQuery(
+    [API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT],
+    () => AXIOS.get(API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT),
+    {
+      refetchInterval: 5000,
+      refetchIntervalInBackground: true,
+    },
   );
 
   return (

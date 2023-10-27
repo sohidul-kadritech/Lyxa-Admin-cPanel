@@ -98,7 +98,9 @@ function NotificationCard({ notification, onClick, onClose }) {
         <Stack flex={1} sx={{ marginTop: '0px' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="h6">{notification?.title || 'title'}</Typography>
-            <Typography variant="body3">{moment(notification?.updatedAt).calendar() || 'time'}</Typography>
+            <Typography variant="body3" sx={{ fontSize: '10px' }}>
+              {moment(notification?.updatedAt).calendar() || 'time'}
+            </Typography>
           </Stack>
           <Typography variant="bod2">{notification?.description || 'description'}</Typography>
         </Stack>
