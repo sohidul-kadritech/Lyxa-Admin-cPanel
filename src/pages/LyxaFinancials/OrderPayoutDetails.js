@@ -57,7 +57,7 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
 
           <DetailsAccordion
             title="Order Amount"
-            tooltip="The fees you earn depend on how your customer order and receive their order."
+            tooltip="The total amount of products the user purchased (including Lyxa Marketing Cashback and excluding deals)."
             titleAmount={paymentDetails?.orderAmount || 0}
             isOpen={currentExpanedTab === 0}
             onChange={(closed) => {

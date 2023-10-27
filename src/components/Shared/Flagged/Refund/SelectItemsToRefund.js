@@ -106,7 +106,7 @@ const getDeliveryFee = (order, flaggData, setFlaggData) => {
       ? 'shop-customer'
       : flaggData?.deliveryType;
 
-  if (flaggData?.deliveryType === 'customer-shop-customer' && flaggData?.replacement === 'with') {
+  if (flaggData?.deliveryType === 'shop-customer-shop' && flaggData?.replacement === 'with') {
     setFlaggData((prev) => ({ ...prev, deliveryType, totalSelectedAmount: deliveryFee * 2 }));
     return deliveryFee * 2;
   }

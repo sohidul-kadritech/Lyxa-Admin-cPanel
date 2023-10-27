@@ -57,6 +57,7 @@ export function createShopSettingsData(
   newCusines,
   newShopNote,
   isShopNoteForRiderEnabled,
+  defaultPreparationTime,
 ) {
   const tags = [];
   const cuisineType = [];
@@ -88,6 +89,7 @@ export function createShopSettingsData(
       shopNote: newShopNote,
       shopExchangeRate,
       isShopNoteForRiderEnabled,
+      defaultPreparationTime: Number(defaultPreparationTime),
       shopDescription: 'desrcriptions',
       tags,
       tagsId,
@@ -144,6 +146,7 @@ export function createShopSettingsData(
     deliveryType: shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
     deliveryFee: shop?.deliveryFee,
     specialInstructions: newSpecialInstructions,
+    defaultPreparationTime: Number(defaultPreparationTime),
     shopExchangeRate,
     shopNote: newShopNote,
     isShopNoteForRiderEnabled,

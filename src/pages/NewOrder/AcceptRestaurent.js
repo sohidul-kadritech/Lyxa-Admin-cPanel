@@ -3,6 +3,7 @@ import { Box, Button, Paper, SliderThumb, Stack, Typography } from '@mui/materia
 import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import { getNextStatus } from '../../components/Shared/UpdateOrderStatus/helpers';
+import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import TimeRangeSlider from './TimeRangeSlider';
 
@@ -23,7 +24,13 @@ function AirbnbThumbComponent(props) {
   );
 }
 function AcceptRestaurent({ onClose, currentOrder, updateStatusMutation }) {
-  const [time, setTime] = useState(0);
+  const { currentUser } = useGlobalContext();
+
+  const { shop } = currentUser;
+
+  console.log({ shop });
+
+  const [time, setTime] = useState(shop?.defaultPreparationTime || 0);
 
   const acceptOrder = () => {
     const currentStatus = getNextStatus(currentOrder);

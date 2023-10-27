@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
 import React, { useState } from 'react';
 import MessageInput from './MessageInput';
@@ -8,6 +9,7 @@ const ChatBox = React.forwardRef(
   ({ messages, onSendMessage, message, setMessage, sendMessageLoading, showInput, loading, height }, ref) => {
     const [open, setOpen] = useState(false);
 
+    console.log({ message, messages });
     return (
       <Stack
         position="relative"
@@ -45,7 +47,7 @@ const ChatBox = React.forwardRef(
         )}
       </Stack>
     );
-  }
+  },
 );
 
 export default ChatBox;

@@ -10,6 +10,7 @@ function Rows({
   expandWithRowClick,
   NoRowsOverlay,
   rowSx,
+  onRowClick,
   rowInnerContainerSx,
 }) {
   const theme = useTheme();
@@ -20,6 +21,7 @@ function Rows({
         <Row
           key={index}
           row={row}
+          onRowClick={onRowClick}
           columns={columns}
           expandWithRowClick={expandWithRowClick}
           rowSx={rowSx}

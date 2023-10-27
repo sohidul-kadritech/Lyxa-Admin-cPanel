@@ -53,7 +53,7 @@ function ByPrice({ flaggData, setFlaggData, order }) {
             : Number(e.target.value)
           : flaggData?.deliveryfee;
 
-      const baseCurrency_adminCutForReplacement = flaggData?.totalSelectedAmount - Number(updatedNewValue);
+      const baseCurrency_adminCutForReplacement = (flaggData?.totalSelectedAmount - Number(updatedNewValue)).toFixed(2);
 
       return {
         ...prev,
