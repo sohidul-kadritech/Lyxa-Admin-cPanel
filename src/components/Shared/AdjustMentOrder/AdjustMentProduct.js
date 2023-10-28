@@ -1,44 +1,29 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Box, Stack, Typography } from '@mui/material';
-import { calculateSecondaryCurrency } from '../../../../../pages/RiderProfile/Transactions/helpers';
-import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
-import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
+/* eslint-disable no-unused-vars */
+import { Close } from '@mui/icons-material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
+import React from 'react';
+import { calculateSecondaryCurrency } from '../../../pages/RiderProfile/Transactions/helpers';
+import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
+import StyledIconButton from '../../Styled/StyledIconButton';
+import { getPriceWithCurrency, productDeal } from '../OrderDetail/Details/OrderSummary/Product';
+import StyledIncrementDecrementButton from './StyledIncrementDecrementButton';
 
-export const productDeal = (product) => {
-  if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
-  if (product?.baseCurrency_discount > 0) return 'percentage';
-  if (product?.finalReward) return 'reward';
-
-  return null;
-};
-
-const dealTypeToLabelMap = {
+// deal type tot label map
+export const dealTypeToLabelMap = {
   percentage: 'Discount',
   double_menu: 'Buy 1 Get 1',
   reward: 'Reward',
 };
 
-// eslint-disable-next-line no-unused-vars
-export const getPriceWithCurrency = (
-  price,
-  secondaryCurrencyPrice = undefined,
-  exchangeRate = { shouldCalculate: false, rate: null }
-) => {
-  if (exchangeRate?.shouldCalculate) {
-    if (exchangeRate?.rate > 0) return `${FormatesecondaryCurrency(price * exchangeRate?.rate || 0)}`;
-    return `${FormateBaseCurrency.get(price || 0)}`;
-  }
-
-  return `${FormatesecondaryCurrency.get(secondaryCurrencyPrice)} ~ ${FormateBaseCurrency.get(price || 0)}`;
-};
-
-// eslint-disable-next-line no-unused-vars
-export default function Product({ product, isFirst, isLast, shopExchangeRate }) {
+function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDeleteProduct, onDeleteAtribute }) {
   const deal = productDeal(product);
   const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
+
+  console.log({ product });
 
   return (
     <Box
@@ -50,17 +35,36 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
       }}
     >
       <Stack gap={1}>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={500}>
-            {product?.product?.name}{' '}
-            <span
-              style={{
-                fontStyle: 'italic',
-              }}
-            >
-              x{quantity || 0}
-            </span>
-          </Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack>
+            <Stack direction="row" alignItems="center" gap={2.5}>
+              <Avatar variant="rounded" src={product?.product?.images[0]} alt="product_image">
+                {product?.product?.name.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={500}>
+                {product?.product?.name}{' '}
+                <span
+                  style={{
+                    fontStyle: 'italic',
+                  }}
+                >
+                  x{quantity || 0}
+                </span>
+              </Typography>
+              <StyledIconButton
+                size="small"
+                sx={{
+                  width: '24px',
+                  height: '24px',
+                }}
+                onClick={() => {
+                  if (onDeleteProduct) onDeleteProduct(product);
+                }}
+              >
+                <Close />
+              </StyledIconButton>
+            </Stack>
+          </Stack>
           <Typography
             variant="inherit"
             fontSize="15px"
@@ -132,6 +136,19 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
                             .withOutSecondaryCurrency}
                       )
                     </Typography>
+                    <StyledIconButton
+                      size="small"
+                      sx={{
+                        width: '24px',
+                        height: '24px',
+                        background: 'transparent',
+                      }}
+                      onClick={() => {
+                        if (onDeleteAtribute) onDeleteAtribute({ product, attribute: attr, item });
+                      }}
+                    >
+                      <Close />
+                    </StyledIconButton>
                   </Stack>
                 ))}
               </Stack>
@@ -139,6 +156,12 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
           ))}
         </Box>
       ) : null}
+
+      <Stack direction="row" justifyContent="flex-start">
+        <StyledIncrementDecrementButton />
+      </Stack>
     </Box>
   );
 }
+
+export default AdjustMentProduct;
