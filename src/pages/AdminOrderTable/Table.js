@@ -890,6 +890,7 @@ export default function Table({
           order={currentOrder}
           onClose={() => {
             setOpenAdjustmentOrder(false);
+            setCurrentOrder({});
           }}
         />
       </Modal>

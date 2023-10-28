@@ -7,7 +7,12 @@ import CustomerInfo from './CustomerInfo';
 import AdjustmentPaymentSummary from './PaymentSummary';
 
 function AdjustmentOrder({ onClose, order }) {
-  const [adjuestedOrder, setAdjustedOrder] = useState(order);
+  const [adjuestedOrder, setAdjustedOrder] = useState({ ...order });
+
+  // useEffect(() => {
+  //   setAdjustedOrder(order);
+  // }, [order]);
+
   return (
     <Paper
       sx={{

@@ -40,27 +40,46 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
       const productDetails = [...prev?.productsDetails];
 
+      // find index for product details
       const findItemsIndex = productDetails?.findIndex((product) => product?.productId === data?.product?.productId);
 
       if (findItemsIndex > -1) {
+        // find index for product attributes
         const findAttributesIndex = productDetails[findItemsIndex]?.selectedAttributes?.findIndex(
-          (attr) => attr?._id === data?.attribute?._id
+          (attr) => attr?.id === data?.attribute?.id
         );
+
+        console.log('data==>', {
+          productDetails,
+          findItemsIndex: {
+            data: productDetails[findItemsIndex],
+            index: findItemsIndex,
+          },
+          findAttributesIndex: {
+            data: productDetails[findItemsIndex]?.selectedAttributes,
+            index: findAttributesIndex,
+            attribute: data?.attribute,
+          },
+        });
 
         if (findAttributesIndex > -1) {
           const removeAttributes = productDetails[findItemsIndex]?.selectedAttributes[
             findAttributesIndex
           ]?.selectedItems?.filter((selectedItem) => selectedItem?._id !== data?.item?._id);
 
-          productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
+          if (removeAttributes?.length > 0)
+            productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
+          else {
+            productDetails[findItemsIndex].selectedAttributes.splice(findAttributesIndex, 1);
+          }
 
-          console.log('items==>', {
-            data,
-            findItems: findItemsIndex,
-            findAttributes: findAttributesIndex,
-            removeAttributes,
-            productDetails: productDetails[findItemsIndex],
-          });
+          // console.log('items==>', {
+          //   data,
+          //   findItems: findItemsIndex,
+          //   findAttributes: findAttributesIndex,
+          //   removeAttributes,
+          //   productDetails: productDetails[findItemsIndex],
+          // });
           // console.log({ findItems: findItemsIndex, findAttributes: findAttributesIndex, removeAttributes });
         }
       }
