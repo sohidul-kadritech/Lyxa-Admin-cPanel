@@ -22,8 +22,6 @@ export default function PageTop({
 }) {
   const theme = useTheme();
 
-  console.log({ onAddDisabled });
-
   return (
     <Box pt={9} pb={7.5} {...rest}>
       {(backButtonLabel || addButtonLabel) && (

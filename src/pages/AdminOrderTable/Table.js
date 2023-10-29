@@ -75,18 +75,6 @@ export default function Table({
   setRender,
   showFor,
 }) {
-  console.log({
-    shopType,
-    queryParams,
-    setQueryParams,
-    totalPage,
-    orderType,
-    loading,
-    refetching,
-    render,
-    setRender,
-    showFor,
-  });
   const history = useHistory();
 
   const routeMatch = useRouteMatch();

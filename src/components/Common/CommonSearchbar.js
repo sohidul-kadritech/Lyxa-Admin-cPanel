@@ -53,7 +53,7 @@ export default function SearchBar({
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, searchDebounceTime),
-    [],
+    []
   );
 
   return (
@@ -73,7 +73,6 @@ export default function SearchBar({
           startDate={queryParams.startDate === 'null' ? null : moment(queryParams.startDate)}
           endDate={queryParams.endDate === 'null' ? null : moment(queryParams.endDate)}
           onChange={({ startDate, endDate }) => {
-            console.log({ startDate, moment: moment(startDate) });
             setQueryParams((prev) => ({
               ...prev,
               startDate: startDate?.format('YYYY-MM-DD'),
