@@ -25,6 +25,7 @@ import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import TableSkeleton from '../../components/Skeleton/TableSkeleton';
 // import StyledTable from '../../components/Styled/StyledTable3';
 import FormateBaseCurrency from '../../components/Common/FormateBaseCurrency';
+import AdjustmentOrder from '../../components/Shared/AdjustMentOrder';
 import ChangeDeliveryAddress from '../../components/Shared/ChangeDeliveryAddress';
 import StyledTable5 from '../../components/Styled/StyledTable5';
 import ThreeDotsMenu from '../../components/ThreeDotsMenu2';
@@ -118,6 +119,8 @@ export default function Table({
 
   const [openAddressChange, setOpenAddressChange] = useState(false);
 
+  const [openAdjustmentOrder, setOpenAdjustmentOrder] = useState(false);
+
   const [addedIndex, setAddedIndex] = useState(0);
 
   const location = useLocation();
@@ -182,6 +185,11 @@ export default function Table({
 
     if (menu === 'accept_urgent_order') {
       setOpenUrgentOrder(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'adjust_order') {
+      setOpenAdjustmentOrder(true);
       setCurrentOrder(order);
     }
   };
@@ -422,7 +430,7 @@ export default function Table({
 
   const filteredColumnsForExpand = useMemo(
     () => filterColumns(columnsForExpand, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   const columns = [
@@ -448,7 +456,7 @@ export default function Table({
                 rowInnerContainerSx={{ padding: '0px' }}
                 columns={filteredColumnsForExpand}
                 rows={[{ ...row }]}
-              />,
+              />
             );
           }}
           name={
@@ -681,7 +689,7 @@ export default function Table({
               menu,
               params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
                 ? params?.row?.originalOrder
-                : params?.row,
+                : params?.row
             );
           }}
           disabled={
@@ -689,14 +697,14 @@ export default function Table({
               params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
                 ? params?.row?.originalOrder
                 : params?.row,
-              currentUser?.adminType,
+              currentUser?.adminType
             ).length
           }
           menuItems={getThreedotMenuOptions(
             params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
               ? params?.row?.originalOrder
               : params?.row,
-            currentUser?.adminType,
+            currentUser?.adminType
           )}
         />
       ),
@@ -705,7 +713,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor],
+    [shopType, orderType, showFor]
   );
 
   if (loading) {
@@ -867,6 +875,22 @@ export default function Table({
           order={currentOrder}
           onClose={() => {
             setOpenAddressChange(false);
+          }}
+        />
+      </Modal>
+
+      {/* adjustment order */}
+      <Modal
+        open={openAdjustmentOrder}
+        onClose={() => {
+          setOpenAdjustmentOrder(false);
+        }}
+      >
+        <AdjustmentOrder
+          order={currentOrder}
+          onClose={() => {
+            setOpenAdjustmentOrder(false);
+            setCurrentOrder({});
           }}
         />
       </Modal>
