@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { Avatar, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { successMsg } from '../../../helpers/successMsg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import { dealTypeToLabelMap } from './AdjustMentProduct';
 import { Attributes } from './Attriubtes';
@@ -34,6 +35,28 @@ export function ProductCard({ product, onClickProduct }) {
   // selected products
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const theme = useTheme();
+
+  const onClickAddButton = () => {
+    let requiredAttributeCount = 0;
+    let selectedRequiredAttributeCount = 0;
+    product?.attributes?.forEach((attribute) => {
+      if (attribute?.required) {
+        requiredAttributeCount++;
+      }
+    });
+
+    selectedAttributes?.forEach((attribute) => {
+      if (attribute?.required) {
+        selectedRequiredAttributeCount++;
+      }
+    });
+
+    if (requiredAttributeCount !== selectedRequiredAttributeCount) {
+      successMsg('Required attributes should not empty');
+    }
+
+    console.log({ selectedAttributes, requiredAttributeCount, selectedRequiredAttributeCount });
+  };
   return (
     <Stack
       py={1}
@@ -131,30 +154,26 @@ export function ProductCard({ product, onClickProduct }) {
                   if (onClickProduct) onClickProduct({ attribute: data, product });
 
                   setSelectedAttributes((prev) => {
+                    // finding new attributes is already exist or not
                     const findAtributesIndex = prev?.findIndex((atr) => atr?._id === data?.attribute?._id);
 
+                    // if exist go here
                     if (findAtributesIndex > -1) {
-                      const findIndexAttributeItem = prev[findAtributesIndex]?.items?.findIndex(
+                      // finding new attributes item is exist or not
+                      const findIndexAttributeItem = prev[findAtributesIndex]?.attributeItems?.findIndex(
                         (item) => item?._id === data?.attribute?.attributeItems[0]?._id
                       );
 
+                      // if new attirubtes is exist go here
                       if (findIndexAttributeItem > -1) {
-                        prev[findAtributesIndex]?.attributeItem.splice(findIndexAttributeItem, 1);
+                        if (prev[findAtributesIndex]?.attributeItems?.length > 1)
+                          prev[findAtributesIndex]?.attributeItems.splice(findIndexAttributeItem, 1);
+                        else prev?.splice(findAtributesIndex, 1);
                       } else if (prev[findAtributesIndex]?.select === 'multiple') {
-                        const itemIndex = prev[findAtributesIndex].attributeItems?.findIndex(
-                          (item) => item?._id === data?.attribute?.attributeItems[0]?._id
-                        );
-
-                        if (itemIndex > -1) {
-                          prev[findAtributesIndex].attributeItems = prev[findAtributesIndex].attributeItems?.filter(
-                            (item) => item?._id !== data?.attribute?.attributeItems[0]?._id
-                          );
-                        } else {
-                          prev[findAtributesIndex].attributeItems = [
-                            ...prev[findAtributesIndex]?.attributeItems,
-                            data?.attribute?.attributeItems[0],
-                          ];
-                        }
+                        prev[findAtributesIndex].attributeItems = [
+                          ...prev[findAtributesIndex]?.attributeItems,
+                          data?.attribute?.attributeItems[0],
+                        ];
                       } else {
                         prev[findAtributesIndex].attributeItems = [data?.attribute?.attributeItems[0]];
                       }
@@ -180,7 +199,7 @@ export function ProductCard({ product, onClickProduct }) {
                   },
                 }}
                 onClick={() => {
-                  console.log({ selectedAttributes });
+                  onClickAddButton();
                 }}
               >
                 Add
