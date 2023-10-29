@@ -212,6 +212,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   const flagOrderNew = { label: 'Flag', value: 'flag_test' };
   const acceptUrgentOrder = { label: 'Accept Urgent Order', value: 'accept_urgent_order' };
   const adderssChange = { label: 'Change Address', value: 'change_address' };
+  const adjustOrder = { label: 'Adjust Order', value: 'adjust_order' };
 
   const makePushOptions = (items) => {
     items.forEach((item) => {
@@ -222,7 +223,7 @@ export const getThreedotMenuOptions = (order, userType) => {
   // console.log('order?.orderStatus', order?.orderStatus);
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
-    makePushOptions([updateStatus, trackOrder, cancelOrderNew]);
+    makePushOptions([updateStatus, trackOrder, cancelOrderNew, adjustOrder]);
 
     if (!order?.isButler) makePushOptions([adderssChange]);
   }
@@ -413,7 +414,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       adminVat: getRefundedVatForAdmin(
         orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
-        appVat,
+        appVat
       ),
     },
   };
