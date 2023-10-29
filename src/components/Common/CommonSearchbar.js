@@ -70,8 +70,8 @@ export default function SearchBar({
       )}
       {showFilters?.date && (
         <StyledDateRangePicker
-          startDate={queryParams.startDate === 'null' ? null : moment(queryParams.startDate)}
-          endDate={queryParams.endDate === 'null' ? null : moment(queryParams.endDate)}
+          startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
+          endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
           onChange={({ startDate, endDate }) => {
             setQueryParams((prev) => ({
               ...prev,

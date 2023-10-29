@@ -1,5 +1,6 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
-import { Avatar, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import { dealTypeToLabelMap } from './AdjustMentProduct';
@@ -30,6 +31,8 @@ const attributeContainerSx = (open) => {
 
 export function ProductCard({ product, onClickProduct }) {
   const [openAttribute, setOpenAttriute] = useState(false);
+  // selected products
+  const [selectedAttributes, setSelectedAttributes] = useState([]);
   const theme = useTheme();
   return (
     <Stack
@@ -49,6 +52,7 @@ export function ProductCard({ product, onClickProduct }) {
         onClick={() => {
           if (product?.attributes?.length > 0) {
             setOpenAttriute(!openAttribute);
+
             return;
           }
 
@@ -77,8 +81,25 @@ export function ProductCard({ product, onClickProduct }) {
               variant="h6"
               sx={{ fontWeight: 500, fontSize: '14px', fontStyle: 'italic', color: 'text.secondary2' }}
             >
-              {FormateBaseCurrency?.get(getProductPriceFroAdjustMent(product, product?.marketing?.type))}
+              {FormateBaseCurrency?.get(getProductPriceFroAdjustMent(product, product?.marketing?.type)?.finalPrice)}
             </Typography>
+
+            {getProductPriceFroAdjustMent(product, product?.marketing?.type)?.shouldShowBoth && (
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  fontStyle: 'italic',
+                  color: 'text.secondary2',
+                  textDecoration: 'line-through',
+                }}
+              >
+                {FormateBaseCurrency?.get(
+                  getProductPriceFroAdjustMent(product, product?.marketing?.type)?.originalPrice
+                )}
+              </Typography>
+            )}
           </Stack>
           {product?.marketing?.type && (
             <Typography
@@ -99,19 +120,74 @@ export function ProductCard({ product, onClickProduct }) {
       <Stack sx={{ ...attributeContainerSx(openAttribute) }} gap={2} mt={product?.attributes?.length > 0 ? 2 : 0}>
         {/* attributes */}
         {product?.attributes?.length > 0 && (
-          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '14px', color: 'text.secondary' }}>
-            Attributes
-          </Typography>
+          <Stack gap={2.5} paddingBottom="20px">
+            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '14px', color: 'text.secondary' }}>
+              Attributes
+            </Typography>
+            {product?.attributes?.map((attribute, i) => (
+              <Attributes
+                selectedAttributes={selectedAttributes}
+                onClickProduct={(data) => {
+                  if (onClickProduct) onClickProduct({ attribute: data, product });
+
+                  setSelectedAttributes((prev) => {
+                    const findAtributesIndex = prev?.findIndex((atr) => atr?._id === data?.attribute?._id);
+
+                    if (findAtributesIndex > -1) {
+                      const findIndexAttributeItem = prev[findAtributesIndex]?.items?.findIndex(
+                        (item) => item?._id === data?.attribute?.attributeItems[0]?._id
+                      );
+
+                      if (findIndexAttributeItem > -1) {
+                        prev[findAtributesIndex]?.attributeItem.splice(findIndexAttributeItem, 1);
+                      } else if (prev[findAtributesIndex]?.select === 'multiple') {
+                        const itemIndex = prev[findAtributesIndex].attributeItems?.findIndex(
+                          (item) => item?._id === data?.attribute?.attributeItems[0]?._id
+                        );
+
+                        if (itemIndex > -1) {
+                          prev[findAtributesIndex].attributeItems = prev[findAtributesIndex].attributeItems?.filter(
+                            (item) => item?._id !== data?.attribute?.attributeItems[0]?._id
+                          );
+                        } else {
+                          prev[findAtributesIndex].attributeItems = [
+                            ...prev[findAtributesIndex]?.attributeItems,
+                            data?.attribute?.attributeItems[0],
+                          ];
+                        }
+                      } else {
+                        prev[findAtributesIndex].attributeItems = [data?.attribute?.attributeItems[0]];
+                      }
+
+                      return [...prev];
+                    }
+
+                    return [...prev, { ...data?.attribute, items: [] }];
+                  });
+                }}
+                key={i}
+                attribute={attribute}
+              />
+            ))}
+
+            <Stack direction="row" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                size="small"
+                sx={{
+                  '&.MuiButton-root': {
+                    padding: '4px 0px',
+                  },
+                }}
+                onClick={() => {
+                  console.log({ selectedAttributes });
+                }}
+              >
+                Add
+              </Button>
+            </Stack>
+          </Stack>
         )}
-        {product?.attributes?.map((attribute, i) => (
-          <Attributes
-            onClickProduct={(attr) => {
-              if (onClickProduct) onClickProduct({ attribute: attr, product });
-            }}
-            key={i}
-            attribute={attribute}
-          />
-        ))}
       </Stack>
     </Stack>
   );

@@ -49,38 +49,17 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
           (attr) => attr?.id === data?.attribute?.id
         );
 
-        console.log('data==>', {
-          productDetails,
-          findItemsIndex: {
-            data: productDetails[findItemsIndex],
-            index: findItemsIndex,
-          },
-          findAttributesIndex: {
-            data: productDetails[findItemsIndex]?.selectedAttributes,
-            index: findAttributesIndex,
-            attribute: data?.attribute,
-          },
-        });
-
         if (findAttributesIndex > -1) {
           const removeAttributes = productDetails[findItemsIndex]?.selectedAttributes[
             findAttributesIndex
           ]?.selectedItems?.filter((selectedItem) => selectedItem?._id !== data?.item?._id);
 
+          // if there are only one items then remove whole atributes other wise one item
           if (removeAttributes?.length > 0)
             productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
           else {
             productDetails[findItemsIndex].selectedAttributes.splice(findAttributesIndex, 1);
           }
-
-          // console.log('items==>', {
-          //   data,
-          //   findItems: findItemsIndex,
-          //   findAttributes: findAttributesIndex,
-          //   removeAttributes,
-          //   productDetails: productDetails[findItemsIndex],
-          // });
-          // console.log({ findItems: findItemsIndex, findAttributes: findAttributesIndex, removeAttributes });
         }
       }
 

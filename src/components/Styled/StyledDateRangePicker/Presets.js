@@ -1,22 +1,6 @@
 import { Button, Stack } from '@mui/material';
 import moment from 'moment';
 
-// export const getFirstMonday = (period) => {
-//   let start;
-
-//   console.log('call me');
-
-//   if (period === 'week') start = moment().startOf('week');
-//   else start = moment().startOf('month');
-
-//   while (start.day() !== 1) {
-//     console.log(period, start.day());
-//     start.add('1', 'day');
-//   }
-
-//   return start;
-// };
-
 export const getFirstMonday = (period) => {
   let start;
 

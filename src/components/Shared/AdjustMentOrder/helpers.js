@@ -1,3 +1,5 @@
+import { truncate } from 'lodash';
+
 /* eslint-disable no-unsafe-optional-chaining */
 export const initialAdjustmentOrderData = {
   orderId: '',
@@ -54,17 +56,16 @@ export const initialAdjustmentOrderData = {
 };
 
 export const getProductPriceFroAdjustMent = (product, deal) => {
-  console.log({ product });
   if (deal === 'double_menu') {
-    return product?.price;
+    return { finalPrice: product?.price, originalPrice: product?.price, shouldShowBoth: truncate };
   }
 
   if (deal === 'reward') {
-    return product?.price;
+    return { finalPrice: product?.price, originalPrice: product?.price, shouldShowBoth: false };
   }
   if (deal === 'percentage') {
-    return product?.price - product?.discount;
+    return { finalPrice: product?.price - product?.discount, originalPrice: product?.price, shouldShowBoth: true };
   }
 
-  return product?.price;
+  return { finalPrice: product?.price, originalPrice: product?.price, shouldShowBoth: false };
 };
