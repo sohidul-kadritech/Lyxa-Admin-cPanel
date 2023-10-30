@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Add } from '@mui/icons-material';
@@ -46,7 +47,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       if (findItemsIndex > -1) {
         // find index for product attributes
         const findAttributesIndex = productDetails[findItemsIndex]?.selectedAttributes?.findIndex(
-          (attr) => attr?.id === data?.attribute?.id
+          (attr) => attr?.id === data?.attribute?.id,
         );
 
         if (findAttributesIndex > -1) {
@@ -119,26 +120,24 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
             />
           ))}
         </Stack>
-        {open && (
-          <Box>
-            <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />
-          </Box>
-        )}
       </StyledAdjustmentOrderContainer>
-      <Box paddingLeft="24px" my={4}>
-        <Button
-          disableRipple
-          startIcon={<Add />}
-          sx={{
-            textDecoration: 'underline',
-          }}
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          Add Item
-        </Button>
-      </Box>
+      <Stack>
+        {open && <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />}
+        <Box paddingLeft="16px" mb={4}>
+          <Button
+            disableRipple
+            startIcon={<Add />}
+            sx={{
+              textDecoration: 'underline',
+            }}
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
+            Add Item
+          </Button>
+        </Box>
+      </Stack>
     </Box>
   );
 }

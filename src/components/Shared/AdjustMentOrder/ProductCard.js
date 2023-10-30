@@ -6,7 +6,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import { dealTypeToLabelMap } from './AdjustMentProduct';
 import { Attributes } from './Attriubtes';
-import { getProductPriceFroAdjustMent } from './helpers';
+import { getProductPriceForAdjustMent } from './helpers';
 
 const attributeContainerSx = (open) => {
   const tempSx = {
@@ -104,10 +104,10 @@ export function ProductCard({ product, onClickProduct }) {
               variant="h6"
               sx={{ fontWeight: 500, fontSize: '14px', fontStyle: 'italic', color: 'text.secondary2' }}
             >
-              {FormateBaseCurrency?.get(getProductPriceFroAdjustMent(product, product?.marketing?.type)?.finalPrice)}
+              {FormateBaseCurrency?.get(getProductPriceForAdjustMent(product, product?.marketing?.type)?.finalPrice)}
             </Typography>
 
-            {getProductPriceFroAdjustMent(product, product?.marketing?.type)?.shouldShowBoth && (
+            {getProductPriceForAdjustMent(product, product?.marketing?.type)?.shouldShowBoth && (
               <Typography
                 variant="h6"
                 sx={{
@@ -119,7 +119,7 @@ export function ProductCard({ product, onClickProduct }) {
                 }}
               >
                 {FormateBaseCurrency?.get(
-                  getProductPriceFroAdjustMent(product, product?.marketing?.type)?.originalPrice
+                  getProductPriceForAdjustMent(product, product?.marketing?.type)?.originalPrice,
                 )}
               </Typography>
             )}
@@ -161,7 +161,7 @@ export function ProductCard({ product, onClickProduct }) {
                     if (findAtributesIndex > -1) {
                       // finding new attributes item is exist or not
                       const findIndexAttributeItem = prev[findAtributesIndex]?.attributeItems?.findIndex(
-                        (item) => item?._id === data?.attribute?.attributeItems[0]?._id
+                        (item) => item?._id === data?.attribute?.attributeItems[0]?._id,
                       );
 
                       // if new attirubtes is exist go here
