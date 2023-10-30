@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
@@ -17,13 +18,19 @@ export const dealTypeToLabelMap = {
   reward: 'Reward',
 };
 
-function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDeleteProduct, onDeleteAtribute }) {
+function AdjustMentProduct({
+  product,
+  shopExchangeRate,
+  isFirst,
+  isLast,
+  onDeleteProduct,
+  onDeleteAtribute,
+  onIncrementDecrement,
+}) {
   const deal = productDeal(product);
   const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
-
-  console.log({ product });
 
   return (
     <Box
@@ -92,7 +99,7 @@ function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDelet
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity
+                  product?.finalReward?.points / product?.productQuantity,
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
@@ -103,13 +110,13 @@ function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDelet
               {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
-                  product?.finalReward?.baseCurrency_amount
+                  product?.finalReward?.baseCurrency_amount,
                 )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
                 `${FormateBaseCurrency.get(
-                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}
             </Typography>
           </Stack>
@@ -130,13 +137,13 @@ function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDelet
                     </Typography>
                     <Typography variant="inherit" fontSize="14px" lineHeight="22px" fontWeight={500}>
                       (
-                      {calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity).enabled
-                        ? calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity).withOutbaseCurrency
+                      {calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity)?.enabled
+                        ? calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity)?.withOutbaseCurrency
                         : calculateSecondaryCurrency(item?.extraPrice, shopExchangeRate, quantity)
-                            .withOutSecondaryCurrency}
+                            ?.withOutSecondaryCurrency}
                       )
                     </Typography>
-                    <StyledIconButton
+                    {/* <StyledIconButton
                       size="small"
                       sx={{
                         width: '24px',
@@ -148,7 +155,7 @@ function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDelet
                       }}
                     >
                       <Close />
-                    </StyledIconButton>
+                    </StyledIconButton> */}
                   </Stack>
                 ))}
               </Stack>
@@ -158,7 +165,12 @@ function AdjustMentProduct({ product, shopExchangeRate, isFirst, isLast, onDelet
       ) : null}
 
       <Stack direction="row" justifyContent="flex-start">
-        <StyledIncrementDecrementButton />
+        <StyledIncrementDecrementButton
+          value={quantity}
+          onClick={(type, value) => {
+            onIncrementDecrement(type, { value, product });
+          }}
+        />
       </Stack>
     </Box>
   );

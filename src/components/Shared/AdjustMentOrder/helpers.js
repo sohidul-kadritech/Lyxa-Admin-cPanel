@@ -197,48 +197,101 @@ export const doubleMenuItemPriceCalculation = (addedItems, user) => {
 
 // single item price calculation.
 export const SingleItemcalculatePrice = (itemData) => {
-  // console.log(itemData);
   let count = 0;
 
   const { quantity } = itemData;
 
   count = itemData?.price * quantity;
 
-  itemData?.attributes?.map((parent) => {
-    parent?.items?.map((child) => {
-      if (itemData?.selectedAttributes?.includes(child?._id)) {
-        count += child?.extraPrice * itemData?.quantity;
-      }
+  console.log({ itemData });
+
+  itemData?.selectedAttributes?.map((parent) => {
+    parent?.attributeItems?.map((child) => {
+      count += child?.extraPrice * itemData?.quantity;
+      console.log({ count });
     });
   });
-
-  // console.log(count);
 
   return Math.round(count * 100) / 100;
 };
 
-// export const calculateTotal = ({ addedItems, groupCartInfo }) => {
-//   let total = totalBill(addedItems) - getRewordItem()?.amount;
+// matched the meals
+export const matchedMeals = (products, addedProduct) => {
+  console.log({ products, addedProduct });
+  const matched = {
+    index: -1,
+    item: {},
+    attributesCounter: 0,
+    attributesItemCounter: 0,
+    isMatched: false,
+  };
 
-//   if (groupCartInfo?.cartType == 'group') {
-//     if (groupCartInfo?.paymentPreferences == 'pay_for_themselves') {
-//       total = totalBill(addedItems, user) - getRewordItem(user)?.amount;
-//     }
+  const filteredProducts = products?.filter((product) => product?.productId === addedProduct?.productId);
 
-//     if (groupCartInfo?.deliveryFeePreferences == 'equally') {
-//       total += deliveryCharge?.deliveryFee / totalMember;
-//     } else {
-//       total += deliveryCharge?.deliveryFee;
-//     }
-//   } else {
-//     total += deliveryCharge?.deliveryFee;
-//   }
-//   // console.log(total);
-//   // vat calculation
-//   const temp = totalBill(addedItems) + deliveryCharge?.deliveryFee - getRewordItem()?.amount;
+  filteredProducts?.forEach((product, i) => {
+    const lengthOfAttribute = product?.selectedAttributes?.length;
+    matched.attributesCounter = 0;
+    matched.attributesItemCounter = 0;
+    let items = 0;
+    product?.selectedAttributes?.forEach((attribute) => {
+      const isExistAtribute = addedProduct?.selectedAttributes?.findIndex((atr) => atr?._id === attribute?._id);
 
-//   // console.log(temp);
+      if (isExistAtribute > -1) {
+        matched.attributesCounter++;
+        const lengthOfAttributeItems = attribute?.selectedItems?.length;
+        items += lengthOfAttributeItems;
 
-//   total += (deliveryCharge?.vat / temp) * total;
-//   return total - coupon?.discountAmount + riderTip;
-// };
+        attribute?.selectedItems?.forEach((selectedItem) => {
+          const isExistAtributeItem = addedProduct?.selectedAttributes[isExistAtribute]?.selectedItems?.findIndex(
+            (item) => item?._id === selectedItem?._id,
+          );
+
+          if (isExistAtributeItem > -1) {
+            matched.attributesItemCounter++;
+          }
+
+          console.log('log last', { lengthOfAttributeItems, items, lengthOfAttribute });
+
+          if (items === matched?.attributesItemCounter && lengthOfAttribute === matched?.attributesCounter) {
+            matched.index = i;
+            matched.item = addedProduct;
+            matched.isMatched = true;
+          }
+        });
+      }
+    });
+  });
+
+  console.log({ filteredProducts });
+
+  // products?.forEach((product, i) => {
+  //   const isSame = product?.productId === addedProduct?.productId;
+  //   product?.selectedAttributes?.forEach((atr) => {
+  //     // find attributes
+  //     const findIndexForAttributes = addedProduct?.selectedAttributes?.findIndex(
+  //       (addedAtr) => addedAtr?._id === atr?._id,
+  //     );
+
+  //     atr?.selectedItems?.forEach((item) => {
+  //       if (findIndexForAttributes > -1 && isSame) {
+  //         const findIndexForAttributeItem = addedProduct?.selectedAttributes[
+  //           findIndexForAttributes
+  //         ]?.selectedItems?.findIndex((addedAtrItem) => addedAtrItem?._id === item?._id);
+
+  //         console.log({
+  //           isSame,
+  //           findIndexForAttributes,
+  //           findIndexForAttributeItem,
+  //           added: addedProduct?.selectedAttributes?.selectedItems,
+  //         });
+  //         if (findIndexForAttributeItem > -1) {
+  //           matched.attributesItemCounter++;
+  //           matched.index = i;
+  //         }
+  //       }
+  //     });
+  //   });
+  // });
+
+  console.log({ ...matched, item: addedProduct });
+};

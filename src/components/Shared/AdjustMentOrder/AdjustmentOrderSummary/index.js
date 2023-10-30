@@ -10,6 +10,7 @@ import CallUser from '../../OrderDetail/Details/CallUser';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
+import { matchedMeals } from '../helpers';
 
 function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const { currentUser } = useGlobalContext();
@@ -18,6 +19,11 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const totalProductQuantity = order?.productsDetails?.reduce((prev, curr) => curr?.productQuantity + prev, 0);
   const history = useHistory();
   const routeMatch = useRouteMatch();
+
+  const onIncrementDecrement = (type, value) => {
+    console.log(type, value);
+    matchedMeals(order?.productsDetails, value?.product);
+  };
 
   const onDeleteProduct = (data) => {
     console.log('onDeleteProduct', data);
@@ -117,13 +123,14 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               shopExchangeRate={order?.shop?.shopExchangeRate}
               onDeleteProduct={onDeleteProduct}
               onDeleteAtribute={onDeleteAtribute}
+              onIncrementDecrement={onIncrementDecrement}
             />
           ))}
         </Stack>
       </StyledAdjustmentOrderContainer>
       <Stack>
         {open && <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />}
-        <Box paddingLeft="16px" mb={4}>
+        <Box paddingLeft="16px" mt={open ? 0 : 4} mb={4}>
           <Button
             disableRipple
             startIcon={<Add />}
@@ -131,7 +138,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               textDecoration: 'underline',
             }}
             onClick={() => {
-              setOpen(true);
+              setOpen((prev) => !prev);
             }}
           >
             Add Item

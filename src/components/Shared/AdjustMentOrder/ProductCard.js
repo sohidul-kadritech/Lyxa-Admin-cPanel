@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Avatar, Button, Stack, Typography, useTheme } from '@mui/material';
@@ -6,7 +7,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import { dealTypeToLabelMap } from './AdjustMentProduct';
 import { Attributes } from './Attriubtes';
-import { getProductPriceForAdjustMent } from './helpers';
+import { SingleItemcalculatePrice, getProductPriceForAdjustMent } from './helpers';
 
 const attributeContainerSx = (open) => {
   const tempSx = {
@@ -55,7 +56,15 @@ export function ProductCard({ product, onClickProduct }) {
       successMsg('Required attributes should not empty');
     }
 
-    console.log({ selectedAttributes, requiredAttributeCount, selectedRequiredAttributeCount });
+    console.log({
+      selectedAttributes,
+      product,
+      price: SingleItemcalculatePrice({
+        quantity: 1,
+        selectedAttributes,
+        ...product,
+      }),
+    });
   };
   return (
     <Stack
