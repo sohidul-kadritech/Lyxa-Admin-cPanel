@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable array-callback-return */
 import { truncate } from 'lodash';
+import { productDeal } from '../OrderDetail/Details/OrderSummary/Product';
 
 /* eslint-disable no-unsafe-optional-chaining */
 export const initialAdjustmentOrderData = {
@@ -101,7 +102,7 @@ export const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     } else if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu' && !skipDiscount) {
       if (!array.includes(itemData?._id)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true),
+          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true)
         );
 
         let quantity = 0;
@@ -163,10 +164,12 @@ export const calculatePrice = (addedItems) => {
   return Math.round(count * 100) / 100;
 };
 
-// double menu itemp price calculation
+// double menu item price calculation
 export const doubleMenuItemPriceCalculation = (addedItems, user) => {
   let count = 0;
   const array = [];
+
+  // selectedAttributes
 
   addedItems?.map((itemData) => {
     if (user && itemData?.owner?._id !== user?._id) {
@@ -176,7 +179,7 @@ export const doubleMenuItemPriceCalculation = (addedItems, user) => {
     if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu') {
       if (!array.includes(itemData?._id)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?._id === itemData?._id && (!user || item?.owner?._id === user?._id),
+          (item) => item?._id === itemData?._id && (!user || item?.owner?._id === user?._id)
         );
 
         let quantity = 0;
@@ -197,31 +200,47 @@ export const doubleMenuItemPriceCalculation = (addedItems, user) => {
 };
 
 // single item price calculation.
-export const SingleItemcalculatePrice = (itemData) => {
+export const SingleItemcalculatePrice = (itemData, shopExchangeRate) => {
   let count = 0;
 
-  const { quantity } = itemData;
+  const output = {
+    baseCurrency_finalPrice: 0,
+    secondaryCurrency_finalPrice: 0,
+    baseCurrency_totalDiscount: 0,
+  };
 
-  count = itemData?.price * quantity;
+  const deal = productDeal(itemData);
 
-  console.log({ itemData });
+  count = itemData?.product?.price * (itemData?.quantity || itemData?.productQuantity);
+
+  if (deal === 'percentage') {
+    output.baseCurrency_totalDiscount = itemData?.product?.discount * (itemData?.quantity || itemData?.productQuantity);
+  }
 
   itemData?.selectedAttributes?.map((parent) => {
     parent?.attributeItems?.map((child) => {
-      count += child?.extraPrice * itemData?.quantity;
+      count += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
       console.log({ count });
     });
   });
 
-  return Math.round(count * 100) / 100;
+  output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
+  if (shopExchangeRate > 0) {
+    output.secondaryCurrency_finalPrice = output?.baseCurrency_finalPrice * shopExchangeRate;
+  }
+
+  console.log(deal, { product: itemData?.product }, itemData?.product?.price - itemData?.product?.discount, output);
+  return output;
 };
 
+// compare two array
 export const compareTwoArray = (firstArray, secondArray, item, user) => {
   const firstArrayTemp = JSON.stringify(firstArray.sort());
   const secondArrayTemp = JSON.stringify(secondArray.sort());
   return firstArrayTemp === secondArrayTemp && item?.owner?._id === user?._id;
 };
 
+// separate attributes id
 export const separateAtributesId = (attributes) => {
   const separateAttributesItems = attributes?.map(({ selectedItems }) => selectedItems);
 
@@ -248,7 +267,7 @@ export const matchedMeals = (products, addedProduct) => {
   products?.forEach((product, i) => {
     const productAttributes = separateAtributesId(product?.selectedAttributes);
     const addedAttributes = separateAtributesId(addedProduct?.selectedAttributes);
-    const isSameProduct = product?.productId;
+    const isSameProduct = product?.productId === addedProduct?.productId;
 
     if (
       productAttributes?.length === addedAttributes?.length &&

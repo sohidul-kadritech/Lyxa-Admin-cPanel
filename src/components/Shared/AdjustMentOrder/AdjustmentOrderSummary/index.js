@@ -7,10 +7,11 @@ import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useGlobalContext } from '../../../../context';
 import CallUser from '../../OrderDetail/Details/CallUser';
+import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
-import { matchedMeals } from '../helpers';
+import { SingleItemcalculatePrice, matchedMeals } from '../helpers';
 
 function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const { currentUser } = useGlobalContext();
@@ -21,19 +22,26 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const routeMatch = useRouteMatch();
 
   const onIncrementDecrement = (type, value) => {
-    console.log(type, value);
-    matchedMeals(order?.productsDetails, value?.product);
-
     setAdjustedOrder((prev) => {
       // remove the products
       const matched = matchedMeals(prev?.productsDetails, value?.product);
 
-      if (matched?.isMatched) {
-        if (type === 'increment') {
-          prev.productsDetails[matched?.index].productQuantity++;
-        } else {
-          prev.productsDetails[matched?.index].productQuantity--;
-        }
+      console.log({ matched, value });
+      if (matched?.isMatched && value?.value > 0) {
+        const deal = productDeal(prev.productsDetails[matched?.index]);
+        prev.productsDetails[matched?.index].productQuantity = value?.value;
+        const updatedPrice =
+          deal !== 'double_menu'
+            ? SingleItemcalculatePrice(prev.productsDetails[matched?.index], order?.shop?.shopExchangeRate)
+            : { baseCurrency_finalPrice: 0, secondaryCurrency_finalPrice: 0 };
+
+        console.log({ ...updatedPrice });
+
+        prev.productsDetails[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
+        prev.productsDetails[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
+        prev.productsDetails[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
+      } else {
+        prev.productsDetails?.splice(matched?.index, 1);
       }
 
       return { ...prev };
@@ -63,7 +71,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       if (findItemsIndex > -1) {
         // find index for product attributes
         const findAttributesIndex = productDetails[findItemsIndex]?.selectedAttributes?.findIndex(
-          (attr) => attr?.id === data?.attribute?.id,
+          (attr) => attr?.id === data?.attribute?.id
         );
 
         if (findAttributesIndex > -1) {
