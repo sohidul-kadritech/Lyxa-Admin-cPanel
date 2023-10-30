@@ -53,6 +53,7 @@ export default function AccountList() {
           showFilters={{ search: true, status: true, type: true, date: false, sort: true }}
         />
       </Box>
+      {/* user table */}
       <UsersTable
         users={query?.data?.data?.users}
         loading={query?.isLoading}

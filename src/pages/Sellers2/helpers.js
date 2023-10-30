@@ -3,7 +3,8 @@ import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
 export const getThreedotMenuOptions = (adminType) => {
-  const menu = [
+  console.log(adminType);
+  let menu = [
     {
       label: 'View',
       value: 'view',
@@ -19,6 +20,10 @@ export const getThreedotMenuOptions = (adminType) => {
       value: 'go_to_financials',
     },
   ];
+
+  if (adminType !== 'admin') {
+    menu = menu.filter((item) => item?.value !== 'go_to_financials');
+  }
 
   if (adminType !== 'customerService') {
     const newMenu = [
