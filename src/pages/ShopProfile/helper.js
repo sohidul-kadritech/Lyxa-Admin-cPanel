@@ -133,7 +133,6 @@ export function AverageOrderValue(totalProductsAmount, totalOrder) {
 }
 
 export function TagsAndCuisines(tags, cuisines) {
-  console.log({ tags, cuisines });
   return ` ${cuisines?.map((cuisines) => cuisines.name).join(', ')}${
     tags?.length && cuisines?.length ? ', ' : ''
   }${tags?.join(', ')}`;
