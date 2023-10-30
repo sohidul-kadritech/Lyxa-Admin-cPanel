@@ -1,6 +1,7 @@
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
+import { TitleWithToolTip } from '../../components/Common/TitleWithToolTip';
 import CommonAreaChart from '../../components/StyledCharts/CommonAreaChart';
 import { useGlobalContext } from '../../context';
 import { generateGraphData } from '../../helpers/generateGraphData';
@@ -12,7 +13,7 @@ function Orders() {
   return (
     <Grid container spacing={6.5}>
       <CommonAreaChart
-        title="Total Orders"
+        title={<TitleWithToolTip title="Total Orders" tooltip="Number of orders delivered withing this time period." />}
         api={API_URL.ACCOUNT_MANAGER_DASHBOARD_ORDER_GRAPH}
         params={{
           accountManagerId: admin?._id,

@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useQuery } from 'react-query';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import SalesRankingTable from './Table';
 
 function SalesRanking({ data = [], padding = true }) {
@@ -45,17 +46,8 @@ function SalesRanking({ data = [], padding = true }) {
         padding: padding ? '16px 18px' : '0px',
       }}
     >
-      <Typography variant="body1" fontWeight={600}>
-        Sales Ranking
-      </Typography>
-      <Stack direction="row" alignItems="center" justifyContent="end" pt={6}>
-        {/* <Stack direction="row" alignItems="center">
-          <Typography variant="body1" sx={{ fontWeight: '700', fontSize: '16px' }}>
-            120
-          </Typography>
-          <IncreaseDecreaseTag status="increase" amount="4%" />
-        </Stack> */}
-      </Stack>
+      <TitleWithToolTip title="Sales Ranking" tooltip="Top ranked sales managers.(Ranked with number of shops)" />
+
       <Box>
         <SalesRankingTable
           loading={getSalesdashBoard?.isLoading}

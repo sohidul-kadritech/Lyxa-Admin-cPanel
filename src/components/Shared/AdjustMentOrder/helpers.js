@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable array-callback-return */
 import { truncate } from 'lodash';
@@ -215,83 +216,49 @@ export const SingleItemcalculatePrice = (itemData) => {
   return Math.round(count * 100) / 100;
 };
 
+export const compareTwoArray = (firstArray, secondArray, item, user) => {
+  const firstArrayTemp = JSON.stringify(firstArray.sort());
+  const secondArrayTemp = JSON.stringify(secondArray.sort());
+  return firstArrayTemp === secondArrayTemp && item?.owner?._id === user?._id;
+};
+
+export const separateAtributesId = (attributes) => {
+  const separateAttributesItems = attributes?.map(({ selectedItems }) => selectedItems);
+
+  let items = [];
+
+  separateAttributesItems?.forEach((item) => {
+    const temp = item?.map((atrItm) => atrItm?._id);
+
+    items = [...items, ...temp];
+  });
+
+  return items;
+};
+
 // matched the meals
 export const matchedMeals = (products, addedProduct) => {
   console.log({ products, addedProduct });
   const matched = {
     index: -1,
     item: {},
-    attributesCounter: 0,
-    attributesItemCounter: 0,
     isMatched: false,
   };
 
-  const filteredProducts = products?.filter((product) => product?.productId === addedProduct?.productId);
+  products?.forEach((product, i) => {
+    const productAttributes = separateAtributesId(product?.selectedAttributes);
+    const addedAttributes = separateAtributesId(addedProduct?.selectedAttributes);
+    const isSameProduct = product?.productId;
 
-  filteredProducts?.forEach((product, i) => {
-    const lengthOfAttribute = product?.selectedAttributes?.length;
-    matched.attributesCounter = 0;
-    matched.attributesItemCounter = 0;
-    let items = 0;
-    product?.selectedAttributes?.forEach((attribute) => {
-      const isExistAtribute = addedProduct?.selectedAttributes?.findIndex((atr) => atr?._id === attribute?._id);
-
-      if (isExistAtribute > -1) {
-        matched.attributesCounter++;
-        const lengthOfAttributeItems = attribute?.selectedItems?.length;
-        items += lengthOfAttributeItems;
-
-        attribute?.selectedItems?.forEach((selectedItem) => {
-          const isExistAtributeItem = addedProduct?.selectedAttributes[isExistAtribute]?.selectedItems?.findIndex(
-            (item) => item?._id === selectedItem?._id,
-          );
-
-          if (isExistAtributeItem > -1) {
-            matched.attributesItemCounter++;
-          }
-
-          console.log('log last', { lengthOfAttributeItems, items, lengthOfAttribute });
-
-          if (items === matched?.attributesItemCounter && lengthOfAttribute === matched?.attributesCounter) {
-            matched.index = i;
-            matched.item = addedProduct;
-            matched.isMatched = true;
-          }
-        });
-      }
-    });
+    if (
+      productAttributes?.length === addedAttributes?.length &&
+      compareTwoArray(productAttributes, addedAttributes) &&
+      isSameProduct
+    ) {
+      matched.isMatched = true;
+      matched.index = i;
+    }
   });
 
-  console.log({ filteredProducts });
-
-  // products?.forEach((product, i) => {
-  //   const isSame = product?.productId === addedProduct?.productId;
-  //   product?.selectedAttributes?.forEach((atr) => {
-  //     // find attributes
-  //     const findIndexForAttributes = addedProduct?.selectedAttributes?.findIndex(
-  //       (addedAtr) => addedAtr?._id === atr?._id,
-  //     );
-
-  //     atr?.selectedItems?.forEach((item) => {
-  //       if (findIndexForAttributes > -1 && isSame) {
-  //         const findIndexForAttributeItem = addedProduct?.selectedAttributes[
-  //           findIndexForAttributes
-  //         ]?.selectedItems?.findIndex((addedAtrItem) => addedAtrItem?._id === item?._id);
-
-  //         console.log({
-  //           isSame,
-  //           findIndexForAttributes,
-  //           findIndexForAttributeItem,
-  //           added: addedProduct?.selectedAttributes?.selectedItems,
-  //         });
-  //         if (findIndexForAttributeItem > -1) {
-  //           matched.attributesItemCounter++;
-  //           matched.index = i;
-  //         }
-  //       }
-  //     });
-  //   });
-  // });
-
-  console.log({ ...matched, item: addedProduct });
+  console.log(matched);
 };

@@ -2,6 +2,7 @@
 import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { TitleWithToolTip } from '../../components/Common/TitleWithToolTip';
 import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import ChartBox from '../../components/StyledCharts/ChartBox';
 import StyledBarChart from '../../components/StyledCharts/StyledBarChart';
@@ -33,13 +34,13 @@ export default function SellersChart({ viewUserType = 'shop' }) {
           endDate: moment(range.end).format('YYYY-MM-DD'),
           type: viewUserType,
         },
-      })
+      }),
   );
 
   const sellersData = generateGraphData(
     salesGraphQuery?.data?.data?.info || [],
     (item) => item.seller,
-    (item) => moment(item?.date).format('MMMM DD')
+    (item) => moment(item?.date).format('MMMM DD'),
   );
 
   const profitChartData = {
@@ -59,7 +60,12 @@ export default function SellersChart({ viewUserType = 'shop' }) {
       chartHeight={325}
       dateRange={range}
       setDateRange={setRange}
-      title="Sellers"
+      title={
+        <TitleWithToolTip
+          title="Sellers"
+          tooltip="Number of sellers are created by this sales manager within this time period."
+        />
+      }
       sx={{ overflow: 'visible' }}
       sm={12}
       xl={6}

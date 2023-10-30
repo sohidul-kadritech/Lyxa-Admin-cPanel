@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
@@ -69,9 +70,7 @@ function ShopRanking({ padding = true }) {
         padding: padding ? '16px 18px' : '0px',
       }}
     >
-      <Typography variant="body1" fontWeight={600}>
-        Shop Ranking
-      </Typography>
+      <TitleWithToolTip title="Shop Ranking" tooltip="Top ranked Shops.(Ranked with number of items sold)" />
       <Stack direction="row" alignItems="center" justifyContent="end" pt={6}>
         <Box ref={shopTableRef}>
           <StyledFormField
