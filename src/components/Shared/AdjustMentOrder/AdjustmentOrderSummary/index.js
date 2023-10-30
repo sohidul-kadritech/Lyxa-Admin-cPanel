@@ -23,10 +23,24 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const onIncrementDecrement = (type, value) => {
     console.log(type, value);
     matchedMeals(order?.productsDetails, value?.product);
+
+    setAdjustedOrder((prev) => {
+      // remove the products
+      const matched = matchedMeals(prev?.productsDetails, value?.product);
+
+      if (matched?.isMatched) {
+        if (type === 'increment') {
+          prev.productsDetails[matched?.index].productQuantity++;
+        } else {
+          prev.productsDetails[matched?.index].productQuantity--;
+        }
+      }
+
+      return { ...prev };
+    });
   };
 
   const onDeleteProduct = (data) => {
-    console.log('onDeleteProduct', data);
     // order?.productsDetails
 
     setAdjustedOrder((prev) => {
@@ -38,10 +52,6 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   };
 
   const onDeleteAtribute = (data) => {
-    // product?.selectedAttributes
-
-    // attr?.selectedItems
-
     setAdjustedOrder((prev) => {
       // remove the products
 

@@ -241,7 +241,7 @@ export const matchedMeals = (products, addedProduct) => {
   console.log({ products, addedProduct });
   const matched = {
     index: -1,
-    item: {},
+    item: { ...addedProduct },
     isMatched: false,
   };
 
@@ -260,5 +260,5 @@ export const matchedMeals = (products, addedProduct) => {
     }
   });
 
-  console.log(matched);
+  return matched;
 };
