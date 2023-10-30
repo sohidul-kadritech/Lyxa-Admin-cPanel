@@ -202,7 +202,12 @@ export const sellerTypeOption = [
   },
 ];
 
-export const previewGenerator = (file) => [{ preview: file }];
+export const previewGenerator = (file) => {
+  if (!file) {
+    return [];
+  }
+  return [{ preview: file }];
+};
 
 export const generateDataForSellerDocuments = (data) => [
   { _id: 1, sellerId: data?._id, title: 'Profile', url: data?.profile_photo, type: 'profile_photo' },
