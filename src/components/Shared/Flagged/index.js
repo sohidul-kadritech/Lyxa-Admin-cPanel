@@ -94,7 +94,7 @@ export const getApi = (flagData) => {
   return api?.placeOrderApi;
 };
 
-function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
+function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSuccess }) {
   const theme = useTheme();
   const [flaggData, setFlaggData] = useState(initialDataForFlagg(order));
   const [cancelOrderData, setCancelOrderData] = useState(initialDataForCancelOrder(order));
@@ -108,10 +108,12 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
   const flaggedQueryMutation = useMutation((data) => AXIOS.post(data?.api, data?.payload), {
     onSuccess: (data) => {
       if (data.status) {
+        if (onSuccess) onSuccess(data);
         successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+        queryClient.invalidateQueries(refetchApiKey);
         onClose();
         setOpen(false);
       } else {
@@ -132,6 +134,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
         if (data.status) {
           successMsg(data?.message, 'success');
 
+          if (onSuccess) onSuccess(data);
+
           const order = data?.data?.order;
 
           queryClient.invalidateQueries(API_URL.ORDER_LIST);
@@ -139,6 +143,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged' }) {
           queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
 
           queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
+
+          queryClient.invalidateQueries(refetchApiKey);
 
           socketServices?.emit('updateOrder', {
             orderId: order?._id,
