@@ -6,6 +6,7 @@ import AdminOrders from '../pages/AdminOrderTable';
 import ChatDetails from '../pages/Chat/ChatDetails/ChatDetails';
 import Chats from '../pages/Chat/Chats';
 import ChatsListByOrder from '../pages/Chat/ChatsListByOrder/ChatsListByOrder';
+import NotFoundPage from '../pages/NotFound';
 import OngoingTickets from '../pages/OngoingTickets';
 import PastTickets from '../pages/PastTickets';
 import RiderProfile from '../pages/RiderProfile';
@@ -43,4 +44,8 @@ export const customer_service_routes = [
   { path: `/customer-support/details/:id`, component: ChatDetails },
   // this route should be at the end of all other routes
   { path: `/`, exact: true, component: () => <Redirect to="/ongoing-tickets" /> },
+  {
+    path: `/*`,
+    component: NotFoundPage,
+  },
 ];
