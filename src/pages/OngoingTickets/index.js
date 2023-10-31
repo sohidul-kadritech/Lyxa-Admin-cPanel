@@ -322,7 +322,7 @@ export default function OngoingTickets() {
               <UrgentOrderTable />
             </TabPanel>
             <TabPanel index={4} noPadding value={Number(queryParams?.currentTab)}>
-              <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="ongoing" />
+              <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="admin" />
             </TabPanel>
           </Box>
         </SlideInContainer>

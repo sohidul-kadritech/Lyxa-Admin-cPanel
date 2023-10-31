@@ -38,6 +38,8 @@ function UrgentOrderRecieved({ order, onClose, showTime }) {
       if (data?.status) {
         successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_LIST);
+        queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
+        queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         history.push({
           pathname: '/ongoing-tickets',
           search: 'currentTab=3&type=ongoing&page=1&errorOrderType=urgent',

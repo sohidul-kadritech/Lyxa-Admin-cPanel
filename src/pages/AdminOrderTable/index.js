@@ -84,19 +84,19 @@ export default function AdminOrders() {
           <Orders type="ongoing" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel panelKey="delivered" value={queryParams?.type} noPadding>
-          <Orders type="delivered" queryParams={queryParams} setQueryParams={setQueryParams} />
+          <Orders paddingTop={4} type="delivered" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel panelKey="cancelled" value={queryParams?.type} noPadding>
-          <Orders type="cancelled" queryParams={queryParams} setQueryParams={setQueryParams} />
+          <Orders paddingTop={4} type="cancelled" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel index="flags" value={queryParams?.type} noPadding>
           <Flags />
         </TabPanel>
         <TabPanel index="low-rating" value={queryParams?.type} noPadding>
-          <Orders type="low-rating" queryParams={queryParams} setQueryParams={setQueryParams} />
+          <Orders paddingTop={4} type="low-rating" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
         <TabPanel index="scheduled" value={queryParams?.type} noPadding>
-          <Orders type="scheduled" queryParams={queryParams} setQueryParams={setQueryParams} />
+          <Orders paddingTop={4} type="scheduled" queryParams={queryParams} setQueryParams={setQueryParams} />
         </TabPanel>
       </Box>
     </Box>
