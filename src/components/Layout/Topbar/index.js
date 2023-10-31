@@ -64,7 +64,7 @@ export default function Topbar({ setSidebar, sidebar }) {
     [API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT],
     () => AXIOS.get(API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT),
     {
-      refetchInterval: 5000,
+      refetchInterval: 30 * 1000,
       refetchIntervalInBackground: true,
       enabled: currentUser?.userType !== 'shop',
     },
