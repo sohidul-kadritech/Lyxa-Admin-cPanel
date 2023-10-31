@@ -23,10 +23,10 @@ const dealTypeToLabelMap = {
 export const getPriceWithCurrency = (
   price,
   secondaryCurrencyPrice = undefined,
-  exchangeRate = { shouldCalculate: false, rate: null }
+  exchangeRate = { shouldCalculate: false, rate: null },
 ) => {
   if (exchangeRate?.shouldCalculate) {
-    if (exchangeRate?.rate > 0) return `${FormatesecondaryCurrency(price * exchangeRate?.rate || 0)}`;
+    if (exchangeRate?.rate > 0) return `${FormatesecondaryCurrency.get(price * exchangeRate?.rate || 0)}`;
     return `${FormateBaseCurrency.get(price || 0)}`;
   }
 
@@ -88,7 +88,7 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity
+                  product?.finalReward?.points / product?.productQuantity,
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
@@ -99,13 +99,13 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
               {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
-                  product?.finalReward?.baseCurrency_amount
+                  product?.finalReward?.baseCurrency_amount,
                 )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
                 `${FormateBaseCurrency.get(
-                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}
             </Typography>
           </Stack>
