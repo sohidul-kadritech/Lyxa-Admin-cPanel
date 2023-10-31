@@ -24,13 +24,22 @@ export const getPriceWithCurrency = (
   price,
   secondaryCurrencyPrice = undefined,
   exchangeRate = { shouldCalculate: false, rate: null },
+  show = { both: true, base: false, secondary: false },
 ) => {
   if (exchangeRate?.shouldCalculate) {
     if (exchangeRate?.rate > 0) return `${FormatesecondaryCurrency.get(price * exchangeRate?.rate || 0)}`;
     return `${FormateBaseCurrency.get(price || 0)}`;
   }
 
-  return `${FormatesecondaryCurrency.get(secondaryCurrencyPrice)} ~ ${FormateBaseCurrency.get(price || 0)}`;
+  if (show?.base) {
+    return FormateBaseCurrency.get(price || 0);
+  }
+
+  if (show?.secondary) {
+    return FormatesecondaryCurrency.get(secondaryCurrencyPrice || 0);
+  }
+
+  return `${FormatesecondaryCurrency.get(secondaryCurrencyPrice || 0)} ~ ${FormateBaseCurrency.get(price || 0)}`;
 };
 
 // eslint-disable-next-line no-unused-vars

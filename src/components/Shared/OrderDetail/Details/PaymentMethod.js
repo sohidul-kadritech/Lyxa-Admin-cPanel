@@ -6,17 +6,17 @@ import { StyledOrderDetailBox } from '../helpers';
 
 const paymentMethodLabelMap = {
   cash: {
-    label: 'Cash on Delivery',
+    label: 'Cash',
     icon: <CashIcon />,
   },
 
   wallet: {
-    label: 'Lyxa pay',
+    label: 'Wallet',
     icon: <LyaxPayIcon />,
   },
 
   card: {
-    label: 'Credit Card',
+    label: 'Card',
     icon: <CreditIcon />,
   },
 };
