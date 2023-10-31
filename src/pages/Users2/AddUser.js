@@ -20,6 +20,8 @@ function AddUser({ onClose, userType, refetch }) {
 
   const [user, setUser] = useState(addUserInit(userType, currentUser[userType]?._id));
 
+  console.log({ userType });
+
   console.log(addUserInit(userType, currentUser[userType]?._id));
 
   const addUserMutation = useMutation((data) => AXIOS.post(userTypeToApiMap[userType], data), {
@@ -89,25 +91,27 @@ function AddUser({ onClose, userType, refetch }) {
           </Typography>
 
           {/* credential user type */}
-          <StyledFormField
-            label="User Type"
-            intputType="select"
-            containerProps={{
-              sx: {
-                padding: '14px 0px 10px 0',
-              },
-            }}
-            inputProps={{
-              type: 'text',
-              name: 'credentialType',
-              items: credentialTypeOptions,
-              onChange,
-              value: user?.credentialType,
-              inputProps: {
-                autoComplete: 'off',
-              },
-            }}
-          />
+          {userType === 'shop' && (
+            <StyledFormField
+              label="User Type"
+              intputType="select"
+              containerProps={{
+                sx: {
+                  padding: '14px 0px 10px 0',
+                },
+              }}
+              inputProps={{
+                type: 'text',
+                name: 'credentialType',
+                items: credentialTypeOptions,
+                onChange,
+                value: user?.credentialType,
+                inputProps: {
+                  autoComplete: 'off',
+                },
+              }}
+            />
+          )}
 
           {/* password */}
           <StyledFormField

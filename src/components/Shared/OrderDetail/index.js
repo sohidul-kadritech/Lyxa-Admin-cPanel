@@ -115,7 +115,7 @@ export default function OrderDetail({
     <OrderContextProvider value={value}>
       <Box
         sx={{
-          width: '400px',
+          width: '425px',
           padding: '0px 20px 25px 20px',
           ...(sx || {}),
         }}

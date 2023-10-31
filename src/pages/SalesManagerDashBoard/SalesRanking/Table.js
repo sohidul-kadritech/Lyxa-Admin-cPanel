@@ -36,7 +36,7 @@ function SalesRankingTable({ data = [], queryParams, setQueryParams, totalPage =
           imgUrl={row?.profile_photo}
           imgStyle="circular"
           titleProps={{
-            sx: { color: 'primary.main', cursor: 'default' },
+            sx: { color: 'text.primary', cursor: 'default', textTransform: 'capitalize' },
             // onClick: () => {
             //   history?.push({
             //     pathname: `/shop/list/${row?._id}`,

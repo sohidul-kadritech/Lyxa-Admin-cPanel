@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Stack, Typography, debounce, useTheme } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -48,11 +48,26 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
     []
   );
 
+  useEffect(() => {
+    function handleClickOutside() {
+      setSearchKey('');
+    }
+
+    // Attach the click event listener to the document
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      // Remove the event listener when the component unmounts
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <Stack
       sx={{
         position: 'relative',
       }}
+      onClick={(e) => e.stopPropagation()}
     >
       <StyledFormField
         intputType="text"
@@ -76,7 +91,6 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
             background: theme.palette.background.secondary,
             padding: '16px 0px',
             borderRadius: '16px',
-            // borderBottomRightRadius: '32px',
             zIndex: 999,
           }}
         >

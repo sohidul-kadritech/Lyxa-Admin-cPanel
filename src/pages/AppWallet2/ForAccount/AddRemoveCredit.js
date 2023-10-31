@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { Box, Button, Stack, createFilterOptions, debounce } from '@mui/material';
+import { Box, Button, Stack, Typography, createFilterOptions, debounce } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import SidebarContainer from '../../../components/Common/SidebarContainerSm';
 import StyledFormField from '../../../components/Form/StyledFormField';
 
-import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import OptionsSelect from '../../../components/Filter/OptionsSelect';
+import { currencyOptions } from '../../../components/Shared/GlobalAddRemoveCredit';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import { currencyTypeOptions } from '../../UsersProfile/Transactions/AddRemoveCredit';
 
 const getDataInit = () => ({
   userId: null,
@@ -60,6 +60,7 @@ function AddRemoveCredit({ onClose }) {
 
       if (data?.status) {
         queryClient.invalidateQueries(Api.DROP_PAY_LIST);
+        queryClient.invalidateQueries(Api.GET_DASHBOARD_SUMMARY);
         onClose();
       }
     },
@@ -135,18 +136,37 @@ function AddRemoveCredit({ onClose }) {
     <SidebarContainer title="Add/Remove credit" onClose={onClose}>
       <Box position="relative" pt={7.5}>
         {isSecondaryCurrencyEnabled && (
-          <StyledRadioGroup
-            sx={{
-              flexDirection: 'row',
-              gap: '25px',
-              pb: 5,
-            }}
-            items={currencyTypeOptions}
-            value={data?.paidCurrency}
-            onChange={(e) =>
-              setData({ ...data, paidCurrency: e.target.value, amount: '', secondaryCurrency_amount: '' })
-            }
-          />
+          <Stack direction="column" pb={3} alignItems="flex-start" gap="12px">
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: '600',
+                fontSize: '15px',
+                lineHeight: '18px',
+              }}
+            >
+              Currency Type
+            </Typography>
+            <OptionsSelect
+              value={data?.paidCurrency}
+              sx={{ padding: '8px 10px' }}
+              gapSx={3}
+              items={currencyOptions(baseCurrency, secondaryCurrency, false, false)}
+              onChange={(value) => setData({ ...data, paidCurrency: value, amount: '', secondaryCurrency_amount: '' })}
+            />
+          </Stack>
+          // <StyledRadioGroup
+          //   sx={{
+          //     flexDirection: 'row',
+          //     gap: '25px',
+          //     pb: 5,
+          //   }}
+          //   items={currencyTypeOptions}
+          //   value={data?.paidCurrency}
+          //   onChange={(e) =>
+          //     setData({ ...data, paidCurrency: e.target.value, amount: '', secondaryCurrency_amount: '' })
+          //   }
+          // />
         )}
 
         <StyledFormField

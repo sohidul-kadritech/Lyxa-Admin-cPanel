@@ -1,4 +1,6 @@
 export const getThreeDotsMenuOptions = (chat) => {
+  console.log({ chat });
+
   const options = [];
   const hideUpdateAndCancel = ['cancelled', 'delivered', 'refused'];
 
@@ -6,12 +8,24 @@ export const getThreeDotsMenuOptions = (chat) => {
     options.push({ label: 'Resolve ticket', value: 'resolve_ticket' });
   }
 
-  if (hideUpdateAndCancel.indexOf(chat?.order?.orderStatus) === -1) {
-    options.push({ label: 'Edit status', value: 'update_status' });
+  if (hideUpdateAndCancel.indexOf(chat?.order?.orderStatus) === -1 && chat?.chatType === 'order') {
+    options.push({ label: 'Update status', value: 'update_status' });
     options.push({ label: 'Cancel Order', value: 'cancel_order' });
+    options.push({ label: 'Track Order', value: 'track_order' });
+    options.push({ label: 'Change Address', value: 'change_address' });
+    options.push({ label: 'Adjust Order', value: 'adjust_order' });
   }
 
-  options.push({ label: 'Flag', value: 'flag' });
+  if (
+    chat?.order?.orderStatus === 'delivered' &&
+    !chat?.order?.isRefundedAfterDelivered &&
+    !chat?.order?.replacementOrder &&
+    !chat?.order?.isReplacementOrder &&
+    !chat?.order?.isButler &&
+    chat?.chatType === 'order'
+  ) {
+    options.push({ label: 'Flag', value: 'flag' });
+  }
 
   return options;
 };

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Stack, useTheme } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
@@ -15,16 +16,32 @@ function ShopRanking({ padding = true }) {
   const { currentUser } = useGlobalContext();
   const admin = currentUser?.admin;
   const adminSellers = admin?.sellers;
+
+  const shopTableRef = useRef(null);
+  const shopContainerRef = useRef(null);
+
   const [sellersOption, setSellerOption] = useState([{ _id: 'all', name: 'All Sellers' }, ...adminSellers]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setSellerOption(() => {
-        console.log('menu: ', [{ _id: 'all', name: 'All Sellers' }, ...adminSellers]);
-        return [{ _id: 'all', name: 'All Sellers' }, ...adminSellers];
-      });
-    }, 500);
+    setSellerOption(() => {
+      console.log('menu: ', [{ _id: 'all', name: 'All Sellers' }, ...adminSellers]);
+      return [{ _id: 'all', name: 'All Sellers' }, ...adminSellers];
+    });
   }, [currentUser?.admin]);
+
+  const scrollToTop = () => {
+    if (shopTableRef.current) {
+      shopContainerRef?.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+
+      shopTableRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  };
 
   const getAccountManagerdashBoard = useQuery(
     [API_URL.GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY, queryParams],
@@ -43,6 +60,7 @@ function ShopRanking({ padding = true }) {
   );
   return (
     <Box
+      ref={shopContainerRef}
       sx={{
         background: '#fff',
         border: `1px solid ${theme.palette.custom.border}`,
@@ -52,21 +70,12 @@ function ShopRanking({ padding = true }) {
         padding: padding ? '16px 18px' : '0px',
       }}
     >
-      <Typography variant="body1" fontWeight={600}>
-        Shop Ranking
-      </Typography>
+      <TitleWithToolTip title="Shop Ranking" tooltip="Top ranked Shops.(Ranked with number of items sold)" />
       <Stack direction="row" alignItems="center" justifyContent="end" pt={6}>
-        {/* <Stack direction="row" alignItems="center">
-          <Typography variant="body1" sx={{ fontWeight: '700', fontSize: '16px' }}>
-            120
-          </Typography>
-          <IncreaseDecreaseTag status="increase" amount="4%" />
-        </Stack> */}
-
-        <Box>
+        <Box ref={shopTableRef}>
           <StyledFormField
             intputType="select"
-            tooltip="Select Zone"
+            tooltip="Select a Seller"
             containerProps={{
               sx: { padding: '0px 0px' },
             }}
@@ -79,7 +88,9 @@ function ShopRanking({ padding = true }) {
               getLabel: (option) => option?.name,
               getValue: (option) => option?._id,
               getDisplayValue: (currentValue) => sellersOption?.find((seller) => seller?._id === currentValue)?.name,
-              onChange: (e) => setQueryParams((prev) => ({ ...prev, sellerId: e.target.value })),
+              onChange: (e) => {
+                setQueryParams((prev) => ({ ...prev, sellerId: e.target.value }));
+              },
             }}
           />
         </Box>

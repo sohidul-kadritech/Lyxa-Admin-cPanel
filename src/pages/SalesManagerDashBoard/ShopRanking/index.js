@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useQuery } from 'react-query';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import ShopRankingTable from './Table';
 
@@ -51,17 +52,8 @@ function ShopRanking({ data, padding = true }) {
         padding: padding ? '16px 18px' : '0px',
       }}
     >
-      <Typography variant="body1" fontWeight={600}>
-        Shop Ranking
-      </Typography>
+      <TitleWithToolTip title="Shop Ranking" tooltip="Top ranked Shops.(Ranked with number of items sold)" />
       <Stack direction="row" alignItems="center" justifyContent="end" pt={6}>
-        {/* <Stack direction="row" alignItems="center">
-          <Typography variant="body1" sx={{ fontWeight: '700', fontSize: '16px' }}>
-            120
-          </Typography>
-          <IncreaseDecreaseTag status="increase" amount="4%" />
-        </Stack> */}
-
         <Box>
           <StyledFormField
             intputType="select"

@@ -229,7 +229,9 @@ export const getThreedotMenuOptions = (order, userType) => {
   }
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'customerService') {
-    makePushOptions([updateStatus, trackOrder, acceptUrgentOrder]);
+    makePushOptions([updateStatus, trackOrder]);
+
+    if (!order?.isCustomerServiceAccepted) makePushOptions([acceptUrgentOrder]);
   }
 
   if (
@@ -414,7 +416,7 @@ export const generateRefundAfterDeliveredData = (orderCancel, orderPayment, appV
       adminVat: getRefundedVatForAdmin(
         orderCancel?.vatAmount?.baseCurrency_vatForAdmin,
         orderPayment?.admin < 0 ? orderPayment?.deliveryBoy || 0 : orderPayment?.admin + orderPayment?.deliveryBoy,
-        appVat
+        appVat,
       ),
     },
   };

@@ -32,7 +32,7 @@ const typeOptions = [
 
 export const currencyTypeOptions = [
   { label: 'Base Currency', value: 'baseCurrency' },
-  { label: 'Secondary Currency', value: 'secondaryCurrency' },
+  // { label: 'Secondary Currency', value: 'secondaryCurrency' },
 ];
 
 export default function AddRemoveCredit({ userId, onClose }) {
@@ -76,7 +76,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
       return;
     }
 
-    if (data?.amount >= max) {
+    if (data?.amount > max && data?.paidCurrency === 'baseCurrency') {
       successMsg(`Base currency amount can't be more than ${max}`, 'error');
       return;
     }
@@ -91,7 +91,11 @@ export default function AddRemoveCredit({ userId, onClose }) {
       return;
     }
 
-    if (isSecondaryCurrencyEnabled && data?.secondaryCurrency_amount > max * adminExchangeRate) {
+    if (
+      isSecondaryCurrencyEnabled &&
+      data?.paidCurrency === 'secondaryCurrency' &&
+      data?.secondaryCurrency_amount > max * adminExchangeRate
+    ) {
       successMsg(`Secondary currency amount can't be more than ${max * adminExchangeRate}`, 'error');
       return;
     }
@@ -139,14 +143,14 @@ export default function AddRemoveCredit({ userId, onClose }) {
               value={data?.paidCurrency}
               sx={{ padding: '8px 10px' }}
               gapSx={3}
-              items={currencyOptions(baseCurrency, secondaryCurrency, isSecondaryCurrencyEnabled, false)}
+              items={currencyOptions(baseCurrency, secondaryCurrency, false, false)}
               onChange={(value) => setData({ ...data, paidCurrency: value, amount: '', secondaryCurrency_amount: '' })}
             />
           </Stack>
         )}
         {data?.paidCurrency === 'baseCurrency' ? (
           <StyledFormField
-            label={`Amount * (max ${baseCurrency?.code} ${max} )`}
+            label={`Amount * (max ${baseCurrency?.code} ${max})`}
             intputType="text"
             inputProps={{
               type: 'text',
@@ -167,7 +171,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
         ) : (
           <>
             <StyledFormField
-              label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate} )`}
+              label={`Amount * (max ${secondaryCurrency?.code} ${max * adminExchangeRate})`}
               intputType="text"
               inputProps={{
                 type: 'text',

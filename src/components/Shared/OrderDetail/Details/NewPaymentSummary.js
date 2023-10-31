@@ -6,7 +6,14 @@ import FormateBaseCurrency from '../../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../../Common/FormatesecondaryCurrency';
 import { StyledOrderDetailBox, SummaryItem } from '../helpers';
 
-function NewPaymentSummary({ order }) {
+function NewPaymentSummary({
+  order,
+  showPaymentMethod = {
+    card: false,
+    wallet: false,
+    cash: false,
+  },
+}) {
   const summary = order?.summary;
   const currency = order?.baseCurrency?.symbol;
   const secondaryCurrency = order?.secondaryCurrency?.code;
@@ -111,31 +118,49 @@ function NewPaymentSummary({ order }) {
           showSecondaryOnly={order?.adminExchangeRate > 0}
           showIfZero
         />
-
-        <SummaryItem label="Total Amount" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
-
-        <SummaryItem
-          label="Cash"
-          value={summary?.baseCurrency_cash}
-          valueSecondary={summary?.baseCurrency_cash * avg_rate}
-          showSecondaryOnly={order?.adminExchangeRate > 0}
-          isTotal
-        />
         <SummaryItem
           label="Lyxa Pay"
           value={summary?.baseCurrency_wallet}
           valueSecondary={summary?.baseCurrency_wallet * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
+          isNegative
+        />
+        <SummaryItem
+          label="Total Amount"
+          value={total_base - Number(summary?.baseCurrency_wallet || 0)}
+          valueSecondary={total_secondary - Number(summary?.baseCurrency_wallet * avg_rate || 0)}
+          showIfZero
           isTotal
         />
 
-        <SummaryItem
-          label="Card"
-          value={summary?.baseCurrency_card}
-          valueSecondary={summary?.baseCurrency_card * avg_rate}
-          showSecondaryOnly={order?.adminExchangeRate > 0}
-          isTotal
-        />
+        {showPaymentMethod?.cash && (
+          <SummaryItem
+            label="Cash"
+            value={summary?.baseCurrency_cash}
+            valueSecondary={summary?.baseCurrency_cash * avg_rate}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
+            isTotal
+          />
+        )}
+        {showPaymentMethod?.wallet && (
+          <SummaryItem
+            label="Lyxa Pay"
+            value={summary?.baseCurrency_wallet}
+            valueSecondary={summary?.baseCurrency_wallet * avg_rate}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
+            isTotal
+          />
+        )}
+
+        {showPaymentMethod?.card && (
+          <SummaryItem
+            label="Card"
+            value={summary?.baseCurrency_card}
+            valueSecondary={summary?.baseCurrency_card * avg_rate}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
+            isTotal
+          />
+        )}
 
         {/* group cart */}
         {order?.cart?.cartType === 'group' && (
