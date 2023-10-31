@@ -281,7 +281,7 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
               value: formatNumber(addRemoveCredit?.secondaryCurrency_amount),
               min: 0,
               max: 5000000,
-              placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5000000`,
+              placeholder: `Secondary currency amount. i.e. ${secondaryCurrency?.code} 5 000 000`,
               onChange: (e) => {
                 const convertedValue = stringToNumber(e.target.value);
                 if (!isNumber(Number(convertedValue))) {
@@ -300,7 +300,9 @@ function GlobalAddRemoveCredit({ type, onClose, data }) {
           <Typography variant="body3" sx={{ marginTop: '-8px !important' }}>
             Equivalent To:{' '}
             {addRemoveCredit?.paidCurrency === 'baseCurrency'
-              ? `${secondaryCurrency?.code} ${formatNumber(Math.round(addRemoveCredit?.secondaryCurrency_amount))}`
+              ? `${secondaryCurrency?.code} ${
+                  formatNumber(Math.round(addRemoveCredit?.secondaryCurrency_amount || 0)) || 0
+                }`
               : `${baseCurrency?.symbol} ${formatNumber((addRemoveCredit[baseKey] || 0).toFixed(2), true)}`}
           </Typography>
         )}

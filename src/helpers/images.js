@@ -21,7 +21,8 @@ export const uploadImage = async (image) => {
 // upload image or existing return url
 export const getImageUrl = async (image) => {
   if (!image?.name) {
-    return image?.preview;
+    if (image?.preview) return image?.preview;
+    return '';
   }
 
   const data = await uploadImage(image);

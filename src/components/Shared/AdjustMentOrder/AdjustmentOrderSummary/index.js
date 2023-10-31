@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Add } from '@mui/icons-material';
@@ -6,9 +7,11 @@ import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useGlobalContext } from '../../../../context';
 import CallUser from '../../OrderDetail/Details/CallUser';
+import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
+import { SingleItemcalculatePrice, matchedMeals } from '../helpers';
 
 function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const { currentUser } = useGlobalContext();
@@ -18,8 +21,34 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
+  const onIncrementDecrement = (type, value) => {
+    setAdjustedOrder((prev) => {
+      // remove the products
+      const matched = matchedMeals(prev?.productsDetails, value?.product);
+
+      console.log({ matched, value });
+      if (matched?.isMatched && value?.value > 0) {
+        const deal = productDeal(prev.productsDetails[matched?.index]);
+        prev.productsDetails[matched?.index].productQuantity = value?.value;
+        const updatedPrice =
+          deal !== 'double_menu'
+            ? SingleItemcalculatePrice(prev.productsDetails[matched?.index], order?.shop?.shopExchangeRate)
+            : { baseCurrency_finalPrice: 0, secondaryCurrency_finalPrice: 0 };
+
+        console.log({ ...updatedPrice });
+
+        prev.productsDetails[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
+        prev.productsDetails[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
+        prev.productsDetails[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
+      } else {
+        prev.productsDetails?.splice(matched?.index, 1);
+      }
+
+      return { ...prev };
+    });
+  };
+
   const onDeleteProduct = (data) => {
-    console.log('onDeleteProduct', data);
     // order?.productsDetails
 
     setAdjustedOrder((prev) => {
@@ -31,10 +60,6 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   };
 
   const onDeleteAtribute = (data) => {
-    // product?.selectedAttributes
-
-    // attr?.selectedItems
-
     setAdjustedOrder((prev) => {
       // remove the products
 
@@ -49,38 +74,17 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
           (attr) => attr?.id === data?.attribute?.id
         );
 
-        console.log('data==>', {
-          productDetails,
-          findItemsIndex: {
-            data: productDetails[findItemsIndex],
-            index: findItemsIndex,
-          },
-          findAttributesIndex: {
-            data: productDetails[findItemsIndex]?.selectedAttributes,
-            index: findAttributesIndex,
-            attribute: data?.attribute,
-          },
-        });
-
         if (findAttributesIndex > -1) {
           const removeAttributes = productDetails[findItemsIndex]?.selectedAttributes[
             findAttributesIndex
           ]?.selectedItems?.filter((selectedItem) => selectedItem?._id !== data?.item?._id);
 
+          // if there are only one items then remove whole atributes other wise one item
           if (removeAttributes?.length > 0)
             productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
           else {
             productDetails[findItemsIndex].selectedAttributes.splice(findAttributesIndex, 1);
           }
-
-          // console.log('items==>', {
-          //   data,
-          //   findItems: findItemsIndex,
-          //   findAttributes: findAttributesIndex,
-          //   removeAttributes,
-          //   productDetails: productDetails[findItemsIndex],
-          // });
-          // console.log({ findItems: findItemsIndex, findAttributes: findAttributesIndex, removeAttributes });
         }
       }
 
@@ -137,29 +141,28 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               shopExchangeRate={order?.shop?.shopExchangeRate}
               onDeleteProduct={onDeleteProduct}
               onDeleteAtribute={onDeleteAtribute}
+              onIncrementDecrement={onIncrementDecrement}
             />
           ))}
         </Stack>
-        {open && (
-          <Box>
-            <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />
-          </Box>
-        )}
       </StyledAdjustmentOrderContainer>
-      <Box paddingLeft="24px" my={4}>
-        <Button
-          disableRipple
-          startIcon={<Add />}
-          sx={{
-            textDecoration: 'underline',
-          }}
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          Add Item
-        </Button>
-      </Box>
+      <Stack>
+        {open && <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />}
+        <Box paddingLeft="16px" mt={open ? 0 : 4} mb={4}>
+          <Button
+            disableRipple
+            startIcon={<Add />}
+            sx={{
+              textDecoration: 'underline',
+            }}
+            onClick={() => {
+              setOpen((prev) => !prev);
+            }}
+          >
+            Add Item
+          </Button>
+        </Box>
+      </Stack>
     </Box>
   );
 }

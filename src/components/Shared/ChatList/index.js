@@ -6,19 +6,29 @@ import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../helpers/successMsg';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
-import OrderCancel from '../../../pages/NewOrder/OrderCancel';
-import { UpdateFlag } from '../../../pages/NewOrder/UpdateFlag';
 
 import socketServices from '../../../common/socketService';
+import OrderTrackingModal from '../../../pages/AdminOrderTable/OrderTracking';
 import LoadingOverlay from '../../Common/LoadingOverlay';
 import TablePagination from '../../Common/TablePagination';
+import AdjustmentOrder from '../AdjustMentOrder';
+import ChangeDeliveryAddress from '../ChangeDeliveryAddress';
 import { getChatRequestId } from '../ChatDetail/Chat';
+import FlaggedModal from '../Flagged';
 import ResolveChat from '../ResolveChat';
 import UpdateOrderStatus from '../UpdateOrderStatus';
 import ChatItem from './ChatItem';
 import ChatListSkeleton from './Skeleton';
 
-const modalsStateInit = { flag: false, updateStatus: false, cancelOrder: false, resolveChat: false };
+const modalsStateInit = {
+  flag: false,
+  updateStatus: false,
+  cancelOrder: false,
+  resolveChat: false,
+  orderTracking: false,
+  changeAddress: false,
+  adjustOrder: false,
+};
 
 export default function ChatList({
   onViewDetails,
@@ -30,6 +40,7 @@ export default function ChatList({
   setPage,
   totalPage,
   hidePagination,
+  showThreedots,
 }) {
   const queryClient = useQueryClient();
 
@@ -41,6 +52,7 @@ export default function ChatList({
     onSuccess: (data, reqBody) => {
       if (data?.status) {
         socketServices.emit('chat-close', { requestId: reqBody?.requestId });
+        setModals((prev) => ({ ...prev, resolveChat: false }));
         temporarySelectedChat.status = 'closed';
         queryClient.invalidateQueries([Api.ONGOING_CHATS]);
         queryClient.invalidateQueries([Api.NEW_CHATS]);
@@ -61,6 +73,9 @@ export default function ChatList({
     if (menu === 'flag') setModals((prev) => ({ ...prev, flag: true }));
     if (menu === 'cancel_order') setModals((prev) => ({ ...prev, cancelOrder: true }));
     if (menu === 'update_status') setModals((prev) => ({ ...prev, updateStatus: true }));
+    if (menu === 'track_order') setModals((prev) => ({ ...prev, orderTracking: true }));
+    if (menu === 'change_address') setModals((prev) => ({ ...prev, changeAddress: true }));
+    if (menu === 'adjust_order') setModals((prev) => ({ ...prev, adjustOrder: true }));
 
     // requestedId
     setRequestedId(getChatRequestId(chat?.chats));
@@ -83,7 +98,13 @@ export default function ChatList({
         <Stack gap={5} position="relative">
           {(refetching || closeChatMutation.isLoading) && <LoadingOverlay />}
           {chats?.map((chat) => (
-            <ChatItem chat={chat} key={chat?._id} onViewDetails={onViewDetails} handleMenuClick={handleMenuClick} />
+            <ChatItem
+              chat={chat}
+              key={chat?._id}
+              onViewDetails={onViewDetails}
+              handleMenuClick={handleMenuClick}
+              showThreedots={showThreedots}
+            />
           ))}
         </Stack>
         {!hidePagination && (
@@ -106,31 +127,63 @@ export default function ChatList({
           onSuccess={(data) => onAction('updateStatus', data)}
         />
       </Modal>
-      <Modal open={modals.flag} onClose={() => setModals((prev) => ({ ...prev, flag: false }))}>
-        <UpdateFlag
-          currentOrder={temporarySelectedChat?.order}
-          onClose={() => setModals((prev) => ({ ...prev, flag: false }))}
+      <Modal
+        open={modals.flag}
+        onClose={() => setModals((prev) => ({ ...prev, flag: false }))}
+        sx={{ zIndex: '999 !important' }}
+      >
+        <FlaggedModal
+          order={temporarySelectedChat?.order}
+          showFor="flagged"
           refetchApiKey={Api.ONGOING_CHATS}
+          onClose={() => setModals((prev) => ({ ...prev, flag: false }))}
           onSuccess={(data) => onAction('flag', data)}
         />
       </Modal>
       <Modal
         open={modals.cancelOrder}
         onClose={() => setModals((prev) => ({ ...prev, cancelOrder: false }))}
-        sx={{ zIndex: '10 !important' }}
+        sx={{ zIndex: '999 !important' }}
       >
-        <OrderCancel
-          currentOrder={temporarySelectedChat?.order}
-          setOpenCancelModal={() => setModals((prev) => ({ ...prev, cancelOrder: false }))}
+        <FlaggedModal
+          order={temporarySelectedChat?.order}
+          showFor="cancelOrder"
           refetchApiKey={Api.ONGOING_CHATS}
+          onClose={() => setModals((prev) => ({ ...prev, cancelOrder: false }))}
           onSuccess={(data) => onAction('cancelOrder', data)}
         />
       </Modal>
-      <Modal open={modals.resolveChat} onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}>
+      <Modal
+        open={modals.resolveChat}
+        onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}
+        sx={{ zIndex: '999 !important' }}
+      >
         <ResolveChat
           onClose={() => setModals((prev) => ({ ...prev, resolveChat: false }))}
           requestId={requestId}
           closeChatMutation={closeChatMutation}
+        />
+      </Modal>
+
+      <Modal open={modals?.orderTracking} centered>
+        <Box>
+          <OrderTrackingModal
+            currentOrder={temporarySelectedChat?.order}
+            onClose={() => setModals((prev) => ({ ...prev, orderTracking: false }))}
+          />
+        </Box>
+      </Modal>
+
+      <Modal open={modals?.changeAddress}>
+        <ChangeDeliveryAddress
+          order={temporarySelectedChat?.order}
+          onClose={() => setModals((prev) => ({ ...prev, changeAddress: false }))}
+        />
+      </Modal>
+      <Modal open={modals?.adjustOrder} onClose={() => setModals((prev) => ({ ...prev, adjustOrder: false }))}>
+        <AdjustmentOrder
+          order={temporarySelectedChat?.order}
+          onClose={() => setModals((prev) => ({ ...prev, adjustOrder: false }))}
         />
       </Modal>
     </>

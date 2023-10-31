@@ -11,12 +11,14 @@ export default function EditDocument({ onClose, document, onReplaceDoc, loading,
   const [currentFile, setCurrentFile] = useState(document?.url);
   const [files, setFiles] = useState([]);
 
+  console.log('document', document);
+
   const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
 
     if (newFiles?.length) {

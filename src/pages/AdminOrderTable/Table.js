@@ -75,18 +75,6 @@ export default function Table({
   setRender,
   showFor,
 }) {
-  console.log({
-    shopType,
-    queryParams,
-    setQueryParams,
-    totalPage,
-    orderType,
-    loading,
-    refetching,
-    render,
-    setRender,
-    showFor,
-  });
   const history = useHistory();
 
   const routeMatch = useRouteMatch();
@@ -141,7 +129,7 @@ export default function Table({
         }
       }
     }
-  }, [loading, location?.search, orders]);
+  }, [loading, location?.search, orders, location?.state?.order?._id]);
 
   const threeDotHandler = (menu, order) => {
     if (menu === 'flag') {
@@ -430,7 +418,7 @@ export default function Table({
 
   const filteredColumnsForExpand = useMemo(
     () => filterColumns(columnsForExpand, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   const columns = [
@@ -456,7 +444,7 @@ export default function Table({
                 rowInnerContainerSx={{ padding: '0px' }}
                 columns={filteredColumnsForExpand}
                 rows={[{ ...row }]}
-              />
+              />,
             );
           }}
           name={
@@ -689,7 +677,7 @@ export default function Table({
               menu,
               params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
                 ? params?.row?.originalOrder
-                : params?.row
+                : params?.row,
             );
           }}
           disabled={
@@ -697,14 +685,19 @@ export default function Table({
               params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
                 ? params?.row?.originalOrder
                 : params?.row,
-              currentUser?.adminType
+              currentUser?.adminType === 'admin' ||
+                (currentUser?.adminType === 'customerService' && showFor === 'admin')
+                ? 'admin'
+                : currentUser?.adminType,
             ).length
           }
           menuItems={getThreedotMenuOptions(
             params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
               ? params?.row?.originalOrder
               : params?.row,
-            currentUser?.adminType
+            currentUser?.adminType === 'admin' || (currentUser?.adminType === 'customerService' && showFor === 'admin')
+              ? 'admin'
+              : currentUser?.adminType,
           )}
         />
       ),
@@ -713,7 +706,7 @@ export default function Table({
 
   const filteredColumns = useMemo(
     () => filterColumns(columns, shopType, orderType, showFor),
-    [shopType, orderType, showFor]
+    [shopType, orderType, showFor],
   );
 
   if (loading) {

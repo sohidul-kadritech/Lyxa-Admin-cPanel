@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { EmailOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
@@ -9,7 +10,6 @@ import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { statusTypeOptions } from '../Faq2/helpers';
 import { previewGenerator } from '../Sellers2/helpers';
 import { generateData, varifyUserData } from './helpers';
 
@@ -49,11 +49,15 @@ export const generateEditAdminData = (data) => {
 function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, isEdit }) {
   const [newAdminData, setNewAdminData] = useState(generateEditAdminData(currentAdmin) || intialData);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { dispatchCurrentUser } = useGlobalContext();
+
   const theme = useTheme();
 
   const editAdminQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_ADMIN, data), {
     onSuccess: (data) => {
+      setIsLoading(false);
       if (data.status) {
         successMsg(data.message, 'success');
         onClose();
@@ -61,6 +65,9 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
       } else {
         successMsg(data.message, 'warn');
       }
+    },
+    onError: () => {
+      setIsLoading(false);
     },
   });
 
@@ -73,10 +80,15 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
     console.log(isVarified);
 
     if (isVarified) {
+      setIsLoading(true);
       const adminData = await generateData({ ...newAdminData, adminType }, isEdit);
       if (adminData?.status === false) {
+        setIsLoading(false);
+        successMsg(adminData?.msg);
         return;
       }
+
+      setIsLoading(true);
       editAdminQuery.mutate(adminData);
     }
   };
@@ -86,7 +98,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         // eslint-disable-next-line prettier/prettier
-      })
+      }),
     );
     setNewAdminData((prev) => ({
       ...prev,
@@ -130,7 +142,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
             }}
           />
           <StyledFormField
-            label={`${isEdit ? 'New ' : ''}Password *`}
+            label={`${isEdit ? 'New ' : ''}Password ${isEdit ? '' : '*'}`}
             // label="Password *"
             intputType="text"
             containerProps={{
@@ -146,7 +158,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
             }}
           />
           <StyledFormField
-            label={`Repeated ${isEdit ? 'New ' : ''} Password *`}
+            label={`Repeated ${isEdit ? 'New ' : ''} Password ${isEdit ? '' : '*'}`}
             // label="Repeated Password *"
             intputType="text"
             containerProps={{
@@ -195,7 +207,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
             }}
           />
           <StyledFormField
-            label="Profile Image *"
+            label="Profile Image"
             intputType="file"
             inputProps={{
               onDrop: (acceptedFiles) => {
@@ -209,22 +221,6 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
               helperText2: 'Pixels: Minimum 320 for width and height',
             }}
           />
-
-          <StyledFormField
-            label="Status *"
-            intputType="select"
-            containerProps={{
-              sx: { padding: '14px 0' },
-            }}
-            inputProps={{
-              value: newAdminData?.status || '',
-              placeholder: 'Select Status',
-              name: 'status',
-              items: statusTypeOptions,
-              onChange: changeHandler,
-              //   readOnly: isReadOnly,
-            }}
-          />
         </Box>
 
         <Stack gap="32px">
@@ -235,7 +231,7 @@ function EditAdminProfile({ adminType = 'admin', onClose, currentAdmin = null, i
           <Button
             disableElevation
             variant="contained"
-            disabled={editAdminQuery?.isLoading}
+            disabled={editAdminQuery?.isLoading || isLoading}
             onClick={() => {
               // onSubmitSeller();
               onSubmitAdminController();

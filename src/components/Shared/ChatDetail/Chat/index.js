@@ -24,6 +24,7 @@ export const getChatRequestId = (chats = []) => {
 const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
 
 export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
+  console.log('chat==> ', { chat });
   const queryClient = useQueryClient();
   const { access_token } = getCookiesAsObject();
 
@@ -33,7 +34,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
   const [open, setOpen] = useState(false);
   const { resolveChatData, setResolveChatData } = useState({});
 
-  const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats));
+  const [requestId, setRequestId] = useState(getChatRequestId(chat?.chats) || '');
   const [orderId, setOrderId] = useState(getOrderId(chat));
 
   const [, setRender] = useState(false);
@@ -191,7 +192,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
 
   useEffect(() => {
     setOrderId(getOrderId(chat));
-    setRequestId(getChatRequestId(chat?.chats));
+    setRequestId(getChatRequestId(chat?.chats || []));
 
     if (chat?.chatType === 'order') {
       const cache = queryClient.getQueryData([Api.SINGLE_CHAT, { orderId: getOrderId(chat) }]);

@@ -22,12 +22,13 @@ export const generateData = async (data, isEdit) => {
 
   const profile_photo = await getImageUrl(data.profile_photo[0]);
 
-  if (!profile_photo) {
+  if (!profile_photo && data?.profile_photo?.length > 0) {
     return {
       status: false,
       msg: 'Error uploading profile image!',
     };
   }
+
   if (isEdit) {
     return {
       ...data,
@@ -86,10 +87,10 @@ export const varifyUserData = (data, isEdit) => {
     successMsg('Provide address!');
     return false;
   }
-  if (!data?.profile_photo?.length) {
-    successMsg('Provide profile photo');
-    return false;
-  }
+  // if (!data?.profile_photo?.length) {
+  //   successMsg('Provide profile photo');
+  //   return false;
+  // }
   if (!data?.status) {
     successMsg('Select Status');
     return false;

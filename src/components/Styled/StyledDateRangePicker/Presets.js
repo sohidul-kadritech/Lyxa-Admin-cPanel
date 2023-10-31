@@ -4,13 +4,23 @@ import moment from 'moment';
 export const getFirstMonday = (period) => {
   let start;
 
-  if (period === 'week') start = moment().startOf('week');
-  else start = moment().startOf('month');
+  if (period === 'week') {
+    start = moment().startOf('week');
+  } else if (period === 'month') {
+    start = moment().startOf('month');
+  } else {
+    return moment(); // Invalid period
+  }
 
-  while (start.day() !== 1) start.add('1', 'day');
+  while (start.day() !== 1) {
+    start.add(1, 'day');
+  }
 
-  console.log({ moment: moment(), start });
-  return start;
+  // Ensure that the first Monday is less than the current date
+  if (start.isSameOrBefore(moment(), 'day')) {
+    return start;
+  }
+  return moment(); // First Monday is in the future
 };
 
 const presets = [
@@ -36,14 +46,16 @@ function DatePresets({ startDate, endDate, onChange }) {
     <Stack direction="row" alignItems="center" gap={3} pl={5} pb={5}>
       {presets.map(({ text, start, end }) => {
         const isChosen =
-          moment(start).format('YYYY/MM/DD') === moment(startDate).format('YYYY/MM/DD') &&
-          moment(end).format('YYYY/MM/DD') === moment(endDate).format('YYYY/MM/DD');
+          moment(start)?.format('YYYY/MM/DD') === moment(startDate)?.format('YYYY/MM/DD') &&
+          moment(end)?.format('YYYY/MM/DD') === moment(endDate)?.format('YYYY/MM/DD');
 
         return (
           <Button
             key={text}
             className={` ${isChosen ? 'active' : ''}`}
-            onClick={() => onChange({ startDate: start, endDate: end })}
+            onClick={() => {
+              onChange({ startDate: start, endDate: end });
+            }}
             variant={isChosen ? 'contained' : 'outlined'}
             size="small"
             sx={{
