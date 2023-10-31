@@ -47,17 +47,6 @@ function Notification() {
   const [open, setOpen] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
-  // const [status, setStatus] = useState('all');
-
-  // eslint-disable-next-line no-unused-vars
-  // const [accountType, setAccountType] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  // const [type, setType] = useState('');
-  // eslint-disable-next-line no-unused-vars
-
-  // const [searchKey, setSearchKey] = useState('');
-
   const queryClient = useQueryClient();
 
   const getAllNotifications = useQuery([API_URL.GET_NOTIFICATIONS, queryParams], () =>
@@ -72,7 +61,7 @@ function Notification() {
       //   endDate: range.end,
       // },
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
 
   // eslint-disable-next-line no-unused-vars
