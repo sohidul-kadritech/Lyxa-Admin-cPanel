@@ -32,7 +32,7 @@ const typeOptions = [
 
 export const currencyTypeOptions = [
   { label: 'Base Currency', value: 'baseCurrency' },
-  { label: 'Secondary Currency', value: 'secondaryCurrency' },
+  // { label: 'Secondary Currency', value: 'secondaryCurrency' },
 ];
 
 export default function AddRemoveCredit({ userId, onClose }) {
@@ -143,7 +143,7 @@ export default function AddRemoveCredit({ userId, onClose }) {
               value={data?.paidCurrency}
               sx={{ padding: '8px 10px' }}
               gapSx={3}
-              items={currencyOptions(baseCurrency, secondaryCurrency, isSecondaryCurrencyEnabled, false)}
+              items={currencyOptions(baseCurrency, secondaryCurrency, false, false)}
               onChange={(value) => setData({ ...data, paidCurrency: value, amount: '', secondaryCurrency_amount: '' })}
             />
           </Stack>
