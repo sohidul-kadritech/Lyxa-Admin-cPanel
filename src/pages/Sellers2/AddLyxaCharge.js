@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Button, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -17,7 +18,10 @@ const init = {
 function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
-  const [currentLyxaCharge, setCurrentLyxaCharge] = useState({ ...init });
+  const [currentLyxaCharge, setCurrentLyxaCharge] = useState({
+    ...init,
+    dropPercentage: currentSeller?.dropPercentage,
+  });
 
   const changeHandler = (e) => {
     setCurrentLyxaCharge((prev) => {
@@ -31,7 +35,7 @@ function AddLyxaCharge({ onClose, sellerDropChargeQuery, currentSeller }) {
       successMsg('Select lyxa charge type');
       return;
     }
-    if (!currentLyxaCharge?.dropPercentage) {
+    if (!Number(currentLyxaCharge?.dropPercentage)) {
       successMsg('Provide lyxa charge');
       return;
     }

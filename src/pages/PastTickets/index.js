@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -24,13 +25,13 @@ export default function PastTickets() {
   const ordersQuery = useQuery([Api.ORDER_TYPE_PAST_CHATS, queryParams], () =>
     AXIOS.get(Api.ORDER_TYPE_PAST_CHATS, {
       params: queryParams,
-    })
+    }),
   );
 
   const accountsQuery = useQuery([Api.ACCOUNT_TYPE_PAST_CHATS, queryParams], () =>
     AXIOS.get(Api.ACCOUNT_TYPE_PAST_CHATS, {
       params: queryParams,
-    })
+    }),
   );
 
   return (

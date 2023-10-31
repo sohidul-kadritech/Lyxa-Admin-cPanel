@@ -292,6 +292,7 @@ export default function OngoingTickets() {
                 chats={newChatList}
                 loading={newRequestquery?.isLoading}
                 onAction={onAction}
+                showThreedots={false}
               />
             </TabPanel>
             <TabPanel index={1} noPadding value={Number(queryParams?.currentTab)}>
@@ -302,6 +303,7 @@ export default function OngoingTickets() {
                 chats={ordersList}
                 loading={ordersQuery?.isLoading}
                 onAction={onAction}
+                showThreedots
               />
             </TabPanel>
             <TabPanel index={2} noPadding value={Number(queryParams?.currentTab)}>
@@ -312,6 +314,7 @@ export default function OngoingTickets() {
                 chats={accountsList}
                 loading={accountsQuery?.isLoading}
                 onAction={onAction}
+                showThreedots
               />
             </TabPanel>
 
@@ -319,7 +322,7 @@ export default function OngoingTickets() {
               <UrgentOrderTable />
             </TabPanel>
             <TabPanel index={4} noPadding value={Number(queryParams?.currentTab)}>
-              <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="ongoing" />
+              <UrgentOrderTable api={Api.ORDER_LIST} type="late" showFor="admin" />
             </TabPanel>
           </Box>
         </SlideInContainer>

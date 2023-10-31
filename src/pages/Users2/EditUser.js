@@ -100,7 +100,7 @@ function EditUser({ onClose, editUser, userType, refetch }) {
 
           {/* credential user type */}
 
-          {!user?.isParentUser && (
+          {!user?.isParentUser && userType === 'shop' && (
             <StyledFormField
               label="User Type"
               intputType="select"

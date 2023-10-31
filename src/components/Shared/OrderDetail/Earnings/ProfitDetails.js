@@ -46,7 +46,13 @@ export default function ProfitDetails({ order = {} }) {
   return (
     <StyledOrderDetailBox title="Order Profit Details">
       <Box pt={2}>
-        <SummaryItem label="Total Order Amount" value={total_base} valueSecondary={total_secondary} showIfZero />
+        <SummaryItem
+          label="Total Order Amount"
+          value={total_base}
+          valueSecondary={total_secondary}
+          showIfZero
+          showSecondaryOnly={order?.adminExchangeRate > 0}
+        />
 
         <SummaryItem
           label="Loyalty Points"
@@ -76,6 +82,7 @@ export default function ProfitDetails({ order = {} }) {
               </ul>
             </Box>
           }
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -84,6 +91,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceAdmin}
           valueSecondary={order?.doubleMenuItemPrice?.secondaryCurrency_doubleMenuItemPriceAdmin}
           tooltip="Buy 1 Get 1 deal added by admin"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -92,6 +100,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.doubleMenuItemPrice?.baseCurrency_doubleMenuItemPriceShop}
           valueSecondary={order?.doubleMenuItemPrice?.secondaryCurrency_doubleMenuItemPriceShop}
           tooltip="Buy 1 Get 1 deal added by shop"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -100,6 +109,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.discountCut?.baseCurrency_discountAdminCut}
           valueSecondary={order?.discountCut?.secondaryCurrency_discountAdminCut}
           tooltip="Discount deal added by admin"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -116,6 +126,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.orderDeliveryCharge?.dropCut}
           valueSecondary={order?.orderDeliveryCharge?.dropCut * adminExchangeRate}
           tooltip="Free Delivery added by admin"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -124,6 +135,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.orderDeliveryCharge?.shopCut}
           valueSecondary={order?.orderDeliveryCharge?.shopCut * adminExchangeRate}
           tooltip="Free Delivery added by shop"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -132,6 +144,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.summary?.baseCurrency_couponDiscountAmount}
           valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
           tooltip="Discount coupon created by admin"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
@@ -142,6 +155,7 @@ export default function ProfitDetails({ order = {} }) {
               label="Shop Profit"
               value={hideExtraFields ? 0 : order?.baseCurrency_shopEarnings}
               valueSecondary={hideExtraFields ? 0 : order?.secondaryCurrency_shopEarnings}
+              showSecondaryOnly={order?.adminExchangeRate > 0}
               showIfZero
             />
 
@@ -149,6 +163,7 @@ export default function ProfitDetails({ order = {} }) {
               label="Shop VAT"
               value={hideExtraFields ? 0 : order?.vatAmount?.baseCurrency_vatForShop}
               valueSecondary={hideExtraFields ? 0 : order?.vatAmount?.secondaryCurrency_vatForShop}
+              showSecondaryOnly={order?.adminExchangeRate > 0}
               showIfZero
             />
 
@@ -156,6 +171,7 @@ export default function ProfitDetails({ order = {} }) {
               label="Deal compensation amount"
               value={hideExtraFields ? 0 : order?.doubleMenuCut?.baseCurrency_doubleMenuAdminCut}
               valueSecondary={hideExtraFields ? 0 : order?.doubleMenuCut?.secondaryCurrency_doubleMenuAdminCut}
+              showSecondaryOnly={order?.adminExchangeRate > 0}
               // eslint-disable-next-line max-len
               tooltip="This amount is paid by admin as compensation for applying Discount, Buy 1 Get 1, or Free Delivery on shop. The amount is already included in shop profit. "
               isRejected
@@ -170,6 +186,7 @@ export default function ProfitDetails({ order = {} }) {
             valueSecondary={
               order?.shop?.haveOwnDeliveryBoy ? 'Self' : hideExtraFields ? 0 : order?.secondaryCurrency_riderFee || 0
             }
+            showSecondaryOnly={order?.adminExchangeRate > 0}
             showIfZero
           />
         </Box>
@@ -180,6 +197,7 @@ export default function ProfitDetails({ order = {} }) {
               label="Lyxa Delivery Profit"
               value={hideExtraFields ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromDelivery}
               valueSecondary={hideExtraFields ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromDelivery}
+              showSecondaryOnly={order?.adminExchangeRate > 0}
               showIfZero
             />
           )}
@@ -188,6 +206,7 @@ export default function ProfitDetails({ order = {} }) {
             label="Lyxa Order Profit"
             value={hideExtraFields ? 0 : order?.adminCharge?.baseCurrency_adminChargeFromOrder}
             valueSecondary={hideExtraFields ? 0 : order?.adminCharge?.secondaryCurrency_adminChargeFromOrder}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
             showIfZero
           />
 
@@ -205,6 +224,7 @@ export default function ProfitDetails({ order = {} }) {
                   order?.orderDeliveryCharge?.shopCut * adminExchangeRate
             }
             tooltip="This amount already in included lyxa profit"
+            showSecondaryOnly={order?.adminExchangeRate > 0}
             isRejected
             hide={hideExtraFields}
           />
@@ -240,6 +260,7 @@ export default function ProfitDetails({ order = {} }) {
             value={order?.vatAmount?.baseCurrency_vatForAdmin}
             valueSecondary={order?.vatAmount?.secondaryCurrency_vatForAdmin}
             hide={hideExtraFields}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
             showIfZero
             pb={0}
           />
@@ -252,6 +273,7 @@ export default function ProfitDetails({ order = {} }) {
             label="Lyxa VAT"
             value={order?.summary?.baseCurrency_vat}
             valueSecondary={order?.summary?.secondaryCurrency_vat}
+            showSecondaryOnly={order?.adminExchangeRate > 0}
             hide={!noRefund}
             showIfZero
           />

@@ -1,0 +1,1118 @@
+import {
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {useContext} from 'react';
+import {SafeAreaView} from 'react-native';
+import ButlerHeader from '../../common/ButlerHeader';
+import {useSelector} from 'react-redux';
+import {
+  APP_RED,
+  BACKGROUND_COLOR,
+  DARK_BACKGROUND_COLOR,
+  DARK_COMPONENT_BACKGROUND_COLOR,
+  RED,
+  WHITE,
+} from '../../utils/Colors';
+import ButlerCard from '../butlerCheckout/ButlerCard';
+import {DELIVERED_TO} from '../../images';
+import ButlerSummary from '../butlerCheckout/ButlerSummary';
+import ButlerPayment from '../butlerCheckout/ButlerPayment';
+import {OVButton} from '../../components/OVButton';
+import {interRegular} from '../../components/OVText';
+import {windowWidth} from '../../utils/Const';
+import DriverInstructionModal from '../../components/driverInstructionModal/DriverInstructionModal';
+import {useState} from 'react';
+import {AuthContext} from '../../services/authProvider';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import DateTimePick from '../dashboard/DateTimePick';
+import {addlonLat} from '../../state/app/Actions';
+import {useDispatch} from 'react-redux';
+import {apiCallForGettingDeliveryCharge} from '../../services/AllApi/apiCallForGettingDeliveryCharge';
+import {CallApiFromGetBalance} from '../../services/AllApi/callApiFromGetBalance';
+import * as Progress from 'react-native-progress';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CodeModal from '../checkout/CodeModal';
+import PinModal from '../checkout/PinModal';
+import {
+  OrderWithCash,
+  OrderWithWallet,
+} from '../checkout/CashCardDataManupulate';
+import {CallApiFromGetCard} from '../../services/AllApi/apiCallFromCard';
+import {distance} from '../../components/Distance';
+import RewordView from '../../common/RewordView';
+import RiderTip from '../../components/riderTip/RiderTip';
+import CartLockView from '../CartScreen/CartLockView';
+import {CloseBusy} from '../../components/RatingFunction';
+import CloseCart from '../../common/StoreDetails/CloseCart';
+import AddAddressModal from '../MyAddress/AddAddressModal';
+import AXIOS from '../../services/Axios';
+import {SAVE_ADDRESS} from '../../utils/ApiEndpoints';
+import {OrderValidate} from './OrderValidation';
+import {
+  convertSecondCurrency,
+  convertSecondCurrencyTotalPrice,
+} from '../../common/OrderHelper';
+import {userWiseDoubleDealManipulate} from '../CartScreen/DoubleDeals';
+
+const NewCheckOut = ({navigation}) => {
+  const dispatch = useDispatch();
+  const route = useRoute();
+  const {totalPrice, reward, specialInstruction, coupon} = route?.params;
+  const {schedule, currency, token, credits, setCredits, user} =
+    useContext(AuthContext);
+  const {darkMode, lonLat} = useSelector(state => state.app);
+  const {addedItems, shopId, groupCartInfo} = useSelector(state => state?.cart);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [deliveryCharge, setDeliveryCharge] = useState({
+    deliveryFee: 0,
+    vat: 0,
+  });
+  const [pos, setPos] = useState(false);
+  const [code, setCode] = useState(false);
+  const [pin, setPin] = useState(false);
+  const [getCardToken, setGetCardToken] = useState([]);
+  const [orderNotes, setOrderNotes] = useState('');
+  const [riderNotes, setRiderNotes] = useState('');
+  const [toggle, setToggle] = useState(false);
+  const [paymentType, setPaymentType] = useState(0);
+  const [card, setCard] = useState([]);
+  const [cardProgress, setCardProgress] = useState(0);
+  const [deliveryChargeProgress, setDeliveryChargeProgress] = useState(0);
+  const [progress, setProgress] = useState(0.1);
+  const [loading, setLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [riderTip, setRiderTip] = useState(0);
+  const [addressModal, setAddressModal] = useState(false);
+  const [bringChange, setBringChange] = useState(0);
+  const [bringChangeToggle, setBringChangeToggle] = useState(false);
+  const DateTime = React.useRef();
+  const countInterval = React.useRef(null);
+  const shop = groupCartInfo?.shop;
+  const totalMember = groupCartInfo?.cartItems?.length;
+  const address = lonLat?.selected;
+  let close = CloseBusy(groupCartInfo?.shop);
+
+  const shopExchangeRate = shop?.shopExchangeRate;
+  const adminExchangeRate = currency?.adminExchangeRate;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (address?.location) {
+        var coordinate = {
+          latitude: address.latitude,
+          longitude: address.longitude,
+        };
+      } else {
+        var coordinate = {
+          latitude: lonLat?.lat,
+          longitude: lonLat?.lon,
+        };
+      }
+
+      setLoading(true);
+      setProgress(0);
+      setDeliveryChargeProgress(0);
+      setCardProgress(0);
+
+      let data = {
+        self: shop?.haveOwnDeliveryBoy,
+        globalCurrency: currency?.adminExchangeRate,
+        shopCurrency: shop?.shopExchangeRate,
+      };
+
+      apiCallForGettingDeliveryCharge(
+        token,
+        coordinate,
+        shopId,
+        setDeliveryCharge,
+        setDeliveryChargeProgress,
+        totalBill(addedItems) -
+          getRewordItem()?.amount -
+          coupon?.discountAmount,
+        'NewCart',
+        data,
+      );
+
+      CallApiFromGetCard(token, setCard, 'NewCart', setCardProgress);
+
+      CallApiFromGetBalance({
+        credits: credits,
+        token: token,
+        setCredits: setCredits,
+      });
+
+      AsyncStorage.getItem('POS_MACHINE_Drop').then(res => {
+        let result = JSON.parse(res);
+        if (result === null || result === undefined || result === false) {
+          setPos(false);
+        } else {
+          setPos(true);
+        }
+      });
+
+      countInterval.current = setInterval(() => {
+        setProgress(old => {
+          if (old + 0.1 > 1) {
+            clearInterval(countInterval?.current);
+          }
+          return old + 0.1;
+        });
+      }, 1000);
+
+      return () => {
+        clearInterval(countInterval?.current); //when user exits, clear this interval.
+      };
+    }, [address]),
+  );
+
+  React.useEffect(() => {
+    if (cardProgress === 1 && deliveryChargeProgress === 1) {
+      setProgress(1);
+      setTimeout(() => setLoading(false), 350);
+    }
+  }, [cardProgress, deliveryChargeProgress]);
+
+  let calculateTotal = () => {
+    let total = totalBill(addedItems) - getRewordItem()?.amount;
+
+    if (groupCartInfo?.cartType == 'group') {
+      if (groupCartInfo?.paymentPreferences == 'pay_for_themselves') {
+        total = totalBill(addedItems, user) - getRewordItem(user)?.amount;
+      }
+
+      if (groupCartInfo?.deliveryFeePreferences == 'equally') {
+        total += deliveryCharge?.deliveryFee / totalMember;
+      } else {
+        total += deliveryCharge?.deliveryFee;
+      }
+    } else {
+      total += deliveryCharge?.deliveryFee;
+    }
+    // console.log(total);
+    // vat calculation
+    let temp =
+      totalBill(addedItems) +
+      deliveryCharge?.deliveryFee -
+      getRewordItem()?.amount;
+
+    // console.log(temp);
+
+    total += (deliveryCharge?.vat / temp) * total;
+    return total - coupon?.discountAmount + riderTip;
+  };
+
+  let cartIntent = () => {
+    let total = calculateTotal();
+
+    if (toggle) {
+      if (total > credits?.balance) {
+        return Math.round((total - credits?.balance) * 100) / 100;
+      } else {
+        return 0;
+      }
+    } else {
+      return total;
+    }
+  };
+
+  const getTime = () => {
+    if (addedItems?.length > 0) {
+      return distance(addedItems[0]?.shop?.location?.coordinates, lonLat);
+    }
+  };
+
+  const getRewordItem = user => {
+    let totalReward = 0;
+    let rewordPrice = 0;
+
+    addedItems?.map(item => {
+      if (
+        (user ? item?.owner?._id == user?._id : true) &&
+        item?.marketing?.isActive &&
+        item?.marketing?.type == 'reward' &&
+        item.rewardApplied
+      ) {
+        totalReward = totalReward + item?.reward?.points * item?.quantity;
+        rewordPrice = rewordPrice + item?.price * item?.quantity;
+        rewordPrice = rewordPrice - item?.reward?.amount * item?.quantity;
+      }
+    });
+
+    return {
+      points: totalReward,
+      amount: rewordPrice,
+      baseCurrency_amount: rewordPrice,
+      secondaryCurrency_amount: rewordPrice * shopExchangeRate,
+    };
+  };
+
+  const checkPoints = totalAmount => {
+    let check = totalAmount - getRewordItem()?.amount <= credits?.balance;
+
+    return check;
+  };
+
+  const createOrderJson = () => {
+    let totalAmount =
+      totalBill(addedItems) + deliveryCharge?.deliveryFee + deliveryCharge?.vat;
+
+    let totalDiscount = calculatePrice(addedItems) - totalBill(addedItems);
+
+    const products = [];
+
+    userWiseDoubleDealManipulate(addedItems)?.map(item => {
+      let productsItem = {};
+      productsItem.product = item._id;
+      productsItem.quantity = item?.quantity;
+
+      //  check any mearketing
+      if (item?.marketing?.isActive) {
+        if (item?.marketing?.type == 'reward' && item.rewardApplied) {
+          productsItem.reward = item.reward;
+          productsItem.marketingId = item?.marketing?._id;
+        } else if (item?.marketing?.type !== 'reward') {
+          productsItem.marketingId = item?.marketing?._id;
+        }
+      }
+
+      // check double deal
+      if (item?.marketing?.isActive && item?.marketing?.type == 'double_menu') {
+        productsItem.isDoubleDeal = true;
+      }
+
+      productsItem.perProduct = SingleItemcalculatePrice(item) / item.quantity;
+      productsItem.totalProductAmount = SingleItemcalculatePrice(item);
+
+      // check discount
+
+      if (item?.marketing?.isActive && item?.marketing?.type == 'percentage') {
+        productsItem.discount = item?.price - item?.discountPrice;
+
+        productsItem.totalDiscount =
+          (item?.price - item?.discountPrice) * item.quantity;
+      } else if (
+        item?.marketing?.isActive &&
+        item?.marketing?.type == 'double_menu'
+      ) {
+        productsItem.totalDiscount =
+          item?.price * item?.quantity -
+          item?.price * (item?.quantity - item?.discountQuantity);
+
+        productsItem.discount = productsItem.totalDiscount / item?.quantity;
+      } else {
+        productsItem.discount = 0;
+        productsItem.totalDiscount = 0;
+      }
+
+      // special instruction
+
+      productsItem.productSpecialInstruction = item?.productSpecialInstruction;
+      // // ==========
+      const attributes = [];
+
+      item?.attributes?.map(child => {
+        const attributesItem = {};
+        let subId = [];
+        child?.items?.map(subChild => {
+          if (item?.selectedAttributes?.includes(subChild?._id)) {
+            subId.push({id: subChild?._id, extraPrice: subChild?.extraPrice});
+          }
+        });
+        if (subId.length > 0) {
+          attributesItem.id = child?._id;
+          attributesItem.attributeItems = subId;
+          attributes.push(attributesItem);
+        }
+      });
+
+      productsItem.attributes = attributes;
+
+      productsItem.owner = item?.owner?._id;
+
+      products.push(productsItem);
+    });
+
+    let getAmount = () => {
+      let total =
+        totalAmount -
+        getRewordItem()?.amount -
+        coupon?.discountAmount +
+        riderTip;
+
+      if (total > credits?.balance) {
+        return total - credits?.balance;
+      } else {
+        return 0;
+      }
+    };
+
+    let getCash = () => {
+      if (paymentType == 1) {
+        if (toggle) {
+          return getAmount();
+        } else {
+          return totalAmount - getRewordItem()?.amount - coupon?.discountAmount;
+        }
+      } else {
+        return 0;
+      }
+    };
+
+    let calculationForIndividualPayCart = () => {
+      let count = 0;
+      groupCartInfo?.cartItems?.map(item => {
+        let summary = item?.summary;
+        if (summary) {
+          count += summary?.baseCurrency_card;
+        }
+      });
+      return count + creatorGetCard();
+    };
+
+    let getCard = () => {
+      if (groupCartInfo?.paymentPreferences == 'pay_for_themselves') {
+        return calculationForIndividualPayCart();
+      }
+
+      let total =
+        totalAmount -
+        getRewordItem()?.amount -
+        coupon?.discountAmount +
+        riderTip;
+
+      if (paymentType == 3) {
+        if (toggle) {
+          return getAmount();
+        } else {
+          return total;
+        }
+      } else {
+        return 0;
+      }
+    };
+
+    let calculationForIndividualPayWallet = () => {
+      let count = 0;
+      groupCartInfo?.cartItems?.map(item => {
+        let summary = item?.summary;
+        if (summary) {
+          count += summary?.baseCurrency_wallet;
+        }
+      });
+      return count + creatorGetWallet();
+    };
+
+    let getWallet = () => {
+      if (groupCartInfo?.paymentPreferences == 'pay_for_themselves') {
+        return calculationForIndividualPayWallet();
+      }
+
+      let total =
+        totalAmount -
+        getRewordItem()?.amount -
+        coupon?.discountAmount +
+        riderTip;
+
+      if (toggle) {
+        if (total > credits?.balance) {
+          return credits?.balance;
+        } else {
+          return total;
+        }
+      } else {
+        return 0;
+      }
+    };
+
+    let creatorProductAmountRegular = totalBill(addedItems, user, false, true);
+    let creatorProductAmountDiscount = totalBill(addedItems, user);
+
+    let creatorDiscountPrice =
+      creatorProductAmountRegular - creatorProductAmountDiscount;
+
+    const getDeliveryCharge = () => {
+      return deliveryCharge?.deliveryFee;
+    };
+
+    const vatCalculation = () => {
+      let redeemReword = getRewordItem(user)?.amount;
+      let creatorIndividualBill = 0;
+
+      if (groupCartInfo?.paymentPreferences == 'pay_for_themselves') {
+        creatorIndividualBill = totalBill(addedItems, user);
+      } else {
+        creatorIndividualBill = totalBill(addedItems);
+      }
+
+      let result =
+        (deliveryCharge?.vat / totalPrice) *
+        (creatorIndividualBill - redeemReword + getDeliveryCharge());
+
+      return result;
+    };
+
+    let creatorGetCash = () => {
+      if (paymentType == 1) {
+        return cartIntent();
+      } else {
+        return 0;
+      }
+    };
+
+    let creatorGetCard = () => {
+      if (paymentType == 3) {
+        return cartIntent();
+      } else {
+        return 0;
+      }
+    };
+
+    let creatorGetWallet = () => {
+      if (!toggle) {
+        return 0;
+      } else {
+        let total = calculateTotal();
+        if (total >= credits?.balance) {
+          return credits?.balance;
+        } else {
+          return total;
+        }
+      }
+    };
+
+    // console.log(creatorGetCard());
+
+    const dualCurrencyRatio = secondaryFinalPrice / finalPrice;
+
+    const data = {
+      shopId,
+      type: schedule?.status === 'now' ? 'now' : 'schedule',
+      scheduleDate: schedule?.date,
+      orderType: addedItems[0]?.type,
+      paymentMethod:
+        paymentType === 1 ? 'cash' : paymentType === 2 ? 'applePay' : 'card',
+      pos: pos ? 'yes' : 'no',
+      orderDeliveryAddressId: address?._id,
+      products: [...products],
+      deliveryBoyNote: riderNotes,
+      note: orderNotes,
+      order_delivery_charge_id: deliveryCharge?._id,
+      specialInstruction,
+      summary: {
+        baseCurrency_productAmount:
+          (Math.round(
+            totalAmount -
+              getDeliveryCharge() -
+              deliveryCharge?.vat +
+              totalDiscount,
+          ) *
+            100) /
+          100,
+        baseCurrency_riderFee: getDeliveryCharge(),
+        baseCurrency_totalAmount:
+          totalAmount - deliveryCharge?.vat + totalDiscount,
+        baseCurrency_discount: totalDiscount,
+        baseCurrency_vat: deliveryCharge?.vat,
+        baseCurrency_cash: getCash(),
+        secondaryCurrency_cash: Math.round(getCash() * dualCurrencyRatio),
+        baseCurrency_card: getCard(),
+        secondaryCurrency_card: Math.round(getCard() * dualCurrencyRatio),
+        baseCurrency_wallet: getWallet(),
+        secondaryCurrency_wallet: Math.round(getWallet() * dualCurrencyRatio),
+        reward: getRewordItem(),
+        baseCurrency_doubleMenuItemPrice:
+          doubleMenuItemPriceCalculation(addedItems),
+        baseCurrency_riderTip: riderTip,
+        baseCurrency_couponDiscountAmount: coupon?.discountAmount,
+      },
+      cartId: groupCartInfo?._id,
+      creatorSummary: {
+        baseCurrency_productAmount: creatorProductAmountRegular,
+        baseCurrency_riderFee: getDeliveryCharge(),
+        baseCurrency_totalAmount:
+          creatorProductAmountRegular + getDeliveryCharge(),
+        baseCurrency_discount: creatorDiscountPrice,
+        baseCurrency_vat: vatCalculation(),
+        baseCurrency_cash: creatorGetCash(),
+        secondaryCurrency_cash: Math.round(
+          creatorGetCash() * dualCurrencyRatio,
+        ),
+        baseCurrency_card: creatorGetCard(),
+        secondaryCurrency_card: Math.round(
+          creatorGetCard() * dualCurrencyRatio,
+        ),
+        baseCurrency_wallet: creatorGetWallet(),
+        secondaryCurrency_wallet: Math.round(
+          creatorGetWallet() * dualCurrencyRatio,
+        ),
+        reward: getRewordItem(user),
+        baseCurrency_doubleMenuItemPrice: doubleMenuItemPriceCalculation(
+          addedItems,
+          user,
+        ),
+        baseCurrency_riderTip: riderTip,
+        baseCurrency_couponDiscountAmount: coupon?.discountAmount,
+      },
+      rewardPoints: Math.round(
+        (getCash() + getWallet() + getCard()) * reward?.rewardPoints,
+      ),
+      creatorRewardPoints: Math.round(
+        (creatorGetWallet() + creatorGetCard() + creatorGetCash()) *
+          reward?.rewardPoints,
+      ),
+
+      shopExchangeRate: shop?.shopExchangeRate,
+      adminExchangeRate: currency?.adminExchangeRate,
+    };
+
+    if (coupon?.discountAmount) {
+      data.couponId = coupon?.coupon?._id;
+    }
+
+    if (bringChangeToggle && bringChange) {
+      data.bringChangeAmount = bringChange;
+    }
+
+    return data;
+  };
+
+  const finalPrice =
+    totalBill(addedItems) +
+    deliveryCharge?.deliveryFee +
+    deliveryCharge?.vat +
+    riderTip -
+    getRewordItem()?.amount -
+    coupon?.discountAmount;
+
+  const secondaryFinalPrice = convertSecondCurrencyTotalPrice(
+    totalBill(addedItems),
+    deliveryCharge?.deliveryFee,
+    deliveryCharge?.vat,
+    riderTip,
+    getRewordItem()?.amount,
+    coupon?.discountAmount,
+    shopExchangeRate,
+    adminExchangeRate,
+    shop?.haveOwnDeliveryBoy,
+  );
+
+  return (
+    <View style={styles.container(darkMode)}>
+      <SafeAreaView style={styles.topHeader(darkMode, modalVisible?.status)} />
+      <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
+        <View style={{flex: 1}}>
+          <ButlerHeader title={'Checkout'} />
+          {loading && (
+            <Progress.Bar
+              progress={progress}
+              width={windowWidth}
+              height={3}
+              color={RED}
+              borderWidth={0}
+              indeterminateAnimationDuration={10}
+              useNativeDriver={true}
+            />
+          )}
+
+          <View style={{height: 7.5}} />
+
+          {groupCartInfo?.cartStatus == 'lock' && (
+            <CartLockView button={false} />
+          )}
+
+          {close?.result && <CloseCart close={close} />}
+
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{opacity: loading ? 0 : 1}}>
+            <ButlerCard
+              title={'Delivery Address'}
+              address={true}
+              addressValue={addressManupulate(address)}
+              bringChangeStatus={paymentType == 1 && true}
+              from={'checkout'}
+              instruction={address?.instructions}
+              image={DELIVERED_TO}
+              input={address?._id == 1 ? false : true}
+              button={true}
+              edit={false}
+              onClick={() => setModalVisible({status: true, anim: false})}
+              onPress={() => {
+                if (
+                  lonLat?.origin === 'CURRENT_LOCATION' &&
+                  lonLat?.addressList?.length == 0
+                ) {
+                  setAddressModal(true);
+                } else {
+                  navigation.navigate('MyAddressNew', {type: 1});
+                }
+              }}
+            />
+
+            <ButlerCard
+              title={'Delivery Time'}
+              time={true}
+              button={true}
+              deliveryTime={getTime()}
+              schedule={schedule}
+              onPress={() => {
+                DateTime?.current?.open();
+              }}
+              addedItems={addedItems}
+            />
+
+            <ButlerPayment
+              title={'Payment Method'}
+              lyxaPay={currency?.symbol + credits?.balance}
+              card={card}
+              setCard={setCard}
+              toggle={toggle}
+              setToggle={setToggle}
+              select={paymentType}
+              bringChange={bringChange}
+              setBringChange={setBringChange}
+              bringChangeToggle={bringChangeToggle}
+              setBringChangeToggle={setBringChangeToggle}
+              setSelect={type => {
+                setPaymentType(type);
+                if (type == 1) {
+                  setRiderTip(0);
+                }
+              }}
+              cash={
+                !(
+                  groupCartInfo?.cartType == 'group' &&
+                  groupCartInfo?.paymentPreferences == 'pay_for_themselves'
+                )
+              }
+            />
+
+            {paymentType !== 1 && (
+              <RiderTip
+                title={'Rider Tip'}
+                riderTip={riderTip}
+                setActive={setRiderTip}
+              />
+            )}
+
+            {reward?.rewardPoints > 0 && (
+              <RewordView
+                reward={
+                  reward.rewardPoints *
+                  (totalBill(addedItems) +
+                    deliveryCharge?.deliveryFee +
+                    deliveryCharge?.vat -
+                    getRewordItem()?.amount +
+                    riderTip -
+                    coupon?.discountAmount)
+                }
+              />
+            )}
+
+            {/* {console.log(totalBill(addedItems, false, true))} */}
+
+            <ButlerSummary
+              shopExchangeRate={shopExchangeRate}
+              adminExchangeRate={adminExchangeRate}
+              currency={currency?.symbol}
+              secondaryCurrency={currency?.secondaryCurrency?.code}
+              subTotal={totalBill(addedItems, false, true)}
+              secondarySubTotal={convertSecondCurrency(
+                totalBill(addedItems, false, true),
+                shopExchangeRate,
+              )}
+              discount={
+                totalBill(addedItems, false, true) - totalBill(addedItems)
+              }
+              secondaryDiscount={convertSecondCurrency(
+                totalBill(addedItems, false, true) - totalBill(addedItems),
+                shopExchangeRate,
+              )}
+              deliveryCharge={deliveryCharge?.deliveryFee}
+              secondaryDeliveryCharge={convertSecondCurrency(
+                deliveryCharge?.deliveryFee,
+                shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate,
+              )}
+              vat={deliveryCharge?.vat}
+              secondaryVat={convertSecondCurrency(
+                deliveryCharge?.vat,
+                shopExchangeRate,
+              )}
+              Reward={getRewordItem()}
+              coupon={coupon?.discountAmount || 0}
+              secondaryCoupon={convertSecondCurrency(
+                coupon?.discountAmount,
+                adminExchangeRate,
+              )}
+              riderTip={riderTip}
+              secondaryRiderTip={convertSecondCurrency(
+                riderTip,
+                shop?.haveOwnDeliveryBoy ? shopExchangeRate : adminExchangeRate,
+              )}
+              total={finalPrice}
+              secondaryTotal={secondaryFinalPrice}
+              cash={createOrderJson()?.summary?.baseCurrency_cash}
+              card={createOrderJson()?.summary?.baseCurrency_card}
+              wallet={createOrderJson()?.summary?.baseCurrency_wallet}
+              status={'redux'}
+            />
+
+            <OVButton
+              title={address?.location ? 'Place Order' : 'Add address'}
+              loading={orderLoading}
+              color={APP_RED}
+              textColor={WHITE}
+              marginTop={10}
+              borderRadius={10}
+              fontFamily={interRegular}
+              fontWeight={'600'}
+              onPress={async () => {
+                if (bringChangeToggle && !bringChange) {
+                  Alert.alert('', 'Enter bring change amount!');
+                  return;
+                }
+
+                if (paymentType == 0) {
+                  Alert.alert('Choose payment method!');
+                  return;
+                }
+
+                let response = await OrderValidate(close, schedule);
+
+                if (!response) return;
+
+                if (!address?.location) {
+                  if (lonLat?.addressList?.length == 0) {
+                    setAddressModal(true);
+                  } else {
+                    navigation.navigate('MyAddressNew', {type: 1});
+                  }
+                  return;
+                }
+
+                let totalAmount = calculateTotal();
+
+                if (toggle && checkPoints(totalAmount)) {
+                  OrderWithWallet(
+                    token,
+                    navigation,
+                    setLoading,
+                    dispatch,
+                    {
+                      token: token,
+                      credits: credits,
+                      setCredits: setCredits,
+                    },
+                    createOrderJson,
+                    groupCartInfo,
+                  );
+                  return;
+                }
+
+                if (paymentType === 1) {
+                  OrderWithCash(
+                    token,
+                    navigation,
+                    setLoading,
+                    dispatch,
+                    {
+                      token: token,
+                      credits: credits,
+                      setCredits: setCredits,
+                    },
+                    createOrderJson,
+                    groupCartInfo,
+                  );
+                } else if (paymentType === 3) {
+                  if (card?.length > 0) {
+                    setCode(true);
+                  } else {
+                    Alert.alert('Please add a card');
+                  }
+                }
+              }}
+              paddingVertical={7}
+              width={windowWidth - 30}
+              marginBottom={10}
+            />
+          </ScrollView>
+
+          {modalVisible.status && (
+            <DriverInstructionModal
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              address={address}
+            />
+          )}
+
+          <RBSheet
+            ref={DateTime}
+            closeOnDragDown={true}
+            closeOnPressMask={true}
+            height={(400 / 375) * windowWidth}
+            openDuration={250}
+            customStyles={{
+              container: {
+                width: windowWidth,
+                borderTopStartRadius: 15,
+                borderTopEndRadius: 15,
+                backgroundColor: darkMode
+                  ? DARK_COMPONENT_BACKGROUND_COLOR
+                  : 'white',
+              },
+            }}>
+            <DateTimePick DateTime={DateTime} />
+          </RBSheet>
+
+          <CodeModal
+            modalVisible={code}
+            setModalVisible={setCode}
+            totalBill={cartIntent()}
+            card={card?.length > 0 ? card[0] : {}}
+            setPin={setPin}
+            setGetCardToken={setGetCardToken}
+            shopId={shopId}
+            addressId={address?._id}
+            createOrderJson={createOrderJson()}
+          />
+
+          <PinModal
+            modalVisible={pin}
+            setModalVisible={setPin}
+            getCardToken={getCardToken}
+            setLoading={setOrderLoading}
+            loading={orderLoading}
+            createOrderJson={createOrderJson()}
+            groupCartInfo={groupCartInfo}
+            totalBill={
+              totalBill(addedItems) +
+              deliveryCharge?.deliveryFee +
+              deliveryCharge?.vat +
+              riderTip -
+              getRewordItem()?.amount
+            }
+          />
+
+          <AddAddressModal
+            addressModal={addressModal}
+            setAddressModal={setAddressModal}
+            setSelect={async address => {
+              const response = await AXIOS.post(SAVE_ADDRESS, address);
+              setAddressModal(false);
+
+              let addressData = response?.data?.address;
+              navigation.setParams({...route, address: addressData});
+
+              let coordinate = addressData?.location?.coordinates;
+
+              dispatch(
+                addlonLat({
+                  ...lonLat,
+                  addressList: [addressData, ...lonLat?.addressList],
+                  lat: coordinate[1],
+                  lon: coordinate[0],
+                  origin: 'CUSTOM_LOCATION',
+                  selected: addressData,
+                }),
+              );
+            }}
+          />
+        </View>
+      </KeyboardAvoidingView>
+      <SafeAreaView style={styles.bottomHeader(darkMode)} />
+    </View>
+  );
+};
+
+const addressManupulate = address => {
+  if (address) {
+    let result = {
+      nickname: address?.nickname,
+      address: address?.address,
+      latitude: address?.latitude,
+      longitude: address?.longitude,
+      _id: 1,
+    };
+    return result;
+  } else {
+    return false;
+  }
+};
+
+const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
+  let count = 0;
+  let array = [];
+
+  addedItems?.map(itemData => {
+    if (user && itemData?.owner?._id !== user?._id) {
+      return;
+    }
+    let price = 0;
+
+    if (
+      itemData?.marketing?.isActive &&
+      itemData?.marketing?.type == 'percentage' &&
+      !skipDiscount &&
+      !skipPercentage
+    ) {
+      price = itemData?.discountPrice * itemData.quantity;
+    } else if (
+      itemData?.marketing?.isActive &&
+      itemData?.marketing?.type == 'double_menu' &&
+      !skipDiscount
+    ) {
+      if (!array.includes(itemData?._id)) {
+        let doubleDealAllProduct = addedItems?.filter(
+          item =>
+            item?._id == itemData?._id &&
+            (user ? item?.owner?._id == user?._id : true),
+        );
+
+        let quantity = 0;
+        doubleDealAllProduct?.map(item => {
+          quantity += item?.quantity;
+        });
+
+        price += itemData?.price * (parseInt(quantity / 2) + (quantity % 2));
+        array.push(itemData?._id);
+      }
+    } else {
+      price = itemData?.price * itemData.quantity;
+    }
+    // console.log(count);
+    count += price;
+
+    itemData?.attributes?.map(parent => {
+      parent?.items?.map(child => {
+        if (itemData?.selectedAttributes?.includes(child?._id)) {
+          count += child?.extraPrice * itemData?.quantity;
+        }
+      });
+    });
+  });
+
+  return Math.round(count * 100) / 100;
+};
+
+const calculatePrice = addedItems => {
+  let count = 0;
+  let array = [];
+  addedItems?.map(itemData => {
+    if (
+      itemData?.marketing?.isActive &&
+      itemData?.marketing?.type == 'double_menu'
+    ) {
+      if (!array.includes(itemData?._id)) {
+        let doubleDealAllProduct = addedItems?.filter(
+          item => item?._id == itemData?._id,
+        );
+        let quantity = 0;
+        doubleDealAllProduct?.map(item => {
+          quantity += item?.quantity;
+        });
+
+        count += itemData?.price * (parseInt(quantity / 2) + (quantity % 2));
+        array.push(itemData?._id);
+      }
+    } else {
+      count += itemData?.price * itemData.quantity;
+    }
+
+    itemData?.attributes?.map(parent => {
+      parent?.items?.map(child => {
+        if (itemData?.selectedAttributes?.includes(child?._id)) {
+          count +=
+            (child?.price ? child?.price : child?.extraPrice) *
+            itemData?.quantity;
+        }
+      });
+    });
+  });
+  // console.log(count);
+
+  return Math.round(count * 100) / 100;
+};
+
+const doubleMenuItemPriceCalculation = (addedItems, user) => {
+  let count = 0;
+  let array = [];
+
+  addedItems?.map(itemData => {
+    if (user && itemData?.owner?._id !== user?._id) {
+      return;
+    }
+    let price = 0;
+    if (
+      itemData?.marketing?.isActive &&
+      itemData?.marketing?.type == 'double_menu'
+    ) {
+      if (!array.includes(itemData?._id)) {
+        let doubleDealAllProduct = addedItems?.filter(
+          item =>
+            item?._id == itemData?._id &&
+            (!user || item?.owner?._id == user?._id),
+        );
+
+        let quantity = 0;
+
+        doubleDealAllProduct?.map(item => {
+          quantity += item?.quantity;
+        });
+
+        price += itemData?.price * parseInt(quantity / 2);
+        array.push(itemData?._id);
+      }
+    }
+    // console.log(count);
+    count += price;
+  });
+
+  return Math.round(count * 100) / 100;
+};
+
+const SingleItemcalculatePrice = itemData => {
+  // console.log(itemData);
+  let count = 0;
+
+  let quantity = itemData.quantity;
+
+  count = itemData?.price * quantity;
+
+  itemData?.attributes?.map(parent => {
+    parent?.items?.map(child => {
+      if (itemData?.selectedAttributes?.includes(child?._id)) {
+        count += child?.extraPrice * itemData?.quantity;
+      }
+    });
+  });
+
+  // console.log(count);
+
+  return Math.round(count * 100) / 100;
+};
+
+export default NewCheckOut;
+
+const styles = StyleSheet.create({
+  container: darkMode => ({
+    flex: 1,
+    backgroundColor: darkMode ? DARK_BACKGROUND_COLOR : BACKGROUND_COLOR,
+  }),
+  topHeader: (darkMode, status) => ({
+    flex: 0,
+    backgroundColor: status
+      ? 'rgba(0,0,0,.3)'
+      : darkMode
+      ? DARK_BACKGROUND_COLOR
+      : BACKGROUND_COLOR,
+  }),
+  bottomHeader: darkMode => ({
+    flex: 0,
+    backgroundColor: darkMode ? DARK_BACKGROUND_COLOR : BACKGROUND_COLOR,
+  }),
+});

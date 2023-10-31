@@ -84,6 +84,7 @@ export default function App() {
   useEffect(() => {
     validateUser();
     settingsQuery.refetch();
+    // initialize currency format
   }, []);
 
   // retries when user comes logs in

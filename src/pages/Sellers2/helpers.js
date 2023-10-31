@@ -3,7 +3,8 @@ import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
 export const getThreedotMenuOptions = (adminType) => {
-  const menu = [
+  console.log(adminType);
+  let menu = [
     {
       label: 'View',
       value: 'view',
@@ -19,6 +20,10 @@ export const getThreedotMenuOptions = (adminType) => {
       value: 'go_to_financials',
     },
   ];
+
+  if (adminType !== 'admin') {
+    menu = menu.filter((item) => item?.value !== 'go_to_financials');
+  }
 
   if (adminType !== 'customerService') {
     const newMenu = [
@@ -202,7 +207,12 @@ export const sellerTypeOption = [
   },
 ];
 
-export const previewGenerator = (file) => [{ preview: file }];
+export const previewGenerator = (file) => {
+  if (!file) {
+    return [];
+  }
+  return [{ preview: file }];
+};
 
 export const generateDataForSellerDocuments = (data) => [
   { _id: 1, sellerId: data?._id, title: 'Profile', url: data?.profile_photo, type: 'profile_photo' },

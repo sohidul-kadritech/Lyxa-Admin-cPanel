@@ -4,6 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as NotificationIcon } from '../../../../assets/icons/notification-icon.svg';
+import { useGlobalContext } from '../../../../context';
 
 const notificationCardSx = (theme, isHover) => {
   if (isHover) {
@@ -28,26 +29,48 @@ const notificationCardSx = (theme, isHover) => {
 };
 
 export const dynamicRedirectingPathForAdmin = (type, order) => {
+  console.log('order', type, order);
+  /*
+  {
+          pathname: '/ongoing-tickets',
+          search: 'currentTab=3&type=ongoing&page=1&errorOrderType=urgent',
+          state: {
+            order: { ...order },
+          },
+        
+}
+  */
   const tempReoutes = {
     admin: {
-      route: '/orders',
-      params: {},
+      pathname: '/orders',
+      state: {},
+      search: {},
     },
     customerService: {
-      route: '/orders',
-      params: {},
+      pathname: '/ongoing-tickets',
+      search: {
+        currentTab: order?.errorOrderType === 'urgent' ? 3 : 4,
+        type: 'ongoing',
+        errorOrderType: order?.errorOrderType,
+      },
+
+      state: {
+        order: order?.errorOrderType === 'urgent' ? { ...order } : null,
+      },
     },
     shop: {
-      route: '/orders',
-      params: {},
+      pathname: '/orders',
+      state: {},
     },
     sales: {
-      route: '/orders',
-      params: {},
+      pathname: '/orders',
+      state: {},
+      search: {},
     },
     accountManager: {
-      route: '/orders',
-      params: {},
+      pathname: '/orders',
+      state: {},
+      search: {},
     },
   };
 
@@ -67,15 +90,20 @@ const getQueryString = (data) =>
     .join('&');
 
 function NotificationCard({ notification, onClick, onClose }) {
+  const { currentUser } = useGlobalContext();
+
+  const { adminType, userType } = currentUser;
+
   const theme = useTheme();
 
   const history = useHistory();
 
   const onClickHandler = () => {
-    const path = dynamicRedirectingPathForAdmin(notification?.accountType, notification?.order);
+    const path = dynamicRedirectingPathForAdmin(userType === 'admin' ? adminType : userType, notification?.order);
+
     history.push({
-      pathname: path?.route,
-      search: getQueryString(path?.params),
+      ...path,
+      search: getQueryString(path?.search),
     });
 
     if (onClose) onClose();

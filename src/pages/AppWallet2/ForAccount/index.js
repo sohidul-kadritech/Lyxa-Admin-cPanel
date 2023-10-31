@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
 import jsPDF from 'jspdf';
@@ -5,6 +6,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ReactComponent as DownloadIcon } from '../../../assets/icons/download-icon-2.svg';
+import FormateBaseCurrency from '../../../components/Common/FormateBaseCurrency';
 import PageTop from '../../../components/Common/PageTop';
 import StyledFormField from '../../../components/Form/StyledFormField';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
@@ -41,6 +43,7 @@ const queryParamsInit = {
 function AccountFinancials() {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
+  FormateBaseCurrency.initialize(general?.currency?.code);
 
   const [open, setOpen] = useState(false);
 
@@ -49,9 +52,7 @@ function AccountFinancials() {
   const [storeAppSettings, setStoreAppSettings] = useState({});
 
   const getDashboardSummary = useQuery([API_URL.GET_DASHBOARD_SUMMARY, queryParams], () =>
-    AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY, {
-      params: { startDate: queryParams.startDate, endDate: queryParams.endDate },
-    }),
+    AXIOS.get(API_URL.GET_DASHBOARD_SUMMARY),
   );
 
   const getDropPayList = useQuery([API_URL.DROP_PAY_LIST, queryParams], () =>
@@ -105,6 +106,8 @@ function AccountFinancials() {
     doc.save(`userTransaction.pdf`);
   };
 
+  console.log(getDashboardSummary?.data?.data?.summary);
+
   return (
     <Box>
       <PageTop
@@ -117,8 +120,8 @@ function AccountFinancials() {
       />
       <Stack direction="row" justifyContent="end" gap="17px" flexWrap="wrap" pb={7.5}>
         <Typography variant="h6" sx={{ fontSize: '15px', fontWeight: '600', color: 'text.secondary2' }}>
-          Balance Amount: {currency}
-          {getDashboardSummary?.data?.data?.summary?.totalDropEarning || 0}
+          Balance Amount:
+          {FormateBaseCurrency.get(getDashboardSummary?.data?.data?.summary?.totalDropEarning || 0)}
         </Typography>
       </Stack>
       <Stack direction="row" justifyContent="start" gap="17px" flexWrap="wrap" sx={{ marginBottom: '30px' }}>

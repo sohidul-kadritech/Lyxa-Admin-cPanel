@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import CloseButton from './CloseButton';
 
-export default function SidebarContainer({ onClose, title, children, ...props }) {
+export default function SidebarContainer({ onClose, title, children, containerSx, ...props }) {
   const theme = useTheme();
 
   return (
@@ -14,6 +14,7 @@ export default function SidebarContainer({ onClose, title, children, ...props })
         paddingRight: '20px',
         paddingTop: '60px',
         position: 'relative',
+        ...(containerSx || {}),
         // height: '100vh',
       }}
     >

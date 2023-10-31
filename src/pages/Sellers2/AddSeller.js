@@ -209,7 +209,7 @@ function AddSeller({
       />
 
       <StyledFormField
-        label="Password *"
+        label={`Password ${isEdit ? '' : '*'}`}
         intputType="password"
         containerProps={{
           sx: { padding: '14px 0' },

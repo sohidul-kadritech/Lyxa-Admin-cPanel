@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
@@ -5,6 +7,7 @@ import { useQuery } from 'react-query';
 import { useGlobalContext } from '../../../../context';
 import * as Api from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
+import FormateBaseCurrency from '../../../Common/FormateBaseCurrency';
 import { LastTransactionsSkeleton, StyledProfileBox } from './helpers';
 
 const queryParamsInit = (userId) => ({
@@ -46,8 +49,8 @@ function TransactionItem({ transaction, isFirst, isLast }) {
       }}
     >
       <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px">
-        <span style={{ fontWeight: 600 }}>Amount:</span> {sign} {baseCurrency?.code}{' '}
-        {(transaction?.amount || 0)?.toFixed(2)}
+        <span style={{ fontWeight: 600 }}>Amount:</span> {sign}
+        {FormateBaseCurrency.get(transaction?.amount)}
       </Typography>
       <Typography variant="inherit" fontWeight={400} fontSize="12px" lineHeight="22px">
         <span style={{ fontWeight: 600 }}>Date:</span> {moment(transaction?.createdAt).format('ddd DD, MMM, YYYY')}
@@ -65,7 +68,7 @@ export default function Transactions({ userId }) {
   const query = useQuery([Api.DROP_PAY_LIST, queryParams], () =>
     AXIOS.get(Api.DROP_PAY_LIST, {
       params: queryParams,
-    })
+    }),
   );
 
   return (

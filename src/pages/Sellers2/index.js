@@ -193,10 +193,19 @@ function SellerList2() {
   });
 
   const replaceDocument = (document) => {
-    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: document.url });
+    console.log('currentSeller', currentSeller);
+    editSellerQuery.mutate({
+      id: currentSeller?._id,
+      [document?.type]: document.url,
+      sellerAddress: currentSeller?.sellerAddress,
+    });
   };
   const removeDocument = (document) => {
-    editSellerQuery.mutate({ id: currentSeller?._id, [document?.type]: '' });
+    editSellerQuery.mutate({
+      id: currentSeller?._id,
+      [document?.type]: '',
+      sellerAddress: currentSeller?.sellerAddress,
+    });
   };
 
   return (

@@ -33,7 +33,14 @@ function Notification({ onClose }) {
   );
 
   return (
-    <SidebarContainer title="Notificaion" onClose={onClose}>
+    <SidebarContainer
+      title="Notificaion"
+      onClose={onClose}
+      containerSx={{
+        minWidth: '425px',
+        maxWidth: '425px',
+      }}
+    >
       {notificationQuery?.isLoading ? (
         <NotificationSekeleton />
       ) : (

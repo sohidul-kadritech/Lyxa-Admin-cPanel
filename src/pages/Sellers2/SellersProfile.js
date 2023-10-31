@@ -238,6 +238,7 @@ function SellersProfile({
                 containerProps={{
                   sx: { padding: '0px 0px' },
                 }}
+                tooltip="Sort by orders"
                 inputProps={{
                   name: 'sortBy',
                   placeholder: 'Sort',
@@ -249,6 +250,7 @@ function SellersProfile({
               />
               <StyledFormField
                 intputType="select"
+                tooltip="Filter by shop status"
                 containerProps={{
                   sx: { padding: '0px 0px' },
                 }}

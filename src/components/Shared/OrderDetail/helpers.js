@@ -84,6 +84,10 @@ export function SummaryItem({
         className={`${isRejected ? 'rejected' : ''} ${isTotal ? 'total' : ''}`}
         sx={{
           color: '#363636',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '2px',
 
           '&.rejected': {
             color: '#b9b9b9',
@@ -94,7 +98,7 @@ export function SummaryItem({
           },
         }}
       >
-        {label}{' '}
+        <Typography component="span"> {label}</Typography>
         {tooltip && (
           <Tooltip title={tooltip}>
             <CustomInfoIcon />
@@ -128,13 +132,13 @@ export function SummaryItem({
         {/* not base value */}
         {typeof value !== 'string' &&
           showBaseOnly &&
-          `${isNegative || value < 0 ? '-' : ''}${FormateBaseCurrency.get(Math.abs(value || 0))}`}
+          `${isNegative || value < 0 ? '-' : ''} ${FormateBaseCurrency.get(Math.abs(value || 0))}`}
         {/* `${isNegative || value < 0 ? '-' : ''}${baseCurrency}${Math.abs(value || 0).toFixed(decimalPrecision)}`} */}
 
         {/* show secondary Only */}
         {typeof value !== 'string' &&
           showSecondaryOnly &&
-          `${isNegative || value < 0 ? '-' : ''}${FormatesecondaryCurrency.get(Math.abs(valueSecondary || 0))}`}
+          `${isNegative || value < 0 ? '-' : ''} ${FormatesecondaryCurrency.get(Math.abs(valueSecondary || 0))}`}
 
         {/* base and secondary both */}
         {typeof value !== 'string' &&
@@ -144,11 +148,11 @@ export function SummaryItem({
           ${
             hideSecondary
               ? ''
-              : `${isNegative || valueSecondary < 0 ? '-' : ''}${FormatesecondaryCurrency.get(
+              : `${isNegative || valueSecondary < 0 ? '-' : ''} ${FormatesecondaryCurrency.get(
                   Math.abs(valueSecondary || 0),
                 )} ~ `
           }
-          ${isNegative || value < 0 ? '-' : ''}${FormateBaseCurrency.get(Math.abs(value || 0))}`}
+          ${isNegative || value < 0 ? '-' : ''} ${FormateBaseCurrency.get(Math.abs(value || 0))}`}
       </Typography>
     </Stack>
   );

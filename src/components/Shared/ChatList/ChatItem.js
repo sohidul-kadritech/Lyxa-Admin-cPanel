@@ -21,7 +21,7 @@ function getChatCreatedAtTime(date) {
   return `Today ${moment(date).format('hh:mm:a')}`;
 }
 
-export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
+export default function ChatItem({ chat, onViewDetails, handleMenuClick, showThreedots }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -102,12 +102,15 @@ export default function ChatItem({ chat, onViewDetails, handleMenuClick }) {
           </Typography>
         </Stack>
       </Stack>
-      <ThreeDotsMenu
-        handleMenuClick={(menu) => {
-          handleMenuClick(menu, chat);
-        }}
-        menuItems={getThreeDotsMenuOptions(chat)}
-      />
+      {showThreedots && (
+        <ThreeDotsMenu
+          handleMenuClick={(menu) => {
+            handleMenuClick(menu, chat);
+          }}
+          disabled={!getThreeDotsMenuOptions(chat)?.length}
+          menuItems={getThreeDotsMenuOptions(chat)}
+        />
+      )}
     </Stack>
   );
 }

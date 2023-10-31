@@ -5,6 +5,7 @@ import { Box, Stack } from '@mui/material';
 // import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
@@ -62,7 +63,12 @@ export default function Orders({
 
   const [currentTab, setCurrentTab] = useState(getCurrentTab(queryParams));
 
-  const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState('all');
+  const location = useLocation();
+  const history = useHistory();
+
+  const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState(
+    !queryParams?.errorOrderType ? 'all' : queryParams?.errorOrderType,
+  );
 
   const [render, setRender] = useState(false);
 
@@ -125,10 +131,7 @@ export default function Orders({
               setCurrentErrorOrderTab(value);
               // console.log('value', value);
               if (value === 'all') {
-                setQueryParams((prev) => {
-                  delete prev?.errorOrderType;
-                  return { ...prev, page: 1 };
-                });
+                setQueryParams((prev) => ({ ...prev, errorOrderType: undefined, page: 1 }));
                 return;
               }
               if (value === 'null') {

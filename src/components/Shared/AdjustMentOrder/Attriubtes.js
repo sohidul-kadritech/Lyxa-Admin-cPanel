@@ -1,8 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { Stack, Typography, useTheme } from '@mui/material';
+import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 
-export function Attributes({ attribute, onClickProduct }) {
+export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
   const theme = useTheme();
+
+  const attributeItems = selectedAttributes?.find((atr) => atr?._id === attribute?._id)?.attributeItems;
+
+  console.log({ attributeItems });
+
   return (
     <Stack>
       <Stack direction="row" alignItems="center" gap={2}>
@@ -53,25 +59,52 @@ export function Attributes({ attribute, onClickProduct }) {
         }}
       >
         {attribute?.items?.map((item, i) => (
-          <Typography
-            variant="h6"
-            key={i}
+          <Stack
+            direction="row"
             onClick={() => {
-              if (onClickProduct) onClickProduct({ isMultiple: attribute?.select === 'multiple', attribute: item });
+              if (onClickProduct)
+                onClickProduct({
+                  isMultiple: attribute?.select === 'multiple',
+                  attribute: { ...attribute, attributeItems: [item] },
+                });
             }}
+            key={i}
             sx={{
-              fontWeight: 500,
-              fontSize: '14px',
-              color: 'text.secondary2',
               transition: 'all 0.3s linear',
               paddingLeft: '16px',
+              backgroundColor: attributeItems?.find((atrItm) => atrItm?._id === item?._id)
+                ? 'rgba(177, 177, 177, 0.2)'
+                : 'transparent',
               '&:hover': {
-                backgroundColor: 'rgba(177, 177, 177, 0.2)',
+                backgroundColor: 'rgba(177, 177, 177, 0.4)',
               },
             }}
           >
-            {item?.name}
-          </Typography>
+            <Typography
+              variant="h6"
+              key={i}
+              sx={{
+                fontWeight: 500,
+                fontSize: '14px',
+                color: 'text.secondary2',
+              }}
+            >
+              {item?.name}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 500,
+                fontSize: '14px',
+                color: 'text.secondary2',
+
+                paddingLeft: '16px',
+                fontStyle: 'italic',
+              }}
+            >
+              {FormateBaseCurrency.get(item?.extraPrice)}
+            </Typography>
+          </Stack>
         ))}
       </Stack>
     </Stack>

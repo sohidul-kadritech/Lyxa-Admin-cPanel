@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 export const chatStatusColorMap = {
   pending: {
@@ -26,9 +27,19 @@ export const chatStatusColorMap = {
 };
 
 export const createChatFromOrder = (order) => {
+  //  ongoing chat
+  console.log(
+    'order',
+    { order },
+    order?.admin_chat_request?.at(-1),
+    order?.admin_chat_request?.[order?.admin_chat_request?.length - 1],
+  );
+
   const recentRequest =
     order?.admin_chat_request?.at(-1) || order?.admin_chat_request?.[order?.admin_chat_request?.length - 1];
-  recentRequest.order = order;
-  recentRequest.user = order?.user;
-  return recentRequest;
+  const chat = { ...recentRequest };
+  chat.order = order;
+  chat.user = order?.user;
+
+  return chat;
 };

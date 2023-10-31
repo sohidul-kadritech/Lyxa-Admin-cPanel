@@ -73,7 +73,7 @@ function RidersMapView({ onClose, currentOrder }) {
             minHeight: '500px',
           }}
         >
-          {getAllRiders?.isLoading ? (
+          {getAllRiders?.isLoading || getMapoverView?.isLoading ? (
             <MapSkeleton />
           ) : (
             <RidersCurrentLocationMapView
