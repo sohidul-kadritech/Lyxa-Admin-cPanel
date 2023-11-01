@@ -6,7 +6,7 @@ import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
 
 export const productDeal = (product) => {
-  if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
+  if (product?.isDoubleDeal) return 'double_menu';
   if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
 
@@ -75,9 +75,9 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
             fontSize="15px"
             lineHeight="22px"
             fontWeight={600}
-            color={deal !== null ? 'text.secondary2' : undefined}
+            color={deal !== null && product?.baseCurrency_totalDiscount ? 'text.secondary2' : undefined}
             sx={{
-              textDecoration: deal !== null ? 'line-through' : undefined,
+              textDecoration: deal !== null && product?.baseCurrency_totalDiscount ? 'line-through' : undefined,
             }}
           >
             {getPriceWithCurrency(baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
@@ -113,6 +113,7 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
 
               {/* double menu */}
               {deal === 'double_menu' &&
+                product?.baseCurrency_totalDiscount > 0 &&
                 `${FormateBaseCurrency.get(
                   product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}

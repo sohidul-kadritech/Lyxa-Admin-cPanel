@@ -32,6 +32,8 @@ function AdjustMentProduct({
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
 
+  console.log(product?.productName, quantity, product?.baseCurrency_finalPrice, product?.baseCurrency_totalDiscount);
+
   return (
     <Box
       sx={{
@@ -99,7 +101,7 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity
+                  product?.finalReward?.points / product?.productQuantity,
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
@@ -110,13 +112,14 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
-                  product?.finalReward?.baseCurrency_amount
+                  product?.finalReward?.baseCurrency_amount,
                 )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
+                product?.baseCurrency_totalDiscount > 0 &&
                 `${FormateBaseCurrency.get(
-                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}
             </Typography>
           </Stack>

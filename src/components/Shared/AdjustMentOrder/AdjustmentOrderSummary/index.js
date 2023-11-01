@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
@@ -11,7 +12,13 @@ import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
-import { SingleItemcalculatePrice, matchedMeals } from '../helpers';
+import {
+  SingleItemcalculatePrice,
+  calculatePrice,
+  doubleDealManipulate,
+  makeSingleProductDetails,
+  matchedMeals,
+} from '../helpers';
 
 function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const { currentUser } = useGlobalContext();
@@ -25,26 +32,37 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
     setAdjustedOrder((prev) => {
       // remove the products
       const matched = matchedMeals(prev?.productsDetails, value?.product);
+      const deal = productDeal(prev.productsDetails[matched?.index]);
 
-      console.log({ matched, value });
+      let testDoubleDeal = prev?.productsDetails;
+
       if (matched?.isMatched && value?.value > 0) {
-        const deal = productDeal(prev.productsDetails[matched?.index]);
-        prev.productsDetails[matched?.index].productQuantity = value?.value;
-        const updatedPrice =
-          deal !== 'double_menu'
-            ? SingleItemcalculatePrice(prev.productsDetails[matched?.index], order?.shop?.shopExchangeRate)
-            : { baseCurrency_finalPrice: 0, secondaryCurrency_finalPrice: 0 };
+        testDoubleDeal[matched?.index].productQuantity = value?.value;
+        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
+          let prices = {};
+          if (productDeal(item) === 'double_menu')
+            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
+          return { ...item, ...prices };
+        });
 
-        console.log({ ...updatedPrice });
-
-        prev.productsDetails[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
-        prev.productsDetails[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
-        prev.productsDetails[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
+        if (deal !== 'double_menu') {
+          const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
+          testDoubleDeal[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
+          testDoubleDeal[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
+          testDoubleDeal[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
+        }
       } else {
-        prev.productsDetails?.splice(matched?.index, 1);
+        testDoubleDeal?.splice(matched?.index, 1);
+
+        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
+          let prices = {};
+          if (productDeal(item) === 'double_menu')
+            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
+          return { ...item, ...prices };
+        });
       }
 
-      return { ...prev };
+      return { ...prev, productsDetails: testDoubleDeal };
     });
   };
 
@@ -53,42 +71,52 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
     setAdjustedOrder((prev) => {
       // remove the products
-      const updatedProducts = prev?.productsDetails?.filter((product) => product?.productId !== data?.productId);
+      const matched = matchedMeals(prev?.productsDetails, data);
 
-      return { ...prev, productsDetails: [...updatedProducts] };
+      if (matched?.index > -1) prev.productsDetails?.splice(matched?.index, 1);
+
+      return { ...prev };
     });
   };
 
-  const onDeleteAtribute = (data) => {
+  const onClickProduct = (data) => {
     setAdjustedOrder((prev) => {
+      const newProduct = makeSingleProductDetails(data?.product);
+
       // remove the products
+      const matched = matchedMeals(prev?.productsDetails, newProduct);
 
-      const productDetails = [...prev?.productsDetails];
+      const deal = productDeal(prev.productsDetails[matched?.index]);
 
-      // find index for product details
-      const findItemsIndex = productDetails?.findIndex((product) => product?.productId === data?.product?.productId);
+      let testDoubleDeal = prev?.productsDetails;
 
-      if (findItemsIndex > -1) {
-        // find index for product attributes
-        const findAttributesIndex = productDetails[findItemsIndex]?.selectedAttributes?.findIndex(
-          (attr) => attr?.id === data?.attribute?.id
-        );
+      // matched
+      console.log('new product:', { newProduct, matched });
 
-        if (findAttributesIndex > -1) {
-          const removeAttributes = productDetails[findItemsIndex]?.selectedAttributes[
-            findAttributesIndex
-          ]?.selectedItems?.filter((selectedItem) => selectedItem?._id !== data?.item?._id);
+      if (matched?.isMatched) {
+        const deal = productDeal(prev.productsDetails[matched?.index]);
+        testDoubleDeal[matched?.index].productQuantity += newProduct?.productQuantity;
+        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
+          let prices = {};
+          if (productDeal(prev.productsDetails[matched?.index]) === 'double_menu')
+            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
+          return { ...item, ...prices };
+        });
 
-          // if there are only one items then remove whole atributes other wise one item
-          if (removeAttributes?.length > 0)
-            productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
-          else {
-            productDetails[findItemsIndex].selectedAttributes.splice(findAttributesIndex, 1);
-          }
+        if (deal !== 'double_menu') {
+          const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
+          testDoubleDeal[matched?.index] = { ...prev.productsDetails[matched?.index], ...updatedPrice };
         }
+      } else if (!matched?.shouldAddInLastIndex) {
+        console.log(matched?.lastIndex, newProduct);
+        testDoubleDeal?.splice(matched?.lastIndex, 0, newProduct);
+      } else {
+        testDoubleDeal.push(newProduct);
       }
 
-      return { ...prev, productDetails: [...productDetails] };
+      console.log({ prev });
+
+      return { ...prev, productsDetails: testDoubleDeal };
     });
   };
 
@@ -140,14 +168,15 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               isLast={i === l - 1}
               shopExchangeRate={order?.shop?.shopExchangeRate}
               onDeleteProduct={onDeleteProduct}
-              onDeleteAtribute={onDeleteAtribute}
               onIncrementDecrement={onIncrementDecrement}
             />
           ))}
         </Stack>
       </StyledAdjustmentOrderContainer>
       <Stack>
-        {open && <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />}
+        {open && (
+          <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} onClickProduct={onClickProduct} />
+        )}
         <Box paddingLeft="16px" mt={open ? 0 : 4} mb={4}>
           <Button
             disableRipple

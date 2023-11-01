@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Stack, Typography, debounce, useTheme } from '@mui/material';
@@ -8,15 +9,12 @@ import AXIOS from '../../../network/axios';
 import StyledFormField from '../../Form/StyledFormField';
 import { ProductCard } from './ProductCard';
 
-function StyledProductSelector({ order, setAdjustedOrder }) {
+function StyledProductSelector({ order, onClickProduct }) {
   const [searchKey, setSearchKey] = useState('');
   const [searchedResult, setSearchedResult] = useState([]);
 
   const theme = useTheme();
 
-  const onClickProduct = (data) => {
-    console.log('onclick ', { data, order });
-  };
   const productsQuery = useMutation(
     () =>
       AXIOS?.get(API_URL.ALL_PRODUCT, {
@@ -36,7 +34,7 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
           setSearchedResult(data?.data?.products);
         }
       },
-    }
+    },
   );
 
   const getProducts = useMemo(
@@ -45,7 +43,7 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
         setSearchKey(value);
         productsQuery.mutate();
       }, 100),
-    []
+    [],
   );
 
   useEffect(() => {

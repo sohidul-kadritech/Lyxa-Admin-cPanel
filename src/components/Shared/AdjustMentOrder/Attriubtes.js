@@ -5,7 +5,7 @@ import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
   const theme = useTheme();
 
-  const attributeItems = selectedAttributes?.find((atr) => atr?._id === attribute?._id)?.attributeItems;
+  const attributeItems = selectedAttributes?.find((atr) => atr?._id === attribute?._id)?.selectedItems;
 
   console.log({ attributeItems });
 
@@ -65,7 +65,7 @@ export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
               if (onClickProduct)
                 onClickProduct({
                   isMultiple: attribute?.select === 'multiple',
-                  attribute: { ...attribute, attributeItems: [item] },
+                  attribute: { ...attribute, selectedItems: [item] },
                 });
             }}
             key={i}
