@@ -40,24 +40,24 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
         testDoubleDeal[matched?.index].productQuantity = value?.value;
         testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
           let prices = {};
-          if (productDeal(item) === 'double_menu')
-            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
+          // if (productDeal(item) === 'double_menu')
+          prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
           return { ...item, ...prices };
         });
 
-        if (deal !== 'double_menu') {
-          const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
-          testDoubleDeal[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
-          testDoubleDeal[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
-          testDoubleDeal[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
-        }
+        // if (deal !== 'double_menu') {
+        //   const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
+        //   testDoubleDeal[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
+        //   testDoubleDeal[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
+        //   testDoubleDeal[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
+        // }
       } else {
         testDoubleDeal?.splice(matched?.index, 1);
 
         testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
           let prices = {};
-          if (productDeal(item) === 'double_menu')
-            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
+          // if (productDeal(item) === 'double_menu')
+          prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
           return { ...item, ...prices };
         });
       }

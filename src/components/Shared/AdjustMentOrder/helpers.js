@@ -107,7 +107,7 @@ export const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     } else if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu' && !skipDiscount) {
       if (!array.includes(itemData?._id)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true),
+          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true)
         );
 
         let quantity = 0;
@@ -152,10 +152,20 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     secondaryCurrency_totalDiscount: 0,
     secondaryCurrency_discount: 0,
     secondaryCurrency_productPrice: 0,
+    finalReward: {
+      points: 0,
+      baseCurrency_amount: 0,
+      secondaryCurrency_amount: 0,
+    },
   };
 
   if (item?.marketing?.isActive && item?.marketing?.type === 'percentage' && !skipDiscount) {
-    singlePrice = item?.discountPrice || 0;
+    singlePrice = item?.product.price || 0;
+    output.baseCurrency_totalDiscount = item?.product?.discount * (item?.quantity || item?.productQuantity);
+    output.secondaryCurrency_totalDiscount = getSecondaryCurrency(output?.baseCurrency_totalDiscount);
+
+    output.baseCurrency_discount = item?.product?.discount;
+    output.secondaryCurrency_discount = getSecondaryCurrency(item?.product?.discount);
   } else {
     singlePrice = item?.product?.price;
   }
@@ -166,16 +176,12 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     count += singlePrice * (quantity - discountQuantity);
 
     /*
-    
     singlePrice 100
-    quantity 4
+    quantity 5
     discountQue 3
 
     count = 100*1 = 100
-    totalDiscoutn = 100*4 = 100
-
-
-    
+    totalDiscoutn = 100*4 = 100   
     */
 
     const totalDiscount = singlePrice * quantity - count;
@@ -202,16 +208,27 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     });
   });
 
-  console.log({ count, singlePrice });
+  output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
+  output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
+  // when marketing is reward
+  if (item?.marketing?.isActive && item?.marketing?.type === 'reward') {
+    output.finalReward.baseCurrency_amount = (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
+    output.finalReward.secondaryCurrency_amount = getSecondaryCurrency(output.finalReward.baseCurrency_amount);
+    output.finalReward.points = (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
+  }
 
-  if (item?.marketing?.type !== 'double_menu') {
+  // when marketing is percentage
+  if (item?.marketing?.isActive && item?.marketing?.type === 'percentage') {
     // final price
     output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
     // product price
     output.baseCurrency_productPrice = Math.round(count * 100) / 100;
     output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
-  } else {
+  }
+
+  // when marketing is percentage
+  if (item?.marketing?.isActive && item?.marketing?.type === 'double_menu') {
     output.baseCurrency_finalPrice = Math.round(singlePrice * (item?.quantity || item?.productQuantity) * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
 
@@ -219,8 +236,20 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
   }
 
-  // return
+  if (item?.marketing?.type !== 'reward') {
+    delete output.finalReward;
+  }
 
+  // return
+  console.log({
+    count,
+    name: item?.productName,
+    qty: item?.productQuantity,
+    discountQuantity,
+    singlePrice,
+    item,
+    output,
+  });
   return output;
 };
 
@@ -228,45 +257,47 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
 export const doubleDealManipulate = (addedItems) => {
   const doubleDealArray = [];
   const result = addedItems?.map((item) => {
-    if (!doubleDealArray?.find((child) => child?._id === item?._id)) {
-      const findAll = addedItems?.filter((child) => child?._id === item?._id);
+    const quantity = item?.quantity || item?.productQuantity;
+    if (!doubleDealArray?.find((child) => child?._id === item?.productId)) {
+      const findAll = addedItems?.filter((child) => child?.productId === item?.productId);
       let count = 0;
       findAll?.map((item) => {
         count += item?.quantity || item?.productQuantity;
       });
+
       const discountQuantity = parseInt(count / 2, 10);
       let remaining = 0;
-      if ((item?.quantity || item?.productQuantity) < discountQuantity) {
-        remaining = discountQuantity - (item?.quantity || item?.productQuantity);
+
+      if (quantity < discountQuantity) {
+        remaining = discountQuantity - quantity;
       }
+
       doubleDealArray.push({
-        _id: item?._id,
+        _id: item?.productId,
         remaining,
       });
+
       return {
         ...item,
-        discountQuantity:
-          (item?.quantity || item?.productQuantity) < discountQuantity
-            ? item?.quantity || item?.productQuantity
-            : discountQuantity,
+        discountQuantity: quantity < discountQuantity ? quantity : discountQuantity,
       };
     }
-    if (doubleDealArray?.find((child) => child?._id === item?._id)) {
+    if (doubleDealArray?.find((child) => child?._id === item?.productId)) {
       // -----------
-      const findIndex = doubleDealArray?.findIndex((child) => child?._id === item?._id);
+      const findIndex = doubleDealArray?.findIndex((child) => child?._id === item?.productId);
       const { remaining } = doubleDealArray[findIndex];
-      if ((item?.quantity || item?.productQuantity) < remaining) {
-        doubleDealArray[findIndex].remaining = remaining - item?.quantity || item?.productQuantity;
+      if (quantity < remaining) {
+        doubleDealArray[findIndex].remaining = remaining - quantity;
       } else {
         doubleDealArray[findIndex].remaining = 0;
       }
       return {
         ...item,
-        discountQuantity:
-          (item?.quantity || item?.productQuantity) < remaining ? item?.quantity || item?.productQuantity : remaining,
+        discountQuantity: quantity < remaining ? quantity : remaining,
       };
     }
   });
+
   return result;
 };
 
