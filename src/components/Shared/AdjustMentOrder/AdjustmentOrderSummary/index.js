@@ -12,13 +12,7 @@ import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
-import {
-  SingleItemcalculatePrice,
-  calculatePrice,
-  doubleDealManipulate,
-  makeSingleProductDetails,
-  matchedMeals,
-} from '../helpers';
+import { makeSingleProductDetails, matchedMeals, populateProductData } from '../helpers';
 
 function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
   const { currentUser } = useGlobalContext();
@@ -30,39 +24,18 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
   const onIncrementDecrement = (type, value) => {
     setAdjustedOrder((prev) => {
-      // remove the products
       const matched = matchedMeals(prev?.productsDetails, value?.product);
       const deal = productDeal(prev.productsDetails[matched?.index]);
-
-      let testDoubleDeal = prev?.productsDetails;
-
+      let productData = prev?.productsDetails;
       if (matched?.isMatched && value?.value > 0) {
-        testDoubleDeal[matched?.index].productQuantity = value?.value;
-        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
-          let prices = {};
-          // if (productDeal(item) === 'double_menu')
-          prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
-          return { ...item, ...prices };
-        });
-
-        // if (deal !== 'double_menu') {
-        //   const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
-        //   testDoubleDeal[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
-        //   testDoubleDeal[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
-        //   testDoubleDeal[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
-        // }
+        productData[matched?.index].productQuantity = value?.value;
+        productData = populateProductData(productData, order?.shop?.shopExchangeRate);
       } else {
-        testDoubleDeal?.splice(matched?.index, 1);
-
-        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
-          let prices = {};
-          // if (productDeal(item) === 'double_menu')
-          prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
-          return { ...item, ...prices };
-        });
+        productData?.splice(matched?.index, 1);
+        productData = populateProductData(productData, order?.shop?.shopExchangeRate);
       }
 
-      return { ...prev, productsDetails: testDoubleDeal };
+      return { ...prev, productsDetails: productData };
     });
   };
 
@@ -96,22 +69,14 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       if (matched?.isMatched) {
         const deal = productDeal(prev.productsDetails[matched?.index]);
         testDoubleDeal[matched?.index].productQuantity += newProduct?.productQuantity;
-        testDoubleDeal = doubleDealManipulate(testDoubleDeal).map((item) => {
-          let prices = {};
-          if (productDeal(prev.productsDetails[matched?.index]) === 'double_menu')
-            prices = calculatePrice(item, false, item?.discountQuantity, order?.shop?.shopExchangeRate);
-          return { ...item, ...prices };
-        });
-
-        if (deal !== 'double_menu') {
-          const updatedPrice = SingleItemcalculatePrice(testDoubleDeal[matched?.index], order?.shop?.shopExchangeRate);
-          testDoubleDeal[matched?.index] = { ...prev.productsDetails[matched?.index], ...updatedPrice };
-        }
+        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
       } else if (!matched?.shouldAddInLastIndex) {
         console.log(matched?.lastIndex, newProduct);
         testDoubleDeal?.splice(matched?.lastIndex, 0, newProduct);
+        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
       } else {
         testDoubleDeal.push(newProduct);
+        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
       }
 
       console.log({ prev });

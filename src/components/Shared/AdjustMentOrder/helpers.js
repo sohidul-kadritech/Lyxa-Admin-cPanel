@@ -434,12 +434,19 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 
   const doubleDealItem = doubleDealManipulate([productTemplate])[0];
 
-  const output =
-    deal === 'double_menu'
-      ? calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate)
-      : SingleItemcalculatePrice({ ...productTemplate }, shopExchangeRate);
+  const output = calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate);
 
   console.log({ productTemplate, deal, output, doubleDealItem });
 
   return { ...productTemplate, ...output };
+};
+
+export const populateProductData = (testDoubleDeal, shopExchangeRate) => {
+  const data = doubleDealManipulate(testDoubleDeal).map((item) => {
+    let prices = {};
+    prices = calculatePrice(item, false, item?.discountQuantity, shopExchangeRate);
+    return { ...item, ...prices };
+  });
+
+  return data;
 };
