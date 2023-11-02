@@ -37,7 +37,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
 
     console.log('adjustedOrder', { adjuestedOrder, validate });
 
-    if (validate?.status === 'true') {
+    if (validate?.status === true) {
       adjustOrderQuery.mutate(validate?.data);
     }
   };
