@@ -4,10 +4,11 @@
 /* eslint-disable no-unused-vars */
 import { Close } from '@mui/icons-material';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { calculateSecondaryCurrency } from '../../../pages/RiderProfile/Transactions/helpers';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import StyledIconButton from '../../Styled/StyledIconButton';
+import StyledSwitch from '../../Styled/StyledSwitch';
 import { getPriceWithCurrency, productDeal } from '../OrderDetail/Details/OrderSummary/Product';
 import StyledIncrementDecrementButton from './StyledIncrementDecrementButton';
 
@@ -26,11 +27,18 @@ function AdjustMentProduct({
   onDeleteProduct,
   onDeleteAtribute,
   onIncrementDecrement,
+  onToggled = () => {},
 }) {
   const deal = productDeal(product);
   const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
+
+  const [isToggled, setIsToggled] = useState(
+    deal === 'reward' && product?.skipDiscount === undefined
+      ? product?.finalReward?.baseCurrency_amount > 0
+      : product?.skipDiscount,
+  );
 
   // console.log(
   //   product?.productName,
@@ -107,7 +115,7 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity
+                  product?.finalReward?.points / product?.productQuantity,
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
@@ -118,16 +126,47 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
-                  product?.finalReward?.baseCurrency_amount
+                  product?.finalReward?.baseCurrency_amount,
                 )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
                 `${FormateBaseCurrency.get(
-                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
                 )}`}
             </Typography>
           </Stack>
+        )}
+        {deal === 'reward' && (
+          <Box>
+            <StyledSwitch
+              size="small"
+              sx={{
+                width: 40,
+                height: 20,
+                '& .MuiSwitch-switchBase': {
+                  margin: '1px 2px 2px 2px',
+                  '&.Mui-checked': {
+                    transform: 'translateX(19px)',
+                  },
+                },
+                '& .MuiSwitch-thumb': {
+                  boxSizing: 'border-box',
+                  width: 18,
+                  height: 18,
+                },
+              }}
+              checked={isToggled}
+              onChange={() => {
+                setIsToggled((prev) => {
+                  const toggled = !prev;
+                  onToggled(product, toggled);
+
+                  return toggled;
+                });
+              }}
+            />
+          </Box>
         )}
       </Stack>
       {product?.selectedAttributes?.length ? (
@@ -151,19 +190,6 @@ function AdjustMentProduct({
                             ?.withOutSecondaryCurrency}
                       )
                     </Typography>
-                    {/* <StyledIconButton
-                      size="small"
-                      sx={{
-                        width: '24px',
-                        height: '24px',
-                        background: 'transparent',
-                      }}
-                      onClick={() => {
-                        if (onDeleteAtribute) onDeleteAtribute({ product, attribute: attr, item });
-                      }}
-                    >
-                      <Close />
-                    </StyledIconButton> */}
                   </Stack>
                 ))}
               </Stack>

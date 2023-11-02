@@ -94,7 +94,14 @@ function StyledProductSelector({ order, onClickProduct }) {
         >
           {!productsQuery?.isLoading &&
             searchedResult?.map((product, i) => (
-              <ProductCard onClickProduct={onClickProduct} product={product} key={i} />
+              <ProductCard
+                onClickProduct={(data) => {
+                  onClickProduct(data);
+                  setSearchKey('');
+                }}
+                product={product}
+                key={i}
+              />
             ))}
 
           {!productsQuery?.isLoading && !searchedResult?.length && (

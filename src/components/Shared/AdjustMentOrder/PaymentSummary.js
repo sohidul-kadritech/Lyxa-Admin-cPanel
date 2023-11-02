@@ -120,6 +120,7 @@ function AdjustmentPaymentSummary({ order }) {
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal
         />
+
         <SummaryItem
           label="Lyxa Pay"
           value={summary?.baseCurrency_wallet}

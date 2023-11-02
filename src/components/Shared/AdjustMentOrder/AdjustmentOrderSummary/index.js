@@ -12,15 +12,44 @@ import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
-import { makeSingleProductDetails, matchedMeals, populateProductData } from '../helpers';
+import { getPaymentSummary, makeSingleProductDetails, matchedMeals, populateProductData } from '../helpers';
 
-function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
-  const { currentUser } = useGlobalContext();
+function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
+  const { currentUser, general } = useGlobalContext();
+  const { appSetting } = general;
   const [open, setOpen] = useState(false);
   const { userType } = currentUser;
   const totalProductQuantity = order?.productsDetails?.reduce((prev, curr) => curr?.productQuantity + prev, 0);
   const history = useHistory();
   const routeMatch = useRouteMatch();
+
+  console.log({ general });
+  const onToggled = (product, toggled) => {
+    setAdjustedOrder((prev) => {
+      const matched = matchedMeals(prev?.productsDetails, product);
+
+      const deal = productDeal(prev.productsDetails[matched?.index]);
+
+      let productData = prev?.productsDetails;
+
+      if (matched?.isMatched) {
+        productData[matched?.index].skipDiscount = toggled;
+      }
+
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      // console.log({
+      //   summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      //   oldOrderSummary,
+      // });
+
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
+    });
+  };
 
   const onIncrementDecrement = (type, value) => {
     setAdjustedOrder((prev) => {
@@ -34,7 +63,11 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       }
       productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
-      return { ...prev, productsDetails: productData };
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 
@@ -51,7 +84,11 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
       productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
-      return { ...prev, productsDetails: productData };
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 
@@ -78,7 +115,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
       productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
-      return { ...prev, productsDetails: productData };
+      return { ...prev, productsDetails: productData, summary: getPaymentSummary(productData, order, appSetting?.vat) };
     });
   };
 
@@ -131,6 +168,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               shopExchangeRate={order?.shop?.shopExchangeRate}
               onDeleteProduct={onDeleteProduct}
               onIncrementDecrement={onIncrementDecrement}
+              onToggled={onToggled}
             />
           ))}
         </Stack>

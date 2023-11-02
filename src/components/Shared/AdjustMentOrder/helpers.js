@@ -3,6 +3,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable array-callback-return */
 
+import { successMsg } from '../../../helpers/successMsg';
+
 /* eslint-disable no-unsafe-optional-chaining */
 export const initialAdjustmentOrderData = {
   orderId: '',
@@ -58,6 +60,19 @@ export const initialAdjustmentOrderData = {
   adjustmentReason: '',
 };
 
+const calculatetotalDiscountPrice = (addedItems) => {
+  let count = 0;
+
+  addedItems?.map((itemData) => {
+    if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'percentage') {
+      count += itemData?.baseCurrency_discount;
+    }
+  });
+  // console.log(count);
+
+  return Math.round(count * 100) / 100;
+};
+
 export const productDealForProductDetails = (product) => {
   const isActive = product?.marketing?.isActive === true;
   const type = product?.marketing?.type;
@@ -86,8 +101,7 @@ export const getProductPriceForAdjustMent = (product, deal) => {
 };
 
 // total product bill
-
-export const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
+const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
   let count = 0;
   const array = [];
 
@@ -97,40 +111,17 @@ export const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     }
     let price = 0;
 
-    if (
-      itemData?.marketing?.isActive &&
-      itemData?.marketing?.type === 'percentage' &&
-      !skipDiscount &&
-      !skipPercentage
-    ) {
-      price = itemData?.discountPrice * itemData.quantity;
-    } else if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu' && !skipDiscount) {
-      if (!array.includes(itemData?._id)) {
-        const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true),
-        );
+    if (itemData?.marketing?.type !== 'double_menu') {
+      price = itemData?.product?.price * (itemData?.quantity || itemData?.productQuantity);
+      count += price;
 
-        let quantity = 0;
-        doubleDealAllProduct?.map((item) => {
-          quantity += item?.quantity;
+      itemData?.selectedAttributes?.map((parent) => {
+        parent?.attributeItems?.map((child) => {
+          count += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
+          price += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
         });
-
-        price += itemData?.price * (parseInt(quantity / 2, 10) + (quantity % 2));
-        array.push(itemData?._id);
-      }
-    } else {
-      price = itemData?.price * itemData.quantity;
-    }
-    // console.log(count);
-    count += price;
-
-    itemData?.attributes?.map((parent) => {
-      parent?.items?.map((child) => {
-        if (itemData?.selectedAttributes?.includes(child?._id)) {
-          count += child?.extraPrice * itemData?.quantity;
-        }
       });
-    });
+    }
   });
 
   return Math.round(count * 100) / 100;
@@ -177,7 +168,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
 
     const totalDiscount = singlePrice * quantity - count;
 
-    const discount = totalDiscount / discountQuantity;
+    const discount = totalDiscount / discountQuantity || 0;
 
     output.baseCurrency_totalDiscount = Math.round(totalDiscount * 100) / 100;
     output.secondaryCurrency_totalDiscount = getSecondaryCurrency(output?.baseCurrency_totalDiscount);
@@ -202,10 +193,17 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
-  if (item?.marketing?.isActive && item?.marketing?.type === 'reward' && !skipDiscount) {
-    output.finalReward.baseCurrency_amount = (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
-    output.finalReward.secondaryCurrency_amount = getSecondaryCurrency(output.finalReward.baseCurrency_amount);
-    output.finalReward.points = (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
+  if (item?.marketing?.isActive && item?.marketing?.type === 'reward') {
+    console.log('item?.reward?.amount', item?.reward?.amount);
+    output.finalReward.baseCurrency_amount = skipDiscount
+      ? 0
+      : (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
+    output.finalReward.secondaryCurrency_amount = !skipDiscount
+      ? 0
+      : getSecondaryCurrency(output.finalReward.baseCurrency_amount);
+    output.finalReward.points = skipDiscount
+      ? 0
+      : (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
   }
 
   // when marketing is percentage
@@ -232,15 +230,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   }
 
   // return
-  console.log({
-    count,
-    name: item?.productName,
-    qty: item?.productQuantity,
-    discountQuantity,
-    singlePrice,
-    item,
-    output,
-  });
+
   return output;
 };
 
@@ -423,6 +413,7 @@ export const makeSingleProductDetails = (product, owner = {}) => {
     selectedAttributes:
       product?.selectedAttributes?.map((atr) => ({ ...atr, attributeItems: atr?.selectedItems })) || [],
     shop: { ...product?.shop },
+    skipDiscount: false,
   };
 
   const shopExchangeRate = product?.shop?.shopExchangeRate || 0;
@@ -436,12 +427,319 @@ export const makeSingleProductDetails = (product, owner = {}) => {
   return { ...productTemplate, ...output };
 };
 
-export const populateProductData = (testDoubleDeal, shopExchangeRate) => {
+export const populateProductData = (testDoubleDeal, shopExchangeRate, skipDiscount = false) => {
   const data = doubleDealManipulate(testDoubleDeal).map((item) => {
+    const shouldSkipDiscount = item?.skipDiscount && skipDiscount;
     let prices = {};
-    prices = calculatePrice(item, item?.skipDiscount, item?.discountQuantity, shopExchangeRate);
+    prices = calculatePrice(item, shouldSkipDiscount, item?.discountQuantity, shopExchangeRate);
     return { ...item, ...prices };
   });
 
   return data;
+};
+
+export const getCard = (order) => {
+  const summary = order?.oldOrderSummary;
+  return summary?.baseCurrency_card;
+};
+
+export const getWallet = (order) => {
+  const summary = order?.oldOrderSummary;
+  return summary?.baseCurrency_wallet;
+};
+
+export const getCash = (order) => {
+  const summary = order?.oldOrderSummary;
+  return summary?.baseCurrency_cash;
+};
+
+export const getRewordItem = (addedItems, shopExchangeRate, user) => {
+  let totalReward = 0;
+  let rewordPrice = 0;
+  const getSecondaryCurrency = (value) => Math.round((shopExchangeRate || 0) * value);
+
+  addedItems?.map((item) => {
+    const skipDiscount =
+      item.skipDiscount === undefined ? item?.finalReward?.baseCurrency_amount > 0 : item?.skipDiscount;
+    if (
+      (user ? item?.owner?._id === user?._id : true) &&
+      item?.marketing?.isActive &&
+      item?.marketing?.type === 'reward' &&
+      !skipDiscount
+    ) {
+      console.log({ item });
+      totalReward += item?.finalReward?.points;
+      rewordPrice +=
+        item?.product?.price * (item?.quantity || item?.productQuantity) - item?.finalReward?.baseCurrency_amount;
+    }
+  });
+
+  return {
+    points: totalReward,
+    amount: rewordPrice,
+    baseCurrency_amount: rewordPrice,
+    secondaryCurrency_amount: getSecondaryCurrency(rewordPrice),
+  };
+};
+
+const doubleMenuItemPriceCalculation = (addedItems, user) => {
+  let count = 0;
+  let itemWithAttribute = 0;
+  const array = [];
+
+  addedItems?.map((itemData) => {
+    if (user && itemData?.owner?._id !== user?._id) {
+      return;
+    }
+    let price = 0;
+    if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu') {
+      if (!array.includes(itemData?.productId)) {
+        const doubleDealAllProduct = addedItems?.filter(
+          (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
+        );
+
+        let quantity = 0;
+
+        doubleDealAllProduct?.map((item) => {
+          quantity += item?.quantity || item?.productQuantity;
+        });
+
+        price += itemData?.product?.price * parseInt(quantity / 2, 10);
+        array.push(itemData?.productId);
+      }
+
+      // item attribute price
+      itemData?.selectedAttributes?.map((parent) => {
+        parent?.attributeItems?.map((child) => {
+          itemWithAttribute += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
+        });
+      });
+    }
+    // console.log(count);
+    count += price;
+    itemWithAttribute += price;
+  });
+
+  return { item: Math.round(count * 100) / 100, itemWithAttribute };
+};
+
+export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
+  const paymentOption = order?.paymentMethod;
+
+  const oldSummary = oldOrderSummary;
+  const newSummary = order?.summary;
+
+  const total_base_new =
+    newSummary?.baseCurrency_totalAmount +
+    newSummary?.baseCurrency_vat +
+    newSummary?.baseCurrency_riderTip -
+    newSummary?.baseCurrency_discount -
+    newSummary?.reward?.baseCurrency_amount -
+    newSummary?.baseCurrency_couponDiscountAmount;
+
+  console.log(
+    newSummary?.baseCurrency_totalAmount,
+    newSummary?.baseCurrency_vat,
+    newSummary?.baseCurrency_riderTip,
+    newSummary?.baseCurrency_discount,
+    newSummary?.reward?.baseCurrency_amount,
+  );
+
+  const total_base_old =
+    oldSummary?.baseCurrency_totalAmount +
+    oldSummary?.baseCurrency_vat +
+    oldSummary?.baseCurrency_riderTip -
+    oldSummary?.baseCurrency_discount -
+    oldSummary?.reward?.baseCurrency_amount -
+    oldSummary?.baseCurrency_couponDiscountAmount;
+
+  const shopExchangeRate = order?.shop?.shopExchangeRate;
+  const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
+
+  const output = {
+    baseCurrency_cash: oldSummary?.baseCurrency_cash,
+    secondaryCurrency_cash: oldSummary?.secondaryCurrency_cash,
+    baseCurrency_card: oldSummary?.baseCurrency_card,
+    secondaryCurrency_card: oldSummary?.secondaryCurrency_card,
+    baseCurrency_wallet: oldSummary?.baseCurrency_wallet,
+    secondaryCurrency_wallet: oldSummary?.secondaryCurrency_wallet,
+  };
+
+  console.log('first', output);
+
+  //  21 - 25 = -4
+  const diff = total_base_new - total_base_old;
+
+  console.log('test', { oldSummary, newSummary, total_base_new, total_base_old });
+
+  if (diff > 0) {
+    output.baseCurrency_cash =
+      paymentOption === 'cash' ? oldSummary?.baseCurrency_cash + diff : oldSummary?.baseCurrency_cash;
+    output.baseCurrency_wallet =
+      paymentOption === 'wallet' ? oldSummary?.baseCurrency_wallet + diff : oldSummary?.baseCurrency_wallet;
+    output.baseCurrency_card =
+      paymentOption === 'card' ? oldSummary?.baseCurrency_card + diff : oldSummary?.baseCurrency_card;
+    console.log({ output });
+  } else if (diff < 0) {
+    if (paymentOption === 'cash') {
+      const remaining = (oldSummary?.baseCurrency_cash || 0) + diff;
+
+      output.baseCurrency_cash = remaining < 0 ? 0 : remaining;
+
+      output.baseCurrency_wallet =
+        remaining < 0 ? (oldSummary?.baseCurrency_wallet || 0) + remaining : oldSummary?.baseCurrency_wallet || 0;
+    }
+
+    if (paymentOption === 'card') {
+      const remaining = (oldSummary?.baseCurrency_card || 0) + diff;
+
+      output.baseCurrency_card = remaining < 0 ? 0 : remaining;
+
+      output.baseCurrency_wallet =
+        remaining < 0 ? (oldSummary?.baseCurrency_wallet || 0) + remaining : oldSummary?.baseCurrency_wallet || 0;
+    }
+
+    if (paymentOption === 'wallet') {
+      const remaining = (oldSummary?.baseCurrency_wallet || 0) + diff;
+      oldSummary.baseCurrency_wallet = remaining;
+    }
+  }
+
+  output.secondaryCurrency_cash = getSecondaryCurrency(output?.baseCurrency_cash);
+  output.secondaryCurrency_card = getSecondaryCurrency(output?.baseCurrency_card);
+  output.secondaryCurrency_wallet = getSecondaryCurrency(output?.baseCurrency_wallet);
+  output.baseCurrency_cash = Number((output?.baseCurrency_cash).toFixed(2));
+  output.baseCurrency_card = Number((output?.baseCurrency_card).toFixed(2));
+  output.baseCurrency_wallet = Number((output?.baseCurrency_wallet).toFixed(2));
+
+  console.log('data ==> ', { diff, total_base_new, total_base_old, output, paymentOption, oldSummary, newSummary });
+
+  return output;
+};
+
+export const calculateVAT = (total, precentage = 0) => Number((total * (precentage / 100)).toFixed(2));
+
+export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSummary) => {
+  console.log({ order });
+
+  const shopExchangeRate = order?.shop?.shopExchangeRate;
+  const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
+
+  const totalDiscount = calculatetotalDiscountPrice(addedItems);
+
+  const summary = oldOrderSummary;
+
+  const totalProductAmount = totalBill(addedItems) + doubleMenuItemPriceCalculation(addedItems).itemWithAttribute;
+  const totalAmount = totalProductAmount + summary?.baseCurrency_riderFee;
+
+  const reward = getRewordItem(addedItems, shopExchangeRate);
+
+  console.log(doubleMenuItemPriceCalculation(addedItems));
+
+  const templateSummary = {
+    baseCurrency_productAmount: totalProductAmount,
+    secondaryCurrency_productAmount: getSecondaryCurrency(totalProductAmount),
+    baseCurrency_riderFee: summary?.baseCurrency_riderFee,
+    baseCurrency_totalAmount: totalAmount,
+    baseCurrency_discount: totalDiscount,
+    secondaryCurrency_discount: getSecondaryCurrency(totalDiscount),
+    baseCurrency_vat: calculateVAT(
+      totalAmount -
+        (summary?.baseCurrency_couponDiscountAmount || 0) -
+        (reward?.baseCurrency_amount || 0) -
+        (totalDiscount || 0),
+      vatPercentage,
+    ),
+    baseCurrency_cash: getCash({ oldOrderSummary }),
+    secondaryCurrency_cash: getSecondaryCurrency(getCash({ oldOrderSummary })),
+    baseCurrency_card: getCard({ oldOrderSummary }),
+    secondaryCurrency_card: getSecondaryCurrency(getCard({ oldOrderSummary })),
+    baseCurrency_wallet: getWallet({ oldOrderSummary }),
+    secondaryCurrency_wallet: getSecondaryCurrency(getWallet({ oldOrderSummary })),
+    reward,
+    baseCurrency_doubleMenuItemPrice: doubleMenuItemPriceCalculation(addedItems).item,
+    secondaryCurrency_doubleMenuItemPrice: getSecondaryCurrency(doubleMenuItemPriceCalculation(addedItems).item),
+    baseCurrency_riderTip: summary?.baseCurrency_riderTip,
+    baseCurrency_couponDiscountAmount: summary?.baseCurrency_couponDiscountAmount,
+  };
+
+  templateSummary.secondaryCurrency_totalAmount = getSecondaryCurrency(templateSummary?.baseCurrency_totalAmount);
+  templateSummary.secondaryCurrency_vat = getSecondaryCurrency(templateSummary?.baseCurrency_vat);
+  templateSummary.secondaryCurrency_riderTip = getSecondaryCurrency(summary?.baseCurrency_riderTip);
+  templateSummary.secondaryCurrency_couponDiscountAmount = getSecondaryCurrency(
+    templateSummary?.baseCurrency_couponDiscountAmount,
+  );
+
+  templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(templateSummary?.baseCurrency_riderFee);
+
+  return { ...templateSummary, ...getUpdatedPaymentOptions({ ...order, summary: templateSummary }, oldOrderSummary) };
+};
+
+export const generateAdjustOrdeJsonData = (adjustedOrder) => {
+  const adjustOrderTemplate = {
+    orderId: adjustedOrder?._id,
+    products: [],
+    summary: {
+      baseCurrency_productAmount: adjustedOrder?.summary?.baseCurrency_productAmount || 0,
+      baseCurrency_riderFee: adjustedOrder?.summary?.baseCurrency_riderFee || 0,
+      baseCurrency_totalAmount: adjustedOrder?.summary?.baseCurrency_totalAmount || 0,
+      baseCurrency_discount: adjustedOrder?.summary?.baseCurrency_discount || 0,
+      baseCurrency_vat: adjustedOrder?.summary?.baseCurrency_vat || 0,
+      baseCurrency_wallet: adjustedOrder?.summary?.baseCurrency_wallet || 0,
+      secondaryCurrency_wallet: adjustedOrder?.summary?.secondaryCurrency_wallet || 0,
+      baseCurrency_card: adjustedOrder?.summary?.baseCurrency_card || 0,
+      secondaryCurrency_card: adjustedOrder?.summary?.secondaryCurrency_card || 0,
+      baseCurrency_cash: adjustedOrder?.summary?.baseCurrency_cash || 0,
+      secondaryCurrency_cash: adjustedOrder?.summary?.secondaryCurrency_cash || 0,
+      reward: {
+        points: adjustedOrder?.summary?.reward?.amount || 0,
+        baseCurrency_amount: adjustedOrder?.summary?.reward?.baseCurrency_amount || 0,
+      },
+      baseCurrency_doubleMenuItemPrice: adjustedOrder?.summary?.baseCurrency_doubleMenuItemPrice,
+      baseCurrency_riderTip: adjustedOrder?.summary?.baseCurrency_riderTip,
+      baseCurrency_couponDiscountAmount: adjustedOrder?.summary?.baseCurrency_couponDiscountAmount,
+    },
+    adjustmentReason: adjustedOrder?.adjustmentReason,
+  };
+
+  adjustOrderTemplate.products = adjustedOrder?.productsDetails?.map((product) => {
+    const productTemplate = {
+      product: product?.productId,
+      perProduct: product?.baseCurrency_productPrice,
+      discount: product?.baseCurrency_discount,
+      totalProductAmount: product?.baseCurrency_finalPrice,
+      totalDiscount: product?.baseCurrency_discount,
+      quantity: product?.productQuantity,
+      attributes: product?.selectedAttributes?.map(({ id, selectedItems }) => ({
+        _id: id,
+        attributeItems: selectedItems?.map(({ _id, extraPrice }) => ({ _id, extraPrice })),
+      })),
+      isDoubleDeal: product?.isDoubleDeal,
+      productSpecialInstruction: product?.productSpecialInstruction,
+      reward: {
+        amount: product?.finalReward?.baseCurrency_amount,
+        points: product?.finalReward?.points,
+      },
+      marketingId: product?.marketing?._id,
+      owner: product?.owner?._id,
+    };
+
+    if (product?.marketing?.type !== 'reward') {
+      delete productTemplate?.reward;
+    }
+
+    return productTemplate;
+  });
+
+  if (!adjustedOrder?._id) {
+    successMsg('Order is not found');
+    return { status: false };
+  }
+
+  if (!adjustedOrder?.adjustmentReason) {
+    successMsg('Provide adjustment reasone please');
+    return { status: false };
+  }
+
+  return { status: true, data: adjustOrderTemplate };
 };

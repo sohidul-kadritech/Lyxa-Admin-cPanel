@@ -266,7 +266,7 @@ export default function NewOrders({ showFor }) {
         </Box>
       )}
 
-      <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <SearchBar searchPlaceHolder="Search Orders" queryParams={queryParams} setQueryParams={setQueryParams} />
 
       <OrderTable
         loading={ordersQuery?.isLoading}

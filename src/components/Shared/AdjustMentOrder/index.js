@@ -1,13 +1,33 @@
 /* eslint-disable no-unused-vars */
-import { Paper, Stack, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { Button, Paper, Stack, Typography } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import AdjusmentReason from './AdjusmentReason';
 import AdjustMentOrderSummary from './AdjustmentOrderSummary';
 import CustomerInfo from './CustomerInfo';
 import AdjustmentPaymentSummary from './PaymentSummary';
+import { generateAdjustOrdeJsonData } from './helpers';
+
+const getInitialOrderData = (order) => ({ ...order, adjustmentReason: '' });
+
+const getOrderSummary = (order) => ({ ...order?.summary });
 
 function AdjustmentOrder({ onClose, order = {} }) {
-  const [adjuestedOrder, setAdjustedOrder] = useState({ ...order });
+  const [adjuestedOrder, setAdjustedOrder] = useState(getInitialOrderData({ ...order }));
+
+  // const [oldOrderSummary, setOldOrderSummary] = useState(getOrderSummary({ ...order }));
+
+  const oldOrderSummary = useMemo(() => {
+    console.log('call use memo');
+    return getOrderSummary(order);
+  }, []);
+
+  console.log({ oldOrderSummary, adjuestedOrder });
+
+  const onAdjustOrder = () => {
+    const validate = generateAdjustOrdeJsonData(adjuestedOrder);
+
+    console.log('adjustedOrder', { adjuestedOrder, validate });
+  };
 
   return (
     <Paper
@@ -34,9 +54,22 @@ function AdjustmentOrder({ onClose, order = {} }) {
       </Stack>
 
       <Stack>
-        <AdjustMentOrderSummary order={adjuestedOrder} setAdjustedOrder={setAdjustedOrder} />
+        <AdjustMentOrderSummary
+          order={adjuestedOrder}
+          setAdjustedOrder={setAdjustedOrder}
+          oldOrderSummary={oldOrderSummary}
+        />
         <AdjustmentPaymentSummary order={adjuestedOrder} />
-        <AdjusmentReason />
+        <AdjusmentReason order={adjuestedOrder} setAdjustedOrder={setAdjustedOrder} />
+      </Stack>
+
+      <Stack direction="row" mt={4} justifyContent="flex-end" alignItems="center" gap={2.5}>
+        <Button variant="outlined" color="primary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="contained" color="primary" onClick={onAdjustOrder}>
+          Adjust Order
+        </Button>
       </Stack>
     </Paper>
   );
