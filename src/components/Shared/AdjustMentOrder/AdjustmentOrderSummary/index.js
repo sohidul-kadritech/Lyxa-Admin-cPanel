@@ -24,6 +24,7 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
   const routeMatch = useRouteMatch();
 
   console.log({ general });
+
   const onToggled = (product, toggled) => {
     setAdjustedOrder((prev) => {
       const matched = matchedMeals(prev?.productsDetails, product);
@@ -33,15 +34,10 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
       let productData = prev?.productsDetails;
 
       if (matched?.isMatched) {
-        productData[matched?.index].skipDiscount = toggled;
+        productData[matched?.index].skipDiscount = !toggled;
       }
 
       productData = populateProductData(productData, order?.shop?.shopExchangeRate);
-
-      // console.log({
-      //   summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
-      //   oldOrderSummary,
-      // });
 
       return {
         ...prev,
@@ -72,8 +68,6 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
   };
 
   const onDeleteProduct = (data) => {
-    // order?.productsDetails
-
     setAdjustedOrder((prev) => {
       // remove the products
       const matched = matchedMeals(prev?.productsDetails, data);
@@ -94,7 +88,9 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
 
   const onClickProduct = (data) => {
     setAdjustedOrder((prev) => {
-      const newProduct = makeSingleProductDetails(data?.product);
+      const newProduct = makeSingleProductDetails(data?.product, prev?.user);
+
+      console.log({ newProduct });
 
       // remove the products
       const matched = matchedMeals(prev?.productsDetails, newProduct);
@@ -115,7 +111,11 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
 
       productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
-      return { ...prev, productsDetails: productData, summary: getPaymentSummary(productData, order, appSetting?.vat) };
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 

@@ -1,6 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
+import { useMutation } from 'react-query';
+import { successMsg } from '../../../helpers/successMsg';
+import * as API_URL from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import AdjusmentReason from './AdjusmentReason';
 import AdjustMentOrderSummary from './AdjustmentOrderSummary';
 import CustomerInfo from './CustomerInfo';
@@ -16,17 +20,26 @@ function AdjustmentOrder({ onClose, order = {} }) {
 
   // const [oldOrderSummary, setOldOrderSummary] = useState(getOrderSummary({ ...order }));
 
-  const oldOrderSummary = useMemo(() => {
-    console.log('call use memo');
-    return getOrderSummary(order);
-  }, []);
+  const oldOrderSummary = useMemo(() => getOrderSummary(order), []);
 
-  console.log({ oldOrderSummary, adjuestedOrder });
+  const adjustOrderQuery = useMutation((data) => AXIOS.get(API_URL.ADJUST_ORDER, data), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        successMsg(data?.message, 'success');
+      } else {
+        successMsg(data?.message, 'success');
+      }
+    },
+  });
 
   const onAdjustOrder = () => {
     const validate = generateAdjustOrdeJsonData(adjuestedOrder);
 
     console.log('adjustedOrder', { adjuestedOrder, validate });
+
+    if (validate?.status === 'true') {
+      adjustOrderQuery.mutate(validate?.data);
+    }
   };
 
   return (

@@ -35,18 +35,10 @@ function AdjustMentProduct({
   const quantity = product?.productQuantity;
 
   const [isToggled, setIsToggled] = useState(
-    deal === 'reward' && product?.skipDiscount === undefined
-      ? product?.finalReward?.baseCurrency_amount > 0
-      : product?.skipDiscount,
+    product?.skipDiscount === undefined
+      ? deal === 'reward' && product?.finalReward?.baseCurrency_amount > 0
+      : !product?.skipDiscount
   );
-
-  // console.log(
-  //   product?.productName,
-  //   quantity,
-  //   product?.baseCurrency_finalPrice,
-  //   product?.baseCurrency_totalDiscount,
-  //   product
-  // );
 
   return (
     <Box
@@ -115,7 +107,7 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${dealTypeToLabelMap[deal]} ${Math.round(
-                  product?.finalReward?.points / product?.productQuantity,
+                  product?.finalReward?.points / product?.productQuantity
                 )} pts`}
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
@@ -126,13 +118,13 @@ function AdjustMentProduct({
               {/* reward */}
               {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
-                  product?.finalReward?.baseCurrency_amount,
+                  product?.finalReward?.baseCurrency_amount
                 )}`}
 
               {/* double menu */}
               {deal === 'double_menu' &&
                 `${FormateBaseCurrency.get(
-                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
+                  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0
                 )}`}
             </Typography>
           </Stack>

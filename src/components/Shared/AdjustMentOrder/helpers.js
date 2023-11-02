@@ -413,7 +413,7 @@ export const makeSingleProductDetails = (product, owner = {}) => {
     selectedAttributes:
       product?.selectedAttributes?.map((atr) => ({ ...atr, attributeItems: atr?.selectedItems })) || [],
     shop: { ...product?.shop },
-    skipDiscount: false,
+    skipDiscount: true,
   };
 
   const shopExchangeRate = product?.shop?.shopExchangeRate || 0;
@@ -427,8 +427,9 @@ export const makeSingleProductDetails = (product, owner = {}) => {
   return { ...productTemplate, ...output };
 };
 
-export const populateProductData = (testDoubleDeal, shopExchangeRate, skipDiscount = false) => {
-  const data = doubleDealManipulate(testDoubleDeal).map((item) => {
+export const populateProductData = (addedProducts, shopExchangeRate, skipDiscount = false) => {
+  console.log({ addedProducts });
+  const data = doubleDealManipulate(addedProducts).map((item) => {
     const shouldSkipDiscount = item?.skipDiscount && skipDiscount;
     let prices = {};
     prices = calculatePrice(item, shouldSkipDiscount, item?.discountQuantity, shopExchangeRate);
@@ -460,7 +461,10 @@ export const getRewordItem = (addedItems, shopExchangeRate, user) => {
 
   addedItems?.map((item) => {
     const skipDiscount =
-      item.skipDiscount === undefined ? item?.finalReward?.baseCurrency_amount > 0 : item?.skipDiscount;
+      item.skipDiscount === undefined
+        ? !(item?.marketing?.type === 'reward' && item?.finalReward?.baseCurrency_amount > 0)
+        : item?.skipDiscount;
+    console.log(item?.productName, skipDiscount);
     if (
       (user ? item?.owner?._id === user?._id : true) &&
       item?.marketing?.isActive &&
@@ -495,7 +499,7 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
     if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu') {
       if (!array.includes(itemData?.productId)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
+          (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id)
         );
 
         let quantity = 0;
@@ -508,16 +512,17 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
         array.push(itemData?.productId);
       }
 
-      // item attribute price
-      itemData?.selectedAttributes?.map((parent) => {
-        parent?.attributeItems?.map((child) => {
-          itemWithAttribute += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
-        });
-      });
+      itemWithAttribute += itemData?.baseCurrency_finalPrice - itemData?.baseCurrency_totalDiscount;
+
+      // // item attribute price
+      // itemData?.selectedAttributes?.map((parent) => {
+      //   parent?.attributeItems?.map((child) => {
+      //     itemWithAttribute += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
+      //   });
+      // });
     }
     // console.log(count);
     count += price;
-    itemWithAttribute += price;
   });
 
   return { item: Math.round(count * 100) / 100, itemWithAttribute };
@@ -542,7 +547,7 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     newSummary?.baseCurrency_vat,
     newSummary?.baseCurrency_riderTip,
     newSummary?.baseCurrency_discount,
-    newSummary?.reward?.baseCurrency_amount,
+    newSummary?.reward?.baseCurrency_amount
   );
 
   const total_base_old =
@@ -608,17 +613,19 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
   output.secondaryCurrency_cash = getSecondaryCurrency(output?.baseCurrency_cash);
   output.secondaryCurrency_card = getSecondaryCurrency(output?.baseCurrency_card);
   output.secondaryCurrency_wallet = getSecondaryCurrency(output?.baseCurrency_wallet);
-  output.baseCurrency_cash = Number((output?.baseCurrency_cash).toFixed(2));
-  output.baseCurrency_card = Number((output?.baseCurrency_card).toFixed(2));
-  output.baseCurrency_wallet = Number((output?.baseCurrency_wallet).toFixed(2));
+  output.baseCurrency_cash = Number((output?.baseCurrency_cash || 0).toFixed(2));
+  output.baseCurrency_card = Number((output?.baseCurrency_card || 0).toFixed(2));
+  output.baseCurrency_wallet = Number((output?.baseCurrency_wallet || 0).toFixed(2));
 
   console.log('data ==> ', { diff, total_base_new, total_base_old, output, paymentOption, oldSummary, newSummary });
 
   return output;
 };
 
+// calcualte total vat
 export const calculateVAT = (total, precentage = 0) => Number((total * (precentage / 100)).toFixed(2));
 
+// generate product summary for updated adjusted order
 export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSummary) => {
   console.log({ order });
 
@@ -634,7 +641,13 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
 
   const reward = getRewordItem(addedItems, shopExchangeRate);
 
-  console.log(doubleMenuItemPriceCalculation(addedItems));
+  if (reward?.amount > order?.user?.tempRewardPoints) {
+    successMsg('Insufficient points');
+  }
+
+  console.log('reward', { reward });
+
+  console.log('double deal', doubleMenuItemPriceCalculation(addedItems));
 
   const templateSummary = {
     baseCurrency_productAmount: totalProductAmount,
@@ -648,7 +661,7 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
         (summary?.baseCurrency_couponDiscountAmount || 0) -
         (reward?.baseCurrency_amount || 0) -
         (totalDiscount || 0),
-      vatPercentage,
+      vatPercentage
     ),
     baseCurrency_cash: getCash({ oldOrderSummary }),
     secondaryCurrency_cash: getSecondaryCurrency(getCash({ oldOrderSummary })),
@@ -667,7 +680,7 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   templateSummary.secondaryCurrency_vat = getSecondaryCurrency(templateSummary?.baseCurrency_vat);
   templateSummary.secondaryCurrency_riderTip = getSecondaryCurrency(summary?.baseCurrency_riderTip);
   templateSummary.secondaryCurrency_couponDiscountAmount = getSecondaryCurrency(
-    templateSummary?.baseCurrency_couponDiscountAmount,
+    templateSummary?.baseCurrency_couponDiscountAmount
   );
 
   templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(templateSummary?.baseCurrency_riderFee);
@@ -675,6 +688,7 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   return { ...templateSummary, ...getUpdatedPaymentOptions({ ...order, summary: templateSummary }, oldOrderSummary) };
 };
 
+// generate product json data for adjusting order
 export const generateAdjustOrdeJsonData = (adjustedOrder) => {
   const adjustOrderTemplate = {
     orderId: adjustedOrder?._id,
@@ -738,6 +752,16 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
 
   if (!adjustedOrder?.adjustmentReason) {
     successMsg('Provide adjustment reasone please');
+    return { status: false };
+  }
+
+  if (!adjustedOrder?.productsDetails?.length) {
+    successMsg("Product list shoul'd not be empty");
+    return { status: false };
+  }
+
+  if (adjustedOrder?.summary?.reward?.amount > adjustedOrder?.user?.tempRewardPoints) {
+    successMsg('Insufficient points');
     return { status: false };
   }
 
