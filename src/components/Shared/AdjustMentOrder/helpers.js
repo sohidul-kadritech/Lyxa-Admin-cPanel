@@ -107,7 +107,7 @@ export const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     } else if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu' && !skipDiscount) {
       if (!array.includes(itemData?._id)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true)
+          (item) => item?._id === itemData?._id && (user ? item?.owner?._id === user?._id : true),
         );
 
         let quantity = 0;
@@ -175,17 +175,8 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
 
     count += singlePrice * (quantity - discountQuantity);
 
-    /*
-    singlePrice 100
-    quantity 5
-    discountQue 3
-
-    count = 100*1 = 100
-    totalDiscoutn = 100*4 = 100   
-    */
-
     const totalDiscount = singlePrice * quantity - count;
-    // quantity - discountQuantity > 0 ? singlePrice * discountQuantity : item?.baseCurrency_totalDiscount;
+
     const discount = totalDiscount / discountQuantity;
 
     output.baseCurrency_totalDiscount = Math.round(totalDiscount * 100) / 100;
@@ -211,14 +202,14 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
-  if (item?.marketing?.isActive && item?.marketing?.type === 'reward') {
+  if (item?.marketing?.isActive && item?.marketing?.type === 'reward' && !skipDiscount) {
     output.finalReward.baseCurrency_amount = (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
     output.finalReward.secondaryCurrency_amount = getSecondaryCurrency(output.finalReward.baseCurrency_amount);
     output.finalReward.points = (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
   }
 
   // when marketing is percentage
-  if (item?.marketing?.isActive && item?.marketing?.type === 'percentage') {
+  if (item?.marketing?.isActive && item?.marketing?.type === 'percentage' && !skipDiscount) {
     // final price
     output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
@@ -228,7 +219,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   }
 
   // when marketing is percentage
-  if (item?.marketing?.isActive && item?.marketing?.type === 'double_menu') {
+  if (item?.marketing?.isActive && item?.marketing?.type === 'double_menu' && !skipDiscount) {
     output.baseCurrency_finalPrice = Math.round(singlePrice * (item?.quantity || item?.productQuantity) * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
 
@@ -402,6 +393,10 @@ export const matchedMeals = (products, addedProduct) => {
     matched.shouldAddInLastIndex = true;
   }
 
+  if (matched?.lastIndex > 0 && matched?.lastIndex < products?.length) {
+    matched.lastIndex += 1;
+  }
+
   return matched;
 };
 
@@ -444,7 +439,7 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 export const populateProductData = (testDoubleDeal, shopExchangeRate) => {
   const data = doubleDealManipulate(testDoubleDeal).map((item) => {
     let prices = {};
-    prices = calculatePrice(item, false, item?.discountQuantity, shopExchangeRate);
+    prices = calculatePrice(item, item?.skipDiscount, item?.discountQuantity, shopExchangeRate);
     return { ...item, ...prices };
   });
 

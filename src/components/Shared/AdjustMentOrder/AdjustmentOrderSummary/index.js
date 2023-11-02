@@ -29,11 +29,10 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       let productData = prev?.productsDetails;
       if (matched?.isMatched && value?.value > 0) {
         productData[matched?.index].productQuantity = value?.value;
-        productData = populateProductData(productData, order?.shop?.shopExchangeRate);
       } else {
         productData?.splice(matched?.index, 1);
-        productData = populateProductData(productData, order?.shop?.shopExchangeRate);
       }
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
       return { ...prev, productsDetails: productData };
     });
@@ -46,9 +45,13 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
       // remove the products
       const matched = matchedMeals(prev?.productsDetails, data);
 
-      if (matched?.index > -1) prev.productsDetails?.splice(matched?.index, 1);
+      let productData = prev?.productsDetails;
 
-      return { ...prev };
+      if (matched?.index > -1) productData?.splice(matched?.index, 1);
+
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      return { ...prev, productsDetails: productData };
     });
   };
 
@@ -61,27 +64,21 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
 
       const deal = productDeal(prev.productsDetails[matched?.index]);
 
-      let testDoubleDeal = prev?.productsDetails;
-
-      // matched
-      console.log('new product:', { newProduct, matched });
+      let productData = prev?.productsDetails;
 
       if (matched?.isMatched) {
         const deal = productDeal(prev.productsDetails[matched?.index]);
-        testDoubleDeal[matched?.index].productQuantity += newProduct?.productQuantity;
-        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
+        productData[matched?.index].productQuantity += newProduct?.productQuantity;
       } else if (!matched?.shouldAddInLastIndex) {
         console.log(matched?.lastIndex, newProduct);
-        testDoubleDeal?.splice(matched?.lastIndex, 0, newProduct);
-        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
+        productData?.splice(matched?.lastIndex, 0, newProduct);
       } else {
-        testDoubleDeal.push(newProduct);
-        testDoubleDeal = populateProductData(testDoubleDeal, order?.shop?.shopExchangeRate);
+        productData.push(newProduct);
       }
 
-      console.log({ prev });
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
 
-      return { ...prev, productsDetails: testDoubleDeal };
+      return { ...prev, productsDetails: productData };
     });
   };
 
