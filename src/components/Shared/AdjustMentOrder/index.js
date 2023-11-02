@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
@@ -22,10 +22,14 @@ function AdjustmentOrder({ onClose, order = {} }) {
 
   const oldOrderSummary = useMemo(() => getOrderSummary(order), []);
 
+  const queryClient = useQueryClient();
+
   const adjustOrderQuery = useMutation((data) => AXIOS.get(API_URL.ADJUST_ORDER, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data?.message, 'success');
+        onClose();
+        queryClient.invalidateQueries(API_URL.ORDER_LIST);
       } else {
         successMsg(data?.message, 'success');
       }
@@ -77,10 +81,10 @@ function AdjustmentOrder({ onClose, order = {} }) {
       </Stack>
 
       <Stack direction="row" mt={4} justifyContent="flex-end" alignItems="center" gap={2.5}>
-        <Button variant="outlined" color="primary" onClick={onClose}>
+        <Button variant="outlined" color="primary" onClick={onClose} disabled={adjustOrderQuery?.isLoading}>
           Cancel
         </Button>
-        <Button variant="contained" color="primary" onClick={onAdjustOrder}>
+        <Button variant="contained" color="primary" onClick={onAdjustOrder} disabled={adjustOrderQuery?.isLoading}>
           Adjust Order
         </Button>
       </Stack>
