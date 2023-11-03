@@ -23,8 +23,6 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
-  console.log({ general });
-
   const onToggled = (product, toggled) => {
     setAdjustedOrder((prev) => {
       const matched = matchedMeals(prev?.productsDetails, product);

@@ -18,6 +18,7 @@ export default function GetPallete() {
     },
     danger: {
       main: '#DD5B63',
+      secondary: '#CC274B',
       contrastText: '#ffffff',
     },
     error: {

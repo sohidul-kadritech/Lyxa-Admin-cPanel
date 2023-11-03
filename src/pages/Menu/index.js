@@ -28,7 +28,7 @@ import AddSubCategory from './SubCategory/AddSubCategory';
 import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
-export default function MenuPage() {
+export default function MenuPage({ editable = true }) {
   const { currentUser, general } = useGlobalContext();
   const { shop } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop, general?.appSetting || {}), []);
@@ -144,23 +144,25 @@ export default function MenuPage() {
 
   return (
     <ProductsContext.Provider value={ContextObj}>
-      <PageTop
-        title={shop?.shopType === 'food' ? `Menu (${shop?.shopName})` : `Product List (${shop?.shopName})`}
-        tag={
-          Deals.deals.hasActiveDeal ? (
-            <OngoingTag label={getMarketingLabel(shop, general?.appSetting, true)} />
-          ) : undefined
-        }
-        titleSx={{
-          lineHeight: '28px',
-        }}
-        sx={{
-          position: 'sticky',
-          top: '0px',
-          zIndex: '999',
-          backgroundColor: '#fbfbfb',
-        }}
-      />
+      {editable && (
+        <PageTop
+          title={shop?.shopType === 'food' ? `Menu (${shop?.shopName})` : `Product List (${shop?.shopName})`}
+          tag={
+            Deals.deals.hasActiveDeal ? (
+              <OngoingTag label={getMarketingLabel(shop, general?.appSetting, true)} />
+            ) : undefined
+          }
+          titleSx={{
+            lineHeight: '28px',
+          }}
+          sx={{
+            position: 'sticky',
+            top: '0px',
+            zIndex: '999',
+            backgroundColor: '#fbfbfb',
+          }}
+        />
+      )}
       {(productsQuery?.isLoading || getAppSettingsData?.isLoading) && <PageSkeleton />}
       {!productsQuery?.isLoading && !getAppSettingsData?.isLoading && (
         <>
@@ -174,7 +176,7 @@ export default function MenuPage() {
             }}
             sx={{
               position: 'sticky',
-              top: '94px',
+              top: editable ? '94px' : '0px',
               zIndex: '999',
               backgroundColor: '#fbfbfb',
             }}

@@ -21,6 +21,7 @@ import socketServices from '../../common/socketService';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
+import MoreOptionModal from './MoreOptions/MoreOptionModal';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
@@ -51,6 +52,7 @@ export default function NewOrders({ showFor }) {
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
   const [openAcceptRestaurentModal, setOpenAcceptRestaurentModal] = useState(false);
+  const [openMore, setOpenMore] = useState(false);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -229,6 +231,13 @@ export default function NewOrders({ showFor }) {
     setOpenCancelModal(true);
   };
 
+  // when click on more button
+
+  const onClickMore = (data) => {
+    setOpenMore((prev) => !prev);
+    setCurrentOrder(data);
+  };
+
   return (
     <Box pb={9}>
       <PageTop title="Orders" />
@@ -295,6 +304,7 @@ export default function NewOrders({ showFor }) {
           showFor="shop"
           onClickAccept={onAcceptHandler}
           onClickReject={onRejectHandler}
+          onClickMore={onClickMore}
           onLoadingUpdateStatus={updateStatusMutation?.isLoading}
           order={currentOrder}
           onClose={() => {
@@ -362,6 +372,15 @@ export default function NewOrders({ showFor }) {
           }}
           updateStatusMutation={updateStatusMutation}
           currentOrder={currentOrder}
+        />
+      </Modal>
+
+      <Modal open={openMore} sx={{ zIndex: '1250 !important' }}>
+        <MoreOptionModal
+          currentOrder={currentOrder}
+          onClose={() => {
+            setOpenMore(!openMore);
+          }}
         />
       </Modal>
 

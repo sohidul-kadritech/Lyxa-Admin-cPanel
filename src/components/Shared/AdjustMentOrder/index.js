@@ -50,7 +50,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
   return (
     <Paper
       sx={{
-        width: 'min(90vw, 1440px)',
+        width: 'min(90vw, 1530px)',
         height: 'min(90vh, 1250px)',
         background: '#fff',
         position: 'relative',

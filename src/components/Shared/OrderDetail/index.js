@@ -33,7 +33,14 @@ const hideUpdateAndCancelOption = (order) => {
   return shouldHideUpdateAndCancelOption;
 };
 
-function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onLoadingUpdateStatus }) {
+function OrderUpdateForShop({
+  userType,
+  onClickReject,
+  onClickMore = () => {},
+  order,
+  onClickAccept,
+  onLoadingUpdateStatus,
+}) {
   const isPreparing = statusOptions[getNextStatus(order)]?.label === 'Preparing';
   const isSpecific = order?.orderFor !== 'global';
 
@@ -51,12 +58,18 @@ function OrderUpdateForShop({ userType, onClickReject, order, onClickAccept, onL
             direction="row"
             justifyContent={statusOptions[getNextStatus(order)]?.label === 'Preparing' ? 'space-between' : 'flex-end'}
           >
-            {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
-            {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
-              <Button onClick={onClickReject} variant="contained" size="small" color="danger">
-                Reject
+            <Stack direction="row" gap={2.5} alignContent="center">
+              <Button onClick={() => onClickMore(order)} variant="outlined" size="small" color="primary">
+                More
               </Button>
-            )}
+              {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
+              {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
+                <Button onClick={onClickReject} variant="contained" size="small" color="danger">
+                  Reject
+                </Button>
+              )}
+            </Stack>
+
             <Stack direction="row" gap={4}>
               <Button variant="text" startIcon={<Print />} disableRipple color="primary">
                 Print
@@ -89,6 +102,7 @@ export default function OrderDetail({
   order,
   onClose,
   hideIssues,
+  onClickMore,
   onClickAccept,
   onClickReject,
   onLoadingUpdateStatus,
@@ -204,6 +218,7 @@ export default function OrderDetail({
                 userType={userType}
                 onClickAccept={onClickAccept}
                 onClickReject={onClickReject}
+                onClickMore={onClickMore}
                 onLoadingUpdateStatus={onLoadingUpdateStatus}
               />
             </Box>

@@ -352,7 +352,6 @@ export const separateAtributesId = (attributes) => {
 
 // matched the meals
 export const matchedMeals = (products, addedProduct) => {
-  console.log({ products, addedProduct });
   const matched = {
     index: -1,
     lastIndex: -1,
@@ -542,14 +541,6 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     newSummary?.reward?.baseCurrency_amount -
     newSummary?.baseCurrency_couponDiscountAmount;
 
-  console.log(
-    newSummary?.baseCurrency_totalAmount,
-    newSummary?.baseCurrency_vat,
-    newSummary?.baseCurrency_riderTip,
-    newSummary?.baseCurrency_discount,
-    newSummary?.reward?.baseCurrency_amount,
-  );
-
   const total_base_old =
     oldSummary?.baseCurrency_totalAmount +
     oldSummary?.baseCurrency_vat +
@@ -570,12 +561,8 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     secondaryCurrency_wallet: oldSummary?.secondaryCurrency_wallet,
   };
 
-  console.log('first', output);
-
   //  21 - 25 = -4
   const diff = total_base_new - total_base_old;
-
-  console.log('test', { oldSummary, newSummary, total_base_new, total_base_old });
 
   if (diff > 0) {
     output.baseCurrency_cash =
@@ -616,8 +603,6 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
   output.baseCurrency_cash = Number((output?.baseCurrency_cash || 0).toFixed(2));
   output.baseCurrency_card = Number((output?.baseCurrency_card || 0).toFixed(2));
   output.baseCurrency_wallet = Number((output?.baseCurrency_wallet || 0).toFixed(2));
-
-  console.log('data ==> ', { diff, total_base_new, total_base_old, output, paymentOption, oldSummary, newSummary });
 
   return output;
 };
