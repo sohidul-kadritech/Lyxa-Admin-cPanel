@@ -78,14 +78,6 @@ function AdjustmentPaymentSummary({ order }) {
         />
 
         <SummaryItem
-          label="Coupon Discount"
-          value={order?.summary?.baseCurrency_couponDiscountAmount}
-          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
-          showSecondaryOnly={order?.adminExchangeRate > 0}
-          isNegative
-        />
-
-        <SummaryItem
           label="Rewards"
           value={`-${
             order?.adminExchangeRate > 0
@@ -93,6 +85,14 @@ function AdjustmentPaymentSummary({ order }) {
               : FormateBaseCurrency.get(Math.abs(order?.summary?.reward?.baseCurrency_amount || 0))
           } ~ ${order?.summary?.reward?.points} Pts`}
           hide={!order?.summary?.reward?.baseCurrency_amount}
+          isNegative
+        />
+
+        <SummaryItem
+          label="Coupon Discount"
+          value={order?.summary?.baseCurrency_couponDiscountAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           isNegative
         />
 

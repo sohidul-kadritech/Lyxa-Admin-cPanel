@@ -499,7 +499,7 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
     if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu') {
       if (!array.includes(itemData?.productId)) {
         const doubleDealAllProduct = addedItems?.filter(
-          (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id)
+          (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
         );
 
         let quantity = 0;
@@ -547,7 +547,7 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     newSummary?.baseCurrency_vat,
     newSummary?.baseCurrency_riderTip,
     newSummary?.baseCurrency_discount,
-    newSummary?.reward?.baseCurrency_amount
+    newSummary?.reward?.baseCurrency_amount,
   );
 
   const total_base_old =
@@ -641,7 +641,14 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
 
   const reward = getRewordItem(addedItems, shopExchangeRate);
 
-  if (reward?.amount > order?.user?.tempRewardPoints) {
+  console.log(
+    'reward points',
+    order?.user?.tempRewardPoints,
+    reward?.points,
+    order?.user?.tempRewardPoints < reward?.points,
+  );
+
+  if (order?.user?.tempRewardPoints < reward?.points) {
     successMsg('Insufficient points');
   }
 
@@ -661,7 +668,7 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
         (summary?.baseCurrency_couponDiscountAmount || 0) -
         (reward?.baseCurrency_amount || 0) -
         (totalDiscount || 0),
-      vatPercentage
+      vatPercentage,
     ),
     baseCurrency_cash: getCash({ oldOrderSummary }),
     secondaryCurrency_cash: getSecondaryCurrency(getCash({ oldOrderSummary })),
@@ -680,7 +687,7 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   templateSummary.secondaryCurrency_vat = getSecondaryCurrency(templateSummary?.baseCurrency_vat);
   templateSummary.secondaryCurrency_riderTip = getSecondaryCurrency(summary?.baseCurrency_riderTip);
   templateSummary.secondaryCurrency_couponDiscountAmount = getSecondaryCurrency(
-    templateSummary?.baseCurrency_couponDiscountAmount
+    templateSummary?.baseCurrency_couponDiscountAmount,
   );
 
   templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(templateSummary?.baseCurrency_riderFee);
@@ -706,7 +713,7 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
       baseCurrency_cash: adjustedOrder?.summary?.baseCurrency_cash || 0,
       secondaryCurrency_cash: adjustedOrder?.summary?.secondaryCurrency_cash || 0,
       reward: {
-        points: adjustedOrder?.summary?.reward?.amount || 0,
+        points: adjustedOrder?.summary?.reward?.points || 0,
         baseCurrency_amount: adjustedOrder?.summary?.reward?.baseCurrency_amount || 0,
       },
       baseCurrency_doubleMenuItemPrice: adjustedOrder?.summary?.baseCurrency_doubleMenuItemPrice,
@@ -725,14 +732,14 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
       totalDiscount: product?.baseCurrency_discount,
       quantity: product?.productQuantity,
       attributes: product?.selectedAttributes?.map(({ id, selectedItems }) => ({
-        _id: id,
-        attributeItems: selectedItems?.map(({ _id, extraPrice }) => ({ _id, extraPrice })),
+        id,
+        attributeItems: selectedItems?.map(({ _id, extraPrice }) => ({ id: _id, extraPrice })),
       })),
       isDoubleDeal: product?.isDoubleDeal,
       productSpecialInstruction: product?.productSpecialInstruction,
       reward: {
-        amount: product?.finalReward?.baseCurrency_amount,
-        points: product?.finalReward?.points,
+        amount: product?.finalReward?.baseCurrency_amount / product?.productQuantity,
+        points: product?.finalReward?.points / product?.productQuantity,
       },
       marketingId: product?.marketing?._id,
       owner: product?.owner?._id,
@@ -760,7 +767,7 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
     return { status: false };
   }
 
-  if (adjustedOrder?.summary?.reward?.amount > adjustedOrder?.user?.tempRewardPoints) {
+  if (adjustedOrder?.user?.tempRewardPoints < adjustedOrder?.summary?.reward?.points) {
     successMsg('Insufficient points');
     return { status: false };
   }

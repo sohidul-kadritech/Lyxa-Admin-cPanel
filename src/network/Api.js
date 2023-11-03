@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 export const API_URL = 'https://request-dev.lyxa.delivery/';
+// export const API_URL = 'https://request-dev.lyxa.delivery/';
 // export const API_URL = 'https://7a7e-103-86-202-146.ngrok-free.app/';
 
 export const SOCKET_CONNECTION = 'https://request-dev.lyxa.delivery';

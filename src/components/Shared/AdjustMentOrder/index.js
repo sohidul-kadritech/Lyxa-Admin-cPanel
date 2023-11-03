@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
@@ -24,7 +25,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
 
   const queryClient = useQueryClient();
 
-  const adjustOrderQuery = useMutation((data) => AXIOS.get(API_URL.ADJUST_ORDER, data), {
+  const adjustOrderQuery = useMutation((data) => AXIOS.post(API_URL.ADJUST_ORDER, data), {
     onSuccess: (data) => {
       if (data?.status) {
         successMsg(data?.message, 'success');
@@ -39,7 +40,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
   const onAdjustOrder = () => {
     const validate = generateAdjustOrdeJsonData(adjuestedOrder);
 
-    console.log('adjustedOrder', { adjuestedOrder, validate });
+    // console.log('adjustedOrder', { adjuestedOrder, validate });
 
     if (validate?.status === true) {
       adjustOrderQuery.mutate(validate?.data);
@@ -50,12 +51,13 @@ function AdjustmentOrder({ onClose, order = {} }) {
     <Paper
       sx={{
         width: 'min(90vw, 1440px)',
-        height: 'min(90vh, 900px)',
+        height: 'min(90vh, 1250px)',
         background: '#fff',
         position: 'relative',
         borderRadius: '8px',
         padding: '48px',
         overflow: 'auto',
+        transition: 'all 0.3s linear',
       }}
     >
       {/* header */}
