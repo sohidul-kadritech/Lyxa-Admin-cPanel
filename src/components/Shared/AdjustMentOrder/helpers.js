@@ -533,6 +533,7 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
   const oldSummary = oldOrderSummary;
   const newSummary = order?.summary;
 
+  // base currency total
   const total_base_new =
     newSummary?.baseCurrency_totalAmount +
     newSummary?.baseCurrency_vat +
@@ -549,7 +550,27 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     oldSummary?.reward?.baseCurrency_amount -
     oldSummary?.baseCurrency_couponDiscountAmount;
 
+  // secondary currency total
+
+  const total_secondary_new =
+    newSummary?.secondaryCurrency_totalAmount +
+    newSummary?.secondaryCurrency_vat +
+    newSummary?.secondaryCurrency_riderTip -
+    newSummary?.secondaryCurrency_discount -
+    newSummary?.reward?.secondaryCurrency_amount -
+    newSummary?.secondaryCurrency_couponDiscountAmount;
+
+  const total_secondary_old =
+    oldSummary?.secondaryCurrency_totalAmount +
+    oldSummary?.secondaryCurrency_vat +
+    oldSummary?.secondaryCurrency_riderTip -
+    oldSummary?.secondaryCurrency_discount -
+    oldSummary?.reward?.secondaryCurrency_amount -
+    oldSummary?.secondaryCurrency_couponDiscountAmount;
+
   const shopExchangeRate = order?.shop?.shopExchangeRate;
+  const adminExchangeRate = order?.adminExchangeRate;
+
   const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
 
   const output = {
@@ -561,45 +582,113 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
     secondaryCurrency_wallet: oldSummary?.secondaryCurrency_wallet,
   };
 
-  //  21 - 25 = -4
-  const diff = total_base_new - total_base_old;
+  //  new 21 -  old 25 =  dif -4
+  const diff = Number((total_base_new - total_base_old).toFixed(2));
+  const diffSecondary = Number((total_secondary_new - total_secondary_old).toFixed(2));
+
+  console.log({
+    diff,
+    diffSecondary,
+    total_base_new,
+    total_base_old,
+    total_secondary_new,
+    total_secondary_old,
+    old: {
+      secondaryCurrency_totalAmount: oldSummary?.secondaryCurrency_totalAmount,
+      secondaryCurrency_vat: oldSummary?.secondaryCurrency_vat,
+      secondaryCurrency_riderTip: oldSummary?.secondaryCurrency_riderTip,
+      secondaryCurrency_discount: oldSummary?.secondaryCurrency_discount,
+      secondaryCurrency_amount: oldSummary?.reward?.secondaryCurrency_amount,
+      secondaryCurrency_couponDiscountAmount: oldSummary?.secondaryCurrency_couponDiscountAmount,
+    },
+    new: {
+      secondaryCurrency_totalAmount: newSummary?.secondaryCurrency_totalAmount,
+      secondaryCurrency_vat: newSummary?.secondaryCurrency_vat,
+      secondaryCurrency_riderTip: newSummary?.secondaryCurrency_riderTip,
+      secondaryCurrency_discount: newSummary?.secondaryCurrency_discount,
+      secondaryCurrency_amount: newSummary?.reward?.secondaryCurrency_amount,
+      secondaryCurrency_couponDiscountAmount: newSummary?.secondaryCurrency_couponDiscountAmount,
+    },
+  });
 
   if (diff > 0) {
+    //  new 21 -  old 25 =  dif -4
+
+    // base currency
     output.baseCurrency_cash =
       paymentOption === 'cash' ? oldSummary?.baseCurrency_cash + diff : oldSummary?.baseCurrency_cash;
     output.baseCurrency_wallet =
       paymentOption === 'wallet' ? oldSummary?.baseCurrency_wallet + diff : oldSummary?.baseCurrency_wallet;
     output.baseCurrency_card =
       paymentOption === 'card' ? oldSummary?.baseCurrency_card + diff : oldSummary?.baseCurrency_card;
+
+    // secondary currency
+    output.secondaryCurrency_cash =
+      paymentOption === 'cash'
+        ? oldSummary?.secondaryCurrency_cash + diffSecondary
+        : oldSummary?.secondaryCurrency_cash;
+    output.secondaryCurrency_wallet =
+      paymentOption === 'wallet'
+        ? oldSummary?.secondaryCurrency_wallet + diffSecondary
+        : oldSummary?.secondaryCurrency_wallet;
+    output.secondaryCurrency_card =
+      paymentOption === 'card'
+        ? oldSummary?.secondaryCurrency_card + diffSecondary
+        : oldSummary?.secondaryCurrency_card;
+
     console.log({ output });
   } else if (diff < 0) {
     if (paymentOption === 'cash') {
+      // base
       const remaining = (oldSummary?.baseCurrency_cash || 0) + diff;
 
       output.baseCurrency_cash = remaining < 0 ? 0 : remaining;
 
       output.baseCurrency_wallet =
         remaining < 0 ? (oldSummary?.baseCurrency_wallet || 0) + remaining : oldSummary?.baseCurrency_wallet || 0;
+
+      // secondary
+      const remainingSecondary = (oldSummary?.secondaryCurrency_cash || 0) + diffSecondary;
+      output.secondaryCurrency_cash = remainingSecondary < 0 ? 0 : remainingSecondary;
+      output.secondaryCurrency_wallet =
+        remainingSecondary < 0
+          ? (oldSummary?.secondaryCurrency_wallet || 0) + remainingSecondary
+          : oldSummary?.secondaryCurrency_wallet || 0;
     }
 
     if (paymentOption === 'card') {
+      // base currency
       const remaining = (oldSummary?.baseCurrency_card || 0) + diff;
-
       output.baseCurrency_card = remaining < 0 ? 0 : remaining;
-
       output.baseCurrency_wallet =
         remaining < 0 ? (oldSummary?.baseCurrency_wallet || 0) + remaining : oldSummary?.baseCurrency_wallet || 0;
+
+      // secondary currency
+      const remainingSecondary = (oldSummary?.secondaryCurrency_card || 0) + diffSecondary;
+      output.secondaryCurrency_card = remainingSecondary < 0 ? 0 : remaining;
+      output.secondaryCurrency_wallet =
+        remaining < 0
+          ? (oldSummary?.secondaryCurrency_wallet || 0) + remainingSecondary
+          : oldSummary?.secondaryCurrency_wallet || 0;
     }
 
     if (paymentOption === 'wallet') {
+      // base currency
       const remaining = (oldSummary?.baseCurrency_wallet || 0) + diff;
       oldSummary.baseCurrency_wallet = remaining;
+
+      // secondary currency
+      const remainingSecondary = (oldSummary?.secondaryCurrency_wallet || 0) + diffSecondary;
+      oldSummary.secondaryCurrency_wallet = remainingSecondary;
     }
   }
 
-  output.secondaryCurrency_cash = getSecondaryCurrency(output?.baseCurrency_cash);
-  output.secondaryCurrency_card = getSecondaryCurrency(output?.baseCurrency_card);
-  output.secondaryCurrency_wallet = getSecondaryCurrency(output?.baseCurrency_wallet);
+  // secondary currency
+  output.secondaryCurrency_cash = Math.round(output?.secondaryCurrency_cash);
+  output.secondaryCurrency_card = Math.round(output?.secondaryCurrency_card);
+  output.secondaryCurrency_wallet = Math.round(output?.secondaryCurrency_wallet);
+
+  // base currency
   output.baseCurrency_cash = Number((output?.baseCurrency_cash || 0).toFixed(2));
   output.baseCurrency_card = Number((output?.baseCurrency_card || 0).toFixed(2));
   output.baseCurrency_wallet = Number((output?.baseCurrency_wallet || 0).toFixed(2));
@@ -615,7 +704,9 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   console.log({ order });
 
   const shopExchangeRate = order?.shop?.shopExchangeRate;
-  const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
+  const adminExchangeRate = order?.adminExchangeRate;
+
+  const getSecondaryCurrency = (value, rate) => Math.round(rate * value);
 
   const totalDiscount = calculatetotalDiscountPrice(addedItems);
 
@@ -623,6 +714,9 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
 
   const totalProductAmount = totalBill(addedItems) + doubleMenuItemPriceCalculation(addedItems).itemWithAttribute;
   const totalAmount = totalProductAmount + summary?.baseCurrency_riderFee;
+  const secondaryCurrency_totalAmount =
+    getSecondaryCurrency(totalProductAmount, shopExchangeRate) +
+    getSecondaryCurrency(summary?.baseCurrency_riderFee, adminExchangeRate);
 
   const reward = getRewordItem(addedItems, shopExchangeRate);
 
@@ -643,11 +737,11 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
 
   const templateSummary = {
     baseCurrency_productAmount: totalProductAmount,
-    secondaryCurrency_productAmount: getSecondaryCurrency(totalProductAmount),
+    secondaryCurrency_productAmount: getSecondaryCurrency(totalProductAmount, shopExchangeRate),
     baseCurrency_riderFee: summary?.baseCurrency_riderFee,
     baseCurrency_totalAmount: totalAmount,
     baseCurrency_discount: totalDiscount,
-    secondaryCurrency_discount: getSecondaryCurrency(totalDiscount),
+    secondaryCurrency_discount: getSecondaryCurrency(totalDiscount, shopExchangeRate),
     baseCurrency_vat: calculateVAT(
       totalAmount -
         (summary?.baseCurrency_couponDiscountAmount || 0) -
@@ -655,27 +749,50 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
         (totalDiscount || 0),
       vatPercentage,
     ),
-    baseCurrency_cash: getCash({ oldOrderSummary }),
-    secondaryCurrency_cash: getSecondaryCurrency(getCash({ oldOrderSummary })),
-    baseCurrency_card: getCard({ oldOrderSummary }),
-    secondaryCurrency_card: getSecondaryCurrency(getCard({ oldOrderSummary })),
-    baseCurrency_wallet: getWallet({ oldOrderSummary }),
-    secondaryCurrency_wallet: getSecondaryCurrency(getWallet({ oldOrderSummary })),
+    baseCurrency_cash: summary?.baseCurrency_cash,
+    secondaryCurrency_cash: summary?.secondaryCurrency_cash,
+    baseCurrency_card: summary?.baseCurrency_card,
+    secondaryCurrency_card: summary?.secondaryCurrency_card,
+    baseCurrency_wallet: summary?.baseCurrency_wallet,
+    secondaryCurrency_wallet: summary?.secondaryCurrency_wallet,
     reward,
     baseCurrency_doubleMenuItemPrice: doubleMenuItemPriceCalculation(addedItems).item,
-    secondaryCurrency_doubleMenuItemPrice: getSecondaryCurrency(doubleMenuItemPriceCalculation(addedItems).item),
+    secondaryCurrency_doubleMenuItemPrice: getSecondaryCurrency(
+      doubleMenuItemPriceCalculation(addedItems).item,
+      shopExchangeRate,
+    ),
     baseCurrency_riderTip: summary?.baseCurrency_riderTip,
     baseCurrency_couponDiscountAmount: summary?.baseCurrency_couponDiscountAmount,
   };
 
-  templateSummary.secondaryCurrency_totalAmount = getSecondaryCurrency(templateSummary?.baseCurrency_totalAmount);
-  templateSummary.secondaryCurrency_vat = getSecondaryCurrency(templateSummary?.baseCurrency_vat);
-  templateSummary.secondaryCurrency_riderTip = getSecondaryCurrency(summary?.baseCurrency_riderTip);
-  templateSummary.secondaryCurrency_couponDiscountAmount = getSecondaryCurrency(
-    templateSummary?.baseCurrency_couponDiscountAmount,
+  const vat = calculateVAT(
+    totalAmount -
+      (summary?.baseCurrency_couponDiscountAmount || 0) -
+      (reward?.baseCurrency_amount || 0) -
+      (totalDiscount || 0),
+    vatPercentage,
   );
 
-  templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(templateSummary?.baseCurrency_riderFee);
+  templateSummary.secondaryCurrency_totalAmount = secondaryCurrency_totalAmount;
+  templateSummary.secondaryCurrency_riderTip = summary?.secondaryCurrency_riderTip;
+  templateSummary.secondaryCurrency_couponDiscountAmount = getSecondaryCurrency(
+    templateSummary?.baseCurrency_couponDiscountAmount,
+    shopExchangeRate,
+  );
+
+  // calculate total for VAT calulation
+  const secondaryCurrencyTotalForVAT =
+    secondaryCurrency_totalAmount -
+    summary?.secondaryCurrency_couponDiscountAmount -
+    reward?.secondaryCurrency_amount -
+    templateSummary?.secondaryCurrency_discount;
+
+  templateSummary.secondaryCurrency_vat = calculateVAT(secondaryCurrencyTotalForVAT, vatPercentage);
+
+  templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(
+    templateSummary?.baseCurrency_riderFee,
+    adminExchangeRate,
+  );
 
   return { ...templateSummary, ...getUpdatedPaymentOptions({ ...order, summary: templateSummary }, oldOrderSummary) };
 };

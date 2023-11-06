@@ -2,7 +2,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Stack, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import FormateBaseCurrency from '../../../../../components/Common/FormateBaseCurrency';
 import StyledFormField from '../../../../../components/Form/StyledFormField';
 import { dealTypeToLabelMap } from '../../../../../components/Shared/AdjustMentOrder/AdjustMentProduct';
@@ -15,6 +15,8 @@ import AtributeCard from './AtributeCard';
 
 function AdjustmentItemCard({ product, isChecked, notes = '', onCheck, onAddNote, shopExchangeRate }) {
   const theme = useTheme();
+
+  const [newNotes, setNewNotes] = useState(notes);
 
   const deal = productDeal(product);
   const baseCurrencyFinalPrice = product?.baseCurrency_finalPrice;
@@ -73,7 +75,6 @@ function AdjustmentItemCard({ product, isChecked, notes = '', onCheck, onAddNote
           }}
         >
           {getPriceWithCurrency(baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
-          {/* {FormateCurrency.get(baseCurrencyFinalPrice)} */}
         </Typography>
       </Stack>
 
@@ -130,7 +131,7 @@ function AdjustmentItemCard({ product, isChecked, notes = '', onCheck, onAddNote
           intputType="text"
           inputProps={{
             placeholder: 'Type reason here',
-            name: 'notes',
+            name: 'note',
             value: notes,
             onChange: (e) => {
               onAddNote(product, e);

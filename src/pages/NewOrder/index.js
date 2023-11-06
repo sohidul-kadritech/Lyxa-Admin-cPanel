@@ -21,7 +21,7 @@ import socketServices from '../../common/socketService';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
-import MoreOptionModal from './MoreOptions/MoreOptionModal';
+import AdjustOrderForShop from './MoreOptions/AdjustOrder';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
@@ -47,22 +47,29 @@ const getTabOptions = () => {
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
+
   const { socket } = useSelector((state) => state.socketReducer);
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
+
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
+
   const [openAcceptRestaurentModal, setOpenAcceptRestaurentModal] = useState(false);
-  const [openMore, setOpenMore] = useState(false);
+
+  const [openAdjustmentOrder, setOpenAdjustmentOrder] = useState(false);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const [totalPage, setTotalPage] = useState(1);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
   const [currentOrder, setCurrentOrder] = useState({});
+
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
+
   const [currentTab, setCurrentTab] = useState(0);
 
   // by defualt we assign ongoing tab as requested where we can only see the requested order here.
@@ -233,8 +240,8 @@ export default function NewOrders({ showFor }) {
 
   // when click on more button
 
-  const onClickMore = (data) => {
-    setOpenMore((prev) => !prev);
+  const onClickAdjustOrder = (data) => {
+    setOpenAdjustmentOrder((prev) => !prev);
     setCurrentOrder(data);
   };
 
@@ -304,7 +311,7 @@ export default function NewOrders({ showFor }) {
           showFor="shop"
           onClickAccept={onAcceptHandler}
           onClickReject={onRejectHandler}
-          onClickMore={onClickMore}
+          onClickAdjustOrder={onClickAdjustOrder}
           onLoadingUpdateStatus={updateStatusMutation?.isLoading}
           order={currentOrder}
           onClose={() => {
@@ -375,11 +382,11 @@ export default function NewOrders({ showFor }) {
         />
       </Modal>
 
-      <Modal open={openMore} sx={{ zIndex: '1250 !important' }}>
-        <MoreOptionModal
+      <Modal open={openAdjustmentOrder} sx={{ zIndex: '1250 !important' }}>
+        <AdjustOrderForShop
           currentOrder={currentOrder}
           onClose={() => {
-            setOpenMore(!openMore);
+            setOpenAdjustmentOrder(false);
           }}
         />
       </Modal>

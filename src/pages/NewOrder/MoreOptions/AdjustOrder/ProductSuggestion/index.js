@@ -3,11 +3,11 @@ import { Stack } from '@mui/material';
 import React, { useState } from 'react';
 import MenuPage from '../../../../Menu';
 
-function ProductSuggestion() {
+function ProductSuggestion({ OnCheckProduct, suggestedProducts }) {
   const [searchKey, setSearchKey] = useState('');
   return (
     <Stack>
-      <MenuPage editable={false} />
+      <MenuPage editable={false} OnCheckProduct={OnCheckProduct} suggestedProducts={suggestedProducts} />
     </Stack>
   );
 }

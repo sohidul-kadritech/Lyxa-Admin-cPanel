@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
+import { Stack } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Container, Draggable } from 'react-smooth-dnd';
@@ -18,8 +19,12 @@ export default function ProductsContainer({
   asSearchResult,
   secondaryCurrency,
   type,
+  editable,
+  OnCheckProduct,
+  suggestedProducts,
 }) {
   console.log({ type });
+
   const [render, setRender] = useState(false);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;
@@ -55,40 +60,94 @@ export default function ProductsContainer({
   }
 
   return (
-    <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler-product">
-      {products.map((product, index, array) => {
-        if (asSearchResult && !product.matched) {
-          return null;
-        }
+    <>
+      {editable ? (
+        <Container
+          onDrop={editable ? onDrop : undefined}
+          lockAxis="y"
+          dragHandleSelector={editable ? '.drag-handler-product' : ''}
+        >
+          {products.map((product, index, array) => {
+            if (asSearchResult && !product.matched) {
+              return null;
+            }
 
-        if (product._id === updatedProduct?._id) {
-          // eslint-disable-next-line no-param-reassign
-          product = updatedProduct;
-          array[index] = updatedProduct;
-        }
+            if (product._id === updatedProduct?._id) {
+              // eslint-disable-next-line no-param-reassign
+              product = updatedProduct;
+              array[index] = updatedProduct;
+            }
 
-        return (
-          <Draggable key={product?._id}>
-            <ProductItem
-              secondaryCurrency={secondaryCurrency}
-              asSearchResult={asSearchResult}
-              product={product}
-              isInsideFavorites={isInsideFavorites}
-              isInsideBestSellers={isInsideBestSellers}
-              sx={{
-                borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
-                cursor: 'pointer',
-                backgroundColor: '#fbfbfb',
-                borderRadius: '8px',
+            return (
+              <>
+                <Draggable key={product?._id}>
+                  <ProductItem
+                    secondaryCurrency={secondaryCurrency}
+                    asSearchResult={asSearchResult}
+                    product={product}
+                    isInsideFavorites={isInsideFavorites}
+                    isInsideBestSellers={isInsideBestSellers}
+                    editable={editable}
+                    sx={{
+                      borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
+                      cursor: 'pointer',
+                      backgroundColor: '#fbfbfb',
+                      borderRadius: '8px',
 
-                '&:hover': {
-                  bgcolor: '#f5f5f5',
-                },
-              }}
-            />
-          </Draggable>
-        );
-      })}
-    </Container>
+                      '&:hover': {
+                        bgcolor: '#f5f5f5',
+                      },
+                    }}
+                    OnCheckProduct={OnCheckProduct}
+                    suggestedProducts={suggestedProducts}
+                  />
+                </Draggable>
+              </>
+            );
+          })}
+        </Container>
+      ) : (
+        <Stack>
+          {products.map((product, index, array) => {
+            if (asSearchResult && !product.matched) {
+              return null;
+            }
+
+            if (product._id === updatedProduct?._id) {
+              // eslint-disable-next-line no-param-reassign
+              product = updatedProduct;
+              array[index] = updatedProduct;
+            }
+
+            return (
+              <>
+                <Draggable key={product?._id}>
+                  <ProductItem
+                    secondaryCurrency={secondaryCurrency}
+                    asSearchResult={asSearchResult}
+                    product={product}
+                    isInsideFavorites={isInsideFavorites}
+                    isInsideBestSellers={isInsideBestSellers}
+                    OnCheckProduct={OnCheckProduct}
+                    suggestedProducts={suggestedProducts}
+                    editable={editable}
+                    sx={{
+                      borderBottom: index === array.length - 1 ? 'none' : '1px solid #EEEEEE',
+                      cursor: 'pointer',
+                      backgroundColor: '#fbfbfb',
+                      borderRadius: '8px',
+
+                      '&:hover': {
+                        bgcolor: '#f5f5f5',
+                      },
+                    }}
+                  />
+                </Draggable>
+              </>
+            );
+          })}
+        </Stack>
+      )}
+    </>
   );
 }

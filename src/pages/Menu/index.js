@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 // third party
@@ -28,30 +29,38 @@ import AddSubCategory from './SubCategory/AddSubCategory';
 import EditSubCategory from './SubCategory/EditSubCategory';
 import { OngoingTag } from './helpers';
 
-export default function MenuPage({ editable = true }) {
+export default function MenuPage({ editable = true, OnCheckProduct, suggestedProducts }) {
   const { currentUser, general } = useGlobalContext();
   const { shop } = currentUser;
   const Deals = useMemo(() => new ShopDeals(shop, general?.appSetting || {}), []);
-  console.log('Deals', Deals);
 
   const [render, setRender] = useState(false);
+
   const [favoriteChanged, setFavoriteChanged] = useState(false);
 
   const [sidebar, setSidebar] = useState(null);
+
   const [category_open, set_category_open] = useState(null);
+
   const [searchValue, setSearchValue] = useState('');
 
   const [newProductCategory, setNewProductCategory] = useState(null);
+
   const [editProduct, setEditProduct] = useState({});
+
   const [productReadonly, setProductReadonly] = useState(false);
+
   const [updatedProduct, setUpdatedProduct] = useState({});
 
   // products
   const [categories, setCategories] = useState([]);
+
   const [favorites, setFavorites] = useState({});
+
   const [bestSellers, setBestSellers] = useState({});
 
   const [editCategory, setEditCategory] = useState({});
+
   const [newSubCategoryId, setNewSubCategoryId] = useState(null);
 
   const [editSubCategory, setEditSubCategory] = useState({});
@@ -167,6 +176,7 @@ export default function MenuPage({ editable = true }) {
       {!productsQuery?.isLoading && !getAppSettingsData?.isLoading && (
         <>
           <Searchbar
+            editable={editable}
             searchPlaceHolder="Search items"
             onMenuClick={(value) => {
               setSidebar(value);
@@ -176,7 +186,7 @@ export default function MenuPage({ editable = true }) {
             }}
             sx={{
               position: 'sticky',
-              top: editable ? '94px' : '0px',
+              top: editable ? '94px' : '50px',
               zIndex: '999',
               backgroundColor: '#fbfbfb',
             }}
@@ -187,20 +197,27 @@ export default function MenuPage({ editable = true }) {
             viewUserType={currentUser?.userType}
           />
           <Box pb={9}>
-            {shop.shopType === 'food' && searchValue === '' && (
+            {shop.shopType === 'food' && searchValue === '' && editable && (
               <>
-                <CategoryItem secondaryCurrency={secondaryCurrency} category={bestSellers} gOpen={category_open} />
                 <CategoryItem
+                  secondaryCurrency={secondaryCurrency}
+                  category={bestSellers}
+                  gOpen={category_open}
+                  editable={editable}
+                />
+                <CategoryItem
+                  editable={editable}
                   secondaryCurrency={secondaryCurrency}
                   category={favorites}
                   type="favourite"
                   gOpen={category_open}
                   setEditFavorite={() => {
-                    setSidebar('edit-favorite');
+                    if (editable) setSidebar('edit-favorite');
                   }}
                 />
               </>
             )}
+
             <Container onDrop={onDrop} lockAxis="y" dragHandleSelector=".drag-handler">
               {categories.map((category) => {
                 if (searchValue !== '' && !category?.category?.category?.matched) {
@@ -210,23 +227,32 @@ export default function MenuPage({ editable = true }) {
                 return (
                   <Draggable key={category?.category?._id}>
                     <CategoryItem
+                      editable={editable}
                       secondaryCurrency={secondaryCurrency}
                       asSearchResult={searchValue !== ''}
                       gOpen={searchValue ? true : category_open}
                       category={category}
                       setEditCategory={(editCategory) => {
-                        setEditCategory(editCategory);
-                        setSidebar('add-category');
+                        if (editable) {
+                          setEditCategory(editCategory);
+                          setSidebar('add-category');
+                        }
                       }}
                       isOridanryCategory
                       setNewProductCategory={(categoryId) => {
-                        setNewProductCategory(categoryId);
-                        setSidebar('add-item');
+                        if (editable) {
+                          setNewProductCategory(categoryId);
+                          setSidebar('add-item');
+                        }
                       }}
                       setNewSubCategoryId={(categoryId) => {
-                        setNewSubCategoryId(categoryId);
-                        setSidebar('add-sub-category');
+                        if (editable) {
+                          setNewSubCategoryId(categoryId);
+                          setSidebar('add-sub-category');
+                        }
                       }}
+                      OnCheckProduct={OnCheckProduct}
+                      suggestedProducts={suggestedProducts}
                     />
                   </Draggable>
                 );

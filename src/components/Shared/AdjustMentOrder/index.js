@@ -21,6 +21,8 @@ function AdjustmentOrder({ onClose, order = {} }) {
 
   // const [oldOrderSummary, setOldOrderSummary] = useState(getOrderSummary({ ...order }));
 
+  console.log({ adjuestedOrder });
+
   const oldOrderSummary = useMemo(() => getOrderSummary(order), []);
 
   const queryClient = useQueryClient();

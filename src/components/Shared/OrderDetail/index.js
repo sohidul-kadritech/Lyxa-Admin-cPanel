@@ -36,7 +36,7 @@ const hideUpdateAndCancelOption = (order) => {
 function OrderUpdateForShop({
   userType,
   onClickReject,
-  onClickMore = () => {},
+  onClickAdjustOrder = () => {},
   order,
   onClickAccept,
   onLoadingUpdateStatus,
@@ -56,12 +56,19 @@ function OrderUpdateForShop({
         <Box my={7.2}>
           <Stack
             direction="row"
-            justifyContent={statusOptions[getNextStatus(order)]?.label === 'Preparing' ? 'space-between' : 'flex-end'}
+            justifyContent={
+              statusOptions[getNextStatus(order)]?.label === 'Preparing' ||
+              (order?.orderStatus === 'preparing' && !order?.adjustOrderReques)
+                ? 'space-between'
+                : 'flex-end'
+            }
           >
             <Stack direction="row" gap={2.5} alignContent="center">
-              <Button onClick={() => onClickMore(order)} variant="outlined" size="small" color="primary">
-                More
-              </Button>
+              {order?.orderStatus === 'preparing' && !order?.adjustOrderRequest && (
+                <Button onClick={() => onClickAdjustOrder(order)} variant="outlined" size="small" color="primary">
+                  Adjust Order
+                </Button>
+              )}
               {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
               {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
                 <Button onClick={onClickReject} variant="contained" size="small" color="danger">
@@ -81,7 +88,12 @@ function OrderUpdateForShop({
                   variant="contained"
                   size="small"
                   color="primary"
-                  disabled={onLoadingUpdateStatus}
+                  disabled={
+                    onLoadingUpdateStatus ||
+                    (statusOptions[getNextStatus(order)].label === 'Ready for pickup' &&
+                      order?.adjustOrderRequest &&
+                      !order?.isOrderAdjusted)
+                  }
                 >
                   {statusOptions[getNextStatus(order)]?.label === 'Preparing'
                     ? 'Accept'
@@ -102,7 +114,7 @@ export default function OrderDetail({
   order,
   onClose,
   hideIssues,
-  onClickMore,
+  onClickAdjustOrder,
   onClickAccept,
   onClickReject,
   onLoadingUpdateStatus,
@@ -114,6 +126,8 @@ export default function OrderDetail({
   const { userType } = currentUser;
   const [currentTab, setCurrentTab] = useState(0);
   const theme = useTheme();
+
+  console.log(theme.palette.danger.secondary2, '');
 
   const value = useMemo(
     () => ({
@@ -167,21 +181,42 @@ export default function OrderDetail({
               />
             </Stack>
             {/* heading */}
-            <Stack direction="row" alignItems="center" justifyContent="space-between" pt={10} pb={6}>
-              <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
-                Order #{order?.orderId}
-              </Typography>
-              <Typography
-                variant="h5"
-                fontSize={12}
-                lineHeight="20px"
-                sx={{
-                  flexShrink: 0,
-                }}
-              >
-                {moment(order?.createdAt).format('ddd DD, MMM, YYYY')}
-              </Typography>
+            <Stack pt={10} pb={6} gap={2.5}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Typography variant="h5" fontSize={17} lineHeight="21px" fontWeight={700}>
+                  Order #{order?.orderId}
+                </Typography>
+                <Typography
+                  variant="h5"
+                  fontSize={12}
+                  lineHeight="20px"
+                  sx={{
+                    flexShrink: 0,
+                  }}
+                >
+                  {moment(order?.createdAt).format('ddd DD, MMM, YYYY')}
+                </Typography>
+              </Stack>
+
+              {order?.adjustOrderRequest && !order?.isOrderAdjusted && (
+                <Stack
+                  sx={{
+                    padding: '10px 16px',
+                    borderRadius: '7px',
+                    alignItems: 'center',
+                    backgroundColor: '#FFF5F8',
+                  }}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Typography sx={{ color: theme.palette.danger.secondary }}>
+                    Waiting for User to Adjust Order
+                  </Typography>
+                </Stack>
+              )}
             </Stack>
+
             <Box sx={{ margin: '0 -8px' }}>
               <Tabs
                 value={currentTab}
@@ -218,7 +253,7 @@ export default function OrderDetail({
                 userType={userType}
                 onClickAccept={onClickAccept}
                 onClickReject={onClickReject}
-                onClickMore={onClickMore}
+                onClickAdjustOrder={onClickAdjustOrder}
                 onLoadingUpdateStatus={onLoadingUpdateStatus}
               />
             </Box>
