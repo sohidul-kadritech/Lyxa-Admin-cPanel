@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { Stack, Typography, useTheme } from '@mui/material';
+import { Radio, Stack, Typography, useTheme } from '@mui/material';
+import { ReactComponent as CheckedIcon } from '../../../assets/icons/checked-icon.svg';
+import { ReactComponent as UncheckIcon } from '../../../assets/icons/uncheck-icon.svg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
+import StyledCheckbox from '../../Styled/StyledCheckbox';
 
 export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
   const theme = useTheme();
 
   const attributeItems = selectedAttributes?.find((atr) => atr?._id === attribute?._id)?.selectedItems;
-
-  console.log({ attributeItems });
 
   return (
     <Stack>
@@ -56,11 +57,13 @@ export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
         sx={{
           background: '#fff',
           borderRadius: '10px',
+          padding: '8px 0px',
         }}
       >
         {attribute?.items?.map((item, i) => (
           <Stack
             direction="row"
+            alignItems="center"
             onClick={() => {
               if (onClickProduct)
                 onClickProduct({
@@ -71,15 +74,43 @@ export function Attributes({ attribute, onClickProduct, selectedAttributes }) {
             key={i}
             sx={{
               transition: 'all 0.3s linear',
-              paddingLeft: '16px',
-              backgroundColor: attributeItems?.find((atrItm) => atrItm?._id === item?._id)
-                ? 'rgba(177, 177, 177, 0.2)'
-                : 'transparent',
-              '&:hover': {
-                backgroundColor: 'rgba(177, 177, 177, 0.4)',
-              },
+              paddingLeft: '8px',
+              // backgroundColor: attributeItems?.find((atrItm) => atrItm?._id === item?._id)
+              //   ? 'rgba(177, 177, 177, 0.2)'
+              //   : 'transparent',
+              // '&:hover': {
+              //   backgroundColor: 'rgba(177, 177, 177, 0.4)',
+              // },
             }}
           >
+            {attribute?.select !== 'multiple' ? (
+              <Radio
+                color="primary"
+                size="small"
+                checked={!!attributeItems?.find((atrItm) => atrItm?._id === item?._id)}
+                sx={{
+                  '&.MuiRadio-root': {
+                    width: '30px',
+                    height: '31px',
+                  },
+                }}
+              />
+            ) : (
+              <StyledCheckbox
+                size="small"
+                checkedIcon={<CheckedIcon />}
+                icon={<UncheckIcon />}
+                checked={!!attributeItems?.find((atrItm) => atrItm?._id === item?._id)}
+                sx={{
+                  padding: '3px 8px',
+                  borderRadius: '7px',
+                  color: 'primary.main',
+                  width: '30px',
+                  // ...(checkBoxSx || {}),
+                }}
+              />
+            )}
+
             <Typography
               variant="h6"
               key={i}

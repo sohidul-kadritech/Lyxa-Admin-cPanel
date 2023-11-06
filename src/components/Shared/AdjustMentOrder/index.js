@@ -81,6 +81,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
           oldOrderSummary={oldOrderSummary}
         />
         <AdjustmentPaymentSummary order={adjuestedOrder} />
+        {/* <PaymentMethod /> */}
         <AdjusmentReason order={adjuestedOrder} setAdjustedOrder={setAdjustedOrder} />
       </Stack>
 

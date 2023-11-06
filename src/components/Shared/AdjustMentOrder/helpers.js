@@ -781,13 +781,15 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   );
 
   // calculate total for VAT calulation
-  const secondaryCurrencyTotalForVAT =
-    secondaryCurrency_totalAmount -
-    summary?.secondaryCurrency_couponDiscountAmount -
-    reward?.secondaryCurrency_amount -
-    templateSummary?.secondaryCurrency_discount;
+  // --------
+  // const secondaryCurrencyTotalForVAT =
+  //   secondaryCurrency_totalAmount -
+  //   summary?.secondaryCurrency_couponDiscountAmount -
+  //   reward?.secondaryCurrency_amount -
+  //   templateSummary?.secondaryCurrency_discount;
 
-  templateSummary.secondaryCurrency_vat = calculateVAT(secondaryCurrencyTotalForVAT, vatPercentage);
+  // templateSummary.secondaryCurrency_vat = calculateVAT(secondaryCurrencyTotalForVAT, vatPercentage);
+  templateSummary.secondaryCurrency_vat = getSecondaryCurrency(templateSummary?.baseCurrency_vat, shopExchangeRate);
 
   templateSummary.secondaryCurrency_riderFee = getSecondaryCurrency(
     templateSummary?.baseCurrency_riderFee,

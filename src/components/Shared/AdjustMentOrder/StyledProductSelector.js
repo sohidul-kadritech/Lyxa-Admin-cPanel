@@ -11,6 +11,9 @@ import { ProductCard } from './ProductCard';
 
 function StyledProductSelector({ order, onClickProduct }) {
   const [searchKey, setSearchKey] = useState('');
+
+  const [focused, setFocused] = useState(false);
+
   const [searchedResult, setSearchedResult] = useState([]);
 
   const theme = useTheme();
@@ -30,7 +33,6 @@ function StyledProductSelector({ order, onClickProduct }) {
     {
       onSuccess: (data) => {
         if (data?.status) {
-          console.log('data?.data?.products', data?.data?.products);
           setSearchedResult(data?.data?.products);
         }
       },
@@ -42,13 +44,17 @@ function StyledProductSelector({ order, onClickProduct }) {
       debounce((value) => {
         setSearchKey(value);
         productsQuery.mutate();
-      }, 100),
+      }, 20),
     [],
   );
 
+  const getInitialProduct = useMemo(() => {
+    productsQuery.mutate();
+  }, []);
+
   useEffect(() => {
     function handleClickOutside() {
-      setSearchKey('');
+      setFocused(false);
     }
 
     // Attach the click event listener to the document
@@ -69,16 +75,23 @@ function StyledProductSelector({ order, onClickProduct }) {
     >
       <StyledFormField
         intputType="text"
+        onFocus={() => {
+          console.log('focues');
+        }}
         inputProps={{
           placeholder: 'Choose Item',
           value: searchKey,
           onChange: (e) => {
             getProducts(e?.target?.value);
           },
+          onFocus: () => {
+            setFocused(true);
+            // getProducts('');
+          },
         }}
       />
 
-      {searchKey && (
+      {focused && (
         <Stack
           sx={{
             position: 'absolute',
@@ -97,6 +110,7 @@ function StyledProductSelector({ order, onClickProduct }) {
               <ProductCard
                 onClickProduct={(data) => {
                   onClickProduct(data);
+                  setFocused(false);
                   setSearchKey('');
                 }}
                 product={product}
