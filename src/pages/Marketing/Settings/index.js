@@ -38,9 +38,11 @@ import {
 } from './helpers';
 
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
-  const { general } = useGlobalContext();
+  const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const adminMaxDiscount = general?.appSetting?.maxDiscount;
+
+  // console.log({ currentUser?.userType });
 
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -193,8 +195,18 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   };
 
   const initLocalState = (mData) => {
-    setServerState(mData?.data?.marketing);
-    const newData = deepClone(mData?.data?.marketing);
+    const userType = currentUser?.userType === 'admin' ? 'admin' : 'shop';
+
+    const marketingForPercentage = mData?.data?.marketings?.find((item) => item?.creatorType === userType);
+
+    const marketingData = !mData?.data?.marketing ? marketingForPercentage : mData?.data?.marketing;
+
+    setServerState(marketingData);
+
+    const newData = deepClone(marketingData);
+
+    console.log('log==>', { newData, marketingForPercentage, marketingData });
+
     setLocalData(newData);
 
     if (newData?.products?.length > 0) {
@@ -205,6 +217,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const initialize = (mData) => {
     if (mData === undefined) return;
 
+    console.log('Initialize', { mData });
+
     // does not have marketing
     if (!mData?.isMarketing) {
       setPageMode(0);
@@ -214,6 +228,27 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     // does have marketing so init local state
     initLocalState(mData);
+
+    if (!mData?.marketing) {
+      const marketing = mData?.data?.marketings?.find((marketing) => marketing?.status === 'active');
+      // marketing is active
+      if (marketing.status === 'active' && marketing?.isActive) {
+        // setPageMode(1);
+        setPageMode(2);
+        setIsPageDisabled(true);
+        // return;
+      }
+
+      // marketing is scheduled
+      if (marketing?.status === 'active' && !marketing?.isActive) {
+        setIsScheduled(true);
+        setIsPageDisabled(true);
+        setPageMode(2);
+        // setPageMode(1);
+      }
+
+      return;
+    }
 
     // marketing is inactive
     if (mData?.data?.marketing?.status === 'inactive') {
@@ -268,10 +303,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         } else {
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
-          window.alert(
-            'Looks like something has changed in marketing since you came here. We will just reload the page',
-          );
-          window.location.reload();
+          // window.alert(
+          //   'Looks like something has changed in marketing since you came here. We will just reload the page',
+          // );
+          // window.location.reload();
         }
       },
     },
@@ -644,7 +679,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                     >
                       <Button
                         disableRipple
-                        className={`${products.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
+                        className={`${products?.length < productsQuery?.data?.data?.products?.length ? '' : 'd-none'}`}
                         variant="text"
                         color="primary"
                         onClick={() => {
