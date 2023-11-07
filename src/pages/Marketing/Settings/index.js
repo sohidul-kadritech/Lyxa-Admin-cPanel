@@ -177,7 +177,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [featuredAmount, setFeaturedDuration] = useState('');
 
   const setLocalData = (data) => {
-    const productsData = data?.products.map(({ product }) => product);
+    const productsData = data?.products?.map(({ product }) => product);
     setProducts(productsData);
     setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
