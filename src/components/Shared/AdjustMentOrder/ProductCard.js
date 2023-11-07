@@ -7,7 +7,7 @@ import { successMsg } from '../../../helpers/successMsg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import { dealTypeToLabelMap } from './AdjustMentProduct';
 import { Attributes } from './Attriubtes';
-import { SingleItemcalculatePrice, getProductPriceForAdjustMent } from './helpers';
+import { getProductPriceForAdjustMent } from './helpers';
 
 const attributeContainerSx = (open) => {
   const tempSx = {
@@ -54,16 +54,15 @@ export function ProductCard({ product, onClickProduct }) {
 
     if (requiredAttributeCount !== selectedRequiredAttributeCount) {
       successMsg('Required attributes should not empty');
+
+      return;
     }
 
-    console.log({
-      selectedAttributes,
-      product,
-      price: SingleItemcalculatePrice({
-        quantity: 1,
-        selectedAttributes,
+    onClickProduct({
+      product: {
         ...product,
-      }),
+        selectedAttributes: [...selectedAttributes],
+      },
     });
   };
   return (
@@ -84,7 +83,6 @@ export function ProductCard({ product, onClickProduct }) {
         onClick={() => {
           if (product?.attributes?.length > 0) {
             setOpenAttriute(!openAttribute);
-
             return;
           }
 
@@ -160,7 +158,7 @@ export function ProductCard({ product, onClickProduct }) {
               <Attributes
                 selectedAttributes={selectedAttributes}
                 onClickProduct={(data) => {
-                  if (onClickProduct) onClickProduct({ attribute: data, product });
+                  // if (onClickProduct) onClickProduct({ attribute: data, product });
 
                   setSelectedAttributes((prev) => {
                     // finding new attributes is already exist or not
@@ -169,28 +167,28 @@ export function ProductCard({ product, onClickProduct }) {
                     // if exist go here
                     if (findAtributesIndex > -1) {
                       // finding new attributes item is exist or not
-                      const findIndexAttributeItem = prev[findAtributesIndex]?.attributeItems?.findIndex(
-                        (item) => item?._id === data?.attribute?.attributeItems[0]?._id,
+                      const findIndexAttributeItem = prev[findAtributesIndex]?.selectedItems?.findIndex(
+                        (item) => item?._id === data?.attribute?.selectedItems[0]?._id,
                       );
 
                       // if new attirubtes is exist go here
                       if (findIndexAttributeItem > -1) {
-                        if (prev[findAtributesIndex]?.attributeItems?.length > 1)
-                          prev[findAtributesIndex]?.attributeItems.splice(findIndexAttributeItem, 1);
+                        if (prev[findAtributesIndex]?.selectedItems?.length > 1)
+                          prev[findAtributesIndex]?.selectedItems.splice(findIndexAttributeItem, 1);
                         else prev?.splice(findAtributesIndex, 1);
                       } else if (prev[findAtributesIndex]?.select === 'multiple') {
-                        prev[findAtributesIndex].attributeItems = [
-                          ...prev[findAtributesIndex]?.attributeItems,
-                          data?.attribute?.attributeItems[0],
+                        prev[findAtributesIndex].selectedItems = [
+                          ...prev[findAtributesIndex]?.selectedItems,
+                          data?.attribute?.selectedItems[0],
                         ];
                       } else {
-                        prev[findAtributesIndex].attributeItems = [data?.attribute?.attributeItems[0]];
+                        prev[findAtributesIndex].selectedItems = [data?.attribute?.selectedItems[0]];
                       }
 
                       return [...prev];
                     }
 
-                    return [...prev, { ...data?.attribute, items: [] }];
+                    return [...prev, { ...data?.attribute }];
                   });
                 }}
                 key={i}

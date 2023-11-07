@@ -18,8 +18,8 @@ function StyledIncrementDecrementButton({ value = 0, step = 1, min = 0, onClick,
     >
       <Button
         onClick={() => {
-          if (value >= min && value <= max) {
-            if (onClick) onClick('increment', value + step);
+          if (value > min && value <= max) {
+            if (onClick) onClick('decrement', value - step);
           }
         }}
         disableRipple
@@ -31,15 +31,15 @@ function StyledIncrementDecrementButton({ value = 0, step = 1, min = 0, onClick,
           },
         }}
       >
-        <AddIcon sx={{ width: '20px', height: '20px' }} />
+        <RemoveIcon sx={{ width: '20px', height: '20px' }} />
       </Button>
       <Typography variant="h5" sx={{ fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>
         {value}
       </Typography>
       <Button
         onClick={() => {
-          if (value > min && value <= max) {
-            if (onClick) onClick('decrement', value - step);
+          if (value >= min && value <= max) {
+            if (onClick) onClick('increment', value + step);
           }
         }}
         disableRipple
@@ -51,7 +51,7 @@ function StyledIncrementDecrementButton({ value = 0, step = 1, min = 0, onClick,
           },
         }}
       >
-        <RemoveIcon sx={{ width: '20px', height: '20px' }} />
+        <AddIcon sx={{ width: '20px', height: '20px' }} />
       </Button>
     </Stack>
   );

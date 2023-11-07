@@ -78,14 +78,6 @@ function AdjustmentPaymentSummary({ order }) {
         />
 
         <SummaryItem
-          label="Coupon Discount"
-          value={order?.summary?.baseCurrency_couponDiscountAmount}
-          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
-          showSecondaryOnly={order?.adminExchangeRate > 0}
-          isNegative
-        />
-
-        <SummaryItem
           label="Rewards"
           value={`-${
             order?.adminExchangeRate > 0
@@ -93,6 +85,14 @@ function AdjustmentPaymentSummary({ order }) {
               : FormateBaseCurrency.get(Math.abs(order?.summary?.reward?.baseCurrency_amount || 0))
           } ~ ${order?.summary?.reward?.points} Pts`}
           hide={!order?.summary?.reward?.baseCurrency_amount}
+          isNegative
+        />
+
+        <SummaryItem
+          label="Coupon Discount"
+          value={order?.summary?.baseCurrency_couponDiscountAmount}
+          valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           isNegative
         />
 
@@ -111,7 +111,21 @@ function AdjustmentPaymentSummary({ order }) {
           showIfZero
         />
 
-        <SummaryItem label="Total Amount" value={total_base} valueSecondary={total_secondary} showIfZero isTotal />
+        <SummaryItem
+          label="Lyxa Pay"
+          value={summary?.baseCurrency_wallet}
+          valueSecondary={summary?.baseCurrency_wallet * avg_rate}
+          showSecondaryOnly={order?.adminExchangeRate > 0}
+          isNegative
+        />
+
+        <SummaryItem
+          label="Total Amount"
+          value={total_base - Number(summary?.baseCurrency_wallet || 0)}
+          valueSecondary={total_secondary - Number(summary?.baseCurrency_wallet * avg_rate || 0)}
+          showIfZero
+          isTotal
+        />
 
         <SummaryItem
           label="Cash"
@@ -120,13 +134,14 @@ function AdjustmentPaymentSummary({ order }) {
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal
         />
-        <SummaryItem
+
+        {/* <SummaryItem
           label="Lyxa Pay"
           value={summary?.baseCurrency_wallet}
           valueSecondary={summary?.baseCurrency_wallet * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal
-        />
+        /> */}
 
         <SummaryItem
           label="Card"

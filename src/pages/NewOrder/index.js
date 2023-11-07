@@ -21,6 +21,7 @@ import socketServices from '../../common/socketService';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
+import AdjustOrderForShop from './MoreOptions/AdjustOrder';
 import OrderRejectForShop from './OrderRejectForShop';
 import OrderTable from './OrderTable';
 import SearchBar from './Searchbar';
@@ -46,21 +47,29 @@ const getTabOptions = () => {
 
 export default function NewOrders({ showFor }) {
   const { currentUser } = useGlobalContext();
+
   const { socket } = useSelector((state) => state.socketReducer);
 
   const [openCancelModal, setOpenCancelModal] = useState(false);
+
   const [openAcceptModal, setOpenAcceptModal] = useState(false);
+
   const [openAcceptRestaurentModal, setOpenAcceptRestaurentModal] = useState(false);
+
+  const [openAdjustmentOrder, setOpenAdjustmentOrder] = useState(false);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const [totalPage, setTotalPage] = useState(1);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
   const [currentOrder, setCurrentOrder] = useState({});
+
   const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
+
   const [currentTab, setCurrentTab] = useState(0);
 
   // by defualt we assign ongoing tab as requested where we can only see the requested order here.
@@ -229,6 +238,13 @@ export default function NewOrders({ showFor }) {
     setOpenCancelModal(true);
   };
 
+  // when click on more button
+
+  const onClickAdjustOrder = (data) => {
+    setOpenAdjustmentOrder((prev) => !prev);
+    setCurrentOrder(data);
+  };
+
   return (
     <Box pb={9}>
       <PageTop title="Orders" />
@@ -266,7 +282,7 @@ export default function NewOrders({ showFor }) {
         </Box>
       )}
 
-      <SearchBar searchPlaceHolder="Search items" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <SearchBar searchPlaceHolder="Search Orders" queryParams={queryParams} setQueryParams={setQueryParams} />
 
       <OrderTable
         loading={ordersQuery?.isLoading}
@@ -295,6 +311,7 @@ export default function NewOrders({ showFor }) {
           showFor="shop"
           onClickAccept={onAcceptHandler}
           onClickReject={onRejectHandler}
+          onClickAdjustOrder={onClickAdjustOrder}
           onLoadingUpdateStatus={updateStatusMutation?.isLoading}
           order={currentOrder}
           onClose={() => {
@@ -362,6 +379,15 @@ export default function NewOrders({ showFor }) {
           }}
           updateStatusMutation={updateStatusMutation}
           currentOrder={currentOrder}
+        />
+      </Modal>
+
+      <Modal open={openAdjustmentOrder} sx={{ zIndex: '1250 !important' }}>
+        <AdjustOrderForShop
+          currentOrder={currentOrder}
+          onClose={() => {
+            setOpenAdjustmentOrder(false);
+          }}
         />
       </Modal>
 

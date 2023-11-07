@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
@@ -11,84 +12,108 @@ import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import AdjustMentProduct from '../AdjustMentProduct';
 import StyledAdjustmentOrderContainer from '../StyledAdjustmentOrderContainer';
 import StyledProductSelector from '../StyledProductSelector';
-import { SingleItemcalculatePrice, matchedMeals } from '../helpers';
+import { getPaymentSummary, makeSingleProductDetails, matchedMeals, populateProductData } from '../helpers';
 
-function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
-  const { currentUser } = useGlobalContext();
+function AdjustMentOrderSummary({ order, setAdjustedOrder, oldOrderSummary }) {
+  const { currentUser, general } = useGlobalContext();
+  const { appSetting } = general;
   const [open, setOpen] = useState(false);
   const { userType } = currentUser;
   const totalProductQuantity = order?.productsDetails?.reduce((prev, curr) => curr?.productQuantity + prev, 0);
   const history = useHistory();
   const routeMatch = useRouteMatch();
 
-  const onIncrementDecrement = (type, value) => {
+  const onToggled = (product, toggled) => {
     setAdjustedOrder((prev) => {
-      // remove the products
-      const matched = matchedMeals(prev?.productsDetails, value?.product);
+      const matched = matchedMeals(prev?.productsDetails, product);
 
-      console.log({ matched, value });
-      if (matched?.isMatched && value?.value > 0) {
-        const deal = productDeal(prev.productsDetails[matched?.index]);
-        prev.productsDetails[matched?.index].productQuantity = value?.value;
-        const updatedPrice =
-          deal !== 'double_menu'
-            ? SingleItemcalculatePrice(prev.productsDetails[matched?.index], order?.shop?.shopExchangeRate)
-            : { baseCurrency_finalPrice: 0, secondaryCurrency_finalPrice: 0 };
+      const deal = productDeal(prev.productsDetails[matched?.index]);
 
-        console.log({ ...updatedPrice });
+      let productData = prev?.productsDetails;
 
-        prev.productsDetails[matched?.index].baseCurrency_finalPrice = updatedPrice?.baseCurrency_finalPrice;
-        prev.productsDetails[matched?.index].secondaryCurrency_finalPrice = updatedPrice?.secondaryCurrency_finalPrice;
-        prev.productsDetails[matched?.index].baseCurrency_totalDiscount = updatedPrice?.baseCurrency_totalDiscount;
-      } else {
-        prev.productsDetails?.splice(matched?.index, 1);
+      if (matched?.isMatched) {
+        productData[matched?.index].skipDiscount = !toggled;
       }
 
-      return { ...prev };
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
+    });
+  };
+
+  const onIncrementDecrement = (type, value) => {
+    setAdjustedOrder((prev) => {
+      const matched = matchedMeals(prev?.productsDetails, value?.product);
+      const deal = productDeal(prev.productsDetails[matched?.index]);
+      let productData = prev?.productsDetails;
+      if (matched?.isMatched && value?.value > 0) {
+        productData[matched?.index].productQuantity = value?.value;
+      } else {
+        productData?.splice(matched?.index, 1);
+      }
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 
   const onDeleteProduct = (data) => {
-    // order?.productsDetails
-
     setAdjustedOrder((prev) => {
       // remove the products
-      const updatedProducts = prev?.productsDetails?.filter((product) => product?.productId !== data?.productId);
+      const matched = matchedMeals(prev?.productsDetails, data);
 
-      return { ...prev, productsDetails: [...updatedProducts] };
+      let productData = prev?.productsDetails;
+
+      if (matched?.index > -1) productData?.splice(matched?.index, 1);
+
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 
-  const onDeleteAtribute = (data) => {
+  const onClickProduct = (data) => {
     setAdjustedOrder((prev) => {
+      const newProduct = makeSingleProductDetails(data?.product, prev?.user);
+
+      console.log({ newProduct });
+
       // remove the products
+      const matched = matchedMeals(prev?.productsDetails, newProduct);
 
-      const productDetails = [...prev?.productsDetails];
+      const deal = productDeal(prev.productsDetails[matched?.index]);
 
-      // find index for product details
-      const findItemsIndex = productDetails?.findIndex((product) => product?.productId === data?.product?.productId);
+      let productData = prev?.productsDetails;
 
-      if (findItemsIndex > -1) {
-        // find index for product attributes
-        const findAttributesIndex = productDetails[findItemsIndex]?.selectedAttributes?.findIndex(
-          (attr) => attr?.id === data?.attribute?.id
-        );
-
-        if (findAttributesIndex > -1) {
-          const removeAttributes = productDetails[findItemsIndex]?.selectedAttributes[
-            findAttributesIndex
-          ]?.selectedItems?.filter((selectedItem) => selectedItem?._id !== data?.item?._id);
-
-          // if there are only one items then remove whole atributes other wise one item
-          if (removeAttributes?.length > 0)
-            productDetails[findItemsIndex].selectedAttributes[findAttributesIndex].selectedItems = removeAttributes;
-          else {
-            productDetails[findItemsIndex].selectedAttributes.splice(findAttributesIndex, 1);
-          }
-        }
+      if (matched?.isMatched) {
+        const deal = productDeal(prev.productsDetails[matched?.index]);
+        productData[matched?.index].productQuantity += newProduct?.productQuantity;
+      } else if (!matched?.shouldAddInLastIndex) {
+        console.log(matched?.lastIndex, newProduct);
+        productData?.splice(matched?.lastIndex, 0, newProduct);
+      } else {
+        productData.push(newProduct);
       }
 
-      return { ...prev, productDetails: [...productDetails] };
+      productData = populateProductData(productData, order?.shop?.shopExchangeRate);
+
+      return {
+        ...prev,
+        productsDetails: productData,
+        summary: getPaymentSummary(productData, prev, appSetting?.vat, oldOrderSummary),
+      };
     });
   };
 
@@ -140,14 +165,16 @@ function AdjustMentOrderSummary({ order, setAdjustedOrder }) {
               isLast={i === l - 1}
               shopExchangeRate={order?.shop?.shopExchangeRate}
               onDeleteProduct={onDeleteProduct}
-              onDeleteAtribute={onDeleteAtribute}
               onIncrementDecrement={onIncrementDecrement}
+              onToggled={onToggled}
             />
           ))}
         </Stack>
       </StyledAdjustmentOrderContainer>
       <Stack>
-        {open && <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} />}
+        {open && (
+          <StyledProductSelector order={order} setAdjustedOrder={setAdjustedOrder} onClickProduct={onClickProduct} />
+        )}
         <Box paddingLeft="16px" mt={open ? 0 : 4} mb={4}>
           <Button
             disableRipple
