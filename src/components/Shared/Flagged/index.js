@@ -192,6 +192,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSu
     [],
   );
 
+  const onSubmitHandler = () => {};
+
   return (
     <OrderContextProvider value={value}>
       <ModalContainer onClose={onClose}>

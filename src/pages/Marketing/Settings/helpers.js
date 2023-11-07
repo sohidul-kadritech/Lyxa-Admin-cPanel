@@ -24,6 +24,10 @@ export const createProductData = (
   console.log({ maxDiscount });
 
   const data = products.map((item) => {
+    const findMarketing = item?.marketing?.find((item) => item?.creatorType === creatorType);
+
+    const findProduct = findMarketing?.products?.find((prdct) => prdct?.product === item?._id);
+
     // reward
     if (!item?._id) {
       prb = 'Please remove empty items from list!';
@@ -50,16 +54,16 @@ export const createProductData = (
     }
 
     // percentage
-    if (marketingType === 'percentage' && !item?.discountPercentage) {
+    if (marketingType === 'percentage' && !findProduct?.discountPercentage) {
       prb = 'Please select percentage bundle for product!';
     }
 
     if (marketingType === 'percentage') {
-      const discountAmount = (item?.price / 100) * item?.discountPercentage;
+      const discountAmount = (item?.price / 100) * findProduct?.discountPercentage;
 
       return {
         id: item?._id,
-        discountPercentage: item?.discountPercentage,
+        discountPercentage: findProduct?.discountPercentage,
         discountPrice: item?.price - (maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount),
         discount: maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount,
       };
