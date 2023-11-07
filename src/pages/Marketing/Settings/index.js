@@ -85,12 +85,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         const counter = {};
 
         data?.data?.products?.forEach((product) => {
-          if (product?.marketing) {
-            types[product?.marketing?.type] = true;
+          if (product?.marketing[0]) {
+            types[product?.marketing[0]?.type] = true;
 
-            if (!counter[product?.marketing?.type]) {
-              counter[product?.marketing?.type] = 1;
-            } else counter[product?.marketing?.type] += 1;
+            if (!counter[product?.marketing[0]?.type]) {
+              counter[product?.marketing[0]?.type] = 1;
+            } else counter[product?.marketing[0]?.type] += 1;
           }
         });
 
@@ -120,7 +120,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing?.type === marketingType,
+        (p) => p.marketing === undefined || p?.marketing[0]?.type === marketingType,
       ),
     [productsQuery?.data],
   );

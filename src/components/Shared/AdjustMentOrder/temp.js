@@ -59,8 +59,8 @@ const getRewordItem = (user) => {
   addedItems?.map((item) => {
     if (
       (user ? item?.owner?._id == user?._id : true) &&
-      item?.marketing?.isActive &&
-      item?.marketing?.type == 'reward' &&
+      item?.marketing[0]?.isActive &&
+      item?.marketing[0]?.type == 'reward' &&
       item.rewardApplied
     ) {
       totalReward += item?.reward?.points * item?.quantity;

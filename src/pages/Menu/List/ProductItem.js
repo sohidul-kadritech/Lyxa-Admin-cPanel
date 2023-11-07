@@ -280,11 +280,11 @@ export default function ProductItem({
           <Typography variant="body4" color={theme.palette.text.secondary2}>
             {`${product?.seoDescription?.slice(0, 50)}${product?.seoDescription?.length > 50 ? '...' : ''}`}
           </Typography>
-          {product?.marketing?.isActive && (
+          {product?.marketing[0]?.isActive && (
             <Typography variant="body4" color={theme.palette.text.secondary2}>
-              {product?.marketing?.type === 'percentage' && `${product?.discountPercentage}% discount`}
-              {product?.marketing?.type === 'reward' && `${product?.rewardBundle}% points enabled `}
-              {product?.marketing?.type === 'double_menu' && `Buy 1, get 1 free`}
+              {product?.marketing[0]?.type === 'percentage' && `${product?.discountPercentage}% discount`}
+              {product?.marketing[0]?.type === 'reward' && `${product?.rewardBundle}% points enabled `}
+              {product?.marketing[0]?.type === 'double_menu' && `Buy 1, get 1 free`}
             </Typography>
           )}
         </Stack>
