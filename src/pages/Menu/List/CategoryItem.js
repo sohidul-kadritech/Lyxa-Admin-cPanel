@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable import/no-named-as-default */
 import { Add, Edit, ExpandMore } from '@mui/icons-material';
@@ -25,6 +26,9 @@ export default function CategoryItem({
   asSearchResult,
   setEditFavorite,
   type,
+  editable = true,
+  OnCheckProduct,
+  suggestedProducts,
 }) {
   const theme = useTheme();
   const { currentUser } = useGlobalContext();
@@ -80,12 +84,14 @@ export default function CategoryItem({
       <StyledAccordionSummary expandIcon={<ExpandMore />}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" paddingRight={6}>
           <Stack direction="row" alignItems="center" gap={5}>
-            <HandleIcon
-              style={{
-                color: category?.category?.isUnsortable ? '#AFAFAE' : '#363636',
-              }}
-              className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler'}`}
-            />
+            {editable && (
+              <HandleIcon
+                style={{
+                  color: category?.category?.isUnsortable ? '#AFAFAE' : '#363636',
+                }}
+                className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler'}`}
+              />
+            )}
             <Stack direction="row" alignItems="center" gap={5}>
               {shop?.shopType !== 'food' && (
                 <Avatar
@@ -132,10 +138,10 @@ export default function CategoryItem({
             }}
           >
             {/* for best seller and favorites */}
-            {!isOridanryCategory && (
+            {!isOridanryCategory && editable && (
               <>
                 {/* only for favorites */}
-                {!category?.category?.isShopBestSellers && (
+                {!category?.category?.isShopBestSellers && editable && (
                   <StyledIconButton
                     color="primary"
                     onClick={() => {
@@ -150,24 +156,28 @@ export default function CategoryItem({
                     <Edit />
                   </StyledIconButton>
                 )}
-                <StyledSwitch
-                  checked={
-                    category?.category?.isShopBestSellers ? shop?.bestSeller?.isActive : shop?.shopFavourites?.isActive
-                  }
-                  onChange={(e) => {
-                    if (category?.category?.isShopBestSellers) {
-                      bestSellerMutation.mutate(e.target.checked);
-                      shop.bestSeller.isActive = e.target.checked;
-                    } else {
-                      favouritesMutation.mutate(e.target.checked);
-                      shop.shopFavourites.isActive = e.target.checked;
+                {editable && (
+                  <StyledSwitch
+                    checked={
+                      category?.category?.isShopBestSellers
+                        ? shop?.bestSeller?.isActive
+                        : shop?.shopFavourites?.isActive
                     }
-                  }}
-                />
+                    onChange={(e) => {
+                      if (category?.category?.isShopBestSellers) {
+                        bestSellerMutation.mutate(e.target.checked);
+                        shop.bestSeller.isActive = e.target.checked;
+                      } else {
+                        favouritesMutation.mutate(e.target.checked);
+                        shop.shopFavourites.isActive = e.target.checked;
+                      }
+                    }}
+                  />
+                )}
               </>
             )}
             {/* for ordinary categories */}
-            {isOridanryCategory && shop?.shopType === 'food' && (
+            {isOridanryCategory && shop?.shopType === 'food' && editable && (
               <>
                 <StyledIconButton
                   color="primary"
@@ -205,6 +215,9 @@ export default function CategoryItem({
             isInsideFavorites={category?.category?.isShopFavorites}
             isInsideBestSellers={category?.category?.isShopBestSellers}
             type={type}
+            editable={editable}
+            OnCheckProduct={OnCheckProduct}
+            suggestedProducts={suggestedProducts}
           />
         ) : (
           <SubCategoriesContainer
@@ -212,10 +225,13 @@ export default function CategoryItem({
             gOpen={gOpen}
             subCategories={category?.subCategories}
             asSearchResult={asSearchResult}
+            editable={editable}
+            OnCheckProduct={OnCheckProduct}
+            suggestedProducts={suggestedProducts}
           />
         )}
         {/* add product */}
-        {isOridanryCategory && shop?.shopType === 'food' && category?.category?.status === 'active' && (
+        {isOridanryCategory && shop?.shopType === 'food' && category?.category?.status === 'active' && editable && (
           <Box pl={8.5} pt={2.5} pb={2.5}>
             <Button
               variant="contained"
@@ -231,7 +247,7 @@ export default function CategoryItem({
           </Box>
         )}
         {/* add sub-category */}
-        {shop?.shopType !== 'food' && category?.category?.status === 'active' && (
+        {shop?.shopType !== 'food' && category?.category?.status === 'active' && editable && (
           <Stack pl={8.5} pt={2.5} pb={2.5} alignItems="center" direction="row" gap={2}>
             <Button
               variant="contained"

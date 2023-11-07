@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Stack, Typography, debounce, useTheme } from '@mui/material';
@@ -8,15 +9,15 @@ import AXIOS from '../../../network/axios';
 import StyledFormField from '../../Form/StyledFormField';
 import { ProductCard } from './ProductCard';
 
-function StyledProductSelector({ order, setAdjustedOrder }) {
+function StyledProductSelector({ order, onClickProduct }) {
   const [searchKey, setSearchKey] = useState('');
+
+  const [focused, setFocused] = useState(false);
+
   const [searchedResult, setSearchedResult] = useState([]);
 
   const theme = useTheme();
 
-  const onClickProduct = (data) => {
-    console.log('onclick ', { data, order });
-  };
   const productsQuery = useMutation(
     () =>
       AXIOS?.get(API_URL.ALL_PRODUCT, {
@@ -32,11 +33,10 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
     {
       onSuccess: (data) => {
         if (data?.status) {
-          console.log('data?.data?.products', data?.data?.products);
           setSearchedResult(data?.data?.products);
         }
       },
-    }
+    },
   );
 
   const getProducts = useMemo(
@@ -44,13 +44,17 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
       debounce((value) => {
         setSearchKey(value);
         productsQuery.mutate();
-      }, 100),
-    []
+      }, 20),
+    [],
   );
+
+  const getInitialProduct = useMemo(() => {
+    productsQuery.mutate();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside() {
-      setSearchKey('');
+      setFocused(false);
     }
 
     // Attach the click event listener to the document
@@ -71,16 +75,23 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
     >
       <StyledFormField
         intputType="text"
+        onFocus={() => {
+          console.log('focues');
+        }}
         inputProps={{
           placeholder: 'Choose Item',
           value: searchKey,
           onChange: (e) => {
             getProducts(e?.target?.value);
           },
+          onFocus: () => {
+            setFocused(true);
+            // getProducts('');
+          },
         }}
       />
 
-      {searchKey && (
+      {focused && (
         <Stack
           sx={{
             position: 'absolute',
@@ -96,7 +107,15 @@ function StyledProductSelector({ order, setAdjustedOrder }) {
         >
           {!productsQuery?.isLoading &&
             searchedResult?.map((product, i) => (
-              <ProductCard onClickProduct={onClickProduct} product={product} key={i} />
+              <ProductCard
+                onClickProduct={(data) => {
+                  onClickProduct(data);
+                  setFocused(false);
+                  setSearchKey('');
+                }}
+                product={product}
+                key={i}
+              />
             ))}
 
           {!productsQuery?.isLoading && !searchedResult?.length && (

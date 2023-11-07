@@ -3,6 +3,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
+import { useGlobalContext } from '../../../context';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../Common/FormatesecondaryCurrency';
 import { OrderContext } from './OrderContext';
@@ -72,6 +73,13 @@ export function SummaryItem({
   const context = useContext(OrderContext);
   const { adminExchangeRate } = context || {};
   const hideSecondary = adminExchangeRate === 0;
+  const { general } = useGlobalContext();
+
+  const { appSetting } = general;
+
+  // initialize currency format
+  FormateBaseCurrency.initialize(appSetting?.baseCurrency?.code);
+  FormatesecondaryCurrency.initialize(appSetting?.secondaryCurrency?.code);
 
   if (hide) return null;
   if (!showIfZero && !value) return null;

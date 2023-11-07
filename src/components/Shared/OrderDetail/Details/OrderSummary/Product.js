@@ -6,7 +6,7 @@ import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
 
 export const productDeal = (product) => {
-  if (product?.isDoubleDeal && product?.baseCurrency_totalDiscount) return 'double_menu';
+  if (product?.isDoubleDeal) return 'double_menu';
   if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
 

@@ -34,7 +34,7 @@ export default function OrderTable({
 }) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
-  console.log('adminType', adminType);
+  console.log('orders', orders);
   const currency = general?.currency?.symbol;
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -167,6 +167,7 @@ export default function OrderTable({
       field: 'paymentMethod',
       flex: 1,
       sortable: false,
+      minWidth: 150,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
           {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
@@ -188,6 +189,7 @@ export default function OrderTable({
       headerName: 'DATE',
       field: 'createdAt',
       sortable: false,
+      minWidth: 150,
       flex: orderType === 'cancelled' ? 1.5 : 1,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
@@ -198,6 +200,7 @@ export default function OrderTable({
       field: 'scheduleDate',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
@@ -240,6 +243,7 @@ export default function OrderTable({
       field: 'rating',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const r = row?.reviews?.find((r) => r?.type === 'deliveryBoy');
 
@@ -257,6 +261,7 @@ export default function OrderTable({
       field: 'rating',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
         if (rating) return <Rating amount={rating?.rating} />;
@@ -293,6 +298,7 @@ export default function OrderTable({
       align: adminType === 'admin' ? 'center' : 'right',
       headerAlign: adminType === 'admin' ? 'center' : 'right',
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => (
         <Typography variant="body4">
           {currency} {(getOrderProfit(row, adminType) || 0)?.toFixed(2)}
@@ -434,6 +440,7 @@ export default function OrderTable({
       field: 'paymentMethod',
       flex: 1,
       sortable: false,
+      minWidth: 150,
       renderCell: ({ row }) => (
         <Typography variant="body4" className="text-capitalize">
           {row?.paymentMethod} {row?.selectPos !== 'no' ? '(Pos)' : ''}
@@ -455,6 +462,7 @@ export default function OrderTable({
       headerName: 'DATE',
       field: 'createdAt',
       sortable: false,
+      minWidth: 150,
       flex: orderType === 'cancelled' ? 1.5 : 1,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
@@ -465,6 +473,7 @@ export default function OrderTable({
       field: 'scheduleDate',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
@@ -507,6 +516,7 @@ export default function OrderTable({
       field: 'rating',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const r = row?.reviews?.find((r) => r?.type === 'deliveryBoy');
 
@@ -524,6 +534,7 @@ export default function OrderTable({
       field: 'rating',
       sortable: false,
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const rating = row?.reviews?.find((ra) => ra?.type === 'shop');
         if (rating) return <Rating amount={rating?.rating} />;
@@ -560,6 +571,7 @@ export default function OrderTable({
       align: adminType === 'admin' ? 'center' : 'right',
       headerAlign: adminType === 'admin' ? 'center' : 'right',
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => (
         <Typography variant="body4">
           {currency}{' '}
@@ -608,6 +620,7 @@ export default function OrderTable({
     align: 'right',
     headerAlign: 'right',
     flex: 1,
+    minWidth: 150,
     renderCell: (params) => (
       <ThreeDotsMenu
         handleMenuClick={(menu) => {

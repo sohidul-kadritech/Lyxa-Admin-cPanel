@@ -13,11 +13,14 @@ const StyledLabel = styled(FormControlLabel)(() => ({
     lineHeight: '24px',
   },
 }));
-function CustomeCheckedBox({ label, value, onChange, readOnly, sx }) {
+
+// custom check box
+function CustomeCheckedBox({ label, value, onChange, readOnly, labelSx, sx, checkBoxSx }) {
   return (
     <Box sx={{ ...(sx || {}) }}>
       <StyledLabel
         label={label}
+        sx={{ ...(labelSx || {}) }}
         control={
           <StyledCheckbox
             size="small"
@@ -36,6 +39,7 @@ function CustomeCheckedBox({ label, value, onChange, readOnly, sx }) {
               borderRadius: '7px',
               color: 'primary.main',
               width: '36px',
+              ...(checkBoxSx || {}),
             }}
           />
         }

@@ -48,6 +48,7 @@ export default function PaymentSummary({ order = {} }) {
             pt={0}
           />
         )}
+
         <SummaryItem
           label="Rider Tips"
           value={order?.summary?.baseCurrency_riderTip}

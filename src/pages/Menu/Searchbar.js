@@ -45,6 +45,7 @@ function SearchBar({
   shopType,
   viewUserType,
   subCategory,
+  editable = true,
   ...props
 }) {
   return (
@@ -58,22 +59,26 @@ function SearchBar({
         }}
       />
       {/* <ThreeDotsMenu handleMenuClick={() => {}} menuItems={bulkItemOptions} ButtonComponent={BulkItemsButton} /> */}
-      <Button
-        onClick={onCollapse}
-        variant="contained"
-        color="primary"
-        size="small"
-        sx={{
-          minWidth: 'auto',
-        }}
-      >
-        <CollapseIcon />
-      </Button>
-      <ThreeDotsMenu
-        handleMenuClick={onMenuClick}
-        menuItems={getAddMenuOptions(shopType, viewUserType, isThereAnySubCategoryOrNot(subCategory))}
-        ButtonComponent={AddMenuButton}
-      />
+      {editable && (
+        <Button
+          onClick={onCollapse}
+          variant="contained"
+          color="primary"
+          size="small"
+          sx={{
+            minWidth: 'auto',
+          }}
+        >
+          <CollapseIcon />
+        </Button>
+      )}
+      {editable && (
+        <ThreeDotsMenu
+          handleMenuClick={onMenuClick}
+          menuItems={getAddMenuOptions(shopType, viewUserType, isThereAnySubCategoryOrNot(subCategory))}
+          ButtonComponent={AddMenuButton}
+        />
+      )}
     </Stack>
   );
 }

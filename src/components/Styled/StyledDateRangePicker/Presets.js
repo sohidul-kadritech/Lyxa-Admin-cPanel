@@ -2,25 +2,25 @@ import { Button, Stack } from '@mui/material';
 import moment from 'moment';
 
 export const getFirstMonday = (period) => {
-  let start;
+  const currentDate = moment();
 
   if (period === 'week') {
-    start = moment().startOf('week');
+    currentDate.startOf('isoWeek');
   } else if (period === 'month') {
-    start = moment().startOf('month');
+    const startOfMonth = moment(currentDate).startOf('month');
+    const dayOfWeek = startOfMonth.isoWeekday();
+
+    if (dayOfWeek >= 6) {
+      // If it's Saturday (6) or Sunday (7)
+      startOfMonth.day(8); // Set to the next Monday
+    }
+
+    return startOfMonth;
   } else {
-    return moment(); // Invalid period
+    return moment();
   }
 
-  while (start.day() !== 1) {
-    start.add(1, 'day');
-  }
-
-  // Ensure that the first Monday is less than the current date
-  if (start.isSameOrBefore(moment(), 'day')) {
-    return start;
-  }
-  return moment(); // First Monday is in the future
+  return currentDate;
 };
 
 const presets = [
@@ -54,6 +54,7 @@ function DatePresets({ startDate, endDate, onChange }) {
             key={text}
             className={` ${isChosen ? 'active' : ''}`}
             onClick={() => {
+              getFirstMonday('month');
               onChange({ startDate: start, endDate: end });
             }}
             variant={isChosen ? 'contained' : 'outlined'}
