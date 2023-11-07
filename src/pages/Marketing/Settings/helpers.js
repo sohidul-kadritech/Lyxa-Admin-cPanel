@@ -16,7 +16,7 @@ export const confirmActionInit = {
 
 export const createProductData = (
   products,
-  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType }
+  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType },
 ) => {
   let prb = null;
   const maxDiscount = Number(creatorType === 'shop' ? shopMaxDiscount : adminMaxDiscount);
@@ -212,7 +212,7 @@ export const getDurationLeft = (date) => {
 export const getDateRange = (mData) => {
   if (mData?.status === 'inactive') {
     const d = Math.ceil(
-      moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true)
+      moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true),
     );
     return d < 0 ? 0 : d;
   }

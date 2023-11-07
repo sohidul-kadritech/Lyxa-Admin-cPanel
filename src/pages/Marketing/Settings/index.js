@@ -120,7 +120,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => p.marketing === undefined || p?.marketing[0]?.type === marketingType,
+        (p) => p.marketing[0] === undefined || p?.marketing[0]?.type === marketingType,
       ),
     [productsQuery?.data],
   );
@@ -177,7 +177,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [featuredAmount, setFeaturedDuration] = useState('');
 
   const setLocalData = (data) => {
-    setProducts(data?.products);
+    const productsData = data?.products.map(({ product }) => product);
+    setProducts(productsData);
     setDateRange(getDateRange(data));
     setSpendLimit(data?.spendLimit);
     setAmountSpent(data?.amountSpent);

@@ -35,7 +35,7 @@ export default function MarketingProductsTable({
   const [render, setRender] = useState(false);
 
   const removeProduct = (product) => {
-    product.marketing = undefined;
+    product.marketing[0] = undefined;
     product.discountPercentage = 0;
     product.reward = undefined;
     setValues((prev) => prev.filter((item) => item?._id !== product?._id));
