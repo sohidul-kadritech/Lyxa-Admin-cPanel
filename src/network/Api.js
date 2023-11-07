@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 export const API_URL = 'https://request-dev.lyxa.delivery/';
+// export const API_URL = 'https://request-dev.lyxa.delivery/';
 // export const API_URL = 'https://7a7e-103-86-202-146.ngrok-free.app/';
 
 export const SOCKET_CONNECTION = 'https://request-dev.lyxa.delivery';
@@ -304,6 +305,8 @@ export const ORDER_LIST = `${ADMIN_ENDPOINT}/order`;
 export const URGENT_ORDER_LIST = `${ADMIN_ENDPOINT}/order/urgent`;
 export const URGENT_ORDER_COUNT = `${ADMIN_ENDPOINT}/order/urgent-count`;
 export const LATE_ORDER_COUNT = `${ADMIN_ENDPOINT}/order/late-count`;
+export const ADJUST_ORDER = `${ADMIN_ENDPOINT}/order/adjust-order`;
+export const ADJUST_ORDER_REQUEST = `${ADMIN_ENDPOINT}/order/adjust-order-request`;
 
 export const SINGLE_ORDER = `${ADMIN_ENDPOINT}/order/single-details`;
 export const ORDRE_UPDATE_STATUS = `${ADMIN_ENDPOINT}/order/update-order-status`;
