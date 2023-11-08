@@ -387,6 +387,7 @@ export default function NewOrders({ showFor }) {
           currentOrder={currentOrder}
           onClose={() => {
             setOpenAdjustmentOrder(false);
+            setSidebarOpen(false);
           }}
         />
       </Modal>

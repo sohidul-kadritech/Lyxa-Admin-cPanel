@@ -40,13 +40,66 @@ const mTypeMap = {
   featured: 'Featured',
 };
 
+const tabIndex = (userType, value) => {
+  const template = {
+    0: 'admin',
+    1: 'shop',
+    admin: 0,
+    shop: 1,
+  };
+
+  if (userType === 'shop') {
+    template['0'] = 'shop';
+    template.shop = 0;
+    template['1'] = 'admin';
+    template.admin = 1;
+  }
+  return template[value];
+};
+
+export const getMarketingId = (mData, userType) => {
+  console.log({ mData, viewUserType: userType });
+  const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
+
+  const existingMarketing = marketingData?.find(
+    (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
+  );
+
+  if (!existingMarketing) {
+    return undefined;
+  }
+
+  const marketingForAdmin = marketingData?.find((mrkting) => mrkting?.creatorType === 'admin');
+  const marketingForShop = marketingData?.find((mrkting) => mrkting?.creatorType === 'shop');
+
+  let marketing = {};
+
+  if (userType === 'admin' && marketingForAdmin) {
+    marketing = marketingForAdmin;
+  } else if (userType === 'shop' && marketingForShop) {
+    marketing = marketingForShop;
+  }
+
+  return marketing?._id;
+};
+
+export const replaceLastSlugPath = (path, replaceSlug) => {
+  // Regular expression to match the last part of the URL
+  const regex = /\/[^/]+$/;
+  // Replace the last part of the URL with the new slug
+  const newUrl = path.replace(regex, replaceSlug);
+  return newUrl;
+};
+
 export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
   const routeMatch = useRouteMatch();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+
+  console.log('searchParams', searchParams.get('user'), searchParams.get('id'));
 
   const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
@@ -56,7 +109,7 @@ export default function MarketingDashboard({ viewUserType }) {
   const [currentShop, setCurrentShop] = useState(shop);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(searchParams.get('user'));
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -308,9 +361,15 @@ export default function MarketingDashboard({ viewUserType }) {
 
       {params?.type === 'percentage' && (
         <Tabs
-          value={currentTab}
+          value={tabIndex(searchParams.get('user'), currentTab)}
           onChange={(event, newValue) => {
-            setCurrentTab(newValue);
+            console.log({
+              data: marketingQuery?.data,
+              pathname,
+              path: replaceLastSlugPath(pathname, `/${params?.type}`),
+              id: getMarketingId(marketingQuery, currentTab),
+            });
+            setCurrentTab(tabIndex(searchParams.get('user'), newValue));
           }}
           sx={{
             paddingBottom: 5,
@@ -321,8 +380,9 @@ export default function MarketingDashboard({ viewUserType }) {
             },
           }}
         >
-          <Tab label="Admin" />
-          <Tab label="Shop" />
+          {searchParams.get('user') === 'shop' && <Tab tabIndex="shop" label="Shop" />}
+          <Tab tabIndex="admin" label="Admin" />
+          {searchParams.get('user') === 'admin' && <Tab tabIndex="shop" label="Shop" />}
         </Tabs>
       )}
 

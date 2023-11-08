@@ -6,22 +6,55 @@
 
 import { successMsg } from '../../../helpers/successMsg';
 
+export const checkPercentageMarketing = (product) => {
+  const percentage = product?.marketing?.filter((item) => item?.isActive && item?.type === 'percentage');
+  if (percentage?.length) return true;
+  return false;
+};
+export const checkDoubleDealMarketing = (product) => {
+  const doubleDeal = product?.marketing?.filter((item) => item?.isActive && item?.type === 'double_menu');
+  if (doubleDeal?.length) return true;
+  return false;
+};
+export const checkRewardMarketing = (product) => {
+  const reward = product?.marketing?.filter((item) => item?.isActive && item?.type === 'reward');
+  if (reward?.length) return true;
+  return false;
+};
+
+export const checkFreeDeliveryMarketing = (product) => {
+  const freeDelivery = product?.marketing?.filter((item) => item?.isActive && item?.type === 'free_delivery');
+  if (freeDelivery?.length) return true;
+  return false;
+};
+export const checkAnyDeals = (product) => {
+  const percentage = product?.marketing?.filter((item) => item?.isActive && item?.type === 'percentage');
+  const doubleDeal = product?.marketing?.filter((item) => item?.isActive && item?.type === 'double_menu');
+  if (percentage?.length || doubleDeal?.length) return true;
+  return false;
+};
+export const checkAnyMarketing = (product) => {
+  const deals = product?.marketing?.find((item) => item?.isActive);
+  if (deals) return deals;
+  return false;
+};
+
 const calculatetotalDiscountPrice = (addedItems) => {
   let count = 0;
 
   addedItems?.map((itemData) => {
-    if (itemData?.marketing[0]?.isActive && itemData?.marketing[0]?.type === 'percentage') {
+    if (checkPercentageMarketing(itemData)) {
       count += itemData?.baseCurrency_discount;
     }
   });
-  // console.log(count);
 
   return Math.round(count * 100) / 100;
 };
 
 export const productDealForProductDetails = (product) => {
-  const isActive = product?.marketing[0]?.isActive === true;
-  const type = product?.marketing[0]?.type;
+  const marketing = checkAnyMarketing(product);
+  const isActive = marketing ? marketing?.isActive === true : false;
+  const type = marketing?.type;
 
   if (isActive) {
     return type;
@@ -77,8 +110,6 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   let count = 0;
   let singlePrice = 0;
 
-  console.log(item?.productName, item);
-
   const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
 
   const output = {
@@ -98,7 +129,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     },
   };
 
-  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'percentage' && !skipDiscount) {
+  if (checkPercentageMarketing(item) && !skipDiscount) {
     singlePrice = item?.product.price || 0;
     output.baseCurrency_totalDiscount = item?.product?.discount * (item?.quantity || item?.productQuantity);
     output.secondaryCurrency_totalDiscount = getSecondaryCurrency(output?.baseCurrency_totalDiscount);
@@ -109,7 +140,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     singlePrice = item?.product?.price;
   }
 
-  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'double_menu' && !skipDiscount) {
+  if (checkDoubleDealMarketing(item) && !skipDiscount) {
     const quantity = item?.quantity || item?.productQuantity;
 
     count += singlePrice * (quantity - discountQuantity);
@@ -141,8 +172,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
-  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'reward') {
-    console.log('item?.reward?.amount', item?.reward?.amount);
+  if (checkRewardMarketing(item)) {
     output.finalReward.baseCurrency_amount = skipDiscount
       ? 0
       : (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
@@ -155,7 +185,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   }
 
   // when marketing is percentage
-  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'percentage' && !skipDiscount) {
+  if (checkPercentageMarketing(item) && !skipDiscount) {
     // final price
     output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
@@ -164,8 +194,8 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
   }
 
-  // when marketing is percentage
-  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'double_menu' && !skipDiscount) {
+  // when marketing is double deal
+  if (checkDoubleDealMarketing(item) && !skipDiscount) {
     output.baseCurrency_finalPrice = Math.round(singlePrice * (item?.quantity || item?.productQuantity) * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
 
@@ -173,7 +203,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
   }
 
-  if (item?.marketing[0]?.type !== 'reward') {
+  if (!checkRewardMarketing(item)) {
     delete output.finalReward;
   }
 
@@ -273,7 +303,6 @@ export const SingleItemcalculatePrice = (itemData, shopExchangeRate = 0) => {
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
 
-  console.log(deal, { product: itemData?.product }, itemData?.product?.price - itemData?.product?.discount, output);
   return output;
 };
 
@@ -369,17 +398,15 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 
   const output = calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate);
 
-  console.log({ productTemplate, deal, output, doubleDealItem });
-
   return { ...productTemplate, ...output };
 };
 
 export const populateProductData = (addedProducts, shopExchangeRate, skipDiscount = false) => {
-  console.log({ addedProducts });
   const data = doubleDealManipulate(addedProducts).map((item) => {
     const shouldSkipDiscount = item?.skipDiscount && skipDiscount;
     let prices = {};
     prices = calculatePrice(item, shouldSkipDiscount, item?.discountQuantity, shopExchangeRate);
+
     return { ...item, ...prices };
   });
 
@@ -409,16 +436,10 @@ export const getRewordItem = (addedItems, shopExchangeRate, user) => {
   addedItems?.map((item) => {
     const skipDiscount =
       item.skipDiscount === undefined
-        ? !(item?.marketing[0]?.type === 'reward' && item?.finalReward?.baseCurrency_amount > 0)
+        ? !(checkRewardMarketing(item) && item?.finalReward?.baseCurrency_amount > 0)
         : item?.skipDiscount;
-    console.log(item?.productName, skipDiscount);
-    if (
-      (user ? item?.owner?._id === user?._id : true) &&
-      item?.marketing[0]?.isActive &&
-      item?.marketing[0]?.type === 'reward' &&
-      !skipDiscount
-    ) {
-      console.log({ item });
+
+    if ((user ? item?.owner?._id === user?._id : true) && checkRewardMarketing(item) && !skipDiscount) {
       totalReward += item?.finalReward?.points;
       rewordPrice +=
         item?.product?.price * (item?.quantity || item?.productQuantity) - item?.finalReward?.baseCurrency_amount;
@@ -460,15 +481,8 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
       }
 
       itemWithAttribute += itemData?.baseCurrency_finalPrice - itemData?.baseCurrency_totalDiscount;
-
-      // // item attribute price
-      // itemData?.selectedAttributes?.map((parent) => {
-      //   parent?.attributeItems?.map((child) => {
-      //     itemWithAttribute += child?.extraPrice * (itemData?.quantity || itemData?.productQuantity);
-      //   });
-      // });
     }
-    // console.log(count);
+
     count += price;
   });
 
@@ -534,31 +548,6 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
   const diff = Number((total_base_new - total_base_old).toFixed(2));
   const diffSecondary = Number((total_secondary_new - total_secondary_old).toFixed(2));
 
-  console.log({
-    diff,
-    diffSecondary,
-    total_base_new,
-    total_base_old,
-    total_secondary_new,
-    total_secondary_old,
-    old: {
-      secondaryCurrency_totalAmount: oldSummary?.secondaryCurrency_totalAmount,
-      secondaryCurrency_vat: oldSummary?.secondaryCurrency_vat,
-      secondaryCurrency_riderTip: oldSummary?.secondaryCurrency_riderTip,
-      secondaryCurrency_discount: oldSummary?.secondaryCurrency_discount,
-      secondaryCurrency_amount: oldSummary?.reward?.secondaryCurrency_amount,
-      secondaryCurrency_couponDiscountAmount: oldSummary?.secondaryCurrency_couponDiscountAmount,
-    },
-    new: {
-      secondaryCurrency_totalAmount: newSummary?.secondaryCurrency_totalAmount,
-      secondaryCurrency_vat: newSummary?.secondaryCurrency_vat,
-      secondaryCurrency_riderTip: newSummary?.secondaryCurrency_riderTip,
-      secondaryCurrency_discount: newSummary?.secondaryCurrency_discount,
-      secondaryCurrency_amount: newSummary?.reward?.secondaryCurrency_amount,
-      secondaryCurrency_couponDiscountAmount: newSummary?.secondaryCurrency_couponDiscountAmount,
-    },
-  });
-
   if (diff > 0) {
     //  new 21 -  old 25 =  dif -4
 
@@ -583,8 +572,6 @@ export const getUpdatedPaymentOptions = (order, oldOrderSummary) => {
       paymentOption === 'card'
         ? oldSummary?.secondaryCurrency_card + diffSecondary
         : oldSummary?.secondaryCurrency_card;
-
-    console.log({ output });
   } else if (diff < 0) {
     if (paymentOption === 'cash') {
       // base
@@ -649,8 +636,6 @@ export const calculateVAT = (total, precentage = 0) => Number((total * (precenta
 
 // generate product summary for updated adjusted order
 export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSummary) => {
-  console.log({ order });
-
   const shopExchangeRate = order?.shop?.shopExchangeRate;
   const adminExchangeRate = order?.adminExchangeRate;
 
@@ -668,20 +653,9 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
 
   const reward = getRewordItem(addedItems, shopExchangeRate);
 
-  console.log(
-    'reward points',
-    order?.user?.tempRewardPoints,
-    reward?.points,
-    order?.user?.tempRewardPoints < reward?.points,
-  );
-
   if (order?.user?.tempRewardPoints < reward?.points) {
     successMsg('Insufficient points');
   }
-
-  console.log('reward', { reward });
-
-  console.log('double deal', doubleMenuItemPriceCalculation(addedItems));
 
   const templateSummary = {
     baseCurrency_productAmount: totalProductAmount,

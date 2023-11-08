@@ -126,9 +126,13 @@ export default function MarketingOverview({ viewUserType }) {
       setCurrentShop(shop);
 
       const activeDeals = getActiveDeals(dealSettingsQuery?.data?.data?.dealSetting || [], shop?.shopType);
+
+      console.log('shopDeals', activeDeals, dealSettingsQuery?.data?.data?.dealSetting);
+
       setActiveDeals(activeDeals);
 
       const appliedDeals = getApliedDeals(shop?.marketings, 'shop');
+
       setAppliedDeals(appliedDeals);
     } else if (shopQuery?.data?.status) {
       setCurrentShop(shopQuery?.data?.data?.shop || {});
@@ -136,6 +140,7 @@ export default function MarketingOverview({ viewUserType }) {
         dealSettingsQuery?.data?.data?.dealSetting || [],
         shopQuery?.data?.data?.shop?.shopType,
       );
+      console.log('shopQuery?.data?.status');
       setActiveDeals(activeDeals);
 
       const appliedDeals = getApliedDeals(shopQuery?.data?.data?.shop?.marketings, 'admin');
@@ -231,32 +236,46 @@ export default function MarketingOverview({ viewUserType }) {
 
   const openHandler = (marketingType, mData = {}) => {
     const marketing = mData?.data?.marketing;
-    console.log(
-      ' mData',
-      marketingType,
-      { userType, viewUserType, mData },
-      // !mData?.isMarketing,
-      // mData?.marketing?.creatorType,
-      // currentShop?._id,
-      // mData?.isNotEligible,
-    );
 
     if (marketingType === 'percentage') {
-      const marketing = mData?.data?.marketings?.find((mrkting) => mrkting?.creatorType === viewUserType);
+      const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
-      if (!marketing) {
+      const existingMarketing = marketingData?.find(
+        (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
+      );
+
+      if (!existingMarketing) {
         setCurrentModal(marketingType);
         return;
       }
 
-      if (viewUserType === 'shop' && userType === 'shop') {
-        history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
-      } else if (viewUserType === 'shop' && userType === 'seller') {
-        history.push(`/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
-      } else if (viewUserType === 'shop' && userType === 'admin') {
-        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}`);
+      const marketingForAdmin = marketingData?.find((mrkting) => mrkting?.creatorType === 'admin');
+      const marketingForShop = marketingData?.find((mrkting) => mrkting?.creatorType === 'shop');
+
+      let marketing = {};
+
+      if (viewUserType === 'admin' && marketingForAdmin) {
+        marketing = marketingForAdmin;
+      } else if (viewUserType === 'shop' && marketingForShop) {
+        marketing = marketingForShop;
       } else {
-        history.push(`/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
+        marketing = marketingForShop || marketingForAdmin;
+      }
+
+      console.log({ existingMarketing, viewUserType, marketingForAdmin, marketingForShop }, 'marketing data');
+
+      if (viewUserType === 'shop' && userType === 'shop') {
+        history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`);
+      } else if (viewUserType === 'shop' && userType === 'seller') {
+        history.push(
+          `/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`,
+        );
+      } else if (viewUserType === 'shop' && userType === 'admin') {
+        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`);
+      } else {
+        history.push(
+          `/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`,
+        );
       }
       return;
     }
