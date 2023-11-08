@@ -3,6 +3,7 @@ import { West } from '@mui/icons-material';
 import { Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import socketServices from '../../../../common/socketService';
 import CloseButton from '../../../../components/Common/CloseButton';
 import CustomerInfo from '../../../../components/Shared/AdjustMentOrder/CustomerInfo';
 import { matchedMeals } from '../../../../components/Shared/AdjustMentOrder/helpers';
@@ -25,13 +26,16 @@ function AdjustOrderForShop({ currentOrder, onClose }) {
   const queryClient = useQueryClient();
 
   const adjustOrderRequestQuery = useMutation((data) => AXIOS.post(API_URL.ADJUST_ORDER_REQUEST, data), {
-    onSuccess: (data) => {
+    onSuccess: (data, payload) => {
       if (data.status) {
         successMsg(data?.message, 'success');
         queryClient.invalidateQueries(API_URL.ORDER_LIST);
         queryClient.invalidateQueries(API_URL.URGENT_ORDER_COUNT);
         queryClient.invalidateQueries(API_URL.LATE_ORDER_COUNT);
         onClose();
+        socketServices?.emit('updateOrder', {
+          orderId: payload?.orderId,
+        });
       } else {
         successMsg(data?.message, 'warn');
       }

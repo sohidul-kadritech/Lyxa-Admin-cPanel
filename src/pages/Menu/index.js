@@ -31,7 +31,9 @@ import { OngoingTag } from './helpers';
 
 export default function MenuPage({ editable = true, OnCheckProduct, suggestedProducts }) {
   const { currentUser, general } = useGlobalContext();
+
   const { shop } = currentUser;
+
   const Deals = useMemo(() => new ShopDeals(shop, general?.appSetting || {}), []);
 
   const [render, setRender] = useState(false);

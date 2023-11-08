@@ -203,6 +203,8 @@ export const getThreedotMenuOptions = (order, userType) => {
   const options = [];
   const hideUpdateAndCanelOption = ['cancelled', 'delivered', 'refused'];
 
+  const hideAdjustOrderOption = ['placed', 'accepted_delivery_boy', 'preparing'];
+
   const updateStatus = { label: 'Update Status', value: 'update_status' };
   const trackOrder = { label: 'Track Order', value: 'track_order' };
   const cancelOrder = { label: 'Cancel Order', value: 'cancel_order' };
@@ -223,7 +225,11 @@ export const getThreedotMenuOptions = (order, userType) => {
   // console.log('order?.orderStatus', order?.orderStatus);
 
   if (hideUpdateAndCanelOption.indexOf(order?.orderStatus) < 0 && userType === 'admin') {
-    makePushOptions([updateStatus, trackOrder, cancelOrderNew, adjustOrder]);
+    makePushOptions([updateStatus, trackOrder, cancelOrderNew]);
+
+    if (hideAdjustOrderOption.indexOf(order?.orderStatus) > -1) {
+      makePushOptions([adjustOrder]);
+    }
 
     if (!order?.isButler) makePushOptions([adderssChange]);
   }

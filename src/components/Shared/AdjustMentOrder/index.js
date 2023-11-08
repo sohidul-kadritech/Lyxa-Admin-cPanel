@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Button, Paper, Stack, Typography } from '@mui/material';
@@ -10,9 +11,21 @@ import AdjusmentReason from './AdjusmentReason';
 import AdjustMentOrderSummary from './AdjustmentOrderSummary';
 import CustomerInfo from './CustomerInfo';
 import AdjustmentPaymentSummary from './PaymentSummary';
-import { generateAdjustOrdeJsonData } from './helpers';
+import { checkAnyDeals, generateAdjustOrdeJsonData } from './helpers';
 
-const getInitialOrderData = (order) => ({ ...order, adjustmentReason: '' });
+const getInitialOrderData = (order) => ({
+  ...order,
+  productsDetails: [
+    ...order?.productsDetails?.map((product) => {
+      const skipDiscount = checkAnyDeals(product)
+        ? !(checkAnyDeals(product)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
+        : false;
+
+      return { ...product, skipDiscount };
+    }),
+  ],
+  adjustmentReason: '',
+});
 
 const getOrderSummary = (order) => ({ ...order?.summary });
 
