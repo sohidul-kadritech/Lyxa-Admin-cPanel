@@ -104,7 +104,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const addons = useMemo(
     () =>
       productsQuery?.data?.data?.products?.filter(
-        (p) => !p?.attributes?.length && p?.marketing?.type !== 'double_menu',
+        (p) => !p?.attributes?.length && p?.marketing[0]?.type !== 'double_menu',
       ),
     [productsQuery?.data?.data?.products],
   );

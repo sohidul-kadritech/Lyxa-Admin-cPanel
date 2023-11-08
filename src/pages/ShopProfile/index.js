@@ -50,7 +50,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     () =>
       AXIOS.get(API_URL.SINGLE_SHOP, {
         params: {
-          id: routeMatch?.params?.shopId,
+          id: routeMatch?.params?.shopId || currentUser?.shop?._id,
         },
       }),
     {

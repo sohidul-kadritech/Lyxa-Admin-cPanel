@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 // third party
-import { Box, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Unstable_Grid2 as Grid, Tab, Tabs } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -55,6 +55,8 @@ export default function MarketingDashboard({ viewUserType }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const [currentTab, setCurrentTab] = useState(0);
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -303,6 +305,27 @@ export default function MarketingDashboard({ viewUserType }) {
           marketingQuery.isLoading
         }
       />
+
+      {params?.type === 'percentage' && (
+        <Tabs
+          value={currentTab}
+          onChange={(event, newValue) => {
+            setCurrentTab(newValue);
+          }}
+          sx={{
+            paddingBottom: 5,
+
+            '& .MuiTab-root': {
+              padding: '8px 12px',
+              textTransform: 'none',
+            },
+          }}
+        >
+          <Tab label="Admin" />
+          <Tab label="Shop" />
+        </Tabs>
+      )}
+
       {__loading && isInitialLoad ? (
         <PageSkeleton />
       ) : (
