@@ -24,7 +24,6 @@ export const getChatRequestId = (chats = []) => {
 const getOrderId = (chat) => (typeof chat?.order === 'string' ? chat?.order : chat?.order?._id);
 
 export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
-  console.log('chat==> ', { chat });
   const queryClient = useQueryClient();
   const { access_token } = getCookiesAsObject();
 
@@ -211,7 +210,7 @@ export default function Chat({ chat, onClose, onAcceptChat, readOnly }) {
         gap: '20px',
       }}
     >
-      <ChatIssues chat={chat} />
+      {chat?.resolvedReason && <ChatIssues chat={chat} />}
       <ChatBox
         ref={listContainerRef}
         showInput={chat.status === 'accepted' && !readOnly}
