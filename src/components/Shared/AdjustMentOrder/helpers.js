@@ -44,7 +44,8 @@ const calculatetotalDiscountPrice = (addedItems) => {
 
   addedItems?.map((itemData) => {
     if (checkPercentageMarketing(itemData)) {
-      count += itemData?.baseCurrency_discount;
+      count += itemData?.baseCurrency_totalDiscount;
+      console.log(itemData?.productName, { itemData });
     }
   });
 
@@ -398,6 +399,8 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 
   const output = calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate);
 
+  console.log('on add', { product });
+
   return { ...productTemplate, ...output };
 };
 
@@ -642,6 +645,8 @@ export const getPaymentSummary = (addedItems, order, vatPercentage, oldOrderSumm
   const getSecondaryCurrency = (value, rate) => Math.round(rate * value);
 
   const totalDiscount = calculatetotalDiscountPrice(addedItems);
+
+  console.log({ totalDiscount });
 
   const summary = oldOrderSummary;
 
