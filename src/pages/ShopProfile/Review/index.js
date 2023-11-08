@@ -41,7 +41,7 @@ const searchReviews = (reviews, queryParams) => {
   return items;
 };
 
-export default function ShopReviews({ reviews = [], onViewDetail }) {
+export default function ShopReviews({ reviews = [], onViewDetail, loading }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit());
   const [filteredReviews, setFilteredReviews] = useState(reviews);
 
@@ -62,7 +62,12 @@ export default function ShopReviews({ reviews = [], onViewDetail }) {
         searchPlaceHolder="Search Reviews"
         showFilters={{ search: true, date: true, sort: true }}
       />
-      <ReviewTable reviews={filteredReviews} setFilteredReviews={setFilteredReviews} onViewDetail={onViewDetail} />
+      <ReviewTable
+        reviews={filteredReviews}
+        setFilteredReviews={setFilteredReviews}
+        onViewDetail={onViewDetail}
+        loading={loading}
+      />
     </Box>
   );
 }

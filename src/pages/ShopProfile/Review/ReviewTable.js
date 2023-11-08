@@ -18,8 +18,9 @@ import localDatePagination from '../../../helpers/localDataPaginations';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
+import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 
-export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews }) {
+export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews, loading }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [currentReview, setCurrentReview] = useState({});
@@ -169,6 +170,25 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews 
     };
 
     columns.push(newColumn);
+  }
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          pr: 5,
+          pl: 3.5,
+          pt: 1,
+          pb: 1,
+          border: '1px solid #EEEEEE',
+          borderRadius: '7px',
+          background: '#fff',
+          marginTop: '30px',
+        }}
+      >
+        <TablePageSkeleton row={5} column={4} />
+      </Box>
+    );
   }
 
   return (

@@ -16,7 +16,7 @@ export const confirmActionInit = {
 
 export const createProductData = (
   products,
-  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType }
+  { marketingType, rewardAmount, shopMaxDiscount, adminMaxDiscount, creatorType },
 ) => {
   let prb = null;
   const maxDiscount = Number(creatorType === 'shop' ? shopMaxDiscount : adminMaxDiscount);
@@ -24,6 +24,10 @@ export const createProductData = (
   console.log({ maxDiscount });
 
   const data = products.map((item) => {
+    const findMarketing = item?.marketing?.find((item) => item?.creatorType === creatorType);
+
+    const findProduct = findMarketing?.products?.find((prdct) => prdct?.product === item?._id);
+
     // reward
     if (!item?._id) {
       prb = 'Please remove empty items from list!';
@@ -50,16 +54,16 @@ export const createProductData = (
     }
 
     // percentage
-    if (marketingType === 'percentage' && !item?.discountPercentage) {
+    if (marketingType === 'percentage' && !findProduct?.discountPercentage) {
       prb = 'Please select percentage bundle for product!';
     }
 
     if (marketingType === 'percentage') {
-      const discountAmount = (item?.price / 100) * item?.discountPercentage;
+      const discountAmount = (item?.price / 100) * findProduct?.discountPercentage;
 
       return {
         id: item?._id,
-        discountPercentage: item?.discountPercentage,
+        discountPercentage: findProduct?.discountPercentage,
         discountPrice: item?.price - (maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount),
         discount: maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount,
       };
@@ -212,7 +216,7 @@ export const getDurationLeft = (date) => {
 export const getDateRange = (mData) => {
   if (mData?.status === 'inactive') {
     const d = Math.ceil(
-      moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true)
+      moment(mData?.duration?.end).endOf('day').diff(moment(mData?.marketingPausedAt).startOf('day'), 'days', true),
     );
     return d < 0 ? 0 : d;
   }

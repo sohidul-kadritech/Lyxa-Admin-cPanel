@@ -27,7 +27,8 @@ export default function MarketingProductsTable({
   rewardCategoryOptions,
   creatorType,
 }) {
-  const { general } = useGlobalContext();
+  const { general, currentUser } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
   const adminMaxDiscount = general?.appSetting?.maxDiscount;
   const maxDiscount = Number(creatorType === 'shop' ? shop?.maxDiscount : adminMaxDiscount);
@@ -35,7 +36,7 @@ export default function MarketingProductsTable({
   const [render, setRender] = useState(false);
 
   const removeProduct = (product) => {
-    product.marketing = undefined;
+    product.marketing[0] = undefined;
     product.discountPercentage = 0;
     product.reward = undefined;
     setValues((prev) => prev.filter((item) => item?._id !== product?._id));
@@ -131,6 +132,23 @@ export default function MarketingProductsTable({
           return <></>;
         }
 
+        let findMarketing = params?.row?.marketing?.find((item) => {
+          if (currentUser?.userType !== 'admin') {
+            return item?.creatorType === 'shop';
+          }
+
+          return item?.creatorType === currentUser?.userType;
+        });
+
+        if (!findMarketing) {
+          findMarketing = { products: [{ product: params?.row?._id, discountPercentage: 0 }] };
+          params.row.marketing = [
+            { ...findMarketing, creatorType: currentUser?.userType !== 'admin' ? 'shop' : 'admin' },
+          ];
+        }
+
+        const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
+
         return (
           <FilterSelect
             items={marketingType === 'percentage' ? percentageDealsOptions : rewardDealOptions || []}
@@ -142,7 +160,7 @@ export default function MarketingProductsTable({
             getDisplayValue={(value) => `${value}`}
             onChange={(e) => {
               if (marketingType === 'percentage') {
-                params.row.discountPercentage = Number(e.target.value);
+                findProduct.discountPercentage = Number(e.target.value);
               } else {
                 params.row.rewardBundle = Number(e.target.value);
               }
@@ -151,7 +169,7 @@ export default function MarketingProductsTable({
               setHasGlobalChange(true);
             }}
             value={
-              marketingType === 'percentage' ? params?.row?.discountPercentage || '' : params.row?.rewardBundle || ''
+              marketingType === 'percentage' ? findProduct?.discountPercentage || '' : params.row?.rewardBundle || ''
             }
           />
         );
@@ -204,6 +222,19 @@ export default function MarketingProductsTable({
       headerAlign: marketingType === 'double_menu' ? 'center' : 'left',
       minWidth: 180,
       renderCell: (params) => {
+        const findMarketing = params?.row?.marketing?.find((item) => {
+          if (currentUser?.userType !== 'admin') {
+            return item?.creatorType === 'shop';
+          }
+
+          return item?.creatorType === currentUser?.userType;
+        });
+
+        const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
+
+        // for percentage only
+        const discountAmount = (params?.row?.price / 100) * findProduct?.discountPercentage;
+
         if (params?.row?.isCategoryHeader) {
           // eslint-disable-next-line react/jsx-no-useless-fragment
           return <></>;
@@ -216,16 +247,13 @@ export default function MarketingProductsTable({
           return <>--</>;
         }
 
-        if (marketingType === 'percentage' && !params?.row?.discountPercentage) {
+        if (marketingType === 'percentage' && !findProduct?.discountPercentage) {
           return <>--</>;
         }
 
         if (marketingType === 'double_menu' && !params?.row?.price) {
           return <>--</>;
         }
-
-        // for percentage only
-        const discountAmount = (params?.row?.price / 100) * params?.row?.discountPercentage;
 
         return (
           <Stack direction="row" alignItems="center" gap={1.5}>

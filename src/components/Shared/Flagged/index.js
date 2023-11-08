@@ -159,26 +159,31 @@ function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSu
     },
   );
 
-  const onSubmitFlag = () => {
+  const onSubmitFlag = (openConfirm) => {
     const validatedData = validateFlagData(order, flaggData, appSetting?.vat);
 
     console.log('validation', validatedData, getApi(flaggData));
 
     if (validatedData?.status === true) {
-      flaggedQueryMutation.mutate({
-        api: getApi(flaggData),
-        payload: validatedData?.data,
-      });
+      if (openConfirm) {
+        setOpen(true);
+      } else
+        flaggedQueryMutation.mutate({
+          api: getApi(flaggData),
+          payload: validatedData?.data,
+        });
     }
   };
 
-  const onSubmitCancelOrder = () => {
+  const onSubmitCancelOrder = (openConfirm) => {
     const validatedData = validateCancelData(order, cancelOrderData);
     const api = order?.isButler ? API_URL.BUTLER_CANCEL_ORDER : API_URL.CANCEL_ORDER;
     const params = order?.isButler ? {} : { userType: 'admin' };
 
     if (validatedData?.status === true) {
-      cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data, params });
+      if (openConfirm) {
+        setOpen(true);
+      } else cancelOrderQueryMutation.mutate({ api, payload: validatedData?.data, params });
     }
   };
 
@@ -191,6 +196,14 @@ function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSu
     }),
     [],
   );
+
+  const onSubmitHandler = (openConfirm) => {
+    if (showFor === 'flagged') {
+      onSubmitFlag(openConfirm);
+      return;
+    }
+    onSubmitCancelOrder(openConfirm);
+  };
 
   return (
     <OrderContextProvider value={value}>
@@ -234,7 +247,8 @@ function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSu
                     color="primary"
                     disabled={flaggedQueryMutation?.isLoading || cancelOrderQueryMutation?.isLoading}
                     onClick={() => {
-                      setOpen(true);
+                      // setOpen(true);
+                      onSubmitHandler(true);
                     }}
                   >
                     {flaggData?.replacement === 'with' ? 'Place Order' : 'Done'}
@@ -262,11 +276,7 @@ function FlaggedModal({ onClose, order, showFor = 'flagged', refetchApiKey, onSu
             setOpen(false);
           }}
           onConfirm={() => {
-            if (showFor === 'flagged') {
-              onSubmitFlag();
-              return;
-            }
-            onSubmitCancelOrder();
+            onSubmitHandler(false);
           }}
         />
       </ModalContainer>
