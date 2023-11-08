@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
@@ -5,66 +6,11 @@
 
 import { successMsg } from '../../../helpers/successMsg';
 
-/* eslint-disable no-unsafe-optional-chaining */
-export const initialAdjustmentOrderData = {
-  orderId: '',
-  products: [
-    {
-      product: '6352c0966ceeee30b3e5fba9',
-      perProduct: 100,
-      discount: 0,
-      totalProductAmount: 100,
-      totalDiscount: 0,
-      quantity: 1,
-      attributes: [
-        {
-          id: '5f9f1b1b1b1b1b1b1b1b1b1b',
-          attributeItems: [
-            {
-              id: '5f9f1b1b1b1b1b1b1b1b1b1b',
-              extraPrice: '20',
-            },
-          ],
-        },
-      ],
-      isDoubleDeal: true,
-      productSpecialInstruction: '',
-      reward: {
-        amount: 10,
-        points: 10,
-      },
-      marketingId: '6352c0966ceeee30b3e5fba9',
-      owner: '6352c0966ceeee30b3e5fba9',
-    },
-  ],
-  summary: {
-    baseCurrency_productAmount: 10,
-    baseCurrency_riderFee: 10,
-    baseCurrency_totalAmount: 20,
-    baseCurrency_discount: 5,
-    baseCurrency_vat: 5,
-    baseCurrency_wallet: 0,
-    secondaryCurrency_wallet: 0,
-    baseCurrency_card: 0,
-    secondaryCurrency_card: 0,
-    baseCurrency_cash: 10,
-    secondaryCurrency_cash: 20,
-    reward: {
-      points: 0,
-      baseCurrency_amount: 0,
-    },
-    baseCurrency_doubleMenuItemPrice: 50,
-    baseCurrency_riderTip: 20,
-    baseCurrency_couponDiscountAmount: 20,
-  },
-  adjustmentReason: '',
-};
-
 const calculatetotalDiscountPrice = (addedItems) => {
   let count = 0;
 
   addedItems?.map((itemData) => {
-    if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'percentage') {
+    if (itemData?.marketing[0]?.isActive && itemData?.marketing[0]?.type === 'percentage') {
       count += itemData?.baseCurrency_discount;
     }
   });
@@ -74,8 +20,8 @@ const calculatetotalDiscountPrice = (addedItems) => {
 };
 
 export const productDealForProductDetails = (product) => {
-  const isActive = product?.marketing?.isActive === true;
-  const type = product?.marketing?.type;
+  const isActive = product?.marketing[0]?.isActive === true;
+  const type = product?.marketing[0]?.type;
 
   if (isActive) {
     return type;
@@ -111,7 +57,7 @@ const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     }
     let price = 0;
 
-    if (itemData?.marketing?.type !== 'double_menu') {
+    if (itemData?.marketing[0]?.type !== 'double_menu') {
       price = itemData?.product?.price * (itemData?.quantity || itemData?.productQuantity);
       count += price;
 
@@ -130,6 +76,8 @@ const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
 export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExchangeRate = 0) => {
   let count = 0;
   let singlePrice = 0;
+
+  console.log(item?.productName, item);
 
   const getSecondaryCurrency = (value) => Math.round(shopExchangeRate * value);
 
@@ -150,7 +98,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     },
   };
 
-  if (item?.marketing?.isActive && item?.marketing?.type === 'percentage' && !skipDiscount) {
+  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'percentage' && !skipDiscount) {
     singlePrice = item?.product.price || 0;
     output.baseCurrency_totalDiscount = item?.product?.discount * (item?.quantity || item?.productQuantity);
     output.secondaryCurrency_totalDiscount = getSecondaryCurrency(output?.baseCurrency_totalDiscount);
@@ -161,7 +109,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     singlePrice = item?.product?.price;
   }
 
-  if (item?.marketing?.isActive && item?.marketing?.type === 'double_menu' && !skipDiscount) {
+  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'double_menu' && !skipDiscount) {
     const quantity = item?.quantity || item?.productQuantity;
 
     count += singlePrice * (quantity - discountQuantity);
@@ -193,7 +141,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
-  if (item?.marketing?.isActive && item?.marketing?.type === 'reward') {
+  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'reward') {
     console.log('item?.reward?.amount', item?.reward?.amount);
     output.finalReward.baseCurrency_amount = skipDiscount
       ? 0
@@ -207,7 +155,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   }
 
   // when marketing is percentage
-  if (item?.marketing?.isActive && item?.marketing?.type === 'percentage' && !skipDiscount) {
+  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'percentage' && !skipDiscount) {
     // final price
     output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
@@ -217,7 +165,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   }
 
   // when marketing is percentage
-  if (item?.marketing?.isActive && item?.marketing?.type === 'double_menu' && !skipDiscount) {
+  if (item?.marketing[0]?.isActive && item?.marketing[0]?.type === 'double_menu' && !skipDiscount) {
     output.baseCurrency_finalPrice = Math.round(singlePrice * (item?.quantity || item?.productQuantity) * 100) / 100;
     output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
 
@@ -225,7 +173,7 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
     output.secondaryCurrency_productPrice = getSecondaryCurrency(output?.baseCurrency_productPrice);
   }
 
-  if (item?.marketing?.type !== 'reward') {
+  if (item?.marketing[0]?.type !== 'reward') {
     delete output.finalReward;
   }
 
@@ -399,7 +347,7 @@ export const makeSingleProductDetails = (product, owner = {}) => {
     baseCurrency_productPrice: 0,
     baseCurrency_totalDiscount: 0,
     isDoubleDeal: deal === 'double_menu',
-    marketing: { ...product?.marketing },
+    marketing: [...product?.marketing],
     owner: { ...owner },
     product: { ...product },
     productId: product?._id,
@@ -461,13 +409,13 @@ export const getRewordItem = (addedItems, shopExchangeRate, user) => {
   addedItems?.map((item) => {
     const skipDiscount =
       item.skipDiscount === undefined
-        ? !(item?.marketing?.type === 'reward' && item?.finalReward?.baseCurrency_amount > 0)
+        ? !(item?.marketing[0]?.type === 'reward' && item?.finalReward?.baseCurrency_amount > 0)
         : item?.skipDiscount;
     console.log(item?.productName, skipDiscount);
     if (
       (user ? item?.owner?._id === user?._id : true) &&
-      item?.marketing?.isActive &&
-      item?.marketing?.type === 'reward' &&
+      item?.marketing[0]?.isActive &&
+      item?.marketing[0]?.type === 'reward' &&
       !skipDiscount
     ) {
       console.log({ item });
@@ -495,7 +443,7 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
       return;
     }
     let price = 0;
-    if (itemData?.marketing?.isActive && itemData?.marketing?.type === 'double_menu') {
+    if (itemData?.marketing[0]?.isActive && itemData?.marketing[0]?.type === 'double_menu') {
       if (!array.includes(itemData?.productId)) {
         const doubleDealAllProduct = addedItems?.filter(
           (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
@@ -845,11 +793,11 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
         amount: product?.finalReward?.baseCurrency_amount / product?.productQuantity,
         points: product?.finalReward?.points / product?.productQuantity,
       },
-      marketingId: product?.marketing?._id,
+      marketingId: product?.marketing[0]?._id,
       owner: product?.owner?._id,
     };
 
-    if (product?.marketing?.type !== 'reward') {
+    if (product?.marketing[0]?.type !== 'reward') {
       delete productTemplate?.reward;
     }
 

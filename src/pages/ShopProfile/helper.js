@@ -456,10 +456,10 @@ export const GetDealsWithOnselectedItems = (categoryItems, details, symble = '$'
   categoryItems?.map((item) => {
     item?.data?.map((child) => {
       total_Product_Count++;
-      if (child?.marketing?.isActive) {
-        if (child?.marketing?.type === 'double_menu') {
+      if (child?.marketing[0]?.isActive) {
+        if (child?.marketing[0]?.type === 'double_menu') {
           double_deal_Count++;
-        } else if (child?.marketing?.type === 'percentage') {
+        } else if (child?.marketing[0]?.type === 'percentage') {
           percentage_Count++;
           const checkDuplicate = percentageHolder.includes(child?.discountPercentage);
           if (!checkDuplicate) {

@@ -111,10 +111,10 @@ export function ProductCard({ product, onClickProduct }) {
               variant="h6"
               sx={{ fontWeight: 500, fontSize: '14px', fontStyle: 'italic', color: 'text.secondary2' }}
             >
-              {FormateBaseCurrency?.get(getProductPriceForAdjustMent(product, product?.marketing?.type)?.finalPrice)}
+              {FormateBaseCurrency?.get(getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.finalPrice)}
             </Typography>
 
-            {getProductPriceForAdjustMent(product, product?.marketing?.type)?.shouldShowBoth && (
+            {getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.shouldShowBoth && (
               <Typography
                 variant="h6"
                 sx={{
@@ -126,12 +126,12 @@ export function ProductCard({ product, onClickProduct }) {
                 }}
               >
                 {FormateBaseCurrency?.get(
-                  getProductPriceForAdjustMent(product, product?.marketing?.type)?.originalPrice,
+                  getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.originalPrice,
                 )}
               </Typography>
             )}
           </Stack>
-          {product?.marketing?.type && (
+          {product?.marketing[0]?.type && (
             <Typography
               variant="h6"
               sx={{
@@ -141,7 +141,7 @@ export function ProductCard({ product, onClickProduct }) {
                 color: 'text.secondary2',
               }}
             >
-              {dealTypeToLabelMap[product?.marketing?.type]}
+              {dealTypeToLabelMap[product?.marketing[0]?.type]}
             </Typography>
           )}
         </Stack>

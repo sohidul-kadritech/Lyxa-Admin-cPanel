@@ -52,6 +52,8 @@ const getApliedDeals = (marketings, currentUserType) => {
 const getActiveDeals = (dealSetting, shopType) => {
   const deals = { ...activeDealsInit };
 
+  console.log({ dealSetting });
+
   dealSetting?.forEach((item) => {
     if (item?.type === shopType || (item?.type === 'restaurant' && shopType === 'food')) {
       item?.option?.forEach((item) => {
@@ -67,14 +69,21 @@ const appliedByOtherSideMap = { shop: 'Admin', admin: 'Shop' };
 
 export default function MarketingOverview({ viewUserType }) {
   const history = useHistory();
+
   const { currentUser } = useGlobalContext();
+
   const { shop, userType } = currentUser;
 
   const [currentModal, setCurrentModal] = useState(null);
+
   const [activeDeals, setActiveDeals] = useState(activeDealsInit);
+
   const params = useParams();
+
   const [currentShop, setCurrentShop] = useState(viewUserType === 'shop' ? shop : {});
+
   const [appliedDeals, setAppliedDeals] = useState(marketingTypesInit);
+
   const routeMatch = useRouteMatch();
 
   console.log('params', params);
@@ -223,13 +232,34 @@ export default function MarketingOverview({ viewUserType }) {
   const openHandler = (marketingType, mData = {}) => {
     const marketing = mData?.data?.marketing;
     console.log(
-      mData,
-      { userType, viewUserType },
-      !mData?.isMarketing,
-      mData?.marketing?.creatorType,
-      currentShop?._id,
-      mData?.isNotEligible,
+      ' mData',
+      marketingType,
+      { userType, viewUserType, mData },
+      // !mData?.isMarketing,
+      // mData?.marketing?.creatorType,
+      // currentShop?._id,
+      // mData?.isNotEligible,
     );
+
+    if (marketingType === 'percentage') {
+      const marketing = mData?.data?.marketings?.find((mrkting) => mrkting?.creatorType === viewUserType);
+
+      if (!marketing) {
+        setCurrentModal(marketingType);
+        return;
+      }
+
+      if (viewUserType === 'shop' && userType === 'shop') {
+        history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}`);
+      } else if (viewUserType === 'shop' && userType === 'seller') {
+        history.push(`/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
+      } else if (viewUserType === 'shop' && userType === 'admin') {
+        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}`);
+      } else {
+        history.push(`/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}`);
+      }
+      return;
+    }
 
     if (!mData?.isMarketing) {
       if (viewUserType === 'shop' && userType === 'admin' && mData?.isNotEligible) {
@@ -267,8 +297,26 @@ export default function MarketingOverview({ viewUserType }) {
     return false;
   };
 
-  const getOngoingBy = (mData = {}) =>
-    mData?.data?.marketing?.status ? viewUserType : appliedByOtherSideMap[viewUserType];
+  const getOngoingBy = (mData = {}) => {
+    console.log(
+      'ongoing marketing: ',
+      { mData, viewUserType },
+      mData?.data?.marketing?.status ? viewUserType : appliedByOtherSideMap[viewUserType],
+    );
+
+    if (mData?.data?.marketings[0]?.type === 'percentage') {
+      const shopMarketing = mData?.data?.marketings?.find((itm) => itm?.creatorType === 'shop');
+      const adminMarketing = mData?.data?.marketings?.find((itm) => itm?.creatorType === 'admin');
+
+      if (shopMarketing && adminMarketing) {
+        return 'Both';
+      }
+
+      return shopMarketing ? 'Shop' : adminMarketing ? 'Admin' : '';
+    }
+
+    return mData?.data?.marketing?.status ? viewUserType : appliedByOtherSideMap[viewUserType];
+  };
 
   const isAdminViewAsShop = viewUserType === 'shop' && userType === 'admin';
 
@@ -292,14 +340,14 @@ export default function MarketingOverview({ viewUserType }) {
             isAdminViewAsShop={viewUserType === 'shop' && userType === 'admin'}
             readOnly={isReadonly(discountQuery?.data)}
             loading={__loading || discountQuery?.isFetching}
-            disabled={
-              discountQuery?.data?.marketing?.creatorType === 'admin' && viewUserType === 'shop'
-                ? false
-                : appliedDeals.percentage || !activeDeals.percentage
-            }
+            // disabled={
+            //   discountQuery?.data?.marketings?.creatorType === 'admin' && viewUserType === 'shop'
+            //     ? false
+            //     : appliedDeals.percentage || !activeDeals.percentage
+            // }
             // disabled={appliedDeals.percentage || !activeDeals.percentage}
             status={getPromotionStatus(discountQuery, 'percentage', activeDeals)}
-            ongoingBy={getOngoingBy(discountQuery?.data)}
+            ongoingBy={getOngoingBy(discountQuery?.data, 'percentage')}
             onOpen={() => {
               if (activeDeals.percentage && !__loading) {
                 openHandler('percentage', discountQuery?.data);

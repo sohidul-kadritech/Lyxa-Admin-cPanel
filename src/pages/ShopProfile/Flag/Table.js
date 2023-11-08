@@ -13,7 +13,6 @@ export const getFlaggedItems = (type) => {
 };
 
 export default function FlagTable({ flags, onViewDetail, showFor, loading = true }) {
-  console.log({ flags, loading });
   const columns = [
     {
       id: 1,
