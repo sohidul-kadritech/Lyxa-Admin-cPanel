@@ -27,19 +27,17 @@ export const chatStatusColorMap = {
 };
 
 export const createChatFromOrder = (order) => {
-  //  ongoing chat
-  console.log(
-    'order',
-    { order },
-    order?.admin_chat_request?.at(-1),
-    order?.admin_chat_request?.[order?.admin_chat_request?.length - 1],
-  );
-
   const recentRequest =
     order?.admin_chat_request?.at(-1) || order?.admin_chat_request?.[order?.admin_chat_request?.length - 1];
   const chat = { ...recentRequest };
   chat.order = order;
   chat.user = order?.user;
 
-  return chat;
+  const resolvedReason = order?.admin_chat_request?.filter((chatReq) => chatReq?.resolveReason);
+
+  if (resolvedReason?.length) {
+    return { ...chat, resolvedReason: resolvedReason[resolvedReason?.length - 1] };
+  }
+
+  return { ...chat };
 };

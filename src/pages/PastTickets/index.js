@@ -79,6 +79,7 @@ export default function PastTickets() {
                 ticketType="order"
                 rows={ordersQuery?.data?.data?.list}
                 onSelect={(row) => {
+                  console.log('row', { row });
                   setSelectedChat(createChatFromOrder(row));
                   setSidebarOpen(true);
                 }}
@@ -102,7 +103,12 @@ export default function PastTickets() {
         </Box>
       </SlideInContainer>
       <SlideInContainer type="dynamic" open={sidebarOpen}>
-        <ChatDetails showingFor={selectedChat?.chatType} chat={selectedChat} onClose={() => setSidebarOpen(false)} />
+        <ChatDetails
+          readOnly
+          showingFor={selectedChat?.chatType}
+          chat={selectedChat}
+          onClose={() => setSidebarOpen(false)}
+        />
       </SlideInContainer>
     </Box>
   );

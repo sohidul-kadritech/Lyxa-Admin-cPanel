@@ -6,6 +6,7 @@ import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
 
 export const productDeal = (product) => {
+  // console.log('productDeal', { product });
   if (product?.isDoubleDeal) return 'double_menu';
   if (product?.baseCurrency_discount > 0) return 'percentage';
   if (product?.finalReward) return 'reward';
@@ -49,6 +50,8 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
 
+  console.log({ shopExchangeRate });
+
   return (
     <Box
       sx={{
@@ -80,7 +83,15 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
               textDecoration: deal !== null ? 'line-through' : undefined,
             }}
           >
-            {getPriceWithCurrency(baseCurrencyFinalPrice, secondaryCurrencyFinalPrice)}
+            {getPriceWithCurrency(
+              baseCurrencyFinalPrice,
+              secondaryCurrencyFinalPrice,
+              { shouldCalculate: false },
+              {
+                both: shopExchangeRate > 0,
+                base: !shopExchangeRate > 0,
+              },
+            )}
             {/* {FormateCurrency.get(baseCurrencyFinalPrice)} */}
           </Typography>
         </Stack>

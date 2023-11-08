@@ -73,3 +73,14 @@ export const getDurationFromMarketingHistory = (data) => {
 
   return `${ceiledDuration} days`;
 };
+
+export const getPercentageMarketingCreatorType = (params, currentTab) => {
+  if (params?.type === 'percentage' && params?.id === 'undefined') {
+    console.log({ currentTab });
+    return currentTab;
+  }
+
+  console.log({ creator: params?.shopId ? 'admin' : 'shop' });
+
+  return params?.shopId ? 'admin' : 'shop';
+};

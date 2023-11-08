@@ -57,6 +57,7 @@ function AdjustmentPaymentSummary({ order }) {
             label="EST item(s) price"
             value={order?.summary?.baseCurrency_productAmount}
             valueSecondary={order?.summary?.secondaryCurrency_productAmount}
+            showBaseOnly={Number(order?.adminExchangeRate) === 0}
             showSecondaryOnly={order?.adminExchangeRate > 0}
             pt={0}
           />
@@ -65,6 +66,7 @@ function AdjustmentPaymentSummary({ order }) {
             label="Subtotal"
             value={summary?.baseCurrency_productAmount + summary?.baseCurrency_doubleMenuItemPrice}
             valueSecondary={summary?.secondaryCurrency_productAmount + summary?.secondaryCurrency_doubleMenuItemPrice}
+            showBaseOnly={Number(order?.adminExchangeRate) === 0}
             showSecondaryOnly={order?.adminExchangeRate > 0}
             pt={0}
           />
@@ -73,12 +75,14 @@ function AdjustmentPaymentSummary({ order }) {
           label="Discount"
           value={total_base_discount}
           valueSecondary={total_secondary_discount}
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isNegative
         />
 
         <SummaryItem
           label="Rewards"
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           value={`-${
             order?.adminExchangeRate > 0
               ? FormatesecondaryCurrency.get(Math.abs(order?.summary?.reward?.secondaryCurrency_amount))
@@ -90,6 +94,7 @@ function AdjustmentPaymentSummary({ order }) {
 
         <SummaryItem
           label="Coupon Discount"
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           value={order?.summary?.baseCurrency_couponDiscountAmount}
           valueSecondary={order?.summary?.secondaryCurrency_couponDiscountAmount}
           showSecondaryOnly={order?.adminExchangeRate > 0}
@@ -98,6 +103,7 @@ function AdjustmentPaymentSummary({ order }) {
 
         <SummaryItem
           label="Delivery Charge"
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           value={order?.summary?.baseCurrency_riderFee > 0 ? order?.summary?.baseCurrency_riderFee : 'FREE'}
           valueSecondary={order?.summary?.secondaryCurrency_riderFee}
           showSecondaryOnly={order?.adminExchangeRate > 0}
@@ -106,6 +112,7 @@ function AdjustmentPaymentSummary({ order }) {
         <SummaryItem
           label="VAT"
           value={order?.summary?.baseCurrency_vat}
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           valueSecondary={order?.summary?.secondaryCurrency_vat}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           showIfZero
@@ -114,6 +121,7 @@ function AdjustmentPaymentSummary({ order }) {
         <SummaryItem
           label="Lyxa Pay"
           value={summary?.baseCurrency_wallet}
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           valueSecondary={summary?.baseCurrency_wallet * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isNegative
@@ -121,6 +129,7 @@ function AdjustmentPaymentSummary({ order }) {
 
         <SummaryItem
           label="Total Amount"
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           value={total_base - Number(summary?.baseCurrency_wallet || 0)}
           valueSecondary={total_secondary - Number(summary?.baseCurrency_wallet * avg_rate || 0)}
           showIfZero
@@ -130,6 +139,7 @@ function AdjustmentPaymentSummary({ order }) {
         <SummaryItem
           label="Cash"
           value={summary?.baseCurrency_cash}
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           valueSecondary={summary?.baseCurrency_cash * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal
@@ -146,6 +156,7 @@ function AdjustmentPaymentSummary({ order }) {
         <SummaryItem
           label="Card"
           value={summary?.baseCurrency_card}
+          showBaseOnly={Number(order?.adminExchangeRate) === 0}
           valueSecondary={summary?.baseCurrency_card * avg_rate}
           showSecondaryOnly={order?.adminExchangeRate > 0}
           isTotal

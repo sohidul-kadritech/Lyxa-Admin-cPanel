@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 // third party
-import { Box, Unstable_Grid2 as Grid, Tab, Tabs } from '@mui/material';
+import { Box, Button, Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -28,6 +28,7 @@ import {
   dateRangeItit,
   getDataForOngoingPromotionItem,
   getMarketingTypeTitle,
+  getPercentageMarketingCreatorType,
   isVisibleOngoingPromotionItem,
   marketingDurationTime,
 } from './helpers';
@@ -40,13 +41,66 @@ const mTypeMap = {
   featured: 'Featured',
 };
 
+const tabIndex = (userType, value) => {
+  const template = {
+    0: 'admin',
+    1: 'shop',
+    admin: 0,
+    shop: 1,
+  };
+
+  if (userType === 'shop') {
+    template['0'] = 'shop';
+    template.shop = 0;
+    template['1'] = 'admin';
+    template.admin = 1;
+  }
+  return template[value];
+};
+
+export const getMarketingId = (mData, userType) => {
+  const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
+
+  const existingMarketing = marketingData?.find(
+    (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
+  );
+
+  if (!existingMarketing) {
+    return undefined;
+  }
+
+  const marketingForAdmin = marketingData?.find((mrkting) => mrkting?.creatorType === 'admin');
+  const marketingForShop = marketingData?.find((mrkting) => mrkting?.creatorType === 'shop');
+
+  let marketing = {};
+
+  if (userType === 'admin' && marketingForAdmin) {
+    marketing = marketingForAdmin;
+  } else if (userType === 'shop' && marketingForShop) {
+    marketing = marketingForShop;
+  }
+
+  return marketing?._id;
+};
+
+export const replaceLastSlugPath = (path, replaceSlug) => {
+  // Regular expression to match the last part of the URL
+  const regex = /\/[^/]+$/;
+  // Replace the last part of the URL with the new slug
+  const newUrl = path.replace(regex, replaceSlug);
+  return newUrl;
+};
+
 export default function MarketingDashboard({ viewUserType }) {
   const params = useParams();
   const history = useHistory();
   const routeMatch = useRouteMatch();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
+  const theme = useTheme();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+
+  console.log('searchParams', searchParams.get('user'), searchParams.get('id'));
 
   const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
@@ -56,7 +110,7 @@ export default function MarketingDashboard({ viewUserType }) {
   const [currentShop, setCurrentShop] = useState(shop);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(searchParams.get('user'));
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -109,12 +163,17 @@ export default function MarketingDashboard({ viewUserType }) {
     marketingQuery?.data?.data?.marketing?.duration?.end,
   );
 
-  const marketingInfoQuery = useQuery([`marketing-dashboard-${params?.id}`], () =>
-    AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
-      params: {
-        marketingId: params?.id,
-      },
-    }),
+  const marketingInfoQuery = useQuery(
+    [`marketing-dashboard-${params?.id}`],
+    () =>
+      AXIOS.get(Api.GET_MARKETING_DASHBOARD_INFO, {
+        params: {
+          marketingId: params?.id,
+        },
+      }),
+    {
+      enabled: params?.id !== 'undefined',
+    },
   );
 
   // orders graph
@@ -131,6 +190,9 @@ export default function MarketingDashboard({ viewUserType }) {
         },
         // eslint-disable-next-line prettier/prettier
       }),
+    {
+      enabled: params?.id !== 'undefined',
+    },
   );
 
   const oData = generateGraphData(
@@ -167,6 +229,9 @@ export default function MarketingDashboard({ viewUserType }) {
           endDate: moment(customerRange.end).format('YYYY-MM-DD'),
         },
       }),
+    {
+      enabled: params?.id !== 'undefined',
+    },
   );
 
   const cData = generateGraphData(
@@ -206,6 +271,9 @@ export default function MarketingDashboard({ viewUserType }) {
         },
         // eslint-disable-next-line prettier/prettier
       }),
+    {
+      enabled: params?.id !== 'undefined',
+    },
   );
 
   const aData = generateGraphData(
@@ -308,9 +376,19 @@ export default function MarketingDashboard({ viewUserType }) {
 
       {params?.type === 'percentage' && (
         <Tabs
-          value={currentTab}
+          value={tabIndex(searchParams.get('user'), currentTab)}
           onChange={(event, newValue) => {
-            setCurrentTab(newValue);
+            const route = {
+              pathname: replaceLastSlugPath(
+                pathname,
+                `/${getMarketingId(marketingQuery?.data, tabIndex(searchParams.get('user'), newValue))}`,
+              ),
+              search: `user=${searchParams.get('user')}`,
+            };
+
+            history.push(route);
+
+            setCurrentTab(tabIndex(searchParams.get('user'), newValue));
           }}
           sx={{
             paddingBottom: 5,
@@ -321,110 +399,152 @@ export default function MarketingDashboard({ viewUserType }) {
             },
           }}
         >
-          <Tab label="Admin" />
-          <Tab label="Shop" />
+          {searchParams.get('user') === 'shop' && <Tab tabIndex="shop" label="Shop" />}
+          <Tab tabIndex="admin" label="Admin" />
+          {searchParams.get('user') === 'admin' && <Tab tabIndex="shop" label="Shop" />}
         </Tabs>
       )}
 
       {__loading && isInitialLoad ? (
         <PageSkeleton />
       ) : (
-        <Grid container spacing={6.5} pb={3}>
-          {isVisibleOngoingPromotionItem(params?.type) && (
-            <InfoCard
-              title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
-              value={getDataForOngoingPromotionItem(params?.type, marketingInfoQuery?.data?.data?.summary, currency)}
-              sm={6}
-              md={4}
-              lg={4}
-            />
-          )}
-          <InfoCard
-            title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
-            value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
-            Tag={
-              <IncreaseDecreaseTag
-                status={
-                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >=
-                  0
-                    ? 'increase'
-                    : 'decrease'
+        <Stack>
+          {params?.id !== 'undefined' ? (
+            <Grid container spacing={6.5} pb={3}>
+              {isVisibleOngoingPromotionItem(params?.type) && (
+                <InfoCard
+                  title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
+                  value={getDataForOngoingPromotionItem(
+                    params?.type,
+                    marketingInfoQuery?.data?.data?.summary,
+                    currency,
+                  )}
+                  sm={6}
+                  md={4}
+                  lg={4}
+                />
+              )}
+              <InfoCard
+                title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
+                value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
+                Tag={
+                  <IncreaseDecreaseTag
+                    status={
+                      marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >=
+                      0
+                        ? 'increase'
+                        : 'decrease'
+                    }
+                    amount={`${Math.round(
+                      marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
+                    )}% in ${marketingDuration}`}
+                  />
                 }
-                amount={`${Math.round(
-                  marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
-                )}% in ${marketingDuration}`}
+                sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+                md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+                lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
               />
-            }
-            sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
-            md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-            lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-          />
-          <InfoCard
-            title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
-            value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
-            Tag={
-              <IncreaseDecreaseTag
-                status={
-                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >=
-                  0
-                    ? 'increase'
-                    : 'decrease'
+              <InfoCard
+                title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
+                value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
+                Tag={
+                  <IncreaseDecreaseTag
+                    status={
+                      marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >=
+                      0
+                        ? 'increase'
+                        : 'decrease'
+                    }
+                    amount={`${Math.round(
+                      marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
+                    )}% in ${marketingDuration}`}
+                  />
                 }
-                amount={`${Math.round(
-                  marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                    marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
-                )}% in ${marketingDuration}`}
+                sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+                md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+                lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
               />
-            }
-            sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
-            md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-            lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-          />
-          <ChartBox
-            chartHeight={245}
-            dateRange={orderRange}
-            setDateRange={setOrderRange}
-            title="Orders"
-            sm={12}
-            loading={ordersGraphQuery.isLoading}
-          >
-            <StyledAreaChartfrom data={oGraphData} />
-          </ChartBox>
-          <ChartBox
-            chartHeight={325}
-            dateRange={customerRange}
-            setDateRange={setCustomerRange}
-            loading={customerGraphQuery.isLoading}
-            title="Customers"
-            sm={12}
-            md={12}
-            lg={params?.type !== 'featured' ? 6 : 12}
-          >
-            <StyledBarChart data={cGraphData} />
-          </ChartBox>
-          {params?.type !== 'featured' && (
-            <ChartBox
-              chartHeight={325}
-              dateRange={amountRange}
-              setDateRange={setAmountRange}
-              loading={amountGraphQuery.isLoading}
-              title="Amount spent"
-              sm={12}
-              md={12}
-              lg={6}
+              <ChartBox
+                chartHeight={245}
+                dateRange={orderRange}
+                setDateRange={setOrderRange}
+                title="Orders"
+                sm={12}
+                loading={ordersGraphQuery.isLoading}
+              >
+                <StyledAreaChartfrom data={oGraphData} />
+              </ChartBox>
+              <ChartBox
+                chartHeight={325}
+                dateRange={customerRange}
+                setDateRange={setCustomerRange}
+                loading={customerGraphQuery.isLoading}
+                title="Customers"
+                sm={12}
+                md={12}
+                lg={params?.type !== 'featured' ? 6 : 12}
+              >
+                <StyledBarChart data={cGraphData} />
+              </ChartBox>
+              {params?.type !== 'featured' && (
+                <ChartBox
+                  chartHeight={325}
+                  dateRange={amountRange}
+                  setDateRange={setAmountRange}
+                  loading={amountGraphQuery.isLoading}
+                  title="Amount spent"
+                  sm={12}
+                  md={12}
+                  lg={6}
+                >
+                  <StyledAreaChartfrom data={aGraphData} />
+                </ChartBox>
+              )}
+            </Grid>
+          ) : (
+            <Stack
+              sx={{
+                width: '100%',
+                background: 'rgba(177,177,177,0.1)',
+                padding: '10px 10px',
+                height: 'min(350px,40vh)',
+                borderRadius: '10px',
+                justifyContent: 'center',
+                alignContent: 'center',
+                border: `3px solid ${theme?.palette?.custom?.border}`,
+              }}
             >
-              <StyledAreaChartfrom data={aGraphData} />
-            </ChartBox>
+              <Stack justifyContent="center" alignItems="center" gap={6}>
+                <Typography variant="h6" sx={{ fontSize: '28px', color: 'red' }}>
+                  No marketing found
+                </Typography>
+                <Button
+                  variant="contained"
+                  // size="small"
+                  sx={{
+                    borderRadius: '8px',
+                    padding: '11px 30px',
+                  }}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Add Marketing
+                </Button>
+              </Stack>
+            </Stack>
           )}
-        </Grid>
+        </Stack>
       )}
       <MSettingsModal open={Boolean(isModalOpen)}>
         <MarketingSettings
           shop={currentShop}
-          creatorType={params?.shopId ? 'admin' : 'shop'}
+          // creatorType={params?.shopId ? 'admin' : 'shop'}
+          creatorType={getPercentageMarketingCreatorType(params, currentTab)}
           marketingType={params?.type}
           onClose={() => {
             setIsModalOpen(false);
