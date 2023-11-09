@@ -372,7 +372,7 @@ export default function PayoutDetails({ paymentDetails, viewUserType }) {
             <DetailsAccordion
               title="Total Payouts"
               titleAmount={totalProfit}
-              tooltip="Shop's overall income: orders, delivery, VAT."
+              tooltip="Total earnings for the shop, including orders, delivery, and VAT."
               titleAmountStatus={paymentDetails?.totalProfit < 0 ? 'minus' : ''}
               isOpen={currentExpanedTab === 3}
               onChange={(closed) => {

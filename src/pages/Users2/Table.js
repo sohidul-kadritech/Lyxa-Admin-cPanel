@@ -13,6 +13,7 @@ const getUserType = {
 };
 
 export default function UserTable({ rows, onEdit, onDelete, loading, showFor }) {
+  console.log({ rows, showFor });
   const columns = [
     {
       showFor: ['shop', 'seller'],
@@ -68,13 +69,14 @@ export default function UserTable({ rows, onEdit, onDelete, loading, showFor }) 
               onEdit(params.row);
             }}
             color="primary"
+            disabled={params?.row?.isNotEditable}
           >
             <Edit />
           </StyledIconButton>
           {/* delete */}
           <StyledIconButton
             color="primary"
-            disabled={params?.row?.isNotEditable}
+            disabled={params?.row?.isNotDeletable}
             sx={{
               '&.Mui-disabled': {
                 color: '#c1c1c1',
