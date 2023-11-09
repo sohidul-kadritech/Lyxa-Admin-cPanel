@@ -12,7 +12,7 @@ const StyledContainer = styled(Stack)(({ theme }) => ({
   borderRadius: '30px',
 }));
 
-const animationSx = (showAnimation, isUp, isDown) => {
+const animationSx = (showAnimation, isValid) => {
   const template = {
     background: 'F6F8FA',
     transition: 'all 0.3s linear',
@@ -20,20 +20,10 @@ const animationSx = (showAnimation, isUp, isDown) => {
     // transform: 'translateY(0px)',
   };
 
-  if (showAnimation && isUp) {
+  if (showAnimation && !isValid) {
     return {
       ...template,
       background: '#FFF5F8',
-      color: 'red',
-      opacity: '1',
-    };
-  }
-
-  if (showAnimation && isDown) {
-    return {
-      ...template,
-      background: '#FFF5F8',
-      color: 'red',
       opacity: '1',
     };
   }
@@ -88,7 +78,7 @@ export default function IncrementDecrementInput({
         alignItems="center"
         sx={{
           width: dynamicWidth ? `${length}px` : '100%',
-          ...(animationSx(showAnimation, value > max, value < min) || {}),
+          ...(animationSx(showAnimation, value >= min && value <= max) || {}),
         }}
       >
         <Button
