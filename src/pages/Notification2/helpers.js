@@ -119,19 +119,19 @@ export const generateData = (data) => {
   if (data.accountType === 'shop') {
     return {
       ...notificationData,
-      shop: data.shop,
+      shop: data.shop?._id,
     };
   }
   if (data.accountType === 'user') {
     return {
       ...notificationData,
-      user: data.user,
+      user: data.user?._id,
     };
   }
   if (data.accountType === 'deliveryBoy') {
     return {
       ...notificationData,
-      deliveryBoy: data.deliveryBoy,
+      deliveryBoy: data.deliveryBoy?._id,
     };
   }
 

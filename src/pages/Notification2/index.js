@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Stack, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -52,15 +53,6 @@ function Notification() {
   const getAllNotifications = useQuery([API_URL.GET_NOTIFICATIONS, queryParams], () =>
     AXIOS.get(API_URL.GET_NOTIFICATIONS, {
       params: queryParams,
-      // params: {
-      //   searchKey,
-      //   status,
-      //   accountType,
-      //   type,
-      //   startDate: range.start,
-      //   endDate: range.end,
-      // },
-      // eslint-disable-next-line prettier/prettier
     }),
   );
 
@@ -89,8 +81,6 @@ function Notification() {
     },
   });
 
-  console.log('getAllNotificatoins: ', getAllNotifications?.data?.data?.notifications);
-
   return (
     <Box>
       <PageTop
@@ -110,7 +100,7 @@ function Notification() {
         <StyledSearchBar
           sx={{ flex: '1' }}
           placeholder="Search"
-          onChange={(e) => setQueryParams('search', e.target.value)}
+          onChange={(e) => setQueryParams('searchKey', e.target.value)}
         />
         <StyledDateRangePicker
           startDate={queryParams.startDate === 'null' ? null : moment(queryParams.startDate)}
