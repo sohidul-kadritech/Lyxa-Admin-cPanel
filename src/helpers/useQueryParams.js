@@ -13,6 +13,7 @@ export default function useQueryParams(defaultParams) {
   const searchParamsObj = useMemo(() => Object.fromEntries(searchParams), [searchParams]);
 
   const setSearchParam = (key, value) => {
+    console.log('params hooks list: ', { key, value });
     if (typeof key === 'object') {
       Object.entries(key).forEach(([k, v]) => {
         if (v === undefined) searchParams.delete(k);
@@ -20,6 +21,7 @@ export default function useQueryParams(defaultParams) {
       });
     } else if (typeof key === 'function') {
       Object.entries(key(searchParamsObj)).forEach(([k, v]) => {
+        console.log('params hooks function: ', { k, v });
         if (v === undefined) searchParams.delete(k);
         else searchParams.set(k, v);
       });

@@ -1,16 +1,16 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Add } from '@mui/icons-material';
 import { Box, Button, Drawer, Tab, Tabs } from '@mui/material';
-import moment from 'moment';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
 // eslint-disable-next-line import/order, no-unused-vars
-import { createUpdateData } from './helpers';
+import { createUpdateData, tabIndexForFAQ } from './helpers';
 
 import SearchBar from '../../components/Common/CommonSearchbar';
 import ConfirmModal from '../../components/Common/ConfirmModal';
-import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import TabPanel from '../../components/Common/TabPanel';
 import { successMsg } from '../../helpers/successMsg';
 import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
@@ -53,14 +53,11 @@ const breadcrumbItems = [
   },
 ];
 
-const getQueryParamsInit = () => ({
-  endDate: moment().format('YYYY-MM-DD'),
-  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+const getQueryParamsInit = {
   status: 'active',
   searchKey: '',
   type: 'orderSupport',
-  tab: 0,
-});
+};
 
 export function AddMenuButton({ title = 'Add', isIcon = true, icon = <Add />, ...props }) {
   return (
@@ -72,7 +69,8 @@ export function AddMenuButton({ title = 'Add', isIcon = true, icon = <Add />, ..
 
 function Faq() {
   const queryClient = useQueryClient();
-  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit());
+
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit);
 
   // const [range, setRange] = useState({ ...dateRangeInit });
 
@@ -100,33 +98,30 @@ function Faq() {
 
   const [open, setOpen] = useState(false);
 
-  const getChatReason = useQuery([API_URL?.GET_CHAT_REASON, queryParams], () =>
-    AXIOS.get(API_URL?.GET_CHAT_REASON, {
-      params: queryParams,
-      // params: {
-      //   status,
-      //   type,
-      //   searchKey,
-      //   startDate: range.start,
-      //   endDate: range.end,
-      // },
-      // eslint-disable-next-line prettier/prettier
-    })
+  // get request
+  const getChatReason = useQuery(
+    [API_URL?.GET_CHAT_REASON, queryParams],
+    () =>
+      AXIOS.get(API_URL?.GET_CHAT_REASON, {
+        params: queryParams,
+      }),
+    {
+      enabled: queryParams?.type !== 'faq',
+    },
   );
 
-  const getChatFaq = useQuery([API_URL?.GET_FAQ, queryParams], () =>
-    AXIOS.get(API_URL?.GET_FAQ, {
-      params: queryParams,
-      // params: {
-      //   status,
-      //   searchKey,
-      //   startDate: range.start,
-      //   endDate: range.end,
-      // },
-      // eslint-disable-next-line prettier/prettier
-    })
+  const getChatFaq = useQuery(
+    [API_URL?.GET_FAQ, queryParams],
+    () =>
+      AXIOS.get(API_URL?.GET_FAQ, {
+        params: queryParams,
+      }),
+    {
+      enabled: queryParams?.type === 'faq',
+    },
   );
 
+  // // post request
   const faqSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_FAQ, data), {
     onSuccess: (data) => {
       if (data.status) {
@@ -199,7 +194,7 @@ function Faq() {
   const reasonDeleteQuery = useMutation((data) => AXIOS.post(API_URL.DELETE_CHAT_REASON, data), {
     onSuccess: (data) => {
       if (data.status) {
-        successMsg('Successfully deleted!', 'success');
+        successMsg('Successfully Deleted!', 'success');
         queryClient.invalidateQueries(API_URL?.GET_CHAT_REASON);
       }
     },
@@ -304,12 +299,11 @@ function Faq() {
 
         <Box sx={{ marginBottom: '30px' }}>
           <Tabs
-            value={Number(queryParams?.tab)}
+            value={tabIndexForFAQ[queryParams?.type]}
             onChange={(event, newValue) => {
               setQueryParams((prev) => ({
                 ...prev,
-                tab: newValue,
-                type: newValue === 0 ? 'orderSupport' : newValue === 1 ? 'accountSupport' : 'faq',
+                type: tabIndexForFAQ[newValue],
               }));
             }}
           >
@@ -331,7 +325,7 @@ function Faq() {
             }}
             showFilters={{
               search: true,
-              date: true,
+              date: false,
               status: true,
               button: true,
             }}
@@ -340,35 +334,57 @@ function Faq() {
           />
         </Box>
 
-        <Box>
+        {/* Orders */}
+        <TabPanel index={0} noPadding value={tabIndexForFAQ[queryParams?.type]}>
           <FaqTable
             supportReason={{
-              type:
-                Number(queryParams?.tab) === 0
-                  ? 'orderSupport'
-                  : Number(queryParams?.tab) === 1
-                  ? 'accountSupport'
-                  : 'faq',
+              type: queryParams?.type,
             }}
-            items={
-              Number(queryParams?.tab) !== 2
-                ? getChatReason?.data?.data?.chatReason || []
-                : getChatFaq?.data?.data?.list || []
-            }
+            items={getChatReason?.data?.data?.chatReason || []}
             threeDotHandler={threeDotHandler}
             faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
             setDataCounter={setDataCounter}
             dataCounter={dataCounter}
             onDrop={dropSort}
           />
-        </Box>
+        </TabPanel>
+
+        {/* Account */}
+        <TabPanel index={1} noPadding value={tabIndexForFAQ[queryParams?.type]}>
+          <FaqTable
+            supportReason={{
+              type: queryParams?.type,
+            }}
+            items={getChatFaq?.data?.data?.list || []}
+            threeDotHandler={threeDotHandler}
+            faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
+            setDataCounter={setDataCounter}
+            dataCounter={dataCounter}
+            onDrop={dropSort}
+          />
+        </TabPanel>
+
+        {/* faq */}
+        <TabPanel index={2} noPadding value={tabIndexForFAQ[queryParams?.type]}>
+          <FaqTable
+            supportReason={{
+              type: queryParams?.type,
+            }}
+            items={getChatReason?.data?.data?.chatReason || []}
+            threeDotHandler={threeDotHandler}
+            faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
+            setDataCounter={setDataCounter}
+            dataCounter={dataCounter}
+            onDrop={dropSort}
+          />
+        </TabPanel>
       </Box>
       <Drawer open={open} anchor="right">
         <AddFaq
           isEdit={isEdit}
           isReadOnly={isReadOnly}
           loading={
-            Number(queryParams?.tab) !== 2
+            queryParams?.type !== 'faq'
               ? reasonUpdateQuery?.isLoading || reasonAddQuery?.isLoading
               : faqUpdateQuery?.isLoading || faqAddQuery?.isLoading
           }
@@ -376,12 +392,7 @@ function Faq() {
             isEdit
               ? currentFaq
               : {
-                  type:
-                    Number(queryParams?.tab) === 0
-                      ? 'orderSupport'
-                      : Number(queryParams?.tab) === 1
-                      ? 'accountSupport'
-                      : 'faq',
+                  type: queryParams?.type,
                 }
           }
           submitHandler={isEdit ? callUpdateFaq : callAddFaq}

@@ -93,3 +93,12 @@ export const createUpdateData = (data) => {
 
   return {};
 };
+
+export const tabIndexForFAQ = {
+  0: 'orderSupport',
+  1: 'accountSupport',
+  2: 'faq',
+  orderSupport: 0,
+  accountSupport: 1,
+  faq: 2,
+};

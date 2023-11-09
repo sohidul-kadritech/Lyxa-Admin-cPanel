@@ -15,7 +15,9 @@ function FaqTable({ items, faqLoading, threeDotHandler, supportReason, onDrop, s
       flex: 1.5,
       renderCell: (params) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
-          <HandleIcon className="drag-handler" />
+          <Box>
+            <HandleIcon className="drag-handler" />
+          </Box>
           <Box>
             <Typography variant="body1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
               {params?.row?.question}
@@ -55,10 +57,9 @@ function FaqTable({ items, faqLoading, threeDotHandler, supportReason, onDrop, s
       minWidth: 100,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row }) => {
-        console.log('status: ', row?.createdAt);
-        return <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography>;
-      },
+      renderCell: ({ row }) => (
+        <Typography variant="body1">{new Date(row?.createdAt || undefined).toLocaleDateString()}</Typography>
+      ),
     },
     {
       id: 4,
