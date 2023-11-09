@@ -85,12 +85,6 @@ function AdjustOrderForShop({ currentOrder, onClose }) {
   };
 
   const onConfirm = () => {
-    console.log('onConfirm', {
-      replacementOrder,
-      suggestedProducts,
-      formatedData: generateProductData(adjustOrder, replacementOrder, suggestedProducts),
-    });
-
     const validate = generateProductData(adjustOrder, replacementOrder, suggestedProducts);
 
     if (validate?.status) {
