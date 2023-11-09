@@ -12,6 +12,35 @@ const StyledContainer = styled(Stack)(({ theme }) => ({
   borderRadius: '30px',
 }));
 
+const animationSx = (showAnimation, isUp, isDown) => {
+  const template = {
+    background: 'F6F8FA',
+    transition: 'all 0.3s linear',
+    opacity: '1',
+    // transform: 'translateY(0px)',
+  };
+
+  if (showAnimation && isUp) {
+    return {
+      ...template,
+      background: '#FFF5F8',
+      color: 'red',
+      opacity: '1',
+    };
+  }
+
+  if (showAnimation && isDown) {
+    return {
+      ...template,
+      background: '#FFF5F8',
+      color: 'red',
+      opacity: '1',
+    };
+  }
+
+  return template;
+};
+
 export default function IncrementDecrementInput({
   onChange,
   onBlur,
@@ -22,6 +51,7 @@ export default function IncrementDecrementInput({
   max = Number.MAX_SAFE_INTEGER,
   value = 0,
   step = 1,
+  showAnimation = false,
 }) {
   const length = 190 + Math.max(value?.toString().length - 1, 0) * 8;
 
@@ -48,7 +78,7 @@ export default function IncrementDecrementInput({
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [value]);
 
   return (
     <Stack direction="row" alignItems="center" gap={3}>
@@ -58,6 +88,7 @@ export default function IncrementDecrementInput({
         alignItems="center"
         sx={{
           width: dynamicWidth ? `${length}px` : '100%',
+          ...(animationSx(showAnimation, value > max, value < min) || {}),
         }}
       >
         <Button
@@ -110,9 +141,7 @@ export default function IncrementDecrementInput({
             }
           }}
           onChange={(e) => {
-            const value = allowDecimal ? e.target.value : Math.round(Number(e.target.value));
-
-            console.log({ input: value });
+            const value = allowDecimal ? e?.target?.value : Math.round(Number(e?.target?.value));
 
             if (onChange && !onBlur) {
               if (Number(value) < min) {

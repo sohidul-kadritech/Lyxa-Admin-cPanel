@@ -45,6 +45,7 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
       >
         <IncrementDecrementInput
           allowDecimal={false}
+          showAnimation
           value={shopSettings?.shopExchangeRate}
           min={Number(appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10)}
           max={Number(appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10)}
