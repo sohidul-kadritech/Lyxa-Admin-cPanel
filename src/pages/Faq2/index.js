@@ -355,7 +355,7 @@ function Faq() {
             supportReason={{
               type: queryParams?.type,
             }}
-            items={getChatFaq?.data?.data?.list || []}
+            items={getChatReason?.data?.data?.chatReason || []}
             threeDotHandler={threeDotHandler}
             faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
             setDataCounter={setDataCounter}
@@ -370,7 +370,7 @@ function Faq() {
             supportReason={{
               type: queryParams?.type,
             }}
-            items={getChatReason?.data?.data?.chatReason || []}
+            items={getChatFaq?.data?.data?.list || []}
             threeDotHandler={threeDotHandler}
             faqLoading={getChatReason?.isLoading || getChatFaq?.isLoading}
             setDataCounter={setDataCounter}
