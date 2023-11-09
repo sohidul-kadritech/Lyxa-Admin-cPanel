@@ -79,11 +79,11 @@ function ShopSettings() {
   const { currentUser, general } = useGlobalContext();
   const { shop, adminType, admin } = currentUser;
   const { currency } = general;
-  console.log('adminType', admin?.adminType);
+
   const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
 
   const [newShop, setNewShop] = useState(deepClone(shop));
-  console.log('newShop', newShop?.shopNote);
+
   const [isShopNoteForRiderEnabled, setIsShopNoteForRiderEnabled] = useState(newShop?.isShopNoteForRiderEnabled);
   const [newShopNote, setNewShopNote] = useState(newShop?.shopNote);
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
