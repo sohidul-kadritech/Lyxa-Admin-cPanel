@@ -55,12 +55,6 @@ export default function ResolveOrderFlag({ order, setRender }) {
               Contact Customer
             </Button>
           )}
-          {/* <Button variant="outlined" color="primary" fullWidth>
-            Assign new rider
-          </Button> */}
-          {/* <Button variant="outlined" color="error" fullWidth>
-            Cancel Order
-          </Button> */}
         </>
       )}
     </Stack>
