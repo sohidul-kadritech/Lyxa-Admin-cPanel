@@ -37,7 +37,7 @@ import {
   itemSelectOptions,
 } from './helpers';
 
-export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
+export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType, onSuccessHandler }) {
   console.log({ creatorType, shop, marketingType });
   const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
@@ -204,7 +204,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     const newData = deepClone(marketingData);
 
-    console.log('log==>', { newData, marketingForPercentage, marketingData });
+    console.log('log==>', { newData, marketingForPercentage, marketingData, mData, userType });
 
     setLocalData(newData);
 
@@ -227,25 +227,34 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     // does have marketing so init local state
     initLocalState(mData);
 
-    if (!mData?.marketing) {
-      const marketing = mData?.data?.marketings?.find((marketing) => marketing?.status === 'active');
+    console.log('line 230', { mData });
+
+    if (!mData?.marketing && marketingType === 'percentage') {
+      const marketing = mData?.data?.marketings?.find((marketing) => marketing?.creatorType === creatorType);
+
       // marketing is active
       if (marketing?.status === 'active' && marketing?.isActive) {
-        console.log('line 235');
         // setPageMode(1);
         setPageMode(2);
         setIsPageDisabled(true);
         // return;
-        console.log('line 338');
       }
 
       // marketing is scheduled
       if (marketing?.status === 'active' && !marketing?.isActive) {
-        console.log('line 247');
         setIsScheduled(true);
         setIsPageDisabled(true);
         setPageMode(2);
         // setPageMode(1);
+      }
+
+      // marketing is inactive
+      if (marketing?.status === 'inactive') {
+        // and is featured
+        if (marketing?.type === 'featured') setPageMode(2);
+        else setPageMode(1);
+        setIsPageDisabled(true);
+        return;
       }
 
       return;
@@ -256,15 +265,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       // and is featured
       if (mData?.data?.marketing?.type === 'featured') setPageMode(2);
       else setPageMode(1);
-      console.log('line 259');
       setIsPageDisabled(true);
       return;
     }
 
     // marketing is active
     if (mData?.data?.marketing?.status === 'active' && mData?.data?.marketing?.isActive) {
-      // setPageMode(1);
-      console.log('line 267');
       setPageMode(2);
       setIsPageDisabled(true);
       return;
@@ -275,8 +281,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       setIsScheduled(true);
       setIsPageDisabled(true);
       setPageMode(2);
-      console.log('line 278');
-      // setPageMode(1);
     }
   };
 
@@ -390,6 +394,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         successMsg('Settings successfully updated', 'success');
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
         queryClient.invalidateQueries([Api.ALL_PRODUCT]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_ORDER_GRAPH]);
+        if (onSuccessHandler) onSuccessHandler(data);
         onClose();
       }
     },
@@ -479,6 +487,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
           queryClient.invalidateQueries([Api.ALL_PRODUCT]);
           onDelete();
+
+          if (onSuccessHandler) onSuccessHandler(data);
         }
       },
     },

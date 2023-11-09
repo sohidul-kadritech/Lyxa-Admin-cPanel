@@ -6,7 +6,7 @@
 import { Box, Button, Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../../components/Common/PageTop';
@@ -99,6 +99,8 @@ export default function MarketingDashboard({ viewUserType }) {
   const routeMatch = useRouteMatch();
   const { search, pathname } = useLocation();
   const theme = useTheme();
+
+  const queryClient = useQueryClient();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -554,6 +556,23 @@ export default function MarketingDashboard({ viewUserType }) {
           }}
           onDelete={() => {
             history.replace(getBackToUrl(viewUserType));
+          }}
+          onSuccessHandler={(data) => {
+            if (data?.status) {
+              Promise.all([
+                queryClient.invalidateQueries(`marketing-settings`),
+                queryClient.invalidateQueries(`marketing-dashboard-${params?.id}`),
+                queryClient.invalidateQueries(
+                  `marketing-graph-orders-${params?.id}-${orderRange.start}-${orderRange.end}`,
+                ),
+                queryClient.invalidateQueries(
+                  `marketing-graph-customer-${params?.id}-${customerRange.start}-${customerRange.end}`,
+                ),
+                queryClient.invalidateQueries(
+                  `marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`,
+                ),
+              ]);
+            }
           }}
         />
       </MSettingsModal>
