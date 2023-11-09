@@ -35,15 +35,6 @@ export default function ResolveOrderFlag({ order, setRender }) {
     },
   });
 
-  const resolveAll = () => {
-    const flagIds = order?.flag?.map((f) => f?._id);
-
-    flagResolve.mutate({
-      flagIds,
-      resolved: true,
-    });
-  };
-
   return (
     <Stack direction="column" gap="15px" pt="30px">
       <Button variant="contained" color="primary" fullWidth onClick={() => setButtonsOpen(!buttonsOpen)}>
@@ -51,19 +42,6 @@ export default function ResolveOrderFlag({ order, setRender }) {
       </Button>
       {buttonsOpen && (
         <>
-          {!isAllResolved && (
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={flagResolve?.isLoading}
-              onClick={() => {
-                resolveAll();
-              }}
-            >
-              Resolve Issue
-            </Button>
-          )}
           {order?.deliveryBoy?.number && (
             <Button variant="outlined" color="primary" fullWidth href={`tel:${order?.deliveryBoy?.number}`}>
               Contact Rider
