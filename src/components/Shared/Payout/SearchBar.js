@@ -17,7 +17,7 @@ const tabsOptions = [
   { value: 'paid', label: 'Paid' },
 ];
 
-function SearchBar({ queryParams, setQueryParams, searchPlaceHolder, onPaid, onDownload }) {
+function SearchBar({ queryParams, setQueryParams, searchPlaceHolder, onPaid, onDownload, disabledButton = false }) {
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
@@ -53,6 +53,7 @@ function SearchBar({ queryParams, setQueryParams, searchPlaceHolder, onPaid, onD
       <AddMenuButton
         title="Download"
         icon={<DownloadIcon />}
+        disabled={disabledButton}
         onClick={() => {
           if (onDownload) onDownload();
         }}

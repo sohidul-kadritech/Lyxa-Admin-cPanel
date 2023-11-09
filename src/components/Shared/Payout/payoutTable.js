@@ -27,6 +27,8 @@ function PayoutTable({
   setOpen,
   setCurrentPayout,
   setIsConfirm,
+  checkedPayoutHandler,
+  checkedPayouts,
 }) {
   const { general } = useGlobalContext();
 
@@ -47,11 +49,19 @@ function PayoutTable({
       headerName: `NAME`,
       field: 'name',
       flex: 1.5,
+      sortable: false,
       renderCell: ({ row }) => {
         const rowData = getPayoutData(row);
         return (
           <Stack direction="row" alignItems="center" sx={{ padding: '10px 0px !important' }}>
-            <Checkbox />
+            <Checkbox
+              checked={!!checkedPayouts?.find((payout) => payout?._id === row?._id)}
+              onChange={() => {
+                if (checkedPayoutHandler) {
+                  checkedPayoutHandler(row);
+                }
+              }}
+            />
             <UserAvatar
               imgAlt="user-image"
               imgUrl={rowData?.image}
@@ -138,7 +148,7 @@ function PayoutTable({
         const isShop = row?.payoutAccount === 'shop';
         const data = isShop
           ? `${currency} ${(row?.profitBreakdown?.baseCurrency_Amount || 0).toFixed(
-              2
+              2,
             )} + ${secondaryCurrency} ${Math.round(row?.profitBreakdown?.secondaryCurrency_Amount || 0)}`
           : row?.profitBreakdown?.currency === 'secondaryCurrency'
           ? `${secondaryCurrency} ${Math.round(row?.profitBreakdown?.riderPayout || 0)}`
