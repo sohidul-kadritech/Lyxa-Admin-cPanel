@@ -22,6 +22,10 @@ const sortOptions = [
 
 const statusOptions = [
   {
+    label: 'All',
+    value: 'all',
+  },
+  {
     label: 'Active',
     value: 'active',
   },
@@ -47,13 +51,14 @@ export default function SearchBar({
   customSelectValue,
   customSelectPlaceholder,
   customSelectHanlder,
+  toolTips = { dateTooltip: 'Filter with date range', sortTooltip: 'Sort', statusTooltip: 'Status' },
 }) {
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, searchDebounceTime),
-    []
+    [],
   );
 
   return (
@@ -88,7 +93,7 @@ export default function SearchBar({
           items={sortOptions}
           value={queryParams.sortBy}
           placeholder="Sort"
-          tooltip="Sort"
+          tooltip={toolTips?.sortTooltip}
           size="sm"
           sx={{
             minWidth: 'auto',
@@ -104,7 +109,7 @@ export default function SearchBar({
           items={statusOptions}
           value={queryParams.status}
           placeholder="Status"
-          tooltip="Status"
+          tooltip={toolTips?.statusTooltip}
           size="sm"
           sx={{
             minWidth: 'auto',
