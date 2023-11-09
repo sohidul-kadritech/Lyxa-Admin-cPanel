@@ -74,7 +74,6 @@ function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsCon
                 textOverflow: 'ellipsis',
                 width: '100%',
                 lineHeight: '1.5',
-                textTransform: 'capitalize',
               }}
             >
               {params?.row?.type !== 'global' && getSpecificUser(params?.row)?.email}
