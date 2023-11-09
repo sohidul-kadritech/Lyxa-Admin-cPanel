@@ -91,7 +91,7 @@ const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     }
     let price = 0;
 
-    if (itemData?.marketing[0]?.type !== 'double_menu') {
+    if (!checkDoubleDealMarketing(itemData)) {
       price = itemData?.product?.price * (itemData?.quantity || itemData?.productQuantity);
       count += price;
 
@@ -399,8 +399,6 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 
   const output = calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate);
 
-  console.log('on add', { product });
-
   return { ...productTemplate, ...output };
 };
 
@@ -467,7 +465,7 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
       return;
     }
     let price = 0;
-    if (itemData?.marketing[0]?.isActive && itemData?.marketing[0]?.type === 'double_menu') {
+    if (checkDoubleDealMarketing(itemData)) {
       if (!array.includes(itemData?.productId)) {
         const doubleDealAllProduct = addedItems?.filter(
           (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
