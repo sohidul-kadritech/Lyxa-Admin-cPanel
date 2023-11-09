@@ -61,6 +61,8 @@ const tabIndex = (userType, value) => {
 export const getMarketingId = (mData, userType) => {
   const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
+  console.log({ marketingData, mData });
+
   const existingMarketing = marketingData?.find(
     (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
   );
@@ -133,14 +135,14 @@ export default function MarketingDashboard({ viewUserType }) {
   const marketingQuery = useQuery(
     [
       `marketing-settings`,
-      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') },
+      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') || shop?._id },
     ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: {
           creatorType: viewUserType,
           type: params?.type,
-          shop: params?.shopId || searchParams.get('shopId'),
+          shop: params?.shopId || searchParams.get('shopId') || shop?._id,
         },
       }),
     {
@@ -370,7 +372,8 @@ export default function MarketingDashboard({ viewUserType }) {
         onAddDisabled={
           (viewUserType === 'shop' && userType === 'admin') ||
           marketingQuery?.data?.isNotEligible ||
-          marketingQuery.isLoading
+          marketingQuery.isLoading ||
+          (params?.type === 'percentage' && viewUserType !== currentTab)
         }
       />
 
@@ -520,7 +523,7 @@ export default function MarketingDashboard({ viewUserType }) {
             >
               <Stack justifyContent="center" alignItems="center" gap={6}>
                 <Typography variant="h6" sx={{ fontSize: '28px', color: 'red' }}>
-                  No marketing found
+                  No Marketing Found
                 </Typography>
                 <Button
                   variant="contained"

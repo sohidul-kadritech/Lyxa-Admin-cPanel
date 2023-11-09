@@ -78,7 +78,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
       {/* header */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
         <Typography fontSize="18px" variant="h4">
-          Adjust Order
+          Adjust Order: #{adjuestedOrder?.orderId}
         </Typography>
         <CustomerInfo
           title={adjuestedOrder?.user?.name}
