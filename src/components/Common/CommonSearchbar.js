@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack, Tooltip } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -75,18 +75,22 @@ export default function SearchBar({
         />
       )}
       {showFilters?.date && (
-        <StyledDateRangePicker
-          startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
-          endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
-          onChange={({ startDate, endDate }) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              startDate: startDate?.format('YYYY-MM-DD'),
-              endDate: endDate?.format('YYYY-MM-DD'),
-              page: 1,
-            }));
-          }}
-        />
+        <Tooltip title={toolTips?.dateTooltip}>
+          <Box>
+            <StyledDateRangePicker
+              startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
+              endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
+              onChange={({ startDate, endDate }) => {
+                setQueryParams((prev) => ({
+                  ...prev,
+                  startDate: startDate?.format('YYYY-MM-DD'),
+                  endDate: endDate?.format('YYYY-MM-DD'),
+                  page: 1,
+                }));
+              }}
+            />
+          </Box>
+        </Tooltip>
       )}
       {/* sort */}
       {showFilters?.sort && (
