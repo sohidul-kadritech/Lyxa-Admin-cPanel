@@ -106,6 +106,20 @@ function ShopSettings() {
     shopExchangeRate: newShop?.shopExchangeRate,
   });
 
+  const [isExistOngoingOrder, setIsExistOngoingOrder] = useState(true);
+
+  const getOngoingOrdersQuery = useQuery([Api.GET_SHOP_ONGOING_ORDER], () => Axios.get(Api.GET_SHOP_ONGOING_ORDER), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        console.log('haveOngoingOrder', { data: data?.data });
+        const haveOngoingOrder = data?.data?.haveOngoingOrder !== undefined ? data?.data?.haveOngoingOrder : true;
+        setIsExistOngoingOrder(haveOngoingOrder);
+      } else {
+        setIsExistOngoingOrder(true);
+      }
+    },
+  });
+
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
     onSuccess: (data) => {
       successMsg(data?.message, data.status ? 'success' : undefined);
@@ -445,8 +459,12 @@ function ShopSettings() {
               options={DeliverySettings}
               action={OwnDeliveryBoyHandler}
               isButton
-              readOnly={adminType !== 'admin' || hasFreeDelivery}
-              disabled={adminType !== 'admin' || hasFreeDelivery}
+              readOnly={
+                adminType !== 'admin' || hasFreeDelivery || isExistOngoingOrder || getOngoingOrdersQuery?.isLoading
+              }
+              disabled={
+                adminType !== 'admin' || hasFreeDelivery || isExistOngoingOrder || getOngoingOrdersQuery?.isLoading
+              }
               isMethod
             />
             {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}
