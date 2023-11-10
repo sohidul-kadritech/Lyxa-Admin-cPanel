@@ -520,7 +520,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 borderRadius: '10px',
                 justifyContent: 'center',
                 alignContent: 'center',
-                border: `3px solid ${theme?.palette?.custom?.border}`,
+                border: `1px solid ${theme?.palette?.custom?.border}`,
               }}
             >
               <Stack justifyContent="center" alignItems="center" gap={6}>
