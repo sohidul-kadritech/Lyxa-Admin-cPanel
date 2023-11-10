@@ -25,7 +25,7 @@ const getInitialOrderData = (order) => ({
         ? !(checkAnyMarketing(updatedProduct)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
         : false;
 
-      return { ...product, skipDiscount };
+      return { ...updatedProduct, skipDiscount };
     }),
   ],
   adjustmentReason: '',
