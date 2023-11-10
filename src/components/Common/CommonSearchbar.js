@@ -92,6 +92,7 @@ export default function SearchBar({
           </Box>
         </Tooltip>
       )}
+
       {/* sort */}
       {showFilters?.sort && (
         <FilterSelect
