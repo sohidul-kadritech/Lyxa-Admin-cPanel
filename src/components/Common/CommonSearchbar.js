@@ -53,7 +53,6 @@ export default function SearchBar({
   customSelectHanlder,
   toolTips = { dateTooltip: 'Filter with date range', sortTooltip: 'Sort', statusTooltip: 'Status' },
 }) {
-  console.log({ queryParams });
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
