@@ -174,9 +174,10 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
   if (checkRewardMarketing(item) && !skipDiscount) {
-    output.finalReward.baseCurrency_amount = (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
+    output.finalReward.baseCurrency_amount =
+      (item?.product?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
     output.finalReward.secondaryCurrency_amount = getSecondaryCurrency(output.finalReward.baseCurrency_amount);
-    output.finalReward.points = (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
+    output.finalReward.points = (item?.product?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
   }
 
   // when marketing is percentage

@@ -21,7 +21,6 @@ const getInitialOrderData = (order) => ({
         ? product
         : { ...product, marketing: product?.marketing ? [{ ...product?.marketing }] : [] };
 
-      console.log('product==> initial', { product, updatedProduct });
       const skipDiscount = checkAnyMarketing(updatedProduct)
         ? !(checkAnyMarketing(updatedProduct)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
         : false;
@@ -36,8 +35,6 @@ const getOrderSummary = (order) => ({ ...order?.summary });
 
 function AdjustmentOrder({ onClose, order = {} }) {
   const [adjuestedOrder, setAdjustedOrder] = useState(getInitialOrderData({ ...order }));
-
-  // const [oldOrderSummary, setOldOrderSummary] = useState(getOrderSummary({ ...order }));
 
   console.log({ adjuestedOrder });
 
