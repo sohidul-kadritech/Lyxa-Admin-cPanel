@@ -77,6 +77,8 @@ const getRouteAndSidebarItems = (userType, adminType, shopDeliveryType, shopType
 export default function Layout() {
   const { currentUser, general } = useGlobalContext();
 
+  console.log('layout current user', { currentUser });
+
   const { userType, adminType } = currentUser;
 
   const { appSetting } = general;
