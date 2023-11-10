@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
 import { useState } from 'react';
+import AdjustedBy from './AdjustedBy';
 import Attachments from './Attachments';
 import ButlerOrderSummary from './ButlerOrderSummary';
 import CancelReason from './CancelReason';
@@ -27,6 +28,7 @@ export default function Detail({ order, hideIssues, userType, hideMoreOptions })
       <DeliveryDetails order={order} />
       {order?.leaveAtDoorImage && <Attachments order={order} />}
       {order?.isButler && <ButlerOrderSummary order={order} />}
+      {order?.adjustOrderRequest?.adjustedBy && <AdjustedBy order={order} />}
       {!order?.isButler && <OrderSummary order={order} />}
       <PaymentMethod method={order?.paymentMethod} />
       {order?.couponDetails && <CouponDetails coupon={order?.couponDetails} />}

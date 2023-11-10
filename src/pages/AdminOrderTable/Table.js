@@ -871,6 +871,7 @@ export default function Table({
       </Modal>
 
       {/* adjustment order */}
+
       <Modal
         open={openAdjustmentOrder}
         onClose={() => {
