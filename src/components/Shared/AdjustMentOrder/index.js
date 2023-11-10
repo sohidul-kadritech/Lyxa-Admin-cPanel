@@ -11,14 +11,19 @@ import AdjusmentReason from './AdjusmentReason';
 import AdjustMentOrderSummary from './AdjustmentOrderSummary';
 import CustomerInfo from './CustomerInfo';
 import AdjustmentPaymentSummary from './PaymentSummary';
-import { checkAnyDeals, generateAdjustOrdeJsonData } from './helpers';
+import { checkAnyMarketing, generateAdjustOrdeJsonData } from './helpers';
 
 const getInitialOrderData = (order) => ({
   ...order,
   productsDetails: [
     ...order?.productsDetails?.map((product) => {
-      const skipDiscount = checkAnyDeals(product)
-        ? !(checkAnyDeals(product)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
+      const updatedProduct = Array.isArray(product?.marketing)
+        ? product
+        : { ...product, marketing: product?.marketing ? [{ ...product?.marketing }] : [] };
+
+      console.log('product==> initial', { product, updatedProduct });
+      const skipDiscount = checkAnyMarketing(updatedProduct)
+        ? !(checkAnyMarketing(updatedProduct)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
         : false;
 
       return { ...product, skipDiscount };
