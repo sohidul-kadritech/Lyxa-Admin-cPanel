@@ -516,7 +516,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 width: '100%',
                 background: 'rgba(177,177,177,0.1)',
                 padding: '10px 10px',
-                height: 'min(350px,40vh)',
+                height: 'max(350px,40vh)',
                 borderRadius: '10px',
                 justifyContent: 'center',
                 alignContent: 'center',
@@ -524,12 +524,13 @@ export default function MarketingDashboard({ viewUserType }) {
               }}
             >
               <Stack justifyContent="center" alignItems="center" gap={6}>
-                <Typography variant="h6" sx={{ fontSize: '28px', color: 'red' }}>
+                <Typography variant="h6" sx={{ fontSize: '28px' }}>
                   No Marketing Found
                 </Typography>
                 <Button
                   variant="contained"
                   // size="small"
+                  disabled={viewUserType !== currentTab}
                   sx={{
                     borderRadius: '8px',
                     padding: '11px 30px',

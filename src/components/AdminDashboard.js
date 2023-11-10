@@ -28,11 +28,7 @@ import timerIcon from '../assets/images/dashboard/timer.png';
 import vatIcon from '../assets/images/dashboard/vat.png';
 import { useGlobalContext } from '../context';
 
-// const GraphInfo = lazy(() => import('./GraphInfo'));
-// const TopSummery = lazy(() => import('./TopSummery'));
-
 function AdminDashboard({ summary, topActivity }) {
-  // const currency = useSelector((store) => store.settingsReducer.appSettingsOptions.currency.code);
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
