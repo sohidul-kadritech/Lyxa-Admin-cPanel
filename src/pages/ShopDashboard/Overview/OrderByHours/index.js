@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 // thrid party
-import { Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Unstable_Grid2 as Grid, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 // project import
+import { TitleWithToolTip } from '../../../../components/Common/TitleWithToolTip';
 import StyledBox from '../../../../components/StyledCharts/StyledBox';
 import { useGlobalContext } from '../../../../context';
 import * as Api from '../../../../network/Api';
@@ -41,9 +42,13 @@ export default function OrdersByHour() {
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" pb={10}>
-          <Typography variant="body1" fontWeight={600} pb={5}>
-            Orders by Hour
-          </Typography>
+          <TitleWithToolTip
+            title="Orders by Hour"
+            tooltip="These graphs show daily order deliveries 24/7, 
+            helping us find the best times and days for selling. 
+            This is the complete order report from start to now, not just a weekly summary."
+            sx={{ fontSize: '16px!important' }}
+          />
           <Tabs
             value={currentTab}
             onChange={(event, newValue) => {

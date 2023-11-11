@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
@@ -29,13 +30,13 @@ export default function MarketingHistory({ viewUserType }) {
   const { shop } = currentUser;
 
   const [queryParams, setQueryParams] = useState(
-    queryParamsInit({ shopId: params?.id || shop?._id, creatorType: viewUserType })
+    queryParamsInit({ shopId: params?.id || shop?._id, creatorType: viewUserType }),
   );
 
   const query = useQuery([Api.GET_MARKETING_HISTORY, queryParams], () =>
     AXIOS.get(Api.GET_MARKETING_HISTORY, {
       params: queryParams,
-    })
+    }),
   );
 
   console.log(query?.data);
@@ -47,6 +48,10 @@ export default function MarketingHistory({ viewUserType }) {
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           searchPlaceHolder="Search"
+          toolTips={{
+            sortTooltip: 'Sort By Created Date',
+            statusTooltip: 'Marketing Status',
+          }}
           showFilters={{
             date: true,
             sort: true,

@@ -79,11 +79,11 @@ function ShopSettings() {
   const { currentUser, general } = useGlobalContext();
   const { shop, adminType, admin } = currentUser;
   const { currency } = general;
-  console.log('adminType', admin?.adminType);
+
   const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
 
   const [newShop, setNewShop] = useState(deepClone(shop));
-  console.log('newShop', newShop?.shopNote);
+
   const [isShopNoteForRiderEnabled, setIsShopNoteForRiderEnabled] = useState(newShop?.isShopNoteForRiderEnabled);
   const [newShopNote, setNewShopNote] = useState(newShop?.shopNote);
   const [newPayMentInformation, setNewPaymentInformation] = useState(newShop?.paymentOption || []);
@@ -104,6 +104,20 @@ function ShopSettings() {
   const [newOrderCapacity, setNewOrderCapacity] = useState(newShop?.orderCapacity || 0);
   const [reateOfShop, setRateofShop] = useState({
     shopExchangeRate: newShop?.shopExchangeRate,
+  });
+
+  const [isExistOngoingOrder, setIsExistOngoingOrder] = useState(true);
+
+  const getOngoingOrdersQuery = useQuery([Api.GET_SHOP_ONGOING_ORDER], () => Axios.get(Api.GET_SHOP_ONGOING_ORDER), {
+    onSuccess: (data) => {
+      if (data?.status) {
+        console.log('haveOngoingOrder', { data: data?.data });
+        const haveOngoingOrder = data?.data?.haveOngoingOrder !== undefined ? data?.data?.haveOngoingOrder : true;
+        setIsExistOngoingOrder(haveOngoingOrder);
+      } else {
+        setIsExistOngoingOrder(true);
+      }
+    },
   });
 
   const updateData = useMutation((data) => Axios.post(Api.EDIT_SHOP, data), {
@@ -445,8 +459,12 @@ function ShopSettings() {
               options={DeliverySettings}
               action={OwnDeliveryBoyHandler}
               isButton
-              readOnly={adminType !== 'admin' || hasFreeDelivery}
-              disabled={adminType !== 'admin' || hasFreeDelivery}
+              readOnly={
+                adminType !== 'admin' || hasFreeDelivery || isExistOngoingOrder || getOngoingOrdersQuery?.isLoading
+              }
+              disabled={
+                adminType !== 'admin' || hasFreeDelivery || isExistOngoingOrder || getOngoingOrdersQuery?.isLoading
+              }
               isMethod
             />
             {/* <Divider variant="middle" sx={{ background: '#000000' }} /> */}

@@ -74,7 +74,6 @@ function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsCon
                 textOverflow: 'ellipsis',
                 width: '100%',
                 lineHeight: '1.5',
-                textTransform: 'capitalize',
               }}
             >
               {params?.row?.type !== 'global' && getSpecificUser(params?.row)?.email}
@@ -104,8 +103,8 @@ function NotificationList({ data = [], loading, deleteQuery, isConfirm, setIsCon
       sortable: false,
       flex: 1,
       minWidth: 100,
-      headerAlign: 'center',
-      align: 'center',
+      headerAlign: 'right',
+      align: 'right',
       renderCell: ({ row }) => {
         console.log('row: ', row);
         return (

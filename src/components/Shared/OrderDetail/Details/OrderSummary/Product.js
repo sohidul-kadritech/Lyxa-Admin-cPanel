@@ -63,7 +63,15 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
     >
       <Stack gap={1}>
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={500}>
+          <Typography
+            variant="inherit"
+            fontSize="15px"
+            lineHeight="22px"
+            fontWeight={500}
+            sx={{
+              textDecoration: product?.isReplaced ? 'line-through' : undefined,
+            }}
+          >
             {product?.product?.name}{' '}
             <span
               style={{

@@ -11,7 +11,7 @@ import { useGlobalContext } from '../../../context';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import StyledBadgeContainer from '../../Styled/StyledBadge';
-import { getProfilePhotoAndAltName } from '../helper';
+import { getProfilePhotoAndAltName, shouldFetchApi } from '../helper';
 import AccountMenu from './AccountMenu';
 import Notification from './NotificationSidebar';
 import Tabs from './Tabs';
@@ -65,8 +65,10 @@ export default function Topbar({ setSidebar, sidebar }) {
     () => AXIOS.get(API_URL.GET_UNSEEN_NOTIFICATIONS_COUNT),
     {
       refetchInterval: 30 * 1000,
-      refetchIntervalInBackground: true,
-      enabled: currentUser?.userType !== 'shop',
+      refetchIntervalInBackground: !shouldFetchApi(
+        currentUser?.userType === 'admin' ? currentUser?.adminType : currentUser?.userType,
+      ),
+      enabled: shouldFetchApi(currentUser?.userType === 'admin' ? currentUser?.adminType : currentUser?.userType),
     },
   );
 
@@ -143,7 +145,8 @@ export default function Topbar({ setSidebar, sidebar }) {
         <Notification
           onClose={() => {
             setOpen(false);
-            notificationCountQuery.refetch();
+            if (shouldFetchApi(currentUser?.userType === 'admin' ? currentUser?.adminType : currentUser?.userType))
+              notificationCountQuery.refetch();
           }}
         />
       </Drawer>

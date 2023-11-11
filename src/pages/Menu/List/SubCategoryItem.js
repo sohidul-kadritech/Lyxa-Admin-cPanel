@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-named-as-default */
 import { Edit, ExpandMore } from '@mui/icons-material';
 import { AccordionDetails, Box, Stack, Typography, useTheme } from '@mui/material';
@@ -12,7 +14,15 @@ import { ProductsContext } from '../ProductContext';
 import ProductsContainer from './ProductsContainer';
 import { StyledAccordion, StyledAccordionSummary } from './helpers';
 
-export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, secondaryCurrency }) {
+export default function SubCategoryItem({
+  editable,
+  OnCheckProduct,
+  suggestedProducts,
+  subCategory,
+  gOpen,
+  asSearchResult,
+  secondaryCurrency,
+}) {
   const theme = useTheme();
 
   const { setEditSubCategory } = useContext(ProductsContext);
@@ -40,7 +50,7 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
           subCategory.subCategory.status = args.status;
         }
       },
-    }
+    },
   );
 
   return (
@@ -56,7 +66,11 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
       <StyledAccordionSummary expandIcon={<ExpandMore />}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" paddingRight={6}>
           <Stack direction="row" alignItems="center" gap={5}>
-            <HandleIcon className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler-sub-category grabable'}`} />
+            {editable && (
+              <HandleIcon
+                className={`${asSearchResult ? 'cursor-not-allowed' : 'drag-handler-sub-category grabable'}`}
+              />
+            )}
             <Stack direction="row" alignItems="center" gap={5}>
               <Box>
                 <Stack direction="row" alignItems="center" justifyContent="start" gap={1.5} pb={1.5}>
@@ -80,42 +94,53 @@ export default function SubCategoryItem({ subCategory, gOpen, asSearchResult, se
               </Box>
             </Stack>
           </Stack>
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap={5}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <>
-              <StyledIconButton
-                color="primary"
-                onClick={() => {
-                  setEditSubCategory(subCategory?.subCategory);
-                }}
-                sx={{
-                  '& .MuiSvgIcon-root': {
-                    color: 'inherit',
-                  },
-                }}
-              >
-                <Edit />
-              </StyledIconButton>
-              <StyledSwitch
-                checked={subCategory?.subCategory?.status === 'active'}
-                onChange={(e) => {
-                  subCategoryMutation.mutate({
-                    status: e.target.checked ? 'active' : 'inactive',
-                  });
-                }}
-              />
-            </>
-          </Stack>
+
+          {/* edit */}
+          {editable && (
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={5}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <>
+                <StyledIconButton
+                  color="primary"
+                  onClick={() => {
+                    setEditSubCategory(subCategory?.subCategory);
+                  }}
+                  sx={{
+                    '& .MuiSvgIcon-root': {
+                      color: 'inherit',
+                    },
+                  }}
+                >
+                  <Edit />
+                </StyledIconButton>
+                <StyledSwitch
+                  checked={subCategory?.subCategory?.status === 'active'}
+                  onChange={(e) => {
+                    subCategoryMutation.mutate({
+                      status: e.target.checked ? 'active' : 'inactive',
+                    });
+                  }}
+                />
+              </>
+            </Stack>
+          )}
         </Stack>
       </StyledAccordionSummary>
       <AccordionDetails>
-        <ProductsContainer secondaryCurrency={secondaryCurrency} products={product()} asSearchResult={asSearchResult} />
+        <ProductsContainer
+          editable={editable}
+          OnCheckProduct={OnCheckProduct}
+          suggestedProducts={suggestedProducts}
+          secondaryCurrency={secondaryCurrency}
+          products={product()}
+          asSearchResult={asSearchResult}
+        />
       </AccordionDetails>
     </StyledAccordion>
   );

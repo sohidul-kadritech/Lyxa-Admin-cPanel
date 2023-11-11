@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack, Tooltip } from '@mui/material';
 import { debounce } from '@mui/material/utils';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -21,6 +21,10 @@ const sortOptions = [
 ];
 
 const statusOptions = [
+  {
+    label: 'All',
+    value: 'all',
+  },
   {
     label: 'Active',
     value: 'active',
@@ -47,13 +51,14 @@ export default function SearchBar({
   customSelectValue,
   customSelectPlaceholder,
   customSelectHanlder,
+  toolTips = { dateTooltip: 'Filter with date range', sortTooltip: 'Sort', statusTooltip: 'Status' },
 }) {
   const updateSearch = useMemo(
     () =>
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, searchDebounceTime),
-    []
+    [],
   );
 
   return (
@@ -64,31 +69,37 @@ export default function SearchBar({
           fullWidth
           placeholder={searchPlaceHolder}
           onChange={(e) => {
+            console.log(e?.target.value, queryParams);
             updateSearch(e);
           }}
         />
       )}
       {showFilters?.date && (
-        <StyledDateRangePicker
-          startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
-          endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
-          onChange={({ startDate, endDate }) => {
-            setQueryParams((prev) => ({
-              ...prev,
-              startDate: startDate?.format('YYYY-MM-DD'),
-              endDate: endDate?.format('YYYY-MM-DD'),
-              page: 1,
-            }));
-          }}
-        />
+        <Tooltip title={toolTips?.dateTooltip}>
+          <Box>
+            <StyledDateRangePicker
+              startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
+              endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
+              onChange={({ startDate, endDate }) => {
+                setQueryParams((prev) => ({
+                  ...prev,
+                  startDate: startDate?.format('YYYY-MM-DD'),
+                  endDate: endDate?.format('YYYY-MM-DD'),
+                  page: 1,
+                }));
+              }}
+            />
+          </Box>
+        </Tooltip>
       )}
+
       {/* sort */}
       {showFilters?.sort && (
         <FilterSelect
           items={sortOptions}
           value={queryParams.sortBy}
           placeholder="Sort"
-          tooltip="Sort"
+          tooltip={toolTips?.sortTooltip}
           size="sm"
           sx={{
             minWidth: 'auto',
@@ -104,7 +115,7 @@ export default function SearchBar({
           items={statusOptions}
           value={queryParams.status}
           placeholder="Status"
-          tooltip="Status"
+          tooltip={toolTips?.statusTooltip}
           size="sm"
           sx={{
             minWidth: 'auto',

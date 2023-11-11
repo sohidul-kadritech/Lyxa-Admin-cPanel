@@ -20,7 +20,7 @@ const getQueryParamsInit = (type, id) => ({
   id,
 });
 
-export default function OrderAmountChart({ viewUserType }) {
+export default function OrderAmountChart({ viewUserType, title = 'Total Order Amount' }) {
   const { currentUser, general } = useGlobalContext();
 
   const { currency } = general;
@@ -64,7 +64,7 @@ export default function OrderAmountChart({ viewUserType }) {
       setDateRange={setQueryParams}
       startDateKey="startDate"
       endDateKey="endDate"
-      title="Total Order Amount"
+      title={title}
       lg={6}
       sm={12}
     >

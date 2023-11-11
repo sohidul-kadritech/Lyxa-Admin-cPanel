@@ -4,7 +4,8 @@
 import { Box, Drawer, Modal, Stack, Tab, Tabs, Typography } from '@mui/material';
 
 // project import
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import PageTop from '../../components/Common/PageTop';
@@ -19,6 +20,8 @@ import AXIOS from '../../network/axios';
 
 import socketServices from '../../common/socketService';
 import ConfirmModal from '../../components/Common/ConfirmModal';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
+import useQueryParams from '../../helpers/useQueryParams';
 import AcceptRestaurent from './AcceptRestaurent';
 import AssignRiderForShop from './AssignRiderForShop';
 import AdjustOrderForShop from './MoreOptions/AdjustOrder';
@@ -32,6 +35,11 @@ const orderFilterToTabValueMap = {
   1: 'delivered',
   2: 'cancelled',
   3: 'scheduled',
+  all: 0,
+  requested: 0,
+  delivered: 1,
+  cancelled: 2,
+  scheduled: 3,
 };
 
 const getTabOptions = () => {
@@ -68,12 +76,30 @@ export default function NewOrders({ showFor }) {
 
   const [currentOrder, setCurrentOrder] = useState({});
 
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit(showFor, currentUser));
+  const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit(showFor, currentUser));
 
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(orderFilterToTabValueMap[queryParams?.orderType]);
 
-  // by defualt we assign ongoing tab as requested where we can only see the requested order here.
+  // By defualt we assign ongoing tab as requested where we can only see the requested order here.
   const [tabForOngoing, setTabForOngoing] = useState('requested');
+
+  // ---------------------- -------------------------------- ---------------------------
+  // When order type is ongoing we removed the date filter.
+  // When order type is not ongoing we add the date filter with selected current week.
+  // ---------------------- -------------------------------- ---------------------------
+
+  useEffect(() => {
+    console.log(orderFilterToTabValueMap[currentTab]);
+    if (orderFilterToTabValueMap[currentTab] === 'requested') {
+      setQueryParams((prev) => ({ ...prev, startDate: undefined, endDate: undefined }));
+    } else {
+      setQueryParams((prev) => ({
+        ...prev,
+        startDate: getFirstMonday('week').format('YYYY/MM/DD'),
+        endDate: moment().format('YYYY/MM/DD'),
+      }));
+    }
+  }, [currentTab]);
 
   // @when we are getting success to update any order status this method will call.
   const onSuccess = (response, payload) => {
@@ -120,10 +146,10 @@ export default function NewOrders({ showFor }) {
 
   // @Get all order list from this query
   const ordersQuery = useQuery(
-    [Api.ORDER_LIST, queryParams],
+    [Api.ORDER_LIST, { ...queryParams }],
     () =>
       AXIOS.get(Api.ORDER_LIST, {
-        params: queryParams,
+        params: { ...queryParams },
       }),
     {
       onSuccess: (data) => {
@@ -282,7 +308,16 @@ export default function NewOrders({ showFor }) {
         </Box>
       )}
 
-      <SearchBar searchPlaceHolder="Search Orders" queryParams={queryParams} setQueryParams={setQueryParams} />
+      <SearchBar
+        searchPlaceHolder="Search Orders"
+        queryParams={queryParams}
+        setQueryParams={setQueryParams}
+        showFilter={{
+          search: true,
+          date: orderFilterToTabValueMap[currentTab] !== 'requested',
+          sort: true,
+        }}
+      />
 
       <OrderTable
         loading={ordersQuery?.isLoading}
@@ -297,7 +332,7 @@ export default function NewOrders({ showFor }) {
 
       {!ordersQuery?.isLoading && (
         <TablePagination
-          currentPage={queryParams?.page}
+          currentPage={Number(queryParams?.page || 1)}
           lisener={(page) => {
             setQueryParams((prev) => ({ ...prev, page }));
           }}

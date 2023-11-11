@@ -258,8 +258,6 @@ export default function MarketingOverview({ viewUserType }) {
         marketing = marketingForAdmin;
       } else if (viewUserType === 'shop' && marketingForShop) {
         marketing = marketingForShop;
-      } else {
-        marketing = marketingForShop || marketingForAdmin;
       }
 
       console.log({ existingMarketing, viewUserType, marketingForAdmin, marketingForShop }, 'marketing data');

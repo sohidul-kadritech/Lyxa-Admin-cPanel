@@ -37,12 +37,11 @@ import {
   itemSelectOptions,
 } from './helpers';
 
-export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType }) {
+export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType, onSuccessHandler }) {
+  console.log({ creatorType, shop, marketingType });
   const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const adminMaxDiscount = general?.appSetting?.maxDiscount;
-
-  // console.log({ currentUser?.userType });
 
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -205,7 +204,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     const newData = deepClone(marketingData);
 
-    console.log('log==>', { newData, marketingForPercentage, marketingData });
+    console.log('log==>', { newData, marketingForPercentage, marketingData, mData, userType });
 
     setLocalData(newData);
 
@@ -215,9 +214,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   };
 
   const initialize = (mData) => {
-    if (mData === undefined) return;
-
     console.log('Initialize', { mData });
+    if (mData === undefined) return;
 
     // does not have marketing
     if (!mData?.isMarketing) {
@@ -229,10 +227,13 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     // does have marketing so init local state
     initLocalState(mData);
 
-    if (!mData?.marketing) {
-      const marketing = mData?.data?.marketings?.find((marketing) => marketing?.status === 'active');
+    console.log('line 230', { mData });
+
+    if (!mData?.marketing && marketingType === 'percentage') {
+      const marketing = mData?.data?.marketings?.find((marketing) => marketing?.creatorType === creatorType);
+
       // marketing is active
-      if (marketing.status === 'active' && marketing?.isActive) {
+      if (marketing?.status === 'active' && marketing?.isActive) {
         // setPageMode(1);
         setPageMode(2);
         setIsPageDisabled(true);
@@ -247,6 +248,15 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         // setPageMode(1);
       }
 
+      // marketing is inactive
+      if (marketing?.status === 'inactive') {
+        // and is featured
+        if (marketing?.type === 'featured') setPageMode(2);
+        else setPageMode(1);
+        setIsPageDisabled(true);
+        return;
+      }
+
       return;
     }
 
@@ -255,14 +265,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       // and is featured
       if (mData?.data?.marketing?.type === 'featured') setPageMode(2);
       else setPageMode(1);
-
       setIsPageDisabled(true);
       return;
     }
 
     // marketing is active
     if (mData?.data?.marketing?.status === 'active' && mData?.data?.marketing?.isActive) {
-      // setPageMode(1);
       setPageMode(2);
       setIsPageDisabled(true);
       return;
@@ -273,7 +281,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
       setIsScheduled(true);
       setIsPageDisabled(true);
       setPageMode(2);
-      // setPageMode(1);
     }
   };
 
@@ -297,16 +304,21 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     {
       enabled: queryEnabled,
       onSuccess: (data) => {
+        console.log('line 303', data);
         if (!data?.isNotEligible) {
+          console.log('line 305');
+          initialize(data);
+          setQueryEnabled(false);
+        } else if (marketingType === 'percentage' && data?.isNotEligible) {
           initialize(data);
           setQueryEnabled(false);
         } else {
           // reloads the page
           // eslint-disable-next-line no-restricted-globals, no-alert
-          // window.alert(
-          //   'Looks like something has changed in marketing since you came here. We will just reload the page',
-          // );
-          // window.location.reload();
+          window.alert(
+            'Looks like something has changed in marketing since you came here. We will just reload the page',
+          );
+          window.location.reload();
         }
       },
     },
@@ -365,6 +377,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setLocalData(newData);
     setHasGlobalChange(false);
     setIsPageDisabled(true);
+    console.log('line 371');
 
     // if marketing is paused
     if (marketingQuery?.data?.data?.marketing?.status === 'inactive') {
@@ -381,6 +394,10 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         successMsg('Settings successfully updated', 'success');
         queryClient.invalidateQueries([`marketing-${marketingType}-settings`]);
         queryClient.invalidateQueries([Api.ALL_PRODUCT]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_AMOUNT_SPENT_GRAPH]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_CUSTOMER_GRAPH]);
+        queryClient.invalidateQueries([Api.GET_MARKETING_DASHBOARD_ORDER_GRAPH]);
+        if (onSuccessHandler) onSuccessHandler(data);
         onClose();
       }
     },
@@ -470,6 +487,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
           queryClient.invalidateQueries([Api.ALL_PRODUCT]);
           onDelete();
+
+          if (onSuccessHandler) onSuccessHandler(data);
         }
       },
     },

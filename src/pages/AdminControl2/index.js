@@ -1,18 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import PageTop from '../../components/Common/PageTop';
-import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AddMenuButton } from '../Faq2';
 import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import AddAdmin from './AddAdmin';
 import AddSellersForAccountManager from './AddSellersForAccountManager';
 import AdminTeamList from './AdminTeamList';
+import { SearchBarForAdminList } from './SearchBarForAdminList';
 
 const adminTypeIndexTracker = {
   0: 'admin',
@@ -110,16 +109,12 @@ function AdminControl() {
           <Tab label="Customer Service" />
         </Tabs>
       </Box>
-      <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }} width="444px">
-        <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-        <AddMenuButton
-          onClick={() => {
-            setCurrentAdmin(null);
-            setIsEdit(false);
-            setOpen(true);
-          }}
-        />
-      </Stack>
+      <SearchBarForAdminList
+        setIsEdit={setIsEdit}
+        setOpen={setOpen}
+        setSearchKey={setSearchKey}
+        setCurrentAdmin={setCurrentAdmin}
+      />
       {getAllAdminQuery?.isLoading ? (
         <TablePageSkeleton row={5} column={5} />
       ) : (

@@ -125,20 +125,28 @@ function AdjustmentItemCard({ product, isChecked, notes = '', onCheck, onAddNote
         </Stack>
       )}
 
-      {isChecked && (
-        <StyledFormField
-          label="Notes *"
-          intputType="text"
-          inputProps={{
-            placeholder: 'Type reason here',
-            name: 'note',
-            value: notes,
-            onChange: (e) => {
-              onAddNote(product, e);
-            },
-          }}
-        />
-      )}
+      <Stack
+        sx={{
+          height: isChecked ? '100px' : '0px',
+          opacity: isChecked ? '1' : '0',
+          transition: 'all 0.3s linear',
+        }}
+      >
+        {isChecked && (
+          <StyledFormField
+            label="Notes *"
+            intputType="text"
+            inputProps={{
+              placeholder: 'Type reason here',
+              name: 'note',
+              value: notes,
+              onChange: (e) => {
+                onAddNote(product, e);
+              },
+            }}
+          />
+        )}
+      </Stack>
     </Stack>
   );
 }
