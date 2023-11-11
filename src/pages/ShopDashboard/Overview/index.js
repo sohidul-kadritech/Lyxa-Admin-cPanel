@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import moment from 'moment';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import MarketingSpentChart from '../../../components/Shared/FinancialsOverview/MarketingSpentChart';
 import OrderAmountChart from '../../../components/Shared/FinancialsOverview/OrderAmontChat';
 import ProfitChart from '../../../components/Shared/FinancialsOverview/ProfitChart';
@@ -35,13 +36,29 @@ export default function Overview() {
           )
         }
       />
-      <OrderAmountChart viewUserType="shop" />
+      <OrderAmountChart
+        viewUserType="shop"
+        title={
+          <TitleWithToolTip
+            title="Total Order Amount"
+            tooltip="This graph shows how much money this store made from selling products to customers"
+            sx={{ fontSize: '16px!important' }}
+          />
+        }
+      />
       <OrderByHours />
       <ProfitChart viewUserType="shop" />
       <MarketingSpentChart viewUserType="shop" />
       <ItemRanking xs={12} sm={12} md={12} lg={6} />
       <CommonAreaChart
-        title="Orders with Issues"
+        title={
+          <TitleWithToolTip
+            title="Orders with Issues"
+            tooltip="This chart helps us to see how many times orders have problems or flags when they're delivered. 
+            It gives us a quick look at any issues that might come up during the delivery process."
+            sx={{ fontSize: '16px!important' }}
+          />
+        }
         api={Api.SHOP_DASHBOARD_ORDER_WITH_ISSUES_GRAPH}
         params={{
           id: shop?._id,

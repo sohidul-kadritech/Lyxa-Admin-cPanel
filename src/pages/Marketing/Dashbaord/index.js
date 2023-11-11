@@ -6,7 +6,7 @@
 import { Box, Button, Unstable_Grid2 as Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../../components/Common/PageTop';
@@ -61,6 +61,8 @@ const tabIndex = (userType, value) => {
 export const getMarketingId = (mData, userType) => {
   const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
+  console.log({ marketingData, mData });
+
   const existingMarketing = marketingData?.find(
     (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
   );
@@ -98,6 +100,8 @@ export default function MarketingDashboard({ viewUserType }) {
   const { search, pathname } = useLocation();
   const theme = useTheme();
 
+  const queryClient = useQueryClient();
+
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
   console.log('searchParams', searchParams.get('user'), searchParams.get('id'));
@@ -133,14 +137,14 @@ export default function MarketingDashboard({ viewUserType }) {
   const marketingQuery = useQuery(
     [
       `marketing-settings`,
-      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') },
+      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') || shop?._id },
     ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
         params: {
           creatorType: viewUserType,
           type: params?.type,
-          shop: params?.shopId || searchParams.get('shopId'),
+          shop: params?.shopId || searchParams.get('shopId') || shop?._id,
         },
       }),
     {
@@ -370,7 +374,8 @@ export default function MarketingDashboard({ viewUserType }) {
         onAddDisabled={
           (viewUserType === 'shop' && userType === 'admin') ||
           marketingQuery?.data?.isNotEligible ||
-          marketingQuery.isLoading
+          marketingQuery.isLoading ||
+          (params?.type === 'percentage' && viewUserType !== currentTab)
         }
       />
 
@@ -511,20 +516,21 @@ export default function MarketingDashboard({ viewUserType }) {
                 width: '100%',
                 background: 'rgba(177,177,177,0.1)',
                 padding: '10px 10px',
-                height: 'min(350px,40vh)',
+                height: 'max(350px,40vh)',
                 borderRadius: '10px',
                 justifyContent: 'center',
                 alignContent: 'center',
-                border: `3px solid ${theme?.palette?.custom?.border}`,
+                border: `1px solid ${theme?.palette?.custom?.border}`,
               }}
             >
               <Stack justifyContent="center" alignItems="center" gap={6}>
-                <Typography variant="h6" sx={{ fontSize: '28px', color: 'red' }}>
-                  No marketing found
+                <Typography variant="h6" sx={{ fontSize: '28px' }}>
+                  No Marketing Found
                 </Typography>
                 <Button
                   variant="contained"
                   // size="small"
+                  disabled={viewUserType !== currentTab}
                   sx={{
                     borderRadius: '8px',
                     padding: '11px 30px',
@@ -551,6 +557,23 @@ export default function MarketingDashboard({ viewUserType }) {
           }}
           onDelete={() => {
             history.replace(getBackToUrl(viewUserType));
+          }}
+          onSuccessHandler={(data) => {
+            if (data?.status) {
+              Promise.all([
+                queryClient.invalidateQueries(`marketing-settings`),
+                queryClient.invalidateQueries(`marketing-dashboard-${params?.id}`),
+                queryClient.invalidateQueries(
+                  `marketing-graph-orders-${params?.id}-${orderRange.start}-${orderRange.end}`,
+                ),
+                queryClient.invalidateQueries(
+                  `marketing-graph-customer-${params?.id}-${customerRange.start}-${customerRange.end}`,
+                ),
+                queryClient.invalidateQueries(
+                  `marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`,
+                ),
+              ]);
+            }
           }}
         />
       </MSettingsModal>

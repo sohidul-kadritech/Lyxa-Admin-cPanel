@@ -48,6 +48,7 @@ export default function Tabs() {
 
   // on switch tab
   const changeTab = (tab) => {
+    console.log('change tab', { tab });
     history.push(tab?.currentLocation);
     dispatchShopTabs({ type: 'change-current-tab', payload: { tabId: tab?.shopId } });
     dispatchCurrentUser({ type: 'shop', payload: { shop: tab.shop } });
@@ -102,6 +103,7 @@ export default function Tabs() {
           }
           disableRipple
           onClick={() => {
+            console.log({ currentTab: tab });
             changeTab(tab);
           }}
         >

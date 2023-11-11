@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-as-default */
 import { Delete, Edit } from '@mui/icons-material';
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { ReactComponent as SellersIcon } from '../../assets/icons/menu-icons/sellers.svg';
 import ConfirmModal from '../../components/Common/ConfirmModal';
@@ -21,6 +21,29 @@ const listFilterOptions = [
     value: 'inactive',
   },
 ];
+
+export const liveStatusForCS = {
+  online: {
+    color: '#417C45',
+    background: '#DCFCE7',
+    label: 'Online',
+  },
+  offline: {
+    color: '#363636',
+    background: 'rgba(0, 0, 0, 0.2)',
+    label: 'Offline',
+  },
+  undefined: {
+    color: '#363636',
+    background: 'rgba(0, 0, 0, 0.2)',
+    label: 'Offline',
+  },
+  unknown: {
+    color: '#363636',
+    background: 'rgba(0, 0, 0, 0.2)',
+    label: 'Offline',
+  },
+};
 
 function AdminTeamList({
   data = [],
@@ -45,8 +68,7 @@ function AdminTeamList({
 
   const onStatusChange = (value, item) => {
     item.status = value;
-    // setRender((prev) => !prev);
-    // tagsMutation.mutate(item);
+
     editAdminQuery.mutate({
       id: item._id,
       status: value,
@@ -56,7 +78,34 @@ function AdminTeamList({
   const allColumns = [
     {
       id: 1,
-      //   showFor: ['Shop List'],
+      showFor: ['customerService'],
+      headerName: `NAME`,
+      field: 'name',
+      sortable: false,
+      flex: 1,
+      renderCell: (params) => (
+        <Stack flexDirection="row" alignItems="center" gap="10px">
+          <Tooltip
+            title={
+              <span style={{ textTransform: 'capitalize' }}>{liveStatusForCS[params?.row?.liveStatus]?.label}</span>
+            }
+          >
+            <Box
+              sx={{
+                width: '14px',
+                height: '14px',
+                borderRadius: '50%',
+                background: `${liveStatusForCS[params?.row?.liveStatus]?.color}`,
+              }}
+            ></Box>
+          </Tooltip>
+          <Typography sx={{ textTransform: 'capitalize' }}>{params?.row?.name}</Typography>
+        </Stack>
+      ),
+    },
+    {
+      id: 1,
+      showFor: ['admin', 'sales', 'accountManager'],
       headerName: `NAME`,
       field: 'name',
       sortable: false,
@@ -78,6 +127,7 @@ function AdminTeamList({
       ),
     },
     {
+      showFor: ['admin', 'sales', 'accountManager', 'customerService'],
       id: 2,
       headerName: `EMAIL`,
       field: 'email',
@@ -100,7 +150,7 @@ function AdminTeamList({
     },
     {
       id: 3,
-      //   showFor: ['Shop List'],
+      showFor: ['admin', 'sales', 'accountManager', 'customerService'],
       headerName: `PHONE NUMBER`,
       field: 'phone_number',
       sortable: false,
@@ -123,7 +173,7 @@ function AdminTeamList({
     },
     {
       id: 4,
-      //   showFor: ['Shop List'],
+      showFor: ['admin', 'sales', 'accountManager', 'customerService'],
       headerName: `STATUS`,
       field: 'status',
       sortable: false,
@@ -156,6 +206,7 @@ function AdminTeamList({
     },
     {
       id: 5,
+      showFor: ['admin', 'sales', 'accountManager', 'customerService'],
       headerName: `ACTION`,
       headerAlign: 'right',
       align: 'right',
@@ -204,6 +255,8 @@ function AdminTeamList({
     },
   ];
 
+  console.log('adminType', adminType);
+
   return (
     <Box>
       <Box
@@ -214,8 +267,8 @@ function AdminTeamList({
         }}
       >
         <StyledTable
-          // columns={allColumns.filter((column) => column.showFor.includes(tabName))}
-          columns={allColumns}
+          columns={allColumns.filter((column) => column.showFor.includes(adminType))}
+          // columns={allColumns}
           rows={data || []}
           getRowHeight={() => 'auto'}
           getRowId={(row) => row?._id}

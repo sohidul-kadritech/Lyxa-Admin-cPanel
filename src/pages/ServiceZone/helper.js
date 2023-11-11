@@ -132,9 +132,6 @@ export const getZoneStatusColor = (zone) => {
     color = '#FFAB09';
   }
 
-  console.log('zone zoneAvailability', zone?.zoneAvailability);
-  console.log('zone Status', zone?.zoneStatus);
-
   return color;
 };
 
@@ -166,7 +163,7 @@ export const createDataForTable = async (data) => {
         zoneGeometry,
       };
       // eslint-disable-next-line prettier/prettier
-    })
+    }),
   );
   return col;
 };

@@ -42,6 +42,8 @@ function PayoutList({
 
   const [searchKey, setSearchKey] = useState('');
 
+  const [checkedPayouts, setCheckedPayouts] = useState([]);
+
   const queryClient = useQueryClient();
 
   const getPayoutsQuery = useQuery([API_URL.GET_PAYOUTS, { ...queryParams }], () =>
@@ -65,7 +67,22 @@ function PayoutList({
       }
     },
   });
-  console.log('getPayoutsQuery', getPayoutsQuery?.data?.data?.payouts);
+
+  const checkedPayoutHandler = (data) => {
+    setCheckedPayouts((prev) => {
+      const oldCheckedPayouts = [...prev];
+
+      const isExist = oldCheckedPayouts?.findIndex((item) => item?._id === data?._id);
+
+      if (isExist > -1) {
+        oldCheckedPayouts?.splice(isExist, 1);
+      } else {
+        oldCheckedPayouts?.push(data);
+      }
+
+      return [...oldCheckedPayouts];
+    });
+  };
 
   const payoutPaidHandler = () => {
     const validated = validatePaidPayout(currentPayout);
@@ -84,7 +101,8 @@ function PayoutList({
         <SearchBar
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          searchPlaceHolder="Search payouts by Id..."
+          searchPlaceHolder="Search Payouts by Id..."
+          disabledButton={!checkedPayouts?.length}
         />
       </Box>
 
@@ -98,6 +116,8 @@ function PayoutList({
         setCurrentPayout={setCurrentPayout}
         setIsConfirm={setIsConfirm}
         setOpen={setOpen}
+        checkedPayoutHandler={checkedPayoutHandler}
+        checkedPayouts={checkedPayouts}
       />
 
       <Modal

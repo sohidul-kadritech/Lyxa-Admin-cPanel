@@ -4,6 +4,7 @@ import { Box, Unstable_Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import TablePagination from '../../../components/Common/TablePagination';
+import { TitleWithToolTip } from '../../../components/Common/TitleWithToolTip';
 import UserAvatar from '../../../components/Common/UserAvatar';
 import TableSkeleton from '../../../components/Skeleton/TableSkeleton';
 import StyledTable from '../../../components/Styled/StyledTable3';
@@ -27,7 +28,7 @@ export default function ItemRanking({ ...props }) {
   const query = useQuery([Api.SHOP_DASHBOARD_ITEM_RANKING, queryParams], () =>
     AXIOS.get(Api.SHOP_DASHBOARD_ITEM_RANKING, {
       params: queryParams,
-    })
+    }),
   );
 
   const column = [
@@ -102,9 +103,12 @@ export default function ItemRanking({ ...props }) {
   return (
     <Grid xs={12} {...props}>
       <StyledBox padding>
-        <Typography variant="body1" fontWeight={600} pb={5}>
-          Item Ranking
-        </Typography>
+        <TitleWithToolTip
+          title="Item Ranking"
+          tooltip="Ranked by Most Sold Items"
+          sx={{ fontSize: '16px!important' }}
+        />
+        <Typography variant="body1" fontWeight={600} pb={5}></Typography>
         {!query?.isLoading && (
           <Box>
             <StyledTable
