@@ -5,9 +5,27 @@ import { Avatar, Button, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { successMsg } from '../../../helpers/successMsg';
 import FormateBaseCurrency from '../../Common/FormateBaseCurrency';
-import { dealTypeToLabelMap } from './AdjustMentProduct';
 import { Attributes } from './Attriubtes';
-import { getProductPriceForAdjustMent } from './helpers';
+import { checkAnyMarketing, getProductPriceForAdjustMent } from './helpers';
+
+export const dealTypeToLabel = (type, product) => {
+  const template = {
+    percentage: 'Discount',
+    double_menu: 'Buy 1 Get 1',
+    reward: 'Reward',
+  };
+
+  console.log({ product });
+
+  if (type === 'percentage') {
+    return `${product?.discountPercentage}% Up to ${FormateBaseCurrency.get(product?.discount)} ${template[type]}`;
+  }
+  if (type === 'reward') {
+    return `${template[type]} ${product?.reward?.points} Pts`;
+  }
+
+  return template[type];
+};
 
 const attributeContainerSx = (open) => {
   const tempSx = {
@@ -36,6 +54,8 @@ export function ProductCard({ product, onClickProduct }) {
   // selected products
   const [selectedAttributes, setSelectedAttributes] = useState([]);
   const theme = useTheme();
+
+  console.log({ marketing: checkAnyMarketing(product) });
 
   const onClickAddButton = () => {
     let requiredAttributeCount = 0;
@@ -111,10 +131,12 @@ export function ProductCard({ product, onClickProduct }) {
               variant="h6"
               sx={{ fontWeight: 500, fontSize: '14px', fontStyle: 'italic', color: 'text.secondary2' }}
             >
-              {FormateBaseCurrency?.get(getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.finalPrice)}
+              {FormateBaseCurrency?.get(
+                getProductPriceForAdjustMent(product, checkAnyMarketing(product)?.type)?.finalPrice,
+              )}
             </Typography>
 
-            {getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.shouldShowBoth && (
+            {getProductPriceForAdjustMent(product, checkAnyMarketing(product)?.type)?.shouldShowBoth && (
               <Typography
                 variant="h6"
                 sx={{
@@ -126,12 +148,12 @@ export function ProductCard({ product, onClickProduct }) {
                 }}
               >
                 {FormateBaseCurrency?.get(
-                  getProductPriceForAdjustMent(product, product?.marketing[0]?.type)?.originalPrice,
+                  getProductPriceForAdjustMent(product, checkAnyMarketing(product)?.type)?.originalPrice,
                 )}
               </Typography>
             )}
           </Stack>
-          {product?.marketing[0]?.type && (
+          {checkAnyMarketing(product) && (
             <Typography
               variant="h6"
               sx={{
@@ -141,7 +163,7 @@ export function ProductCard({ product, onClickProduct }) {
                 color: 'text.secondary2',
               }}
             >
-              {dealTypeToLabelMap[product?.marketing[0]?.type]}
+              {dealTypeToLabel(checkAnyMarketing(product)?.type, product)}
             </Typography>
           )}
         </Stack>

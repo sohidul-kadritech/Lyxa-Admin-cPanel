@@ -11,17 +11,21 @@ import AdjusmentReason from './AdjusmentReason';
 import AdjustMentOrderSummary from './AdjustmentOrderSummary';
 import CustomerInfo from './CustomerInfo';
 import AdjustmentPaymentSummary from './PaymentSummary';
-import { checkAnyDeals, generateAdjustOrdeJsonData } from './helpers';
+import { checkAnyMarketing, generateAdjustOrdeJsonData } from './helpers';
 
 const getInitialOrderData = (order) => ({
   ...order,
   productsDetails: [
     ...order?.productsDetails?.map((product) => {
-      const skipDiscount = checkAnyDeals(product)
-        ? !(checkAnyDeals(product)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
+      const updatedProduct = Array.isArray(product?.marketing)
+        ? product
+        : { ...product, marketing: product?.marketing ? [{ ...product?.marketing }] : [] };
+
+      const skipDiscount = checkAnyMarketing(updatedProduct)
+        ? !(checkAnyMarketing(updatedProduct)?.type === 'reward' && product?.finalReward?.baseCurrency_amount > 0)
         : false;
 
-      return { ...product, skipDiscount };
+      return { ...updatedProduct, skipDiscount };
     }),
   ],
   adjustmentReason: '',
@@ -31,8 +35,6 @@ const getOrderSummary = (order) => ({ ...order?.summary });
 
 function AdjustmentOrder({ onClose, order = {} }) {
   const [adjuestedOrder, setAdjustedOrder] = useState(getInitialOrderData({ ...order }));
-
-  // const [oldOrderSummary, setOldOrderSummary] = useState(getOrderSummary({ ...order }));
 
   console.log({ adjuestedOrder });
 
@@ -78,7 +80,7 @@ function AdjustmentOrder({ onClose, order = {} }) {
       {/* header */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" pb={5}>
         <Typography fontSize="18px" variant="h4">
-          Adjust Order
+          Adjust Order: #{adjuestedOrder?.orderId}
         </Typography>
         <CustomerInfo
           title={adjuestedOrder?.user?.name}

@@ -370,8 +370,6 @@ export default function Table({
         const total =
           row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
-        console.log('rplace', { row });
-
         const totalOringinalOrder = row?.summary?.baseCurrency_totalAmount + row?.summary?.baseCurrency_vat;
 
         return <Typography variant="body4">{FormateBaseCurrency.get(totalOringinalOrder || 0)}</Typography>;
@@ -752,14 +750,14 @@ export default function Table({
         open={detailOpen}
         onClose={() => {
           setDetailOpen(false);
-          setCurrentOrder({});
+          // setCurrentOrder({});
         }}
       >
         <OrderDetail
           order={currentOrder}
           onClose={() => {
             setDetailOpen(false);
-            setCurrentOrder({});
+            // setCurrentOrder({});
           }}
         />
       </Drawer>
@@ -873,6 +871,7 @@ export default function Table({
       </Modal>
 
       {/* adjustment order */}
+
       <Modal
         open={openAdjustmentOrder}
         onClose={() => {

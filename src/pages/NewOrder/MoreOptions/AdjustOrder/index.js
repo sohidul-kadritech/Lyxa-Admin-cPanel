@@ -85,12 +85,6 @@ function AdjustOrderForShop({ currentOrder, onClose }) {
   };
 
   const onConfirm = () => {
-    console.log('onConfirm', {
-      replacementOrder,
-      suggestedProducts,
-      formatedData: generateProductData(adjustOrder, replacementOrder, suggestedProducts),
-    });
-
     const validate = generateProductData(adjustOrder, replacementOrder, suggestedProducts);
 
     if (validate?.status) {
@@ -179,7 +173,20 @@ function AdjustOrderForShop({ currentOrder, onClose }) {
         )}
 
         {replacementOrder?.length > 0 && (
-          <Stack direction="row" justifyContent="center" gap={2.5} mt={4}>
+          <Stack
+            direction="row"
+            justifyContent="center"
+            gap={2.5}
+            mt={4}
+            sx={{
+              position: 'sticky',
+              padding: '16px 0px',
+              bottom: '-20px',
+              paddingBottom: '20px',
+              zIndex: '999',
+              backgroundColor: '#fbfbfb',
+            }}
+          >
             <Button
               variant="outlined"
               color="primary"

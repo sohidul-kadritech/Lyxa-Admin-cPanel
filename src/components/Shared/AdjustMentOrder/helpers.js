@@ -71,7 +71,7 @@ export const getProductPriceForAdjustMent = (product, deal) => {
   }
 
   if (deal === 'reward') {
-    return { finalPrice: product?.price, originalPrice: product?.price, shouldShowBoth: false };
+    return { finalPrice: product?.reward?.amount, originalPrice: product?.price, shouldShowBoth: true };
   }
   if (deal === 'percentage') {
     return { finalPrice: product?.price - product?.discount, originalPrice: product?.price, shouldShowBoth: true };
@@ -91,7 +91,7 @@ const totalBill = (addedItems, user, skipDiscount, skipPercentage) => {
     }
     let price = 0;
 
-    if (itemData?.marketing[0]?.type !== 'double_menu') {
+    if (!checkDoubleDealMarketing(itemData)) {
       price = itemData?.product?.price * (itemData?.quantity || itemData?.productQuantity);
       count += price;
 
@@ -173,16 +173,11 @@ export const calculatePrice = (item, skipDiscount, discountQuantity = 0, shopExc
   output.baseCurrency_finalPrice = Math.round(count * 100) / 100;
   output.secondaryCurrency_finalPrice = getSecondaryCurrency(output?.baseCurrency_finalPrice);
   // when marketing is reward
-  if (checkRewardMarketing(item)) {
-    output.finalReward.baseCurrency_amount = skipDiscount
-      ? 0
-      : (item?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
-    output.finalReward.secondaryCurrency_amount = !skipDiscount
-      ? 0
-      : getSecondaryCurrency(output.finalReward.baseCurrency_amount);
-    output.finalReward.points = skipDiscount
-      ? 0
-      : (item?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
+  if (checkRewardMarketing(item) && !skipDiscount) {
+    output.finalReward.baseCurrency_amount =
+      (item?.product?.reward?.amount || 0) * (item?.quantity || item?.productQuantity);
+    output.finalReward.secondaryCurrency_amount = getSecondaryCurrency(output.finalReward.baseCurrency_amount);
+    output.finalReward.points = (item?.product?.reward?.points || 0) * (item?.quantity || item?.productQuantity);
   }
 
   // when marketing is percentage
@@ -399,8 +394,6 @@ export const makeSingleProductDetails = (product, owner = {}) => {
 
   const output = calculatePrice(doubleDealItem, false, doubleDealItem?.discountQuantity, shopExchangeRate);
 
-  console.log('on add', { product });
-
   return { ...productTemplate, ...output };
 };
 
@@ -409,7 +402,7 @@ export const populateProductData = (addedProducts, shopExchangeRate, skipDiscoun
     const shouldSkipDiscount = item?.skipDiscount && skipDiscount;
     let prices = {};
     prices = calculatePrice(item, shouldSkipDiscount, item?.discountQuantity, shopExchangeRate);
-
+    console.log('productName', item?.productName, { ...item, ...prices });
     return { ...item, ...prices };
   });
 
@@ -467,7 +460,7 @@ const doubleMenuItemPriceCalculation = (addedItems, user) => {
       return;
     }
     let price = 0;
-    if (itemData?.marketing[0]?.isActive && itemData?.marketing[0]?.type === 'double_menu') {
+    if (checkDoubleDealMarketing(itemData)) {
       if (!array.includes(itemData?.productId)) {
         const doubleDealAllProduct = addedItems?.filter(
           (item) => item?.productId === itemData?.productId && (!user || item?.owner?._id === user?._id),
@@ -772,11 +765,11 @@ export const generateAdjustOrdeJsonData = (adjustedOrder) => {
         amount: product?.finalReward?.baseCurrency_amount / product?.productQuantity,
         points: product?.finalReward?.points / product?.productQuantity,
       },
-      marketingId: product?.marketing[0]?._id,
+      marketingId: checkAnyMarketing(product)?._id,
       owner: product?.owner?._id,
     };
 
-    if (product?.marketing[0]?.type !== 'reward') {
+    if (checkAnyMarketing(product)?.type !== 'reward') {
       delete productTemplate?.reward;
     }
 

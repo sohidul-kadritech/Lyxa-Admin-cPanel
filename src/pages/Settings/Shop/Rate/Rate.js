@@ -11,33 +11,13 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
   const { appSetting } = general;
   const secondaryCurrency = appSetting?.secondaryCurrency?.code;
 
-  console.log('appSetting', appSetting);
+  // console.log('appSetting', appSetting);
 
-  // const incrementHandler = (setValue, key) => {
-  //   setHasChanged(true);
-  //   setValue((prev) => {
-  // eslint-disable-next-line max-len
-  //     if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '') return { ...prev, [key]: parseInt(prev[key], 10) + 5 };
-  //     if (prev[key] === '') return { ...prev, [key]: 5 };
-  //     return { ...prev };
-  //   });
-  // };
-
-  // const decrementHandler = (setValue, key) => {
-  //   setHasChanged(true);
-  //   setValue((prev) => {
-  //     if (isNumber(parseInt(prev[key], 10)) && prev[key] !== '' && parseInt(prev[key], 10) - 5 > 0)
-  //       return { ...prev, [key]: parseInt(prev[key], 10) - 5 };
-  //     if (prev[key] === '' || prev[key] <= 0) return { ...prev, [key]: 5 };
-  //     return { ...prev };
-  //   });
-  // };
-
-  console.log(
-    appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10,
-    // eslint-disable-next-line prettier/prettier
-    appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10,
-  );
+  // console.log(
+  //   appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10,
+  //   // eslint-disable-next-line prettier/prettier
+  //   appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10,
+  // );
 
   return (
     <Stack direction="row" alignItems="center" flexWrap="wrap">
@@ -65,10 +45,16 @@ function Rate({ shopSettings, setShopSettings, setHasChanged }) {
       >
         <IncrementDecrementInput
           allowDecimal={false}
+          showAnimation
           value={shopSettings?.shopExchangeRate}
           min={Number(appSetting?.adminExchangeRate - appSetting?.adminExchangeRate / 10)}
           max={Number(appSetting?.adminExchangeRate + appSetting?.adminExchangeRate / 10)}
           onChange={(value) => {
+            console.log({ output: value });
+            setShopSettings((prev) => ({ ...prev, shopExchangeRate: value }));
+            setHasChanged(true);
+          }}
+          onBlur={(value) => {
             setShopSettings((prev) => ({ ...prev, shopExchangeRate: value }));
             setHasChanged(true);
           }}

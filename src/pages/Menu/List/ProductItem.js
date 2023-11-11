@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { ReactComponent as CheckedIcon } from '../../../assets/icons/checked-icon.svg';
 import { ReactComponent as HandleIcon } from '../../../assets/icons/handle.svg';
 import { ReactComponent as UncheckIcon } from '../../../assets/icons/uncheck-icon.svg';
+import { checkAnyMarketing, checkPercentageMarketing } from '../../../components/Shared/AdjustMentOrder/helpers';
 import StyledCheckbox from '../../../components/Styled/StyledCheckbox';
 import ThreeDotsMenu from '../../../components/ThreeDotsMenu2';
 import { useGlobalContext } from '../../../context';
@@ -280,9 +281,9 @@ export default function ProductItem({
           <Typography variant="body4" color={theme.palette.text.secondary2}>
             {`${product?.seoDescription?.slice(0, 50)}${product?.seoDescription?.length > 50 ? '...' : ''}`}
           </Typography>
-          {product?.marketing[0]?.isActive && (
+          {checkAnyMarketing(product) && (
             <Typography variant="body4" color={theme.palette.text.secondary2}>
-              {product?.marketing[0]?.type === 'percentage' && `${product?.discountPercentage}% discount`}
+              {checkPercentageMarketing(product) && `${product?.discountPercentage}% discount`}
               {product?.marketing[0]?.type === 'reward' && `${product?.rewardBundle}% points enabled `}
               {product?.marketing[0]?.type === 'double_menu' && `Buy 1, get 1 free`}
             </Typography>

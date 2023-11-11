@@ -3,10 +3,12 @@
 /* eslint-disable prettier/prettier */
 import { Box, Stack } from '@mui/material';
 // import moment from 'moment';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import SearchBar from '../../components/Common/CommonSearchbar';
+import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import StyledTabs2 from '../../components/Styled/StyledTab2';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
@@ -65,6 +67,23 @@ export default function Orders({
 
   const location = useLocation();
   const history = useHistory();
+
+  // ---------------------- -------------------------------- ---------------------------
+  // When order type is ongoing we removed the date filter.
+  // When order type is not ongoing we add the date filter with selected current week.
+  // ---------------------- -------------------------------- ---------------------------
+
+  useEffect(() => {
+    if (type === 'ongoing') {
+      setQueryParams((prev) => ({ ...prev, startDate: undefined, endDate: undefined }));
+    } else {
+      setQueryParams((prev) => ({
+        ...prev,
+        startDate: getFirstMonday('week').format('YYYY/MM/DD'),
+        endDate: moment().format('YYYY/MM/DD'),
+      }));
+    }
+  }, [type]);
 
   const [currentErrorOrderTab, setCurrentErrorOrderTab] = useState(
     !queryParams?.errorOrderType ? 'all' : queryParams?.errorOrderType,
@@ -162,7 +181,7 @@ export default function Orders({
           showFilters={{
             search: true,
             sort: true,
-            date: true,
+            date: type !== 'ongoing',
             customSelect: showTabs?.category === true,
           }}
         />

@@ -21,16 +21,19 @@ const createCurrentUesrItem = (allCredentials = [], currentUser, userType) => {
   const credentialUserId = currentUser?.credentialUserId;
 
   const allUsers = allCredentials?.map((u) => {
-    if (u?._id === credentialUserId) return { ...u, isNotEditable: true };
+    if (u?._id === credentialUserId) return { ...u, isNotEditable: false, isNotDeletable: true };
     return u;
   });
+
+  console.log({ user, currentUser, allCredentials }, credentialUserId, user?._id, user?._id === credentialUserId);
 
   allUsers.unshift({
     _id: user?._id,
     name: user?.name ? user?.name : user?.account_name,
     email: user?.email,
+    isNotEditable: user?._id !== credentialUserId,
+    isNotDeletable: true,
     isParentUser: true,
-    isNotEditable: true,
   });
   return allUsers;
 };

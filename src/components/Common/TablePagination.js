@@ -2,6 +2,7 @@ import { Pagination, Stack } from '@mui/material';
 import React from 'react';
 
 export default function TablePagination({ currentPage, lisener, totalPage }) {
+  console.log({ currentPage, totalPage });
   return (
     <Stack direction="row" justifyContent="end" sx={{ marginTop: '20px' }}>
       <Pagination

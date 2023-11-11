@@ -22,6 +22,7 @@ export const GET_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard`;
 export const GET_SELLER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/seller`;
 
 export const GET_SHOP_DASHBOARD_SUMMARY2 = `${ADMIN_ENDPOINT}/dashboard/shop`;
+export const GET_SHOP_ONGOING_ORDER = `${ADMIN_ENDPOINT}/shop/ongoing-order`;
 export const GET_SHOP_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/financial/shop`;
 export const GET_SALES_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/sales`;
 export const GET_ACCOUNT_MANAGER_DASHBOARD_SUMMARY = `${ADMIN_ENDPOINT}/dashboard/account-manager`;

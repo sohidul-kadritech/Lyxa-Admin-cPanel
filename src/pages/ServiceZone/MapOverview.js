@@ -52,37 +52,6 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
     },
   );
 
-  // eslint-disable-next-line no-unused-vars
-  // const getAllZones = useQuery(
-  //   [API_URL.GET_ALL_ZONE, { searchedValue, pageNo }],
-  //   () =>
-  //     AXIOS.get(API_URL.GET_ALL_ZONE, {
-  //       params: {
-  //         zoneStatus: 'active',
-  //         page: pageNo,
-  //         searchKey: searchedValue,
-  //         pageSize: selectedPageSize,
-  //       },
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       setIsloading(true);
-  //       if (data?.status) {
-  //         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
-
-  //         // eslint-disable-next-line no-unused-vars
-  //         const filteredData = createDataForTable(data?.data?.zones).then((data) => {
-  //           setTempAllZones(data);
-  //           setIsloading(false);
-  //         });
-  //       } else {
-  //         setIsloading(false);
-  //       }
-  //     },
-  //     // eslint-disable-next-line prettier/prettier
-  //   },
-  // );
-
   const columns = [
     {
       id: 0,
