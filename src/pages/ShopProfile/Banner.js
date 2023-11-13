@@ -64,7 +64,10 @@ export default function ShopBanner({ shop, loading, onDrop }) {
       />
       <Box sx={{ position: 'absolute', top: '10px', left: '10px', minWidth: '350px', minHeight: '120px' }}>
         <Stack sx={{ position: 'relative' }} gap={2.5} alignItems="flex-start">
-          {promotion?.percentage?.isActive && <MarketingLabelCard label={promotion?.percentage?.label} />}
+          {promotion?.percentages?.admin?.isActive && (
+            <MarketingLabelCard label={promotion?.percentages?.admin?.label} />
+          )}
+          {promotion?.percentages?.shop?.isActive && <MarketingLabelCard label={promotion?.percentages?.shop?.label} />}
           {promotion?.double_menu?.isActive && <MarketingLabelCard label={promotion?.double_menu?.label} />}
           {promotion?.featured?.isActive && <MarketingLabelCard label={promotion?.featured?.label} />}
           {promotion?.free_delivery?.isActive && <MarketingLabelCard label={promotion?.free_delivery?.label} />}
