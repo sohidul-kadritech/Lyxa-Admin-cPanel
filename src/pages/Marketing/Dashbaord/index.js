@@ -121,10 +121,10 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
-  console.log('marketing settings', { shop, currentUser });
+  console.log('marketing settings', { shop, currentUser }, searchParams.get('tab'));
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const [currentTab, setCurrentTab] = useState(searchParams.get('user'));
+  const [currentTab, setCurrentTab] = useState(searchParams.get('tab'));
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -255,7 +255,6 @@ export default function MarketingDashboard({ viewUserType }) {
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
-    // eslint-disable-next-line prettier/prettier
     (item) => moment(item?.date).format('MMMM DD'),
   );
 
@@ -340,7 +339,10 @@ export default function MarketingDashboard({ viewUserType }) {
     },
     {
       label: `${getMarketingTypeTitle(params?.type)}`,
-      to: searchParams.get('user') ? `${routeMatch?.url}?user=${searchParams.get('user')}` : '#',
+      to:
+        searchParams.get('user') && searchParams.get('tab')
+          ? `${routeMatch?.url}?user=${searchParams.get('user')}&tab=${searchParams.get('tab')}`
+          : '#',
     },
   ];
 
@@ -405,7 +407,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 pathname,
                 `/${getMarketingId(marketingQuery?.data, tabIndex(searchParams.get('user'), newValue))}`,
               ),
-              search: `user=${searchParams.get('user')}`,
+              search: `user=${searchParams.get('user')}&tab=${tabIndex(searchParams.get('user'), newValue)}`,
             };
 
             history.push(route);
