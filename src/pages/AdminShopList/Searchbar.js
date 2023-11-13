@@ -72,7 +72,7 @@ const props = ['sortByOrders', 'sortByAvgTime', 'sortByRating', 'sortByProfit'];
 
 export default function SearchBar({ searchPlaceHolder, queryParams, setQueryParams }) {
   const [zoneItems, setZoneItems] = useState([{ zoneName: 'All', _id: '' }]);
-  console.log('queryParams?.shopBrand', queryParams?.shopBrand);
+
   // eslint-disable-next-line no-unused-vars
   const [shopBrands, setShopBrands] = useState([{ brandName: 'All', shopBrand: '' }]);
   // eslint-disable-next-line no-unused-vars

@@ -55,13 +55,24 @@ const tabIndex = (userType, value) => {
     template['1'] = 'admin';
     template.admin = 1;
   }
+  console.log('template', template, value);
   return template[value];
+};
+
+export const percentageMarketingExistOrNot = (mData) => {
+  console.log('is exist or not', { mData });
+
+  const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
+
+  const existingMarketing = marketingData?.find(
+    (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
+  );
+
+  return !!existingMarketing;
 };
 
 export const getMarketingId = (mData, userType) => {
   const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
-
-  console.log({ marketingData, mData });
 
   const existingMarketing = marketingData?.find(
     (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
@@ -104,17 +115,16 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  console.log('searchParams', searchParams.get('user'), searchParams.get('id'));
-
   const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
   const { currency } = general;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
+  console.log('marketing settings', { shop, currentUser }, searchParams.get('tab'));
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const [currentTab, setCurrentTab] = useState(searchParams.get('user'));
+  const [currentTab, setCurrentTab] = useState(searchParams.get('tab'));
 
   const singleShopQuery = useQuery(
     [`single-shop-${params?.shopId}`],
@@ -137,7 +147,11 @@ export default function MarketingDashboard({ viewUserType }) {
   const marketingQuery = useQuery(
     [
       `marketing-settings`,
-      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') || shop?._id },
+      {
+        creatorType: searchParams.get('creator'),
+        shop: params?.shopId || searchParams.get('shopId') || shop?._id,
+        currentTab,
+      },
     ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
@@ -241,7 +255,6 @@ export default function MarketingDashboard({ viewUserType }) {
   const cData = generateGraphData(
     customerGraphQuery?.data?.data?.info || [],
     (item) => item.customer,
-    // eslint-disable-next-line prettier/prettier
     (item) => moment(item?.date).format('MMMM DD'),
   );
 
@@ -326,7 +339,10 @@ export default function MarketingDashboard({ viewUserType }) {
     },
     {
       label: `${getMarketingTypeTitle(params?.type)}`,
-      to: '#',
+      to:
+        searchParams.get('user') && searchParams.get('tab')
+          ? `${routeMatch?.url}?user=${searchParams.get('user')}&tab=${searchParams.get('tab')}`
+          : '#',
     },
   ];
 
@@ -347,9 +363,12 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const getBackToUrl = (viewUserType) => {
     const routeSeg = routeMatch?.url?.split('/');
+
     routeSeg?.pop();
     routeSeg?.pop();
     routeSeg?.pop();
+
+    console.log({ routeSeg });
     return routeSeg?.join('/');
   };
 
@@ -388,16 +407,15 @@ export default function MarketingDashboard({ viewUserType }) {
                 pathname,
                 `/${getMarketingId(marketingQuery?.data, tabIndex(searchParams.get('user'), newValue))}`,
               ),
-              search: `user=${searchParams.get('user')}`,
+              search: `user=${searchParams.get('user')}&tab=${tabIndex(searchParams.get('user'), newValue)}`,
             };
 
             history.push(route);
 
-            setCurrentTab(tabIndex(searchParams.get('user'), newValue));
+            setCurrentTab((prev) => tabIndex(searchParams.get('user'), newValue));
           }}
           sx={{
             paddingBottom: 5,
-
             '& .MuiTab-root': {
               padding: '8px 12px',
               textTransform: 'none',
@@ -558,7 +576,7 @@ export default function MarketingDashboard({ viewUserType }) {
           onDelete={() => {
             history.replace(getBackToUrl(viewUserType));
           }}
-          onSuccessHandler={(data) => {
+          onSuccessHandler={async (data) => {
             if (data?.status) {
               Promise.all([
                 queryClient.invalidateQueries(`marketing-settings`),
@@ -573,6 +591,17 @@ export default function MarketingDashboard({ viewUserType }) {
                   `marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`,
                 ),
               ]);
+
+              // console.log('marketing data', { data }, data?.data?.marketing?._id);
+
+              if (params?.type === 'percentage') {
+                const route = {
+                  pathname: replaceLastSlugPath(pathname, `/${data?.data?.marketing?._id}`),
+                  search: `user=${searchParams.get('user')}`,
+                };
+
+                history.push(route);
+              }
             }
           }}
         />

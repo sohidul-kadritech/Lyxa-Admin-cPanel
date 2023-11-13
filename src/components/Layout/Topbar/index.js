@@ -13,6 +13,7 @@ import AXIOS from '../../../network/axios';
 import StyledBadgeContainer from '../../Styled/StyledBadge';
 import { getProfilePhotoAndAltName, shouldFetchApi } from '../helper';
 import AccountMenu from './AccountMenu';
+import CustomerServiceProfile from './CustomerServiceProfile';
 import Notification from './NotificationSidebar';
 import Tabs from './Tabs';
 
@@ -50,8 +51,11 @@ export default function Topbar({ setSidebar, sidebar }) {
   const { currentUser } = useGlobalContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openCSInfo, setOpenCSInfo] = useState(false);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    setOpenCSInfo((prev) => !prev);
   };
 
   const handleClose = () => {
@@ -139,7 +143,12 @@ export default function Topbar({ setSidebar, sidebar }) {
           </Avatar>
         </IconButton>
       </Stack>
-      <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
+
+      {currentUser?.adminType !== 'customerService' ? (
+        <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
+      ) : (
+        <CustomerServiceProfile admin={currentUser?.admin} open={openCSInfo} onClose={handleClick} />
+      )}
 
       <Drawer open={open} anchor="right">
         <Notification

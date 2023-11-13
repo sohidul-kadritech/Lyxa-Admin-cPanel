@@ -298,12 +298,23 @@ export const getMarketingLabel = (shop, appSettings, showPromotionString = false
       maxDiscount: '',
       currency: currency?.base?.symbol,
     },
+    percentages: {
+      admin: {},
+      shop: {},
+    },
     featured: false,
     hasActiveDeal: false,
   };
 
-  const promotion = {};
+  const promotion = {
+    percentages: {
+      admin: {},
+      shop: {},
+    },
+  };
   let promotionString = 'Ongoing ';
+
+  console.log('shop?.marketings', shop?.marketings);
 
   shop?.marketings?.forEach((obj) => {
     if (obj?.type === 'free_delivery') {
@@ -393,6 +404,11 @@ export const getMarketingLabel = (shop, appSettings, showPromotionString = false
           label: temp,
           isActive: obj?.isActive,
         };
+
+        promotion.percentages[obj?.creatorType] = {
+          label: temp,
+          isActive: obj?.isActive,
+        };
       }
 
       if (obj?.type === 'double_menu') {
@@ -442,6 +458,8 @@ export const getMarketingLabel = (shop, appSettings, showPromotionString = false
   if (showPromotionString) {
     return `${promotionString} promotions`;
   }
+
+  console.log({ promotion });
 
   return promotion;
 };
