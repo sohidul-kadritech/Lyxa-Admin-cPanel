@@ -14,6 +14,7 @@ import ConfirmModal from '../../../components/Common/ConfirmModal';
 import LoadingOverlay from '../../../components/Common/LoadingOverlay';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import OptionsSelect from '../../../components/Filter/OptionsSelect';
+import { checkAnyMarketing } from '../../../components/Shared/AdjustMentOrder/helpers';
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
@@ -38,7 +39,6 @@ import {
 } from './helpers';
 
 export default function MarketingSettings({ onClose, onDelete, marketingType, shop, creatorType, onSuccessHandler }) {
-  console.log({ creatorType, shop, marketingType });
   const { general, currentUser } = useGlobalContext();
   const currency = general?.currency?.symbol;
   const adminMaxDiscount = general?.appSetting?.maxDiscount;
@@ -73,7 +73,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           pageSize: 1000,
           type: 'all',
           status: 'active',
-          shop: shop?._id,
+          shop: shop?._id || currentUser?.shop?._id,
           inStock: true,
           hideAddons: marketingType === 'double_menu' ? true : undefined,
         },
@@ -86,12 +86,12 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         const counter = {};
 
         data?.data?.products?.forEach((product) => {
-          if (product?.marketing[0]) {
-            types[product?.marketing[0]?.type] = true;
+          if (checkAnyMarketing(product)) {
+            types[checkAnyMarketing(product)?.type] = true;
 
-            if (!counter[product?.marketing[0]?.type]) {
-              counter[product?.marketing[0]?.type] = 1;
-            } else counter[product?.marketing[0]?.type] += 1;
+            if (!counter[checkAnyMarketing(product)?.type]) {
+              counter[checkAnyMarketing(product)?.type] = 1;
+            } else counter[checkAnyMarketing(product)?.type] += 1;
           }
         });
 
@@ -204,8 +204,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     const newData = deepClone(marketingData);
 
-    console.log('log==>', { newData, marketingForPercentage, marketingData, mData, userType });
-
     setLocalData(newData);
 
     if (newData?.products?.length > 0) {
@@ -214,7 +212,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   };
 
   const initialize = (mData) => {
-    console.log('Initialize', { mData });
     if (mData === undefined) return;
 
     // does not have marketing
@@ -226,8 +223,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
 
     // does have marketing so init local state
     initLocalState(mData);
-
-    console.log('line 230', { mData });
 
     if (!mData?.marketing && marketingType === 'percentage') {
       const marketing = mData?.data?.marketings?.find((marketing) => marketing?.creatorType === creatorType);
@@ -304,9 +299,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     {
       enabled: queryEnabled,
       onSuccess: (data) => {
-        console.log('line 303', data);
         if (!data?.isNotEligible) {
-          console.log('line 305');
           initialize(data);
           setQueryEnabled(false);
         } else if (marketingType === 'percentage' && data?.isNotEligible) {
@@ -377,7 +370,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setLocalData(newData);
     setHasGlobalChange(false);
     setIsPageDisabled(true);
-    console.log('line 371');
 
     // if marketing is paused
     if (marketingQuery?.data?.data?.marketing?.status === 'inactive') {
@@ -630,7 +622,30 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                               if (marketingType === 'reward') {
                                 product.rewardBundle = Number(e.target.value);
                               } else {
+                                let findMarketing = product?.marketing?.find((item) => {
+                                  if (creatorType !== 'admin') {
+                                    return item?.creatorType === 'shop';
+                                  }
+
+                                  return item?.creatorType === creatorType;
+                                });
+
                                 product.discountPercentage = Number(e.target.value);
+
+                                if (!findMarketing) {
+                                  findMarketing = {
+                                    products: [{ product: product?._id, discountPercentage: Number(e.target.value) }],
+                                  };
+                                  product.marketing = [
+                                    { ...findMarketing, creatorType: creatorType !== 'admin' ? 'shop' : 'admin' },
+                                  ];
+                                }
+
+                                const findProduct = findMarketing?.products?.find(
+                                  (prdcts) => prdcts?.product === product?._id,
+                                );
+
+                                findProduct.discountPercentage = Number(e.target.value);
                               }
                             });
                             setGlobalRewardBundle(Number(e.target.value));

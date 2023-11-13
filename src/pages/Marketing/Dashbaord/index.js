@@ -112,6 +112,7 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentShop, setCurrentShop] = useState(shop);
+  console.log('marketing settings', { shop, currentUser });
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const [currentTab, setCurrentTab] = useState(searchParams.get('user'));
@@ -383,6 +384,7 @@ export default function MarketingDashboard({ viewUserType }) {
         <Tabs
           value={tabIndex(searchParams.get('user'), currentTab)}
           onChange={(event, newValue) => {
+            console.log('marketing data', { data: marketingQuery?.data });
             const route = {
               pathname: replaceLastSlugPath(
                 pathname,
@@ -573,6 +575,15 @@ export default function MarketingDashboard({ viewUserType }) {
                   `marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`,
                 ),
               ]);
+
+              // console.log('marketing data', { data }, data?.data?.marketing?._id);
+
+              const route = {
+                pathname: replaceLastSlugPath(pathname, `/${data?.data?.marketing?._id}`),
+                search: `user=${searchParams.get('user')}`,
+              };
+
+              history.push(route);
             }
           }}
         />
