@@ -510,11 +510,10 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
         />
       ),
     },
-
     {
       id: 8,
       type: ['delivery'],
-      headerName: `Delivery Refund`,
+      headerName: `DELIVERY REFUND`,
       sortable: false,
       field: 'deliveryRefund',
       flex: 1,

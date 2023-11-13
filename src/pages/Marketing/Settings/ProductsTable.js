@@ -133,18 +133,18 @@ export default function MarketingProductsTable({
         }
 
         let findMarketing = params?.row?.marketing?.find((item) => {
-          if (currentUser?.userType !== 'admin') {
+          if (creatorType !== 'admin') {
             return item?.creatorType === 'shop';
           }
 
-          return item?.creatorType === currentUser?.userType;
+          return item?.creatorType === creatorType;
         });
 
         if (!findMarketing) {
-          findMarketing = { products: [{ product: params?.row?._id, discountPercentage: 0 }] };
-          params.row.marketing = [
-            { ...findMarketing, creatorType: currentUser?.userType !== 'admin' ? 'shop' : 'admin' },
-          ];
+          findMarketing = {
+            products: [{ product: params?.row?._id, discountPercentage: 0 }],
+          };
+          params.row.marketing = [{ ...findMarketing, creatorType: creatorType !== 'admin' ? 'shop' : 'admin' }];
         }
 
         const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);

@@ -61,7 +61,7 @@ export const getDataForOngoingPromotionItem = (type, data, currency) => {
     return `${totalSpentFeaturedAmount || 0}/${totalFeaturedAmount || 0}${currency?.symbol}`;
   }
 
-  return data?.totalPromotionItems;
+  return data?.totalPromotionItems || 0;
 };
 
 export const getDurationFromMarketingHistory = (data) => {

@@ -118,6 +118,7 @@ export default function ProfitDetails({ order = {} }) {
           value={order?.discountCut?.baseCurrency_discountShopCut}
           valueSecondary={order?.discountCut?.secondaryCurrency_discountShopCut}
           tooltip="Discount deal added by shop"
+          showSecondaryOnly={order?.adminExchangeRate > 0}
           hide={hideExtraFields}
         />
 
