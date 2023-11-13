@@ -58,10 +58,20 @@ const tabIndex = (userType, value) => {
   return template[value];
 };
 
-export const getMarketingId = (mData, userType) => {
+export const percentageMarketingExistOrNot = (mData) => {
+  console.log('is exist or not', { mData });
+
   const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
-  console.log({ marketingData, mData });
+  const existingMarketing = marketingData?.find(
+    (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
+  );
+
+  return !!existingMarketing;
+};
+
+export const getMarketingId = (mData, userType) => {
+  const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
   const existingMarketing = marketingData?.find(
     (mrkting) => mrkting?.creatorType === 'admin' || mrkting?.creatorType === 'shop',
@@ -348,9 +358,12 @@ export default function MarketingDashboard({ viewUserType }) {
 
   const getBackToUrl = (viewUserType) => {
     const routeSeg = routeMatch?.url?.split('/');
+
     routeSeg?.pop();
     routeSeg?.pop();
     routeSeg?.pop();
+
+    console.log({ routeSeg });
     return routeSeg?.join('/');
   };
 
@@ -560,7 +573,7 @@ export default function MarketingDashboard({ viewUserType }) {
           onDelete={() => {
             history.replace(getBackToUrl(viewUserType));
           }}
-          onSuccessHandler={(data) => {
+          onSuccessHandler={async (data) => {
             if (data?.status) {
               Promise.all([
                 queryClient.invalidateQueries(`marketing-settings`),
@@ -576,14 +589,18 @@ export default function MarketingDashboard({ viewUserType }) {
                 ),
               ]);
 
+              await marketingQuery.refetch();
+
               // console.log('marketing data', { data }, data?.data?.marketing?._id);
 
-              const route = {
-                pathname: replaceLastSlugPath(pathname, `/${data?.data?.marketing?._id}`),
-                search: `user=${searchParams.get('user')}`,
-              };
+              if (percentageMarketingExistOrNot(marketingQuery?.data) && params?.type === 'percentage') {
+                const route = {
+                  pathname: replaceLastSlugPath(pathname, `/${data?.data?.marketing?._id}`),
+                  search: `user=${searchParams.get('user')}`,
+                };
 
-              history.push(route);
+                history.push(route);
+              }
             }
           }}
         />

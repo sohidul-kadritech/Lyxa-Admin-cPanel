@@ -479,8 +479,6 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
           queryClient.removeQueries([`marketing-${marketingType}-settings`]);
           queryClient.invalidateQueries([Api.ALL_PRODUCT]);
           onDelete();
-
-          if (onSuccessHandler) onSuccessHandler(data);
         }
       },
     },
