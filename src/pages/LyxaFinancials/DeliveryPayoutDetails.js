@@ -75,7 +75,7 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
             titleAmountStatus="minus"
           />
           <DetailsAccordion
-            title="Delivery refund"
+            title="Delivery Refund"
             titleAmount={deliveryProfitBreakDown?.deliveryRefund}
             titleAmountStatus="minus"
           />

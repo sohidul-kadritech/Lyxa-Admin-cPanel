@@ -55,6 +55,7 @@ const tabIndex = (userType, value) => {
     template['1'] = 'admin';
     template.admin = 1;
   }
+  console.log('template', template, value);
   return template[value];
 };
 
@@ -113,8 +114,6 @@ export default function MarketingDashboard({ viewUserType }) {
   const queryClient = useQueryClient();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-
-  console.log('searchParams', searchParams.get('user'), searchParams.get('id'));
 
   const { currentUser, general } = useGlobalContext();
   const { shop, userType } = currentUser;
@@ -337,7 +336,7 @@ export default function MarketingDashboard({ viewUserType }) {
     },
     {
       label: `${getMarketingTypeTitle(params?.type)}`,
-      to: '#',
+      to: searchParams.get('user') ? `${routeMatch?.url}?user=${searchParams.get('user')}` : '#',
     },
   ];
 
@@ -397,7 +396,6 @@ export default function MarketingDashboard({ viewUserType }) {
         <Tabs
           value={tabIndex(searchParams.get('user'), currentTab)}
           onChange={(event, newValue) => {
-            console.log('marketing data', { data: marketingQuery?.data });
             const route = {
               pathname: replaceLastSlugPath(
                 pathname,
@@ -408,11 +406,13 @@ export default function MarketingDashboard({ viewUserType }) {
 
             history.push(route);
 
-            setCurrentTab(tabIndex(searchParams.get('user'), newValue));
+            setCurrentTab((prev) => {
+              console.log('old data: ', { prev }, tabIndex(searchParams.get('user'), newValue), newValue);
+              return tabIndex(searchParams.get('user'), newValue);
+            });
           }}
           sx={{
             paddingBottom: 5,
-
             '& .MuiTab-root': {
               padding: '8px 12px',
               textTransform: 'none',
