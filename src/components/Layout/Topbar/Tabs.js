@@ -51,8 +51,8 @@ export default function Tabs() {
     console.log('change tab', { tab });
     history.push(tab?.currentLocation);
     dispatchShopTabs({ type: 'change-current-tab', payload: { tabId: tab?.shopId } });
-    dispatchCurrentUser({ type: 'shop', payload: { shop: tab.shop } });
-    dispatchCurrentUser({ type: 'seller', payload: { seller: tab.seller } });
+    dispatchCurrentUser({ type: 'shop', payload: { shop: tab?.shop } });
+    dispatchCurrentUser({ type: 'seller', payload: { seller: tab?.seller } });
   };
 
   // on remove tab
@@ -103,7 +103,7 @@ export default function Tabs() {
           }
           disableRipple
           onClick={() => {
-            console.log({ currentTab: tab });
+            console.log('change tab 1', { currentTab: tab });
             changeTab(tab);
           }}
         >
