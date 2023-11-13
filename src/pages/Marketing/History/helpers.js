@@ -5,7 +5,7 @@ import { getDateRange } from '../Settings/helpers';
 export const getMarketingStatusWithDate = (status, row) => {
   const marketingPausedAt = row?.marketingPausedAt;
   const marketingDeleteAt = row?.deletedAt;
-  const expiredDate = row?.duration;
+  // const expiredDate = row?.duration;
   const duration = getDateRange(row);
 
   if (status === 'paused')
@@ -38,7 +38,7 @@ export const getMarketingStatusWithDate = (status, row) => {
           {status}
         </Typography>
         <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
-          {moment(expiredDate?.end).format('MMMM DD, YYYY')}
+          {moment(marketingDeleteAt).format('MMMM DD, YYYY')}
         </Typography>
       </Stack>
     );
