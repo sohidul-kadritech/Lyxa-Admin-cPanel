@@ -1,17 +1,36 @@
 /* eslint-disable no-unused-vars */
-import { Email } from '@mui/icons-material';
+import { Email, Logout } from '@mui/icons-material';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import { ReactComponent as Loacation } from '../../../assets/icons/location.svg';
 import { ReactComponent as Phone } from '../../../assets/icons/phone.svg';
 
 import { ReactComponent as UserIcon } from '../../../assets/icons/user_outline.svg';
+import socketServices from '../../../common/socketService';
+import getCookiesAsObject from '../../../helpers/cookies/getCookiesAsObject';
+import setCookiesAsObject from '../../../helpers/cookies/setCookiesAsObject';
+import CustomerServiceOnlineOfflineToggle from '../../../pages/OngoingTickets/CustomerServiceOnlineOfflineToggle';
 
-function CustomerServiceInfoBox({ icon, label }) {
+function CustomerServiceInfoBox({ icon, label, onClickHandler }) {
   return (
-    <Typography variant="h5" sx={{ display: 'flex', direction: 'row', alignItems: 'center' }}>
-      {icon} {label}
-    </Typography>
+    <Stack
+      direction="row"
+      alignItems="center"
+      gap={2.5}
+      onClick={() => {
+        if (onClickHandler) {
+          onClickHandler();
+        }
+      }}
+    >
+      <Stack flex={0.1} sx={{ width: '24px' }} direction="row" justifyContent="center" alignItems="center">
+        {icon}
+      </Stack>
+      <Stack flex={0.9}>
+        <Typography variant="h5" sx={{ display: 'flex', direction: 'row', alignItems: 'center' }}>
+          {label}
+        </Typography>
+      </Stack>
+    </Stack>
   );
 }
 
@@ -34,9 +53,18 @@ function CustomerServiceProfileCardContainer({ children, theme, sx }) {
   );
 }
 
-function CustomerServiceProfile({ admin }) {
+function CustomerServiceProfile({ admin, open, onClose }) {
   const theme = useTheme();
+  const onClickHandler = (href) => {
+    window.location.href = href;
+  };
 
+  const _logout = () => {
+    const authCookies = getCookiesAsObject();
+    setCookiesAsObject(authCookies, 0);
+    window.location.reload(true);
+    socketServices.close();
+  };
   return (
     <Box
       sx={{
@@ -47,11 +75,15 @@ function CustomerServiceProfile({ admin }) {
         padding: '8px 0px',
         borderRadius: '10px',
         minWidth: '300px',
-        minHeight: '100px',
-        maxHeight: '250px',
+        minHeight: open ? '100px' : '0px',
+        maxHeight: open ? '250px' : '0px',
         background: '#fff',
         overflow: 'auto',
         border: `1px solid ${theme?.palette?.custom?.border}`,
+        opacity: open ? '1' : '0',
+        visibility: !open ? 'hidden' : null,
+        pointerEvents: !open ? 'none' : null,
+        transition: 'all 0.5s linear',
       }}
     >
       <Stack
@@ -71,12 +103,41 @@ function CustomerServiceProfile({ admin }) {
 
         {/* phone */}
         <CustomerServiceProfileCardContainer theme={theme}>
-          <CustomerServiceInfoBox icon={<Phone />} label={admin?.email} />
+          <CustomerServiceInfoBox icon={<Phone />} label={admin?.phone_number} />
+        </CustomerServiceProfileCardContainer>
+        <CustomerServiceProfileCardContainer
+          theme={theme}
+          sx={{
+            '&:hover': {
+              backgroundColor: 'rgba(177, 177, 177, 0.0)',
+            },
+          }}
+        >
+          <CustomerServiceOnlineOfflineToggle
+            admin={admin}
+            sx={{
+              justifyContent: 'space-between',
+            }}
+            sxToggle={{
+              width: 40,
+              height: 20,
+              '& .MuiSwitch-switchBase': {
+                margin: '1px 2px 2px 2px',
+                '&.Mui-checked': {
+                  transform: 'translateX(19px)',
+                },
+              },
+              '& .MuiSwitch-thumb': {
+                boxSizing: 'border-box',
+                width: 18,
+                height: 18,
+              },
+            }}
+          />
         </CustomerServiceProfileCardContainer>
 
-        {/* location */}
         <CustomerServiceProfileCardContainer theme={theme}>
-          <CustomerServiceInfoBox icon={<Loacation />} label={admin?.email} />
+          <CustomerServiceInfoBox icon={<Logout />} onClickHandler={_logout} label="Logout" />
         </CustomerServiceProfileCardContainer>
       </Stack>
     </Box>

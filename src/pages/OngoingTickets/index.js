@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import socketServices from '../../common/socketService';
 import TabPanel from '../../components/Common/TabPanel';
-import UserProfileInfo from '../../components/Common/UserProfileInfo';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatList from '../../components/Shared/ChatList';
 import StyledBadgeContainer from '../../components/Styled/StyledBadge';
@@ -16,7 +15,6 @@ import { successMsg } from '../../helpers/successMsg';
 import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { statusColor } from '../ShopProfile/Info';
 import SlideInContainer from './SlideInContainer';
 import UrgentOrderTable from './UrgentOrders';
 
@@ -204,10 +202,10 @@ export default function OngoingTickets() {
         }}
       >
         <SlideInContainer open={sidebarOpen} type="static" pt={9}>
-          <Typography variant="h4" pb={10}>
+          {/* <Typography variant="h4" pb={10}>
             Dashboard
-          </Typography>
-          <UserProfileInfo
+          </Typography> */}
+          {/* <UserProfileInfo
             user={{
               name: admin?.name,
               email: admin?.email,
@@ -219,7 +217,8 @@ export default function OngoingTickets() {
             }}
             containerProps={{ sx: { gap: 5 } }}
             showFor="customerService"
-          />
+          /> */}
+
           <Tabs
             value={Number(queryParams?.currentTab)}
             onChange={(event, newValue) => {

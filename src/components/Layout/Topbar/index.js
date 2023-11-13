@@ -51,11 +51,12 @@ export default function Topbar({ setSidebar, sidebar }) {
   const { currentUser } = useGlobalContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openCSInfo, setOpenCSInfo] = useState(false);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    setOpenCSInfo((prev) => !prev);
   };
-
-  console.log({ currentUser });
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -146,7 +147,7 @@ export default function Topbar({ setSidebar, sidebar }) {
       {currentUser?.adminType !== 'customerService' ? (
         <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
       ) : (
-        <CustomerServiceProfile admin={currentUser?.admin} />
+        <CustomerServiceProfile admin={currentUser?.admin} open={openCSInfo} onClose={handleClick} />
       )}
 
       <Drawer open={open} anchor="right">
