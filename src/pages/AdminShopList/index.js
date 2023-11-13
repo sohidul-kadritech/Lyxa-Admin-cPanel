@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -61,7 +62,7 @@ export default function ShopList() {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   const handleMenuClick = (menu, shop) => {
@@ -83,6 +84,8 @@ export default function ShopList() {
     }
 
     if (menu === 'marketing') {
+      console.log('payload: ', { type: 'shop', payload: { shop } });
+      dispatchCurrentUser({ type: 'shop', payload: { shop } });
       history.push(`/shops/${shop?._id}/marketing`, shop);
     }
   };

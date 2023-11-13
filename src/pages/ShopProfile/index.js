@@ -25,6 +25,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
   const history = useHistory();
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
   const { seller } = currentUser;
   const [shop, setShop] = useState(routeMatch?.path !== '/shop/profile/:shopId' ? currentUser?.shop : {});
   const [open, setOpen] = useState(false);
@@ -95,6 +96,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         });
 
         dispatchCurrentUser({ type: 'shop', payload: { shop } });
+
         dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller, from: routeMatch?.url } });
       }
 
@@ -104,9 +106,10 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         });
 
         dispatchCurrentUser({ type: 'shop', payload: { shop } });
+
         dispatchShopTabs({
           type: 'add-tab',
-          payload: { shop, location: routePath, seller: {}, from: routeMatch?.url },
+          payload: { shop, location: routePath, seller: { ...currentUser?.seller }, from: routeMatch?.url },
         });
       }
 

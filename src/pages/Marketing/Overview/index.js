@@ -263,16 +263,20 @@ export default function MarketingOverview({ viewUserType }) {
       console.log({ existingMarketing, viewUserType, marketingForAdmin, marketingForShop }, 'marketing data');
 
       if (viewUserType === 'shop' && userType === 'shop') {
-        history.push(`/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`);
+        history.push(
+          `/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}&tab=${viewUserType}`,
+        );
       } else if (viewUserType === 'shop' && userType === 'seller') {
         history.push(
-          `/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`,
+          `/shop/dashboard/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}&tab=${viewUserType}`,
         );
       } else if (viewUserType === 'shop' && userType === 'admin') {
-        history.push(`${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`);
+        history.push(
+          `${routeMatch?.url}/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}&tab=${viewUserType}`,
+        );
       } else {
         history.push(
-          `/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}`,
+          `/shops/${currentShop?._id}/marketing/dashboard/${marketingType}/${marketing?._id}?user=${viewUserType}&tab=${viewUserType}`,
         );
       }
       return;

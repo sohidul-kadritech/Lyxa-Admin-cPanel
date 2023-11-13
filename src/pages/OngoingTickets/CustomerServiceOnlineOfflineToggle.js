@@ -9,7 +9,7 @@ import { successMsg } from '../../helpers/successMsg';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 
-function CustomerServiceOnlineOfflineToggle({ admin }) {
+function CustomerServiceOnlineOfflineToggle({ admin, sx, sxToggle }) {
   const { dispatchCurrentUser } = useGlobalContext();
   const customerServiceUpdateLiveStatusMutation = useMutation(
     () =>
@@ -44,6 +44,7 @@ function CustomerServiceOnlineOfflineToggle({ admin }) {
         borderRadius: '7px',
         alignItems: 'center',
         backgroundColor: value ? 'rgba(94, 151, 169, 0.12)' : '#FCF9F0',
+        ...(sx || {}),
       }}
     >
       <Typography sx={{ fontSize: '16px', fontWeight: 500, color: value ? 'primary.main' : '#F78C3F', width: '115px' }}>
@@ -52,6 +53,9 @@ function CustomerServiceOnlineOfflineToggle({ admin }) {
       <StyledSwitch
         checked={value}
         disabled={admin?.liveStatus === 'busy'}
+        sx={{
+          ...(sxToggle || {}),
+        }}
         onChange={() => {
           //   const shopData = getShopEditData(shop);
           //   createEditShopData(shopData)?.then((data) => {
