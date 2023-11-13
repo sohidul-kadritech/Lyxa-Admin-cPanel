@@ -147,7 +147,11 @@ export default function MarketingDashboard({ viewUserType }) {
   const marketingQuery = useQuery(
     [
       `marketing-settings`,
-      { creatorType: searchParams.get('creator'), shop: params?.shopId || searchParams.get('shopId') || shop?._id },
+      {
+        creatorType: searchParams.get('creator'),
+        shop: params?.shopId || searchParams.get('shopId') || shop?._id,
+        currentTab,
+      },
     ],
     () =>
       AXIOS.get(Api.GET_MARKETING_SETTINGS, {
@@ -406,10 +410,7 @@ export default function MarketingDashboard({ viewUserType }) {
 
             history.push(route);
 
-            setCurrentTab((prev) => {
-              console.log('old data: ', { prev }, tabIndex(searchParams.get('user'), newValue), newValue);
-              return tabIndex(searchParams.get('user'), newValue);
-            });
+            setCurrentTab((prev) => tabIndex(searchParams.get('user'), newValue));
           }}
           sx={{
             paddingBottom: 5,
@@ -589,11 +590,9 @@ export default function MarketingDashboard({ viewUserType }) {
                 ),
               ]);
 
-              await marketingQuery.refetch();
-
               // console.log('marketing data', { data }, data?.data?.marketing?._id);
 
-              if (percentageMarketingExistOrNot(marketingQuery?.data) && params?.type === 'percentage') {
+              if (params?.type === 'percentage') {
                 const route = {
                   pathname: replaceLastSlugPath(pathname, `/${data?.data?.marketing?._id}`),
                   search: `user=${searchParams.get('user')}`,
