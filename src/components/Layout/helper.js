@@ -6,7 +6,7 @@ export const getProfilePhotoAndAltName = (currentUser, userType) => {
 
   if (userType === 'admin') {
     // not added yet
-    profilePhoto = currentUser?.admin?.profilePhoto;
+    profilePhoto = currentUser?.admin?.profile_photo;
     name = currentUser?.admin?.name;
   }
 
