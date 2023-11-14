@@ -464,12 +464,14 @@ export default function MarketingDashboard({ viewUserType }) {
           {params?.id !== 'undefined' ? (
             <>
               {/* Marketing duration */}
-              <MarketingDuration
-                duration={getMarketingDurationData(
-                  marketingQuery?.data,
-                  params?.type === 'percentage' ? searchParams.get('tab') : viewUserType,
-                )}
-              />
+              {params?.type !== 'featured' && (
+                <MarketingDuration
+                  duration={getMarketingDurationData(
+                    marketingQuery?.data,
+                    params?.type === 'percentage' ? searchParams.get('tab') : viewUserType,
+                  )}
+                />
+              )}
               <Grid container spacing={6.5} pb={3}>
                 {isVisibleOngoingPromotionItem(params?.type) && (
                   <InfoCard
