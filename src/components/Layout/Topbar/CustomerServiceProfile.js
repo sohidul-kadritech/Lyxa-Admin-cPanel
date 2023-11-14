@@ -83,10 +83,11 @@ function CustomerServiceProfile({ admin, open, onClose }) {
         opacity: open ? '1' : '0',
         visibility: !open ? 'hidden' : null,
         pointerEvents: !open ? 'none' : null,
-        transition: 'all 0.5s linear',
+        transition: 'all 0.3s linear',
       }}
     >
       <Stack
+        gap={1.2}
         sx={{
           position: 'relative',
           width: '100%',

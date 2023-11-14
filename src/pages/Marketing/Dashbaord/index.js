@@ -71,7 +71,7 @@ export const percentageMarketingExistOrNot = (mData) => {
   return !!existingMarketing;
 };
 
-export const getMarketingId = (mData, userType) => {
+export const getMarketingId = (mData, userType, returnObject = false) => {
   const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
 
   const existingMarketing = marketingData?.find(
@@ -93,6 +93,7 @@ export const getMarketingId = (mData, userType) => {
     marketing = marketingForShop;
   }
 
+  if (returnObject) return marketing;
   return marketing?._id;
 };
 
@@ -361,6 +362,33 @@ export default function MarketingDashboard({ viewUserType }) {
     }
   }, [__loading]);
 
+  useEffect(() => {
+    if (params?.type === 'percentage') {
+      // get marketing data
+      const getMarketing = getMarketingId(
+        marketingQuery?.data,
+        searchParams.get('tab') ? searchParams.get('tab') : viewUserType,
+        true,
+      );
+
+      // store search params
+      const searchValue = `user=${searchParams.get('user') ? searchParams.get('user') : viewUserType}&tab=${
+        searchParams.get('tab') ? searchParams.get('tab') : viewUserType
+      }`;
+
+      // make route object
+      const route = {
+        pathname: replaceLastSlugPath(pathname, `/${getMarketing?._id}`),
+        search: searchValue,
+      };
+
+      // change current tab value
+      setCurrentTab(searchParams.get('tab') ? searchParams.get('tab') : viewUserType);
+      // change route
+      history.push(route);
+    }
+  }, [marketingQuery?.data]);
+
   const getBackToUrl = (viewUserType) => {
     const routeSeg = routeMatch?.url?.split('/');
 
@@ -371,8 +399,6 @@ export default function MarketingDashboard({ viewUserType }) {
     console.log({ routeSeg });
     return routeSeg?.join('/');
   };
-
-  console.log({ marketingData: marketingQuery?.data }, marketingQuery?.data?.isNotEligible);
 
   return (
     <Box>
