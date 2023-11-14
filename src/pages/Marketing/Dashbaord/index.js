@@ -15,6 +15,7 @@ import PageTop from '../../../components/Common/PageTop';
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
+import MarketingDuration from '../../../components/StyledCharts/MarketingDuratin';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import { useGlobalContext } from '../../../context';
@@ -458,6 +459,9 @@ export default function MarketingDashboard({ viewUserType }) {
         <PageSkeleton />
       ) : (
         <Stack>
+          {/* Marketing duration */}
+          <MarketingDuration />
+          {/* Marketing duration */}
           {params?.id !== 'undefined' ? (
             <Grid container spacing={6.5} pb={3}>
               {isVisibleOngoingPromotionItem(params?.type) && (
@@ -473,6 +477,7 @@ export default function MarketingDashboard({ viewUserType }) {
                   lg={4}
                 />
               )}
+
               <InfoCard
                 title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
                 value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
@@ -495,6 +500,7 @@ export default function MarketingDashboard({ viewUserType }) {
                 md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
                 lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
               />
+
               <InfoCard
                 title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
                 value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}

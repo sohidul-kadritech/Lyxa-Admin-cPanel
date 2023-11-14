@@ -121,7 +121,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => !checkAnyMarketing(p) || checkAnyMarketing(p)?.type === marketingType,
+        (p) => p?.marketing[0] === undefined || checkAnyMarketing(p)?.type === marketingType,
       ),
     [productsQuery?.data],
   );
