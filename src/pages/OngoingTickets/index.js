@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import socketServices from '../../common/socketService';
+import PageTop from '../../components/Common/PageTop';
 import TabPanel from '../../components/Common/TabPanel';
 import ChatDetails from '../../components/Shared/ChatDetail';
 import ChatList from '../../components/Shared/ChatList';
@@ -195,13 +196,14 @@ export default function OngoingTickets() {
         overflowY: 'hidden',
       }}
     >
+      <PageTop title="Dashboard" />
       <Box
         sx={{
           height: '100%',
           overflowY: 'auto',
         }}
       >
-        <SlideInContainer open={sidebarOpen} type="static" pt={9}>
+        <SlideInContainer open={sidebarOpen} type="static" pt={4}>
           {/* <Typography variant="h4" pb={10}>
             Dashboard
           </Typography> */}
@@ -236,7 +238,7 @@ export default function OngoingTickets() {
               }
             }}
             sx={{
-              paddingTop: '40px',
+              paddingTop: '0px',
               '& .MuiTab-root': {
                 padding: '8px 12px',
                 textTransform: 'none',
