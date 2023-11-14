@@ -15,7 +15,7 @@ import PageTop from '../../../components/Common/PageTop';
 import ChartBox from '../../../components/StyledCharts/ChartBox';
 import IncreaseDecreaseTag from '../../../components/StyledCharts/IncrementDecrementTag';
 import InfoCard from '../../../components/StyledCharts/InfoCard';
-import MarketingDuration from '../../../components/StyledCharts/MarketingDuratin';
+import MarketingDuration from '../../../components/StyledCharts/MarketingDuration';
 import StyledAreaChartfrom from '../../../components/StyledCharts/StyledAreaChart';
 import StyledBarChart from '../../../components/StyledCharts/StyledBarChart';
 import { useGlobalContext } from '../../../context';
@@ -28,6 +28,7 @@ import PageSkeleton from './PageSkeleton';
 import {
   dateRangeItit,
   getDataForOngoingPromotionItem,
+  getMarketingDurationData,
   getMarketingTypeTitle,
   getPercentageMarketingCreatorType,
   isVisibleOngoingPromotionItem,
@@ -458,108 +459,115 @@ export default function MarketingDashboard({ viewUserType }) {
       {__loading && isInitialLoad ? (
         <PageSkeleton />
       ) : (
-        <Stack>
-          {/* Marketing duration */}
-          <MarketingDuration />
+        <Stack gap={4}>
           {/* Marketing duration */}
           {params?.id !== 'undefined' ? (
-            <Grid container spacing={6.5} pb={3}>
-              {isVisibleOngoingPromotionItem(params?.type) && (
+            <>
+              {/* Marketing duration */}
+              <MarketingDuration
+                duration={getMarketingDurationData(
+                  marketingQuery?.data,
+                  params?.type === 'percentage' ? searchParams.get('tab') : viewUserType,
+                )}
+              />
+              <Grid container spacing={6.5} pb={3}>
+                {isVisibleOngoingPromotionItem(params?.type) && (
+                  <InfoCard
+                    title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
+                    value={getDataForOngoingPromotionItem(
+                      params?.type,
+                      marketingInfoQuery?.data?.data?.summary,
+                      currency,
+                    )}
+                    sm={6}
+                    md={4}
+                    lg={4}
+                  />
+                )}
+
                 <InfoCard
-                  title={`${params?.type === 'featured' ? 'Amount Spent' : 'Ongoing Promotions on Items'}`}
-                  value={getDataForOngoingPromotionItem(
-                    params?.type,
-                    marketingInfoQuery?.data?.data?.summary,
-                    currency,
-                  )}
-                  sm={6}
-                  md={4}
-                  lg={4}
+                  title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
+                  value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
+                  Tag={
+                    <IncreaseDecreaseTag
+                      status={
+                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                          marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >=
+                        0
+                          ? 'increase'
+                          : 'decrease'
+                      }
+                      amount={`${Math.round(
+                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
+                          marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
+                      )}% in ${marketingDuration}`}
+                    />
+                  }
+                  sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+                  md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+                  lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
                 />
-              )}
 
-              <InfoCard
-                title={`Order Increase with ${getMarketingTypeTitle(params?.type)}`}
-                value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage || 0)}%`}
-                Tag={
-                  <IncreaseDecreaseTag
-                    status={
-                      marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth >=
-                      0
-                        ? 'increase'
-                        : 'decrease'
-                    }
-                    amount={`${Math.round(
-                      marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentage -
-                        marketingInfoQuery?.data?.data?.summary?.orderIncreasePercentageLastMonth || 0,
-                    )}% in ${marketingDuration}`}
-                  />
-                }
-                sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
-                md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-                lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-              />
-
-              <InfoCard
-                title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
-                value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
-                Tag={
-                  <IncreaseDecreaseTag
-                    status={
-                      marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >=
-                      0
-                        ? 'increase'
-                        : 'decrease'
-                    }
-                    amount={`${Math.round(
-                      marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
-                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
-                    )}% in ${marketingDuration}`}
-                  />
-                }
-                sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
-                md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-                lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
-              />
-              <ChartBox
-                chartHeight={245}
-                dateRange={orderRange}
-                setDateRange={setOrderRange}
-                title="Orders"
-                sm={12}
-                loading={ordersGraphQuery.isLoading}
-              >
-                <StyledAreaChartfrom data={oGraphData} />
-              </ChartBox>
-              <ChartBox
-                chartHeight={325}
-                dateRange={customerRange}
-                setDateRange={setCustomerRange}
-                loading={customerGraphQuery.isLoading}
-                title="Customers"
-                sm={12}
-                md={12}
-                lg={params?.type !== 'featured' ? 6 : 12}
-              >
-                <StyledBarChart data={cGraphData} />
-              </ChartBox>
-              {params?.type !== 'featured' && (
+                <InfoCard
+                  title={`Customer Increase with ${getMarketingTypeTitle(params?.type)}`}
+                  value={`${Math.round(marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage || 0)}%`}
+                  Tag={
+                    <IncreaseDecreaseTag
+                      status={
+                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                          marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth >=
+                        0
+                          ? 'increase'
+                          : 'decrease'
+                      }
+                      amount={`${Math.round(
+                        marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentage -
+                          marketingInfoQuery?.data?.data?.summary?.customerIncreasePercentageLastMonth || 0,
+                      )}% in ${marketingDuration}`}
+                    />
+                  }
+                  sm={isVisibleOngoingPromotionItem(params?.type) ? 6 : 6}
+                  md={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+                  lg={isVisibleOngoingPromotionItem(params?.type) ? 4 : 6}
+                />
+                <ChartBox
+                  chartHeight={245}
+                  dateRange={orderRange}
+                  setDateRange={setOrderRange}
+                  title="Orders"
+                  sm={12}
+                  loading={ordersGraphQuery.isLoading}
+                >
+                  <StyledAreaChartfrom data={oGraphData} />
+                </ChartBox>
                 <ChartBox
                   chartHeight={325}
-                  dateRange={amountRange}
-                  setDateRange={setAmountRange}
-                  loading={amountGraphQuery.isLoading}
-                  title="Amount spent"
+                  dateRange={customerRange}
+                  setDateRange={setCustomerRange}
+                  loading={customerGraphQuery.isLoading}
+                  title="Customers"
                   sm={12}
                   md={12}
-                  lg={6}
+                  lg={params?.type !== 'featured' ? 6 : 12}
                 >
-                  <StyledAreaChartfrom data={aGraphData} />
+                  <StyledBarChart data={cGraphData} />
                 </ChartBox>
-              )}
-            </Grid>
+                {params?.type !== 'featured' && (
+                  <ChartBox
+                    chartHeight={325}
+                    dateRange={amountRange}
+                    setDateRange={setAmountRange}
+                    loading={amountGraphQuery.isLoading}
+                    title="Amount spent"
+                    sm={12}
+                    md={12}
+                    lg={6}
+                  >
+                    <StyledAreaChartfrom data={aGraphData} />
+                  </ChartBox>
+                )}
+              </Grid>
+            </>
           ) : (
             <Stack
               sx={{
