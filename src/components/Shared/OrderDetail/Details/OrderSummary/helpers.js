@@ -63,8 +63,6 @@ export const modifyReplaceOrderForProductDetails = (order) => {
     },
   );
 
-  console.log('updatedProductDetails', productsDetails);
-
   if (productsDetails?.length > 0) {
     return [...productsDetails, ...orderProductDetails];
   }
