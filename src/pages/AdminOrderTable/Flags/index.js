@@ -17,7 +17,7 @@ const queryParamsInit = {
   resolved: false,
   page: 1,
   pageSize: 25,
-  sortBy: '',
+  sortBy: 'DESC',
   startDate: getFirstMonday('week'),
   endDate: moment(),
   searchKey: '',
