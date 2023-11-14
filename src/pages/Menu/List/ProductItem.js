@@ -204,6 +204,9 @@ export default function ProductItem({
       pr={5}
       onClick={() => {
         if (editable) setEditProduct(product, true);
+        if (OnCheckProduct) {
+          OnCheckProduct(product);
+        }
       }}
       {...props}
     >

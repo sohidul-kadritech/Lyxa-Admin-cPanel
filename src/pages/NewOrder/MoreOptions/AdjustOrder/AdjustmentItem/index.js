@@ -134,7 +134,7 @@ function AdjustmentItemCard({ product, isChecked, notes = '', onCheck, onAddNote
       >
         {isChecked && (
           <StyledFormField
-            label="Notes *"
+            label="Notes"
             intputType="text"
             inputProps={{
               placeholder: 'Type reason here',
