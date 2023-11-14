@@ -23,7 +23,7 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx, row
     borderLeft: `1px solid ${theme.palette.custom.border}`,
     borderBottom: `1px solid ${theme.palette.custom.border}`,
     width: '100%',
-    transition: 'all 0.3s linear',
+    transition: 'all 0.2s linear',
     zIndex: 99,
   };
 
@@ -70,20 +70,17 @@ function Row({ row, columns, isExpandable = true, expandWithRowClick, rowSx, row
       </Stack>
 
       <AccordionDetails
-        sx={
-          isExpanded
-            ? { ...dropdownProps, opacity: 1, padding: '8px 0px 8px 8px' }
-            : {
-                ...dropdownProps,
-                opacity: 0,
-                height: 0,
-                visibility: 'hidden',
-                pointerEvents: 'none',
-                '&.MuiAccordionDetails-root': {
-                  padding: '0px',
-                },
-              }
-        }
+        sx={{
+          ...dropdownProps,
+          opacity: isExpanded ? 1 : 0,
+          height: isExpanded ? undefined : '0px',
+          visibility: !isExpanded ? 'hidden' : undefined,
+          pointerEvents: !isExpanded ? 'none' : undefined,
+          padding: !isExpanded ? undefined : '8px 0px 8px 8px',
+          '&.MuiAccordionDetails-root': {
+            padding: !isExpanded ? '0px' : undefined,
+          },
+        }}
       >
         {expandedComponents}
       </AccordionDetails>
