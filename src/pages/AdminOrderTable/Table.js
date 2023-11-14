@@ -36,6 +36,19 @@ import OrderTrackingModal from './OrderTracking';
 
 const shopTypeLabelMap = { food: 'Restaurant', grocery: 'Grocery', pharmacy: 'Pharmacy' };
 
+export const getOrderStatus = (order) => (
+  <Stack alignItems="center" gap={0} width="100%">
+    <Typography variant="body" sx={{ fontSize: '14px' }}>
+      {orderStatusMap[order?.orderStatus]}
+    </Typography>
+    {order?.adjustOrderRequest && !order?.isOrderAdjusted && (
+      <Typography variant="body" sx={{ fontSize: '12px !important', color: '#525252' }}>
+        (Request Sent)
+      </Typography>
+    )}
+  </Stack>
+);
+
 const filterColumns = (columns, shopType, orderType = 'ongoing', showFor) => {
   let cols = columns.filter((col) => col?.showFor?.includes(orderType));
 
@@ -324,17 +337,18 @@ export default function Table({
       headerName: 'STATUS',
       field: 'orderStatus',
       sortable: false,
-      flex: 1,
+      flex: 1.5,
       minWidth: 180,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Chip
-          label={orderStatusMap[value || '']}
+          // label={orderStatusMap[value] || ''}
+          label={getOrderStatus(row)}
           sx={{
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            maxWidth: '150px',
-            ...(statusColorVariants[value] || {}),
+            maxWidth: '200px',
+            ...(statusColorVariants[row?.orderStatus] || {}),
           }}
           variant="contained"
         />
@@ -573,17 +587,18 @@ export default function Table({
       headerName: 'STATUS',
       field: 'orderStatus',
       sortable: false,
-      flex: 1,
+      flex: 1.5,
       minWidth: 180,
-      renderCell: ({ value }) => (
+      renderCell: ({ row }) => (
         <Chip
-          label={orderStatusMap[value || '']}
+          // label={orderStatusMap[value] || ''}
+          label={getOrderStatus(row)}
           sx={{
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            // maxWidth: '150px',
-            ...(statusColorVariants[value] || {}),
+            maxWidth: '200px',
+            ...(statusColorVariants[row?.orderStatus] || {}),
           }}
           variant="contained"
         />

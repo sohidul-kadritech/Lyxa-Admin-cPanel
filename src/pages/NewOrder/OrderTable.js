@@ -17,11 +17,12 @@ import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import StyledTable5 from '../../components/Styled/StyledTable5';
 import OrderTrackingModal from '../AdminOrderTable/OrderTracking';
+import { getOrderStatus } from '../AdminOrderTable/Table';
 import OrderCancel from './OrderCancel';
 import PageSkeleton from './PageSkeleton';
 import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
-import { getOrderProfit, getThreedotMenuOptions, orderStatusMap, statusColorVariants } from './helpers';
+import { getOrderProfit, getThreedotMenuOptions, statusColorVariants } from './helpers';
 
 export default function OrderTable({
   orders = [],
@@ -274,16 +275,18 @@ export default function OrderTable({
       headerName: 'STATUS',
       field: 'orderStatus',
       sortable: false,
-      flex: 1,
-      minWidth: 140,
-      renderCell: ({ value }) => (
+      flex: 1.5,
+      minWidth: 180,
+      renderCell: ({ row }) => (
         <Chip
-          label={orderStatusMap[value || '']}
+          // label={orderStatusMap[value] || ''}
+          label={getOrderStatus(row)}
           sx={{
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            ...(statusColorVariants[value] || {}),
+            maxWidth: '200px',
+            ...(statusColorVariants[row?.orderStatus] || {}),
           }}
           variant="contained"
         />
@@ -547,16 +550,18 @@ export default function OrderTable({
       headerName: 'STATUS',
       field: 'orderStatus',
       sortable: false,
-      flex: 1,
-      minWidth: 140,
-      renderCell: ({ value }) => (
+      flex: 1.5,
+      minWidth: 180,
+      renderCell: ({ row }) => (
         <Chip
-          label={orderStatusMap[value || '']}
+          // label={orderStatusMap[value] || ''}
+          label={getOrderStatus(row)}
           sx={{
             height: 'auto',
             padding: '12px 23px',
             borderRadius: '40px',
-            ...(statusColorVariants[value] || {}),
+            maxWidth: '200px',
+            ...(statusColorVariants[row?.orderStatus] || {}),
           }}
           variant="contained"
         />
