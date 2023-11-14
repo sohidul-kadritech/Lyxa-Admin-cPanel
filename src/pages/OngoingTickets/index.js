@@ -204,23 +204,6 @@ export default function OngoingTickets() {
         }}
       >
         <SlideInContainer open={sidebarOpen} type="static" pt={4}>
-          {/* <Typography variant="h4" pb={10}>
-            Dashboard
-          </Typography> */}
-          {/* <UserProfileInfo
-            user={{
-              name: admin?.name,
-              email: admin?.email,
-              phone: admin?.phone_number,
-              statusColor: admin?.liveStatus === 'online' ? statusColor?.green : statusColor?.black,
-            }}
-            avatarProps={{
-              sx: { width: 70, height: 70 },
-            }}
-            containerProps={{ sx: { gap: 5 } }}
-            showFor="customerService"
-          /> */}
-
           <Tabs
             value={Number(queryParams?.currentTab)}
             onChange={(event, newValue) => {
