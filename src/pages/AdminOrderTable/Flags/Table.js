@@ -163,15 +163,15 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
         anchor="right"
         open={detailOpen}
         onClose={() => {
-          setDetailOpen(false);
           setCurrentOrder({});
+          setDetailOpen(false);
         }}
       >
         <OrderDetail
           order={currentOrder}
           onClose={() => {
-            setDetailOpen(false);
             setCurrentOrder({});
+            setDetailOpen(false);
           }}
         />
       </Drawer>
