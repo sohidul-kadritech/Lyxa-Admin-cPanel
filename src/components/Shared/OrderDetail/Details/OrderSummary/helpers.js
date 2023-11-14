@@ -53,11 +53,7 @@ export const modifyReplaceOrderForProductDetails = (order) => {
         isReplaced: true,
       };
 
-      // console.log('extractedAtributes', extractAttributeItems(product?.attributes, attributes));
-
       result.productQuantity = quantity;
-
-      // result.baseCurrency_finalPrice =
 
       return { ...result };
     },
