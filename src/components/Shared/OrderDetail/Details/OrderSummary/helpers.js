@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 
@@ -41,28 +42,32 @@ export const modifyReplaceOrderForProductDetails = (order) => {
 
   const getSecondaryCurrency = (value) => Math?.round(shopExchangeRate * Number(value || 0));
 
-  const productsDetails = order?.adjustOrderRequest?.replacedProducts?.map(({ quantity, product, attributes }) => {
-    const result = {
-      ...product,
-      selectedAttributes: [...extractAttributeItems(product?.attributes, attributes)],
-      product: { ...product },
-      isReplaced: true,
-    };
+  const orderProductDetails = order?.productsDetails || [];
 
-    console.log('extractedAtributes', extractAttributeItems(product?.attributes, attributes));
+  const productsDetails = (order?.adjustOrderRequest?.replacedProducts || [])?.map(
+    ({ quantity, product, attributes }) => {
+      const result = {
+        ...product,
+        selectedAttributes: [...extractAttributeItems(product?.attributes, attributes)],
+        product: { ...product },
+        isReplaced: true,
+      };
 
-    result.productQuantity = quantity;
+      // console.log('extractedAtributes', extractAttributeItems(product?.attributes, attributes));
 
-    // result.baseCurrency_finalPrice =
+      result.productQuantity = quantity;
 
-    return { ...result };
-  });
+      // result.baseCurrency_finalPrice =
+
+      return { ...result };
+    },
+  );
 
   console.log('updatedProductDetails', productsDetails);
 
   if (productsDetails?.length > 0) {
-    return [...productsDetails, ...order?.productsDetails];
+    return [...productsDetails, ...orderProductDetails];
   }
 
-  return [...order?.productsDetails];
+  return [...orderProductDetails];
 };
