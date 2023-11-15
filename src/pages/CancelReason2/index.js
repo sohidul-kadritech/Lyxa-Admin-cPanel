@@ -196,8 +196,8 @@ function CancelReason() {
           <Tab label="Butler" />
           <Tab label="Shop" />
           <Tab label="Admin" />
-          <Tab label="Resolve Chat Reason" />
-          <Tab label="Subscription Cancel Reason" />
+          <Tab label="Resolve Chat" />
+          <Tab label="Subscription" />
         </Tabs>
       </Box>
 

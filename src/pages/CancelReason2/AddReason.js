@@ -14,8 +14,8 @@ const reasonTypeOption = [
   { label: 'User', value: 'userCancel' },
   { label: 'User Refund', value: 'userRefund' },
   { label: 'Butler', value: 'butler' },
-  { label: 'Resolve Chat', value: 'resolve' },
-  { label: 'Subscription Cancel Reason', value: 'subscriptionCancelReason' },
+  { label: 'Resolve', value: 'resolve' },
+  { label: 'Subscription', value: 'subscriptionCancelReason' },
 ];
 const statusOptions = [
   {
