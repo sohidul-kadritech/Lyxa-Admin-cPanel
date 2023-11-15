@@ -34,6 +34,7 @@ const initialReason = {
   ans: '',
   status: 'active',
 };
+
 const updateType = (type) => {
   let modifiedType = '';
   if (type === 'shopCancel') {
