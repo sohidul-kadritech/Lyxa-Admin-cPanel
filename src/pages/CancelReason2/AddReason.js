@@ -9,13 +9,13 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 const reasonTypeOption = [
-  { label: 'Shop', value: 'shopCancel' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'User', value: 'userCancel' },
-  { label: 'User Refund', value: 'userRefund' },
-  { label: 'Butler', value: 'butler' },
-  { label: 'Resolve', value: 'resolve' },
-  { label: 'Subscription', value: 'subscriptionCancelReason' },
+  { label: 'SHOP', value: 'shopCancel' },
+  { label: 'ADMIN', value: 'admin' },
+  { label: 'USER', value: 'userCancel' },
+  { label: 'USER REFUND', value: 'userRefund' },
+  { label: 'BUTLER', value: 'butler' },
+  { label: 'RESOLVE CHAT', value: 'resolve' },
+  { label: 'SUBSCRIPTION', value: 'subscriptionCancelReason' },
 ];
 const statusOptions = [
   {
