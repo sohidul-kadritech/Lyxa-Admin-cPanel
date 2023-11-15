@@ -36,6 +36,7 @@ const tabTracker = {
   2: 'shopCancel',
   3: 'admin',
   4: 'resolve',
+  5: 'subscriptionCancelReason',
 };
 
 // function AddMenuButton({ ...props }) {
@@ -196,6 +197,7 @@ function CancelReason() {
           <Tab label="Shop" />
           <Tab label="Admin" />
           <Tab label="Resolve Chat Reason" />
+          <Tab label="Subscription Cancel Reason" />
         </Tabs>
       </Box>
 
