@@ -30,7 +30,7 @@ import { getOrderProfit, getThreedotMenuOptions, statusColorVariants } from './h
 export default function OrderTable({ orders = [], onRowClick, orderType, adminType, showFor, onViewDetail, loading }) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
-  console.log('orders', orders);
+
   const currency = general?.currency?.symbol;
   const history = useHistory();
   const routeMatch = useRouteMatch();
@@ -708,26 +708,6 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
         background: '#fff',
       }}
     >
-      {/* <StyledTable
-        columns={columns.filter((column) => column.showFor.includes(orderType))}
-        rows={orders}
-        getRowId={(row) => row?._id}
-        rowHeight={71}
-        onRowClick={onRowClick}
-        sx={{
-          '& .MuiDataGrid-row': {
-            cursor: onRowClick ? 'pointer' : 'default',
-          },
-        }}
-        components={{
-          NoRowsOverlay: () => (
-            <Stack height="100%" alignItems="center" justifyContent="center">
-              No Order found
-            </Stack>
-          ),
-        }}
-      /> */}
-
       <StyledTable5
         columns={columns.filter((column) => column.showFor.includes(orderType))}
         rows={orders}

@@ -227,6 +227,9 @@ export default function ProductItem({
             checkedIcon={<CheckedIcon />}
             icon={<UncheckIcon />}
             checked={isChecked}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             onChange={() => {
               if (OnCheckProduct) {
                 OnCheckProduct(product);
@@ -249,7 +252,9 @@ export default function ProductItem({
           <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }}>
             {product?.name?.charAt(0)}
           </Avatar>
+
           {product?.status === 'inactive' && <ProductOverlayTag label="Deactivated" color="#363636" />}
+
           {product?.stockQuantity < 1 && product?.status === 'active' && (
             <ProductOverlayTag label="Out of Stock" color="#DD5B63" />
           )}
