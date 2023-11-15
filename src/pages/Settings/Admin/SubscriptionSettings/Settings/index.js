@@ -15,16 +15,7 @@ export const initialData = {
   status: 'active', // "active", "inactive"
 };
 
-// http://localhost:5001/admin/setting/subscription-setting?subscriptionPackage=monthly
-// ------------------------------------------------------------------------------------
-// http://localhost:5001/admin/setting/subscription-setting/edit
-
 function Settings() {
-  /*
-SUBSCRIPTION_SETTINGS
-SUBSCRIPTION_SETTINGS_EDIT
-*/
-
   const queryClient = useQueryClient();
 
   const [sidebar, setSidebar] = useState(false);
