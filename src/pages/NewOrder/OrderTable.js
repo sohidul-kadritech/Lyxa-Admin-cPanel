@@ -14,6 +14,9 @@ import { useGlobalContext } from '../../context';
 
 import { ReactComponent as MessageIcon } from '../../assets/icons/message-icon.svg';
 import { ReactComponent as FlagIcon } from '../../assets/icons/order-flag.svg';
+import AdjustmentOrder from '../../components/Shared/AdjustMentOrder';
+import ChangeDeliveryAddress from '../../components/Shared/ChangeDeliveryAddress';
+import FlaggedModal from '../../components/Shared/Flagged';
 import UpdateOrderStatus from '../../components/Shared/UpdateOrderStatus';
 import StyledTable5 from '../../components/Styled/StyledTable5';
 import OrderTrackingModal from '../AdminOrderTable/OrderTracking';
@@ -24,15 +27,7 @@ import RefundOrder from './RefundOrder';
 import { UpdateFlag } from './UpdateFlag';
 import { getOrderProfit, getThreedotMenuOptions, statusColorVariants } from './helpers';
 
-export default function OrderTable({
-  orders = [],
-  onRowClick,
-  orderType,
-  adminType,
-
-  onViewDetail,
-  loading,
-}) {
+export default function OrderTable({ orders = [], onRowClick, orderType, adminType, showFor, onViewDetail, loading }) {
   const { general, currentUser } = useGlobalContext();
   const { userType } = currentUser;
   console.log('orders', orders);
@@ -43,9 +38,22 @@ export default function OrderTable({
 
   const [openOrderTrackingModal, setOpenOrderTrackingModal] = useState(false);
 
+  const [openUrgentOrder, setOpenUrgentOrder] = useState(false);
+
+  const [flagModalNew, setFlagModalNew] = useState(false);
+
+  const [openAdjustmentOrder, setOpenAdjustmentOrder] = useState(false);
+
   const [flagModal, setFlagModal] = useState(false);
+
+  const [openAddressChange, setOpenAddressChange] = useState(false);
+
   const [openCancelModal, setOpenCancelModal] = useState(false);
+
+  const [openCancelModalNew, setOpenCancelModalNew] = useState(false);
+
   const [openRefundModal, setOpenRefundModal] = useState(false);
+
   const [currentOrder, setCurrentOrder] = useState({});
 
   const threeDotHandler = (menu, order) => {
@@ -53,9 +61,17 @@ export default function OrderTable({
       setFlagModal(true);
       setCurrentOrder(order);
     }
+    if (menu === 'change_address') {
+      setOpenAddressChange(true);
+      setCurrentOrder(order);
+    }
     if (menu === 'cancel_order') {
       setCurrentOrder(order);
       setOpenCancelModal(!openCancelModal);
+    }
+    if (menu === 'cancel_order_test') {
+      setCurrentOrder(order);
+      setOpenCancelModalNew(true);
     }
     if (menu === 'refund_order') {
       setCurrentOrder(order);
@@ -68,6 +84,20 @@ export default function OrderTable({
     }
     if (menu === 'track_order') {
       setOpenOrderTrackingModal(true);
+      setCurrentOrder(order);
+    }
+    if (menu === 'accept_urgent_order') {
+      setOpenUrgentOrder(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'flag_test') {
+      setFlagModalNew(true);
+      setCurrentOrder(order);
+    }
+
+    if (menu === 'adjust_order') {
+      setOpenAdjustmentOrder(true);
       setCurrentOrder(order);
     }
   };
@@ -629,9 +659,31 @@ export default function OrderTable({
     renderCell: (params) => (
       <ThreeDotsMenu
         handleMenuClick={(menu) => {
-          threeDotHandler(menu, params?.row);
+          threeDotHandler(
+            menu,
+            params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+              ? params?.row?.originalOrder
+              : params?.row,
+          );
         }}
-        menuItems={getThreedotMenuOptions(params?.row, adminType)}
+        disabled={
+          !getThreedotMenuOptions(
+            params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+              ? params?.row?.originalOrder
+              : params?.row,
+            currentUser?.adminType === 'admin' || (currentUser?.adminType === 'customerService' && showFor === 'admin')
+              ? 'admin'
+              : currentUser?.adminType,
+          ).length
+        }
+        menuItems={getThreedotMenuOptions(
+          params?.row?.isReplacementOrder && params?.row?.orderStatus === 'delivered'
+            ? params?.row?.originalOrder
+            : params?.row,
+          currentUser?.adminType === 'admin' || (currentUser?.adminType === 'customerService' && showFor === 'admin')
+            ? 'admin'
+            : currentUser?.adminType,
+        )}
       />
     ),
   };
@@ -750,6 +802,58 @@ export default function OrderTable({
         <Box>
           <OrderTrackingModal currentOrder={currentOrder} onClose={() => setOpenOrderTrackingModal(false)} />
         </Box>
+      </Modal>
+
+      <Modal open={openAddressChange}>
+        <ChangeDeliveryAddress
+          order={currentOrder}
+          onClose={() => {
+            setOpenAddressChange(false);
+          }}
+        />
+      </Modal>
+
+      {/* adjustment order */}
+
+      <Modal
+        open={openAdjustmentOrder}
+        onClose={() => {
+          setOpenAdjustmentOrder(false);
+        }}
+      >
+        <AdjustmentOrder
+          order={currentOrder}
+          onClose={() => {
+            setOpenAdjustmentOrder(false);
+            setCurrentOrder({});
+          }}
+        />
+      </Modal>
+
+      <Modal sx={{ zIndex: '100 !important' }} open={flagModalNew}>
+        <FlaggedModal
+          onClose={() => {
+            setFlagModalNew(false);
+          }}
+          order={currentOrder}
+        />
+      </Modal>
+
+      {/*  cancel order with flag modal */}
+      <Modal
+        open={openCancelModalNew}
+        sx={{ zIndex: '100 !important' }}
+        onClose={() => {
+          setOpenCancelModalNew(false);
+        }}
+      >
+        <FlaggedModal
+          onClose={() => {
+            setOpenCancelModalNew(false);
+          }}
+          order={currentOrder}
+          showFor="cancel-order"
+        />
       </Modal>
     </Box>
   );
