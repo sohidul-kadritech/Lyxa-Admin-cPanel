@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -236,7 +237,6 @@ export default function MarketingProductsTable({
         const discountAmount = (params?.row?.price / 100) * findProduct?.discountPercentage;
 
         if (params?.row?.isCategoryHeader) {
-          // eslint-disable-next-line react/jsx-no-useless-fragment
           return <></>;
         }
 

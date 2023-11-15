@@ -624,17 +624,15 @@ export default function MarketingDashboard({ viewUserType }) {
                 queryClient.invalidateQueries(`marketing-settings`),
                 queryClient.invalidateQueries(`marketing-dashboard-${params?.id}`),
                 queryClient.invalidateQueries(
-                  `marketing-graph-orders-${params?.id}-${orderRange.start}-${orderRange.end}`,
+                  `marketing-graph-orders-${params?.id}-${orderRange?.start}-${orderRange?.end}`,
                 ),
                 queryClient.invalidateQueries(
-                  `marketing-graph-customer-${params?.id}-${customerRange.start}-${customerRange.end}`,
+                  `marketing-graph-customer-${params?.id}-${customerRange?.start}-${customerRange?.end}`,
                 ),
                 queryClient.invalidateQueries(
-                  `marketing-graph-amount-${params?.id}-${amountRange.start}-${amountRange.end}`,
+                  `marketing-graph-amount-${params?.id}-${amountRange?.start}-${amountRange?.end}`,
                 ),
               ]);
-
-              // console.log('marketing data', { data }, data?.data?.marketing?._id);
 
               if (params?.type === 'percentage') {
                 const route = {
