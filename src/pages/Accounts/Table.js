@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-named-as-default */
 // project import
 import { Edit, Visibility } from '@mui/icons-material';
-import { Box, Drawer, Stack, Typography } from '@mui/material';
+import { Box, Chip, Drawer, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -15,6 +17,7 @@ import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
+import { statusColorVariants } from '../NewOrder/helpers';
 import TableSkeleton from './Skeleton';
 import ViewAccountInfo from './ViewAccount';
 
@@ -29,9 +32,11 @@ const listFilterOptions = [
   },
 ];
 
-export default function UsersTable({ users = [], page, setPage, totalPage, loading }) {
+export default function UsersTable({ users = [], page, setPage, totalPage, loading, showFor }) {
   const queryClient = useQueryClient();
   const { currentUser } = useGlobalContext();
+
+  console.log('log', { users });
 
   const { admin } = currentUser;
 
@@ -56,33 +61,39 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
 
   const columns = [
     {
+      showFor: ['normal', 'subscribed'],
       id: 1,
       headerName: 'ACCOUNT NAME',
       field: 'user',
       flex: 1.5,
+      minWidth: 200,
       sortable: false,
       renderCell: ({ row }) => (
-        <UserAvatar
-          imgAlt="user-image"
-          imgUrl={row?.profile_photo}
-          imgFallbackCharacter={row?.name?.charAt(0)}
-          name={row?.name}
-          subTitle={row?.autoGenId}
-          titleProps={{
-            sx: { color: 'primary.main', cursor: 'pointer' },
-            onClick: () => {
-              history.push(`/users/${row?._id}`, {
-                user: row,
-              });
-            },
-          }}
-        />
+        <Stack py={3}>
+          <UserAvatar
+            imgAlt="user-image"
+            imgUrl={row?.profile_photo}
+            imgFallbackCharacter={row?.name?.charAt(0)}
+            name={row?.name}
+            subTitle={row?.autoGenId}
+            titleProps={{
+              sx: { color: 'primary.main', cursor: 'pointer' },
+              onClick: () => {
+                history.push(`/users/${row?._id}`, {
+                  user: row,
+                });
+              },
+            }}
+          />
+        </Stack>
       ),
     },
     {
+      showFor: ['normal', 'subscribed'],
       id: 2,
       headerName: 'ZONE',
       field: 'zone',
+      minWidth: 150,
       flex: 1,
       sortable: false,
       renderCell: ({ value }) => (
@@ -92,10 +103,12 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
+      showFor: ['normal', 'subscribed'],
       id: 3,
       headerName: 'E-MAIL',
       field: 'email',
       sortable: false,
+      minWidth: 200,
       flex: 1.5,
       renderCell: ({ value }) => (
         <Typography className="text-dots" variant="body4" pr={3}>
@@ -104,10 +117,12 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
+      showFor: ['normal', 'subscribed'],
       id: 3,
       headerName: 'PHONE #',
       field: 'phone_number',
       sortable: false,
+      minWidth: 200,
       flex: 1.5,
       renderCell: ({ value }) => (
         <Typography className="text-dots" variant="body4" pr={3}>
@@ -116,6 +131,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
+      showFor: ['normal', 'subscribed'],
       id: 4,
       headerName: 'ORDERS',
       field: 'orderCompleted',
@@ -124,10 +140,12 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       renderCell: ({ value }) => <Typography variant="body4">{value}</Typography>,
     },
     {
+      showFor: ['normal', 'subscribed'],
       id: 5,
       headerName: 'STATUS',
       field: 'status',
       sortable: false,
+      minWidth: 150,
       flex: 1,
       renderCell: ({ value, row }) => (
         <FilterSelect
@@ -153,14 +171,94 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
+      showFor: ['subscribed'],
+      id: 5,
+      headerName: 'AUTO RENEW',
+      field: 'subscriptionAutoRenew',
+      sortable: false,
+      minWidth: 180,
+      flex: 1.5,
+      renderCell: ({ value, row }) => (
+        <Stack alignItems="center" gap={1}>
+          <Chip
+            label={row?.subscription?.subscriptionAutoRenew ? 'Auto-Renewed' : 'Cancelled'}
+            sx={{
+              height: 'auto',
+              padding: '12px 23px',
+              borderRadius: '40px',
+              textTransform: 'capitalize',
+              ...(statusColorVariants[row?.subscription?.subscriptionAutoRenew] || {}),
+            }}
+            variant="contained"
+          />
+          {!row?.subscription?.subscriptionAutoRenew && (
+            <Box sx={{ maxWidth: '180px' }}>
+              <Typography
+                variant="body3"
+                sx={{
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 2, // Number of lines to show
+                  textAlign: 'center',
+                }}
+              >
+                Reason: {row?.subscription?.subscriptionCancelReason || ''}
+              </Typography>
+            </Box>
+          )}
+        </Stack>
+      ),
+    },
+    {
+      showFor: ['subscribed'],
+      id: 5,
+      headerName: 'PACKAGE',
+      field: 'subscriptionPackage',
+      sortable: false,
+      minWidth: 100,
+      flex: 1.5,
+      renderCell: ({ value, row }) => (
+        <Typography
+          variant="body"
+          sx={{
+            textTransform: 'capitalize',
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2, // Number of lines to show
+          }}
+        >
+          {row?.subscription?.subscriptionPackage || ''}
+        </Typography>
+      ),
+    },
+    {
+      showFor: ['normal'],
       id: 6,
       headerName: 'CREATION DATE',
       field: 'createdAt',
       sortable: false,
+      minWidth: 150,
       flex: 1,
       renderCell: ({ value }) => <TableDateTime date={value} />,
     },
     {
+      showFor: ['subscribed'],
+      id: 6,
+      headerName: 'END DATE',
+      field: 'subscriptionDuration',
+      minWidth: 150,
+      sortable: false,
+      flex: 1,
+      renderCell: ({ value, row }) => <TableDateTime date={row?.subscription?.subscriptionDuration?.end} />,
+    },
+    {
+      showFor: ['normal', 'subscribed'],
       id: 7,
       headerName: '',
       field: 'action',
@@ -213,10 +311,10 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
         }}
       >
         <StyledTable
-          columns={columns}
+          columns={columns?.filter((column) => column?.showFor?.includes(showFor))}
           rows={users}
           getRowId={(row) => row?._id}
-          rowHeight={71}
+          getRowHeight={() => 'auto'}
           components={{
             NoRowsOverlay: () => (
               <Stack height="100%" alignItems="center" justifyContent="center">
