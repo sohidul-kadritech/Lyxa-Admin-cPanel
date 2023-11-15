@@ -17,7 +17,6 @@ import ShopListTable from './Table';
 
 const tabOptionsForSubscriptions = [
   { value: 'undefined', label: 'All' },
-  { value: 'no', label: 'Normal' },
   { value: 'yes', label: 'Subscription' },
 ];
 
@@ -48,8 +47,11 @@ const menuItems = [
 
 export default function ShopList() {
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
+
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
   const [queryParams, setQueryParams] = useQueryParams(queryParamsInit('food'));
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -57,7 +59,9 @@ export default function ShopList() {
   const [plusShop, setPlusShop] = useState(queryParams?.plusShop ? queryParams?.plusShop : 'undefined');
 
   const [totalPage, setTotalPage] = useState(1);
+
   const [open, setOpen] = useState(null);
+
   const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery(
