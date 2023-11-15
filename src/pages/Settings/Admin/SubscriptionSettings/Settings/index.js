@@ -39,6 +39,7 @@ SUBSCRIPTION_SETTINGS_EDIT
     {
       onSuccess: (data, payload) => {
         queryClient.invalidateQueries(API_URL.SUBSCRIPTION_SETTINGS);
+        console.log('payload', payload);
         if (data?.status) {
           if (!payload?.isToggled) successMsg(data?.message, 'success');
           setSidebar(false);
@@ -59,7 +60,6 @@ SUBSCRIPTION_SETTINGS_EDIT
   };
 
   const updateField = (row, isToggled = false) => {
-    console.log('click on updateField', row);
     updateSubscriptionSettingsQuery.mutate({ body: { ...row }, isToggled });
   };
 

@@ -27,7 +27,7 @@ export default function EditSubscription({ onClose, editField, updateField, load
       return;
     }
 
-    updateField({ ...field, subscriptionFee: Number(field?.subscriptionFee) }, 'amount');
+    updateField({ ...field, subscriptionFee: Number(field?.subscriptionFee) }, false);
   };
 
   return (
