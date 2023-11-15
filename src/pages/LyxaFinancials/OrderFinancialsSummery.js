@@ -30,11 +30,13 @@ const breadcrumbItems = () => [
 
 function OrderFinancialsSummary() {
   const [paymentDetailsRange, setPaymentDetailsRange] = useState({ ...dateRangeItit });
+
   const { general } = useGlobalContext();
 
   const theme = useTheme();
 
   const appSettings = general?.appSetting;
+
   const { baseCurrency, secondaryCurrency } = appSettings;
 
   const [currentExpanedTab, seCurrentExpanedTab] = useState(-1);
@@ -96,6 +98,12 @@ function OrderFinancialsSummary() {
   const otherAmount = summary?.other;
 
   const addRemoveCredit = summary?.addRemoveCredit;
+
+  const subscriptionEarning = summary?.subscriptionEarning;
+
+  const subscriptionSpent = summary?.subscriptionSpent;
+
+  console.log({ summary });
 
   return (
     <Box>
@@ -644,6 +652,62 @@ function OrderFinancialsSummary() {
           </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
+              title="Subscription Spent"
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 9 ? 9999 : 99 }}
+              isDropdown
+              index={9}
+              setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 9}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(subscriptionSpent?.totalSubscriptionSpent || 0).toFixed(2)}
+                  </Typography>
+                  {subscriptionSpent?.secondaryCurrency_subscriptionSpent >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(subscriptionSpent, 'subscription_spent'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
+                </Stack>
+              }
+              sm={6}
+              md={4}
+              lg={4}
+            >
+              <Stack gap={3}>
+                <PriceItem title="Discount" amount={subscriptionSpent?.totalSubscriptionDiscount} showIfZero />
+
+                <PriceItem
+                  title="Buy 1, Get 1"
+                  amount={subscriptionSpent?.totalSubscriptionDoubleMenuLoss}
+                  showIfZero
+                />
+
+                <PriceItem title="Free delivery" amount={subscriptionSpent?.totalSubscriptionFreeDelivery} showIfZero />
+              </Stack>
+            </InfoCard>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
               title="Free delivery by shop"
               sx={{ position: 'relative', left: 0 }}
               valueComponent={
@@ -727,7 +791,7 @@ function OrderFinancialsSummary() {
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Add/Remove Credit"
-              sx={{ position: 'relative', left: 0, zIndex: 990 }}
+              sx={{ position: 'absolute', left: 0, zIndex: 990 }}
               isDropdown
               index={10}
               setExpandedIndex={setExpandedIndex}
@@ -813,6 +877,49 @@ function OrderFinancialsSummary() {
                   >
                     {currency} {(getPendingFinancialsDashBoard?.data?.data?.totalOngoingOrderAmount || 0).toFixed(2)}
                   </Typography>
+                </Stack>
+              }
+              sm={6}
+              md={4}
+              lg={4}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Subscription Earning"
+              sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
+              index={8}
+              setExpandedIndex={setExpandedIndex}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(subscriptionEarning?.totalSubscriptionEarning || 0).toFixed(2)}
+                  </Typography>
+                  {subscriptionEarning?.secondaryCurrency_subscriptionEarning >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(subscriptionEarning, 'subscription_earning'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
                 </Stack>
               }
               sm={6}

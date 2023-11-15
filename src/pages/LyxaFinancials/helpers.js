@@ -130,5 +130,21 @@ export const bothCurrencyProfitbreakDown = (data, type) => {
     return template;
   }
 
+  if (type === 'subscription_spent') {
+    template.secondaryCurrency_adminProfit = data?.secondaryCurrency_subscriptionSpent || 0;
+    template.baseCurrency_adminProfit = data?.baseCurrency_subscriptionSpent || 0;
+    template.totalAdminProfit = data?.totalSubscriptionSpent || 0;
+
+    return template;
+  }
+
+  if (type === 'subscription_earning') {
+    template.secondaryCurrency_adminProfit = data?.secondaryCurrency_subscriptionEarning || 0;
+    template.baseCurrency_adminProfit = data?.baseCurrency_subscriptionEarning || 0;
+    template.totalAdminProfit = data?.totalSubscriptionEarning || 0;
+
+    return template;
+  }
+
   return template;
 };
