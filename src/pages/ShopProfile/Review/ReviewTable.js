@@ -206,9 +206,9 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews,
         }}
       >
         <StyledTable
-          rows={reviews}
+          rows={localDatePagination(reviews, currentPage, 15)}
           columns={columns}
-          reviews={localDatePagination(reviews, currentPage, 5)}
+          // reviews={localDatePagination(reviews, currentPage, 5)}
           getRowId={(row) => row?._id}
           rowHeight={71}
           components={{
@@ -225,7 +225,7 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews,
         lisener={(page) => {
           setCurrentPage(page);
         }}
-        totalPage={Math.ceil(reviews.length / 5)}
+        totalPage={Math.ceil(reviews.length / 15)}
       />
 
       <ConfirmModal

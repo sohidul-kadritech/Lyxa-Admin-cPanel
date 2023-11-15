@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Drawer } from '@mui/material';
 import moment from 'moment';
@@ -14,7 +15,7 @@ import OrderTable from '../../NewOrder/OrderTable';
 
 export const queryParamsInit = {
   page: 1,
-  pageSize: 10,
+  pageSize: 15,
   sortBy: 'DESC',
   type: 'all',
   startDate: getFirstMonday('week'),
@@ -41,7 +42,7 @@ export default function RiderOrders({ riderId }) {
         console.log(data);
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   return (

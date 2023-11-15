@@ -109,6 +109,7 @@ export default function OrderTable({ orders = [], onRowClick, orderType, adminTy
       headerName: 'ACCOUNT',
       field: 'orders',
       flex: orderType === 'cancelled ' ? 1.5 : 1,
+
       sortable: false,
       renderCell: ({ row }) => (
         <UserAvatar
