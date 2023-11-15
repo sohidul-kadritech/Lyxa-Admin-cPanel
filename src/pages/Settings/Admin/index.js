@@ -119,7 +119,7 @@ export default function AdminSettings() {
           searchPlaceHolder="Search Page"
         />
       </Box>
-      <PageList items={list} />
+      <PageList items={list.sort((a, b) => a.label.localeCompare(b.label))} />
     </Box>
   );
 }
