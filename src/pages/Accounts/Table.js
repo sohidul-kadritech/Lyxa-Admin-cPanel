@@ -89,7 +89,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
-      showFor: ['normal', 'subscribed'],
+      showFor: ['normal'],
       id: 2,
       headerName: 'ZONE',
       field: 'zone',
@@ -103,7 +103,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
-      showFor: ['normal', 'subscribed'],
+      showFor: ['normal'],
       id: 3,
       headerName: 'E-MAIL',
       field: 'email',
@@ -117,7 +117,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
       ),
     },
     {
-      showFor: ['normal', 'subscribed'],
+      showFor: ['normal'],
       id: 3,
       headerName: 'PHONE #',
       field: 'phone_number',
@@ -215,7 +215,7 @@ export default function UsersTable({ users = [], page, setPage, totalPage, loadi
     {
       showFor: ['subscribed'],
       id: 5,
-      headerName: 'PACKAGE',
+      headerName: 'SUBS TYPE',
       field: 'subscriptionPackage',
       sortable: false,
       minWidth: 100,

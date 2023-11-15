@@ -70,8 +70,8 @@ export default function AccountList() {
             setQueryParams((prev) => ({ ...prev, userType: tabValueToIndex[newValue] }));
           }}
         >
-          <Tab label="Normal" />
-          <Tab label="Subscribed" />
+          <Tab label="Lyxa Users" />
+          <Tab label="Lyxa Plus Users" />
         </Tabs>
 
         <SearchBar

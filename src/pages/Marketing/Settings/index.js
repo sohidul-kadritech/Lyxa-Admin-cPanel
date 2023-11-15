@@ -877,13 +877,13 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   }}
                   Title={
                     <CommonTitle
-                      title="Subscribers Only"
+                      title="Offer Availabe For"
                       subTitle={
                         currentExpanedTab === 3
-                          ? 'This toggle only allows subscribers to receive this offer when it is turned on.'
+                          ? 'This toggle only allows lyxa plus users to receive this offer when it is turned on.'
                           : subscribed
-                          ? 'Only for subscribed user'
-                          : 'For All Users'
+                          ? 'Only for Lyxa Plus user'
+                          : 'For Lyxa Users'
                       }
                     />
                   }
@@ -910,7 +910,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                           color: subscribed ? 'primary.main' : '#F78C3F',
                         }}
                       >
-                        {subscribed ? 'Only For Subscribed Users' : 'For All Users'}
+                        {subscribed ? 'Lyxa Plus Users' : 'All Lyxa Users'}
                       </Typography>
                       <StyledSwitch
                         checked={subscribed}
