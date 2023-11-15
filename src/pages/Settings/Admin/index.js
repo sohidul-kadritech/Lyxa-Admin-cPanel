@@ -15,6 +15,10 @@ const getPageList = () => [
     to: '/settings/zone',
   },
   {
+    label: 'Subscription Settings',
+    to: '/settings/subscription-settings',
+  },
+  {
     label: 'Products',
     to: '/settings/products',
   },
@@ -71,14 +75,15 @@ const getPageList = () => [
     label: 'Request New Area',
     to: '/admin/requested-area',
   },
-  {
-    label: 'Transaction',
-    to: '/admin/transactions',
-  },
-  {
-    label: 'Chat',
-    to: '/customer-support',
-  },
+
+  // {
+  //   label: 'Transaction',
+  //   to: '/admin/transactions',
+  // },
+  // {
+  //   label: 'Chat',
+  //   to: '/customer-support',
+  // },
   {
     label: 'Payout Configuration',
     to: '/settings/payout-configuration',
@@ -88,10 +93,10 @@ const getPageList = () => [
 const filterPages = (searchKey, pages) => {
   if (searchKey === '') return pages;
 
-  return pages.filter((page) =>
+  return pages?.filter((page) =>
     page?.label
       ?.toLowerCase()
-      .includes(searchKey.toLowerCase() || page?.to?.toLowerCase().includes(searchKey.toLowerCase())),
+      .includes(searchKey?.toLowerCase() || page?.to?.toLowerCase().includes(searchKey?.toLowerCase())),
   );
 };
 

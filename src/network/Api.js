@@ -218,6 +218,9 @@ export const DELIVERY_BOY_SHOP_RATING = `${ADMIN_ENDPOINT}/order/delivery/shop-r
 export const DELIVERY_BOY_CUSTOMER_RATING = `${ADMIN_ENDPOINT}/order/delivery/customer-rating`;
 
 //  SETTINGS
+export const SUBSCRIPTION_SETTINGS = `${ADMIN_ENDPOINT}/setting/subscription-setting`;
+export const SUBSCRIPTION_SETTINGS_EDIT = `${ADMIN_ENDPOINT}/setting/subscription-setting/edit`;
+
 export const ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting`;
 
 export const UPDATE_ADMINS_SETTINGS = `${ADMIN_ENDPOINT}/admin/setting/admin-setting/edit`;
