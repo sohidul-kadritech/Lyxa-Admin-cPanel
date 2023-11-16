@@ -3,10 +3,13 @@
 import { Stack, Typography, debounce } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import CustomerLocation from '../../../../assets/icons/customer-location.png';
 import { smoothPanTo } from '../../../../components/Shared/ChangeDeliveryAddress/helpers';
 import StyledSearchBar from '../../../../components/Styled/StyledSearchBar';
 import * as API_URL from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
+import { isThisPolygonHasAnyMarker } from '../../../ServiceZone/ZoneMap';
+import { convertedLatLonToLonLat } from '../../../ServiceZone/helper';
 import ZoneCard from './ZoneCard';
 
 function RidersWithZone({ mapRef }) {
@@ -27,7 +30,43 @@ function RidersWithZone({ mapRef }) {
     if (value?.length > 0) {
       const { google } = window;
       const center = new google.maps.LatLng(value[0][0][1], value[0][0][0]);
-      smoothPanTo(mapRef, center, 400, google);
+      const bounds = new google.maps.LatLngBounds();
+      const getAllLatLngCoordinates =
+        value?.length > 0 ? value[0]?.map((latLng) => new google.maps.LatLng(latLng[1], latLng[0])) : [];
+
+      const userIcon = {
+        url: CustomerLocation,
+        scaledSize: new google.maps.Size(30, 60),
+      };
+
+      getAllLatLngCoordinates.forEach((coordinates) => {
+        bounds.extend(coordinates);
+      });
+
+      const boundsCenter = bounds.getCenter();
+
+      const modifiedPolygonData = convertedLatLonToLonLat(value[0]);
+
+      const isIntersect = isThisPolygonHasAnyMarker(modifiedPolygonData, {
+        lat: boundsCenter.lat(),
+        lng: boundsCenter.lng(),
+      });
+
+      console.log({ isIntersect });
+
+      mapRef.currentLocation.setMap(null);
+
+      mapRef.currentLocation = new google.maps.Marker({
+        position: isIntersect ? boundsCenter : center,
+        icon: userIcon,
+        map: mapRef?.map,
+      });
+
+      // mapRef?.currentLocation?.setPosition(isIntersect ? boundsCenter : center);
+
+      smoothPanTo(mapRef?.map, center, 400, google);
+
+      setTimeout(() => mapRef?.map.fitBounds(bounds), 1000);
     }
   };
   return (

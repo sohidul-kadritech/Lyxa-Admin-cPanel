@@ -119,7 +119,6 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
       });
 
       // Rider Title
-
       let infowindowForRider = new google.maps.InfoWindow({
         content: getTitleForMarker(order?.deliveryBoy?.name || 'Rider Title'),
       });
@@ -132,6 +131,7 @@ export default function OrderTrackingMap({ pickup = {}, dropoff = {}, order, ord
 
       bounds.extend(riderLocation.getPosition());
     }
+
     bounds.extend(userLocation.getPosition());
     bounds.extend(shopLocation.getPosition());
     map.fitBounds(bounds);

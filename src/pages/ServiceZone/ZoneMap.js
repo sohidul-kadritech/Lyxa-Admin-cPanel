@@ -23,7 +23,6 @@ import {
 import mapUrlProvider from './mapUrlProvider';
 
 function getTurfPolygonData(data) {
-  console.log('data', data);
   if (data.length > 4) {
     return [[...data, data[0]]];
   }
@@ -31,7 +30,23 @@ function getTurfPolygonData(data) {
   return [[...data, data[0], data[0], data[0]]];
 }
 
+export function isThisPolygonHasAnyMarker(polygon, marker = { lat: 0, lng: 1 }) {
+  console.log({ polygon });
+  let isIntersects = false;
+
+  const polygonFeature = turf.polygon(getTurfPolygonData(polygon));
+
+  const markerPoint = turf.point([marker?.lat, marker?.lng]);
+
+  if (turf.booleanPointInPolygon(markerPoint, polygonFeature)) {
+    isIntersects = true;
+  }
+
+  return isIntersects;
+}
+
 function isThisPolygonHasAnyStore(polygon, stores) {
+  console.log({ polygon });
   let isIntersects = false;
 
   const polygonFeature = turf.polygon(getTurfPolygonData(polygon));
