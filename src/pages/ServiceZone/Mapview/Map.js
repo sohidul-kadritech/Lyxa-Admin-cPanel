@@ -96,6 +96,8 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
       });
     });
 
+    const bounds = new google.maps.LatLngBounds();
+
     // set polygon of each zone
     formateZoneCoordinates(zones).forEach((item, i) => {
       console.log({ color: colorList[i + (1 % 50)], i });
@@ -104,6 +106,10 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
       if (coordinates && coordinates.length > 0) {
         // Transform the coordinates into LatLng objects
         const path = coordinates.map((coord) => new google.maps.LatLng(coord.lat, coord.lng));
+
+        // path.forEach((coor) => {
+        //   bounds.extend(coor);
+        // });
 
         const polygon = new google.maps.Polygon({
           paths: path, // Use the transformed coordinates
@@ -130,6 +136,8 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
         google.maps.event.addListener(polygon, 'mouseout', () => {
           infoWindow.close();
         });
+
+        // map.fitBounds(bounds);
       }
     });
 
