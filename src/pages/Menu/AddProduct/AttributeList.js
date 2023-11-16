@@ -11,7 +11,7 @@ const attributeInit = {
   extraPrice: '0',
 };
 
-function AttributeList({ items, readOnly }) {
+function AttributeList({ items, readOnly, setMaxLimit }) {
   const { general } = useGlobalContext();
   const currency = general?.currency?.symbol;
 
@@ -21,6 +21,7 @@ function AttributeList({ items, readOnly }) {
 
   const onDelete = (item, index) => {
     items.splice(index, 1);
+    setMaxLimit(items?.length);
     setRender(!render);
   };
 
@@ -89,6 +90,8 @@ function AttributeList({ items, readOnly }) {
           }
           setShowAddNew(true);
           items.push({ ...attributeInit });
+          console.log(items?.length);
+          setMaxLimit(items?.length);
           setRender(!render);
         }}
       >

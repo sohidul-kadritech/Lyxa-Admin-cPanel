@@ -34,7 +34,6 @@ export const checkAnyDeals = (product) => {
   return false;
 };
 export const checkAnyMarketing = (product) => {
-  console.log('check any deals marketing product', product);
   const deals = product?.marketing?.find((item) => item?.isActive);
   if (deals) return deals;
   return false;

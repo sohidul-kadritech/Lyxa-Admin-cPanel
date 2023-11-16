@@ -91,7 +91,7 @@ function Product() {
           <Tabs
             value={Number(queryParams?.currentTab)}
             onChange={(event, newValue) => {
-              setQueryParams((prev) => ({ ...prev, type: shopType[newValue], currentTab: newValue }));
+              setQueryParams((prev) => ({ ...prev, type: shopType[newValue], currentTab: newValue, page: 1 }));
             }}
           >
             <Tab label="Food"></Tab>

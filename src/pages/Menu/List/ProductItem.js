@@ -40,15 +40,22 @@ export default function ProductItem({
 }) {
   // console.log({ suggestedProducts });
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
+
   const theme = useTheme();
+
   const history = useHistory();
+
   const location = useLocation();
 
   // eslint-disable-next-line no-unused-vars
   const [exchangeCurrency, setExchangeCurrency] = useState(getExchangeRate(secondaryCurrency, product));
+
   const [render, setRender] = useState(false);
+
   const { currentUser, general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
+
   const { shop } = currentUser;
 
   useEffect(() => {
