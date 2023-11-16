@@ -50,6 +50,23 @@ function MapView({ onClose }) {
         if (data?.status) {
           if (data?.data?.zones?.length > 0) {
             setZoneName(data?.data?.zones[0]?.zoneName);
+
+            if (mapReference?.marker && mapReference?.map) {
+              const { google } = window;
+              // change center position
+
+              const bounds = new google.maps.LatLngBounds();
+              // get all co-ordinates to fit in map view
+              const getAllLatLngCoordinates = data?.data?.zones[0]?.zoneGeometry?.coordinates[0]?.map(
+                (latLng) => new google.maps.LatLng(latLng[1], latLng[0]),
+              );
+
+              getAllLatLngCoordinates.forEach((coordinates) => {
+                bounds.extend(coordinates);
+              });
+
+              setTimeout(() => mapReference?.map.fitBounds(bounds), 400);
+            }
           } else {
             setZoneName('');
           }
