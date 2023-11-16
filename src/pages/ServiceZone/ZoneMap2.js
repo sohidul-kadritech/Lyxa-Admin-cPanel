@@ -55,6 +55,8 @@ function ZoneMap2({ infoData, polygon, zoneName }) {
       {/* Map edit controler */}
       <FeatureGroup></FeatureGroup>
 
+      {/* <FullscreenControl /> */}
+
       <TileLayer url={mapUrlProvider.maptiler.url}></TileLayer>
       <Polygon positions={convertedLonLatToLatLon(polygon[0]).slice(0, -1)} pathOptions={{ color: `#000000` }}>
         <Tooltip className="custom-tooltip" direction="top" offset={[-15, -10]} opacity={1} sticky>

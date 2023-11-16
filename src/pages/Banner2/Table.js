@@ -81,7 +81,7 @@ function AddBannerTable({
               textOverflow: 'ellipsis',
             }}
           >
-            {row?.clickType || 'Default'}
+            {row?.clickType === 'plus' ? 'Lyxa Plus Link' : row?.clickType || 'Default'}
           </Typography>
         </Stack>
       ),
@@ -134,7 +134,6 @@ function AddBannerTable({
               background: theme?.palette?.background?.secondary,
             }}
             onClick={() => {
-              console.log(row);
               setRowData(row);
               setOpen(() => {
                 setIsEdit(true);

@@ -40,15 +40,22 @@ export default function ProductItem({
 }) {
   // console.log({ suggestedProducts });
   const { favorites, setEditProduct, bestSellers, setFavorites, setUpdatedProduct } = useContext(ProductsContext);
+
   const theme = useTheme();
+
   const history = useHistory();
+
   const location = useLocation();
 
   // eslint-disable-next-line no-unused-vars
   const [exchangeCurrency, setExchangeCurrency] = useState(getExchangeRate(secondaryCurrency, product));
+
   const [render, setRender] = useState(false);
+
   const { currentUser, general } = useGlobalContext();
+
   const currency = general?.currency?.symbol;
+
   const { shop } = currentUser;
 
   useEffect(() => {
@@ -204,6 +211,9 @@ export default function ProductItem({
       pr={5}
       onClick={() => {
         if (editable) setEditProduct(product, true);
+        if (OnCheckProduct) {
+          OnCheckProduct(product);
+        }
       }}
       {...props}
     >
@@ -224,6 +234,9 @@ export default function ProductItem({
             checkedIcon={<CheckedIcon />}
             icon={<UncheckIcon />}
             checked={isChecked}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             onChange={() => {
               if (OnCheckProduct) {
                 OnCheckProduct(product);
@@ -246,7 +259,9 @@ export default function ProductItem({
           <Avatar src={product?.images[0]} alt={product?.name} variant="rounded" sx={{ width: 66, height: 52 }}>
             {product?.name?.charAt(0)}
           </Avatar>
+
           {product?.status === 'inactive' && <ProductOverlayTag label="Deactivated" color="#363636" />}
+
           {product?.stockQuantity < 1 && product?.status === 'active' && (
             <ProductOverlayTag label="Out of Stock" color="#DD5B63" />
           )}

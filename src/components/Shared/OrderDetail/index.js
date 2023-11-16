@@ -44,6 +44,8 @@ function OrderUpdateForShop({
   const isPreparing = statusOptions[getNextStatus(order)]?.label === 'Preparing';
   const isSpecific = order?.orderFor !== 'global';
 
+  console.log({ order });
+
   const shouldReplacementOrderOntheWay =
     !order?.isReplacementItemPickFromUser &&
     order?.replacementOrderDeliveryInfo?.deliveryType === 'shop-customer-shop' &&
@@ -58,7 +60,9 @@ function OrderUpdateForShop({
             direction="row"
             justifyContent={
               statusOptions[getNextStatus(order)]?.label === 'Preparing' ||
-              (order?.orderStatus === 'preparing' && !order?.adjustOrderReques)
+              (order?.orderStatus === 'preparing' && !order?.adjustOrderRequest)
+                ? 'space-between'
+                : !order?.preparingAt
                 ? 'space-between'
                 : 'flex-end'
             }
@@ -70,7 +74,7 @@ function OrderUpdateForShop({
                 </Button>
               )}
               {/* @If the next status is preparing then it will visible otherwise not (Reject button) */}
-              {statusOptions[getNextStatus(order)]?.label === 'Preparing' && (
+              {(statusOptions[getNextStatus(order)]?.label === 'Preparing' || !order?.preparingAt) && (
                 <Button onClick={onClickReject} variant="contained" size="small" color="danger">
                   Reject
                 </Button>
@@ -95,7 +99,7 @@ function OrderUpdateForShop({
                       !order?.isOrderAdjusted)
                   }
                 >
-                  {statusOptions[getNextStatus(order)]?.label === 'Preparing'
+                  {statusOptions[getNextStatus(order)]?.label === 'Preparing' || !order?.preparingAt
                     ? 'Accept'
                     : shouldReplacementOrderOntheWay
                     ? 'Replacement Order on The Way'

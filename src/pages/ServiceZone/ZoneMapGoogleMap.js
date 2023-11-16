@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
-import CustomerLocation from '../../../assets/icons/customer-location.png';
-import GroceryLocation from '../../../assets/icons/grocery-location.png';
-import PharmacyLocation from '../../../assets/icons/pharmacy-location.png';
-import ReturantLocation from '../../../assets/icons/restaurant-location.png';
-import { addCurrentLocationControl, smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/helpers';
-import { getTitleForMarker, getTitleForStoreMarker } from '../../AdminOrderTable/OrderTracking/helpers';
-import { colorList } from '../helper';
-import { formateZoneCoordinates } from './helpers';
+import CustomerLocation from '../../assets/icons/customer-location.png';
+import GroceryLocation from '../../assets/icons/grocery-location.png';
+import PharmacyLocation from '../../assets/icons/pharmacy-location.png';
+import ReturantLocation from '../../assets/icons/restaurant-location.png';
+import { addCurrentLocationControl, smoothPanTo } from '../../components/Shared/ChangeDeliveryAddress/helpers';
+import { getTitleForMarker, getTitleForStoreMarker } from '../AdminOrderTable/OrderTracking/helpers';
+import { formateZoneCoordinates } from './Mapview/helpers';
+import { colorList } from './helper';
 
 const orderTypeToIconMap = {
   grocery: GroceryLocation,
@@ -16,7 +16,15 @@ const orderTypeToIconMap = {
   food: ReturantLocation,
 };
 
-function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], stores = [] }) {
+function ZoneMapGoogleMap({
+  currentLocation,
+  getSelectedLatLng,
+  setMapReference,
+  polygon,
+  zoneName,
+  zones = [],
+  infoData = [],
+}) {
   const { google } = window;
   const mapRef = useRef();
   const sidebar = useRef();
@@ -27,8 +35,9 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     // initializing google map here
     let isMounted = true;
     // center points
+
     const map = new google.maps.Map(mapRef.current, {
-      center: { lat: currentLocation?.latitude || 0, lng: currentLocation?.longitude || 0 },
+      center: { lat: infoData[0]?.location?.coordinates[1] || 0, lng: infoData[0]?.location?.coordinates[0] || 0 },
       zoom: 15,
       disableDefaultUI: true,
     });
@@ -49,7 +58,7 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
       draggable: true,
     });
 
-    setMapReference({ marker: userLocationMarker?.current, map });
+    if (setMapReference) setMapReference({ marker: userLocationMarker?.current, map });
 
     userLocationMarker.current.addListener('dragend', () => {
       // Handle drag end event (e.g., update the new position in your application)
@@ -67,16 +76,16 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     addCurrentLocationControl(map, google, smoothPanTo, getSelectedLatLng, userLocationMarker.current);
 
     // set marker for each stores.
-    stores.forEach((store, i) => {
+    infoData.forEach((data, i) => {
       const shopIcon = {
-        url: orderTypeToIconMap[store?.shopType],
+        url: orderTypeToIconMap[data?.shopType],
         scaledSize: new google.maps.Size(30, 60),
       };
 
       const shopLocation = new google.maps.Marker({
         position: {
-          lat: store?.location?.coordinates[1] || 0,
-          lng: store?.location?.coordinates[0] || 0,
+          lat: data?.location?.coordinates[1] || 0,
+          lng: data?.location?.coordinates[0] || 0,
         },
         icon: shopIcon,
         map,
@@ -84,7 +93,7 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
 
       // store Title
       const infowindowForStore = new google.maps.InfoWindow({
-        content: getTitleForStoreMarker(store?.shopName || 'Store name', store?.shopLogo),
+        content: getTitleForStoreMarker(data?.shopName || 'Store name', data?.shopLogo),
       });
 
       shopLocation.addListener('mouseover', () => {
@@ -97,6 +106,48 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     });
 
     const bounds = new google.maps.LatLngBounds();
+
+    console.log({ polygon });
+
+    if (polygon?.length > 0) {
+      const path = polygon[0].map((coord) => new google.maps.LatLng(coord[1], coord[0]));
+
+      const getAllLatLngCoordinates = polygon[0]?.map((latLng) => new google.maps.LatLng(latLng[1], latLng[0]));
+
+      getAllLatLngCoordinates.forEach((coordinates) => {
+        bounds.extend(coordinates);
+      });
+
+      console.log({ path });
+
+      const polygonView = new google.maps.Polygon({
+        paths: path, // Use the transformed coordinates
+        strokeColor: colorList[1], // Corrected the strokeColor index
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: colorList[1], // Corrected the fillColor index
+        fillOpacity: 0.35,
+      });
+
+      polygonView.setMap(map);
+
+      map.fitBounds(bounds);
+      // Create an InfoWindow to display the tooltip
+      const infoWindow = new google.maps.InfoWindow({
+        content: getTitleForMarker(zoneName),
+      });
+
+      // Add a mouseover event listener to show the tooltip
+      google.maps.event.addListener(polygonView, 'mouseover', (event) => {
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      });
+
+      // Add a mouseout event listener to hide the tooltip
+      google.maps.event.addListener(polygonView, 'mouseout', () => {
+        infoWindow.close();
+      });
+    }
 
     // set polygon of each zone
     formateZoneCoordinates(zones).forEach((item, i) => {
@@ -149,9 +200,9 @@ function Map({ currentLocation, getSelectedLatLng, setMapReference, zones = [], 
     return () => {
       isMounted = false;
     };
-  }, [currentLocation?.latitude, currentLocation?.longitude]);
+  }, [infoData]);
 
   return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }
 
-export default Map;
+export default ZoneMapGoogleMap;

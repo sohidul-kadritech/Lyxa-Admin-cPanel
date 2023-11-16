@@ -23,8 +23,6 @@ export default function ProductsContainer({
   OnCheckProduct,
   suggestedProducts,
 }) {
-  console.log({ type });
-
   const [render, setRender] = useState(false);
   const { currentUser } = useGlobalContext();
   const { shop } = currentUser;

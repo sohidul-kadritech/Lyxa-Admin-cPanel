@@ -187,7 +187,6 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
             rows={getMapoverView?.data?.data?.zones || []}
             onRowClick={(data) => {
               setIsSideBarOpen(true);
-              console.log('row data', data?.row);
               setCurrentRowData(data?.row);
             }}
             getRowId={(row) => row?._id}

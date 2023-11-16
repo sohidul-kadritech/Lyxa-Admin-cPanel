@@ -18,6 +18,7 @@ import { checkAnyMarketing } from '../../../components/Shared/AdjustMentOrder/he
 import StyledAccordion from '../../../components/Styled/StyledAccordion';
 import StyledInput from '../../../components/Styled/StyledInput';
 import StyledRadioGroup from '../../../components/Styled/StyledRadioGroup';
+import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import { useGlobalContext } from '../../../context';
 import { deepClone } from '../../../helpers/deepClone';
 import { successMsg } from '../../../helpers/successMsg';
@@ -55,6 +56,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const [pageMode, setPageMode] = useState(-1);
   const [isScheduled, setIsScheduled] = useState(false);
   const [entireMenu, setEntireMenu] = useState(true);
+
+  const [subscribed, setSubscribed] = useState(false);
 
   // reward settings
   const rewardSettingsQuery = useQuery(['reward-settings'], () => AXIOS.get(Api.GET_ADMIN_REWARD_SETTINGS), {
@@ -121,7 +124,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
   const productOptions = useMemo(
     () =>
       (productsQuery?.data?.data?.products || []).filter(
-        (p) => !checkAnyMarketing(p) || checkAnyMarketing(p)?.type === marketingType,
+        (p) => p?.marketing[0] === undefined || checkAnyMarketing(p)?.type === marketingType,
       ),
     [productsQuery?.data],
   );
@@ -185,6 +188,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setAmountSpent(data?.amountSpent);
     setItemSelectType(data?.itemSelectionType);
     setFeaturedDuration(data?.featuredAmount);
+    setSubscribed(data?.onlyForSubscriber);
 
     if (data?.spendLimit > 0) {
       setSpendLimitChecked(true);
@@ -203,6 +207,8 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
     setServerState(marketingData);
 
     const newData = deepClone(marketingData);
+
+    console.log('newData', { newData });
 
     setLocalData(newData);
 
@@ -459,6 +465,7 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
         spendLimit: spendLimitChecked ? spendLimit : 0,
         status: invalid ? 'inactive' : status || 'active',
         itemSelectionType: itemSelectType,
+        onlyForSubscriber: subscribed,
       });
     }
   };
@@ -861,6 +868,61 @@ export default function MarketingSettings({ onClose, onDelete, marketingType, sh
                   />
                 </Stack>
               </StyledAccordion>
+
+              {creatorType === 'admin' && (marketingType === 'percentage' || marketingType === 'double_menu') && (
+                <StyledAccordion
+                  isOpen={currentExpanedTab === 3}
+                  onChange={(closed) => {
+                    seCurrentExpanedTab(closed ? 3 : -1);
+                  }}
+                  Title={
+                    <CommonTitle
+                      title="Offer Availabe For"
+                      subTitle={
+                        currentExpanedTab === 3
+                          ? 'This toggle only allows lyxa plus users to receive this offer when it is turned on.'
+                          : subscribed
+                          ? 'Only for Lyxa Plus user'
+                          : 'For Lyxa Users'
+                      }
+                    />
+                  }
+                  disabled={isPageDisabled}
+                >
+                  <Stack direction="row" alignItems="center" gap={5} pt={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      gap="15px"
+                      sx={{
+                        padding: '10px 16px',
+                        borderRadius: '7px',
+                        alignItems: 'center',
+                        backgroundColor: subscribed ? 'rgba(94, 151, 169, 0.12)' : '#FCF9F0',
+                        width: '100%',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: 500,
+                          color: subscribed ? 'primary.main' : '#F78C3F',
+                        }}
+                      >
+                        {subscribed ? 'Lyxa Plus Users' : 'All Lyxa Users'}
+                      </Typography>
+                      <StyledSwitch
+                        checked={subscribed}
+                        disabled={creatorType === 'shop'}
+                        onChange={() => {
+                          setSubscribed((prev) => !prev);
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+                </StyledAccordion>
+              )}
             </Box>
           ) : (
             <Box>

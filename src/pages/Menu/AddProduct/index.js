@@ -54,17 +54,23 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   const queryClient = useQueryClient();
 
   const { currentUser, general } = useGlobalContext();
+
   const { shop } = currentUser;
 
   const secondaryCurrency = general?.appSetting?.secondaryCurrency;
+
   const baseCurrency = general?.appSetting?.baseCurrency;
 
   const [currentTab, setCurrentTab] = useState(0);
+
   const [render, setRender] = useState(false);
+
   const [loading, setLoading] = useState(false);
+
   const [categories, setCategories] = useState([]);
 
   const [hasAttribute, setHasAttribute] = useState('no');
+
   const [product, setProduct] = useState(
     editProduct?._id ? converEditProduct(editProduct) : getProductInit(shop, newProductCategory),
   );
@@ -98,8 +104,6 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
         },
       }),
   );
-
-  console.log('products', productsQuery?.data?.data?.products);
 
   const addons = useMemo(
     () =>
@@ -256,8 +260,11 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
       return;
     }
 
+    console.log('product price', { product });
+
     setLoading(true);
     const productData = await createProductData(product, shop, !!editProduct?._id, hasAttribute);
+    console.log('product price', { productData });
 
     if (productData?.status === false) {
       successMsg(productData?.message);
@@ -280,7 +287,14 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
   }
 
   return (
-    <SidebarContainer title="Add Items" onClose={onClose}>
+    <SidebarContainer
+      title="Add Items"
+      onClose={onClose}
+      containerSx={{
+        minWidth: '425px',
+        maxWidth: '425px',
+      }}
+    >
       {shop?.shopType === 'food' && (
         <Box
           sx={{
@@ -483,6 +497,9 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
                 attributItem={item}
                 readonly={productReadonly}
                 key={item?.xid}
+                onChangeAttribute={(value) => {
+                  product.attributes[index] = value;
+                }}
                 onDelete={() => {
                   product?.attributes?.splice(index, 1);
                   setRender(!render);

@@ -2,6 +2,7 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import CustomerLocation from '../../../assets/icons/customer-location.png';
 import RiderLocation from '../../../assets/icons/riderPin.png';
 import { successMsg } from '../../../helpers/successMsg';
 import { getTitleForMarker } from '../../AdminOrderTable/OrderTracking/helpers';
@@ -20,6 +21,7 @@ function RidersCurrentLocationMapView({ riders = [], setMapRef, zones }) {
   const floatingPanel = useRef();
 
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
 
   const redirectWithId = (id) => {
@@ -28,7 +30,6 @@ function RidersCurrentLocationMapView({ riders = [], setMapRef, zones }) {
       pathname: `${path}${id}`,
       state: {
         from: routeMatch?.path,
-
         backToLabel: 'Back to Order List',
       },
     });
@@ -46,16 +47,21 @@ function RidersCurrentLocationMapView({ riders = [], setMapRef, zones }) {
       disableDefaultUI: true,
     });
 
-    setMapRef(map);
-
     // icons --
     const RiderIcon = {
       url: RiderLocation,
       scaledSize: new google.maps.Size(60, 70),
     };
 
+    // icons --
+    const userIcon = {
+      url: CustomerLocation,
+      scaledSize: new google.maps.Size(30, 60),
+    };
+
     const redirectWithId = (id) => {
       const path = '/riders/';
+
       history.push({
         pathname: `${path}${id}`,
         state: {
@@ -85,13 +91,27 @@ function RidersCurrentLocationMapView({ riders = [], setMapRef, zones }) {
         marker.addListener('click', () => {
           redirectWithId(rider?._id);
         });
-        bounds.extend(marker.getPosition());
+        bounds?.extend(marker.getPosition());
       });
     } else {
       successMsg('No available riders found!');
     }
 
-    map.fitBounds(bounds);
+    map?.fitBounds(bounds);
+
+    const center = bounds.getCenter();
+
+    // console.log('center', center.lat(), center.lng());
+
+    const currentLocation = new google.maps.Marker({
+      position: { lat: center.lat(), lng: center.lng() },
+      icon: userIcon,
+      map,
+    });
+
+    setMapRef({ map, currentLocation });
+
+    currentLocation.setMap(null);
 
     // set polygon of each zone
     formateZoneCoordinates(zones).forEach((item, i) => {

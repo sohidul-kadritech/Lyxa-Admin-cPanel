@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Box, Drawer, Tab, Tabs } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import React, { useState } from 'react';
 
 import moment from 'moment';
@@ -40,7 +40,6 @@ const queryParamsInit = {
   tab: 0,
   sortBy: 'DESC',
   status: 'active',
-  type: 'home',
 
   page: 1,
   pageSize: 5,
@@ -57,13 +56,10 @@ const queryParamsInit = {
 
 function AdBanner() {
   const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
-  // const [currentTab, setCurrentTab] = useState(0);
-  // const [sortBy, setSortBy] = useState('desc');
-  // const [status, setStatus] = useState('active');
-  // const [type, setType] = useState('home');
+
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState({});
-  // const [range, setRange] = useState({ ...dateRangeInit });
+
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
@@ -74,8 +70,8 @@ function AdBanner() {
 
   const getBannerListQuery = useQuery([API_URL.BANNER_LIST, queryParams], () =>
     AXIOS.get(API_URL.BANNER_LIST, {
-      params: queryParams,
-    })
+      params: { ...queryParams, type: 'home' },
+    }),
   );
 
   const addBannerQuery = useMutation((data) => AXIOS.post(API_URL.ADD_BANNER, data), {
@@ -123,23 +119,21 @@ function AdBanner() {
         }}
       />
 
-      <Box sx={{ marginBottom: '30px' }}>
+      {/* <Box sx={{ marginBottom: '30px' }}>
         <Tabs
           value={Number(queryParams?.tab)}
           onChange={(event, newValue) => {
             setQueryParams((prev) => ({ ...prev, tab: newValue, type: bannerTypeIndex[newValue] }));
-            // setQueryParams
-            // setCurrentTab(newValue);
-            // setType(bannerTypeIndex[newValue]);
           }}
         >
           <Tab label="Home"></Tab>
-          {/* <Tab label="Shop"></Tab> */}
+
           <Tab label="Food"></Tab>
           <Tab label="Pharmacy"></Tab>
           <Tab label="Grocery"></Tab>
         </Tabs>
-      </Box>
+      </Box> */}
+
       <Box sx={{ marginBottom: '30px' }}>
         <SearchBar
           showFilters={{
@@ -156,47 +150,13 @@ function AdBanner() {
             setRowData({});
             setOpen(true);
           }}
+          searchPlaceHolder="Search by Title"
+          toolTips={{
+            dateTooltip: 'Filter with date range',
+            sortTooltip: 'Sort By Creation Date',
+            statusTooltip: 'Status',
+          }}
         />
-        {/* <Stack direction="row" justifyContent="start" gap="17px" sx={{ marginBottom: '30px' }}>
-          <StyledSearchBar sx={{ flex: '1' }} placeholder="Search" onChange={(e) => setSearchKey(e.target.value)} />
-          <DateRange range={range} setRange={setRange} />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'sortBy',
-              placeholder: 'sortBy',
-              value: sortBy,
-              items: sortOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setSortBy(e.target.value),
-            }}
-          />
-          <StyledFormField
-            intputType="select"
-            containerProps={{
-              sx: { padding: '0px 0px' },
-            }}
-            inputProps={{
-              name: 'status',
-              placeholder: 'status',
-              value: status,
-              items: statusTypeOptions,
-              size: 'sm2',
-              //   items: categories,
-              onChange: (e) => setStatus(e.target.value),
-            }}
-          />
-         <AddMenuButton
-            onClick={() => {
-              setRowData({});
-              setOpen(true);
-            }}
-          />
-        </Stack> */}
       </Box>
       <Box>
         {getBannerListQuery.isLoading ? (
@@ -204,7 +164,8 @@ function AdBanner() {
           <BannerTableSkeleton row={5} column={4} />
         ) : (
           <AddBannerTable
-            type={queryParams?.type}
+            type="home"
+            // type={queryParams?.type}
             updateQuery={editBannerQuery}
             setIsConfirmModal={setIsConfirmModal}
             isConfirmModal={isConfirmModal}
@@ -224,7 +185,8 @@ function AdBanner() {
           isEdit={isEdit}
           rowData={rowData}
           addQuery={isEdit ? editBannerQuery : addBannerQuery}
-          type={queryParams?.type}
+          type="home"
+          // type={queryParams?.type}
           onClose={() => {
             setOpen(false);
             setIsReadOnly(false);
