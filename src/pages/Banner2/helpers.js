@@ -1,6 +1,21 @@
 import { getImageUrl } from '../../helpers/images';
 import { successMsg } from '../../helpers/successMsg';
 
+export const viewUserTypeOption = [
+  {
+    label: 'All',
+    value: 'all',
+  },
+  {
+    label: 'Lyxa Users',
+    value: 'normal',
+  },
+  {
+    label: 'Lyxa Plus Users',
+    value: 'plus',
+  },
+];
+
 export const clickableOption = [
   {
     label: 'Yes',
@@ -11,6 +26,7 @@ export const clickableOption = [
     value: 'no',
   },
 ];
+
 export const clickableLinkOption = [
   {
     label: 'Link',
@@ -23,6 +39,10 @@ export const clickableLinkOption = [
   {
     label: 'Product',
     value: 'product',
+  },
+  {
+    label: 'Lyxa Plus',
+    value: 'plus',
   },
 ];
 
@@ -71,6 +91,12 @@ export const BannerDataValidation = (data, type) => {
     successMsg('Please provide banner!');
     return false;
   }
+
+  if (!data?.visibleUserType) {
+    successMsg('Please select user type!');
+    return false;
+  }
+
   if (!data?.isClickable && type === 'home') {
     successMsg('Select the url is clickable or not!');
     return false;
@@ -103,6 +129,7 @@ export const generateData = async (data, type) => {
     shopId: '',
     clickableUrl: '',
     productId: '',
+    visibleUserType: data?.visibleUserType,
   };
 
   if (data?.isClickable === 'yes' && data?.clickType === 'link' && type === 'home') {
@@ -118,4 +145,14 @@ export const generateData = async (data, type) => {
   }
 
   return readyData;
+};
+
+export const getValidClickType = (value, options) => {
+  const foundValue = options?.find((option) => option?.value === value);
+
+  if (foundValue) {
+    return value;
+  }
+
+  return '';
 };

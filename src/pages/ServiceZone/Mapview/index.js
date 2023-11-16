@@ -94,11 +94,11 @@ function MapView({ onClose }) {
     const center = new google.maps.LatLng(coordinates?.lat, coordinates?.lon);
     if (mapReference?.marker && mapReference?.map) {
       // change center position
-      mapReference?.marker.setPosition(center);
+      mapReference?.marker?.setPosition(center);
 
       smoothPanTo(mapReference?.map, center, 300, google);
     }
-  }, [loaded, coordinates?.lat, coordinates?.lon]);
+  }, [loaded, coordinates?.lat, coordinates?.lon, mapReference]);
 
   // getAllZones
   const getAllZones = useQuery([API_URL?.GET_ALL_ZONE], () => AXIOS.get(API_URL?.GET_ALL_ZONE));
