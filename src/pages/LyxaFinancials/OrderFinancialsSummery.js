@@ -177,6 +177,7 @@ function OrderFinancialsSummary() {
                 <PriceItem title="Profit from Butler" amount={profit?.profitFromButler} showIfZero />
                 <PriceItem title="Profit from Delivery" amount={profit?.profitFromDelivery} showIfZero />
                 <PriceItem title="Lyxa Pay" amount={summary?.adminPay} isNegative showIfZero />
+                <PriceItem title="Lyxa Plus" amount={subscriptionEarning?.totalSubscriptionEarning} showIfZero />
               </Stack>
             </InfoCard>
           </Grid>
@@ -652,7 +653,7 @@ function OrderFinancialsSummary() {
           </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Subscription Spent"
+              title="Lyxa Plus Marketing Spent"
               sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 9 ? 9999 : 99 }}
               isDropdown
               index={9}
@@ -887,7 +888,7 @@ function OrderFinancialsSummary() {
 
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Subscription Earning"
+              title="Lyxa Plus Earning"
               sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
               index={8}
               setExpandedIndex={setExpandedIndex}
