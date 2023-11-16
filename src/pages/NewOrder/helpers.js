@@ -117,6 +117,14 @@ export const statusColorVariants = {
     color: '#454545',
     background: '#F0F0F0',
   },
+  ongoing: {
+    color: '#417C45',
+    background: '#DCFCE7',
+  },
+  expired: {
+    color: '#454545',
+    background: '#F0F0F0',
+  },
 };
 
 export const sortOptions = [

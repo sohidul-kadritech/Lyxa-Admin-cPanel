@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { Box, Button, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import CloseButton from '../../components/Common/CloseButton';
 import TabPanel from '../../components/Common/TabPanel';
-import ZoneMap2 from './ZoneMap2';
+import ZoneMapGoogleMap from './ZoneMapGoogleMap';
 import { createZoneInfoData, getMarkerLabel } from './helper';
 
 function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName }) {
@@ -23,7 +24,8 @@ function ZoneInfo({ theme, setIsSideBarOpen, infoData = [], polygon, zoneName })
     <Stack justifyContent="space-between" gap="40px" height="100%">
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Box sx={{ width: '100%', height: '400px' }}>
-          <ZoneMap2 polygon={polygon} infoData={createZoneInfoData(infoData)} zoneName={zoneName} />
+          {/* <ZoneMap2 polygon={polygon} infoData={createZoneInfoData(infoData)} zoneName={zoneName} /> */}
+          <ZoneMapGoogleMap infoData={infoData} polygon={polygon} zoneName={zoneName} />
         </Box>
         <Stack
           flexDirection="row"
@@ -80,7 +82,7 @@ function SidebarZone({ setIsSideBarOpen, currentRowData }) {
   console.log('currentRowdata', currentRowData);
   console.log('polygon currenr zone', currentRowData?.zoneGeometry?.coordinates);
   const theme = useTheme();
-  const [currentTab, setCurrentTab] = useState(3);
+  const [currentTab, setCurrentTab] = useState(0);
   return (
     <Stack
       justifyContent="space-between"

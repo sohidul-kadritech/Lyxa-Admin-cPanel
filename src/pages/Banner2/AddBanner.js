@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { ArrowDownward } from '@mui/icons-material';
 import { Box, Button, Divider, Stack, createFilterOptions, debounce } from '@mui/material';
@@ -8,7 +9,15 @@ import StyledFormField from '../../components/Form/StyledFormField';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import { previewGenerator } from '../Sellers2/helpers';
-import { BannerDataValidation, clickableLinkOption, clickableOption, generateData, shopTypeOptions } from './helpers';
+import {
+  BannerDataValidation,
+  clickableLinkOption,
+  clickableOption,
+  generateData,
+  getValidClickType,
+  shopTypeOptions,
+  viewUserTypeOption,
+} from './helpers';
 
 const initialData = {
   title: '',
@@ -18,12 +27,14 @@ const initialData = {
   clickableUrl: '',
   clickType: '',
   productId: '',
+  visibleUserType: '', // "all" //'all', 'plus', 'normal'
 };
 
-const getInitialData = (rowData, isEdit, isReadOnly, type) => {
+const getInitialData = (rowData, isEdit, isReadOnly, type = 'home') => {
   if (isEdit || isReadOnly)
     return {
       ...rowData,
+      type,
       clickType: rowData?.clickType ? rowData?.clickType : 'link',
       isClickable: rowData?.isClickable ? 'yes' : 'no',
       image: previewGenerator(rowData?.image),
@@ -32,7 +43,7 @@ const getInitialData = (rowData, isEdit, isReadOnly, type) => {
   return { ...initialData, type };
 };
 
-function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, isEdit }) {
+function AddBanner({ onClose, type = 'home', addQuery, isReadOnly, rowData = undefined, isEdit }) {
   const [shopType, setShopType] = useState('');
 
   const [searchKeyShop, setSearchKeyShop] = useState('');
@@ -45,8 +56,22 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
 
   const [searchedProductOptions, setSearchedProductOptions] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
+  const clickTypeOptions = clickableLinkOption?.filter((option) =>
+    newBanner?.visibleUserType === 'normal' ? true : option?.value !== 'plus',
+  );
+
   const onChangeHandler = (e) => {
-    setNewBanner((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    // visibleUserType
+    setNewBanner((prev) => {
+      const oldValue = { ...prev };
+
+      if (e.target.name === 'visibleUserType') {
+        oldValue.clickType = undefined;
+      }
+      return { ...oldValue, [e.target.name]: e.target.value };
+    });
   };
 
   const onDrop = (acceptedFiles, feild) => {
@@ -126,16 +151,17 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
   );
 
   const uploadHanlder = async () => {
-    const isVerified = BannerDataValidation(newBanner, type);
+    setLoading(true);
+    const isVerified = BannerDataValidation(newBanner, type || 'home');
     if (isVerified) {
-      const readyData = await generateData(newBanner, type);
-      console.log('readyData', readyData);
+      const readyData = await generateData(newBanner, type || 'home');
       if (readyData && !isEdit) {
         addQuery.mutate(readyData);
       } else {
         addQuery.mutate({ ...readyData, id: newBanner?._id });
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -168,6 +194,27 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
         />
       </Box>
       <Divider variant="middle" sx={{ background: '#000000' }} />
+      <Divider variant="middle" sx={{ background: '#000000' }} />
+      {/*  view user type */}
+
+      <Box position="relative">
+        <Box sx={{ marginTop: '20px' }}>
+          <StyledFormField
+            label="Select User Type *"
+            intputType="select"
+            inputProps={{
+              sx: { maxWidth: '110px !important' },
+              name: 'visibleUserType',
+              readOnly: isReadOnly,
+              placeholder: 'Select User Type',
+              items: viewUserTypeOption,
+              value: newBanner?.visibleUserType,
+              onChange: onChangeHandler,
+            }}
+          />
+        </Box>
+      </Box>
+      <Divider variant="middle" sx={{ background: '#000000' }} />
       {type === 'home' && (
         <Box sx={{ marginTop: '20px', paddingBottom: '20px' }}>
           <StyledFormField
@@ -196,8 +243,8 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
               name: 'clickType',
               readOnly: isReadOnly,
               placeholder: 'Click Options',
-              items: clickableLinkOption,
-              value: newBanner?.clickType || '',
+              items: clickTypeOptions,
+              value: getValidClickType(newBanner?.clickType, clickTypeOptions),
               onChange: onChangeHandler,
             }}
           />
@@ -219,6 +266,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
           />
         </Box>
       )}
+
       {/* For Shop */}
 
       {newBanner?.clickType === 'shop' && newBanner?.isClickable === 'yes' && !isEdit && !isReadOnly && (
@@ -311,7 +359,7 @@ function AddBanner({ onClose, type, addQuery, isReadOnly, rowData = undefined, i
 
       <Stack direction="row" margin="30px 0px" justifyContent="center">
         <Button
-          disabled={addQuery?.isLoading || isReadOnly}
+          disabled={addQuery?.isLoading || isReadOnly || loading}
           fullWidth
           onClick={uploadHanlder}
           variant="contained"

@@ -42,8 +42,12 @@ export default function IncrementDecrementInput({
   value = 0,
   step = 1,
   showAnimation = false,
+  inputBoxSx = {},
+  defaultSize = 190,
+  disabled,
+  sx,
 }) {
-  const length = 190 + Math.max(value?.toString().length - 1, 0) * 8;
+  const length = defaultSize + Math.max(value?.toString().length - 1, 0) * 8;
 
   useEffect(() => {
     // Function to handle mouseMove event
@@ -70,6 +74,35 @@ export default function IncrementDecrementInput({
     };
   }, [value]);
 
+  useEffect(() => {
+    // Function to handle mouseMove event
+    const handleMaxMinValue = () => {
+      // Do something with the mouse position
+      const newValue = allowDecimal ? value : Math.round(Number(value));
+      if (onBlur) {
+        if (Number(newValue) < min) {
+          onBlur(min);
+        } else if (Number(newValue) > max) {
+          onBlur(max);
+        } else {
+          onBlur(Number(newValue));
+        }
+      }
+      // when onBlur occured
+      if (onChange) {
+        if (Number(newValue) < min) {
+          onChange(min);
+        } else if (Number(newValue) > max) {
+          onChange(max);
+        } else {
+          onChange(Number(newValue));
+        }
+      }
+    };
+
+    handleMaxMinValue();
+  }, [max]);
+
   return (
     <Stack direction="row" alignItems="center" gap={3}>
       <StyledContainer
@@ -79,16 +112,19 @@ export default function IncrementDecrementInput({
         sx={{
           width: dynamicWidth ? `${length}px` : '100%',
           ...(animationSx(showAnimation, value >= min && value <= max) || {}),
+          ...(sx || {}),
         }}
       >
         <Button
-          disabled={Number(value) === min}
+          disabled={Number(value) === min || disabled}
           disableRipple
           onClick={(e) => {
-            if (Number(value) - step >= min && Number(value) - step <= max) {
-              onChange(Number(value) - step, e);
-            } else {
-              onChange(min, e);
+            if (onChange) {
+              if (Number(value) - step >= min && Number(value) - step <= max) {
+                onChange(Number(value) - step, e);
+              } else {
+                onChange(min, e);
+              }
             }
           }}
         >
@@ -102,10 +138,12 @@ export default function IncrementDecrementInput({
 
             '& input': {
               textAlign: 'center',
+              ...(inputBoxSx || {}),
             },
           }}
           type="number"
           value={value}
+          readOnly={disabled}
           onBlur={(e) => {
             const value = allowDecimal ? e.target.value : Math.round(Number(e.target.value));
             if (onBlur) {
@@ -151,12 +189,14 @@ export default function IncrementDecrementInput({
         />
         <Button
           disableRipple
-          disabled={Number(value) === max}
+          disabled={Number(value) === max || disabled}
           onClick={(e) => {
-            if (Number(value) + step <= max) {
-              onChange(Number(value) + step, e);
-            } else {
-              onChange(max, e);
+            if (onChange) {
+              if (Number(value) + step <= max) {
+                onChange(Number(value) + step, e);
+              } else {
+                onChange(max, e);
+              }
             }
           }}
         >

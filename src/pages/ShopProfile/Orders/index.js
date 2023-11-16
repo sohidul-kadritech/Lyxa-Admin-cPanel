@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -15,12 +16,12 @@ export default function ShopOrders({ shop, onViewDetail }) {
 
   const [totalPage, setTotalPage] = useState(0);
   const [queryParams, setQueryParams] = useState(
-    getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' })
+    getQueryParamsInit({ page: 1, pageSize: 15, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' }),
   );
 
   useEffect(() => {
     setQueryParams(
-      getQueryParamsInit({ page: 1, pageSize: 5, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' })
+      getQueryParamsInit({ page: 1, pageSize: 15, shop: shop?._id, sortBy: 'DESC', orderType: 'all', model: 'order' }),
     );
     setTotalPage(1);
   }, [shop?._id]);
@@ -35,7 +36,7 @@ export default function ShopOrders({ shop, onViewDetail }) {
       onSuccess: (data) => {
         setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
       },
-    }
+    },
   );
 
   return (
@@ -46,7 +47,7 @@ export default function ShopOrders({ shop, onViewDetail }) {
         searchPlaceHolder="Search Orders"
         showFilters={{ search: true, date: true, sort: true }}
       />
-      <Box paddingTop="30px" />
+      <Box paddingTop="30px" sx={{ overflow: 'scrollX' }} />
       <OrderTable
         adminType={currentUser?.userType}
         onViewDetail={(order) => {
@@ -55,6 +56,7 @@ export default function ShopOrders({ shop, onViewDetail }) {
         orders={ordersQuery?.data?.data.orders}
         orderType="shopProfile"
         loading={ordersQuery?.isLoading}
+        showFor="admin"
       />
       {!ordersQuery.isLoading && (
         <TablePagination

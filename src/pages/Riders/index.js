@@ -25,9 +25,13 @@ export default function RiderList({ viewUserType }) {
   const [queryParams, setQueryParams] = useQueryParams(getQueryParamsInit(viewUserType, shop?._id));
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
+
   const [openRidersMapViewModal, setOpenRidersMapViewModal] = useState(false);
+
   const [totalPage, setTotalPage] = useState(1);
+
   const [currentRider, setCurrentRider] = useState({});
 
   const query = useQuery(

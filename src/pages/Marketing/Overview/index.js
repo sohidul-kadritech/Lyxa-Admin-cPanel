@@ -319,18 +319,12 @@ export default function MarketingOverview({ viewUserType }) {
   };
 
   const getOngoingBy = (mData = {}) => {
-    console.log(
-      'ongoing marketing: ',
-      { mData, viewUserType },
-      mData?.data?.marketing?.status ? viewUserType : appliedByOtherSideMap[viewUserType],
-    );
-
     if (mData?.data?.marketings[0]?.type === 'percentage') {
       const shopMarketing = mData?.data?.marketings?.find((itm) => itm?.creatorType === 'shop');
       const adminMarketing = mData?.data?.marketings?.find((itm) => itm?.creatorType === 'admin');
 
       if (shopMarketing && adminMarketing) {
-        return 'Both';
+        return 'Dual Marketing';
       }
 
       return shopMarketing ? 'Shop' : adminMarketing ? 'Admin' : '';
@@ -340,8 +334,6 @@ export default function MarketingOverview({ viewUserType }) {
   };
 
   const isAdminViewAsShop = viewUserType === 'shop' && userType === 'admin';
-
-  console.log('appliedDeals.percentage || !activeDeals.percentage', appliedDeals.percentage, activeDeals.percentage);
 
   return (
     <Box>

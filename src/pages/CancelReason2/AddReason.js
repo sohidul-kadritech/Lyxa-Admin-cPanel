@@ -9,12 +9,13 @@ const fieldContainerSx = {
   padding: '14px 0',
 };
 const reasonTypeOption = [
-  { label: 'Shop', value: 'shopCancel' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'User', value: 'userCancel' },
-  { label: 'User Refund', value: 'userRefund' },
-  { label: 'Butler', value: 'butler' },
-  { label: 'Resolve Chat', value: 'resolve' },
+  { label: 'SHOP', value: 'shopCancel' },
+  { label: 'ADMIN', value: 'admin' },
+  { label: 'USER', value: 'userCancel' },
+  { label: 'USER REFUND', value: 'userRefund' },
+  { label: 'BUTLER', value: 'butler' },
+  { label: 'RESOLVE CHAT', value: 'resolve' },
+  { label: 'SUBSCRIPTION', value: 'subscriptionCancelReason' },
 ];
 const statusOptions = [
   {
@@ -33,20 +34,23 @@ const initialReason = {
   ans: '',
   status: 'active',
 };
+
 const updateType = (type) => {
   let modifiedType = '';
   if (type === 'shopCancel') {
-    modifiedType = 'Shop';
+    modifiedType = 'Shop Order Cancel Reason';
   } else if (type === 'userCancel') {
-    modifiedType = 'User';
+    modifiedType = 'User Order Cancel Reason';
   } else if (type === 'userRefund') {
     modifiedType = 'User Refund';
   } else if (type === 'butler') {
-    modifiedType = 'Butler';
+    modifiedType = 'Butler Order Cancel Reason';
   } else if (type === 'resolve') {
     modifiedType = 'Resolve Chat Reason';
+  } else if (type === 'subscriptionCancelReason') {
+    modifiedType = 'Subscription Cancel Reason';
   } else {
-    modifiedType = 'Admin';
+    modifiedType = 'Admin Order Cancel Reason';
   }
   return modifiedType;
 };
@@ -70,13 +74,7 @@ function AddReason({ isEdit, onClose, reason, submitHandler, loading }) {
   return (
     <SidebarContainer
       title={`${
-        isEdit
-          ? `Edit ${updateType(currentReason?.type) || ''} ${
-              currentReason?.type === 'resolve' ? '' : 'Order Cancel Reason'
-            }`
-          : `Add ${updateType(currentReason?.type) || ''} ${
-              currentReason?.type === 'resolve' ? '' : 'Order Cancel Reason'
-            }`
+        isEdit ? `Edit ${updateType(currentReason?.type) || ''} ` : `Add ${updateType(currentReason?.type) || ''}`
       }`}
       onClose={onClose}
     >
@@ -101,7 +99,7 @@ function AddReason({ isEdit, onClose, reason, submitHandler, loading }) {
         />
       </Stack>
       <StyledFormField
-        label="Reasone *"
+        label="Reason *"
         intputType="text"
         containerProps={{
           sx: fieldContainerSx,

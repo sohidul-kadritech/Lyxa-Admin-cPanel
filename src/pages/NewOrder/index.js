@@ -230,7 +230,7 @@ export default function NewOrders({ showFor }) {
       return;
     }
 
-    if (shouldOpenAcceptedModal) {
+    if (shouldOpenAcceptedModal || !currentOrder?.preparingAt) {
       setOpenAcceptRestaurentModal(true);
       return;
     }

@@ -61,6 +61,7 @@ import AdminMarketingSettings from '../pages/Settings/Admin/Marketing';
 import AdminDealSettings from '../pages/Settings/Admin/Marketing/DealSettings';
 import AdminFeaturedSettings from '../pages/Settings/Admin/Marketing/FeaturedSettings';
 import AdminLoyaltySettings from '../pages/Settings/Admin/Marketing/LoyaltySettings';
+import SubscriptionSettings from '../pages/Settings/Admin/SubscriptionSettings';
 import PayoutConfiguration from '../pages/Settings/Payout';
 import ShopProfile from '../pages/ShopProfile';
 import TermsAndConditions from '../pages/TermsAndConditons2/index';
@@ -183,6 +184,7 @@ export const admin_routes = [
   { path: '/settings/marketing/featured', component: AdminFeaturedSettings },
   { path: '/settings/marketing/coupons', component: CouponSettings },
   { path: '/settings/zone', component: ServiceZone },
+  { path: '/settings/subscription-settings', component: SubscriptionSettings },
   { path: '/settings/ratings', component: RatingSettings2 },
   { path: '/settings/categories/list', component: CategoryList2 },
 

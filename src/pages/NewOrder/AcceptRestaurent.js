@@ -36,7 +36,7 @@ function AcceptRestaurent({ onClose, currentOrder, updateStatusMutation }) {
     const currentStatus = getNextStatus(currentOrder);
     const data = {};
     data.orderId = currentOrder?._id;
-    data.orderStatus = currentStatus;
+    data.orderStatus = 'preparing';
     data.shop = currentOrder?.shop?._id;
     data.time = time;
 

@@ -28,6 +28,7 @@ const indexToTypeTracker = {
   0: 'user',
   1: 'shop',
   2: 'delivery',
+  3: 'subscription',
 };
 
 function TermsAndConditions() {
@@ -126,6 +127,7 @@ function TermsAndConditions() {
         <Tab label="User App"></Tab>
         <Tab label="Shop App"></Tab>
         <Tab label="Rider App"></Tab>
+        <Tab label="Subscription"></Tab>
       </Tabs>
       {loading ? (
         <TermsAndConditionsSkeleton />

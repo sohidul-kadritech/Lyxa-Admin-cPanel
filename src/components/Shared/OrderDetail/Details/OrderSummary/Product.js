@@ -1,9 +1,11 @@
+/* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Box, Stack, Typography } from '@mui/material';
 import { calculateSecondaryCurrency } from '../../../../../pages/RiderProfile/Transactions/helpers';
 import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
 import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
+import { dualCurrencyPriceReward } from './helpers';
 
 export const productDeal = (product) => {
   // console.log('productDeal', { product });
@@ -50,7 +52,7 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
   const secondaryCurrencyFinalPrice = product?.secondaryCurrency_finalPrice;
   const quantity = product?.productQuantity;
 
-  console.log({ shopExchangeRate });
+  console.log({ product });
 
   return (
     <Box
@@ -96,8 +98,9 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
               secondaryCurrencyFinalPrice,
               { shouldCalculate: false },
               {
-                both: shopExchangeRate > 0,
+                both: false,
                 base: !shopExchangeRate > 0,
+                secondary: shopExchangeRate > 0,
               },
             )}
             {/* {FormateCurrency.get(baseCurrencyFinalPrice)} */}
@@ -121,20 +124,25 @@ export default function Product({ product, isFirst, isLast, shopExchangeRate }) 
             </Typography>
             <Typography variant="inherit" fontSize="15px" lineHeight="22px" fontWeight={600}>
               {/* percentage */}
-              {deal === 'percentage' &&
-                `${FormateBaseCurrency.get(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount)}`}
+
+              {/* {deal === 'percentage' &&
+                `${FormateBaseCurrency.get(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount)}`} */}
 
               {/* reward */}
-              {deal === 'reward' &&
+
+              {/* {deal === 'reward' &&
                 `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
                   product?.finalReward?.baseCurrency_amount,
-                )}`}
+                )}`} */}
 
               {/* double menu */}
-              {deal === 'double_menu' &&
+
+              {/* {deal === 'double_menu' &&
                 `${FormateBaseCurrency.get(
                   product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
-                )}`}
+                )}`} */}
+
+              {dualCurrencyPriceReward(deal, product, shopExchangeRate)}
             </Typography>
           </Stack>
         )}

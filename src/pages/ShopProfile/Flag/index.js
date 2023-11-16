@@ -40,13 +40,10 @@ const searchFlags = (flags, queryParams) => {
 export default function ShopFlags({ flags = [], onViewDetail, loading }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit({ page: 1 }));
   const [filteredData, setFilteredData] = useState(flags);
-  console.log({ flags, loading });
 
   useEffect(() => {
     setFilteredData(searchFlags(flags, queryParams));
   }, [queryParams, flags]);
-
-  console.log({ onViewDetail });
 
   return (
     <Box>
@@ -58,7 +55,7 @@ export default function ShopFlags({ flags = [], onViewDetail, loading }) {
       />
       <Box sx={{ paddingTop: '30px' }} />
       <FlagTable
-        flags={localDatePagination(filteredData, queryParams?.page, 5)}
+        flags={localDatePagination(filteredData, queryParams?.page, 15)}
         onViewDetail={onViewDetail}
         showFor="Flagged"
         loading={loading}
@@ -68,7 +65,7 @@ export default function ShopFlags({ flags = [], onViewDetail, loading }) {
         lisener={(page) => {
           setQueryParams({ ...queryParams, page });
         }}
-        totalPage={Math.ceil(filteredData.length / 5)}
+        totalPage={Math.ceil(filteredData.length / 15)}
       />
     </Box>
   );

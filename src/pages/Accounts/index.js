@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
@@ -16,11 +17,20 @@ const queryParamsInit = {
   type: 'ongoing',
   searchKey: '',
   status: '',
+  userType: 'normal',
+};
+
+const tabValueToIndex = {
+  normal: 0,
+  subscribed: 1,
+  0: 'normal',
+  1: 'subscribed',
 };
 
 export default function AccountList() {
   const [queryParams, setQueryParams] = useQueryParams({ ...queryParamsInit });
   const [totalPage, setTotalPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState(0);
   const location = useLocation();
   const query = useQuery(
     [Api.ALL_USERS, queryParams],
@@ -44,20 +54,40 @@ export default function AccountList() {
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
       />
-      <Box pb={7.5}>
+
+      {/* User searchbar */}
+      <Stack pb={7.5} gap={7.5}>
+        <Tabs
+          value={tabValueToIndex[queryParams?.userType]}
+          sx={{
+            '& .MuiTab-root': {
+              padding: '8px 12px',
+              textTransform: 'none',
+            },
+          }}
+          onChange={(event, newValue) => {
+            setCurrentTab(newValue);
+            setQueryParams((prev) => ({ ...prev, userType: tabValueToIndex[newValue] }));
+          }}
+        >
+          <Tab label="Lyxa Users" />
+          <Tab label="Lyxa Plus Users" />
+        </Tabs>
+
         <SearchBar
-          searchPlaceHolder="Search users"
+          searchPlaceHolder="Search Users"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           buttonLabel="Add"
           showFilters={{ search: true, status: true, type: true, date: false, sort: true }}
         />
-      </Box>
+      </Stack>
       {/* user table */}
       <UsersTable
         users={query?.data?.data?.users}
         loading={query?.isLoading}
         totalPage={totalPage}
+        showFor={queryParams?.userType}
         setPage={(page) => {
           setQueryParams((prev) => ({ ...prev, page }));
         }}

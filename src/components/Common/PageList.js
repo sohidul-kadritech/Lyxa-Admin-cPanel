@@ -39,6 +39,8 @@ export default function PageList({ items }) {
           {item.label}
         </StyledButton>
       ))}
+
+      {!items?.length && <StyledButton disableRipple>No Items Found</StyledButton>}
     </Stack>
   );
 }
