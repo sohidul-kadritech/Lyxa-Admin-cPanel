@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Stack, Tab, Tabs } from '@mui/material';
 import React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
@@ -17,7 +18,7 @@ import { shopType } from './helpers';
 const breadcrumbItems = [
   {
     label: 'Settings',
-    to: '#',
+    to: '/settings',
   },
   {
     label: 'Products',
@@ -29,7 +30,10 @@ export const queryParamsInit = {
   currentTab: 0,
   status: 'active',
   sortBy: 'DESC',
+  type: 'food',
   searchKey: '',
+  pageSize: 15,
+  page: 1,
 };
 
 function Product() {
@@ -42,7 +46,7 @@ function Product() {
   const getAllProduct = useQuery([url, queryParams], () =>
     AXIOS.get(url, {
       params: queryParams,
-    })
+    }),
   );
 
   const updateStatusQuery = useMutation((data) => AXIOS.post(API_URL.EDIT_PRODUCT, data), {
@@ -72,22 +76,52 @@ function Product() {
         }}
       />
 
-      <Box marginBottom="20px">
-        <Tabs
-          value={Number(queryParams?.currentTab)}
-          onChange={(event, newValue) => {
-            setQueryParams((prev) => ({ ...prev, type: shopType[newValue], currentTab: newValue }));
-          }}
-        >
-          <Tab label="Food"></Tab>
-          <Tab label="Grocery"></Tab>
-          <Tab label="Pharmacy"></Tab>
-        </Tabs>
-      </Box>
+      <Stack
+        sx={{
+          position: 'sticky',
+          top: '10px',
+          zIndex: '999',
+          backgroundColor: '#fbfbfb',
+        }}
+        pt={2}
+        pb={30 / 4}
+        gap={5}
+      >
+        <Box>
+          <Tabs
+            value={Number(queryParams?.currentTab)}
+            onChange={(event, newValue) => {
+              setQueryParams((prev) => ({ ...prev, type: shopType[newValue], currentTab: newValue }));
+            }}
+          >
+            <Tab label="Food"></Tab>
+            <Tab label="Grocery"></Tab>
+            <Tab label="Pharmacy"></Tab>
+          </Tabs>
+        </Box>
 
-      <Box marginBottom="30px">
-        <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
-      </Box>
+        <Box>
+          <SearchBar
+            showFilters={{
+              search: true,
+              date: false,
+              sort: true,
+              status: true,
+              button: false,
+            }}
+            queryParams={queryParams}
+            setQueryParams={setQueryParams}
+            buttonLabel="Add"
+            searchPlaceHolder="Search by Title"
+            toolTips={{
+              dateTooltip: 'Filter with date range',
+              sortTooltip: 'Sort By Product Name',
+              statusTooltip: 'Status',
+            }}
+          />
+        </Box>
+      </Stack>
+
       {getAllProduct?.isLoading ? (
         <Box
           sx={{
