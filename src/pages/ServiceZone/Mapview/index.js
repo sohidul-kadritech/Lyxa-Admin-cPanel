@@ -84,7 +84,7 @@ function MapView({ onClose }) {
   }, [loaded, coordinates?.lat, coordinates?.lon]);
 
   // getAllZones
-  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE));
+  const getAllZones = useQuery([API_URL?.GET_ALL_ZONE], () => AXIOS.get(API_URL?.GET_ALL_ZONE));
 
   // getAllStore
   const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {

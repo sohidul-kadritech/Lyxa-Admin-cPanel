@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Stack, Typography, debounce } from '@mui/material';
@@ -18,8 +19,8 @@ function RidersWithZone({ mapRef }) {
     AXIOS.get(API_URL.ZONE_MAP_OVERVIEW, {
       params: {
         // zoneStatus: 'active',
-        page: 1,
-        pageSize: 20,
+        // page: 1,
+        // pageSize: 20,
         searchKey: searchedValue,
         // pageSize: selectedPageSize,
       },
@@ -52,8 +53,6 @@ function RidersWithZone({ mapRef }) {
         lng: boundsCenter.lng(),
       });
 
-      console.log({ isIntersect });
-
       mapRef.currentLocation.setMap(null);
 
       mapRef.currentLocation = new google.maps.Marker({
@@ -70,9 +69,11 @@ function RidersWithZone({ mapRef }) {
     }
   };
   return (
-    <Stack gap={2.5}>
-      <Typography variant="h4">Zones</Typography>
-      <StyledSearchBar placeholder="Search" onChange={debounce((e) => setSearchedValue(e.target.value), 300)} />
+    <Stack>
+      <Stack sx={{ position: 'sticky', top: '0px', zIndex: 999, background: '#fff', paddingBottom: '10px' }} gap={2.5}>
+        <Typography variant="h4">Zones</Typography>
+        <StyledSearchBar placeholder="Search" onChange={debounce((e) => setSearchedValue(e.target.value), 300)} />
+      </Stack>
       {getMapoverView?.isLoading ? (
         <Stack
           sx={{
