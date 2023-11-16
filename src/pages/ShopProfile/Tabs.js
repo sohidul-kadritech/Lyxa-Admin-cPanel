@@ -48,6 +48,7 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
             <Tab label="Flagged" />
             <Tab label="Financials" />
             <Tab label="Payouts" />
+
             {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
           </Tabs>
           <Box pt={6}>

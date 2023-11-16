@@ -5,6 +5,7 @@ import Header from './Header';
 import Rows from './Rows';
 
 function StyledTable5({
+  tableSx,
   expandWithRowClick,
   columns,
   rows,
@@ -15,7 +16,7 @@ function StyledTable5({
   onRowClick,
 }) {
   return (
-    <Stack sx={{ background: '#fff', paddingBottom: '12px', overflow: 'auto' }}>
+    <Stack sx={{ background: '#fff', paddingBottom: '12px', ...(tableSx || {}) }}>
       {showHeader && <Header columns={columns} />}
       <Rows
         columns={columns}

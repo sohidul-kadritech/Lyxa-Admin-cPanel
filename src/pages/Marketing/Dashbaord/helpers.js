@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import moment from 'moment';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
 
@@ -83,4 +85,26 @@ export const getPercentageMarketingCreatorType = (params, currentTab) => {
   console.log({ creator: params?.shopId ? 'admin' : 'shop' });
 
   return params?.shopId ? 'admin' : 'shop';
+};
+
+export const getMarketingDurationData = (mData, creatorType) => {
+  const marketingData = mData?.isMarketing ? mData?.data?.marketings : mData?.marketings;
+
+  const existingMarketing = marketingData?.find((mrkting) => mrkting?.creatorType === creatorType);
+
+  let duration = { start: new Date(), end: new Date() };
+
+  if (!existingMarketing && !marketingData?.length) {
+    return duration;
+  }
+
+  if (!existingMarketing && marketingData?.length) {
+    duration = marketingData[0]?.duration;
+  }
+
+  if (existingMarketing) duration = existingMarketing?.duration;
+
+  // console.log({ existingMarketing, creatorType });
+
+  return duration;
 };

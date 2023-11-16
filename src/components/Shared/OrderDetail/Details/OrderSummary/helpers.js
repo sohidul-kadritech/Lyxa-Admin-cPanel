@@ -2,6 +2,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 
+import FormateBaseCurrency from '../../../../Common/FormateBaseCurrency';
+import FormatesecondaryCurrency from '../../../../Common/FormatesecondaryCurrency';
+
 export const extractAttributeItems = (atributes, selectedAtributes) => {
   const result = [];
   console.log({ atributes, selectedAtributes });
@@ -64,4 +67,64 @@ export const modifyReplaceOrderForProductDetails = (order) => {
   }
 
   return [...orderProductDetails];
+};
+
+export const dualCurrencyPriceReward = (deal, product, exchangeRate, showBoth = false) => {
+  /*
+
+{deal === 'percentage' &&
+`${FormateBaseCurrency.get(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount)}`}
+
+
+{deal === 'reward' &&
+`${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
+  product?.finalReward?.baseCurrency_amount,
+)}`}
+
+
+{deal === 'double_menu' &&
+`${FormateBaseCurrency.get(
+  product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
+)}`}
+
+*/
+
+  const template = {
+    base: 0,
+    second: 0,
+  };
+
+  if (deal === 'percentage') {
+    template.base = FormateBaseCurrency.get(product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount);
+    template.second = FormatesecondaryCurrency.get(
+      product?.secondaryCurrency_finalPrice - product?.secondaryCurrency_totalDiscount,
+    );
+  }
+
+  if (deal === 'reward') {
+    template.base = `${product?.finalReward?.points} pts + ${FormateBaseCurrency.get(
+      product?.finalReward?.baseCurrency_amount,
+    )}`;
+    template.second = `${product?.finalReward?.points} pts + ${FormatesecondaryCurrency.get(
+      product?.finalReward?.secondaryCurrency_amount,
+    )}`;
+  }
+
+  if (deal === 'double_menu') {
+    template.base = FormateBaseCurrency.get(
+      product?.baseCurrency_finalPrice - product?.baseCurrency_totalDiscount || 0,
+    );
+
+    template.second = FormatesecondaryCurrency.get(
+      product?.secondaryCurrency_finalPrice - product?.secondaryCurrency_totalDiscount,
+    );
+  }
+
+  console.log({ exchangeRate });
+
+  if (exchangeRate > 0) {
+    return template.second;
+  }
+
+  return template?.base;
 };

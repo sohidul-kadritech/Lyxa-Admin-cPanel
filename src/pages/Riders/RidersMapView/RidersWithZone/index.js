@@ -1,12 +1,16 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Stack, Typography, debounce } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import CustomerLocation from '../../../../assets/icons/customer-location.png';
 import { smoothPanTo } from '../../../../components/Shared/ChangeDeliveryAddress/helpers';
 import StyledSearchBar from '../../../../components/Styled/StyledSearchBar';
 import * as API_URL from '../../../../network/Api';
 import AXIOS from '../../../../network/axios';
+import { isThisPolygonHasAnyMarker } from '../../../ServiceZone/ZoneMap';
+import { convertedLatLonToLonLat } from '../../../ServiceZone/helper';
 import ZoneCard from './ZoneCard';
 
 function RidersWithZone({ mapRef }) {
@@ -15,8 +19,8 @@ function RidersWithZone({ mapRef }) {
     AXIOS.get(API_URL.ZONE_MAP_OVERVIEW, {
       params: {
         // zoneStatus: 'active',
-        page: 1,
-        pageSize: 20,
+        // page: 1,
+        // pageSize: 20,
         searchKey: searchedValue,
         // pageSize: selectedPageSize,
       },
@@ -27,13 +31,49 @@ function RidersWithZone({ mapRef }) {
     if (value?.length > 0) {
       const { google } = window;
       const center = new google.maps.LatLng(value[0][0][1], value[0][0][0]);
-      smoothPanTo(mapRef, center, 400, google);
+      const bounds = new google.maps.LatLngBounds();
+      const getAllLatLngCoordinates =
+        value?.length > 0 ? value[0]?.map((latLng) => new google.maps.LatLng(latLng[1], latLng[0])) : [];
+
+      const userIcon = {
+        url: CustomerLocation,
+        scaledSize: new google.maps.Size(30, 60),
+      };
+
+      getAllLatLngCoordinates.forEach((coordinates) => {
+        bounds.extend(coordinates);
+      });
+
+      const boundsCenter = bounds.getCenter();
+
+      const modifiedPolygonData = convertedLatLonToLonLat(value[0]);
+
+      const isIntersect = isThisPolygonHasAnyMarker(modifiedPolygonData, {
+        lat: boundsCenter.lat(),
+        lng: boundsCenter.lng(),
+      });
+
+      mapRef.currentLocation.setMap(null);
+
+      mapRef.currentLocation = new google.maps.Marker({
+        position: isIntersect ? boundsCenter : center,
+        icon: userIcon,
+        map: mapRef?.map,
+      });
+
+      // mapRef?.currentLocation?.setPosition(isIntersect ? boundsCenter : center);
+
+      smoothPanTo(mapRef?.map, center, 400, google);
+
+      setTimeout(() => mapRef?.map.fitBounds(bounds), 1000);
     }
   };
   return (
-    <Stack gap={2.5}>
-      <Typography variant="h4">Zones</Typography>
-      <StyledSearchBar placeholder="Search" onChange={debounce((e) => setSearchedValue(e.target.value), 300)} />
+    <Stack>
+      <Stack sx={{ position: 'sticky', top: '0px', zIndex: 999, background: '#fff', paddingBottom: '10px' }} gap={2.5}>
+        <Typography variant="h4">Zones</Typography>
+        <StyledSearchBar placeholder="Search" onChange={debounce((e) => setSearchedValue(e.target.value), 300)} />
+      </Stack>
       {getMapoverView?.isLoading ? (
         <Stack
           sx={{

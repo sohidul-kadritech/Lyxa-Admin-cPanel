@@ -143,13 +143,13 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
     },
     {
       id: 5,
-      headerName: '',
+      headerName: 'Action',
       field: 'action',
       sortable: false,
       flex: 1,
       minWidth: 100,
-      headerAlign: 'center',
-      align: 'center',
+      headerAlign: 'right',
+      align: 'right',
       renderCell: ({ row }) => (
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap="10px">
           {/* delete */}

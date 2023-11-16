@@ -9,7 +9,8 @@ import { smoothPanTo } from '../../../components/Shared/ChangeDeliveryAddress/he
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import ModalContainer from '../ModalContainer';
-import { getLocationFromLatLng } from '../helper';
+import { isThisPolygonHasAnyMarker } from '../ZoneMap';
+import { convertedLatLonToLonLat, getLocationFromLatLng } from '../helper';
 import useGeoLocation from '../useGeoLocation';
 import Map from './Map';
 import StyledSearchForZone from './StyledSearchForZone';
@@ -49,6 +50,23 @@ function MapView({ onClose }) {
         if (data?.status) {
           if (data?.data?.zones?.length > 0) {
             setZoneName(data?.data?.zones[0]?.zoneName);
+
+            if (mapReference?.marker && mapReference?.map) {
+              const { google } = window;
+              // change center position
+
+              const bounds = new google.maps.LatLngBounds();
+              // get all co-ordinates to fit in map view
+              const getAllLatLngCoordinates = data?.data?.zones[0]?.zoneGeometry?.coordinates[0]?.map(
+                (latLng) => new google.maps.LatLng(latLng[1], latLng[0]),
+              );
+
+              getAllLatLngCoordinates.forEach((coordinates) => {
+                bounds.extend(coordinates);
+              });
+
+              setTimeout(() => mapReference?.map.fitBounds(bounds), 400);
+            }
           } else {
             setZoneName('');
           }
@@ -76,14 +94,14 @@ function MapView({ onClose }) {
     const center = new google.maps.LatLng(coordinates?.lat, coordinates?.lon);
     if (mapReference?.marker && mapReference?.map) {
       // change center position
-      mapReference?.marker.setPosition(center);
+      mapReference?.marker?.setPosition(center);
 
       smoothPanTo(mapReference?.map, center, 300, google);
     }
-  }, [loaded, coordinates?.lat, coordinates?.lon]);
+  }, [loaded, coordinates?.lat, coordinates?.lon, mapReference]);
 
   // getAllZones
-  const getAllZones = useQuery([API_URL.GET_ALL_ZONE], () => AXIOS.get(API_URL.GET_ALL_ZONE));
+  const getAllZones = useQuery([API_URL?.GET_ALL_ZONE], () => AXIOS.get(API_URL?.GET_ALL_ZONE));
 
   // getAllStore
   const getAllStore = useQuery([API_URL?.ALL_SHOP], () => AXIOS.get(API_URL?.ALL_SHOP), {
@@ -102,6 +120,7 @@ function MapView({ onClose }) {
       deliveryAddress: { ...prev?.deliveryAddress, address },
     }));
   };
+
   return (
     <ModalContainer
       onClose={onClose}
@@ -136,6 +155,7 @@ function MapView({ onClose }) {
               onClick={(value) => {
                 if (value?.zoneGeometry?.coordinates?.length > 0) {
                   const { google } = window;
+                  const bounds = new google.maps.LatLngBounds();
                   // const { center } = getCenterOfTheZone(formateZoneCoordinates([value])[0].zoneGeometry?.coordinates);
 
                   // locaton for generating address
@@ -143,6 +163,15 @@ function MapView({ onClose }) {
                     latitude: value?.zoneGeometry?.coordinates[0][0][1],
                     longitude: value?.zoneGeometry?.coordinates[0][0][0],
                   };
+
+                  // get all co-ordinates to fit in map view
+                  const getAllLatLngCoordinates = value?.zoneGeometry?.coordinates[0]?.map(
+                    (latLng) => new google.maps.LatLng(latLng[1], latLng[0]),
+                  );
+
+                  getAllLatLngCoordinates.forEach((coordinates) => {
+                    bounds.extend(coordinates);
+                  });
 
                   // locaton for center position
                   const center = new google.maps.LatLng(
@@ -153,9 +182,19 @@ function MapView({ onClose }) {
                   // generating address
                   getSelectedLatLng(locationOfMarker, true);
 
+                  const modifiedPolygonData = convertedLatLonToLonLat(value?.zoneGeometry?.coordinates[0]);
+
+                  const boundsCenter = bounds.getCenter();
+
+                  const isIntersect = isThisPolygonHasAnyMarker(modifiedPolygonData, {
+                    lat: boundsCenter.lat(),
+                    lng: boundsCenter.lng(),
+                  });
+
                   // change center position
-                  mapReference?.marker.setPosition(center);
-                  smoothPanTo(mapReference?.map, center, 300, google);
+                  mapReference?.marker.setPosition(isIntersect ? boundsCenter : center);
+                  smoothPanTo(mapReference?.map, center, 400, google);
+                  setTimeout(() => mapReference?.map.fitBounds(bounds), 1000);
                 }
               }}
             />

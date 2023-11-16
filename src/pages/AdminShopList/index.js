@@ -1,17 +1,24 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Box, Drawer, Tab, Tabs } from '@mui/material';
+import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
 import ViewShopInfo from '../../components/Shared/ViewShopInfo';
+import StyledTabs2 from '../../components/Styled/StyledTab2';
 import { useGlobalContext } from '../../context';
 import useQueryParams from '../../helpers/useQueryParams';
 import * as Api from '../../network/Api';
 import AXIOS from '../../network/axios';
 import SearchBar from './Searchbar';
 import ShopListTable from './Table';
+
+const tabOptionsForSubscriptions = [
+  { value: 'undefined', label: 'All' },
+  { value: 'yes', label: 'Subscription' },
+];
 
 const queryParamsInit = (type) => ({
   page: 1,
@@ -40,14 +47,21 @@ const menuItems = [
 
 export default function ShopList() {
   const history = useHistory();
+
   const routeMatch = useRouteMatch();
+
   const { dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
+
   const [queryParams, setQueryParams] = useQueryParams(queryParamsInit('food'));
 
-  // const [queryParams, setQueryParams] = useState(queryParamsInit('food'));
   const [currentTab, setCurrentTab] = useState(0);
+
+  const [plusShop, setPlusShop] = useState(queryParams?.plusShop ? queryParams?.plusShop : 'undefined');
+
   const [totalPage, setTotalPage] = useState(1);
+
   const [open, setOpen] = useState(null);
+
   const [currentShop, setCurrentShop] = useState({});
 
   const shopsQuery = useQuery(
@@ -111,9 +125,26 @@ export default function ShopList() {
           <Tab label="Grocery" />
           <Tab label="Pharmacy" />
         </Tabs>
-        <Box pt="30px" pb="30px">
+
+        <Stack pt="20px" pb="20px" gap={2}>
+          <StyledTabs2
+            value={plusShop}
+            options={tabOptionsForSubscriptions}
+            onChange={(value) => {
+              setPlusShop(value);
+              setQueryParams((prev) => {
+                let plusShop = value;
+
+                if (value === 'undefined') {
+                  plusShop = undefined;
+                }
+
+                return { ...prev, plusShop };
+              });
+            }}
+          />
           <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} searchPlaceHolder="Search shops" />
-        </Box>
+        </Stack>
         <ShopListTable
           shops={shopsQuery?.data?.data?.shops}
           loading={shopsQuery?.isLoading}

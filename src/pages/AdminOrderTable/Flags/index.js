@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getFirstMonday } from '../../../components/Styled/StyledDateRangePicker/Presets';
+import useQueryParams from '../../../helpers/useQueryParams';
 import * as Api from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import SearchBar from './Searchbar';
@@ -18,14 +19,14 @@ const queryParamsInit = {
   page: 1,
   pageSize: 25,
   sortBy: 'DESC',
-  startDate: getFirstMonday('week'),
-  endDate: moment(),
+  startDate: getFirstMonday('week').format('YYYY/MM/DD'),
+  endDate: moment().format('YYYY/MM/DD'),
   searchKey: '',
 };
 
 export default function Flags() {
   const [totalPage, setTotalPage] = useState(1);
-  const [queryParams, setQueryParams] = useState(queryParamsInit);
+  const [queryParams, setQueryParams] = useQueryParams(queryParamsInit);
 
   const query = useQuery(
     [Api.GET_ALL_FLAGS, queryParams],

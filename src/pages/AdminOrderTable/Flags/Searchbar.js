@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { Stack } from '@mui/material';
 import { debounce } from '@mui/material/utils';
+import moment from 'moment';
 import { useMemo } from 'react';
 import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledDateRangePicker from '../../../components/Styled/StyledDateRangePicker';
@@ -107,7 +109,7 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
       debounce((e) => {
         setQueryParams((prev) => ({ ...prev, searchKey: e.target.value, page: 1 }));
       }, 300),
-    []
+    [],
   );
 
   return (
@@ -120,13 +122,13 @@ export default function SearchBar({ searchPlaceHolder, queryParams, setQueryPara
         }}
       />
       <StyledDateRangePicker
-        startDate={queryParams.startDate}
-        endDate={queryParams.endDate}
+        startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
+        endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
         onChange={({ startDate, endDate }) => {
           setQueryParams((prev) => ({
             ...prev,
-            startDate,
-            endDate,
+            startDate: startDate?.format('YYYY-MM-DD'),
+            endDate: endDate?.format('YYYY-MM-DD'),
             page: 1,
           }));
         }}
