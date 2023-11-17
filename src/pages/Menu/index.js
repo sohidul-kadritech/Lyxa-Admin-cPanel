@@ -27,6 +27,7 @@ import { ProductsContext } from './ProductContext';
 import Searchbar from './Searchbar';
 import AddSubCategory from './SubCategory/AddSubCategory';
 import EditSubCategory from './SubCategory/EditSubCategory';
+import ViewProductInfo from './ViewProduct';
 import { OngoingTag } from './helpers';
 
 export default function MenuPage({ editable = true, OnCheckProduct, suggestedProducts }) {
@@ -142,7 +143,13 @@ export default function MenuPage({ editable = true, OnCheckProduct, suggestedPro
       editProduct,
       setEditProduct: (product, readonly) => {
         setEditProduct(product);
-        setSidebar('add-item');
+
+        if (readonly) {
+          setSidebar('view-item');
+        } else {
+          setSidebar('add-item');
+        }
+
         setProductReadonly(readonly);
       },
       setEditSubCategory: (subCategory) => {
@@ -270,6 +277,17 @@ export default function MenuPage({ editable = true, OnCheckProduct, suggestedPro
             productReadonly={productReadonly}
             editProduct={editProduct}
             secondaryCurrency={secondaryCurrency}
+            onClose={() => {
+              setSidebar(null);
+              setNewProductCategory(null);
+              setEditProduct({});
+              setProductReadonly(false);
+            }}
+          />
+        )}
+        {sidebar === 'view-item' && (
+          <ViewProductInfo
+            productData={editProduct}
             onClose={() => {
               setSidebar(null);
               setNewProductCategory(null);
