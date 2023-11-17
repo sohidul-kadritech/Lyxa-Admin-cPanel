@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
@@ -5,6 +6,7 @@ import CustomerLocation from '../../assets/icons/customer-location.png';
 import GroceryLocation from '../../assets/icons/grocery-location.png';
 import PharmacyLocation from '../../assets/icons/pharmacy-location.png';
 import ReturantLocation from '../../assets/icons/restaurant-location.png';
+import RiderLocation from '../../assets/icons/riderPin.png';
 import { addCurrentLocationControl, smoothPanTo } from '../../components/Shared/ChangeDeliveryAddress/helpers';
 import { getTitleForMarker, getTitleForStoreMarker } from '../AdminOrderTable/OrderTracking/helpers';
 import { colorList } from './helper';
@@ -13,6 +15,7 @@ const orderTypeToIconMap = {
   grocery: GroceryLocation,
   pharmacy: PharmacyLocation,
   food: ReturantLocation,
+  deliveryBoy: RiderLocation, // icons --
 };
 
 function ZoneMapGoogleMap({
@@ -39,6 +42,8 @@ function ZoneMapGoogleMap({
       center: { lat: infoData[0]?.location?.coordinates[1] || 0, lng: infoData[0]?.location?.coordinates[0] || 0 },
       zoom: 15,
       disableDefaultUI: true,
+      fullscreenControl: true,
+      scaleControl: true,
     });
 
     // icons --
@@ -76,9 +81,10 @@ function ZoneMapGoogleMap({
 
     // set marker for each stores.
     infoData.forEach((data, i) => {
+      console.log({ infoData: data });
       const shopIcon = {
-        url: orderTypeToIconMap[data?.shopType],
-        scaledSize: new google.maps.Size(30, 60),
+        url: orderTypeToIconMap[data?.deliveryBoyType ? 'deliveryBoy' : data?.shopType],
+        scaledSize: data?.deliveryBoyType ? new google.maps.Size(60, 70) : new google.maps.Size(30, 60),
       };
 
       const shopLocation = new google.maps.Marker({
@@ -92,8 +98,17 @@ function ZoneMapGoogleMap({
 
       // store Title
       const infowindowForStore = new google.maps.InfoWindow({
-        content: getTitleForStoreMarker(data?.shopName || 'Store name', data?.shopLogo),
+        content: data?.deliveryBoyType
+          ? getTitleForMarker(`${data?.name || 'Rider Title'} (${data?.ongoingOrders || 0})` || 'Rider Title')
+          : getTitleForStoreMarker(data?.shopName || 'Store name', data?.shopLogo),
       });
+
+      setMapReference((prev) => ({
+        ...prev,
+        [data?._id]: shopLocation,
+        [`${data?._id}-infowindow`]: infowindowForStore,
+        infoWindow: [...(prev?.infoWindow || []), { [`${data?._id}-infowindow`]: infowindowForStore }],
+      }));
 
       shopLocation.addListener('mouseover', (e) => {
         infowindowForStore.open(map, shopLocation);
@@ -117,7 +132,7 @@ function ZoneMapGoogleMap({
         bounds.extend(coordinates);
       });
 
-      console.log({ path });
+      // console.log({ path });
 
       const polygonView = new google.maps.Polygon({
         paths: path, // Use the transformed coordinates
