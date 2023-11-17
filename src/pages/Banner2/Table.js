@@ -197,8 +197,6 @@ function AddBannerTable({
     <Box
       sx={{
         padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
         border: `1px solid ${theme.palette.custom.border}`,
         borderRadius: '7px',
       }}
