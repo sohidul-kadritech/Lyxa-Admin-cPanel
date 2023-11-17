@@ -241,7 +241,7 @@ export default function MarketingProductsTable({
         let productForShop = {};
 
         if (marketingForAdmin) {
-          productForAdmin = marketingForAdmin?.products?.find((product) => product?._id === params?.row?._id);
+          productForAdmin = marketingForAdmin?.products?.find((product) => product?.product === params?.row?._id);
         }
 
         if (marketingForShop) {
