@@ -104,6 +104,30 @@ function AdBanner() {
     },
   });
 
+  const bannerSortQuery = useMutation((data) => AXIOS.post(API_URL.SORT_BANNER, data), {
+    onSuccess: (data) => {
+      if (data.status) {
+        queryClient.invalidateQueries(API_URL.BANNER_LIST);
+        setOpen(false);
+        setIsConfirmModal(false);
+      }
+    },
+  });
+
+  const dropSort = ({ removedIndex, addedIndex }) => {
+    console.log({ removedIndex, addedIndex });
+    if (removedIndex === null || addedIndex === null) return;
+
+    const item = getBannerListQuery?.data?.data?.banners.splice(removedIndex, 1);
+    getBannerListQuery?.data?.data?.banners.splice(addedIndex, 0, item[0]);
+    bannerSortQuery.mutate({
+      banners: getBannerListQuery?.data?.data?.banners.map((item, index) => ({
+        id: item._id,
+        sortingOrder: index + 1,
+      })),
+    });
+  };
+
   return (
     <Box>
       <PageTop
@@ -165,6 +189,7 @@ function AdBanner() {
         ) : (
           <AddBannerTable
             type="home"
+            onDrop={dropSort}
             // type={queryParams?.type}
             updateQuery={editBannerQuery}
             setIsConfirmModal={setIsConfirmModal}
