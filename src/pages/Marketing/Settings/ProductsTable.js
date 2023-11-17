@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
@@ -229,6 +230,30 @@ export default function MarketingProductsTable({
           }
 
           return item?.creatorType === currentUser?.userType;
+        });
+
+        const marketingForShop = params?.row?.marketing?.find((item) => item?.isActive && item?.creatorType === 'shop');
+        const marketingForAdmin = params?.row?.marketing?.find(
+          (item) => item?.isActive && item?.creatorType === 'admin',
+        );
+
+        let productForAdmin = {};
+        let productForShop = {};
+
+        if (marketingForAdmin) {
+          productForAdmin = marketingForAdmin?.products?.find((product) => product?._id === params?.row?._id);
+        }
+
+        if (marketingForShop) {
+          productForShop = marketingForShop?.products?.find((product) => product?._id === params?.row?._id);
+        }
+
+        console.log({
+          marketingtable: params?.row,
+          marketingForShop,
+          marketingForAdmin,
+          productForAdmin,
+          productForShop,
         });
 
         const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
