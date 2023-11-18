@@ -83,7 +83,7 @@ function CustomerServiceProfile({ admin, open, onClose }) {
         position: 'absolute',
         top: 70,
         right: 40,
-        zIndex: 9,
+        zIndex: 999999,
         padding: '8px 0px',
         borderRadius: '10px',
         minWidth: '300px',
@@ -132,6 +132,7 @@ function CustomerServiceProfile({ admin, open, onClose }) {
                   }}
                   onClick={() => {
                     setOpenEdit(true);
+                    onClose();
                   }}
                 >
                   <Edit />

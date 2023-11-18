@@ -300,7 +300,7 @@ export const getProductInit = (shop, categoryId) => {
 export const converEditProduct = (product) => {
   const data = {
     isUnitEnabled: Boolean(product?.unit),
-    category: product?.category._id,
+    category: product?.category?._id,
     subCategory: product?.subCategory?._id,
     images: product?.images?.map((url) => ({
       preview: url,

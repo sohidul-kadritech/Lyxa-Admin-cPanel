@@ -265,6 +265,7 @@ function SellersProfile({
               />
             </Stack>
           )}
+
           <ShopList
             adminType={admin?.adminType}
             setSelectedShop={setSelectedShop}

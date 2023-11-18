@@ -78,6 +78,7 @@ export const ADD_BANNER = `${ADMIN_ENDPOINT}/banner/add`;
 export const DELETE_BANNER = `${ADMIN_ENDPOINT}/banner/delete`;
 export const GET_SINGLE_BANNER = `${ADMIN_ENDPOINT}/banner/`;
 export const EDIT_BANNER = `${ADMIN_ENDPOINT}/banner/update`;
+export const SORT_BANNER = `${ADMIN_ENDPOINT}/banner/sort`;
 
 // ADMIN
 export const ADD_ADMIN = `${ADMIN_ENDPOINT}/admins/add-admin`;

@@ -2,9 +2,10 @@ import { Delete, Edit, Visibility } from '@mui/icons-material';
 import { Avatar, Box, Button, Stack, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
+import { ReactComponent as HandleIcon } from '../../assets/icons/handle.svg';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import StyledSwitch from '../../components/Styled/StyledSwitch';
-import StyledTable from '../../components/Styled/StyledTable3';
+import StyledTable4 from '../../components/Styled/StyledTable4';
 
 function AddBannerTable({
   data,
@@ -17,10 +18,12 @@ function AddBannerTable({
   setIsReadOnly,
   deleteQuery,
   updateQuery,
+  onDrop,
   type,
 }) {
   const theme = useTheme();
 
+  console.log({ onDrop });
   const [rowId, setRowId] = useState('');
   const allColumns = [
     {
@@ -32,6 +35,9 @@ function AddBannerTable({
       flex: 1,
       renderCell: ({ row }) => (
         <Stack width="100%" spacing={2} flexDirection="row" alignItems="center" gap="10px">
+          <Box>
+            <HandleIcon className="drag-handler" />
+          </Box>
           <Avatar variant="rounded" sx={{ width: '117px', height: '46px' }} src={row?.image}>
             Banner
           </Avatar>
@@ -191,24 +197,20 @@ function AddBannerTable({
     <Box
       sx={{
         padding: '7.5px 16px  2px',
-        maxHeight: '480px',
-        overflow: 'auto',
         border: `1px solid ${theme.palette.custom.border}`,
         borderRadius: '7px',
       }}
     >
-      <StyledTable
+      <StyledTable4
         columns={allColumns.filter((col) => col?.showFor?.includes(type))}
         rows={data || []}
-        getRowId={(row) => row?._id}
+        getRowKey={(row) => row?._id}
         rowHeight={72}
+        onDrop={onDrop}
         sx={{
           '& .MuiDataGrid-cell': {
             cursor: 'pointer',
           },
-          //   '& .MuiDataGrid-row:hover': {
-          //     backgroundColor: 'rgba(0, 0, 0, 0.04) !important',
-          //   },
         }}
         components={{
           NoRowsOverlay: () => (
