@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Box, Chip, Drawer, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 // eslint-disable-next-line import/no-named-as-default
@@ -7,10 +8,12 @@ import StyledSwitch from '../../components/Styled/StyledSwitch';
 import StyledTable from '../../components/Styled/StyledTable3';
 
 import AddProduct from '../Menu/AddProduct';
+import ViewProductInfo from '../Menu/ViewProduct';
 
 function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
   const theme = useTheme();
   const [open, setOpen] = useState();
+  const [openProduct, setOpenProduct] = useState(false);
   const [currentSelectedProduct, setCurrentSelectedProduct] = useState({});
 
   const allColumns = [
@@ -29,7 +32,8 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
                 variant="h6"
                 onClick={() => {
                   setCurrentSelectedProduct(params?.row);
-                  setOpen(true);
+                  // setOpen(true);
+                  setOpenProduct(true);
                 }}
                 style={{
                   overflow: 'hidden',
@@ -197,6 +201,14 @@ function ProductList({ data = [], getCurrentCurrency, updateStatusQuery }) {
           editProduct={currentSelectedProduct}
           onClose={() => {
             setOpen(false);
+          }}
+        />
+      </Drawer>
+      <Drawer open={openProduct} anchor="right">
+        <ViewProductInfo
+          productData={currentSelectedProduct}
+          onClose={() => {
+            setOpenProduct(false);
           }}
         />
       </Drawer>

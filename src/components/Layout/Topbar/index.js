@@ -60,6 +60,7 @@ export default function Topbar({ setSidebar, sidebar }) {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setOpenCSInfo((prev) => !prev);
   };
 
   const { profilePhoto, altName } = getProfilePhotoAndAltName(currentUser, currentUser?.userType);
@@ -147,7 +148,7 @@ export default function Topbar({ setSidebar, sidebar }) {
       {currentUser?.adminType !== 'customerService' ? (
         <AccountMenu anchorEl={anchorEl} handleClose={handleClose} />
       ) : (
-        <CustomerServiceProfile admin={currentUser?.admin} open={openCSInfo} onClose={handleClick} />
+        <CustomerServiceProfile admin={currentUser?.admin} open={openCSInfo} onClose={handleClose} />
       )}
 
       <Drawer open={open} anchor="right">

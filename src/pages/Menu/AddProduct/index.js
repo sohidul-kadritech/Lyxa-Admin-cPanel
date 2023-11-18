@@ -28,7 +28,9 @@ import {
   productAttrInit,
   validateProduct,
 } from '../helpers';
+
 import AttributeItem from './AttributeItem';
+
 import PageSkeleton from './PageSkeleton';
 
 const fieldContainerSx = {
@@ -642,7 +644,7 @@ export default function AddProduct({ onClose, editProduct, productReadonly, newP
           )}
         </Box>
       )}
-      {/*  unit */}
+      {/*  Unit */}
       <Box sx={fieldContainerSx}>
         <Stack justifyContent="space-between" alignItems="center" direction="row" pb={1}>
           <Typography
