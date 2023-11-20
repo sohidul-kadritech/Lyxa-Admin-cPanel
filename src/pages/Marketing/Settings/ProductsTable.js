@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 /* eslint-disable no-unsafe-optional-chaining */
-import { Stack, Typography } from '@mui/material';
+import { Chip, Stack, Tooltip, Typography } from '@mui/material';
 import _ from 'lodash';
 import { useMemo, useState } from 'react';
 import CloseButton from '../../../components/Common/CloseButton';
@@ -11,7 +11,7 @@ import FilterSelect from '../../../components/Filter/FilterSelect';
 import StyledAutocomplete from '../../../components/Styled/StyledAutocomplete';
 import { useGlobalContext } from '../../../context';
 import ProductTable from './ProductTable';
-import { GroupHeader, createGroupedDataRow } from './helpers';
+import { GroupHeader, createGroupedDataRow, getDualMarketingPrice, toolTipTextForDualMarketing } from './helpers';
 
 export default function MarketingProductsTable({
   marketingType,
@@ -146,7 +146,10 @@ export default function MarketingProductsTable({
           findMarketing = {
             products: [{ product: params?.row?._id, discountPercentage: 0 }],
           };
-          params.row.marketing = [{ ...findMarketing, creatorType: creatorType !== 'admin' ? 'shop' : 'admin' }];
+          params.row.marketing = [
+            ...(params.row.marketing || []),
+            { ...findMarketing, creatorType: creatorType !== 'admin' ? 'shop' : 'admin', isActive: true },
+          ];
         }
 
         const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
@@ -215,6 +218,68 @@ export default function MarketingProductsTable({
     },
     {
       id: 5,
+      headerName: `${creatorType.charAt(0).toUpperCase() + creatorType.slice(1)} Discount Price`,
+      showFor: ['percentage'],
+      sortable: false,
+      field: 'initialPrice',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      minWidth: 180,
+      renderCell: (params) => {
+        const findMarketing = params?.row?.marketing?.find((item) => {
+          if (currentUser?.userType !== 'admin') {
+            return item?.creatorType === 'shop';
+          }
+
+          return item?.creatorType === currentUser?.userType;
+        });
+
+        const marketingForShop = params?.row?.marketing?.find((item) => item?.isActive && item?.creatorType === 'shop');
+        const marketingForAdmin = params?.row?.marketing?.find(
+          (item) => item?.isActive && item?.creatorType === 'admin',
+        );
+
+        const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
+
+        // for percentage only
+        const discountAmount = (params?.row?.price / 100) * findProduct?.discountPercentage;
+
+        const finalDiscountAmount = maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount;
+
+        if (params?.row?.isCategoryHeader) {
+          return <></>;
+        }
+
+        if (!findProduct?.discountPercentage) {
+          return <>--</>;
+        }
+
+        return (
+          <Stack direction="row" alignItems="center" gap={1.5}>
+            <Stack direction="row" alignItems="center" gap={1.5}>
+              {/* percentage */}
+              <Typography variant="body1" color="text.danger">
+                {currency} {(params?.row?.price - finalDiscountAmount)?.toFixed(2)}{' '}
+              </Typography>
+              {/* second */}
+              <Typography
+                sx={{
+                  color: '#A3A3A3',
+                  fontWeight: 500,
+                  textDecoration: 'line-through',
+                }}
+                variant="body1"
+              >
+                {`${currency} ${params?.row?.price}`}
+              </Typography>
+            </Stack>
+          </Stack>
+        );
+      },
+    },
+    {
+      id: 5,
       headerName: `Final Price`,
       showFor: ['reward', 'percentage', 'double_menu'],
       sortable: false,
@@ -237,29 +302,41 @@ export default function MarketingProductsTable({
           (item) => item?.isActive && item?.creatorType === 'admin',
         );
 
-        let productForAdmin = {};
-        let productForShop = {};
+        const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
+
+        // for percentage only
+        const discountAmount = (params?.row?.price / 100) * findProduct?.discountPercentage;
+
+        const finalDiscountAmount = maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount;
+
+        let productForAdmin;
+        let productForShop;
 
         if (marketingForAdmin) {
           productForAdmin = marketingForAdmin?.products?.find((product) => product?.product === params?.row?._id);
         }
 
         if (marketingForShop) {
-          productForShop = marketingForShop?.products?.find((product) => product?._id === params?.row?._id);
+          productForShop = marketingForShop?.products?.find((product) => product?.product === params?.row?._id);
         }
 
-        console.log({
-          marketingtable: params?.row,
-          marketingForShop,
-          marketingForAdmin,
+        if (creatorType === 'shop' && productForAdmin && !productForShop) {
+          productForShop = findProduct;
+        }
+
+        if (creatorType === 'admin' && productForShop && !productForAdmin) {
+          productForAdmin = findProduct;
+        }
+
+        console.log({ marketingForAdmin, marketingForShop, productForAdmin, productForShop, row: params?.row });
+
+        const dualMarketingPrice = getDualMarketingPrice(
           productForAdmin,
           productForShop,
-        });
-
-        const findProduct = findMarketing?.products?.find((item) => item?.product === params?.row?._id);
-
-        // for percentage only
-        const discountAmount = (params?.row?.price / 100) * findProduct?.discountPercentage;
+          params?.row?.price,
+          finalDiscountAmount,
+          creatorType,
+        );
 
         if (params?.row?.isCategoryHeader) {
           return <></>;
@@ -281,56 +358,74 @@ export default function MarketingProductsTable({
         }
 
         return (
-          <Stack direction="row" alignItems="center" gap={1.5}>
-            <Stack direction="row" alignItems="center" gap={1.5}>
-              {/* reward */}
-              {marketingType === 'reward' && (
-                <Typography variant="body1" color="primary.main">
-                  {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts + {currency}{' '}
-                  {(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle).toFixed(2)}
-                </Typography>
-              )}
-              {/* percentage */}
-              {marketingType === 'percentage' && (
-                <Typography variant="body1" color="text.danger">
-                  {currency}{' '}
-                  {(
-                    params?.row?.price - (maxDiscount > 0 ? Math.min(discountAmount, maxDiscount) : discountAmount)
-                  )?.toFixed(2)}{' '}
-                </Typography>
-              )}
-              {/* double_menu */}
-              {marketingType === 'double_menu' && (
-                <Typography variant="body1" color="text.danger">
-                  {currency} {params?.row?.price}
-                </Typography>
-              )}
-              {/* second */}
-              <Typography
-                sx={{
-                  color: '#A3A3A3',
-                  fontWeight: 500,
-                  textDecoration: 'line-through',
-                }}
-                variant="body1"
-              >
-                {/* reward/percentage  */}
-                {marketingType === 'reward' || (marketingType === 'percentage' && `${currency} ${params?.row?.price}`)}
-                {/* double_menu */}
-                {marketingType === 'double_menu' && `${currency} ${params?.row?.price * 2} `}
-              </Typography>
-            </Stack>
-            {itemSelectType !== 'multiple' && (
-              <CloseButton
-                color="primary"
-                size="sm"
-                onClick={() => {
-                  removeProduct(params.row);
-                  setProductsChanged(true);
-                }}
-              />
+          <Tooltip
+            title={toolTipTextForDualMarketing(
+              productForAdmin,
+              productForShop,
+              { percentage: findProduct?.discountPercentage, finalDiscountAmount },
+              creatorType,
             )}
-          </Stack>
+            sx={{ cursor: 'default' }}
+          >
+            <Stack direction="row" alignItems="center" gap={1.5}>
+              <Stack direction="row" alignItems="center" gap={1.5}>
+                {/* reward */}
+                {marketingType === 'reward' && (
+                  <Typography variant="body1" color="primary.main">
+                    {Math.round(((params?.row?.price / 100) * params?.row?.rewardBundle) / rewardAmount)} Pts +{' '}
+                    {currency} {(params?.row?.price - (params?.row?.price / 100) * params.row.rewardBundle).toFixed(2)}
+                  </Typography>
+                )}
+                {/* percentage */}
+                {marketingType === 'percentage' && (
+                  <>
+                    {dualMarketingPrice > 0 ? (
+                      <Typography variant="body1" color="text.danger">
+                        {currency} {dualMarketingPrice?.toFixed(2)}{' '}
+                      </Typography>
+                    ) : (
+                      <Typography variant="body1" color="text.danger">
+                        {currency} {(params?.row?.price - finalDiscountAmount)?.toFixed(2)}{' '}
+                      </Typography>
+                    )}
+                  </>
+                )}
+                {/* double_menu */}
+                {marketingType === 'double_menu' && (
+                  <Typography variant="body1" color="text.danger">
+                    {currency} {params?.row?.price}
+                  </Typography>
+                )}
+                {/* second */}
+                <Typography
+                  sx={{
+                    color: '#A3A3A3',
+                    fontWeight: 500,
+                    textDecoration: 'line-through',
+                  }}
+                  variant="body1"
+                >
+                  {/* reward/percentage  */}
+                  {marketingType === 'reward' ||
+                    (marketingType === 'percentage' && `${currency} ${params?.row?.price}`)}
+                  {/* double_menu */}
+                  {marketingType === 'double_menu' && `${currency} ${params?.row?.price * 2} `}
+                </Typography>
+              </Stack>
+              {marketingType === 'percentage' && dualMarketingPrice > 0 && <Chip label="Dual" size="small" />}
+
+              {itemSelectType !== 'multiple' && (
+                <CloseButton
+                  color="primary"
+                  size="sm"
+                  onClick={() => {
+                    removeProduct(params.row);
+                    setProductsChanged(true);
+                  }}
+                />
+              )}
+            </Stack>
+          </Tooltip>
         );
       },
     },
