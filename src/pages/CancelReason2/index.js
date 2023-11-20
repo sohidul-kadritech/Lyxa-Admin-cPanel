@@ -217,7 +217,7 @@ function CancelReason() {
             date: false,
             button: true,
           }}
-          searchPlaceHolder="Search by reasone"
+          searchPlaceHolder="Search by reason"
           buttonLabel="Add"
           onButtonClick={() => {
             setOpen(() => {
