@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { EmailOutlined } from '@mui/icons-material';
 import { Box, Button, Stack, Tab, Tabs, debounce } from '@mui/material';
@@ -33,6 +34,7 @@ const adminTypeToApiMap = {
 };
 
 export default function AddSellersForAccountManager({ onClose, currentAdmin, editAdminQuery }) {
+  console.log({ currentAdmin });
   const [queryParams, setQueryParams] = useState(getQueryParams(currentAdmin?.adminType, currentAdmin?._id));
   const [currentTab, setCurrentTab] = useState(0);
   const [sellers, setSellers] = useState(getManagerSellerIds(currentAdmin?.sellers));
@@ -54,7 +56,7 @@ export default function AddSellersForAccountManager({ onClose, currentAdmin, edi
   const query = useQuery([adminTypeToApiMap[currentAdmin?.adminType], queryParams], () =>
     AXIOS.get(adminTypeToApiMap[currentAdmin?.adminType], {
       params: queryParams,
-    })
+    }),
   );
 
   const updateSellers = () => {

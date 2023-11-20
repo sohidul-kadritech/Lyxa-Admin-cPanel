@@ -15,7 +15,7 @@ const intialData = {
 
 const getAdminType = (type) => {
   if (type === 'admin') return 'Admin';
-  if (type === 'customerService') return 'customer service';
+  if (type === 'customerService') return 'Customer Support';
   if (type === 'sales') return 'sales';
   if (type === 'accountManager') return 'account manager';
   return '';

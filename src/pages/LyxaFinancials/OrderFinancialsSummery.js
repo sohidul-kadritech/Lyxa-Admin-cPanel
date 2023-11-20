@@ -454,6 +454,11 @@ function OrderFinancialsSummary() {
                     showIfZero
                   />
                   <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.restaurant?.discountFromRestaurantForSubscription || 0}
+                    showIfZero
+                  />
+                  <PriceItem
                     title="loyality"
                     amount={marketingSpent?.restaurant?.loyaltyPointFromRestaurant}
                     showIfZero
@@ -461,6 +466,11 @@ function OrderFinancialsSummary() {
                   <PriceItem
                     title="buy 1, get 1"
                     amount={marketingSpent?.restaurant?.buy1Get1FromRestaurant}
+                    showIfZero
+                  />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.restaurant?.buy1Get1FromRestaurantForSubscription}
                     showIfZero
                   />
                   <PriceItem
@@ -481,8 +491,18 @@ function OrderFinancialsSummary() {
                   }}
                 >
                   <PriceItem title="discount" amount={marketingSpent?.grocery?.discountFromGrocery} showIfZero />
+                  <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.grocery?.discountFromGroceryForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="loyality" amount={marketingSpent?.grocery?.loyaltyPointFromGrocery} showIfZero />
                   <PriceItem title="buy 1, get 1" amount={marketingSpent?.grocery?.buy1Get1FromGrocery} showIfZero />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.grocery?.buy1Get1FromGroceryForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="coupon" amount={marketingSpent?.grocery?.couponDiscountFromGrocery} showIfZero />
                 </DetailsAccordion>
                 <DetailsAccordion
@@ -497,8 +517,18 @@ function OrderFinancialsSummary() {
                   }}
                 >
                   <PriceItem title="discount" amount={marketingSpent?.pharmacy?.discountFromPharmacy} showIfZero />
+                  <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.pharmacy?.discountFromPharmacyForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="loyality" amount={marketingSpent?.pharmacy?.loyaltyPointFromPharmacy} showIfZero />
                   <PriceItem title="buy 1, get 1" amount={marketingSpent?.pharmacy?.buy1Get1FromPharmacy} showIfZero />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.pharmacy?.buy1Get1FromPharmacyForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="coupon" amount={marketingSpent?.pharmacy?.couponDiscountFromPharmacy} showIfZero />
                 </DetailsAccordion>
                 <DetailsAccordion
@@ -511,11 +541,10 @@ function OrderFinancialsSummary() {
                     seCurrentExpanedTab(closed ? 1 : -1);
                   }}
                 >
-                  <></>
+                  <PriceItem title="Free Delivery by Lyxa" amount={marketingSpent?.delivery?.freeDelivery} showIfZero />
                   <PriceItem
-                    title="Free Delivery by Lyxa"
-                    amount={marketingSpent?.delivery?.freeDelivery}
-                    // isNegative
+                    title="Free Delivery by Lyxa plus"
+                    amount={marketingSpent?.delivery?.freeDeliveryForSubscription}
                     showIfZero
                   />
                 </DetailsAccordion>
