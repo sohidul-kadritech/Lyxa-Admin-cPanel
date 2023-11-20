@@ -78,7 +78,7 @@ function SellersProfileInfo({ data = {}, theme, threeDotHandler, adminType }) {
                 <InfoListItem
                   titleSx={{
                     overflow: 'hidden',
-                    maxWidth: '350px',
+                    maxWidth: '450px',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                   }}
