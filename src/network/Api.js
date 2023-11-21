@@ -472,3 +472,11 @@ export const REQUESTED_AREA = `${ADMIN_ENDPOINT}/request-area`;
 export const ZONE_MAP_OVERVIEW = `${ADMIN_ENDPOINT}/zone/map-overview`;
 export const GET_ZONE_FROM_LATLNG = `${ADMIN_ENDPOINT}/shop/get-zones`;
 export const GET_ZONE_SERVICE_AVAILABILITY = `${ADMIN_ENDPOINT}/zone/check`;
+
+// shop new api list
+export const GET_ALL_SHOP = `${ADMIN_ENDPOINT}/shop/all`;
+export const GET_SINGLE_SELLER_SHOP = `${ADMIN_ENDPOINT}/shop/seller-shop`;
+export const GET_SINGLE_SELLER_ALL_SHOP = `${ADMIN_ENDPOINT}/shop/seller-all-shop`;
+export const GET_SINGLE_SHOP = `${ADMIN_ENDPOINT}/shop/single`;
+export const GET_SHOP_FLAGS = `${ADMIN_ENDPOINT}/shop/flags`;
+export const GET_SHOP_REVIEWS = `${ADMIN_ENDPOINT}/shop/reviews`;
