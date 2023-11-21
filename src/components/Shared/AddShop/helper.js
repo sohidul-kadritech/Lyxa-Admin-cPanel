@@ -100,7 +100,7 @@ export const validateShopDetails = (shopData, isEditShop, adminType, shopZone) =
     return status;
   }
 
-  if (!shopData?.shopAddress?.address) {
+  if (!shopData?.address?.address) {
     status.msg = 'Please provide shop address';
     return status;
   }
@@ -110,7 +110,7 @@ export const validateShopDetails = (shopData, isEditShop, adminType, shopZone) =
     return status;
   }
 
-  if (!shopData?.shopAddress?.pin) {
+  if (!shopData?.address?.pin) {
     status.msg = 'Please provide shop Zip Code';
     return status;
   }
