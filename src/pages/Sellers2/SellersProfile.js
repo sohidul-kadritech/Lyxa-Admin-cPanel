@@ -175,9 +175,9 @@ function SellersProfile({
   };
 
   const getSingleShop = useQuery(
-    [API_URL.SELLER_DASHBOARD_SHOP_LIST, { ...queryParams, sellerId: currentSeller?._id }],
+    [API_URL.GET_SINGLE_SELLER_SHOP, { ...queryParams, sellerId: currentSeller?._id }],
     () =>
-      AXIOS.get(API_URL.SELLER_DASHBOARD_SHOP_LIST, {
+      AXIOS.get(API_URL.GET_SINGLE_SELLER_SHOP, {
         params: { ...queryParams, sellerId: currentSeller?._id },
       }),
     {
@@ -283,7 +283,7 @@ function SellersProfile({
             removeDocument={removeDocument}
             data={
               tabName === 'Shop List'
-                ? getSingleShop?.data?.data?.shopList || []
+                ? getSingleShop?.data?.data?.shops || []
                 : generateDataForSellerDocuments(currentSeller) || []
             }
           />

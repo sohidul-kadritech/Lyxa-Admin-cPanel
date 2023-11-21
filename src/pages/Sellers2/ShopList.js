@@ -123,7 +123,7 @@ function ShopList({
             textTransform: 'capitalize',
           }}
         >
-          {calculateTotal(params?.row?.repeatedCustomers?.length, params?.row?.repeatedCustomers?.length)}
+          {params?.row?.totalCustomers}
         </Typography>
       ),
     },

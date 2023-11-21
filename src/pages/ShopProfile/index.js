@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Drawer } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import PageTop from '../../components/Common/PageTop';
@@ -27,7 +27,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   const { currentUser, dispatchCurrentUser, dispatchShopTabs } = useGlobalContext();
 
   const { seller } = currentUser;
-  const [shop, setShop] = useState(routeMatch?.path !== '/shop/profile/:shopId' ? currentUser?.shop : {});
+  const [shop, setShop] = useState({});
+  // const [shop, setShop] = useState(routeMatch?.path !== '/shop/profile/:shopId' ? currentUser?.shop : {});
   const [open, setOpen] = useState(false);
 
   const shopMutation = useMutation((data) => AXIOS.post(API_URL.EDIT_SHOP, data), {
@@ -46,18 +47,58 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
     },
   });
 
-  const shopQuery = useQuery(
-    [API_URL.SINGLE_SHOP, { id: routeMatch?.params?.shopId }],
+  // const shopQuery = useQuery(
+  //   [API_URL.SINGLE_SHOP, { id: routeMatch?.params?.shopId }],
+  //   () =>
+  //     AXIOS.get(API_URL.SINGLE_SHOP, {
+  //       params: {
+  //         id: routeMatch?.params?.shopId || currentUser?.shop?._id,
+  //       },
+  //     }),
+  //   {
+  //     enabled: false,
+  //     onSuccess: (data) => {
+  //       setShop(data?.data?.shop);
+  //     },
+  //     onError: (error) => {
+  //       console.log(error);
+  //     },
+  //   },
+  // );
+  // const shopQuery = useQuery(
+  //   [API_URL.GET_SINGLE_SHOP, { id: routeMatch?.params?.shopId || currentUser?.shop?._id }],
+  //   () =>
+  //     AXIOS.get(API_URL.GET_SINGLE_SHOP, {
+  //       params: {
+  //         shopId: routeMatch?.params?.shopId || currentUser?.shop?._id,
+  //       },
+  //     }),
+  //   {
+  //     // enabled: false,
+  //     onSuccess: (data) => {
+  //       if (data?.status) {
+  //         setShop(data?.data?.shop);
+  //       }
+  //     },
+  //     onError: (error) => {
+  //       console.log(error);
+  //     },
+  //   },
+  // );
+
+  const shopQuery = useMutation(
     () =>
-      AXIOS.get(API_URL.SINGLE_SHOP, {
+      AXIOS.get(API_URL.GET_SINGLE_SHOP, {
         params: {
-          id: routeMatch?.params?.shopId || currentUser?.shop?._id,
+          shopId: routeMatch?.params?.shopId || currentUser?.shop?._id,
         },
       }),
     {
-      enabled: false,
+      // enabled: false,
       onSuccess: (data) => {
-        setShop(data?.data?.shop);
+        if (data?.status) {
+          setShop(data?.data?.shop);
+        }
       },
       onError: (error) => {
         console.log(error);
@@ -66,20 +107,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   );
 
   useEffect(() => {
-    if (routeMatch?.path === '/shop/profile/:shopId') {
-      if (shopQuery?.data?.data?.shop?._id === routeMatch?.params?.shopId) {
-        setShop(shopQuery?.data?.data?.shop);
-      } else {
-        shopQuery.refetch();
-      }
-    }
+    shopQuery.mutate();
   }, []);
-
-  useEffect(() => {
-    if (routeMatch?.path !== '/shop/profile/:shopId') {
-      setShop(currentUser?.shop);
-    }
-  }, [currentUser?.shop]);
 
   const menuHandler = (value) => {
     if (value === 'edit') {
@@ -153,8 +182,8 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
         backButtonLabel={location?.state ? location?.state?.backToLabel : undefined}
         backTo={location?.state ? location?.state?.from : undefined}
       />
-      {(shopQuery?.isLoading || !shop?._id) && <ShopProfileSkeleton />}
-      {!shopQuery?.isLoading && shop?._id && (
+      {shopQuery?.isLoading && <ShopProfileSkeleton />}
+      {!shopQuery?.isLoading && (
         <Box
           sx={{
             display: 'grid',

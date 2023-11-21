@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 import PageTop from '../../components/Common/PageTop';
 import AddShop from '../../components/Shared/AddShop';
@@ -28,7 +29,7 @@ const queryParamsInit = (type) => ({
   type,
   shopStatus: 'all',
   liveStatus: 'all',
-  sortByOrders: '',
+  sortByOrders: 'desc',
   sortByAvgTime: '',
   sortByRating: '',
   sortByProfit: '',
@@ -81,29 +82,85 @@ export default function ShopList() {
     },
   );
 
+  const accessAsShopAccessMarketing = (menu, shop) => {
+    if (menu === 'access') {
+      console.log({ shop });
+
+      const routePath = `/shop/dashboard/${shop?._id}`;
+      history.push(routePath);
+      dispatchCurrentUser({ type: 'shop', payload: { shop } });
+
+      dispatchShopTabs({
+        type: 'add-tab',
+        payload: { shop, location: routePath, seller: {}, from: routeMatch?.url },
+      });
+    }
+
+    if (menu === 'marketing') {
+      dispatchCurrentUser({ type: 'shop', payload: { shop } });
+      history.push(`/shops/${shop?._id}/marketing`, shop);
+    }
+  };
+
+  const shopQueryForAccessAsShop = useMutation(
+    (data) => {
+      console.log('get data', { shop: data });
+      return AXIOS.get(Api.GET_SINGLE_SHOP, {
+        params: {
+          shopId: data?.shop?._id,
+        },
+      });
+    },
+    {
+      // enabled: false,
+      onSuccess: (data, payload) => {
+        if (data?.status) {
+          // setShop(data?.data?.shop);
+          console.log({ shopData: data?.data?.shop });
+          // setPayloadShopData(data?.data?.shop);
+
+          if (data?.data?.shop?._id) accessAsShopAccessMarketing(payload?.menu, data?.data?.shop);
+        }
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    },
+  );
+
   const handleMenuClick = (menu, shop) => {
     if (menu === 'edit') {
       setCurrentShop(shop);
       setOpen(menu);
+      return;
     }
 
     if (menu === 'view') {
       setCurrentShop(shop);
       setOpen(menu);
+      return;
     }
 
-    if (menu === 'access') {
-      const routePath = `/shop/dashboard/${shop._id}`;
-      history.push(routePath);
-      dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      dispatchShopTabs({ type: 'add-tab', payload: { shop, location: routePath, seller: {}, from: routeMatch?.url } });
-    }
+    shopQueryForAccessAsShop.mutate({ shop, menu });
 
-    if (menu === 'marketing') {
-      console.log('payload: ', { type: 'shop', payload: { shop } });
-      dispatchCurrentUser({ type: 'shop', payload: { shop } });
-      history.push(`/shops/${shop?._id}/marketing`, shop);
-    }
+    // if (menu === 'access') {
+    //   console.log({ shop: payloadShopData });
+
+    //   const routePath = `/shop/dashboard/${shop?._id}`;
+    //   history.push(routePath);
+    //   dispatchCurrentUser({ type: 'shop', payload: { shop: payloadShopData } });
+
+    //   if (payloadShopData?._id)
+    //     dispatchShopTabs({
+    //       type: 'add-tab',
+    //       payload: { shop: payloadShopData, location: routePath, seller: {}, from: routeMatch?.url },
+    //     });
+    // }
+
+    // if (menu === 'marketing') {
+    //   dispatchCurrentUser({ type: 'shop', payload: { shop: payloadShopData } });
+    //   history.push(`/shops/${shop?._id}/marketing`, payloadShopData);
+    // }
   };
 
   return (

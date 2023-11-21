@@ -5,7 +5,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
-import { AverageOrderValue, OpeningHours, TagsAndCuisines } from '../../pages/ShopProfile/helper';
+import { OpeningHours, TagsAndCuisines } from '../../pages/ShopProfile/helper';
 import CloseButton from '../Common/CloseButton';
 import Rating from '../Common/Rating';
 import ClickableAddress from './ClickableAddress';
@@ -317,7 +317,7 @@ function ViewShopInfo({ onClose, selectedShop = {} }) {
 
           <ShopInfo title="Average Ord. Value" sx={{ textTransform: 'capitalize' }} theme={theme}>
             <Typography variant="body4" sx={{ textTransform: 'capitalize' }}>
-              {AverageOrderValue(shopData?.orderValue?.productAmount, shopData?.orderValue?.count)}
+              {shopData?.avgOrderValue}
             </Typography>
           </ShopInfo>
           <ShopInfo title="Opening Hours" sx={{ textTransform: 'capitalize' }} theme={theme}>

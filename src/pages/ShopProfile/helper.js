@@ -195,9 +195,9 @@ export function OpeningHours({ normalHours }) {
   );
 }
 
-export const calculatePercantagesOfRating = (reviews) => {
+export const calculatePercantagesOfRating = (reviews = []) => {
   const ratingCounts = {};
-  const totalReviews = reviews.length;
+  const totalReviews = reviews?.length;
 
   // Count the occurrences of each rating
   for (const review of reviews) {
@@ -247,7 +247,7 @@ export function ShopReviewDetails({ shop }) {
     <Stack gap={4}>
       <Stack direction="row" gap={2} alignItems="center">
         <Avatar src={shop?.shopLogo} sx={{ width: '50px', height: '50px' }}>
-          {shop?.shopName[0]}
+          {shop?.shopName?.charAt(0).toUpperCase()}
         </Avatar>
         <Stack>
           <Rating amount={shop?.rating} titleSx={{ fontSize: '18px', fontWeight: 600 }} />
