@@ -27,13 +27,15 @@ const addressInit = {
 export default function ShopDetails({ shop, setZones, zones, setShop, onChange, onDrop, isEditShop }) {
   const [render, setRender] = useState(false);
 
-  const [selectedAddress, setSelectedAddress] = useState(shop?.shopAddress?.address);
+  console.log('address', shop?.address?.address, { shop });
+
+  const [selectedAddress, setSelectedAddress] = useState(shop?.address?.address);
 
   const [showZoneMsg, setShowZoneMsg] = useState(false);
 
   const [latlngForZone, setLatLngForZone] = useState({
-    longitude: shop?.shopAddress?.longitude || 0,
-    latitude: shop?.shopAddress?.latitude || 0,
+    longitude: shop?.address?.longitude || 0,
+    latitude: shop?.address?.latitude || 0,
   });
 
   const getZoneFromAddress = useQuery(
@@ -90,7 +92,7 @@ export default function ShopDetails({ shop, setZones, zones, setShop, onChange, 
 
     setLatLngForZone((prev) => ({ ...prev, latitude: newAddress.latitude, longitude: newAddress.longitude }));
 
-    shop.shopAddress = newAddress;
+    shop.address = newAddress;
     setRender(!render);
   };
 
@@ -132,7 +134,7 @@ export default function ShopDetails({ shop, setZones, zones, setShop, onChange, 
       />
       {/* shop name */}
       <StyledFormField
-        label="Shop Manager Name *"
+        label="Shop Owner Name *"
         intputType="text"
         inputProps={{
           value: shop?.name,
@@ -275,11 +277,11 @@ export default function ShopDetails({ shop, setZones, zones, setShop, onChange, 
         label="Zip Code *"
         intputType="text"
         inputProps={{
-          value: shop.shopAddress.pin,
+          value: shop?.address?.pin,
           type: 'text',
           name: 'pin',
           onChange: (event) => {
-            shop.shopAddress.pin = event.target.value;
+            shop.address.pin = event.target.value;
             setRender(!render);
           },
         }}

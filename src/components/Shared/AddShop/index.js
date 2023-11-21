@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { ArrowDownward, ArrowForward } from '@mui/icons-material';
-import { Box, Button, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Button, Skeleton, Stack, Tab, Tabs } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useGlobalContext } from '../../../context';
 import { successMsg } from '../../../helpers/successMsg';
@@ -25,6 +25,38 @@ import {
   validateShopFeatures,
 } from './helper';
 
+function RowSkeleton() {
+  return (
+    <Stack gap={2.5}>
+      <Skeleton width="250px" height="16px" />
+      <Skeleton width="80%" height="40px" sx={{ borderRadius: '32px' }} />
+    </Stack>
+  );
+}
+
+function EditShopSkeleton() {
+  return (
+    <Stack>
+      <Stack gap={6}>
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+        <RowSkeleton />
+      </Stack>
+    </Stack>
+  );
+}
+
 const getTabMax = (isEditShop, shopReceivePaymentBy) => {
   if (isEditShop && shopReceivePaymentBy === 'cash') return 0;
   if (isEditShop || shopReceivePaymentBy === 'cash') return 1;
@@ -32,7 +64,7 @@ const getTabMax = (isEditShop, shopReceivePaymentBy) => {
 };
 
 export default function AddShop({ onClose, editShop, seller: customSeller, refetch = () => {} }) {
-  console.log('shop', editShop);
+  // console.log('shop', editShop);
 
   const queryClient = useQueryClient();
 
@@ -42,14 +74,63 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
 
   const [seller] = useState(customSeller?._id ? customSeller : currentSeller);
 
-  const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
+  const [shop, setShop] = useState(editShop?._id ? {} : shopInit(seller?._id));
+  // const [shop, setShop] = useState(editShop?._id ? getShopEditData(editShop) : shopInit(seller?._id));
 
   const [loading, setLoading] = useState(false);
+
+  const [render, setRender] = useState(false);
 
   const [currentTab, setCurrentTab] = useState(0);
   const [zones, setZones] = useState([]);
 
   const tabMax = getTabMax(editShop?._id, shop?.shopReceivePaymentBy);
+
+  // const shopsQuery = useQuery(
+  //   [Api.GET_SINGLE_SHOP, { shopId: editShop?._id, ...editShop }],
+  //   () =>
+  //     AXIOS.get(Api.GET_SINGLE_SHOP, {
+  //       params: {
+  //         shopId: editShop?._id,
+  //       },
+  //     }),
+  //   {
+  //     enabled: !!editShop?._id,
+  //     refetchOnWindowFocus: true,
+  //     onSuccess: (data) => {
+  //       if (data?.status) {
+  //         console.log('address', data?.data?.shop);
+
+  //         if (data?.data?.shop?._id === editShop?._id) setShop(getShopEditData(data?.data?.shop));
+
+  //         setRender(true);
+  //       }
+  //     },
+  //   },
+  // );
+
+  const singleShopDataQuery = useMutation(
+    () =>
+      AXIOS.get(Api.GET_SINGLE_SHOP, {
+        params: {
+          shopId: editShop?._id,
+        },
+      }),
+    {
+      onSuccess: (data) => {
+        if (data?.status) {
+          console.log('address', data?.data?.shop);
+
+          if (data?.data?.shop?._id === editShop?._id) setShop(getShopEditData(data?.data?.shop));
+          else {
+            setShop(shopInit(seller?._id));
+          }
+
+          setRender(true);
+        }
+      },
+    },
+  );
 
   const onChangeHandler = (e) => {
     if (e.target.name === 'pin') {
@@ -87,6 +168,7 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
           else queryClient.invalidateQueries([Api.ALL_SHOP]);
 
           queryClient.invalidateQueries([Api.SHOP_BRANDS]);
+          queryClient.invalidateQueries([Api.GET_ALL_SHOP]);
 
           onClose();
           refetch();
@@ -154,7 +236,19 @@ export default function AddShop({ onClose, editShop, seller: customSeller, refet
     setCurrentTab((prev) => prev + 1);
   };
 
-  console.log({ shop });
+  useEffect(() => {
+    singleShopDataQuery.mutate();
+  }, [editShop]);
+
+  console.log('address loading', { loading: singleShopDataQuery?.isLoading, editShop });
+
+  if (singleShopDataQuery?.isLoading) {
+    return (
+      <SidebarContainer title={`${editShop?._id ? 'Edit' : 'Add'} Shop`} onClose={onClose}>
+        <EditShopSkeleton />
+      </SidebarContainer>
+    );
+  }
 
   return (
     <SidebarContainer title={`${editShop?._id ? 'Edit' : 'Add'} Shop`} onClose={onClose}>

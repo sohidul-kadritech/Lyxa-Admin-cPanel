@@ -66,7 +66,7 @@ export const validateShopDetails = (shopData, isEditShop, adminType, shopZone) =
     return status;
   }
   if (!shopData?.name?.trim()) {
-    status.msg = 'Please provide shop manager name';
+    status.msg = 'Please provide shop owner name';
     return status;
   }
 
@@ -256,7 +256,7 @@ export const createEditShopData = async (shopData) => {
     bank_address: shopData?.bank_address,
     bank_postal_code: shopData?.bank_postal_code,
     account_swift: shopData?.account_swift,
-    shopAddress: shopData?.shopAddress,
+    shopAddress: shopData?.address,
     shopZone: shopData?.shopZone,
     shopLogo,
     shopBanner,
