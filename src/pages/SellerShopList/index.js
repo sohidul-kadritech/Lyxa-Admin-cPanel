@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // third party
 import { Box, Drawer, Typography } from '@mui/material';
 
@@ -53,8 +54,8 @@ export default function SellerShopList() {
   };
 
   const query = useQuery(
-    [Api.ALL_SHOP, { sellerId: seller?._id }],
-    () => AXIOS.get(Api.ALL_SHOP, { params: { sellerId: seller?._id } }),
+    [Api.GET_SINGLE_SELLER_ALL_SHOP, { sellerId: seller?._id }],
+    () => AXIOS.get(Api.GET_SINGLE_SELLER_ALL_SHOP, { params: { sellerId: seller?._id } }),
     {
       enabled: queryEnabled,
       onSuccess: (data) => {
@@ -65,7 +66,7 @@ export default function SellerShopList() {
           setCurrentShop(data);
         }
       },
-    }
+    },
   );
 
   useEffect(() => {

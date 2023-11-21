@@ -15,12 +15,6 @@ import ShopOrders from './Orders';
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
 
-const accessAddmin = {
-  admin: ['admin', 'sales', 'accountManager'],
-  shop: ['shop'],
-  seller: ['seller'],
-};
-
 export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
   const [currentTab, setCurrentTab] = useState(0);
   const [open, setOpen] = useState(false);

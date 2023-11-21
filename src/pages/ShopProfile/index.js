@@ -65,26 +65,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   //     },
   //   },
   // );
-  // const shopQuery = useQuery(
-  //   [API_URL.GET_SINGLE_SHOP, { id: routeMatch?.params?.shopId || currentUser?.shop?._id }],
-  //   () =>
-  //     AXIOS.get(API_URL.GET_SINGLE_SHOP, {
-  //       params: {
-  //         shopId: routeMatch?.params?.shopId || currentUser?.shop?._id,
-  //       },
-  //     }),
-  //   {
-  //     // enabled: false,
-  //     onSuccess: (data) => {
-  //       if (data?.status) {
-  //         setShop(data?.data?.shop);
-  //       }
-  //     },
-  //     onError: (error) => {
-  //       console.log(error);
-  //     },
-  //   },
-  // );
 
   const shopQuery = useMutation(
     () =>
@@ -109,6 +89,10 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   useEffect(() => {
     shopQuery.mutate();
   }, []);
+
+  useEffect(() => {
+    if (routeMatch?.path === '/shops/list') shopQuery.mutate();
+  }, [currentUser?.shop?._id]);
 
   const menuHandler = (value) => {
     if (value === 'edit') {
