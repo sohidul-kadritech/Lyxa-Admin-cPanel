@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, debounce, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -7,8 +8,18 @@ import TablePageSkeleton from '../Notification2/TablePageSkeleton';
 import { getZoneStatusColor } from './helper';
 
 import StyledSearchBar from '../../components/Styled/StyledSearchBar';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
+
+const initializationParamsForZoneMapOverview = {
+  searchKey: '',
+  zoneStatus: 'active',
+  page: 1,
+  pageSize: 5,
+  sortBy: '',
+  tab: 'map-overview',
+};
 
 function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
   // eslint-disable-next-line no-unused-vars
@@ -29,22 +40,20 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
 
   const theme = useTheme();
 
+  const [queryParams, setQueryParams] = useQueryParams(initializationParamsForZoneMapOverview);
+
   // eslint-disable-next-line no-unused-vars
   const getMapoverView = useQuery(
-    [API_URL.ZONE_MAP_OVERVIEW, { searchedValue, pageNo }],
+    [API_URL.ZONE_MAP_OVERVIEW, { ...queryParams }],
     () =>
       AXIOS.get(API_URL.ZONE_MAP_OVERVIEW, {
         params: {
-          zoneStatus: 'active',
-          page: pageNo,
-          searchKey: searchedValue,
-          pageSize: selectedPageSize,
+          ...queryParams,
         },
       }),
     {
       onSuccess: (data) => {
         if (data?.status) {
-          console.log('map over view: ', data?.data?.zones);
           setTotalPage(data?.data?.paginate?.metadata?.page?.totalPage);
         }
       },
@@ -164,7 +173,7 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
         <StyledSearchBar
           sx={{ flex: 1 }}
           placeholder="Search"
-          onChange={debounce((e) => setSearchedValue(e.target.value), 300)}
+          onChange={debounce((e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value })), 300)}
         />
       </Stack>
 
@@ -212,10 +221,9 @@ function MapOverview({ setIsSideBarOpen, setCurrentRowData }) {
       </Box>
       <Box marginTop={5}>
         <AppPagination
-          currentPage={pageNo}
+          currentPage={Number(queryParams?.page)}
           lisener={(newPage) => {
-            setPageNo(newPage);
-            console.log(true);
+            setQueryParams((prev) => ({ ...prev, page: newPage }));
           }}
           totalPage={totalPage}
         />

@@ -91,10 +91,11 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
             {shop?.shopName}
           </Typography>
           {shop?.accountManager?.name && <AccountManagerInfo accountManager={shop?.accountManager} />}
-          {routeMatch?.path === '/seller/dashboard/:sellerId/shop/dashboard/:shopId/profile' &&
-          admin?.adminType === 'customerService' ? null : (
+          {/* {routeMatch?.path === '/seller/dashboard/:sellerId/shop/dashboard/:shopId/profile' && */}
+          {admin?.adminType === 'customerService' ? null : (
             <Box sx={{ display: 'flex', justifyContent: 'space-between', flex: '5', alignItems: 'center' }}>
               <Box />
+
               <ThreeDotsMenu
                 menuItems={menuOtions(currentUser?.userType, routeMatch?.path, admin?.adminType)}
                 handleMenuClick={menuHandler}

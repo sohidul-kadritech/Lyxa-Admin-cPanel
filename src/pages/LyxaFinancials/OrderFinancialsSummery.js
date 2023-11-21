@@ -454,6 +454,11 @@ function OrderFinancialsSummary() {
                     showIfZero
                   />
                   <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.restaurant?.discountFromRestaurantForSubscription || 0}
+                    showIfZero
+                  />
+                  <PriceItem
                     title="loyality"
                     amount={marketingSpent?.restaurant?.loyaltyPointFromRestaurant}
                     showIfZero
@@ -461,6 +466,11 @@ function OrderFinancialsSummary() {
                   <PriceItem
                     title="buy 1, get 1"
                     amount={marketingSpent?.restaurant?.buy1Get1FromRestaurant}
+                    showIfZero
+                  />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.restaurant?.buy1Get1FromRestaurantForSubscription}
                     showIfZero
                   />
                   <PriceItem
@@ -481,8 +491,18 @@ function OrderFinancialsSummary() {
                   }}
                 >
                   <PriceItem title="discount" amount={marketingSpent?.grocery?.discountFromGrocery} showIfZero />
+                  <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.grocery?.discountFromGroceryForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="loyality" amount={marketingSpent?.grocery?.loyaltyPointFromGrocery} showIfZero />
                   <PriceItem title="buy 1, get 1" amount={marketingSpent?.grocery?.buy1Get1FromGrocery} showIfZero />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.grocery?.buy1Get1FromGroceryForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="coupon" amount={marketingSpent?.grocery?.couponDiscountFromGrocery} showIfZero />
                 </DetailsAccordion>
                 <DetailsAccordion
@@ -497,8 +517,18 @@ function OrderFinancialsSummary() {
                   }}
                 >
                   <PriceItem title="discount" amount={marketingSpent?.pharmacy?.discountFromPharmacy} showIfZero />
+                  <PriceItem
+                    title="discount for lyxa plus"
+                    amount={marketingSpent?.pharmacy?.discountFromPharmacyForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="loyality" amount={marketingSpent?.pharmacy?.loyaltyPointFromPharmacy} showIfZero />
                   <PriceItem title="buy 1, get 1" amount={marketingSpent?.pharmacy?.buy1Get1FromPharmacy} showIfZero />
+                  <PriceItem
+                    title="buy 1, get 1 for lyxa plus"
+                    amount={marketingSpent?.pharmacy?.buy1Get1FromPharmacyForSubscription}
+                    showIfZero
+                  />
                   <PriceItem title="coupon" amount={marketingSpent?.pharmacy?.couponDiscountFromPharmacy} showIfZero />
                 </DetailsAccordion>
                 <DetailsAccordion
@@ -511,11 +541,10 @@ function OrderFinancialsSummary() {
                     seCurrentExpanedTab(closed ? 1 : -1);
                   }}
                 >
-                  <></>
+                  <PriceItem title="Free Delivery by Lyxa" amount={marketingSpent?.delivery?.freeDelivery} showIfZero />
                   <PriceItem
-                    title="Free Delivery by Lyxa"
-                    amount={marketingSpent?.delivery?.freeDelivery}
-                    // isNegative
+                    title="Free Delivery by Lyxa plus"
+                    amount={marketingSpent?.delivery?.freeDeliveryForSubscription}
                     showIfZero
                   />
                 </DetailsAccordion>
@@ -651,62 +680,7 @@ function OrderFinancialsSummary() {
               </Stack>
             </InfoCard>
           </Grid>
-          <Grid item xs={6} md={4}>
-            <InfoCard
-              title="Lyxa Plus Marketing Spent"
-              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 9 ? 9999 : 99 }}
-              isDropdown
-              index={9}
-              setExpandedIndex={setExpandedIndex}
-              expandedIndex={expandedIndex === 9}
-              valueComponent={
-                <Stack direction="column" alignItems="baseline" gap={2}>
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      lineHeight: '24px',
-                      fontSize: '40px',
-                    }}
-                  >
-                    {currency} {(subscriptionSpent?.totalSubscriptionSpent || 0).toFixed(2)}
-                  </Typography>
-                  {subscriptionSpent?.secondaryCurrency_subscriptionSpent >= 0 ? (
-                    <Typography
-                      variant="inherit"
-                      sx={{
-                        fontSize: '14px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {
-                        getTotalProfitForLyxa(
-                          baseCurrency?.symbol,
-                          secondaryCurrency?.code,
-                          bothCurrencyProfitbreakDown(subscriptionSpent, 'subscription_spent'),
-                          true,
-                        ).printConditionally
-                      }
-                    </Typography>
-                  ) : null}
-                </Stack>
-              }
-              sm={6}
-              md={4}
-              lg={4}
-            >
-              <Stack gap={3}>
-                <PriceItem title="Discount" amount={subscriptionSpent?.totalSubscriptionDiscount} showIfZero />
 
-                <PriceItem
-                  title="Buy 1, Get 1"
-                  amount={subscriptionSpent?.totalSubscriptionDoubleMenuLoss}
-                  showIfZero
-                />
-
-                <PriceItem title="Free delivery" amount={subscriptionSpent?.totalSubscriptionFreeDelivery} showIfZero />
-              </Stack>
-            </InfoCard>
-          </Grid>
           <Grid item xs={6} md={4}>
             <InfoCard
               title="Free delivery by shop"
@@ -861,12 +835,15 @@ function OrderFinancialsSummary() {
               </Stack>
             </InfoCard>
           </Grid>
+
           <Grid item xs={6} md={4}>
             <InfoCard
-              title="Total Pending Amount"
-              sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
-              index={8}
+              title="Lyxa Plus Marketing Spent"
+              sx={{ position: 'absolute', left: 0, zIndex: expandedIndex === 9 ? 9999 : 99 }}
+              isDropdown
+              index={9}
               setExpandedIndex={setExpandedIndex}
+              expandedIndex={expandedIndex === 9}
               valueComponent={
                 <Stack direction="column" alignItems="baseline" gap={2}>
                   <Typography
@@ -876,14 +853,44 @@ function OrderFinancialsSummary() {
                       fontSize: '40px',
                     }}
                   >
-                    {currency} {(getPendingFinancialsDashBoard?.data?.data?.totalOngoingOrderAmount || 0).toFixed(2)}
+                    {currency} {(subscriptionSpent?.totalSubscriptionSpent || 0).toFixed(2)}
                   </Typography>
+                  {subscriptionSpent?.secondaryCurrency_subscriptionSpent >= 0 ? (
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {
+                        getTotalProfitForLyxa(
+                          baseCurrency?.symbol,
+                          secondaryCurrency?.code,
+                          bothCurrencyProfitbreakDown(subscriptionSpent, 'subscription_spent'),
+                          true,
+                        ).printConditionally
+                      }
+                    </Typography>
+                  ) : null}
                 </Stack>
               }
               sm={6}
               md={4}
               lg={4}
-            />
+            >
+              <Stack gap={3}>
+                <PriceItem title="Discount" amount={subscriptionSpent?.totalSubscriptionDiscount} showIfZero />
+
+                <PriceItem
+                  title="Buy 1, Get 1"
+                  amount={subscriptionSpent?.totalSubscriptionDoubleMenuLoss}
+                  showIfZero
+                />
+
+                <PriceItem title="Free delivery" amount={subscriptionSpent?.totalSubscriptionFreeDelivery} showIfZero />
+              </Stack>
+            </InfoCard>
           </Grid>
 
           <Grid item xs={6} md={4}>
@@ -921,6 +928,30 @@ function OrderFinancialsSummary() {
                       }
                     </Typography>
                   ) : null}
+                </Stack>
+              }
+              sm={6}
+              md={4}
+              lg={4}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <InfoCard
+              title="Total Pending Amount"
+              sx={{ position: 'relative', left: 0, zIndex: expandedIndex === 8 ? 9999 : 99 }}
+              index={8}
+              setExpandedIndex={setExpandedIndex}
+              valueComponent={
+                <Stack direction="column" alignItems="baseline" gap={2}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      lineHeight: '24px',
+                      fontSize: '40px',
+                    }}
+                  >
+                    {currency} {(getPendingFinancialsDashBoard?.data?.data?.totalOngoingOrderAmount || 0).toFixed(2)}
+                  </Typography>
                 </Stack>
               }
               sm={6}

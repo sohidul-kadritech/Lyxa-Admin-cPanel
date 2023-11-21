@@ -165,7 +165,12 @@ export const validateShopFeatures = (shopData, sellerType) => {
   }
 
   if (!shopData?.tags?.length) {
-    status.msg = 'Please select at least one tag';
+    status.msg = 'Please select at least two tags';
+    return status;
+  }
+
+  if (shopData?.tags?.length < 2) {
+    status.msg = 'Tags must be select 2';
     return status;
   }
 

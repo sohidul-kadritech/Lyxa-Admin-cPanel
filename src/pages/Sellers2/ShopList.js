@@ -16,7 +16,7 @@ import StyledIconButton from '../../components/Styled/StyledIconButton';
 import { useGlobalContext } from '../../context';
 // eslint-disable-next-line no-unused-vars
 const calculateTotal = (array) => {
-  if (array.length > 0) return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  if (array?.length > 0) return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   return 0;
 };
 

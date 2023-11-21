@@ -18,15 +18,7 @@ const orderTypeToIconMap = {
   deliveryBoy: RiderLocation, // icons --
 };
 
-function ZoneMapGoogleMap({
-  currentLocation,
-  getSelectedLatLng,
-  setMapReference,
-  polygon,
-  zoneName,
-  zones = [],
-  infoData = [],
-}) {
+function ZoneMapGoogleMap({ currentLocation, getSelectedLatLng, setMapReference, polygon, zoneName, infoData = [] }) {
   const { google } = window;
   const mapRef = useRef();
   const sidebar = useRef();
@@ -171,7 +163,7 @@ function ZoneMapGoogleMap({
     return () => {
       isMounted = false;
     };
-  }, [infoData]);
+  }, [polygon, infoData]);
 
   return <Box ref={mapRef} className="map" style={{ width: '100%', height: '100%', borderRadius: '7px' }}></Box>;
 }

@@ -19,6 +19,7 @@ export default function ShopListTable({
   queryParams,
   setQueryParams,
 }) {
+  console.log({ shops });
   const history = useHistory();
   const { dispatchCurrentUser, general } = useGlobalContext();
   const { currency } = general;

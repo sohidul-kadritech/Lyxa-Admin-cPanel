@@ -60,6 +60,11 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
             <PriceItem title="Delivery Fees" amount={deliveryProfitBreakDown?.users} showIfZero />
             <PriceItem title="Free Delivery by Shops" amount={deliveryProfitBreakDown?.freeDeliveryByShop} showIfZero />
             <PriceItem title="Free Delivery by Lyxa" amount={deliveryProfitBreakDown?.freeDeliveryByAdmin} showIfZero />
+            <PriceItem
+              title="Free Delivery by Lyxa Plus"
+              amount={deliveryProfitBreakDown?.freeDeliveryByAdminForSubscription}
+              showIfZero
+            />
           </DetailsAccordion>
 
           {/* shop cut */}
@@ -72,6 +77,11 @@ function DeliveryPayoutDetails({ showFor, deliveryProfitBreakDown = {} }) {
           <DetailsAccordion
             title="Free Delivery by Lyxa"
             titleAmount={deliveryProfitBreakDown?.freeDeliveryByAdmin}
+            titleAmountStatus="minus"
+          />
+          <DetailsAccordion
+            title="Free Delivery by Lyxa Plus"
+            titleAmount={deliveryProfitBreakDown?.freeDeliveryByAdminForSubscription}
             titleAmountStatus="minus"
           />
           <DetailsAccordion

@@ -95,6 +95,12 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                 valueSecondary={financialBreakdown?.freeDeliveryByAdmin}
                 value={financialBreakdown?.freeDeliveryByAdmin}
               />
+              <SummaryItem
+                label="Free Delivery By Lyxa Plus"
+                currencyType={currencyType}
+                valueSecondary={financialBreakdown?.freeDeliveryByAdminForSubscription}
+                value={financialBreakdown?.freeDeliveryByAdminForSubscription}
+              />
             </TableAccordion>
           </Box>
         );
@@ -509,6 +515,30 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
           showIfZero
         />
       ),
+    },
+    {
+      id: 8,
+      type: ['delivery'],
+      headerName: `FREE DELIVERY BY LYXA PLUS`,
+      sortable: false,
+      field: 'freeDeliveryByLyxaPlus',
+      flex: 1,
+      align: 'left',
+      headerAlign: 'left',
+      renderCell: ({ row }) => {
+        console.log({ row });
+        return (
+          <SummaryItem
+            title
+            pb={0}
+            currencyType={currencyType}
+            value={row?.profitBreakdown?.freeDeliveryByAdminForSubscription}
+            valueSecondary={row?.profitBreakdown?.freeDeliveryByAdminForSubscription}
+            isNegative
+            showIfZero
+          />
+        );
+      },
     },
     {
       id: 8,
