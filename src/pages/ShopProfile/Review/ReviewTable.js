@@ -14,13 +14,20 @@ import StyledIconButton from '../../../components/Styled/StyledIconButton';
 import StyledSwitch from '../../../components/Styled/StyledSwitch';
 import StyledTable from '../../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../../context';
-import localDatePagination from '../../../helpers/localDataPaginations';
 import { successMsg } from '../../../helpers/successMsg';
 import * as API_URL from '../../../network/Api';
 import AXIOS from '../../../network/axios';
 import TablePageSkeleton from '../../Notification2/TablePageSkeleton';
 
-export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews, loading }) {
+export default function ReviewTable({
+  reviews,
+  onViewDetail,
+  setFilteredReviews,
+  loading,
+  page = 1,
+  totalPage,
+  setQueryParams,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [currentReview, setCurrentReview] = useState({});
@@ -41,12 +48,10 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews,
     onSuccess: (data) => {
       if (data?.status) {
         successMsg('Review deleted succesfully', 'success');
-        setFilteredReviews((prev) => {
-          const updatedReview = prev.filter((review) => review._id !== currentReview?._id);
 
-          return updatedReview;
-        });
-        // queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        queryClient.invalidateQueries(API_URL.SINGLE_SHOP);
+        queryClient.invalidateQueries(API_URL.GET_SHOP_REVIEWS);
+        queryClient.invalidateQueries(API_URL.GET_SINGLE_SHOP);
         setOpen(false);
       } else {
         successMsg(data?.message, 'error');
@@ -206,7 +211,7 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews,
         }}
       >
         <StyledTable
-          rows={localDatePagination(reviews, currentPage, 15)}
+          rows={reviews}
           columns={columns}
           // reviews={localDatePagination(reviews, currentPage, 5)}
           getRowId={(row) => row?._id}
@@ -221,11 +226,11 @@ export default function ReviewTable({ reviews, onViewDetail, setFilteredReviews,
         />
       </Box>
       <TablePagination
-        currentPage={currentPage}
+        currentPage={page}
         lisener={(page) => {
-          setCurrentPage(page);
+          setQueryParams((prev) => ({ ...prev, page }));
         }}
-        totalPage={Math.ceil(reviews.length / 15)}
+        totalPage={totalPage}
       />
 
       <ConfirmModal

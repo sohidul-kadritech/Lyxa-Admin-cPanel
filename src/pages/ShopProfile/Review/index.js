@@ -47,7 +47,7 @@ const searchReviews = (reviews, queryParams) => {
 };
 
 export default function ShopReviews({ shop, onViewDetail }) {
-  const [queryParams, setQueryParams] = useState(getQueryParamsInit());
+  const [queryParams, setQueryParams] = useState(getQueryParamsInit({ page: 1, pageSize: 15 }));
   // const [filteredReviews, setFilteredReviews] = useState(reviews);
 
   const shopReviewsQuery = useQuery([API_URL.GET_SHOP_REVIEWS, { shopId: shop?._id, ...queryParams }], () =>
@@ -59,7 +59,7 @@ export default function ShopReviews({ shop, onViewDetail }) {
     }),
   );
 
-  console.log('shopReviewsQuery', { shopReviewsQuery: shopReviewsQuery?.data?.data });
+  console.log('shopReviewsQuery', { shopReviewsQuery: shopReviewsQuery?.data?.data?.reviews });
 
   return (
     <Box>
@@ -70,8 +70,10 @@ export default function ShopReviews({ shop, onViewDetail }) {
         showFilters={{ search: true, date: true, sort: true }}
       />
       <ReviewTable
-        reviews={[]}
-        setFilteredReviews={[]}
+        page={Number(queryParams?.page)}
+        totalPage={shopReviewsQuery?.data?.data.paginate?.metadata?.page?.totalPage}
+        setQueryParams={setQueryParams}
+        reviews={shopReviewsQuery?.data?.data?.reviews}
         onViewDetail={onViewDetail}
         loading={shopReviewsQuery?.isLoading}
       />
