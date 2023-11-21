@@ -1,7 +1,12 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import { Box } from '@mui/material';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 import SearchBar from '../../../components/Common/CommonSearchbar';
+import * as API_URL from '../../../network/Api';
+import AXIOS from '../../../network/axios';
 import { getQueryParamsInit } from '../helper';
 import ReviewTable from './ReviewTable';
 
@@ -41,18 +46,20 @@ const searchReviews = (reviews, queryParams) => {
   return items;
 };
 
-export default function ShopReviews({ reviews = [], onViewDetail, loading }) {
+export default function ShopReviews({ shop, onViewDetail }) {
   const [queryParams, setQueryParams] = useState(getQueryParamsInit());
-  const [filteredReviews, setFilteredReviews] = useState(reviews);
+  // const [filteredReviews, setFilteredReviews] = useState(reviews);
 
-  useEffect(() => {
-    setFilteredReviews(searchReviews(reviews, queryParams));
-  }, [queryParams]);
+  const shopReviewsQuery = useQuery([API_URL.GET_SHOP_REVIEWS, { shopId: shop?._id, ...queryParams }], () =>
+    AXIOS.get(API_URL.GET_SHOP_REVIEWS, {
+      params: {
+        shopId: shop?._id,
+        ...queryParams,
+      },
+    }),
+  );
 
-  useEffect(() => {
-    setQueryParams({ ...queryParams });
-    // setQueryParams(getQueryParamsInit());
-  }, [reviews]);
+  console.log('shopReviewsQuery', { shopReviewsQuery: shopReviewsQuery?.data?.data });
 
   return (
     <Box>
@@ -63,10 +70,10 @@ export default function ShopReviews({ reviews = [], onViewDetail, loading }) {
         showFilters={{ search: true, date: true, sort: true }}
       />
       <ReviewTable
-        reviews={filteredReviews}
-        setFilteredReviews={setFilteredReviews}
+        reviews={[]}
+        setFilteredReviews={[]}
         onViewDetail={onViewDetail}
-        loading={loading}
+        loading={shopReviewsQuery?.isLoading}
       />
     </Box>
   );

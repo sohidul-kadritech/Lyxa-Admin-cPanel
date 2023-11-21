@@ -1,11 +1,14 @@
-const createTab = (payload) => ({
-  shopId: payload.shop?._id,
-  shopName: payload.shop?.shopName,
-  shop: payload.shop,
-  seller: payload.seller || {},
-  currentLocation: payload.location,
-  from: payload?.from,
-});
+const createTab = (payload) => {
+  console.log('creating tabs', { payload });
+  return {
+    shopId: payload?.shop?._id,
+    shopName: payload?.shop?.shopName,
+    shop: payload?.shop,
+    seller: payload?.seller || {},
+    currentLocation: payload?.location,
+    from: payload.from,
+  };
+};
 
 export const shopTabsInit = {
   currentTabId: null,
@@ -22,6 +25,7 @@ export const shopTabsReducer = (state, { type, payload }) => {
     */
 
     const newTab = createTab(payload);
+    console.log('new tabs', { payload, newTab });
     const duplicateTab = state.allTabs.find((tab) => tab.shopId === newTab.shopId);
 
     if (duplicateTab && !duplicateTab?._id) {

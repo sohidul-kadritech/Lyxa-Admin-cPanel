@@ -50,6 +50,7 @@ export default function App() {
   });
 
   const validateUser = async () => {
+    console.log({ adminDataIsLoading });
     // no cookie found inside user browser
     if (document.cookie.length < 1) {
       setAdminDataIsLoading(false);

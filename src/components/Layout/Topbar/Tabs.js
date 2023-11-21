@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box } from '@material-ui/core';
 import { Close } from '@mui/icons-material';
 import { Button, Stack, styled } from '@mui/material';
@@ -87,7 +88,7 @@ export default function Tabs() {
     changeTab(fallbackTab);
     dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
   };
-
+  console.log({ tabs: shopTabs?.allTabs });
   return (
     <Stack direction="row" alignItems="center" gap={1.5} position="relative">
       {shopTabs?.allTabs?.map((tab) => (
@@ -97,6 +98,7 @@ export default function Tabs() {
           endIcon={
             <Close
               onClick={(event) => {
+                console.log({ event, tab });
                 removeTab(event, tab);
               }}
             />

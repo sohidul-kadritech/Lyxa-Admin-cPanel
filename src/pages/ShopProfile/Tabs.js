@@ -2,16 +2,14 @@
 /* eslint-disable no-unused-vars */
 import { Box, Drawer, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import PayoutList from '../../components/Shared/Payout';
 import { useGlobalContext } from '../../context';
-import * as API_URL from '../../network/Api';
-import AXIOS from '../../network/axios';
 import Banking from '../ShopFinancials/Banking';
 import ShopFlags from './Flag';
 import ShopOrders from './Orders';
+
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
 
@@ -28,14 +26,6 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
     setCurrentOrder(order);
     setOpen(true);
   };
-
-  const shopQuery = useQuery([API_URL.SINGLE_SHOP, { id: shop?._id, currentTab }], () =>
-    AXIOS.get(API_URL.SINGLE_SHOP, {
-      params: {
-        id: shop?._id,
-      },
-    }),
-  );
 
   return (
     <>
@@ -62,23 +52,14 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
               <ShopOrders onViewDetail={onViewDetail} shop={shop} />
             </TabPanel>
             <TabPanel index={1} noPadding value={currentTab}>
-              <ShopReviews
-                loading={shopQuery?.isLoading}
-                reviews={shopQuery?.data?.data?.shop?.reviews || []}
-                onViewDetail={onViewDetail}
-              />
+              <ShopReviews shop={shop} onViewDetail={onViewDetail} />
             </TabPanel>
             <TabPanel index={2} value={currentTab} noPadding>
-              <ShopFlags
-                flags={shopQuery?.data?.data?.shop?.flags}
-                onViewDetail={onViewDetail}
-                loading={shopQuery?.isLoading}
-              />
+              <ShopFlags shop={shop} onViewDetail={onViewDetail} />
             </TabPanel>
             <TabPanel index={3} noPadding value={currentTab}>
               <ShopTransactions
-                shop={shopQuery?.data?.data?.shop}
-                loading={shopQuery?.isLoading}
+                shop={shop}
                 show={{
                   payout: false,
                   order: true,
@@ -91,7 +72,7 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
             </TabPanel>
             {shop?.shopReceivePaymentBy === 'bank' && (
               <TabPanel index={5} noPadding value={currentTab}>
-                <Banking shop={shopQuery?.data?.data?.shop} />
+                <Banking shop={shop} />
               </TabPanel>
             )}
           </Box>

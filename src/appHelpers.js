@@ -4,13 +4,22 @@ import * as Api from './network/Api';
 import AXIOS from './network/axios';
 
 export const userTypeToApiMap = {
-  shop: Api.SINGLE_SHOP,
+  shop: Api.GET_SINGLE_SHOP,
   seller: Api.SINGLE_SELLER,
   admin: Api.SINGLE_ADMIN,
 };
 
 export const getUserData = async (accountType, accountId, credentialUserId) => {
   const api = userTypeToApiMap[accountType];
+
+  const queryParams =
+    accountType !== 'shop'
+      ? {
+          id: accountId,
+        }
+      : {
+          shopId: accountId,
+        };
 
   // unknown or manipulated accountType - will be logged out
   if (!api) {
@@ -20,7 +29,7 @@ export const getUserData = async (accountType, accountId, credentialUserId) => {
   try {
     const userData = await AXIOS.get(api, {
       params: {
-        id: accountId,
+        ...queryParams,
       },
     });
 

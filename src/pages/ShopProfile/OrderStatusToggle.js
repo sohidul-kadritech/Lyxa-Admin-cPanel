@@ -13,6 +13,8 @@ import AXIOS from '../../network/axios';
 export default function OrderToggle({ shop }) {
   const [, setRender] = useState(false);
 
+  const [isChecked, setIsChecked] = useState(shop?.liveStatus === 'online');
+
   const { dispatchCurrentUser } = useGlobalContext();
 
   const mutation = useMutation((data) => AXIOS.post(Api.EDIT_SHOP, data), {
@@ -31,7 +33,7 @@ export default function OrderToggle({ shop }) {
     },
   });
 
-  const value = shop?.liveStatus === 'online';
+  // const value = shop?.liveStatus === 'online';
 
   return (
     <Stack
@@ -42,16 +44,19 @@ export default function OrderToggle({ shop }) {
         padding: '10px 16px',
         borderRadius: '7px',
         alignItems: 'center',
-        backgroundColor: value ? 'rgba(94, 151, 169, 0.12)' : '#FCF9F0',
+        backgroundColor: isChecked ? 'rgba(94, 151, 169, 0.12)' : '#FCF9F0',
       }}
     >
-      <Typography sx={{ fontSize: '16px', fontWeight: 500, color: value ? 'primary.main' : '#F78C3F', width: '115px' }}>
-        {value ? 'Taking orders' : 'Orders paused'}
+      <Typography
+        sx={{ fontSize: '16px', fontWeight: 500, color: isChecked ? 'primary.main' : '#F78C3F', width: '115px' }}
+      >
+        {isChecked ? 'Taking orders' : 'Orders paused'}
       </Typography>
       <StyledSwitch
-        checked={value}
+        checked={isChecked}
         disabled={shop?.liveStatus === 'busy' || mutation?.isLoading}
         onChange={() => {
+          setIsChecked((prev) => !prev);
           const shopData = getShopEditData(shop);
           createEditShopData(shopData)?.then((data) => {
             if (data?.status === false) {
@@ -59,7 +64,7 @@ export default function OrderToggle({ shop }) {
               return;
             }
             successMsg('Updating status....', 'success');
-            mutation.mutate({ ...data, liveStatus: value ? 'offline' : 'online' });
+            mutation.mutate({ ...data, liveStatus: isChecked ? 'offline' : 'online' });
           });
         }}
       />

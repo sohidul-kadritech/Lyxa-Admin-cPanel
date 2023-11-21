@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Box } from '@mui/material';
 // eslint-disable-next-line no-unused-vars
 import { useEffect, useMemo, useState } from 'react';
@@ -24,15 +25,15 @@ export default function SellerToShopLayout() {
 
   const { path, url } = useMemo(
     () => ({ path: routeMatch?.path, url: routeMatch?.url?.replace(/\/$/, '') }),
-    [routeMatch?.params?.shopId]
+    [routeMatch?.params?.shopId],
   );
 
   const shopQuery = useQuery(
-    [Api.SINGLE_SHOP, { id: routeMatch?.params?.shopId }],
+    [Api.GET_SINGLE_SHOP, { shopId: routeMatch?.params?.shopId }],
     () =>
-      AXIOS.get(Api.SINGLE_SHOP, {
+      AXIOS.get(Api.GET_SINGLE_SHOP, {
         params: {
-          id: routeMatch?.params?.shopId,
+          shopId: routeMatch?.params?.shopId,
         },
       }),
     {
@@ -55,7 +56,7 @@ export default function SellerToShopLayout() {
         successMsg('Could not find shop');
         history.push('/');
       },
-    }
+    },
   );
 
   useState(() => {
@@ -87,7 +88,7 @@ export default function SellerToShopLayout() {
       menuItems={shop_menu_items(
         url,
         currentUser?.shop?.haveOwnDeliveryBoy ? 'self' : 'drop',
-        currentUser?.shop?.shopType
+        currentUser?.shop?.shopType,
       )}
       childFor="shop"
     />

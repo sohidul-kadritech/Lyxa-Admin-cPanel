@@ -87,13 +87,17 @@ export default function ShopList() {
       console.log({ shop });
 
       const routePath = `/shop/dashboard/${shop?._id}`;
-      history.push(routePath);
+
       dispatchCurrentUser({ type: 'shop', payload: { shop } });
+
+      console.log('tabs', routeMatch?.url);
 
       dispatchShopTabs({
         type: 'add-tab',
         payload: { shop, location: routePath, seller: {}, from: routeMatch?.url },
       });
+
+      history.push(routePath);
     }
 
     if (menu === 'marketing') {
@@ -118,7 +122,6 @@ export default function ShopList() {
           // setShop(data?.data?.shop);
           console.log({ shopData: data?.data?.shop });
           // setPayloadShopData(data?.data?.shop);
-
           if (data?.data?.shop?._id) accessAsShopAccessMarketing(payload?.menu, data?.data?.shop);
         }
       },
@@ -144,22 +147,22 @@ export default function ShopList() {
     shopQueryForAccessAsShop.mutate({ shop, menu });
 
     // if (menu === 'access') {
-    //   console.log({ shop: payloadShopData });
+    //   console.log({ shop });
 
     //   const routePath = `/shop/dashboard/${shop?._id}`;
     //   history.push(routePath);
-    //   dispatchCurrentUser({ type: 'shop', payload: { shop: payloadShopData } });
+    //   dispatchCurrentUser({ type: 'shop', payload: { shop } });
 
-    //   if (payloadShopData?._id)
+    //   if (shop?._id)
     //     dispatchShopTabs({
     //       type: 'add-tab',
-    //       payload: { shop: payloadShopData, location: routePath, seller: {}, from: routeMatch?.url },
+    //       payload: { shop, location: routePath, seller: {}, from: routeMatch?.url },
     //     });
     // }
 
     // if (menu === 'marketing') {
-    //   dispatchCurrentUser({ type: 'shop', payload: { shop: payloadShopData } });
-    //   history.push(`/shops/${shop?._id}/marketing`, payloadShopData);
+    //   dispatchCurrentUser({ type: 'shop', payload: { shop } });
+    //   history.push(`/shops/${shop?._id}/marketing`, shop);
     // }
   };
 
