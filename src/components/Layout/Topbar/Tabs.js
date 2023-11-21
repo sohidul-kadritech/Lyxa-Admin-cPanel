@@ -88,7 +88,7 @@ export default function Tabs() {
     changeTab(fallbackTab);
     dispatchShopTabs({ type: 'remove-tab', payload: { tabId: tab?.shopId } });
   };
-  console.log({ tabs: shopTabs?.allTabs });
+
   return (
     <Stack direction="row" alignItems="center" gap={1.5} position="relative">
       {shopTabs?.allTabs?.map((tab) => (
@@ -98,14 +98,12 @@ export default function Tabs() {
           endIcon={
             <Close
               onClick={(event) => {
-                console.log({ event, tab });
                 removeTab(event, tab);
               }}
             />
           }
           disableRipple
           onClick={() => {
-            console.log('change tab 1', { currentTab: tab });
             changeTab(tab);
           }}
         >
