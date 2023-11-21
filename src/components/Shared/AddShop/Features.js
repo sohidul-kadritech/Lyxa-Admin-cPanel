@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { useGlobalContext } from '../../../context';
 import { getDietaryOptions } from '../../../pages/Menu/helpers';
 import IncrementDecrementInput from '../../Form/IncrementDecrementInput';
 import StyledFormField from '../../Form/StyledFormField';
@@ -22,6 +23,11 @@ const filterTagsAndCuisine = (tagsCuisine) => {
 
 export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerType }) {
   const [render, setRender] = useState();
+  const { general } = useGlobalContext();
+
+  const { currency } = general;
+
+  console.log({ general });
 
   const optionSelectHandler = (value, item) => {
     const idx = value?.indexOf(item);
@@ -116,6 +122,7 @@ export default function ShopFeatures({ shop, onChange, tagsCuisine = [], sellerT
         </Typography>
         <IncrementDecrementInput
           value={shop?.minOrderAmount}
+          endAdornment={currency?.symbol}
           min={1}
           onChange={(value) => {
             shop.minOrderAmount = value;

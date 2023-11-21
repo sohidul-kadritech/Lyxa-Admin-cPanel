@@ -94,41 +94,48 @@ function StyledSearchForZone({ onClick, zoneName, setZoneName }) {
           overflow: 'hidden',
         }}
       >
-        {getAllZones?.isLoading && <Box sx={{ padding: '6px 16px' }}>Loading...</Box>}
+        <Box
+          sx={{
+            maxHeight: '250px',
+            overflow: 'auto',
+          }}
+        >
+          {getAllZones?.isLoading && <Box sx={{ padding: '6px 16px' }}>Loading...</Box>}
 
-        {open && !getAllZones?.isLoading && (
-          <>
-            {searchedZone.map((zone, i) => (
-              <Box
-                key={i}
-                onClick={() => {
-                  if (onClick) onClick(zone);
-                  setOpen(false);
-                  setZoneName(zone?.zoneName);
-                }}
-                sx={{
-                  padding: '6px 16px',
-                  fontSize: '14px',
-                  fontWeight: '400',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: '8px',
-                  alignItems: 'center',
+          {open && !getAllZones?.isLoading && (
+            <>
+              {searchedZone.map((zone, i) => (
+                <Box
+                  key={i}
+                  onClick={() => {
+                    if (onClick) onClick(zone);
+                    setOpen(false);
+                    setZoneName(zone?.zoneName);
+                  }}
+                  sx={{
+                    padding: '6px 16px',
+                    fontSize: '14px',
+                    fontWeight: '400',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: '8px',
+                    alignItems: 'center',
 
-                  '&:hover': {
-                    background: '#ecf0f5',
-                  },
-                }}
-              >
-                <LocationOnOutlined /> <Typography variant="body2"> {zone?.zoneName}</Typography>
-                {/* {suggestion.description} */}
-              </Box>
-            ))}
+                    '&:hover': {
+                      background: '#ecf0f5',
+                    },
+                  }}
+                >
+                  <LocationOnOutlined /> <Typography variant="body2"> {zone?.zoneName}</Typography>
+                  {/* {suggestion.description} */}
+                </Box>
+              ))}
 
-            {!searchedZone.length && <Box sx={{ padding: '6px 16px' }}>No zone found</Box>}
-          </>
-        )}
+              {!searchedZone.length && <Box sx={{ padding: '6px 16px' }}>No zone found</Box>}
+            </>
+          )}
+        </Box>
       </Box>
     </Stack>
   );

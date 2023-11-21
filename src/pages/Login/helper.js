@@ -28,7 +28,7 @@ export const adminAccountTypes = [
   },
   {
     value: 'customerService',
-    label: 'Customer Service',
+    label: 'Customer Support & Operations',
   },
 ];
 

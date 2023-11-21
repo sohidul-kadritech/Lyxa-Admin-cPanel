@@ -114,16 +114,16 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                       },
 
                       {
-                        label: 'Buy 1 Get 1',
-                        value: `-${
-                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
-                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.buy1Get1_cash)}`,
-                      },
-                      {
                         label: 'Loyalty Points',
                         value: `-${
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.loyaltyPoints_cash)}`,
+                      },
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.cash?.buy1Get1_cash)}`,
                       },
                       {
                         label: 'Coupons',
@@ -158,19 +158,19 @@ export default function Table({ currencyType, loading, rows = [], page, setPage,
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(currencyType, financialBreakdown?.online?.discount_online)}`,
                       },
-
-                      {
-                        label: 'Buy 1 Get 1',
-                        value: `-${
-                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
-                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.buy1Get1_online)}`,
-                      },
                       {
                         label: 'Loyalty Points',
                         value: `-${
                           currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
                         } ${getCurrencyValue(currencyType, financialBreakdown?.online?.loyaltyPoints_online)}`,
                       },
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `-${
+                          currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code
+                        } ${getCurrencyValue(currencyType, financialBreakdown?.online?.buy1Get1_online)}`,
+                      },
+
                       {
                         label: 'Coupons',
                         value: `-${currencyType === 'baseCurrency' ? baseCurrency?.symbol : secondaryCurrency?.code} ${

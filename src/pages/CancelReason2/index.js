@@ -1,12 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Box, Drawer, Tab, Tabs } from '@mui/material';
-import moment from 'moment';
+import { Box, Drawer, Stack, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import SearchBar from '../../components/Common/CommonSearchbar';
 import ConfirmModal from '../../components/Common/ConfirmModal';
 import PageTop from '../../components/Common/PageTop';
-import { getFirstMonday } from '../../components/Styled/StyledDateRangePicker/Presets';
 import { successMsg } from '../../helpers/successMsg';
 import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
@@ -48,8 +46,8 @@ const tabTracker = {
 // }
 
 const getQueryParamsInit = () => ({
-  endDate: moment().format('YYYY-MM-DD'),
-  startDate: getFirstMonday('week').format('YYYY-MM-DD'),
+  // endDate: moment().format('YYYY-MM-DD'),
+  // startDate: getFirstMonday('week').format('YYYY-MM-DD'),
   status: 'active',
   searchKey: '',
   type: 'userCancel',
@@ -173,7 +171,6 @@ function CancelReason() {
   return (
     <Box>
       <PageTop
-        // title="Zone"
         backButtonLabel="Back to Settings"
         breadcrumbItems={breadcrumbItems}
         backTo="/settings"
@@ -185,7 +182,18 @@ function CancelReason() {
           fontWeight: 700,
         }}
       />
-      <Box sx={{ marginBottom: '30px' }}>
+      <Stack
+        sx={{
+          position: 'sticky',
+          top: '0px',
+          zIndex: '999',
+          backgroundColor: '#fbfbfb',
+        }}
+        mt={2}
+        pt={2}
+        pb={30 / 4}
+        gap={5}
+      >
         <Tabs
           value={Number(queryParams?.tab)}
           onChange={(event, newValue) => {
@@ -199,18 +207,17 @@ function CancelReason() {
           <Tab label="Resolve Chat" />
           <Tab label="Subscription" />
         </Tabs>
-      </Box>
 
-      <Box marginBottom="30px">
         <SearchBar
           queryParams={queryParams}
           setQueryParams={setQueryParams}
           showFilters={{
             search: true,
             status: true,
-            date: true,
+            date: false,
             button: true,
           }}
+          searchPlaceHolder="Search by reason"
           buttonLabel="Add"
           onButtonClick={() => {
             setOpen(() => {
@@ -219,7 +226,7 @@ function CancelReason() {
             });
           }}
         />
-      </Box>
+      </Stack>
 
       <Box>
         <ReasonTable

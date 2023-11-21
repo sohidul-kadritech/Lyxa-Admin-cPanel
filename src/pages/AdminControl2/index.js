@@ -106,7 +106,7 @@ function AdminControl() {
           <Tab label="Super Admin" />
           <Tab label="Sales Manger" />
           <Tab label="Account Manager" />
-          <Tab label="Customer Service" />
+          <Tab label="Customer Support & Operations" />
         </Tabs>
       </Box>
       <SearchBarForAdminList

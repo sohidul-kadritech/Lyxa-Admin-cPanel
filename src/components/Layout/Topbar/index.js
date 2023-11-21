@@ -23,7 +23,7 @@ const getConsoleName = (userType, adminType, shopOrderManager) => {
   }
 
   if (userType === 'admin' && adminType === 'customerService') {
-    return 'Customer Service Console';
+    return 'Customer Support & Operations Console';
   }
   if (userType === 'admin' && adminType === 'accountManager') {
     return 'Account Manager';

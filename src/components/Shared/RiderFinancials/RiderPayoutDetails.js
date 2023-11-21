@@ -77,6 +77,12 @@ function RiderPayoutDetails({ deliveryProfitBreakDown = {}, currencyType }) {
             <PriceItem
               title="Free Delivery by Lxya"
               currencyType={currencyType}
+              amount={deliveryProfitBreakDown?.freeDeliveryByAdminForSubscription || 0}
+              showIfZero
+            />
+            <PriceItem
+              title="Free Delivery by Lxya Plus"
+              currencyType={currencyType}
               amount={deliveryProfitBreakDown?.freeDeliveryByAdmin || 0}
               showIfZero
             />

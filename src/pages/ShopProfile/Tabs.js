@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import TabPanel from '../../components/Common/TabPanel';
 import OrderDetail from '../../components/Shared/OrderDetail';
 import PayoutList from '../../components/Shared/Payout';
+import { useGlobalContext } from '../../context';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import Banking from '../ShopFinancials/Banking';
@@ -14,10 +15,20 @@ import ShopOrders from './Orders';
 import ShopReviews from './Review';
 import ShopTransactions from './Transactions';
 
+const accessAddmin = {
+  admin: ['admin', 'sales', 'accountManager'],
+  shop: ['shop'],
+  seller: ['seller'],
+};
+
 export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
   const [currentTab, setCurrentTab] = useState(0);
   const [open, setOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
+
+  const { currentUser } = useGlobalContext();
+
+  console.log({ currentUser });
 
   const onViewDetail = (order) => {
     setCurrentOrder(order);
@@ -46,8 +57,9 @@ export default function ShopProfileTabs({ shop, refetchShopData, loading }) {
             <Tab label="Orders" />
             <Tab label="Reviews" />
             <Tab label="Flagged" />
-            <Tab label="Financials" />
-            <Tab label="Payouts" />
+
+            {currentUser?.adminType !== 'customerService' && <Tab label="Financials" />}
+            {currentUser?.adminType !== 'customerService' && <Tab label="Payouts" />}
 
             {shop?.shopReceivePaymentBy === 'bank' && <Tab label="Banking" />}
           </Tabs>
