@@ -1,7 +1,10 @@
+/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unsafe-optional-chaining */
 import { Stack, Typography, styled, useTheme } from '@mui/material';
 import moment from 'moment';
+import FormateBaseCurrency from '../../../components/Common/FormateBaseCurrency';
 
 export const itemSelectOptions = [
   { label: 'Selected Items', value: 'single' },
@@ -249,4 +252,71 @@ export const getRemainingSpendingLimit = (spendLimit, amountSpent) => {
   }
 
   return 0;
+};
+
+export const getDualMarketingPrice = (productForAdmin, productForShop, price, discountAmount, creatorType) => {
+  if (productForAdmin && productForShop) {
+    const output = {
+      admin: price - discountAmount - productForShop?.discount || 0,
+      shop: price - discountAmount - productForAdmin?.discount || 0,
+    };
+
+    return output[creatorType];
+  }
+
+  return false;
+};
+
+export const toolTipTextForDualMarketing = (productForAdmin, productForShop, currentData, creatorType) => {
+  // console.log({ productForAdmin, productForShop, currentData });
+
+  if (!productForAdmin || !productForShop) {
+    return '';
+  }
+  const component = (
+    <div>
+      <p
+        style={{
+          padding: '4px 16px',
+          marginBottom: '0',
+          minWidth: '180px',
+        }}
+      >
+        {productForAdmin && productForShop
+          ? 'Dual Marketing'
+          : `${creatorType.charAt(0).toUpperCase() + creatorType.slice(1)} Final Discount Price`}
+      </p>
+
+      {productForAdmin && productForShop && (
+        <ul
+          style={{
+            padding: '4px 16px',
+            marginBottom: '0',
+            minWidth: '180px',
+          }}
+        >
+          <>
+            <li>
+              Admin:{' '}
+              {FormateBaseCurrency.get(
+                creatorType === 'admin' ? currentData?.finalDiscountAmount : productForAdmin?.discount,
+              )}
+            </li>
+            <li>
+              Shop:{' '}
+              {FormateBaseCurrency.get(
+                creatorType === 'shop' ? currentData?.finalDiscountAmount : productForShop?.discount,
+              )}
+            </li>
+          </>
+        </ul>
+      )}
+    </div>
+  );
+
+  // const output = {
+  //   admin: <span></span>
+  // }
+
+  return component;
 };

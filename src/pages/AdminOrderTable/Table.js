@@ -631,8 +631,24 @@ export default function Table({
       sortable: false,
       flex: 1,
       renderCell: ({ row }) => {
+        // const total =
+        //   row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
         const total =
-          row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
+          row?.summary?.baseCurrency_totalAmount +
+          row?.summary?.baseCurrency_vat -
+          row?.summary?.baseCurrency_discount -
+          row?.summary?.reward?.baseCurrency_amount +
+          row?.summary?.baseCurrency_riderTip;
+
+        // secondary amount;
+        // let secondaryTotal =
+        // row?.summary?.secondaryCurrency_vat -
+        // row?.summary?.secondaryCurrency_discount -
+        // row?.summary?.secondaryCurrency_totalAmount +
+        // row?.summary?.reward?.secondaryCurrency_amount +
+        // row?.summary?.secondaryCurrency_riderTip;
+        // const total =
+        //   row?.summary?.baseCurrency_cash + row?.summary?.baseCurrency_wallet + row?.summary?.baseCurrency_card;
 
         const totalOringinalOrder =
           row?.originalOrder?.summary?.baseCurrency_cash +

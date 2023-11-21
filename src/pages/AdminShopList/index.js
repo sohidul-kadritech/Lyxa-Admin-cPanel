@@ -64,10 +64,12 @@ export default function ShopList() {
 
   const [currentShop, setCurrentShop] = useState({});
 
+  // ALL_SHOP --> GET_ALL_SHOP
+
   const shopsQuery = useQuery(
-    [Api.ALL_SHOP, queryParams],
+    [Api.GET_ALL_SHOP, queryParams],
     () =>
-      AXIOS.get(Api.ALL_SHOP, {
+      AXIOS.get(Api.GET_ALL_SHOP, {
         params: {
           ...queryParams,
         },

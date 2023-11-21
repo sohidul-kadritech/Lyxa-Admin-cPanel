@@ -15,6 +15,7 @@ export default function MSettingsModal({ children, open }) {
           lg: '5%',
           md: '2.5%',
         },
+        zIndex: 999,
       }}
     >
       <Paper

@@ -73,34 +73,37 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
                 seCurrentExpanedTab(closed ? 0 : -1);
               }}
             >
-              <PriceItem title="Original Order Amount" amount={cash?.originalOrderAmount_cash || 0} />
-
               <PriceItem
-                title="Discount"
-                amount={cash?.discount_cash || 0}
-                isNegative
-                // tooltip={
-                //   <CommonOrderAmountTooltipText
-                //     byAdmin={cash?.totalAdminDiscount}
-                //     byShop={cash?.totalShopDiscount}
-                //     currency={currency}
-                //   />
-                // }
+                title="Original Order Amount"
+                amount={cash?.originalOrderAmount_cash || 0}
+                tooltip={
+                  <CommonOrderMarketingCashbackTooltipText
+                    value={[
+                      {
+                        label: 'Discount',
+                        value: `${currency}${cash?.discount_cash}`,
+                      },
+                      {
+                        label: 'Loyalty Points',
+                        value: `${currency}${cash?.loyaltyPoints_cash}`,
+                      },
+                      {
+                        label: 'Buy 1 Get 1',
+                        value: `${currency}${cash?.buy1Get1_cash}`,
+                      },
+                      {
+                        label: 'Coupon',
+                        value: `${currency}${cash?.couponDiscount_cash}`,
+                      },
+                    ]}
+                  />
+                }
               />
 
-              <PriceItem
-                title="Buy 1 Get 1"
-                amount={cash?.buy1Get1_cash || 0}
-                isNegative
-                // tooltip={
-                //   <CommonOrderAmountTooltipText
-                //     byShop={orderValue?.totalShopDoubleMenuItemPrice}
-                //     byAdmin={orderValue?.totalAdminDoubleMenuItemPrice}
-                //     currency={currency}
-                //   />
-                // }
-              />
+              <PriceItem title="Discount" amount={cash?.discount_cash || 0} isNegative />
+
               <PriceItem title="Loyalty Points" amount={cash?.loyaltyPoints_cash || 0} isNegative />
+              <PriceItem title="Buy 1 Get 1" amount={cash?.buy1Get1_cash || 0} isNegative />
               <PriceItem title="Coupons" amount={cash?.couponDiscount_cash || 0} isNegative />
               <PriceItem title="Lyxa Pay" amount={cash?.wallet_cash || 0} amountSx={{ color: '#B5B5C3' }} showIfZero />
             </DetailsAccordion>
@@ -127,12 +130,16 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
                         value: `${currency}${online?.discount_online}`,
                       },
                       {
+                        label: 'Loyalty Points',
+                        value: `${currency}${online?.loyaltyPoints_online}`,
+                      },
+                      {
                         label: 'Buy 1 Get 1',
                         value: `${currency}${online?.buy1Get1_online}`,
                       },
                       {
-                        label: 'Loyalyt Points',
-                        value: `${currency}${online?.loyaltyPoints_online}`,
+                        label: 'Coupon',
+                        value: `${currency}${online?.couponDiscount_online}`,
                       },
                     ]}
                   />
@@ -244,8 +251,8 @@ export default function OrderPayoutDetails({ showFor, paymentDetails = {} }) {
           >
             <PriceItem
               title="Lyxa Marketing cashback"
-              amount={otherPayments?.adminMarketingCashback || 0}
-              isNegative
+              amount={Math.abs(otherPayments?.adminMarketingCashback || 0)}
+              isNegative={otherPayments?.adminMarketingCashback > 0}
               showIfZero
             />
 

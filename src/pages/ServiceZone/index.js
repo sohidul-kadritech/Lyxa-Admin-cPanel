@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Add, Close, Edit, Map } from '@mui/icons-material';
 import { Box, Button, Fade, Grid, Modal, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
@@ -15,6 +16,7 @@ import StyledSearchBar from '../../components/Styled/StyledSearchBar';
 import StyledTable from '../../components/Styled/StyledTable3';
 import { useGlobalContext } from '../../context';
 import { successMsg } from '../../helpers/successMsg';
+import useQueryParams from '../../helpers/useQueryParams';
 import * as API_URL from '../../network/Api';
 import AXIOS from '../../network/axios';
 import AddZoneStatus from './AddZoneStatus';
@@ -73,6 +75,23 @@ const listFilterOptions = [
     value: 'busy',
   },
 ];
+
+const indexOfTab = {
+  0: 'zone',
+  1: 'zone-info',
+  zone: 0,
+  'zone-info': 1,
+};
+
+export const initializationParamsForZone = {
+  searchKey: '',
+  zoneStatus: 'all',
+  page: 1,
+  pageSize: 5,
+  sortBy: '',
+  tab: 'zone',
+};
+
 function AddMenuButton({ label, Icon, ...props }) {
   return (
     <Button variant="contained" color="primary" size="small" startIcon={Icon || <Add />} {...props}>
@@ -96,15 +115,11 @@ function ServiceZone() {
 
   const [actionType, setActionType] = useState('add');
 
-  const [rowData, setRowData] = useState({});
+  const [rowData, setRowData] = useState();
 
-  const [currentTab, setCurrentTab] = useState(0);
+  const [queryParams, setQueryParams] = useQueryParams({ ...initializationParamsForZone });
 
-  const [slectedZoneStatus, setSelectedZoneStatus] = useState('all');
-
-  const [searchedValue, setSearchedValue] = useState('');
-
-  const [pageNo, setPageNo] = useState(1);
+  const [currentTab, setCurrentTab] = useState(indexOfTab[queryParams?.tab] || 0);
 
   const [totalPage, setTotalPage] = useState(1);
   // eslint-disable-next-line no-unused-vars
@@ -123,15 +138,11 @@ function ServiceZone() {
 
   // getAllZonesWithPagination
   const getAllZonesWithPagination = useQuery(
-    [apiurl, { slectedStatus: slectedZoneStatus, searchedValue, pageNo, selectedPageSize, selectedsortBy }],
+    [apiurl, { ...queryParams }],
     () =>
       AXIOS.get(apiurl, {
         params: {
-          zoneStatus: slectedZoneStatus !== 'all' ? slectedZoneStatus : '',
-          searchKey: searchedValue,
-          page: pageNo,
-          pageSize: selectedPageSize,
-          sortBy: selectedsortBy,
+          ...queryParams,
         },
       }),
     {
@@ -374,6 +385,15 @@ function ServiceZone() {
               value={currentTab}
               onChange={(event, newValue) => {
                 setCurrentTab(newValue);
+                setQueryParams((prev) => {
+                  const params = { ...prev };
+                  const keys = Object.keys(params);
+                  keys.forEach((key) => {
+                    params[key] = undefined;
+                  });
+
+                  return { ...params, tab: indexOfTab[newValue], page: 1, pageSize: 5 };
+                });
                 setIsSideBarOpen(false);
               }}
               sx={{
@@ -384,7 +404,7 @@ function ServiceZone() {
               }}
             >
               <Tab label="Zone List" />
-              <Tab label="Map Overview" />
+              <Tab label="Zone Info" />
             </Tabs>
           </Box>
           <TabPanel index={0} value={currentTab}>
@@ -392,7 +412,7 @@ function ServiceZone() {
               <StyledSearchBar
                 sx={{ flex: '1' }}
                 placeholder="Search"
-                onChange={(e) => setSearchedValue(e.target.value)}
+                onChange={(e) => setQueryParams((prev) => ({ ...prev, searchKey: e.target.value }))}
               />
               <StyledFormField
                 intputType="select"
@@ -401,11 +421,11 @@ function ServiceZone() {
                 }}
                 inputProps={{
                   name: 'zoneStatus',
-                  value: slectedZoneStatus,
+                  value: queryParams?.zoneStatus,
                   items: statusOptions,
                   size: 'sm2',
 
-                  onChange: (e) => setSelectedZoneStatus(e.target.value),
+                  onChange: (e) => setQueryParams((prev) => ({ ...prev, zoneStatus: e.target.value })),
                 }}
               />
               {/* Map veiw */}
@@ -462,9 +482,9 @@ function ServiceZone() {
               )}
             </Box>
             <AppPagination
-              currentPage={pageNo}
+              currentPage={Number(queryParams?.page)}
               lisener={(newPage) => {
-                setPageNo(newPage);
+                setQueryParams((prev) => ({ ...prev, page: newPage }));
               }}
               totalPage={totalPage}
             />
@@ -536,6 +556,9 @@ function ServiceZone() {
                   width: '100%',
                   height: '100vh',
                   padding: '20px',
+                  opacity: !isSideBarOpen ? '0' : '1',
+                  transform: !isSideBarOpen ? 'translateX(100%)' : 'translateX(0px)',
+                  transition: 'all 0.3s ease-in-out',
                   // backgroundColor: 'blue',
                   marginRight: '-50px',
                   backgroundColor: theme.palette.primary.contrastText,

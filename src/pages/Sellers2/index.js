@@ -250,7 +250,7 @@ function SellerList2() {
             onChange: (e) => setZoneId(e.target.value),
           }}
         />
-        {admin?.adminType !== 'accountManager' && admin?.adminType !== 'customerService' && (
+        {admin?.adminType !== 'customerService' && (
           <AddMenuButton
             onClick={() => {
               setOpen(() => {
