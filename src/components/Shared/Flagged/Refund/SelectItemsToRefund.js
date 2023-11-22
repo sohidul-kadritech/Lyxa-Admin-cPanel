@@ -8,6 +8,7 @@ import { isFinite } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
+import FormateBaseCurrency from '../../../Common/FormateBaseCurrency';
 import StyledIconButton from '../../../Styled/StyledIconButton';
 import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import SelectableItem from './SelectableItem';
@@ -367,7 +368,7 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
                     Delivery Fees
                   </Typography>
                   <Typography variant="body2" minWidth="40px">
-                    {baseCurrency?.symbol} {deliveryFee}
+                    {FormateBaseCurrency.get(deliveryFee)}
                   </Typography>
                 </Stack>
               )}
@@ -384,11 +385,11 @@ function SelectItemsToRefund({ order, flaggData, setFlaggData }) {
               </Typography>
               {order?.summary?.baseCurrency_couponDiscountAmount > 0 && flaggData?.replacement === 'without' ? (
                 <Typography variant="body2" minWidth="40px">
-                  {baseCurrency?.symbol} {0}
+                  {FormateBaseCurrency.get(0)}
                 </Typography>
               ) : (
                 <Typography variant="body2" minWidth="40px">
-                  {baseCurrency?.symbol} {flaggData?.totalSelectedAmount}
+                  {FormateBaseCurrency.get(flaggData?.totalSelectedAmount)}
                 </Typography>
               )}
             </Stack>

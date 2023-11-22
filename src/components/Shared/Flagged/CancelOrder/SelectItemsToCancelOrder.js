@@ -7,6 +7,7 @@ import { isFinite } from 'lodash';
 import React, { useState } from 'react';
 import { ReactComponent as ExchangeIcon } from '../../../../assets/icons/exchangeIcon.svg';
 import { useGlobalContext } from '../../../../context';
+import FormateBaseCurrency from '../../../Common/FormateBaseCurrency';
 import StyledIconButton from '../../../Styled/StyledIconButton';
 import { productDeal } from '../../OrderDetail/Details/OrderSummary/Product';
 import SelectableItem from '../Refund/SelectableItem';
@@ -187,7 +188,8 @@ function SelectItemsToCancelOrder({ order, flaggData, setFlaggData }) {
                 Total
               </Typography>
               <Typography variant="body2">
-                {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0).toFixed(2)}
+                {/* {baseCurrency?.symbol} {selectedItem.reduce((prev, item) => prev + item?.price, 0).toFixed(2)} */}
+                {FormateBaseCurrency?.get(selectedItem.reduce((prev, item) => prev + item?.price, 0))}
               </Typography>
             </Stack>
           </Stack>

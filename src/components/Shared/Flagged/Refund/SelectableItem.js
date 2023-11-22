@@ -2,6 +2,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useGlobalContext } from '../../../../context';
+import FormateBaseCurrency from '../../../Common/FormateBaseCurrency';
 import StyledSwitch from '../../../Styled/StyledSwitch';
 import CustomeCheckedBox from '../CustomeCheckedBox';
 
@@ -49,8 +50,8 @@ function SelectableItem({ label, price, isChecked, onChange, showToggle = false,
         </Stack>
         {showPrice && (
           <Stack direction="row" alignItems="center">
-            <Typography minWidth="40px" variant="body2">
-              {baseCurrency?.symbol} {price}
+            <Typography minWidth="50px" variant="body2">
+              {FormateBaseCurrency.get(price)}
             </Typography>
           </Stack>
         )}

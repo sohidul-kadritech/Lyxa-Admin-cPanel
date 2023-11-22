@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { Box, Stack, useTheme } from '@mui/material';
 import React from 'react';
@@ -74,7 +75,9 @@ function CancelOrder({ order, cancelOrderData, setCancelOrderData }) {
         <StyledInputBox title="Specific Reason">
           <Stack mt={10 / 4}>
             <StyledRadioGroup
-              items={cancelReasonOptions}
+              items={cancelReasonOptions?.filter((options) =>
+                order?.isButler ? options?.value !== 'restaurent late' : true,
+              )}
               value={cancelOrderData?.cancelReason}
               name="cancelReason"
               onChange={onChangeHandler}
