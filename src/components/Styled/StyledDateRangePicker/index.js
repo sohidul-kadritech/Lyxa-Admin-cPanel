@@ -31,17 +31,19 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
       {/* <StyledDateInput /> */}
 
       <DateRangePicker
-        // startDate={date?.startDate}
-        startDate={startDate}
-        // endDate={date?.endDate}
-        endDate={endDate}
+        startDate={date?.startDate}
+        // startDate={startDate}
+        endDate={date?.endDate}
+        // endDate={endDate}
         startDateId={_.uniqueId('start_date_id')}
         endDateId={_.uniqueId('end_date_id')}
         onDatesChange={({ startDate, endDate }) => {
           console.log({ startDate, endDate });
           // onChange({ startDate, endDate });
-          if (startDate && endDate) onChange({ startDate, endDate });
-          else {
+          if (startDate && endDate) {
+            onChange({ startDate, endDate });
+            setDate({ startDate, endDate });
+          } else {
             setDate({ startDate, endDate });
           }
         }}
@@ -59,7 +61,16 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
         hideKeyboardShortcutsPanel
         keepOpenOnDateSelect
         isOutsideRange={() => false}
-        renderCalendarInfo={() => <DatePresets endDate={endDate} startDate={startDate} onChange={onChange} />}
+        renderCalendarInfo={() => (
+          <DatePresets
+            endDate={endDate}
+            startDate={startDate}
+            onChange={({ startDate, endDate }) => {
+              onChange({ startDate, endDate });
+              setDate({ startDate, endDate });
+            }}
+          />
+        )}
       />
     </Stack>
   );
