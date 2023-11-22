@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React, { useMemo } from 'react';

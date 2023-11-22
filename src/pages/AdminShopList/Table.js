@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '../../components/Common/Rating';
