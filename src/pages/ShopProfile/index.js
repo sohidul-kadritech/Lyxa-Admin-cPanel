@@ -17,7 +17,7 @@ import ShopInfo from './Info';
 import ShopProfileSkeleton from './Sekleton';
 import ShopDetails from './ShopDetails';
 import ShopProfileTabs from './Tabs';
-import { createShopData } from './helper';
+import { createShopData, routeListForUseEffect } from './helper';
 
 export default function ShopProfile({ setLoading = () => {}, loading }) {
   const routeMatch = useRouteMatch();
@@ -91,7 +91,7 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
   }, []);
 
   useEffect(() => {
-    if (routeMatch?.path === '/shops/list') shopQuery.mutate();
+    if (routeListForUseEffect?.includes(routeMatch?.path)) shopQuery.mutate();
   }, [currentUser?.shop?._id]);
 
   const menuHandler = (value) => {
@@ -156,8 +156,6 @@ export default function ShopProfile({ setLoading = () => {}, loading }) {
 
     shopMutation.mutate({ ...shopData });
   };
-
-  console.log(shopQuery?.isLoading || !shop?._id, { shop }, shopQuery?.isLoading);
 
   return (
     <Box>

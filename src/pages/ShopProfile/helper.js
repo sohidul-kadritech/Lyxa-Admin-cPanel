@@ -519,3 +519,9 @@ export const GetDealsWithOnselectedItems = (categoryItems, details, symble = '$'
   }
   return result;
 };
+
+export const routeListForUseEffect = [
+  '/shops/list',
+  '/seller/dashboard/:sellerId/shops/list',
+  '/seller/dashboard/:sellerId/shop/dashboard/:shopId',
+];

@@ -80,8 +80,6 @@ function ShopSettings() {
   const { shop, adminType, admin } = currentUser;
   const { currency } = general;
 
-  console.log({ shop });
-
   const [hasFreeDelivery] = useState(getHasFreeDelivery(shop));
 
   const [newShop, setNewShop] = useState(deepClone(shop));

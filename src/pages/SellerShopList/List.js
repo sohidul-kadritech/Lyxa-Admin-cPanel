@@ -3,7 +3,6 @@ import { useGlobalContext } from '../../context';
 
 function StyledShopButton({ shop, isActiveShop, onSelect, disabled }) {
   const theme = useTheme();
-  console.log(shop);
 
   return (
     <Stack

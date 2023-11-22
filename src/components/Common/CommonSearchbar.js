@@ -81,6 +81,7 @@ export default function SearchBar({
               startDate={queryParams?.startDate === 'null' ? null : moment(queryParams?.startDate)}
               endDate={queryParams?.endDate === 'null' ? null : moment(queryParams?.endDate)}
               onChange={({ startDate, endDate }) => {
+                console.log('onChange date', { startDate, endDate });
                 setQueryParams((prev) => ({
                   ...prev,
                   startDate: startDate?.format('YYYY-MM-DD'),
