@@ -41,6 +41,7 @@ export const getShopStatusColor = (shop) => {
 };
 
 export default function ShopInfo({ shop, onDrop, menuHandler }) {
+  console.log({ shop });
   const { currentUser, general } = useGlobalContext();
   const currency = general?.currency;
   const { admin } = currentUser;
@@ -129,7 +130,7 @@ export default function ShopInfo({ shop, onDrop, menuHandler }) {
               }}
             />
             <Typography variant="inherit" fontSize="18px" sx={{ fontWeight: 400, color: 'text.secondary2' }}>
-              ({shop?.reviews?.length > 100 ? '100+' : shop?.reviews?.length} reviews)
+              ({shop?.totalRating || 0} reviews)
             </Typography>
           </Stack>
           <Stack flexDirection="row" gap="16px" sx={{ marginTop: '16px' }}>

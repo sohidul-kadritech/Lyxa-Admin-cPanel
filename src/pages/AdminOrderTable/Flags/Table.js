@@ -45,6 +45,12 @@ export default function Table({ orders = [], queryParams, setQueryParams, totalP
                   <MessageIcon color="#5BBD4E" />
                 </>
               ) : null}
+              {row?.replacementOrder ? (
+                <>
+                  &nbsp;&nbsp;
+                  <ReplacementIcon style={{ height: 18 }} color="#DD5B63" />
+                </>
+              ) : null}
               {row?.flag?.length ? (
                 <>
                   &nbsp;&nbsp;

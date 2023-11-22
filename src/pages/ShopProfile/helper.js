@@ -228,7 +228,7 @@ function PercentageOfRate({ rate, percentage, color }) {
           sx={{
             background: color,
             position: 'absolute',
-            width: `${percentage}%`,
+            width: `${percentage}`,
             height: '100%',
             left: 0,
             top: 0,
@@ -236,13 +236,12 @@ function PercentageOfRate({ rate, percentage, color }) {
           }}
         />
       </Box>
-      <Typography variant="body">{percentage}%</Typography>
+      <Typography variant="body">{percentage}</Typography>
     </Stack>
   );
 }
 
 export function ShopReviewDetails({ shop }) {
-  const ratings = calculatePercantagesOfRating(shop?.reviews);
   return (
     <Stack gap={4}>
       <Stack direction="row" gap={2} alignItems="center">
@@ -257,17 +256,38 @@ export function ShopReviewDetails({ shop }) {
         </Stack>
       </Stack>
       <Stack gap={2}>
-        <PercentageOfRate rate={1} percentage={ratings['1'] || 0} color="#CD6366" />
-        <PercentageOfRate rate={2} percentage={ratings['2'] || 0} color="#CD6366" />
-        <PercentageOfRate rate={3} percentage={ratings['3'] || 0} color="#F2C14B" />
-        <PercentageOfRate rate={4} percentage={ratings['4'] || 0} color="#507B4B" />
-        <PercentageOfRate rate={5} percentage={ratings['5'] || 0} color="#507B4B" />
+        <PercentageOfRate
+          rate={1}
+          percentage={shop?.ratingPercentage ? shop?.ratingPercentage[1] : 0}
+          color="#CD6366"
+        />
+        <PercentageOfRate
+          rate={2}
+          percentage={shop?.ratingPercentage ? shop?.ratingPercentage[2] : 0}
+          color="#CD6366"
+        />
+        <PercentageOfRate
+          rate={3}
+          percentage={shop?.ratingPercentage ? shop?.ratingPercentage[3] : 0}
+          color="#F2C14B"
+        />
+        <PercentageOfRate
+          rate={4}
+          percentage={shop?.ratingPercentage ? shop?.ratingPercentage[4] : 0}
+          color="#507B4B"
+        />
+        <PercentageOfRate
+          rate={5}
+          percentage={shop?.ratingPercentage ? shop?.ratingPercentage[5] : 0}
+          color="#507B4B"
+        />
       </Stack>
     </Stack>
   );
 }
 
 export const getMarketingLabel = (shop, appSettings, showPromotionString = false) => {
+  console.log('shop', { shop });
   const maxDiscount = {
     shop: shop?.maxDiscount,
     admin: appSettings?.maxDiscount,

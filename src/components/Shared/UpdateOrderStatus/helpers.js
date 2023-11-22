@@ -16,7 +16,7 @@ export const statusOptions = {
     position: 3,
   },
   ready_to_pickup: {
-    label: 'Ready for pickup',
+    label: 'Ready to pickup',
     position: 4,
   },
   order_on_the_way: {
@@ -66,7 +66,7 @@ export const newStatusOptions = (currentOrder) => {
       },
 
       ready_to_pickup: {
-        label: 'Ready for pickup',
+        label: 'Ready to pickup',
         position: 4,
       },
       order_on_the_way: {
@@ -101,7 +101,7 @@ export const newStatusOptions = (currentOrder) => {
       },
 
       ready_to_pickup: {
-        label: 'Ready for pickup',
+        label: 'Ready to pickup',
         position: 4,
       },
       order_on_the_way: {
@@ -138,7 +138,7 @@ export const newStatusOptions = (currentOrder) => {
         position: 3,
       },
       ready_to_pickup: {
-        label: 'Ready for pickup',
+        label: 'Ready to pickup',
         position: 4,
       },
       order_on_the_way: {
@@ -171,7 +171,7 @@ export const newStatusOptions = (currentOrder) => {
       position: 3,
     },
     ready_to_pickup: {
-      label: 'Ready for pickup',
+      label: 'Ready to pickup',
       position: 4,
     },
     order_on_the_way: {

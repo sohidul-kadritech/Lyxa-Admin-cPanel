@@ -39,10 +39,11 @@ export default function StyledDateRangePicker({ startDate, endDate, onChange }) 
         endDateId={_.uniqueId('end_date_id')}
         onDatesChange={({ startDate, endDate }) => {
           console.log({ startDate, endDate });
-          if (startDate && endDate) onChange({ startDate, endDate });
-          else {
-            setDate({ startDate, endDate });
-          }
+          onChange({ startDate, endDate });
+          // if (startDate && endDate) onChange({ startDate, endDate });
+          // else {
+          //   setDate({ startDate, endDate });
+          // }
         }}
         onClose={({ startDate, endDate }) => {
           console.log('onClose', { startDate, endDate, date });

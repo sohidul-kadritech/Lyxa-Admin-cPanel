@@ -42,10 +42,10 @@ export function TitleWithToolTip({ title, tooltip, sx }) {
 
 export const orderStatusMap = {
   placed: 'Placed',
-  accepted_delivery_boy: 'Rider Accepted',
-  preparing: 'Restaurant Accepted',
+  accepted_delivery_boy: 'Rider accepted',
+  preparing: 'Preparing',
   ready_to_pickup: 'Ready to pickup',
-  order_on_the_way: 'On the way',
+  order_on_the_way: 'Order on the way',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
   refused: 'Rejected',
